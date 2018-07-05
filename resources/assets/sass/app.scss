@@ -1,1 +1,10 @@
+@import "../../../node_modules/bulma/sass/utilities/_all";
 
+$primary: $red;
+$primary-invert: $red-invert;
+$section-padding: 44;
+
+@import "../../../node_modules/bulma/sass/base/all";
+@import "../../../node_modules/bulma/sass/grid/columns";
+@import "../../../node_modules/bulma/sass/layout/all";
+@import "../../../node_modules/bulma/sass/elements/button";
