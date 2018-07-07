@@ -1,11 +1,6 @@
-@import "../../../node_modules/bulma/sass/utilities/_all";
+@import "variables";
 
-$primary: $red;
-$primary-invert: $red-invert;
 
-$family-primary: "PT Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+@import "../../../node_modules/bulma/bulma";
+@import "common";
 
-@import "../../../node_modules/bulma/sass/base/all";
-@import "../../../node_modules/bulma/sass/grid/columns";
-@import "../../../node_modules/bulma/sass/layout/all";
-@import "../../../node_modules/bulma/sass/elements/button";

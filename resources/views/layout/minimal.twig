@@ -15,11 +15,16 @@
     <meta name="msapplication-TileColor" content="#b91d47">
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ manifest('/assets/app.css') }}">
 </head>
 <body>
-{% if _message is defined %}
-    <div class="alert alert-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
-{% endif %}
+<div class="navbar auth-navbar">
+    <div class="navbar-brand">
+        <a href="{{ url('/') }}" class="navbar-item">
+            <i class="fas fa-tty"></i>
+        </a>
+    </div>
+</div>
 {% block content %}{% endblock content %}
 </body>
 </html>

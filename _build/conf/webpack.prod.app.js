@@ -1,7 +1,7 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CssMiniPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const BundleAnalyzerWebpackPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+//const BundleAnalyzerWebpackPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
@@ -27,7 +27,8 @@ module.exports = {
                     priority: -20,
                     chunks: 'initial',
                     reuseExistingChunk: true
-                }
+                },
+
             }
         }
     },
@@ -91,7 +92,7 @@ module.exports = {
             cssProcessorOptions: {safe: true, discardComments: {removeAll: true}},
         }),
         new ManifestPlugin({
-            basePath: 'assets/'
+            basePath: '/assets/'
         })
     ]
 };
