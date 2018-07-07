@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +47,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof TokenMismatchException) {
+            return redirect($request->fullUrl())->with('_message', ['type' => 'info', 'text' => 'Время для отправки данных истекло, повторите отправку'])->withInput($request->all());
+        }
+        if ($exception instanceof AccessDeniedException)
+        {
+            //@TODO: Log access violations
+            return redirect('/')->with('_message', ['type' => 'danger', 'text' => 'У вас нет прав для выполнения этой операции!']);
+        }
         return parent::render($request, $exception);
     }
 }

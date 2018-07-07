@@ -39,9 +39,7 @@ abstract class Controller extends BaseController
         $this->metadata->set('homepage', Request::is('/'));
         $this->metadata->title = Request::server('SERVER_NAME', 'localhost');
         $this->set('_metadata', $this->metadata);
-        $this->metadata->title = 'Glotus CRM';
-
-
+        $this->metadata->title = env('app.name', 'Document');
     }
 
     protected function set($key, $value = null)
@@ -67,10 +65,11 @@ abstract class Controller extends BaseController
         $router = app('router');
         $route = $router->current();
         $action = $route->getAction();
-        preg_match('~^' . preg_quote($action['namespace'] . '\\', '~') . '([^@]+)Controller@(get|post|any)(.*)' . '~i', $action['uses'], $matches);
+        preg_match('~^' . preg_quote($action['namespace'] . '\\', '~') . '([^@]+)Controller@(get|post|any)?(.*)' . '~i', $action['uses'], $matches);
         //dd($action);
         $controller = $matches[1];
         $action = $matches[3];
+        //dd($this->metadata);
         $this->metadata->setMethod($controller, $action);
         $this->layout = strtolower($controller . DIRECTORY_SEPARATOR . $action);
     }
@@ -95,7 +94,9 @@ abstract class Controller extends BaseController
         $this->before();
         $response = parent::callAction($method, $parameters);
         $user = \Auth::user();
-        if (!is_null($user)) {$user->load('rights');}
+        if (!is_null($user)) {
+            $user->load('rights');
+        }
         $this->set('_user', $user);
         if (is_null($response) && !is_null($this->layout)) {
             $this->setupLayout();
