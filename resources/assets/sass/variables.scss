@@ -1,7 +1,9 @@
 @import "../../../node_modules/bulma/sass/utilities/initial-variables";
 @import "../../../node_modules/bulma/sass/utilities/functions";
 
-$primary: $blue;
+$primary: hsl(219, 46%, 50%);
 $primary-invert: findColorInvert($primary);
+
+@import "../../../node_modules/bulma/sass/utilities/derived-variables";
 
 $family-primary: "PT Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
