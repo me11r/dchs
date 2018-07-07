@@ -1,13 +1,13 @@
 {
   "scripts": {
-    "build:app": "node ./_build/build.js --config=app --mode=prod",
-    "build:comp": "node ./_build/build.js --config=comp --mode=prod",
-    "watch:app": "node ./_build/build.js --config=app --mode=prod --watch",
+    "build": "node ./_build/build.js --config=app --mode=prod",
+    "components": "node ./_build/build.js --config=comp --mode=prod",
+    "watch": "node ./_build/build.js --config=app --mode=prod --watch",
     "dev:app": "node ./_build/develop.js --config=app --mode=dev",
-    "dev:comp": "node ./_build/develop.js --config=app --mode=dev",
-    "build:all": "npm run build:comp && npm run build:app"
+    "dev:comp": "node ./_build/develop.js --config=app --mode=dev"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.1.0",
     "autoprefixer": "^8.6.3",
     "axios": "^0.18.0",
     "babel-core": "^6.26.3",

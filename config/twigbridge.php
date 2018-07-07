@@ -1,5 +1,7 @@
 <?php
 
+use TwigBridge\Twig\Template;
+
 /**
  * This file is part of the TwigBridge package.
  *
@@ -46,7 +48,7 @@ return [
 
             // The base template class to use for generated templates.
             // default: TwigBridge\Twig\Template
-            'base_template_class' => 'TwigBridge\Twig\Template',
+            'base_template_class' => Template::class,
 
             // An absolute path where to store the compiled templates, or false to disable caching. If null
             // then the cache file path is used.
@@ -62,7 +64,7 @@ return [
             // (variables and or attributes/methods that do not exist) and
             // replace them with a null value. When set to true, Twig throws an exception instead.
             // default: false
-            'strict_variables' => false,
+            'strict_variables' => env('APP_DEBUG', false),
 
             // If set to true, auto-escaping will be enabled by default for all templates.
             // default: 'html'
@@ -175,10 +177,12 @@ return [
         |
         */
         'functions' => [
-            'elixir',
-            'head',
-            'last',
-            'mix',
+            /*
+                         'elixir',
+                        'head',
+                        'last',
+                        'mix',
+            */
         ],
 
         /*
@@ -210,7 +214,7 @@ return [
         |
         */
         'filters' => [
-            'get' => 'data_get',    
+            'get' => 'data_get',
         ],
-    ],  
+    ],
 ];

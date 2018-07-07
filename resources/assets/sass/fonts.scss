@@ -1,0 +1,22 @@
+@font-face {
+    font-family: 'PT Sans';
+    src: url('../../fonts/pt-sans-regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'PT Sans';
+    src: url('../../fonts/pt-sans-bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'PT Sans';
+    src: url('../../fonts/pt-sans-italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+$fa-font-path: '../../fonts/';
+@import "../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "../../../node_modules/@fortawesome/fontawesome-free/scss/fa-regular";
+@import "../../../node_modules/@fortawesome/fontawesome-free/scss/fa-solid";
