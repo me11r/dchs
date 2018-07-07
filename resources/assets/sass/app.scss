@@ -2,7 +2,8 @@
 
 $primary: $red;
 $primary-invert: $red-invert;
-$section-padding: 44;
+
+$family-primary: "PT Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
 @import "../../../node_modules/bulma/sass/base/all";
 @import "../../../node_modules/bulma/sass/grid/columns";

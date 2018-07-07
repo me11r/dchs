@@ -2,12 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
+use App\Page\Metadata;
+use Auth;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Request;
 
-class Controller extends BaseController
+
+abstract class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    protected $timezone = '';
+    protected $layout;
+    protected $data = [];
+    protected $_user;
+    protected $_locales;
+    /** @var Metadata */
+    private $metadata;
+
+    public function before()
+    {
+
+    }
+
+    public function after()
+    {
+
+    }
+
+    public function __construct()
+    {
+        $this->metadata = new Metadata();
+        $this->metadata->set('homepage', Request::is('/'));
+        $this->metadata->title = Request::server('SERVER_NAME', 'localhost');
+        $this->set('_metadata', $this->metadata);
+        $this->metadata->title = 'Glotus CRM';
+
+
+    }
+
+    protected function set($key, $value = null)
+    {
+        if (is_array($key)) {
+            $this->data = array_merge($this->data, $key);
+        } else {
+            $this->data[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    protected function noLayout()
+    {
+        $this->layout = null;
+
+        return $this;
+    }
+
+    protected function detectLayout()
+    {
+        $router = app('router');
+        $route = $router->current();
+        $action = $route->getAction();
+        preg_match('~^' . preg_quote($action['namespace'] . '\\', '~') . '([^@]+)Controller@(get|post|any)(.*)' . '~i', $action['uses'], $matches);
+        //dd($action);
+        $controller = $matches[1];
+        $action = $matches[3];
+        $this->metadata->setMethod($controller, $action);
+        $this->layout = strtolower($controller . DIRECTORY_SEPARATOR . $action);
+    }
+
+    protected function setupLayout()
+    {
+        if (!is_null($this->layout)) {
+            $this->layout = \View::make($this->layout);
+            $this->layout->with('_token', csrf_token());
+
+            $message = \Session::pull('_message');
+            if (!is_null($message)) {
+                $this->layout->with('_message', $message);
+            }
+            $this->layout->with($this->data);
+        }
+    }
+
+    public function callAction($method, $parameters)
+    {
+        $this->detectLayout();
+        $this->before();
+        $response = parent::callAction($method, $parameters);
+        $user = \Auth::user();
+        if (!is_null($user)) {$user->load('rights');}
+        $this->set('_user', $user);
+        if (is_null($response) && !is_null($this->layout)) {
+            $this->setupLayout();
+            $response = $this->layout;
+        }
+
+        $this->after();
+        return $response;
+    }
+
 }
