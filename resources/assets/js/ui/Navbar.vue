@@ -5,7 +5,14 @@
             <a role="button" class="navbar-burger" @click="toggleOpen"><span></span><span></span><span></span></a>
         </div>
         <div class="navbar-menu" :class="menuClass">
+            <div class="navbar-start">
 
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                <form action="/logout" method="post"><input type="hidden" name="_token" :value="csrf"><button class="button is-outlined"><i class="fas fa-door-open"></i>&nbsp;Выход</button></form>
+                </div>
+            </div>
         </div>
     </nav>
 </template>
@@ -16,6 +23,7 @@
         data: function () {
             return {
                 opened: false,
+                csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             }
         },
         computed: {

@@ -36,7 +36,7 @@ class LoginController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('guest', ['except' => 'postLogout']);
+        $this->middleware('guest')->except('postLogout');
     }
 
     public function getIndex()
@@ -73,9 +73,8 @@ class LoginController extends Controller
     {
         $this->noLayout();
         $this->guard()->logout();
-        $request->session()->flush();
+        $request->session()->invalidate();
 
-        $request->session()->regenerate();
         return redirect('/');
     }
 }
