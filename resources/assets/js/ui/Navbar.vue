@@ -6,11 +6,20 @@
         </div>
         <div class="navbar-menu" :class="menuClass">
             <div class="navbar-start">
-
+                <div class="navbar-item"><a href="/card/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-card"></i>&nbsp; Карточка 101</a></div>
+                <div class="navbar-item"><a href="/card/112" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-card"></i>&nbsp; Карточка 112</a></div>
+                <div class="navbar-item"><a href="/list/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Строевая записка 101</a>
+                </div>
             </div>
             <div class="navbar-end">
+                <div class="navbar-item has-dropdown">
+                    <a href="#" class="navbar-link">Справочники</a>
+                    <div class="navbar-dropdown"></div>
+                </div>
                 <div class="navbar-item">
-                <form action="/logout" method="post"><input type="hidden" name="_token" :value="csrf"><button class="button is-outlined"><i class="fas fa-door-open"></i>&nbsp;Выход</button></form>
+                    <form action="/logout" id="logout" method="post"><input type="hidden" name="_token" :value="csrf"><a @click="logout"
+                                                                                                                         class="  is-inline-block-widescreen is-block button is-primary is-outlined"><i
+                            class="fas fa-door-open"></i>&nbsp;Выход</a></form>
                 </div>
             </div>
         </div>
@@ -34,6 +43,9 @@
         methods: {
             toggleOpen: function () {
                 this.opened = !this.opened
+            },
+            logout: function () {
+                document.getElementById('logout').submit();
             }
         }
     }
