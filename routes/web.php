@@ -25,5 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 
+    Route::get('/card/101', 'CardController@get101')->name('card.101');
+
     Route::get('/', 'HomeController@getIndex')->name('home');
 });
