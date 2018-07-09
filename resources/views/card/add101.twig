@@ -16,42 +16,42 @@
                 <div id="tab_call" class="is-hidden">
                     <div class="field">
                         <label for="location">Место пожара (Адрес)</label>
-                        <textarea name="location" id="location" class="textarea" cols="30" rows="3"></textarea>
+                        <textarea name="location" id="location" class="textarea" cols="30" rows="3">{{ ticket.location|default('') }}</textarea>
                     </div>
                     <div class="field">
                         <label for="city_area">Район города</label>
-                        <input class="input" type="text" name="city_area" id="city_area" value=""/>
+                        <input class="input" type="text" name="city_area" id="city_area" value="{{ ticket.city_area|default('') }}"/>
                     </div>
                     <div class="field">
                         <label for="crossroad">Пересечение улиц</label>
-                        <input type="text" class="input" name="crossroad" id="crossroad" value=""/>
+                        <input type="text" class="input" name="crossroad" id="crossroad" value="{{ ticket.crossroad|default('') }}"/>
                     </div>
                     <div class="field">
                         <label for="description">Что горит</label>
-                        <input type="text" class="input" name="description" id="description" value="">
+                        <input type="text" class="input" name="description" id="description" value="{{ ticket.description|default('') }}">
                     </div>
                     <div class="field is-grouped">
                         <p class="control">
                             <label for="storey_count">Этажность</label>
-                            <input type="number" class="input" name="storey_count" id="storey_count" value=""/>
+                            <input type="number" class="input" name="storey_count" id="storey_count" value="{{ ticket.storey_count|default('') }}"/>
                         </p>
                         <p class="control">
                             <label for="floor">На каком этаже пожар</label>
-                            <input type="number" class="input" name="floor" id="floor" value=""/>
+                            <input type="number" class="input" name="floor" id="floor" value="{{ ticket.floor|default('') }}"/>
                         </p>
                     </div>
                     <div class="field">
                         <label for="building_description">Конструктивные особенности</label>
-                        <textarea class="textarea" name="building_description" id="building_description" cols="30" rows="2"></textarea>
+                        <textarea class="textarea" name="building_description" id="building_description" cols="30" rows="2">{{ ticket.building_description|default('') }}</textarea>
                     </div>
                     <div class="field is-grouped">
                         <p class="control is-expanded">
                             <label for="caller_name">ФИО Заявителя</label>
-                            <input type="text" class="input" name="caller_name" id="caller_name" value=""/>
+                            <input type="text" class="input" name="caller_name" id="caller_name" value="{{ ticket.caller_name|default('') }}"/>
                         </p>
                         <p class="control">
                             <label for="caller_phone">Телефон заявителя</label>
-                            <input type="text" class="input" name="caller_phone" id="caller_phone" value=""/>
+                            <input type="text" class="input" name="caller_phone" id="caller_phone" value="{{ ticket.caller_phone|default('') }}"/>
                         </p>
 
                     </div>
@@ -62,13 +62,14 @@
                         {% for name,title in gu_notify %}
                             <p class="control">
                                 <label for="notify_{{ name }}_time">{{ title }}</label>
-                                <input type="text" class="input" style="max-width: 4rem" name="notify_{{ name }}_time" id="notify_{{ name }}_time" value="">
+                                <input type="text" class="input" style="max-width: 4rem" name="notify_{{ name }}_time" id="notify_{{ name }}_time"
+                                       value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
                             </p>
                         {% endfor %}
                     </div>
                     <div class="field">
                         <label for="next_notify_time">Время следующего взаимодействия</label>
-                        <input type="text" class="input" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" value="">
+                        <input type="text" class="input" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" value="{{ ticket.next_notify_time|default('') }}">
                     </div>
                     <h5 class="subtitle">Службы</h5>
                     <div>
@@ -85,9 +86,12 @@
                             {% for name,title in service_notify %}
                                 <tr>
                                     <td>{{ title }}</td>
-                                    <td><input type="text" class="input" name="call_{{ name }}_time" id="call_{{ name }}_time"/></td>
-                                    <td><input type="text" class="input" name="name_{{ name }}_recv" id="name_{{ name }}_recv"/></td>
-                                    <td><input type="text" class="input" name="arrival_{{ name }}" id="arrival_{{ name }}"/></td>
+                                    <td><input type="text" class="input" name="call_{{ name }}_time" id="call_{{ name }}_time"
+                                               value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}"/></td>
+                                    <td><input type="text" class="input" name="name_{{ name }}_recv" id="name_{{ name }}_recv"
+                                               value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/></td>
+                                    <td><input type="text" class="input" name="arrival_{{ name }}" id="arrival_{{ name }}"
+                                               value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}"/></td>
                                 </tr>
                             {% endfor %}
                             </tbody>
