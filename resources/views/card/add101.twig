@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <section class="box container" id="cardadd101">
+    <section class="container" id="cardadd101">
         <div class=""><h4 class="title" style="padding: 3px 15px">Добавление: Карточка 101</h4></div>
         <form action="" method="post">
             {{ csrf_field() }}
@@ -9,7 +9,7 @@
                     <li><a href="#tab_call" onclick="setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a></li>
                     <li><a href="#tab_notify" onclick="setTab(1);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a></li>
                     <li><a href="#tab_truck" onclick="setTab(2);"><i class="fas fa-truck-moving"></i>&nbsp; Подразделения</a></li>
-                    <li><a href="#tab_other"  onclick="setTab(3);"><i class="fas fa-info-circle"></i>&nbsp; Прочее</a></li>
+                    <li><a href="#tab_other" onclick="setTab(3);"><i class="fas fa-info-circle"></i>&nbsp; Прочее</a></li>
                 </ul>
             </div>
             <div class="panels">
@@ -19,8 +19,41 @@
                         <textarea name="location" id="location" class="textarea" cols="30" rows="3"></textarea>
                     </div>
                     <div class="field">
-                        <label for="city_area"></label>
-                        <input type="text" name="city_area" id="city_area" value>
+                        <label for="city_area">Район города</label>
+                        <input class="input" type="text" name="city_area" id="city_area" value=""/>
+                    </div>
+                    <div class="field">
+                        <label for="crossroad">Пересечение улиц</label>
+                        <input type="text" class="input" name="crossroad" id="crossroad" value=""/>
+                    </div>
+                    <div class="field">
+                        <label for="description">Что горит</label>
+                        <input type="text" class="input" name="description" id="description" value="">
+                    </div>
+                    <div class="field is-grouped">
+                        <p class="control">
+                            <label for="storey_count">Этажность</label>
+                            <input type="number" class="input" name="storey_count" id="storey_count" value=""/>
+                        </p>
+                        <p class="control">
+                            <label for="floor">На каком этаже пожар</label>
+                            <input type="number" class="input" name="floor" id="floor" value=""/>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label for="building_description">Конструктивные особенности</label>
+                        <textarea class="textarea" name="building_description" id="building_description" cols="30" rows="2"></textarea>
+                    </div>
+                    <div class="field is-grouped">
+                        <p class="control is-expanded">
+                            <label for="caller_name">ФИО Заявителя</label>
+                            <input type="text" class="input" name="caller_name" id="caller_name" value=""/>
+                        </p>
+                        <p class="control">
+                            <label for="caller_phone">Телефон заявителя</label>
+                            <input type="text" class="input" name="caller_phone" id="caller_phone" value=""/>
+                        </p>
+
                     </div>
                 </div>
                 <div id="tab_notify" class="is-hidden">
@@ -33,8 +66,15 @@
                     33
                 </div>
             </div>
-            <div class="panel" style="padding: 10px 20px">
-                <button type="submit" class="button is-success is-outlined"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <button id="nexttab" class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>&nbsp; Следующий раздел</button>
+                    </p>
+                    <p class="control">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                    </p>
+                </div>
             </div>
         </form>
     </section>
@@ -50,8 +90,19 @@
             panels[i].classList.remove('is-hidden');
             activeTab = i;
         }
+
+        function nextTab(e) {
+            e.preventDefault();
+            let nextTab = activeTab + 1;
+            if (nextTab > 3) {
+                nextTab = 0;
+            }
+            setTab(nextTab);
+        }
+
         window.addEventListener('load', () => {
             setTab(activeTab);
+            document.getElementById('nexttab').addEventListener('click', nextTab);
         });
     </script>
 {% endblock content %}
