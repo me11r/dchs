@@ -20,10 +20,26 @@
 <body>
 <nav id="navbar"></nav>
 {% if _message is defined %}
-    <div class="alert alert-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
+    <div id="notification" class="notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
 {% endif %}
 {% block content %}{% endblock content %}
 <script src="{{ manifest('/assets/vendor.js') }}"></script>
 <script src="{{ manifest('/assets/app.js') }}"></script>
+<script>
+    window.addEventListener('load', () => {
+        const notify = document.getElementById('notification');
+        if (notify) {
+            notify.addEventListener('transitionend', () => {
+                notify.style.display = 'none';
+            });
+            notify.style.opacity = 0;
+        }
+    });
+</script>
+<style>
+    #notification {
+        transition: opacity ease-out 5s;
+    }
+</style>
 </body>
 </html>

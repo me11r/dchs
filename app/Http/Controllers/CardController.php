@@ -41,7 +41,7 @@ class CardController extends AuthorizedController
             'smk' => 'ЦМК (254-63-53)'
         ];
         $ssv_out = [
-            'ӨСБ - ПЧ-1',
+            1 => 'ӨСБ - ПЧ-1',
             ' - ПЧ-2',
             ' - ПЧ-3',
             ' - ПЧ-4',
@@ -72,6 +72,6 @@ class CardController extends AuthorizedController
         $card = Ticket101::findOrNew($card_id);
         $card->fill($request->all());
         $card->save();
-        return redirect('');
+        return redirect('/card/101')->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
     }
 }
