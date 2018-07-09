@@ -114,24 +114,40 @@
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right">{{ ssv }}</td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_ot"  id="ph_{{ index }}_ot"
+                                <td><input class="input" type="text" name="ph_{{ index }}_ot" id="ph_{{ index }}_ot"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"/></td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_out_time"  id="ph_{{ index }}_out_time"
+                                <td><input class="input" type="text" name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}"/></td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_arrive_time"  id="ph_{{ index }}_arrive_time"
+                                <td><input class="input" type="text" name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}"/></td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_loc_time"  id="ph_{{ index }}_loc_time"
+                                <td><input class="input" type="text" name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}"/></td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_liqv_time"  id="ph_{{ index }}_liqv_time"
+                                <td><input class="input" type="text" name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}"/></td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_ret_time"  id="ph_{{ index }}_ret_time"
+                                <td><input class="input" type="text" name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}"/></td>
                             </tr>
                         {% endfor %}
                     </table>
                 </div>
                 <div id="tab_other" class="is-hidden">
-                    33
+                    <h5 class="subtitle">Обстановка с места пожара:</h5>
+                    {% for index in 1..5 %}
+                        <div class="field is-grouped">
+                            <p class="control is-narrow">
+                                <label for="update_{{ index }}_time">Время</label>
+                                <input name="update_{{ index }}_time" type="text" class="input" value="{{ attribute(ticket, 'update_' ~ index ~ '_time')|default('') }}"/>
+                            </p>
+                            <p class="control is-expanded">
+                                <label for="update_{{ index }}_info">Ситуация</label>
+                                <input name="update_{{ index }}_info" type="text" class="input" value="{{ attribute(ticket, 'update_' ~ index ~ '_info')|default('') }}"/>
+                            </p>
+                        </div>
+                    {% endfor %}
+                    <div class="field">
+                        <label for="add_info">Дополнительная информация</label>
+                        <textarea name="add_info" id="add_info" class="textarea" cols="30" rows="3"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
