@@ -57,7 +57,42 @@
                     </div>
                 </div>
                 <div id="tab_notify" class="is-hidden">
-                    11
+                    <h5 class="subtitle">Время сообщения руководству ГУ:</h5>
+                    <div class="field is-grouped">
+                        {% for name,title in gu_notify %}
+                            <p class="control">
+                                <label for="notify_{{ name }}_time">{{ title }}</label>
+                                <input type="text" class="input" style="max-width: 4rem" name="notify_{{ name }}_time" id="notify_{{ name }}_time" value="">
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <div class="field">
+                        <label for="next_notify_time">Время следующего взаимодействия</label>
+                        <input type="text" class="input" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" value="">
+                    </div>
+                    <h5 class="subtitle">Службы</h5>
+                    <div>
+                        <table class="table is-expanded is-striped is-narrow is-fullwidth">
+                            <thead>
+                            <tr>
+                                <th>Службы</th>
+                                <th>Время сообщения</th>
+                                <th>Фамилия<br/>принявшего сообщение</th>
+                                <th>Время прибытия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for name,title in service_notify %}
+                                <tr>
+                                    <td>{{ title }}</td>
+                                    <td><input type="text" class="input" name="call_{{ name }}_time" id="call_{{ name }}_time"/></td>
+                                    <td><input type="text" class="input" name="name_{{ name }}_recv" id="name_{{ name }}_recv"/></td>
+                                    <td><input type="text" class="input" name="arrival_{{ name }}" id="arrival_{{ name }}"/></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div id="tab-truck" class="is-hidden">
                     22
@@ -67,11 +102,11 @@
                 </div>
             </div>
             <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
-                <div class="field is-grouped">
-                    <p class="control">
+                <div class="level">
+                    <p class="level-left">
                         <button id="nexttab" class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>&nbsp; Следующий раздел</button>
                     </p>
-                    <p class="control">
+                    <p class="level-right">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
                     </p>
                 </div>
