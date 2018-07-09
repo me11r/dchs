@@ -333,4 +333,6 @@ class Ticket101 extends Model
 {
     use SoftDeletes;
     protected $table = 'ticket101';
+    protected $fillable = [];
+    protected $guarded = [];
 }

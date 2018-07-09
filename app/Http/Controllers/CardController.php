@@ -9,13 +9,15 @@
 namespace App\Http\Controllers;
 
 
+use App\Ticket101;
 use Illuminate\Http\Request;
 
 class CardController extends AuthorizedController
 {
     public function get101(Request $request)
     {
-
+        $tickets = Ticket101::all();
+        $this->set('tickets', $tickets);
     }
 
     public function getAdd101(Request $request, $card_id = 0)
@@ -36,14 +38,20 @@ class CardController extends AuthorizedController
             '104' => 'Служба газа 104',
             'electro' => 'Э\\сеть (277-98-42)',
             'water' => 'Водоканал (274-66-66)',
-            'cmk' => 'ЦМК (254-63-53)'
+            'smk' => 'ЦМК (254-63-53)'
         ];
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
+
+        $ticket = Ticket101::findOrNew($card_id);
+        $this->set('ticket', $ticket);
     }
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-
+        $card = Ticket101::findOrNew($card_id);
+        $card->fill($request->all());
+        $card->save();
+        return redirect('');
     }
 }
