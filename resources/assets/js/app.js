@@ -7,6 +7,7 @@ import Buefy from 'buefy';
 
 import App from './App.vue'
 import Navbar from './ui/Navbar'
+import Card from './Card101'
 
 Vue.config.productionTip = false;
 

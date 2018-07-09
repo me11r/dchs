@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::get('/card/101', 'CardController@get101')->name('card.101');
+    Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->where(['card_id' => '[0-9]+'])->name('card.101.add');
+    Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->where(['user_id' => '[0-9]+'])->name('card.101.save');
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

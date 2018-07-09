@@ -17,4 +17,14 @@ class CardController extends AuthorizedController
     {
 
     }
+
+    public function getAdd101(Request $request, $card_id = 0)
+    {
+
+    }
+
+    public function postAdd101(Request $request, $card_id = 0)
+    {
+
+    }
 }

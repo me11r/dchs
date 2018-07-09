@@ -1,0 +1,57 @@
+{% extends "layout/html" %}
+{% block content %}
+    <section class="box container" id="cardadd101">
+        <div class=""><h4 class="title" style="padding: 3px 15px">Добавление: Карточка 101</h4></div>
+        <form action="" method="post">
+            {{ csrf_field() }}
+            <div class="tabs is-boxed" id="">
+                <ul>
+                    <li><a href="#tab_call" onclick="setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a></li>
+                    <li><a href="#tab_notify" onclick="setTab(1);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a></li>
+                    <li><a href="#tab_truck" onclick="setTab(2);"><i class="fas fa-truck-moving"></i>&nbsp; Подразделения</a></li>
+                    <li><a href="#tab_other"  onclick="setTab(3);"><i class="fas fa-info-circle"></i>&nbsp; Прочее</a></li>
+                </ul>
+            </div>
+            <div class="panels">
+                <div id="tab_call" class="is-hidden">
+                    <div class="field">
+                        <label for="location">Место пожара (Адрес)</label>
+                        <textarea name="location" id="location" class="textarea" cols="30" rows="3"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="city_area"></label>
+                        <input type="text" name="city_area" id="city_area" value>
+                    </div>
+                </div>
+                <div id="tab_notify" class="is-hidden">
+                    11
+                </div>
+                <div id="tab-truck" class="is-hidden">
+                    22
+                </div>
+                <div id="tab_other" class="is-hidden">
+                    33
+                </div>
+            </div>
+            <div class="panel" style="padding: 10px 20px">
+                <button type="submit" class="button is-success is-outlined"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+            </div>
+        </form>
+    </section>
+    <script>
+        let activeTab = 0;
+
+        function setTab(i) {
+            let tabs = document.querySelectorAll('#cardadd101 .tabs li');
+            let panels = document.querySelectorAll('#cardadd101 .panels > div');
+            tabs[activeTab].classList.remove('is-active');
+            panels[activeTab].classList.add('is-hidden');
+            tabs[i].classList.add('is-active');
+            panels[i].classList.remove('is-hidden');
+            activeTab = i;
+        }
+        window.addEventListener('load', () => {
+            setTab(activeTab);
+        });
+    </script>
+{% endblock content %}
