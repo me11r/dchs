@@ -19,6 +19,15 @@
     </div>
     <div class="panel">
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <thead>
+            <tr>
+                <th>№ КУИ</th>
+                <th>Адрес</th>
+                <th>Район</th>
+                <th class="has-text-right">Дата и время</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
             {% for ticket in tickets %}
                 <tr>
                     <td class="has-text-right">{{ ticket.id }}</td>
