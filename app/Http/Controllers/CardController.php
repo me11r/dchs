@@ -40,6 +40,26 @@ class CardController extends AuthorizedController
             'water' => 'Водоканал (274-66-66)',
             'smk' => 'ЦМК (254-63-53)'
         ];
+        $ssv_out = [
+            'ӨСБ - ПЧ-1',
+            ' - ПЧ-2',
+            ' - ПЧ-3',
+            ' - ПЧ-4',
+            ' - ПЧ-5',
+            ' - ПЧ-6',
+            'МӨСБ - СПЧ-7',
+            ' - СПЧ-8',
+            ' - СПЧ-9',
+            ' - ПЧ-10',
+            ' - СПЧ-11',
+            'ӨСБ - ПЧ-12',
+            'МЖ - СО',
+            'МӨСБ - СПЧ-14',
+            'МӨСБ - СПЧ-15',
+            ' - П.16',
+            ' - П. 17',
+        ];
+        $this->set('ssv_out', $ssv_out);
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
 

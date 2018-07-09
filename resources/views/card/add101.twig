@@ -14,6 +14,7 @@
             </div>
             <div class="panels">
                 <div id="tab_call" class="is-hidden">
+                    <h5 class="subtitle">Сведения поступившие со звонком:</h5>
                     <div class="field">
                         <label for="location">Место пожара (Адрес)</label>
                         <textarea name="location" id="location" class="textarea" cols="30" rows="3">{{ ticket.location|default('') }}</textarea>
@@ -99,7 +100,35 @@
                     </div>
                 </div>
                 <div id="tab-truck" class="is-hidden">
-                    22
+                    <h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>
+                    <table class="table is-narrow is-hoverable is-striped is-fullwidth">
+                        <tr>
+                            <th>Подразделение</th>
+                            <th>Отделения</th>
+                            <th>Время выезда</th>
+                            <th>- прибытия</th>
+                            <th>- локализации</th>
+                            <th>- ликвидации</th>
+                            <th>- возвращения</th>
+                        </tr>
+                        {% for index,ssv in ssv_out %}
+                            <tr>
+                                <td class="has-text-right">{{ ssv }}</td>
+                                <td><input class="input" type="text" name="ph_{{ index }}_ot"  id="ph_{{ index }}_ot"
+                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"/></td>
+                                <td><input class="input" type="text" name="ph_{{ index }}_out_time"  id="ph_{{ index }}_out_time"
+                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}"/></td>
+                                <td><input class="input" type="text" name="ph_{{ index }}_arrive_time"  id="ph_{{ index }}_arrive_time"
+                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}"/></td>
+                                <td><input class="input" type="text" name="ph_{{ index }}_loc_time"  id="ph_{{ index }}_loc_time"
+                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}"/></td>
+                                <td><input class="input" type="text" name="ph_{{ index }}_liqv_time"  id="ph_{{ index }}_liqv_time"
+                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}"/></td>
+                                <td><input class="input" type="text" name="ph_{{ index }}_ret_time"  id="ph_{{ index }}_ret_time"
+                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}"/></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </div>
                 <div id="tab_other" class="is-hidden">
                     33
