@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\FireDepartment;
 use App\FormationReport;
 use Illuminate\Http\Request;
 
@@ -46,18 +47,37 @@ class FormationController extends AuthorizedController
         return redirect('/formation/101');
     }
 
-    public function getAdd101Persons(Request $request, $form_id = 0)
+    public function getAdd101Persons(Request $request, $form_id, $dept_id = 0)
+    {
+        $this->set('departments', FireDepartment::all())
+            ->set('report', (new FormationReport)->find($form_id))
+            ->set('form_id', $form_id)
+            ->set('dept_id', $dept_id);
+    }
+
+    public function postAdd101Persons(Request $request, $form_id, $dept_id = 0)
     {
 
     }
 
-    public function postAdd101Persons(Request $request, $form_id = 0)
+    public function getAdd101Tech(Request $request, $form_id, $dept_id = 0)
+    {
+        $this->set('departments', FireDepartment::all())
+            ->set('report', (new FormationReport)->find($form_id))
+            ->set('form_id', $form_id)
+            ->set('dept_id', $dept_id);
+
+    }
+
+    public function postAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
 
     }
 
-    public function getViewFull(Request $request, $date = null)
+
+    public function getView101(Request $request, $form_id)
     {
+        $this->set('departments', FireDepartment::all());
 
     }
 

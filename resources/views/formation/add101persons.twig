@@ -1,0 +1,31 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <h4 class="title">Персонал строевой записки от {{ report.report_date }}</h4>
+        <div class="field">
+            <p class="control">
+                <label for="dept_id_selector">Пожарная часть</label>
+            <div class="select">
+                <select class="select" name="dept_id" id="dept_id_selector">
+                    {% for department in departments %}
+                        <option value="{{ department.id }}" {% if department.id == dept_id %}selected{% endif %}>&nbsp;{{ department.title }}&nbsp;</option>
+                    {% endfor %}
+                </select>
+            </div>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const selector = document.getElementById('dept_id_selector');
+            const dept_id = '{{ dept_id }}';
+            selector.addEventListener('change', (e) => {
+                let location = window.location.pathname.split('/');
+                location.pop();
+                location.push(e.target.value);
+                window.location = location.join('/');
+            });
+        });
+    </script>
+{% endblock content %}
