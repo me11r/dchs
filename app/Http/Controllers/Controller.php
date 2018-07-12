@@ -76,12 +76,12 @@ abstract class Controller extends BaseController
 
     protected function setupLayout()
     {
-        if (!is_null($this->layout)) {
+        if (null !== $this->layout) {
             $this->layout = \View::make($this->layout);
             $this->layout->with('_token', csrf_token());
 
             $message = \Session::pull('_message');
-            if (!is_null($message)) {
+            if (null !== $message) {
                 $this->layout->with('_message', $message);
             }
             $this->layout->with($this->data);
@@ -94,11 +94,11 @@ abstract class Controller extends BaseController
         $this->before();
         $response = parent::callAction($method, $parameters);
         $user = \Auth::user();
-        if (!is_null($user)) {
+        if (null !== $user) {
             $user->load('rights');
         }
         $this->set('_user', $user);
-        if (is_null($response) && !is_null($this->layout)) {
+        if (null === $response && null !== $this->layout) {
             $this->setupLayout();
             $response = $this->layout;
         }

@@ -7,8 +7,10 @@
         <div class="navbar-menu" :class="menuClass">
             <div class="navbar-start">
                 <div class="navbar-item"><a href="/card/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-card"></i>&nbsp; Карточка 101</a></div>
+<!--
                 <div class="navbar-item"><a href="/card/112" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-card"></i>&nbsp; Карточка 112</a></div>
-                <div class="navbar-item"><a href="/list/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Строевая записка 101</a>
+-->
+                <div class="navbar-item"><a href="/formation/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Строевая записка 101</a>
                 </div>
             </div>
             <div class="navbar-end">
