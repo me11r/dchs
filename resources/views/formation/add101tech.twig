@@ -1,14 +1,14 @@
 {% extends "layout/html" %}
 {% block content %}
     <div class="container">
-    <div class="level" style="margin-top: 20px">
-    <div class="level-left">
-    <h4 class="title">Персонал строевой записки от {{ report.report_date }}</h4>
-    </div>
-        <div class="level-right">
-            <a href="{{ url('/formation/add101tech/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i class="fas fa-truck-moving"></i>&nbsp;Данные техники</a>
+        <div class="level" style="margin-top: 20px">
+            <div class="level-left">
+        <h4 class="title">Техника строевой записки от {{ report.report_date }}</h4>
+            </div>
+            <div class="level-right">
+                <a href="{{ url('/formation/add101persons/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i class="fas fa-user"></i>&nbsp;Данные персонала</a>
+            </div>
         </div>
-    </div>
         <div class="field">
             <p class="control">
                 <label for="dept_id_selector">Пожарная часть</label>

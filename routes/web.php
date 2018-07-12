@@ -40,11 +40,11 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('form_id', '[0-9]+')
         ->where('dept_id', '[0-9]+')
     ;
-    Route::get('/formation/add101persons/{form_id}/{dept_id?}', 'FormationController@getAdd101Persons')
+    Route::get('/formation/add101tech/{form_id}/{dept_id?}', 'FormationController@getAdd101Tech')
         ->where('form_id', '[0-9]+')
         ->where('dept_id', '[0-9]+')
         ->name('formation.101.add');
-    Route::post('/formation/add101persons/{form_id}/{dept_id?}', 'FormationController@postAdd101Persons')
+    Route::post('/formation/add101tech/{form_id}/{dept_id?}', 'FormationController@postAdd101Tech')
         ->where('form_id', '[0-9]+')
         ->where('dept_id', '[0-9]+');
     Route::get('/formation/view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
