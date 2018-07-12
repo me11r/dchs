@@ -1,0 +1,17 @@
+{% for index,field in fields %}
+    {% if field is iterable %}
+        <fieldset class="">
+            <legend>{{ index }}</legend>
+            {% include "formation/field.twig" with {fields: field, prefix: prefix ~'_' ~ loop.index, model:model} %}
+        </fieldset>
+    {% else %}
+        <div class="field">
+            <label for="field{{ prefix }}_{{ index }}">{{ field }}</label>
+            <div class="control">
+                <input type="text" class="input" name="field{{ prefix }}_{{ index }}"
+                       id="field{{ prefix }}_{{ index }}"
+                       value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"/>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}

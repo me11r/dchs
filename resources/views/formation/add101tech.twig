@@ -19,8 +19,24 @@
                     {% endfor %}
                 </select>
             </div>
-            </p>
         </div>
+        <form action="" method="post">
+            {{ csrf_field() }}
+            <input type="hidden" name="dept_id" value="{{ dept_id }}"/>
+            <input type="hidden" name="form_id" value="{{ form_id }}"/>
+            {% include "formation/field.twig" with {fields: fieldlist, prefix: ''} %}
+
+            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                    </p>
+                </div>
+            </div>
+        </form>
+
     </div>
 
     <script>
