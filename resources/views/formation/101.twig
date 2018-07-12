@@ -1,3 +1,28 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="level">
+        <div class="level-left">
+            <h4 class="title" style="padding: 3px 15px">Строевая записка</h4>
+        </div>
+        <div class="level-right has-text-right"><a href="{{ url('formation/addToday') }}" class="button is-success is-outlined"  style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая строевая записка</a></div>
+    </div>
+    <table class="table is-fullwidth is-narrow is-hoverable">
+        <thead>
+        <tr>
+            <th>
+                Дата
+            </th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        {% for report in reports %}
+            <tr class="{% if report.report_date == today %}is-primary{% else %}{% endif %}">
+                <td>{{ report.report_date }}</td>
+                <td class="has-text-right"><a href="{{ url('formation/add101persons/' ~ report.id) }}" class="button is-primary is-outlined"><i class="fas fa-user"></i>&nbsp;Указать персонал</a>
+                <a href="{{ url('formation/add101tech/' ~ report.id) }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp; Указать технику</a>
+                    <a href="{{ url('/formation/view101/' ~ report.id) }}" class="button is-primary"><i class="fas fa-receipt"></i>&nbsp; Смотреть строевую записку</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock content %}

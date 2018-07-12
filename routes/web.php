@@ -30,8 +30,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->where(['user_id' => '[0-9]+'])->name('card.101.save');
 
     Route::get('/formation/101', 'FormationController@get101');
-    Route::get('/formation/add101/{form_id?}', 'FormationController@getAdd101')->where('form_id', '[0-9+]')->name('formation.101.add');
-    Route::post('/formation/add101/{form_id?}', 'FormationController@postAdd101')->where('form_id', '[0-9]+');
+    Route::get('/formation/addToday', 'FormationController@getAddToday');
+    Route::post('/formation/addToday', 'FormationController@postAddToday');
+    Route::get('/formation/add101persons/{form_id?}', 'FormationController@getAdd101')->where('form_id', '[0-9+]')->name('formation.101.add');
+    Route::post('/formation/add101persons/{form_id?}', 'FormationController@postAdd101')->where('form_id', '[0-9]+');
     Route::get('/formation/view/{date?}', 'FormationController@getViewFull')->where('date', '([0-9]{2}-[0-9]{2}-[0-9]{4})');
 
     Route::get('/', 'HomeController@getIndex')->name('home');
