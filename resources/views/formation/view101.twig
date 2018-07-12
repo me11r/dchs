@@ -1,0 +1,100 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="panel">
+        <div class="level" style="padding: 10px">
+            <div class="level-left">
+                <h4 class="title">Строевая записка от {{ report.report_date }}</h4>
+            </div>
+            <div class="level-right has-text-right">
+                <a href="" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как PDF</a>
+            </div>
+        </div>
+        <div class="tbl" style="overflow-x: scroll">
+            <table class="detailed-table table is-small is-fullwidth is-narrow is-hoverable" style="font-size: .7rem">
+                <thead>
+                <tr>
+                    <th class="rotate">
+                        <div><span>П/Ч</span></div>
+                    </th>
+                    {% for key,hd_pp in people_fl %}
+                        {% if hd_pp is iterable %}
+                            {% for hd1_pp in hd_pp %}
+                                <th class="rotate">
+                                    <div><span>{{ key }}: {{ hd1_pp }}</span></div>
+                                </th>
+                            {% endfor %}
+                        {% else %}
+                            <th class="rotate">
+                                <div><span>{{ hd_pp }}</span></div>
+                            </th>
+                        {% endif %}
+                    {% endfor %}
+                    {% for key,hd_pp in tech_fl %}
+                        {% if hd_pp is iterable %}
+                            {% for skey,hd1_pp in hd_pp %}
+                                {% if hd1_pp is iterable %}
+                                    {% for hd2_pp in hd1_pp %}
+                                        <th class="rotate">
+                                            <div><span>{{ key }}-{{ skey }}: {{ hd2_pp }}</span></div>
+                                        </th>
+                                    {% endfor %}
+                                {% else %}
+                                    <th class="rotate">
+                                        <div><span>{{ key }}: {{ hd1_pp }}</span></div>
+                                    </th>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <th class="rotate">
+                                <div><span>{{ hd_pp }}</span></div>
+                            </th>
+                        {% endif %}
+                    {% endfor %}
+
+                </tr>
+                </thead>
+                {% for dept in departments %}
+                    <tr>
+                        <td>{{ dept.title }}</td>
+                        {% for ppl in people_fields %}
+                            <td>{{ people[dept.id][ppl]|default('-') }}</td>
+                        {% endfor %}
+                        {% for tch in tech_fields %}
+                            <td>{{ tech[dept.id][tch]|default('-') }}</td>
+                        {% endfor %}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td><h5>Нет данных от пожарых частей!</h5></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <style>
+        th.rotate {
+            /* Something you can count on */
+            height: 180px;
+            white-space: nowrap;
+            font-size: .6rem;
+        }
+
+        th.rotate > div {
+            transform: /* Magic3Numbers */ translate(25px, 151px) rotate(315deg);
+            width: 30px;
+        }
+
+        th.rotate > div > span {
+            border-bottom: 1px solid #ccc;
+            padding: 5px 10px;
+        }
+
+        .detailed-table > thead {
+        }
+
+        .detailed-table tr > td {
+            text-align: center;
+            border-left: 1px solid #bbbfc3;
+        }
+    </style>
+{% endblock content %}
