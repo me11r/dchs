@@ -61,16 +61,16 @@
                     <h5 class="subtitle">Время сообщения руководству ГУ:</h5>
                     <div class="field is-grouped">
                         {% for name,title in gu_notify %}
-                            <p class="control">
+                            <p class="control" data-component="timepicker" data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
                                 <label for="notify_{{ name }}_time">{{ title }}</label>
-                                <input type="text" class="input" style="max-width: 4rem" name="notify_{{ name }}_time" id="notify_{{ name }}_time"
-                                       value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
+                                <b-timepicker type="text" v-model="value" style="max-width: 4rem" name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time"
+                                ></b-timepicker>
                             </p>
                         {% endfor %}
                     </div>
-                    <div class="field">
+                    <div class="field" data-component="timepicker" data-value="{{ ticket.next_notify_time|default('') }}">
                         <label for="next_notify_time">Время следующего взаимодействия</label>
-                        <input type="text" class="input" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" value="{{ ticket.next_notify_time|default('') }}">
+                        <b-timepicker v-model="value" type="text" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" :value="value">
                     </div>
                     <h5 class="subtitle">Службы</h5>
                     <div>
@@ -184,7 +184,33 @@
             setTab(nextTab);
         }
 
+        function bindTimepickers() {
+            const pickers = document.querySelectorAll('[data-component="timepicker"]');
+            pickers.forEach((element) => {
+                const cdate = element.getAttribute('data-value');
+                let dt = new Date('01-01-1970 00:00');
+                if (cdate !== '') {
+                    const tm = cdate.split(':');
+                    if (tm.length > 1) {
+                        dt.setHours(tm[0]);
+                        dt.setMinutes(tm[1]);
+                    }
+                }
+                console.log(dt);
+                return new Vue({
+                    el: element,
+                    data: function () {
+                        return {
+                            value: dt
+                        }
+                    }
+                });
+            });
+        }
+
         window.addEventListener('load', () => {
+            Vue.use(Buefy.default);
+            bindTimepickers();
             setTab(activeTab);
             document.getElementById('nexttab').addEventListener('click', nextTab);
         });
