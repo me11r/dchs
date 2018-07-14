@@ -3,21 +3,19 @@
 namespace App\Http\Controllers;
 
 
-use App\CarRoute;
-use App\IATACode;
-use App\Right;
-use App\Shipment;
-use App\Ticket;
-use App\User;
-use App\City;
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Http\Request;
+use App\Dictionary\Street;
 
 class AjaxController extends AuthorizedController
 {
-    public function getCityArea()
+    public function findStreet($txt, $area_id = null)
     {
-        
+        $streets = new Street();
+        if ($area_id !== null) {
+            $streets = $streets->where('city_area_id', $area_id);
+        }
+        $streets = $streets->where('name', 'like', '%' . $txt . '%');
+        $streets = $streets->limit(30);
+        $streets = $streets->get();
+        return response()->json($streets->toJson());
     }
 }
