@@ -32,4 +32,14 @@ class FireDepartment extends Model
     use SoftDeletes;
     protected $table = 'fire_departments';
     protected $guarded = ['id'];
+
+    public function getNameAttribute()
+    {
+        return $this->attributes['title'];
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['title'] = $value;
+    }
 }

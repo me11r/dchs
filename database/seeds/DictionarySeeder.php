@@ -12,6 +12,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
     {
         $dicts = [
             [
+                'title' => 'Пожарные части',
+                'table' => 'fire_deptartments',
+                'model' => \App\FireDepartment::class,
+            ],
+            [
                 'title' => 'Объект возгорания',
                 'table' => 'dict_fire_object',
                 'model' => \App\Dictionary\FireObject::class
