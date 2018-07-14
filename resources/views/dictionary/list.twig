@@ -1,0 +1,38 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="level" style="margin: 10px 20px">
+                <div class="level-left">
+                    <h4 class="title">{{ dictinfo.title }}</h4>
+                </div>
+                <div class="level-right has-text-right">
+                    <a href="{{ url('/dictionaries/edit/' ~ dictinfo.id ~ '/') }}" class="button is-success"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                </div>
+            </div>
+            <table class="table is-striped is-narrow is-hoverable">
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Наименование</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for record in dictionary %}
+                    <tr>
+                        <td>{{ record.id }}</td>
+                        <td>{{ record.name }}</td>
+                        <td><a href="{{ url('dictionaries/edit/' ~ dictinfo.id ~ '/' ~ record.id) }}" class="button is-small is-primary is-outlined"><i class="fas fa-edit"></i>&nbsp;Изменить</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td><h5 class="">Нет записей</h5></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ dictinfo.title }}</h4>
+                <form action="" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" id="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="name">Наименование</label>
+                        <input type="text" class="input" name="name" id="name" value="{{ record.name|default('') }}"/>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="{{ url('/dictionaries/list/' ~ dictinfo.id) }}" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

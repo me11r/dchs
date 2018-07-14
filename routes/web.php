@@ -49,6 +49,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/formation/view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
+    Route::get('/dictionaries/list/{dict_id}', 'DictionaryController@getList')->where('dict_id', '[0-9]+');
+    Route::get('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@getEdit')
+        ->where('dict_id', '[0-9]+')
+        ->where('row_id', '[0-9]+');
+    Route::post('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@postEdit')
+        ->where('dict_id', '[0-9]+')
+        ->where('row_id', '[0-9]+');
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });
