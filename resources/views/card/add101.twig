@@ -14,7 +14,7 @@
             </div>
             <div id="preload_pane" class="hero is-loading has-text-centered" style="height: 30vh; align-items: center">
                 <div class="hero-body has-text-info">
-                <i class="fas fa-circle-notch fa-spin fa-6x"></i>
+                    <i class="fas fa-circle-notch fa-spin fa-6x"></i>
                 </div>
             </div>
             <div class="panels">
@@ -25,16 +25,36 @@
                         <textarea name="location" id="location" class="textarea" cols="30" rows="3">{{ ticket.location|default('') }}</textarea>
                     </div>
                     <div class="field">
+                        <p class="control">
                         <label for="city_area">Район города</label>
-                        <input class="input" type="text" name="city_area" id="city_area" value="{{ ticket.city_area|default('') }}"/>
+                        </p>
+                        {#<input class="input" type="text" name="city_area" id="city_area" value="{{ ticket.city_area|default('') }}"/>#}
+                        <div class="select">
+                            <select name="city_area" id="city_area">
+                                <option value="">-</option>
+                                {% for area in city_area %}
+                                    <option value="{{ area.id }}" {% if area.id == ticket.city_area %}selected{% endif %}>{{ area.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                     <div class="field">
                         <label for="crossroad">Пересечение улиц</label>
                         <input type="text" class="input" name="crossroad" id="crossroad" value="{{ ticket.crossroad|default('') }}"/>
                     </div>
                     <div class="field">
+                        <p class="control">
                         <label for="description">Что горит</label>
-                        <input type="text" class="input" name="description" id="description" value="{{ ticket.description|default('') }}">
+                        </p>
+                        <div class="select">
+                            <select name="description" id="description">
+                                <option value="">-</option>
+                                {% for object in fire_object %}
+                                    <option value="{{ object.id }}" {% if object.id == ticket.fire_object %}selected{% endif %}>{{ object.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {#<input type="text" class="input" name="description" id="description" value="{{ ticket.description|default('') }}">#}
                     </div>
                     <div class="field is-grouped">
                         <p class="control">
@@ -94,12 +114,14 @@
                                     <td>{{ title }}</td>
                                     <td data-component="timepicker" data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
                                         <b-timepicker type="text" name="call_{{ name }}_time" id="call_{{ name }}_time"
-                                               :value="value" icon="clock" icon-pack="far"></b-timepicker></td>
+                                                      :value="value" icon="clock" icon-pack="far"></b-timepicker>
+                                    </td>
                                     <td><input type="text" class="input" name="name_{{ name }}_recv" id="name_{{ name }}_recv"
                                                value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/></td>
                                     <td data-component="timepicker" data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
-                                        <b-timepicker  icon="clock" icon-pack="far" type="text" name="arrival_{{ name }}" id="arrival_{{ name }}"
-                                               :value="value"></b-timepicker></td>
+                                        <b-timepicker icon="clock" icon-pack="far" type="text" name="arrival_{{ name }}" id="arrival_{{ name }}"
+                                                      :value="value"></b-timepicker>
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -125,19 +147,24 @@
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"/></td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
-                                           :value="value"></b-timepicker></td>
+                                                  :value="value"></b-timepicker>
+                                </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
-                                           :value="value"></b-timepicker></td>
+                                                  :value="value"></b-timepicker>
+                                </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
-                                           :value="value"></b-timepicker></td>
+                                                  :value="value"></b-timepicker>
+                                </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
-                                           :value="value"></b-timepicker></td>
+                                                  :value="value"></b-timepicker>
+                                </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}">
-                                    <b-timepicker  icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
-                                           :value="value"></b-timepicker></td>
+                                    <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
+                                                  :value="value"></b-timepicker>
+                                </td>
                             </tr>
                         {% endfor %}
                     </table>

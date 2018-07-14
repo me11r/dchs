@@ -9,6 +9,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Dictionary\CityArea;
+use App\Dictionary\FireObject;
 use App\Ticket101;
 use Illuminate\Http\Request;
 
@@ -62,7 +64,8 @@ class CardController extends AuthorizedController
         $this->set('ssv_out', $ssv_out);
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
-
+        $this->set('city_area', CityArea::all());
+        $this->set('fire_object', FireObject::all());
         $ticket = Ticket101::findOrNew($card_id);
         $this->set('ticket', $ticket);
     }
