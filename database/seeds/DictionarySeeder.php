@@ -15,12 +15,19 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'title' => 'Объект возгорания',
                 'table' => 'dict_fire_object',
                 'model' => \App\Dictionary\FireObject::class
-            ]
+            ],
+            [
+                'title' => 'Район города',
+                'table' => 'dict_city_area',
+                'model' => \App\Dictionary\CityArea::class
+            ],
+
         ];
         (new App\Dictionary)->truncate();
         foreach ($dicts as $dict) {
             (new App\Dictionary())->fill($dict)->save();
         }
         $this->call(FireObjectSeeder::class);
+        $this->call(CityAreaSeeder::class);
     }
 }
