@@ -34,5 +34,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         }
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
+        $this->call(FireDeptSeeder::class);
     }
 }

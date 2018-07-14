@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\FireDepartment withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\FireDepartment withoutTrashed()
  * @mixin \Eloquent
+ * @property mixed $name
  */
 class FireDepartment extends Model
 {

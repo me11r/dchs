@@ -6,20 +6,20 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 /**
  * App\Ticket101
  *
  * @property int $id
- * @property string $location
- * @property string $city_area
- * @property string $crossroad
- * @property string $description
- * @property int $storey_count
- * @property int $floor
- * @property string $building_description
- * @property string $caller_phone
- * @property string $caller_name
+ * @property string|null $location
+ * @property int|null $city_area_id
+ * @property int|null $crossroad_1_id
+ * @property int|null $crossroad_2_id
+ * @property int|null $fire_object_id
+ * @property int|null $storey_count
+ * @property int|null $floor
+ * @property string|null $building_description
+ * @property string|null $caller_phone
+ * @property string|null $caller_name
  * @property string|null $call_time
  * @property string|null $notify_100_time
  * @property string|null $notify_101_time
@@ -30,139 +30,139 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $notify_b04_time
  * @property string|null $next_notify_time
  * @property string|null $call_112_time
- * @property string $name_112_recv
+ * @property string|null $name_112_recv
  * @property string|null $arrival_112
  * @property string|null $call_102_time
- * @property string $name_102_recv
+ * @property string|null $name_102_recv
  * @property string|null $arrival_102
  * @property string|null $call_103_time
- * @property string $name_103_recv
+ * @property string|null $name_103_recv
  * @property string|null $arrival_103
  * @property string|null $call_104_time
- * @property string $name_104_recv
+ * @property string|null $name_104_recv
  * @property string|null $arrival_104
  * @property string|null $call_electro_time
- * @property string $name_electro_recv
+ * @property string|null $name_electro_recv
  * @property string|null $arrival_electro
  * @property string|null $call_water_time
- * @property string $name_water_recv
+ * @property string|null $name_water_recv
  * @property string|null $arrival_water
  * @property string|null $call_smk_time
- * @property string $name_smk_recv
+ * @property string|null $name_smk_recv
  * @property string|null $arrival_smk
- * @property string $ph_1_ot
- * @property string $ph_1_out_time
- * @property string $ph_1_arrive_time
- * @property string $ph_1_loc_time
- * @property string $ph_1_liqv_time
- * @property string $ph_1_ret_time
- * @property string $ph_2_ot
- * @property string $ph_2_out_time
- * @property string $ph_2_arrive_time
- * @property string $ph_2_loc_time
- * @property string $ph_2_liqv_time
- * @property string $ph_2_ret_time
- * @property string $ph_3_ot
- * @property string $ph_3_out_time
- * @property string $ph_3_arrive_time
- * @property string $ph_3_loc_time
- * @property string $ph_3_liqv_time
- * @property string $ph_3_ret_time
- * @property string $ph_4_ot
- * @property string $ph_4_out_time
- * @property string $ph_4_arrive_time
- * @property string $ph_4_loc_time
- * @property string $ph_4_liqv_time
- * @property string $ph_4_ret_time
- * @property string $ph_5_ot
- * @property string $ph_5_out_time
- * @property string $ph_5_arrive_time
- * @property string $ph_5_loc_time
- * @property string $ph_5_liqv_time
- * @property string $ph_5_ret_time
- * @property string $ph_6_ot
- * @property string $ph_6_out_time
- * @property string $ph_6_arrive_time
- * @property string $ph_6_loc_time
- * @property string $ph_6_liqv_time
- * @property string $ph_6_ret_time
- * @property string $ph_7_ot
- * @property string $ph_7_out_time
- * @property string $ph_7_arrive_time
- * @property string $ph_7_loc_time
- * @property string $ph_7_liqv_time
- * @property string $ph_7_ret_time
- * @property string $ph_8_ot
- * @property string $ph_8_out_time
- * @property string $ph_8_arrive_time
- * @property string $ph_8_loc_time
- * @property string $ph_8_liqv_time
- * @property string $ph_8_ret_time
- * @property string $ph_9_ot
- * @property string $ph_9_out_time
- * @property string $ph_9_arrive_time
- * @property string $ph_9_loc_time
- * @property string $ph_9_liqv_time
- * @property string $ph_9_ret_time
- * @property string $ph_10_ot
- * @property string $ph_10_out_time
- * @property string $ph_10_arrive_time
- * @property string $ph_10_loc_time
- * @property string $ph_10_liqv_time
- * @property string $ph_10_ret_time
- * @property string $ph_11_ot
- * @property string $ph_11_out_time
- * @property string $ph_11_arrive_time
- * @property string $ph_11_loc_time
- * @property string $ph_11_liqv_time
- * @property string $ph_11_ret_time
- * @property string $ph_12_ot
- * @property string $ph_12_out_time
- * @property string $ph_12_arrive_time
- * @property string $ph_12_loc_time
- * @property string $ph_12_liqv_time
- * @property string $ph_12_ret_time
- * @property string $ph_13_ot
- * @property string $ph_13_out_time
- * @property string $ph_13_arrive_time
- * @property string $ph_13_loc_time
- * @property string $ph_13_liqv_time
- * @property string $ph_13_ret_time
- * @property string $ph_14_ot
- * @property string $ph_14_out_time
- * @property string $ph_14_arrive_time
- * @property string $ph_14_loc_time
- * @property string $ph_14_liqv_time
- * @property string $ph_14_ret_time
- * @property string $ph_15_ot
- * @property string $ph_15_out_time
- * @property string $ph_15_arrive_time
- * @property string $ph_15_loc_time
- * @property string $ph_15_liqv_time
- * @property string $ph_15_ret_time
- * @property string $ph_16_ot
- * @property string $ph_16_out_time
- * @property string $ph_16_arrive_time
- * @property string $ph_16_loc_time
- * @property string $ph_16_liqv_time
- * @property string $ph_16_ret_time
- * @property string $ph_17_ot
- * @property string $ph_17_out_time
- * @property string $ph_17_arrive_time
- * @property string $ph_17_loc_time
- * @property string $ph_17_liqv_time
- * @property string $ph_17_ret_time
- * @property string $update_1_time
- * @property string $update_1_info
- * @property string $update_2_time
- * @property string $update_2_info
- * @property string $update_3_time
- * @property string $update_3_info
- * @property string $update_4_time
- * @property string $update_4_info
- * @property string $update_5_time
- * @property string $update_5_info
- * @property string $add_info
+ * @property string|null $ph_1_ot
+ * @property string|null $ph_1_out_time
+ * @property string|null $ph_1_arrive_time
+ * @property string|null $ph_1_loc_time
+ * @property string|null $ph_1_liqv_time
+ * @property string|null $ph_1_ret_time
+ * @property string|null $ph_2_ot
+ * @property string|null $ph_2_out_time
+ * @property string|null $ph_2_arrive_time
+ * @property string|null $ph_2_loc_time
+ * @property string|null $ph_2_liqv_time
+ * @property string|null $ph_2_ret_time
+ * @property string|null $ph_3_ot
+ * @property string|null $ph_3_out_time
+ * @property string|null $ph_3_arrive_time
+ * @property string|null $ph_3_loc_time
+ * @property string|null $ph_3_liqv_time
+ * @property string|null $ph_3_ret_time
+ * @property string|null $ph_4_ot
+ * @property string|null $ph_4_out_time
+ * @property string|null $ph_4_arrive_time
+ * @property string|null $ph_4_loc_time
+ * @property string|null $ph_4_liqv_time
+ * @property string|null $ph_4_ret_time
+ * @property string|null $ph_5_ot
+ * @property string|null $ph_5_out_time
+ * @property string|null $ph_5_arrive_time
+ * @property string|null $ph_5_loc_time
+ * @property string|null $ph_5_liqv_time
+ * @property string|null $ph_5_ret_time
+ * @property string|null $ph_6_ot
+ * @property string|null $ph_6_out_time
+ * @property string|null $ph_6_arrive_time
+ * @property string|null $ph_6_loc_time
+ * @property string|null $ph_6_liqv_time
+ * @property string|null $ph_6_ret_time
+ * @property string|null $ph_7_ot
+ * @property string|null $ph_7_out_time
+ * @property string|null $ph_7_arrive_time
+ * @property string|null $ph_7_loc_time
+ * @property string|null $ph_7_liqv_time
+ * @property string|null $ph_7_ret_time
+ * @property string|null $ph_8_ot
+ * @property string|null $ph_8_out_time
+ * @property string|null $ph_8_arrive_time
+ * @property string|null $ph_8_loc_time
+ * @property string|null $ph_8_liqv_time
+ * @property string|null $ph_8_ret_time
+ * @property string|null $ph_9_ot
+ * @property string|null $ph_9_out_time
+ * @property string|null $ph_9_arrive_time
+ * @property string|null $ph_9_loc_time
+ * @property string|null $ph_9_liqv_time
+ * @property string|null $ph_9_ret_time
+ * @property string|null $ph_10_ot
+ * @property string|null $ph_10_out_time
+ * @property string|null $ph_10_arrive_time
+ * @property string|null $ph_10_loc_time
+ * @property string|null $ph_10_liqv_time
+ * @property string|null $ph_10_ret_time
+ * @property string|null $ph_11_ot
+ * @property string|null $ph_11_out_time
+ * @property string|null $ph_11_arrive_time
+ * @property string|null $ph_11_loc_time
+ * @property string|null $ph_11_liqv_time
+ * @property string|null $ph_11_ret_time
+ * @property string|null $ph_12_ot
+ * @property string|null $ph_12_out_time
+ * @property string|null $ph_12_arrive_time
+ * @property string|null $ph_12_loc_time
+ * @property string|null $ph_12_liqv_time
+ * @property string|null $ph_12_ret_time
+ * @property string|null $ph_13_ot
+ * @property string|null $ph_13_out_time
+ * @property string|null $ph_13_arrive_time
+ * @property string|null $ph_13_loc_time
+ * @property string|null $ph_13_liqv_time
+ * @property string|null $ph_13_ret_time
+ * @property string|null $ph_14_ot
+ * @property string|null $ph_14_out_time
+ * @property string|null $ph_14_arrive_time
+ * @property string|null $ph_14_loc_time
+ * @property string|null $ph_14_liqv_time
+ * @property string|null $ph_14_ret_time
+ * @property string|null $ph_15_ot
+ * @property string|null $ph_15_out_time
+ * @property string|null $ph_15_arrive_time
+ * @property string|null $ph_15_loc_time
+ * @property string|null $ph_15_liqv_time
+ * @property string|null $ph_15_ret_time
+ * @property string|null $ph_16_ot
+ * @property string|null $ph_16_out_time
+ * @property string|null $ph_16_arrive_time
+ * @property string|null $ph_16_loc_time
+ * @property string|null $ph_16_liqv_time
+ * @property string|null $ph_16_ret_time
+ * @property string|null $ph_17_ot
+ * @property string|null $ph_17_out_time
+ * @property string|null $ph_17_arrive_time
+ * @property string|null $ph_17_loc_time
+ * @property string|null $ph_17_liqv_time
+ * @property string|null $ph_17_ret_time
+ * @property string|null $update_1_time
+ * @property string|null $update_1_info
+ * @property string|null $update_2_time
+ * @property string|null $update_2_info
+ * @property string|null $update_3_time
+ * @property string|null $update_3_info
+ * @property string|null $update_4_time
+ * @property string|null $update_4_info
+ * @property string|null $update_5_time
+ * @property string|null $update_5_info
+ * @property string|null $add_info
  * @property string|null $deleted_at
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -188,11 +188,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCallWaterTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCallerName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCallerPhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCityArea($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCityAreaId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCrossroad($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCrossroad1Id($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCrossroad2Id($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereFireObjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereFloor($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereLocation($value)
@@ -334,5 +335,5 @@ class Ticket101 extends Model
     use SoftDeletes;
     protected $table = 'ticket101';
     protected $fillable = [];
-    protected $guarded = [];
+    protected $guarded = ['id'];
 }

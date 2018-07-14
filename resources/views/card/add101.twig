@@ -33,7 +33,7 @@
                             <select name="city_area" id="city_area">
                                 <option value="">-</option>
                                 {% for area in city_area %}
-                                    <option value="{{ area.id }}" {% if area.id == ticket.city_area %}selected{% endif %}>{{ area.name }}</option>
+                                    <option value="{{ area.id }}" {% if area.id == ticket.city_area_id %}selected{% endif %}>{{ area.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -50,7 +50,7 @@
                             <select name="description" id="description">
                                 <option value="">-</option>
                                 {% for object in fire_object %}
-                                    <option value="{{ object.id }}" {% if object.id == ticket.fire_object %}selected{% endif %}>{{ object.name }}</option>
+                                    <option value="{{ object.id }}" {% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
