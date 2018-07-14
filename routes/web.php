@@ -38,8 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('formation.101.add');
     Route::post('/formation/add101persons/{form_id}/{dept_id?}', 'FormationController@postAdd101Persons')
         ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+')
-    ;
+        ->where('dept_id', '[0-9]+');
     Route::get('/formation/add101tech/{form_id}/{dept_id?}', 'FormationController@getAdd101Tech')
         ->where('form_id', '[0-9]+')
         ->where('dept_id', '[0-9]+')
@@ -48,6 +47,8 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('form_id', '[0-9]+')
         ->where('dept_id', '[0-9]+');
     Route::get('/formation/view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
+
+    Route::get('/dictionaries', 'DictionaryController@getIndex');
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

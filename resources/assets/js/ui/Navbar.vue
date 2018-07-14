@@ -14,9 +14,8 @@
                 </div>
             </div>
             <div class="navbar-end">
-                <div class="navbar-item has-dropdown">
-                    <a href="#" class="navbar-link">Справочники</a>
-                    <div class="navbar-dropdown"></div>
+                <div class="navbar-item">
+                    <div class="navbar-item"><a href="/dictionaries" class="button is-inline-block-widescreen is-block"><i class="far fa-list-alt"></i>&nbsp;Справочники</a></div>
                 </div>
                 <div class="navbar-item">
                     <form action="/logout" id="logout" method="post"><input type="hidden" name="_token" :value="csrf"><a @click="logout"
