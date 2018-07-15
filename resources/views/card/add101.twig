@@ -67,7 +67,23 @@
                              data-hid="{{ ticket.crossroad_2_id|default('') }}">
                             <label for="crossroad_2_id">и улицы</label>
                             <input type="hidden" name="crossroad_2_id" id="crossroad_2_hid" :value="hid"/>
-                            <input type="text" class="input" id="crossroad_2_id" :value="name"/>
+                            <b-autocomplete type="text" id="crossroad_2_id"
+                                            field="name"
+                                            ref="crossroad_2_hid"
+                                            id="crossroad_2_id"
+                                            v-model="name"
+                                            :data="data"
+                                            :loading="isFetching"
+                                            @input="getData"
+                                            @select="onSelect"
+                            >                                <template slot-scope="props">
+                                    {% verbatim %}
+                                    <div class="row"><span>{{ props.option.name }}</span>, <small>{{ props.option.area.name }} район</small></div>
+                                    {% endverbatim %}
+                                </template>
+                                <template slot="empty">Подходящих улиц не найдено</template>
+
+                            </b-autocomplete>
                         </div>
                     </div>
                     <div class="field">
