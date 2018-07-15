@@ -26,11 +26,11 @@
                     </div>
                     <div class="field">
                         <p class="control">
-                        <label for="city_area">Район города</label>
+                            <label for="city_area">Район города</label>
                         </p>
                         {#<input class="input" type="text" name="city_area" id="city_area" value="{{ ticket.city_area|default('') }}"/>#}
                         <div class="select">
-                            <select name="city_area" id="city_area">
+                            <select name="city_area_id" id="city_area">
                                 <option value="">-</option>
                                 {% for area in city_area %}
                                     <option value="{{ area.id }}" {% if area.id == ticket.city_area_id %}selected{% endif %}>{{ area.name }}</option>
@@ -38,13 +38,41 @@
                             </select>
                         </div>
                     </div>
-                    <div class="field">
-                        <label for="crossroad">Пересечение улиц</label>
-                        <input type="text" class="input" name="crossroad" id="crossroad" value="{{ ticket.crossroad|default('') }}"/>
+                    <div class="field is-grouped">
+                        <div class="control is-expanded" data-component="autocomplete"
+                             data-name="{{ ticket.crossroad_1|default('') }}"
+                             data-hid="{{ ticket.crossroad_1_id|default('') }}">
+                            <label for="crossroad_1_id">Пересечение улицы</label>
+                            <input type="hidden" name="crossroad_1_id" id="crossroad_1_hid" :value="hid"/>
+                            <b-autocomplete
+                                    field="name"
+                                    ref="crossroad_1_hid"
+                                    id="crossroad_1_id"
+                                    v-model="name"
+                                    :data="data"
+                                    :loading="isFetching"
+                                    @input="getData"
+                                    @select="onSelect"
+                            >
+                                <template slot-scope="props">
+                                    {% verbatim %}
+                                    <div class="row"><span>{{ props.option.name }}</span>, <small>{{ props.option.area.name }} район</small></div>
+                                    {% endverbatim %}
+                                </template>
+                                <template slot="empty">Подходящих улиц не найдено</template>
+                            </b-autocomplete>
+                        </div>
+                        <div class="control is-expanded" data-component="autocomplete"
+                             data-name="{{ ticket.crossroad_2|default('') }}"
+                             data-hid="{{ ticket.crossroad_2_id|default('') }}">
+                            <label for="crossroad_2_id">и улицы</label>
+                            <input type="hidden" name="crossroad_2_id" id="crossroad_2_hid" :value="hid"/>
+                            <input type="text" class="input" id="crossroad_2_id" :value="name"/>
+                        </div>
                     </div>
                     <div class="field">
                         <p class="control">
-                        <label for="description">Что горит</label>
+                            <label for="description">Что горит</label>
                         </p>
                         <div class="select">
                             <select name="description" id="description">
@@ -246,9 +274,57 @@
             });
         }
 
+        function bindAutocomplete() {
+            const autoc = document.querySelectorAll('[data-component="autocomplete"]');
+
+            autoc.forEach((element) => {
+                const sname = element.getAttribute('data-name');
+                const shid = element.getAttribute('data-hid');
+                return new Vue({
+                        el: element,
+                        data: {
+                            data: [],
+                            isFetching: false,
+                            selected: null,
+                            name: sname,
+                            hid: shid,
+                        },
+                        methods: {
+                            onSelect: function (selected) {
+                                this.hid = selected.id;
+                                this.name = selected.name;
+                            },
+                            getData: _.debounce(function () {
+                                const area = document.getElementById('city_area');
+                                const area_id = area[area.selectedIndex].value;
+                                this.data = [];
+                                this.isFetching = true;
+                                axios.get('/ajax/street/' + area_id + '/?q=' + this.name)
+                                    .then((response) => {
+                                            const data = response.data;
+                                            data.forEach((item) => {
+                                                this.data.push(item);
+                                            });
+                                            this.isFetching = false;
+                                        }
+                                    )
+                                    .catch(() => {
+                                        this.isFetching = false;
+                                    })
+
+                            }, 300)
+                        }
+                    }
+                )
+                    ;
+            })
+            ;
+        }
+
         window.addEventListener('load', () => {
             Vue.use(Buefy.default);
             bindTimepickers();
+            bindAutocomplete();
             document.getElementById('preload_pane').style.display = 'none';
             setTab(activeTab);
             document.getElementById('nexttab').addEventListener('click', nextTab);

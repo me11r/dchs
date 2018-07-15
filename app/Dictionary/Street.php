@@ -18,6 +18,6 @@ class Street extends Model
 
     public function area()
     {
-        return $this->belongsTo(CityArea::class, 'id', 'city_area_id');
+        return $this->belongsTo(CityArea::class, 'city_area_id', 'id');
     }
 }
