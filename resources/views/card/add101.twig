@@ -40,7 +40,7 @@
                     </div>
                     <div class="field is-grouped">
                         <div class="control is-expanded" data-component="autocomplete"
-                             data-name="{{ ticket.crossroad_1|default('') }}"
+                             data-name="{{ ticket.crossroad_1.name|default('') }}"
                              data-hid="{{ ticket.crossroad_1_id|default('') }}">
                             <label for="crossroad_1_id">Пересечение улицы</label>
                             <input type="hidden" name="crossroad_1_id" id="crossroad_1_hid" :value="hid"/>
@@ -56,14 +56,14 @@
                             >
                                 <template slot-scope="props">
                                     {% verbatim %}
-                                    <div class="row"><span>{{ props.option.name }}</span>, <small>{{ props.option.area.name }} район</small></div>
+                                    <div class="row"><span>{{ props.option.name }}</span><small v-if="props.option.area">, {{ props.option.area.name }} район</small></div>
                                     {% endverbatim %}
                                 </template>
                                 <template slot="empty">Подходящих улиц не найдено</template>
                             </b-autocomplete>
                         </div>
                         <div class="control is-expanded" data-component="autocomplete"
-                             data-name="{{ ticket.crossroad_2|default('') }}"
+                             data-name="{{ ticket.crossroad_2.name|default('') }}"
                              data-hid="{{ ticket.crossroad_2_id|default('') }}">
                             <label for="crossroad_2_id">и улицы</label>
                             <input type="hidden" name="crossroad_2_id" id="crossroad_2_hid" :value="hid"/>
@@ -76,9 +76,10 @@
                                             :loading="isFetching"
                                             @input="getData"
                                             @select="onSelect"
-                            >                                <template slot-scope="props">
+                            >
+                                <template slot-scope="props">
                                     {% verbatim %}
-                                    <div class="row"><span>{{ props.option.name }}</span>, <small>{{ props.option.area.name }} район</small></div>
+                                    <div class="row"><span>{{ props.option.name }}</span><small v-if="props.option.area">, {{ props.option.area.name }} район</small></div>
                                     {% endverbatim %}
                                 </template>
                                 <template slot="empty">Подходящих улиц не найдено</template>
@@ -88,10 +89,10 @@
                     </div>
                     <div class="field">
                         <p class="control">
-                            <label for="description">Что горит</label>
+                            <label for="fire_object_id">Что горит</label>
                         </p>
                         <div class="select">
-                            <select name="description" id="description">
+                            <select name="fire_object_id" id="fire_object_id">
                                 <option value="">-</option>
                                 {% for object in fire_object %}
                                     <option value="{{ object.id }}" {% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>
@@ -306,7 +307,7 @@
                             hid: shid,
                         },
                         methods: {
-                            onSelect: function (selected) {
+                            onSelect: function(selected) {
                                 this.hid = selected.id;
                                 this.name = selected.name;
                             },
@@ -321,13 +322,13 @@
                                             data.forEach((item) => {
                                                 this.data.push(item);
                                             });
+
                                             this.isFetching = false;
                                         }
                                     )
                                     .catch(() => {
                                         this.isFetching = false;
                                     })
-
                             }, 300)
                         }
                     }

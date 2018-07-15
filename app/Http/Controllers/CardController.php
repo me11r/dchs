@@ -66,7 +66,7 @@ class CardController extends AuthorizedController
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::all());
         $this->set('fire_object', FireObject::all());
-        $ticket = Ticket101::findOrNew($card_id);
+        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2'])->findOrNew($card_id);
         $this->set('ticket', $ticket);
     }
 

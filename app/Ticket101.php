@@ -4,8 +4,10 @@
 namespace App;
 
 
+use App\Dictionary\Street;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 /**
  * App\Ticket101
  *
@@ -336,4 +338,15 @@ class Ticket101 extends Model
     protected $table = 'ticket101';
     protected $fillable = [];
     protected $guarded = ['id'];
+
+    public function crossroad_1()
+    {
+        return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
+    }
+
+    public function crossroad_2()
+    {
+        return $this->hasOne(Street::class, 'id', 'crossroad_2_id');
+    }
+
 }
