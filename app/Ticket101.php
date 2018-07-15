@@ -4,6 +4,7 @@
 namespace App;
 
 
+use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -349,4 +350,8 @@ class Ticket101 extends Model
         return $this->hasOne(Street::class, 'id', 'crossroad_2_id');
     }
 
+    public function city_area()
+    {
+        return $this->hasOne(CityArea::class, 'id', 'city_area_id');
+    }
 }

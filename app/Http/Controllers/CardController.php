@@ -18,7 +18,7 @@ class CardController extends AuthorizedController
 {
     public function get101(Request $request)
     {
-        $tickets = Ticket101::all();
+        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])->get();
         $this->set('tickets', $tickets);
     }
 
