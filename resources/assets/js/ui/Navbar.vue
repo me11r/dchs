@@ -12,6 +12,9 @@
 -->
                 <div class="navbar-item"><a href="/formation/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Строевая записка 101</a>
                 </div>
+                <div class="navbar-item"><a href="/pdf/daily_report.pdf" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Суточный отчет</a>
+                </div>
+
             </div>
             <div class="navbar-end">
                 <div class="navbar-item">
