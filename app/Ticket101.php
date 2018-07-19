@@ -409,6 +409,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh8Dispatched($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh9DispatchId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh9Dispatched($value)
+ * @property-read \App\Dictionary\FireLevel $fire_level
+ * @property-read \App\Dictionary\FireObject $fire_object
  */
 class Ticket101 extends Model
 {

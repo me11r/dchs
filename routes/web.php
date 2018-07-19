@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
+            ->name('roadtrip.plan.view')
             ->where('plan_id', '[0-9]+');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');

@@ -55,7 +55,8 @@
         </tr>
         <tr>
             <td class="has-text-right is-bold">Время возвращение в ПЧ</td>
-            <td>{% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %} <a href="{{ url('/roadtrip/save/' ~ trip.id) }}" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</a>{% endif %}</td>
+            <td>{% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
+                    <form action="{{ url('/roadtrip/save/' ~ trip.id) }}" method="post">{{ csrf_field() }}<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</button></form>{% endif %}</td>
         </tr>
         <tr>
             <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
