@@ -28,7 +28,7 @@ class RoadtripController extends AuthorizedController
 
         $plan = new RoadtripPlan();
         $cnt = $plan
-            ->where('ticket_id', $ticket_id)
+            ->where('card_id', $ticket_id)
             ->where('department_id', $dept_id)
             ->count();
 
@@ -42,7 +42,7 @@ class RoadtripController extends AuthorizedController
 
         $plan = new RoadtripPlan();
         $plan->fill([
-            'ticket_id' => $ticket_id,
+            'card_id' => $ticket_id,
             'department_id' => $dept_id,
         ])
             ->save();
