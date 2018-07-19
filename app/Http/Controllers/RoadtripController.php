@@ -4,6 +4,10 @@
 namespace App\Http\Controllers;
 
 
+use App\FireDepartment;
+use App\RoadtripPlan;
+use App\Ticket101;
+
 class RoadtripController extends AuthorizedController
 {
     public function getIndex()
@@ -18,6 +22,38 @@ class RoadtripController extends AuthorizedController
 
     public function getSend($dept_id, $ticket_id)
     {
+        $this->noLayout();
+        $ticket = Ticket101::findOrFail($ticket_id);
+        $department = FireDepartment::findOrFail($dept_id);
 
+        $plan = new RoadtripPlan();
+        $cnt = $plan
+            ->where('ticket_id', $ticket_id)
+            ->where('department_id', $dept_id)
+            ->count();
+
+        if ($cnt > 0) {
+            return redirect(route('card101add', ['card_id' => $ticket_id]))
+                ->with('_message', [
+                    'type' => 'warning',
+                    'text' => 'В подразделение уже был раннее отправлен путевой лист на этот пожар'
+                ]);
+        }
+
+        $plan = new RoadtripPlan();
+        $plan->fill([
+            'ticket_id' => $ticket_id,
+            'department_id' => $dept_id,
+        ])
+            ->save();
+        $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
+        $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
+        $ticket->save();
+
+        return redirect(route('card101add', ['card_id' => $ticket_id]))
+            ->with('_message', [
+                'type' => 'success',
+                'text' => 'В подразделение отправлен путевой лист'
+            ]);
     }
 }
