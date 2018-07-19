@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary\CityArea;
+use App\Dictionary\FireLevel;
 use App\Dictionary\FireObject;
 use App\Ticket101;
 use Illuminate\Http\Request;
@@ -66,6 +67,7 @@ class CardController extends AuthorizedController
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::all());
         $this->set('fire_object', FireObject::all());
+        $this->set('fire_levels', FireLevel::all());
         $ticket = Ticket101::with(['crossroad_1', 'crossroad_2'])->findOrNew($card_id);
         $this->set('ticket', $ticket);
     }

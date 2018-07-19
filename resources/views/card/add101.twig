@@ -89,7 +89,7 @@
                     </div>
                     <div class="field">
                         <p class="control">
-                            <label for="fire_object_id">Что горит</label>
+                        <label for="fire_object_id">Что горит</label>
                         </p>
                         <div class="select">
                             <select name="fire_object_id" id="fire_object_id">
@@ -99,7 +99,26 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {#<input type="text" class="input" name="description" id="description" value="{{ ticket.description|default('') }}">#}
+                    </div>
+                    <div class="field">
+                        <p class="control">
+                        <label for="fire_level_id">Класс пожара</label>
+                        </p>
+                        <div class="select">
+                            <select name="fire_level_id" id="fire_level_id">
+                                <option value="">-</option>
+                                {% for object in fire_levels %}
+                                    <option value="{{ object.id }}" {% if object.id == ticket.fire_level_id %}selected{% endif %}>{{ object.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="checkbox">
+                            <input type="hidden" name="people_in_danger" value="0"/>
+                            <input type="checkbox" name="people_in_danger" value="1" id="people_in_danger" {% if ticket.people_in_danger %}checked{% endif %}/>
+                            <label for="people_in_danger">Опасность для людей</label>
+                        </div>
                     </div>
                     <div class="field is-grouped">
                         <p class="control">
@@ -113,7 +132,8 @@
                     </div>
                     <div class="field">
                         <label for="building_description">Конструктивные особенности</label>
-                        <textarea class="textarea" name="building_description" id="building_description" cols="30" rows="2">{{ ticket.building_description|default('') }}</textarea>
+                        <textarea class="textarea" name="building_description" id="building_description" cols="30"
+                                  rows="2">{{ ticket.building_description|default('') }}</textarea>
                     </div>
                     <div class="field is-grouped">
                         <p class="control is-expanded">
@@ -173,7 +193,7 @@
                                         <b-timepicker class="is-rounded" type="text" name="call_{{ name }}_time" id="call_{{ name }}_time"
                                                       :value="value" icon="clock" icon-pack="far">
                                             <a class="button is-primary"
-                                                    @click="value = new Date()">
+                                               @click="value = new Date()">
                                                 <b-icon pack="far" icon="clock"></b-icon>
                                                 <span>Сейчас</span>
                                             </a>
@@ -185,7 +205,7 @@
                                         <b-timepicker icon="clock" icon-pack="far" type="text" name="arrival_{{ name }}" id="arrival_{{ name }}"
                                                       :value="value">
                                             <a class="button is-primary"
-                                                    @click="value = new Date()">
+                                               @click="value = new Date()">
                                                 <b-icon pack="far" icon="clock"></b-icon>
                                                 <span>Сейчас</span>
                                             </a>
@@ -367,7 +387,7 @@
                             hid: shid,
                         },
                         methods: {
-                            onSelect: function(selected) {
+                            onSelect: function (selected) {
                                 this.hid = selected.id;
                                 this.name = selected.name;
                             },
