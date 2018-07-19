@@ -10,6 +10,12 @@ abstract class Repository implements RepositoryInterface
     /** @var Model */
     protected $model;
 
+
+    public function __construct()
+    {
+        $this->makeModel();
+    }
+
     /**
      * @return Model
      */

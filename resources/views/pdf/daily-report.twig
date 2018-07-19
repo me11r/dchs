@@ -47,36 +47,45 @@
     </div>
 
     <div>
-        За дежурные сутки зарегистрировано – {{ count }} выездов, из них:
+        За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:
     </div>
-    <div>1.Пожары – 2</div>
-    <div style="padding-left: 40px">1.1. Жилой сектор – 0</div>
-    <div style="padding-left: 60px">а) жилой дом (квартира) - 0 ; б) надворные постройки – 0</div>
-    <div style="padding-left: 40px">1.2. Транспорт – 0</div>
-    <div style="padding-left: 40px">1.3. Прочие объекты пожаров – 2</div>
-    <div>2. Случаи горения, не подлежащие учету как пожары – 4</div>
-    <div style="padding-left: 40px">2.1. КЗ – 3</div>
-    <div style="padding-left: 40px">2.2. Мусор – 0</div>
-    <div style="padding-left: 40px">2.3. Пища на газе – 0</div>
-    <div style="padding-left: 40px">2.4. Сухостой – 1</div>
-    <div>3. Прочие – 0</div>
-    <div>4. АСР – 1</div>
-    <div>5. Технологический процесс – 0</div>
-    <div>6. Бдительность населения (ложный) – 3</div>
-    <div>7. Загорание а/м в результате ДТП – 0</div>
-    <div>8. Загорание бесхозных зданий, транспортных средств – 0</div>
-    <div>9. Битумные работы – 0</div>
-    <div>10. Срабатывание ОПС – 0</div>
-    <div>11. Область – 0</div>
-    <div>12. Случаи отравления - 0</div>
-    <div style="padding-left: 40px">12.1. Отравление угарным газом – 0</div>
-    <div style="padding-left: 40px">12.2. Отравление природным газом – 0</div>
+    <div>1.Пожары – {{ fireCount }}</div>
+    <div style="padding-left: 40px">1.1. Транспорт – {{ burntTransportCount }}</div>
+    <div style="padding-left: 40px">1.2. Прочие объекты пожаров – {{ burntOtherCount }}</div>
+    <div>2. Случаи горения, не подлежащие учету как пожары – {{ notFireCount }}</div>
+    <div style="padding-left: 40px">2.1. Пища на газе и задымление при неиспр.быт.эл.приборов – {{ kitchenFireCount }}</div>
+    <div style="padding-left: 40px">2.2. КЗ эл.сетей и эл.оборудования – {{ electricFireCount }}</div>
+    <div style="padding-left: 40px">2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах – {{ trashFireOtherCount }}</div>
+    <div style="padding-left: 40px">2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд) – {{ trashFireHouseCount }}</div>
+    <div>3. Ложный – {{ falseCallCount }}</div>
+    <div>4. АСР – {{ asrCount }}</div>
+    <div>5. Кровельные, битумные, сварочные работы – {{ workFireCount }}</div>
+    <div>6. Бдительность населения – {{ peopleCallCount }}</div>
+    <div>7. Загорание бесхозных зданий, бесхозных транспортных средств – {{ orphanFireCount }}</div>
+    <div>8. Прочие случаи загорания – {{ otherFireCount }}</div>
+    <div>9. Область – {{ regionFireCount }}</div>
+    <div>10. Технологический процесс – {{ technologyFireCount }}</div>
+    <div>11. Самовозгорание пирофорных соединений, без последствий и ущерба – {{ pyrophoricFireCount }}</div>
+    <div>Cрабатывание сигнализации - {{ alarmCount }}</div>
+    <div>Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - {{ airFireCount }}</div>
+    <div>Покушение на самоубийство - {{ suicideCount }}</div>
+    <div>Вспышки и разряды стат.электричества - {{ dischargesElectrCount }}</div>
+    <div>Cрабатывание сигнализации - {{ alarmCount }}</div>
+    <div>Cрабатывание сигнализации - {{ alarmCount }}</div>
+
+    <div>12. Случаи отравления - {{ poisoningCount }}</div>
+    <div style="padding-left: 40px">12.1. Отравление угарным газом – {{ carbonPoisoningCount }}</div>
+    <div style="padding-left: 40px">12.2. Отравление природным газом – {{ naturalPoisoningCount }}</div>
     <div>13. Сведения по людям (дети) – 0</div>
-    <div style="padding-left: 40px">13.1. Попытка суицида – 0</div>
-    <div style="padding-left: 40px">13.2. Спасено – 0</div>
-    <div style="padding-left: 40px">13.3. Эвакуировано – 0</div>
-    <div style="padding-left: 40px">13.4. Пострадало – 0</div>
-    <div style="padding-left: 40px">13.5. Погибло – 0</div>
+    <div style="padding-left: 40px">13.1. Попытка суицида - 0</div>
+    <div style="padding-left: 40px">13.2. Спасено людей – 0</div>
+    <div style="padding-left: 40px">13.3. Эвакуировано людей – 0</div>
+    <div style="padding-left: 40px">13.4. Получили ожоги – 0</div>
+    <div style="padding-left: 40px">13.5. Пострадало – 0</div>
+    <div style="padding-left: 40px">13.6. Гибель людей – 0</div>
+    <div style="padding-left: 40px">13.7. Гибель детей – 0</div>
+    <div style="padding-left: 40px">13.8. Госпитализировано – 0</div>
+
 
 
     <div style="margin: 0 auto;width: 10%"><b>ПОЖАР:</b></div>

@@ -14,16 +14,35 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerTiket101();
+        $this->registerTicket101();
+        $this->registerFireObject();
+        $this->registerBurntObject();
     }
 
 
-    protected function registerTiket101()
+    protected function registerTicket101()
     {
         $this->app->bind(
-            'App\Repositories\Contracts\Tiket101Interface',
-            'App\Repositories\EloquentTiket101Repository'
+            'App\Repositories\Contracts\Ticket101Interface',
+            'App\Repositories\EloquentTicket101Repository'
         );
     }
+
+    protected function registerFireObject()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\FireObjectInterface',
+            'App\Repositories\EloquentFireObjectRepository'
+        );
+    }
+
+    protected function registerBurntObject()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\BurntObjectInterface',
+            'App\Repositories\EloquentBurntObjectRepository'
+        );
+    }
+
 
 }
