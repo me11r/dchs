@@ -21,10 +21,11 @@
             <div class="panels">
                 <div id="tab_call" class="is-hidden">
                     <h5 class="subtitle">Сведения поступившие со звонком:</h5>
-                    {% if ticket.id %}<div class="level is-marginless">
+                    {% if ticket.id %}
+                        <div class="level is-marginless">
                         <div class="level-left"><label>Номер КУИ:</label>&nbsp;{{ ticket.id }}</div>
                         <div class="level-right has-text-right"><label>Время получения сообщения:</label>&nbsp;{{ ticket.created_at|date('d.m.Y H:i:s') }}</div>
-                    </div>{% endif %}
+                        </div>{% endif %}
                     <div class="field">
                         <label for="location">Место пожара (Адрес)</label>
                         <textarea name="location" id="location" class="textarea" cols="30" rows="3">{{ ticket.location|default('') }}</textarea>
@@ -293,8 +294,10 @@
                                 </td>
                                 <td>
                                     {% if attribute(ticket, 'ph_' ~ index ~ '_dispatched') == 0 %}
-                                    <a href="" class="button is-primary is-outlined" @click="dispatch({{ index }})"><i class="fas fa-bus"></i>&nbsp;Отправить подразделение</a>
-                                        {% else %}
+                                        <a href="{{ url('/roadtrip/send/'~index ~'/'~ticket.id) }}"
+                                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
+                                            подразделение</a>
+                                    {% else %}
                                         <span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>
                                     {% endif %}
                                 </td>
@@ -359,7 +362,7 @@
         function nextTab(e) {
             e.preventDefault();
             let nextTab = activeTab + 1;
-            if (nextTab > 3) {
+            if (nextTab > 4) {
                 nextTab = 0;
             }
             setTab(nextTab);
