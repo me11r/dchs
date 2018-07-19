@@ -1,0 +1,31 @@
+{% extends "layout/html" %}
+{% block content %}
+    <h4 class="title">Активные путевые листы</h4>
+    <table class="table is-striped is-narrow is-fullwidth">
+        <thead>
+        <tr>
+            <th>Номер листа</th>
+            <th>Подразделение</th>
+            <th>Адрес возгорания</th>
+            <th>Дата и время</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for trip in trips %}
+            <tr>
+                <td>{{ trip.id }}</td>
+                <td>{{ trip.department.name|default('-') }}</td>
+                <td>{{ trip.ticket.address|default('-') }} {% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>
+                <td>{{ trip.created_at|date('d.m.Y H:i') }}</td>
+                <td class="has-text-right"><a href="{{ url('/roadtrip/view/' ~ trip.id) }}" class="button is-small is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой
+                        лист</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="has-text-centered"><h4 class="subtitle">Нет открытых путевых листов</h4></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

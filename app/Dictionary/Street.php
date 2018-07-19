@@ -11,6 +11,18 @@ namespace App\Dictionary;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Dictionary\Street
+ *
+ * @property int $id
+ * @property int $city_area_id
+ * @property string|null $name
+ * @property-read \App\Dictionary\CityArea $area
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\Street whereCityAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\Street whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\Street whereName($value)
+ * @mixin \Eloquent
+ */
 class Street extends Model
 {
     protected $table = 'streets';
