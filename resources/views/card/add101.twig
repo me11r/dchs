@@ -419,7 +419,183 @@
                     </div>
                 </div>
                 <div id="tab_summary" class="is-hidden">
-                    55
+                    <div class="field">
+                        <label for="detailed_address">Уточненный адрес</label>
+                        <textarea name="detailed_address" id="detailed_address" cols="30" rows="3" class="textarea"></textarea>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label for="burn_object_id">Объект горения</label>
+                        </div>
+                        <div class="select">
+                            <select name="burn_object_id" id="burn_object_id">
+                                <option> -</option>
+                                {% for burn in burn_object %}
+                                    <option value="{{ burn.id }}" {% if burn.id == ticket.burn_object_id %}selected{% endif %}>{{ burn.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label for="trip_result_id">Результат выезда</label>
+                        </div>
+                        <div class="select">
+                            <select name="trip_result_id" id="trip_result_id">
+                                <option> -</option>
+                                {% for trip_res in trip_result %}
+                                    <option value="{{ trip_res.id }}" {% if trip_res.id == ticket.trip_result_id %}selected{% endif %}>{{ trip_res.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label for="liquidation_method_id">Потушено стволами</label>
+                        </div>
+                        <div class="select">
+                            <select name="liquidation_method_id" id="liquidation_method_id">
+                                <option value="">-</option>
+                                {% for liquidation_method in liquidation_methods %}
+                                    <option value="{{ liquidation_method.id }}"
+                                            {% if liquidation_method.id == ticket.liquidation_method_id %}selected{% endif %}>{{ liquidation_method.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label for="result_fire_level_id">Уточненный ранг пожара</label>
+                        </div>
+                        <div class="select">
+                            <select name="result_fire_level_id" id="result_fire_level_id">
+                                <option value="">-</option>
+                                {% for fire_level in fire_levels %}
+                                    <option value="{{ fire_level.id }}" {% if fire_level.id == ticket.result_fire_level_id %}selected{% endif %}>{{ fire_level.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <div class="checkbox">
+                                <input type="hidden" name="vu_found" value="0"/>
+                                <input type="checkbox" name="vu_found" id="vu_found" value="1" {% if ticket.vu_found == 1 %}checked{% endif %}/>
+                                <label for="vu_found">Обнаружено ВУ</label>
+                            </div>
+                        </div>
+                        <div class="control">
+                            <div class="checkbox">
+                                <input type="hidden" name="animal_death" value="0"/>
+                                <input type="checkbox" name="animal_death" id="animal_death" value="1" {% if ticket.animal_death == 1 %}checked{% endif %}/>
+                                <label for="animal_death">Гибель животных</label>
+                            </div>
+                        </div>
+                        <div class="control">
+                            <div class="checkbox">
+                                <input type="hidden" name="car_crash" value="0"/>
+                                <input type="checkbox" name="car_crash" id="car_crash" value="1" {% if ticket.car_crash == 1 %}checked{% endif %}/>
+                                <label for="car_crash">Авария А/М при следовании на пожар, с жертвами</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- -->
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <label for="rescued_count">Спасено людей
+                            </label>
+                            <input type="number" class="input" name="rescued_count" id="rescued_count" value="{{ ticket.rescued_count|default('') }}"/>
+                        </div>
+                        <div class="control">
+                            <label for="evac_count">Эвакуировано людей
+                            </label>
+                            <input type="number" class="input" name="evac_count" id="evac_count" value="{{ ticket.evac_count|default('') }}"/>
+                        </div>
+
+                        <div class="control">
+                            <label for="co2_poisoned_count">Получили отравления угарным/природным газом
+                            </label>
+                            <input type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count" value="{{ ticket.co2_poisoned_count|default('') }}"/>
+                        </div>
+                    </div>
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <label for="gpt_burns_count">Получили ожоги
+                            </label>
+                            <input type="number" class="input" name="gpt_burns_count" id="gpt_burns_count" value="{{ ticket.gpt_burns_count|default('') }}"/>
+                        </div>
+
+                        <div class="control">
+                            <label for="people_death_count">Гибель людей
+                            </label>
+                            <input type="number" class="input" name="people_death_count" id="people_death_count" value="{{ ticket.people_death_count|default('') }}"/>
+                        </div>
+                        <div class="control">
+                            <label for="children_death_count">Гибель детей
+                            </label>
+                            <input type="number" class="input" name="children_death_count" id="children_death_count" value="{{ ticket.children_death_count|default('') }}"/>
+                        </div>
+                        <div class="control">
+                            <label for="hospitalized_count">Госпитализировано
+                            </label>
+                            <input type="number" class="input" name="hospitalized_count" id="hospitalized_count" value="{{ ticket.hospitalized_count|default('') }}"/>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="more_info">Дополнительная информация</label>
+                        <textarea name="more_info" id="more_info" cols="30" rows="2" class="textarea">{{ ticket.more_info|default('') }}</textarea>
+                    </div>
+                    <div class="field">
+                        <div class="checkbox">
+                            <input type="hidden" name="hydrant_found" value="0"/>
+                            <input type="checkbox" name="hydrant_found" id="hydrant_found" value="1" {% if ticket.hydrant_found == 1 %}checked{% endif %}/>
+                            <label for="hydrant_found">Наличие ПГ/ПВ</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <label for="distance">Расстояние до места
+                            </label>
+                            <input type="number" class="input" name="distance" id="distance" value="{{ ticket.distance|default('') }}"/>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="owner">Владелец(дома,кв.,а/м)</label>
+                        <input type="text" id="owner" name="owner" value="{{ ticket.owner|default('') }}" class="input"/>
+                    </div>
+                    <h5 class="subtitle">Объяснения</h5>
+                    <div class="field">
+                        <div class="file is-info has-name">
+                            <label class="file-label">
+                                <input class="file-input" type="file">
+                                <span class="file-cta">
+        <span class="file-icon">
+          <i class="fas fa-upload"></i>
+        </span>
+        <span class="file-label">
+        Приложить объяснения очевидца
+        </span>
+      </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="file is-info has-name">
+                            <label class="file-label">
+                                <input class="file-input" type="file">
+                                <span class="file-cta">
+        <span class="file-icon">
+          <i class="fas fa-upload"></i>
+        </span>
+        <span class="file-label">
+        Приложить план пожара
+        </span>
+      </span>
+                            </label>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
