@@ -13,7 +13,7 @@ abstract class Repository implements RepositoryInterface
     /**
      * @return Model
      */
-    abstract function model(): Model;
+    abstract function model();
 
     /**
      * @return mixed
