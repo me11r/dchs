@@ -5,6 +5,8 @@ namespace App;
 
 
 use App\Dictionary\CityArea;
+use App\Dictionary\FireLevel;
+use App\Dictionary\FireObject;
 use App\Dictionary\Street;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -428,5 +430,14 @@ class Ticket101 extends Model
     public function city_area()
     {
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
+    }
+
+    public function fire_level(){
+        return $this->hasOne(FireLevel::class, 'id', 'fire_level_id');
+    }
+
+    public function fire_object()
+    {
+        return $this->hasOne(FireObject::class, 'id', 'fire_object_id');
     }
 }

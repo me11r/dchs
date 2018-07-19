@@ -50,7 +50,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
-        Route::get('/show/{plan_id}', 'RoadtripController@getView')
+        Route::get('/view/{plan_id}', 'RoadtripController@getView')
+            ->where('plan_id', '[0-9]+');
+        Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
         Route::get('/send/{dept_id}/{ticket_id}', 'RoadtripController@getSend')
             ->where('dept_id', '[0-9]+')

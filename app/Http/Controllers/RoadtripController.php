@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\FireDepartment;
 use App\RoadtripPlan;
 use App\Ticket101;
+use Illuminate\Http\Request;
 
 class RoadtripController extends AuthorizedController
 {
@@ -21,6 +22,13 @@ class RoadtripController extends AuthorizedController
     }
 
     public function getView($plan_id)
+    {
+        $trip = RoadtripPlan::with(['ticket', 'department'])
+            ->findOrFail($plan_id);
+        $this->set('trip', $trip);
+    }
+
+    public function postPlan(Request $request, $plan_id)
     {
 
     }
