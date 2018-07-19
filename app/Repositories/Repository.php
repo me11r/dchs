@@ -102,6 +102,16 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * @param string $attribute
+     * @param array $values
+     * @return mixed
+     */
+    public function whereBetween(string $attribute, array $values)
+    {
+        return $this->model->whereBetween($attribute, $values);
+    }
+
+    /**
      * @param string $field
      * @param string $type
      * @return mixed

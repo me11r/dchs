@@ -6,4 +6,6 @@ namespace App\Repositories\Contracts;
 interface Tiket101Interface
 {
 
+    public function getCountDaily($from, $to);
+
 }

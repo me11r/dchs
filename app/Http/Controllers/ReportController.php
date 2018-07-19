@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 
-use App\Services\Report;
+use App\Reports\Report;
+use App\Repositories\Contracts\Tiket101Interface;
 use Dompdf\Dompdf;
 
 class ReportController extends AuthorizedController
 {
+    protected $tiket101;
+
+    public function __construct(Tiket101Interface $tiket101)
+    {
+        $this->tiket101 = $tiket101;
+        parent::__construct();
+    }
 
     public function getDaily()
     {
         $html = view('pdf/daily-report',
-            (new Report())->getReport()
+            (new Report($this->tiket101))->getReport()
         )->render();
 
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');

@@ -14,6 +14,16 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerTiket101();
+    }
+
+
+    protected function registerTiket101()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\Tiket101Interface',
+            'App\Repositories\EloquentTiket101Repository'
+        );
     }
 
 }
