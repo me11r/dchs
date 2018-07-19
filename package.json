@@ -3,7 +3,7 @@
     "build": "node ./_build/build.js --config=app --mode=prod",
     "components": "node ./_build/build.js --config=comp --mode=prod",
     "watch": "node ./_build/build.js --config=app --mode=prod --watch",
-    "watch-alt": "node ./_build/build.js --config=app --mode=prod --watch --progress --hide-modules",
+    "watch-alt": "node ./_build/build.js --config=app  --watch --progress --hide-modules",
     "dev:app": "node ./_build/develop.js --config=app --mode=dev",
     "dev:comp": "node ./_build/develop.js --config=app --mode=dev"
   },
@@ -53,6 +53,14 @@
     "not ie <= 9"
   ],
   "devDependencies": {
-    "file-loader": "^1.1.11"
+    "file-loader": "^1.1.11",
+    "eslint": "^4.19.1",
+    "babel-eslint": "7.2.3",
+    "eslint-config-standard": "10.2.1",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-standard": "3.0.1",
+    "eslint-plugin-vue": "^4.5.0",
+    "eslint-plugin-node": "5.1.1",
+    "eslint-plugin-promise": "3.5.0"
   }
 }

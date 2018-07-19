@@ -13,7 +13,7 @@ class IncidentTypes extends Migration
      */
     public function up()
     {
-        Schema::table('incident_types', function (Blueprint $table) {
+        Schema::create('incident_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });

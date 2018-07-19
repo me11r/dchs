@@ -1,6 +1,16 @@
 {% extends "layout/html" %}
+
 {% block content %}
-    <div id="card112-form">
-        <card112-form :streets="{{ streets | json_encode() }}"></card112-form>
+    <script>
+        window.card112FormData = {
+            streets: {{ streets | json_encode() | raw }},
+            incidentTypes: {{ incidentTypes | json_encode() | raw }},
+            serviceTypes: {{ serviceTypes | json_encode() | raw }},
+            model: {
+                street_id: ''
+            }
+        };
+    </script>
+    <div id="card112-form-block">
     </div>
 {% endblock content %}

@@ -13,7 +13,7 @@ class Cards112Chronologies extends Migration
      */
     public function up()
     {
-        Schema::table('cards_112_chronologies', function (Blueprint $table) {
+        Schema::create('cards_112_chronologies', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cards_112_id')->unsigned();
             $table->time('time');

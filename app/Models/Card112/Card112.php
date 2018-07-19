@@ -11,7 +11,7 @@ class Card112 extends Model
     public $table = 'card_112';
 
     public $fillable = [
-        'address_id',
+        'street_id',
         'crossroad_1_id',
         'crossroad_2_id',
         'incident_type_id',
@@ -19,7 +19,7 @@ class Card112 extends Model
         'caller_phone',
         'caller_name',
         'call_time',
-        'additional_address_id',
+        'additional_street_id',
         'additional_incident_type_id',
         'measures',
         'resources',
@@ -29,9 +29,9 @@ class Card112 extends Model
         'hospitalized'
     ];
 
-    public function address()
+    public function street()
     {
-        return $this->hasOne(Street::class, 'id', 'address_id');
+        return $this->hasOne(Street::class, 'id', 'street_id');
     }
 
     public function crossroad1()
@@ -46,7 +46,7 @@ class Card112 extends Model
 
     public function additionalAddress()
     {
-        return $this->hasOne(Street::class, 'id', 'additional_address_id');
+        return $this->hasOne(Street::class, 'id', 'additional_street_id');
     }
 
     public function incident()

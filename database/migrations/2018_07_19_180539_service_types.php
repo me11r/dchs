@@ -13,7 +13,7 @@ class ServiceTypes extends Migration
      */
     public function up()
     {
-        Schema::table('service_types', function (Blueprint $table) {
+        Schema::create('service_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });

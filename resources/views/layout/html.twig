@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="https://unpkg.com/buefy/lib/buefy.min.css"/>
     <link rel="stylesheet" href="{{ manifest('/assets/app.css') }}">
     <script>
-        window.CSRF_TOKEN = '{{ csrf_token() }}';
+        window.csrf_token = '{{ csrf_token() }}';
     </script>
 </head>
 <body>

@@ -14,7 +14,7 @@ class Card112ServiceReactions extends Migration
      */
     public function up()
     {
-        Schema::table('card_112_service_reactions', function (Blueprint $table) {
+        Schema::create('card_112_service_reactions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cards_112_id')->unsigned();
             $table->integer('service_type_id')->unsigned();
