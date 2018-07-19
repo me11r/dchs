@@ -75,6 +75,8 @@ class AddTicket101 extends Migration
                 $table->time('ph_' . $i . '_loc_time')->nullable();
                 $table->time('ph_' . $i . '_liqv_time')->nullable();
                 $table->time('ph_' . $i . '_ret_time')->nullable();
+                $table->boolean('ph_' . $i . '_dispatched')->default(false);
+                $table->integer('ph_' . $i . '_dispatch_id')->nullable();
             }
 
             // tab 4

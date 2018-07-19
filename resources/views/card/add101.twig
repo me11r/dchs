@@ -10,6 +10,7 @@
                     <li><a href="#tab_notify" onclick="setTab(1);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a></li>
                     <li><a href="#tab_truck" onclick="setTab(2);"><i class="fas fa-truck-moving"></i>&nbsp; Подразделения</a></li>
                     <li><a href="#tab_other" onclick="setTab(3);"><i class="fas fa-info-circle"></i>&nbsp; Прочее</a></li>
+                    <li><a href="#tab_summary" onclick="setTab(4);"><i class="fas fa-check-double"></i>&nbsp;Итоги выезда</a></li>
                 </ul>
             </div>
             <div id="preload_pane" class="hero is-loading has-text-centered" style="height: 30vh; align-items: center">
@@ -233,6 +234,7 @@
                             <th>- локализации</th>
                             <th>- ликвидации</th>
                             <th>- возвращения</th>
+                            <th>-</th>
                         </tr>
                         {% for index,ssv in ssv_out %}
                             <tr>
@@ -289,6 +291,13 @@
                                         </a>
                                     </b-timepicker>
                                 </td>
+                                <td>
+                                    {% if attribute(ticket, 'ph_' ~ index ~ '_dispatched') == 0 %}
+                                    <a href="" class="button is-primary is-outlined" @click="dispatch({{ index }})"><i class="fas fa-bus"></i>&nbsp;Отправить подразделение</a>
+                                        {% else %}
+                                        <span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -317,6 +326,9 @@
                         <label for="add_info">Дополнительная информация</label>
                         <textarea name="add_info" id="add_info" class="textarea" cols="30" rows="3"></textarea>
                     </div>
+                </div>
+                <div id="tab_summary" class="is-hidden">
+                    55
                 </div>
             </div>
             <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
