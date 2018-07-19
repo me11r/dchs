@@ -11,9 +11,9 @@ abstract class Repository implements RepositoryInterface
     protected $model;
 
     /**
-     * @return Model
+     * @return mixed
      */
-    abstract function model(): Model;
+    abstract function model();
 
     /**
      * @return mixed
