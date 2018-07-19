@@ -47,7 +47,8 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('form_id', '[0-9]+')
         ->where('dept_id', '[0-9]+');
     Route::get('/formation/view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
-    Route::group(['prefix' => '/roadtrip'], function () {
+
+    Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
         Route::get('/show/{plan_id}', 'RoadtripController@getView')
             ->where('plan_id', '[0-9]+');

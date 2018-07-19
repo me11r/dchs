@@ -12,7 +12,12 @@ class RoadtripController extends AuthorizedController
 {
     public function getIndex()
     {
+        $trips = RoadtripPlan::with(['ticket', 'department'])
+            ->where('is_closed', false)
+            ->get();
 
+
+        $this->set('trips', $trips);
     }
 
     public function getView($plan_id)

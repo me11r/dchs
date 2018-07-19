@@ -36,11 +36,11 @@ class RoadtripPlan extends Model
 
     public function ticket()
     {
-        return $this->belongsTo(Ticket101::class);
+        return $this->belongsTo(Ticket101::class, 'card_id');
     }
 
     public function department()
     {
-        return $this->hasOne(FireDepartment::class);
+        return $this->belongsTo(FireDepartment::class);
     }
 }
