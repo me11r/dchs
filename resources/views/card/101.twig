@@ -32,7 +32,7 @@
                 <tr>
                     <td class="has-text-right">{{ ticket.id }}</td>
                     <td>{{ ticket.location }}</td>
-                    <td>{{ ticket.city_area.name }} {% if ticket.crossroad_1_id %}({{ ticket.crossroad_1.name|default('-') }} &times; {{ ticket.crossroad_2.name|default('-') }}){% endif %}</td>
+                    <td>{{ ticket.city_area.name|default('-') }} {% if ticket.crossroad_1_id %}({{ ticket.crossroad_1.name|default('-') }} &times; {{ ticket.crossroad_2.name|default('-') }}){% endif %}</td>
                     <td class="has-text-right">{{ ticket.created_at|date('H:i d.m.Y') }}</td>
                     <td class="has-text-right"><a href="{{ url('/card/add101/' ~ ticket.id) }}" class="button is-small is-outlined is-primary"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a></td>
                 </tr>

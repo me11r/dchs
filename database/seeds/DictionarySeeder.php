@@ -26,6 +26,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'dict_city_area',
                 'model' => \App\Dictionary\CityArea::class
             ],
+            [
+                'title' => 'Класс пожара',
+                'table' => 'dict_fire_level',
+                'model' => \App\Dictionary\FireLevel::class
+            ],
 
         ];
         (new App\Dictionary)->truncate();
@@ -35,5 +40,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
         $this->call(FireDeptSeeder::class);
+        $this->call(FireLevelSeeder::class);
     }
 }

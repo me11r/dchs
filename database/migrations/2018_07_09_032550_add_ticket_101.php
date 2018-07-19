@@ -24,6 +24,8 @@ class AddTicket101 extends Migration
             $table->integer('storey_count')->nullable();
             $table->integer('floor')->nullable();
             $table->text('building_description')->nullable();
+            $table->boolean('people_in_danger')->default(false);
+            $table->integer('fire_level_id')->nullable();
             $table->text('caller_phone')->nullable();
             $table->text('caller_name')->nullable();
             $table->time('call_time')->nullable();

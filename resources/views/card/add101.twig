@@ -134,13 +134,25 @@
                             <p class="control" data-component="timepicker" data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
                                 <label for="notify_{{ name }}_time">{{ title }}</label>
                                 <b-timepicker type="text" v-model="value" style="max-width: 4rem" name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time"
-                                ></b-timepicker>
+                                >
+                                    <a class="button is-primary"
+                                       @click="value = new Date()">
+                                        <b-icon pack="far" icon="clock"></b-icon>
+                                        <span>Сейчас</span>
+                                    </a>
+                                </b-timepicker>
                             </p>
                         {% endfor %}
                     </div>
                     <div class="field" data-component="timepicker" data-value="{{ ticket.next_notify_time|default('') }}">
                         <label for="next_notify_time">Время следующего взаимодействия</label>
                         <b-timepicker v-model="value" type="text" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" :value="value">
+                            <a class="button is-primary"
+                               @click="value = new Date()">
+                                <b-icon pack="far" icon="clock"></b-icon>
+                                <span>Сейчас</span>
+                            </a>
+                        </b-timepicker>
                     </div>
                     <h5 class="subtitle">Службы</h5>
                     <div>
@@ -158,14 +170,26 @@
                                 <tr>
                                     <td>{{ title }}</td>
                                     <td data-component="timepicker" data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
-                                        <b-timepicker type="text" name="call_{{ name }}_time" id="call_{{ name }}_time"
-                                                      :value="value" icon="clock" icon-pack="far"></b-timepicker>
+                                        <b-timepicker class="is-rounded" type="text" name="call_{{ name }}_time" id="call_{{ name }}_time"
+                                                      :value="value" icon="clock" icon-pack="far">
+                                            <a class="button is-primary"
+                                                    @click="value = new Date()">
+                                                <b-icon pack="far" icon="clock"></b-icon>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </b-timepicker>
                                     </td>
                                     <td><input type="text" class="input" name="name_{{ name }}_recv" id="name_{{ name }}_recv"
                                                value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/></td>
                                     <td data-component="timepicker" data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
                                         <b-timepicker icon="clock" icon-pack="far" type="text" name="arrival_{{ name }}" id="arrival_{{ name }}"
-                                                      :value="value"></b-timepicker>
+                                                      :value="value">
+                                            <a class="button is-primary"
+                                                    @click="value = new Date()">
+                                                <b-icon pack="far" icon="clock"></b-icon>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </b-timepicker>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -192,23 +216,53 @@
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"/></td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
-                                                  :value="value"></b-timepicker>
+                                                  :value="value">
+                                        <a class="button is-primary"
+                                           @click="value = new Date()">
+                                            <b-icon pack="far" icon="clock"></b-icon>
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
-                                                  :value="value"></b-timepicker>
+                                                  :value="value">
+                                        <a class="button is-primary"
+                                           @click="value = new Date()">
+                                            <b-icon pack="far" icon="clock"></b-icon>
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
-                                                  :value="value"></b-timepicker>
+                                                  :value="value">
+                                        <a class="button is-primary"
+                                           @click="value = new Date()">
+                                            <b-icon pack="far" icon="clock"></b-icon>
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
-                                                  :value="value"></b-timepicker>
+                                                  :value="value">
+                                        <a class="button is-primary"
+                                           @click="value = new Date()">
+                                            <b-icon pack="far" icon="clock"></b-icon>
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}">
                                     <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
-                                                  :value="value"></b-timepicker>
+                                                  :value="value">
+                                        <a class="button is-primary"
+                                           @click="value = new Date()">
+                                            <b-icon pack="far" icon="clock"></b-icon>
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </b-timepicker>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -220,7 +274,13 @@
                         <div class="field is-grouped">
                             <p class="control is-narrow" data-component="timepicker" data-value="{{ attribute(ticket, 'update_' ~ index ~ '_time')|default('') }}">
                                 <label for="update_{{ index }}_time">Время</label>
-                                <b-timepicker icon="clock" icon-pack="far" name="update_{{ index }}_time" type="text" :value="value"></b-timepicker>
+                                <b-timepicker icon="clock" icon-pack="far" name="update_{{ index }}_time" type="text" :value="value">
+                                    <a class="button is-primary"
+                                       @click="value = new Date()">
+                                        <b-icon pack="far" icon="clock"></b-icon>
+                                        <span>Сейчас</span>
+                                    </a>
+                                </b-timepicker>
                             </p>
                             <p class="control is-expanded">
                                 <label for="update_{{ index }}_info">Ситуация</label>
