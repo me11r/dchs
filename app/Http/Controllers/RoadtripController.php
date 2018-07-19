@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\FireDepartment;
 use App\RoadtripPlan;
 use App\Ticket101;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RoadtripController extends AuthorizedController
@@ -30,7 +31,18 @@ class RoadtripController extends AuthorizedController
 
     public function postPlan(Request $request, $plan_id)
     {
+        $plan = RoadtripPlan::findOrFail($plan_id);
+        if (!$plan->is_closed) {
+            $plan->is_closed = true;
+            $plan->return_time = Carbon::now();
+            $plan->save();
+        }
 
+        return redirect(route('roadtrip.plan.view', ['plan_id' => $plan_id]))
+            ->with('_message', [
+                'type' => 'sucess',
+                'message' => 'Путевой лист закрыт'
+            ]);
     }
 
     public function getSend($dept_id, $ticket_id)
