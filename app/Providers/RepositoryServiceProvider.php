@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\Card112RepositoryInterface;
+use App\Repositories\EloquentCard112Repository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -14,6 +16,14 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerCard112Repository();
     }
 
+    protected function registerCard112Repository()
+    {
+        $this->app->bind(
+            Card112RepositoryInterface::class,
+            EloquentCard112Repository::class
+        );
+    }
 }

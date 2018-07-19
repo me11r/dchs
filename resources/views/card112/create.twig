@@ -1,0 +1,6 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div id="card112-form">
+        <card112-form :streets="{{ streets | json_encode() }}"></card112-form>
+    </div>
+{% endblock content %}

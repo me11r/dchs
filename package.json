@@ -3,6 +3,7 @@
     "build": "node ./_build/build.js --config=app --mode=prod",
     "components": "node ./_build/build.js --config=comp --mode=prod",
     "watch": "node ./_build/build.js --config=app --mode=prod --watch",
+    "watch-alt": "node ./_build/build.js --config=app --mode=prod --watch --progress --hide-modules",
     "dev:app": "node ./_build/develop.js --config=app --mode=dev",
     "dev:comp": "node ./_build/develop.js --config=app --mode=dev"
   },
