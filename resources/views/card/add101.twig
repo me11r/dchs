@@ -20,6 +20,10 @@
             <div class="panels">
                 <div id="tab_call" class="is-hidden">
                     <h5 class="subtitle">Сведения поступившие со звонком:</h5>
+                    {% if ticket.id %}<div class="level is-marginless">
+                        <div class="level-left"><label>Номер КУИ:</label>&nbsp;{{ ticket.id }}</div>
+                        <div class="level-right has-text-right"><label>Время получения сообщения:</label>&nbsp;{{ ticket.created_at|date('d.m.Y H:i:s') }}</div>
+                    </div>{% endif %}
                     <div class="field">
                         <label for="location">Место пожара (Адрес)</label>
                         <textarea name="location" id="location" class="textarea" cols="30" rows="3">{{ ticket.location|default('') }}</textarea>
@@ -89,7 +93,7 @@
                     </div>
                     <div class="field">
                         <p class="control">
-                        <label for="fire_object_id">Что горит</label>
+                            <label for="fire_object_id">Что горит</label>
                         </p>
                         <div class="select">
                             <select name="fire_object_id" id="fire_object_id">
@@ -102,7 +106,7 @@
                     </div>
                     <div class="field">
                         <p class="control">
-                        <label for="fire_level_id">Класс пожара</label>
+                            <label for="fire_level_id">Класс пожара</label>
                         </p>
                         <div class="select">
                             <select name="fire_level_id" id="fire_level_id">
@@ -154,6 +158,7 @@
                             <p class="control" data-component="timepicker" data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
                                 <label for="notify_{{ name }}_time">{{ title }}</label>
                                 <b-timepicker type="text" v-model="value" style="max-width: 4rem" name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time"
+
                                 >
                                     <a class="button is-primary"
                                        @click="value = new Date()">
@@ -365,6 +370,13 @@
                     data: function () {
                         return {
                             value: dt
+                        }
+                    },
+                    methods: {
+                        close: function () {
+                            if (this.$children[0]) {
+                                this.$children[0].close();
+                            }
                         }
                     }
                 });
