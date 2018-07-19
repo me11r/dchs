@@ -25,9 +25,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 
-    Route::get('/card/101', 'CardController@get101')->name('card.101');
-    Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->where(['card_id' => '[0-9]+'])->name('card.101.add');
-    Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->where(['user_id' => '[0-9]+'])->name('card.101.save');
+    Route::get('/card/101', 'CardController@get101')->name('card101');
+    Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
+    Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+']);
 
     Route::get('/formation/101', 'FormationController@get101');
     Route::get('/formation/addToday', 'FormationController@getAddToday');
@@ -47,9 +47,13 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('form_id', '[0-9]+')
         ->where('dept_id', '[0-9]+');
     Route::get('/formation/view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
-    Route::group(['prefix' => '/roadtrip'], function () {
+
+    Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
-        Route::get('/show/{plan_id}', 'RoadtripController@getView')
+        Route::get('/view/{plan_id}', 'RoadtripController@getView')
+            ->name('roadtrip.plan.view')
+            ->where('plan_id', '[0-9]+');
+        Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
         Route::get('/send/{dept_id}/{ticket_id}', 'RoadtripController@getSend')
             ->where('dept_id', '[0-9]+')

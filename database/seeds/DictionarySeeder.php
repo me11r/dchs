@@ -35,7 +35,18 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'title' => 'Способ ликвидации',
                 'table' => 'dict_liquidation_method',
                 'model' => \App\Dictionary\LiquidationMethod::class
-            ]
+            ],
+            [
+                'title' => 'Объект горения',
+                'table' => 'dict_burn_object',
+                'model' => \App\Dictionary\BurntObject::class
+            ],
+            [
+                'title' => 'Причина выезда',
+                'table' => 'dict_trip_result',
+                'model' => \App\Dictionary\TripResult::class
+            ],
+
         ];
         (new App\Dictionary)->truncate();
         foreach ($dicts as $dict) {
@@ -46,5 +57,7 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(FireDeptSeeder::class);
         $this->call(FireLevelSeeder::class);
         $this->call(LiqvidationMethodSeeder::class);
+        $this->call(BurntObjectSeeder::class);
+        $this->call(TripResultSeeder::class);
     }
 }

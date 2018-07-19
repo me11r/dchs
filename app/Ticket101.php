@@ -5,6 +5,8 @@ namespace App;
 
 
 use App\Dictionary\CityArea;
+use App\Dictionary\FireLevel;
+use App\Dictionary\FireObject;
 use App\Dictionary\Street;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -332,6 +334,83 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Ticket101 withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Ticket101 withoutTrashed()
  * @mixin \Eloquent
+ * @property int $people_in_danger
+ * @property int|null $fire_level_id
+ * @property int $ph_1_dispatched
+ * @property int|null $ph_1_dispatch_id
+ * @property int $ph_2_dispatched
+ * @property int|null $ph_2_dispatch_id
+ * @property int $ph_3_dispatched
+ * @property int|null $ph_3_dispatch_id
+ * @property int $ph_4_dispatched
+ * @property int|null $ph_4_dispatch_id
+ * @property int $ph_5_dispatched
+ * @property int|null $ph_5_dispatch_id
+ * @property int $ph_6_dispatched
+ * @property int|null $ph_6_dispatch_id
+ * @property int $ph_7_dispatched
+ * @property int|null $ph_7_dispatch_id
+ * @property int $ph_8_dispatched
+ * @property int|null $ph_8_dispatch_id
+ * @property int $ph_9_dispatched
+ * @property int|null $ph_9_dispatch_id
+ * @property int $ph_10_dispatched
+ * @property int|null $ph_10_dispatch_id
+ * @property int $ph_11_dispatched
+ * @property int|null $ph_11_dispatch_id
+ * @property int $ph_12_dispatched
+ * @property int|null $ph_12_dispatch_id
+ * @property int $ph_13_dispatched
+ * @property int|null $ph_13_dispatch_id
+ * @property int $ph_14_dispatched
+ * @property int|null $ph_14_dispatch_id
+ * @property int $ph_15_dispatched
+ * @property int|null $ph_15_dispatch_id
+ * @property int $ph_16_dispatched
+ * @property int|null $ph_16_dispatch_id
+ * @property int $ph_17_dispatched
+ * @property int|null $ph_17_dispatch_id
+ * @property-read \App\Dictionary\CityArea $city_area
+ * @property-read \App\Dictionary\Street $crossroad_1
+ * @property-read \App\Dictionary\Street $crossroad_2
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereFireLevelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePeopleInDanger($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh10DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh10Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh11DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh11Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh12DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh12Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh13DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh13Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh14DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh14Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh15DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh15Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh16DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh16Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh17DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh17Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh1DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh1Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh2DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh2Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh3DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh3Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh4DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh4Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh5DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh5Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh6DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh6Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh7DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh7Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh8DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh8Dispatched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh9DispatchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh9Dispatched($value)
+ * @property-read \App\Dictionary\FireLevel $fire_level
+ * @property-read \App\Dictionary\FireObject $fire_object
  */
 class Ticket101 extends Model
 {
@@ -353,5 +432,14 @@ class Ticket101 extends Model
     public function city_area()
     {
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
+    }
+
+    public function fire_level(){
+        return $this->hasOne(FireLevel::class, 'id', 'fire_level_id');
+    }
+
+    public function fire_object()
+    {
+        return $this->hasOne(FireObject::class, 'id', 'fire_object_id');
     }
 }

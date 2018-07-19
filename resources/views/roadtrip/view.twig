@@ -1,0 +1,66 @@
+{% extends "layout/html" %}
+{% block content %}
+    <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
+    <table class="table is-narrow">
+        <tr>
+            <td class="has-text-right is-bold">Место пожара (адрес)</td>
+            <td>{{ trip.ticket.address|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Район города</td>
+            <td>{{ trip.ticket.city_area.name|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Пересечение улиц</td>
+            <td>{% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Ранг пожара
+            </td>
+            <td>{{ trip.ticket.fire_level.name|default('?') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Объект горения</td>
+            <td>{{ trip.ticket.fire_object.name|default('?') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">
+                Этажность</td>
+            <td>{{ trip.ticket.storey_count|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">На каком этаже горит
+            </td>
+            <td>{{ trip.ticket.floor|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Конструктивные особенности</td>
+            <td>{{ trip.ticket.building_description|default('') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Наличие угрозы людям</td>
+            <td>{% if trip.ticket.people_in_danger ==1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">ФИО заявителя</td>
+            <td>{{ trip.ticket.caller_name|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Телефон заявителя</td>
+            <td>{{ trip.ticket.caller_phone|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Время получения сообщения о ЧС</td>
+            <td>{{ trip.ticket.created_at|date('d.m.Y H:i') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Время возвращение в ПЧ</td>
+            <td>{% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
+                    <form action="{{ url('/roadtrip/save/' ~ trip.id) }}" method="post">{{ csrf_field() }}<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</button></form>{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
+            <td>{{ trip.created_at|date('d.m.Y') }}</td>
+        </tr>
+    </table>
+{% endblock content %}
