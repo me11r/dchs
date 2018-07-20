@@ -203,6 +203,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <!--@TODO doesn't work in the Edit page-->
                                 <tr
                                     v-for="serviceType in serviceTypes"
                                     :key="serviceType.id">
@@ -428,6 +429,7 @@
                             </div>
                         </div>
                     </div>
+                    <!--@TODO doesn't work in the Edit page-->
                     <div :style="{'display': currentTabIndex === 3 ? 'block': 'none'}">
                         <h5 class="subtitle">Хронология событий:</h5>
                         <table class="table is-expanded is-striped is-fullwidth">

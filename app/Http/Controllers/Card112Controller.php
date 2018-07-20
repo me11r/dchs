@@ -44,12 +44,6 @@ class Card112Controller extends Controller
             ->render();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->repository->createFilledWithRelations($request->all());
@@ -67,30 +61,20 @@ class Card112Controller extends Controller
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect(ServiceType::orderBy('name')->get(['id', 'name']))->toArray())
-            ->with('model', $this->repository->where('id','=', $id)->with(['serviceReactions', 'chronology'])->first())
+            ->with('model', $this->repository->where('id', '=', $id)->with(['serviceReactions', 'chronology'])->first())
             ->render();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
+        //@TODO
         abort('418', 'Раздел в разработке.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        // @TODO to test
+        $this->repository->delete($id);
+        return redirect('/card112');
     }
 }
