@@ -21,6 +21,9 @@
     <script src="https://unpkg.com/buefy"></script>
     <link rel="stylesheet" href="https://unpkg.com/buefy/lib/buefy.min.css"/>
     <link rel="stylesheet" href="{{ manifest('/assets/app.css') }}">
+    <script>
+        window.csrf_token = '{{ csrf_token() }}';
+    </script>
 </head>
 <body>
 <nav id="navbar"></nav>

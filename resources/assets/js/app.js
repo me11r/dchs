@@ -5,9 +5,10 @@ import '../sass/app.scss';
 import Vue from 'vue';
 import Buefy from 'buefy';
 
-import App from './App.vue'
-import Navbar from './ui/Navbar'
-import Card from './Card101'
+import App from './App.vue';
+import Navbar from './ui/Navbar';
+import Card from './Card101';
+import {Card112Form} from './views/Card112';
 
 Vue.config.productionTip = false;
 
@@ -18,3 +19,8 @@ Vue.use(Buefy, {
 new Vue({
     render: h => h(Navbar)
 }).$mount('#navbar');
+
+new Vue({
+    el: '#card112-form-block',
+    render: h => h(Card112Form)
+});

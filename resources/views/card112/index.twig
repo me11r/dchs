@@ -1,0 +1,50 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">Карточка 112
+        </h4>
+    </div>
+    <div class="columns is-gapless">
+        <div class="column is-narrow">
+            <div style="border-bottom: 1px solid #dbdbdb">
+                <a href="{{ route('card112.create') }}" class="button is-success is-outlined"
+                   style="margin: 2px 10px 2px">
+                    <i class="fas fa-plus"></i>&nbsp;Новая карточка
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <thead>
+            <tr>
+                <th>№ КУИ</th>
+                <th>Адрес</th>
+                <th>Район</th>
+                <th class="has-text-right">Дата и время</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            {% for item in items %}
+                <tr>
+                    <td class="has-text-right">{{ item.id }}</td>
+                    <td>{{ item.street.name }}</td>
+                    <td>{{ item.street.area ? item.street.area.name : '-' }}</td>
+                    <td class="has-text-right">{{ item.created_at|date('H:i d.m.Y') }}</td>
+                    <td class="has-text-right">
+                        <a href="{{ route('card112.edit', item.id) }}"
+                           class="button is-small is-outlined is-primary">
+                            <i class="fas fa-pencil-alt"></i>&nbsp;
+                            Редактировать
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="is-centered"><h1 class="title">Нет выбранных заявок</h1></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}

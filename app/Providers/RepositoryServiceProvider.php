@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\Card112RepositoryInterface;
+use App\Repositories\EloquentCard112Repository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -14,6 +16,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerCard112Repository();
         $this->registerTicket101();
         $this->registerFireObject();
         $this->registerBurntObject();
@@ -45,4 +48,11 @@ class RepositoryServiceProvider extends ServiceProvider
     }
 
 
+    protected function registerCard112Repository()
+    {
+        $this->app->bind(
+            Card112RepositoryInterface::class,
+            EloquentCard112Repository::class
+        );
+    }
 }

@@ -1,0 +1,16 @@
+{% extends "layout/html" %}
+
+{% block content %}
+    <script>
+        window.card112FormData = {
+            streets: {{ streets | json_encode() | raw }},
+            incidentTypes: {{ incidentTypes | json_encode() | raw }},
+            serviceTypes: {{ serviceTypes | json_encode() | raw }},
+            model: {{ model | json_encode() | raw }},
+            method: 'PATCH',
+            formRoute: '{{ route('card112.update', model.id) }}'
+        };
+    </script>
+    <div id="card112-form-block">
+    </div>
+{% endblock content %}

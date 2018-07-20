@@ -46,6 +46,16 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'dict_trip_result',
                 'model' => \App\Dictionary\TripResult::class
             ],
+            [
+                'title' => 'Типы служб',
+                'table' => 'service_types',
+                'model' => \App\Models\ServiceType::class
+            ],
+            [
+                'title' => 'Типы инцидентов',
+                'table' => 'incident_types',
+                'model' => \App\Models\IncidentType::class
+            ],
 
         ];
         (new App\Dictionary)->truncate();
@@ -59,5 +69,7 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(LiqvidationMethodSeeder::class);
         $this->call(BurntObjectSeeder::class);
         $this->call(TripResultSeeder::class);
+        $this->call(ServiceTypeSeeder::class);
+        $this->call(IncidentTypeSeeder::class);
     }
 }
