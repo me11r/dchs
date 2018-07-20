@@ -93,7 +93,7 @@
 
 
     {% if fire.items | length > 0  %}
-        <div style="margin: 0 auto;width: 10%"><b>{{ fire.name }}:</b></div>
+        <div style="margin: 0 auto;width: 50%"><b>{{ fire.name }}:</b></div>
         {% for item in fire.items %}
             <div>
                 <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -113,7 +113,7 @@
     {% endif %}
 
     {% if electricFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ electricFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ electricFire.name }}:</b></div>
     {% for item in electricFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -134,7 +134,7 @@
 
 
     {% if kitchenFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ kitchenFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ kitchenFire.name }}:</b></div>
     {% for item in kitchenFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -155,7 +155,7 @@
 
 
     {% if trashFireOther.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ trashFireOther.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ trashFireOther.name }}:</b></div>
     {% for item in trashFireOther.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -175,7 +175,7 @@
     {% endif %}
 
     {% if trashFireHouse.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ trashFireHouse.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ trashFireHouse.name }}:</b></div>
     {% for item in trashFireHouse.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -195,7 +195,7 @@
     {% endif %}
 
     {% if workFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ workFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ workFire.name }}:</b></div>
     {% for item in workFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -215,7 +215,7 @@
     {% endif %}
 
     {% if peopleCall.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ peopleCall.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ peopleCall.name }}:</b></div>
     {% for item in peopleCall.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -235,7 +235,7 @@
     {% endif %}
 
     {% if asr.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ asr.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ asr.name }}:</b></div>
     {% for item in asr.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -256,7 +256,7 @@
 
 
     {% if falseCall.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ falseCall.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ falseCall.name }}:</b></div>
     {% for item in falseCall.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -276,7 +276,7 @@
     {% endif %}
 
     {% if orphanFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ orphanFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ orphanFire.name }}:</b></div>
     {% for item in orphanFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -296,7 +296,7 @@
     {% endif %}
 
     {% if otherFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ otherFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ otherFire.name }}:</b></div>
     {% for item in otherFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -316,7 +316,7 @@
     {% endif %}
 
     {% if regionFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ regionFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ regionFire.name }}:</b></div>
     {% for item in regionFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -336,7 +336,7 @@
     {% endif %}
 
     {% if technologyFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ technologyFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ technologyFire.name }}:</b></div>
     {% for item in technologyFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -356,7 +356,7 @@
     {% endif %}
 
     {% if pyrophoricFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ pyrophoricFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ pyrophoricFire.name }}:</b></div>
     {% for item in pyrophoricFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -377,7 +377,7 @@
 
 
     {% if alarm.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ alarm.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ alarm.name }}:</b></div>
     {% for item in alarm.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -397,7 +397,7 @@
     {% endif %}
 
     {% if airFire.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ airFire.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ airFire.name }}:</b></div>
     {% for item in airFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -417,7 +417,7 @@
     {% endif %}
 
     {% if suicide.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ suicide.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ suicide.name }}:</b></div>
     {% for item in suicide.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
@@ -437,7 +437,7 @@
     {% endif %}
 
     {% if dischargesElectr.items | length > 0  %}
-    <div style="margin: 0 auto;width: 10%"><b>{{ dischargesElectr.name }}:</b></div>
+    <div style="margin: 0 auto;width: 50%"><b>{{ dischargesElectr.name }}:</b></div>
     {% for item in dischargesElectr.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
