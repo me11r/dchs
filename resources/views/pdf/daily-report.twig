@@ -117,7 +117,7 @@
     {% for item in electricFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -138,7 +138,7 @@
     {% for item in kitchenFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -159,7 +159,7 @@
     {% for item in trashFireOther.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -179,7 +179,7 @@
     {% for item in trashFireHouse.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -199,7 +199,7 @@
     {% for item in workFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -219,7 +219,7 @@
     {% for item in peopleCall.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -239,7 +239,7 @@
     {% for item in asr.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -260,7 +260,7 @@
     {% for item in falseCall.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -280,7 +280,7 @@
     {% for item in orphanFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -300,7 +300,7 @@
     {% for item in otherFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -320,7 +320,7 @@
     {% for item in regionFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -340,7 +340,7 @@
     {% for item in technologyFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -360,7 +360,7 @@
     {% for item in pyrophoricFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -381,7 +381,7 @@
     {% for item in alarm.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -401,7 +401,7 @@
     {% for item in airFire.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -421,7 +421,7 @@
     {% for item in suicide.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -441,7 +441,7 @@
     {% for item in dischargesElectr.items %}
         <div>
             <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                {{ item.city_area.name }}, {{ item.location }}:</b>
+                {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
         </div>
         <div>
             (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
