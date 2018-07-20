@@ -9,7 +9,7 @@ class Card112Chronology extends Model
     public $table = 'cards_112_chronologies';
 
     public $fillable = [
-        'cards_112_id',
+        'card112_id',
         'time',
         'comment',
         'additional_comment'

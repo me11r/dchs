@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dictionary\Street;
+use App\Models\Card112\Card112;
 use App\Models\IncidentType;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
@@ -20,14 +21,17 @@ class Card112Controller extends Controller
         $this->repository = $repository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $items = $this->repository->with([
+            'street',
+            'street.area'
+        ])->get();
+
+        return View::make('card112.index')
+            ->with('items', $items)
+            ->render();
     }
 
     public function create()
@@ -36,58 +40,53 @@ class Card112Controller extends Controller
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect(ServiceType::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('model', new Card112())
             ->render();
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $this->repository->createFilledWithRelations($request->all());
+        return redirect('/card112');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        // @TODO to do
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+        return View::make('card112.edit')
+            ->with('streets', collect(Street::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('serviceTypes', collect(ServiceType::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('model', $this->repository->where('id','=', $id)->with(['serviceReactions', 'chronology'])->first())
+            ->render();
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        abort('418', 'Раздел в разработке.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

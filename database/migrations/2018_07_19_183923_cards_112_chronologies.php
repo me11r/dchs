@@ -15,13 +15,13 @@ class Cards112Chronologies extends Migration
     {
         Schema::create('cards_112_chronologies', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('cards_112_id')->unsigned();
+            $table->integer('card112_id')->unsigned();
             $table->time('time');
             $table->text('comment');
             $table->text('additional_comment');
             $table->timestamps();
 
-            $table->foreign('cards_112_id')->references('id')->on('card_112')->onDelete('cascade');
+            $table->foreign('card112_id')->references('id')->on('card_112')->onDelete('cascade');
         });
     }
 

@@ -16,7 +16,7 @@ class Card112ServiceReactions extends Migration
     {
         Schema::create('card_112_service_reactions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('cards_112_id')->unsigned();
+            $table->integer('card112_id')->unsigned();
             $table->integer('service_type_id')->unsigned();
             $table->time('message_time');
             $table->string('name');
@@ -24,7 +24,7 @@ class Card112ServiceReactions extends Migration
             $table->time('arrival_time');
             $table->timestamps();
 
-            $table->foreign('cards_112_id')->references('id')->on('card_112')->onDelete('cascade');
+            $table->foreign('card112_id')->references('id')->on('card_112')->onDelete('cascade');
             $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('cascade');
         });
     }
