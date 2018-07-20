@@ -7,7 +7,9 @@ namespace App;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireLevel;
 use App\Dictionary\FireObject;
+use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
+use App\Dictionary\TripResult;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -441,5 +443,20 @@ class Ticket101 extends Model
     public function fire_object()
     {
         return $this->hasOne(FireObject::class, 'id', 'fire_object_id');
+    }
+
+    public function trip_result()
+    {
+        return $this->hasOne(TripResult::class, 'id', 'trip_result_id');
+    }
+
+    public function liquidation_method()
+    {
+        return $this->hasOne(LiquidationMethod::class, 'id', 'liquidation_method_id');
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(FireDepartment::class, 'roadtrip_plan', 'card_id', 'department_id');
     }
 }

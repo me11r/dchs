@@ -13,7 +13,7 @@
                 <div class="navbar-item"><a href="/formation/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Строевая записка 101</a>
                 </div>
                 <div class="navbar-item"><a href="/roadtrip/" class="button is-inline-block-widescreen is-block"><i class="fas fa-truck"></i>&nbsp; Путевой лист</a></div>
-                <div class="navbar-item"><a href="/pdf/daily_report.pdf" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Суточный отчет</a>
+                <div class="navbar-item"><a href="/pdf/dailyReport" target="_blank" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Суточный отчет</a>
                 </div>
 
             </div>
