@@ -17,6 +17,7 @@ class EloquentTicket101Repository extends Repository implements Ticket101Interfa
     {
         return $this->model
             ->whereBetween('created_at', [$from, $to])
+            ->with('city_area', 'departments', 'trip_result', 'liquidation_method')
             ->get();
     }
 }

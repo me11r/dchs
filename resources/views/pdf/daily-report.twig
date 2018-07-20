@@ -49,62 +49,414 @@
     <div>
         За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:
     </div>
-    <div>1.Пожары – {{ fireCount }}</div>
+    <div>1.Пожары – {{ fire.items | length }}</div>
     <div style="padding-left: 40px">1.1. Транспорт – {{ burntTransportCount }}</div>
     <div style="padding-left: 40px">1.2. Прочие объекты пожаров – {{ burntOtherCount }}</div>
-    <div>2. Случаи горения, не подлежащие учету как пожары – {{ notFireCount }}</div>
-    <div style="padding-left: 40px">2.1. Пища на газе и задымление при неиспр.быт.эл.приборов – {{ kitchenFireCount }}</div>
-    <div style="padding-left: 40px">2.2. КЗ эл.сетей и эл.оборудования – {{ electricFireCount }}</div>
-    <div style="padding-left: 40px">2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах – {{ trashFireOtherCount }}</div>
-    <div style="padding-left: 40px">2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд) – {{ trashFireHouseCount }}</div>
-    <div>3. Ложный – {{ falseCallCount }}</div>
-    <div>4. АСР – {{ asrCount }}</div>
-    <div>5. Кровельные, битумные, сварочные работы – {{ workFireCount }}</div>
-    <div>6. Бдительность населения – {{ peopleCallCount }}</div>
-    <div>7. Загорание бесхозных зданий, бесхозных транспортных средств – {{ orphanFireCount }}</div>
-    <div>8. Прочие случаи загорания – {{ otherFireCount }}</div>
-    <div>9. Область – {{ regionFireCount }}</div>
-    <div>10. Технологический процесс – {{ technologyFireCount }}</div>
-    <div>11. Самовозгорание пирофорных соединений, без последствий и ущерба – {{ pyrophoricFireCount }}</div>
-    <div>Cрабатывание сигнализации - {{ alarmCount }}</div>
-    <div>Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - {{ airFireCount }}</div>
-    <div>Покушение на самоубийство - {{ suicideCount }}</div>
-    <div>Вспышки и разряды стат.электричества - {{ dischargesElectrCount }}</div>
-    <div>Cрабатывание сигнализации - {{ alarmCount }}</div>
-    <div>Cрабатывание сигнализации - {{ alarmCount }}</div>
+    <div>2. Случаи горения, не подлежащие учету как пожары –
+        {{
+        (electricFire.items | length) +
+        (kitchenFire.items | length) +
+        (trashFireOther.items | length) +
+        (trashFireHouse.items | length)
+        }}</div>
+    <div style="padding-left: 40px">2.1. Пища на газе и задымление при неиспр.быт.эл.приборов – {{ kitchenFire.items | length }}</div>
+    <div style="padding-left: 40px">2.2. КЗ эл.сетей и эл.оборудования – {{ electricFire.items | length }}</div>
+    <div style="padding-left: 40px">2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах – {{ trashFireOther.items | length }}</div>
+    <div style="padding-left: 40px">2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд) – {{ trashFireHouse.items | length }}</div>
+    <div>3. Ложный – {{ falseCall.items | length }}</div>
+    <div>4. АСР – {{ asr.items | length }}</div>
+    <div>5. Кровельные, битумные, сварочные работы – {{ workFire.items | length }}</div>
+    <div>6. Бдительность населения – {{ peopleCall.items | length }}</div>
+    <div>7. Загорание бесхозных зданий, бесхозных транспортных средств – {{ orphanFire.items | length }}</div>
+    <div>8. Прочие случаи загорания – {{ otherFire.items | length }}</div>
+    <div>9. Область – {{ regionFire.items | length }}</div>
+    <div>10. Технологический процесс – {{ technologyFire.items | length }}</div>
+    <div>11. Самовозгорание пирофорных соединений, без последствий и ущерба – {{ pyrophoricFire.items | length }}</div>
+    <div>Cрабатывание сигнализации - {{ alarm.items | length }}</div>
+    <div>Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - {{ airFire.items | length }}</div>
+    <div>Покушение на самоубийство - {{ suicide.items | length }}</div>
+    <div>Вспышки и разряды стат.электричества - {{ dischargesElectr.items | length }}</div>
 
     <div>12. Случаи отравления - {{ poisoningCount }}</div>
     <div style="padding-left: 40px">12.1. Отравление угарным газом – {{ carbonPoisoningCount }}</div>
     <div style="padding-left: 40px">12.2. Отравление природным газом – {{ naturalPoisoningCount }}</div>
-    <div>13. Сведения по людям (дети) – 0</div>
-    <div style="padding-left: 40px">13.1. Попытка суицида - 0</div>
-    <div style="padding-left: 40px">13.2. Спасено людей – 0</div>
-    <div style="padding-left: 40px">13.3. Эвакуировано людей – 0</div>
-    <div style="padding-left: 40px">13.4. Получили ожоги – 0</div>
-    <div style="padding-left: 40px">13.5. Пострадало – 0</div>
-    <div style="padding-left: 40px">13.6. Гибель людей – 0</div>
-    <div style="padding-left: 40px">13.7. Гибель детей – 0</div>
-    <div style="padding-left: 40px">13.8. Госпитализировано – 0</div>
+    <div>13. Сведенеия по людям /детям: {{
+        (suicide.items | length)+rescuedCount+evacCount+gptBurnsCount+peopleDeathCount+childrenDeathCount+hospitalizedCount }}</div>
+    <div style="padding-left: 40px">13.1. Попытка суицида - {{ suicide.items | length }}</div>
+    <div style="padding-left: 40px">13.2. Спасено людей – {{ rescuedCount }}</div>
+    <div style="padding-left: 40px">13.3. Эвакуировано людей – {{ evacCount }}</div>
+    <div style="padding-left: 40px">13.4. Получили ожоги – {{ gptBurnsCount }}</div>
+    {#<div style="padding-left: 40px">13.5. Пострадало – 0</div>#}
+    <div style="padding-left: 40px">13.5. Гибель людей – {{ peopleDeathCount }}</div>
+    <div style="padding-left: 40px">13.6. Гибель детей – {{ childrenDeathCount }}</div>
+    <div style="padding-left: 40px">13.7. Госпитализировано – {{ hospitalizedCount }}</div>
 
 
+    {% if fire.items | length > 0  %}
+        <div style="margin: 0 auto;width: 10%"><b>{{ fire.name }}:</b></div>
+        {% for item in fire.items %}
+            <div>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area.name }}, {{ item.location }}:</b>
+            </div>
+            <div>
+                (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+                ПЧ осуществляющая выезд:
+                {% for department in item.departments %}
+                    {{ department.title }} {{ not loop.index ? ',': '' }}
+                {% endfor %}.
+                Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+                Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+                Дополнительная информация: {{ item.more_info }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-    <div style="margin: 0 auto;width: 10%"><b>ПОЖАР:</b></div>
-    <div>
-        <b>1. 24.06.18г. 11 час. 45 мин. Алатауский район, южнее ул. Индустриальная на территории Западного
-            кладбища:</b>
-    </div>
-    <div>
-        (заявитель: Василова, тел: 87075022240). Загорание сухостоя с переходом на могильные кресты на общей S=300м2.
-        СПЧ15 (1)
-        на АЦ-4-40 прибыло в 12 час. 08 мин. (23 мин., 10,5 км). Пожар локализован в 12 час. 16 мин. ликвидирован в 12
-        час. 30 мин.,
-        1 ствол «Б» от АЦ и подручными средствами 3 хлопушки, 2 «Ермак». На место пожара выезжал л/с в количестве 7ми
-        человек: СПЧ-15 (1);
-        (н/к м-р г/з Нурпеисов), инженер Алатауского ОЧС Ескараев. Материал зарегистрирован в КУИ №1696 от 24.06.18г.
-    </div>
+    {% if electricFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ electricFire.name }}:</b></div>
+    {% for item in electricFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
 
-    <div style="margin: 0 auto;width: 30%;padding-top: 20px"><b>БДИТЕЛЬНОСТЬ НАСЕЛЕНИЯ:</b>
-    </div>
+
+    {% if kitchenFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ kitchenFire.name }}:</b></div>
+    {% for item in kitchenFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+
+    {% if trashFireOther.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ trashFireOther.name }}:</b></div>
+    {% for item in trashFireOther.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if trashFireHouse.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ trashFireHouse.name }}:</b></div>
+    {% for item in trashFireHouse.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if workFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ workFire.name }}:</b></div>
+    {% for item in workFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if peopleCall.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ peopleCall.name }}:</b></div>
+    {% for item in peopleCall.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if asr.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ asr.name }}:</b></div>
+    {% for item in asr.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+
+    {% if falseCall.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ falseCall.name }}:</b></div>
+    {% for item in falseCall.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if orphanFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ orphanFire.name }}:</b></div>
+    {% for item in orphanFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if otherFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ otherFire.name }}:</b></div>
+    {% for item in otherFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if regionFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ regionFire.name }}:</b></div>
+    {% for item in regionFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if technologyFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ technologyFire.name }}:</b></div>
+    {% for item in technologyFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if pyrophoricFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ pyrophoricFire.name }}:</b></div>
+    {% for item in pyrophoricFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+
+    {% if alarm.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ alarm.name }}:</b></div>
+    {% for item in alarm.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if airFire.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ airFire.name }}:</b></div>
+    {% for item in airFire.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if suicide.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ suicide.name }}:</b></div>
+    {% for item in suicide.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if dischargesElectr.items | length > 0  %}
+    <div style="margin: 0 auto;width: 10%"><b>{{ dischargesElectr.name }}:</b></div>
+    {% for item in dischargesElectr.items %}
+        <div>
+            <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
+                {{ item.city_area.name }}, {{ item.location }}:</b>
+        </div>
+        <div>
+            (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
+            ПЧ осуществляющая выезд:
+            {% for department in item.departments %}
+                {{ department.title }} {{ not loop.index ? ',': '' }}
+            {% endfor %}.
+            Результат выезда - {{ item.trip_result ? item.trip_result.name : '' }}.
+            Ликвидировано стволами: {{ item.liquidation_method ? item.liquidation_method.name : '' }}
+            Дополнительная информация: {{ item.more_info }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+
 
     <div style="padding-top: 50px;">
         <div style="float: left;width: 55%">

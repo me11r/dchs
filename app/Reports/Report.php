@@ -43,30 +43,6 @@ class Report
             $this->dictionaries['burntObject']['transport']
         ));
 
-        $kitchenFireCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['kitchenFire']
-        ));
-
-        $electricFireCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['electricFire']
-        ));
-
-        $trashFireOtherCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['trashFireOther']
-        ));
-
-        $trashFireHouseCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['trashFireHouse']
-        ));
-
         $carbonPoisoningCount = count($this->filterByObject(
             'fire_object_id',
             'fireObject',
@@ -82,86 +58,185 @@ class Report
         $data = [
             'dates' => $this->getDates(),
             'allCount' => count($this->report),
-            'fireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['fire']
-            )),
+
+            // в разрезе
+            'fire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['fire']
+                ),
+                'name' => $this->dictionaries['fireObject']['fire']
+            ],
+            'shortCircuit' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['shortCircuit']
+                ),
+                'name' => $this->dictionaries['fireObject']['shortCircuit']
+            ],
+            'electricFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['electricFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['electricFire']
+            ],
+            'kitchenFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['kitchenFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['kitchenFire']
+            ],
+            'trashFireOther' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['trashFireOther']
+                ),
+                'name' => $this->dictionaries['fireObject']['trashFireOther']
+            ],
+            'trashFireHouse' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['trashFireHouse']
+                ),
+                'name' => $this->dictionaries['fireObject']['trashFireHouse']
+            ],
+            'workFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['workFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['workFire']
+            ],
+            'peopleCall' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+                    $this->dictionaries['fireObject']['peopleCall']
+                ),
+                'name' => $this->dictionaries['fireObject']['peopleCall']
+            ],
+            'asr' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['asr']
+                ),
+                'name' => $this->dictionaries['fireObject']['asr']
+            ],
+
+
+            'falseCall' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['falseCall']
+                ),
+                'name' => $this->dictionaries['fireObject']['falseCall']
+            ],
+            'orphanFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['orphanFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['orphanFire']
+            ],
+            'otherFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['otherFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['otherFire']
+            ],
+            'regionFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['regionFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['regionFire']
+            ],
+            'technologyFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['technologyFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['technologyFire']
+            ],
+            'pyrophoricFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['pyrophoricFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['pyrophoricFire']
+            ],
+            'alarm' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['alarm']
+                ),
+                'name' => $this->dictionaries['fireObject']['alarm']
+            ],
+            'airFire' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['airFire']
+                ),
+                'name' => $this->dictionaries['fireObject']['airFire']
+            ],
+            'suicide' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['suicide']
+                ),
+                'name' => $this->dictionaries['fireObject']['suicide']
+            ],
+            'dischargesElectr' => [
+                'items' => $this->filterByObject(
+                    'fire_object_id',
+                    'fireObject',
+
+                    $this->dictionaries['fireObject']['dischargesElectr']
+                ),
+                'name' => $this->dictionaries['fireObject']['dischargesElectr']
+            ],
+
             'burntTransportCount' => $burntTransportCount,
             'burntOtherCount' => count($this->report) - $burntTransportCount,
-            'notFireCount' => ($kitchenFireCount + $electricFireCount + $trashFireOtherCount + $trashFireHouseCount),
-            'kitchenFireCount' => $kitchenFireCount,
-            'electricFireCount' => $electricFireCount,
-            'trashFireOtherCount' => $trashFireOtherCount,
-            'trashFireHouseCount' => $trashFireHouseCount,
-            'falseCallCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['falseCall']
-            )),
-            'asrCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['asr']
-            )),
-            'workFireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['workFire']
-            )),
-            'peopleCallCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['peopleCall']
-            )),
-            'orphanFireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['orphanFire']
-            )),
-            'otherFireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['otherFire']
-            )),
-            'regionFireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['regionFire']
-            )),
-            'technologyFireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['technologyFire']
-            )),
-            'pyrophoricFireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['pyrophoricFire']
-            )),
-            'alarmCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['alarm']
-            )),
-            'airFireCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['airFire']
-            )),
-            'suicideCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['suicide']
-            )),
-            'dischargesElectrCount' => count($this->filterByObject(
-                'fire_object_id',
-                'fireObject',
-                $this->dictionaries['fireObject']['dischargesElectr']
-            )),
             'poisoningCount' => ($carbonPoisoningCount + $naturalPoisoningCount),
             'carbonPoisoningCount' => $carbonPoisoningCount,
             'naturalPoisoningCount' => $naturalPoisoningCount,
+            'rescuedCount' => $this->report->sum('rescued_count'),
+            'evacCount' => $this->report->sum('evac_count'),
+            'gptBurnsCount' => $this->report->sum('gpt_burns_count'),
+            'peopleDeathCount' => $this->report->sum('people_death_count'),
+            'childrenDeathCount' => $this->report->sum('children_death_count'),
+            'hospitalizedCount' => $this->report->sum('hospitalized_count'),
 
 
         ];

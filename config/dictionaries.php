@@ -22,6 +22,7 @@ return [
         'dischargesElectr' => 'Вспышки и разряды стат.электричества',
         'carbonPoisoning' => 'Отравление угарным газом',
         'naturalPoisoning' => 'Отравление природным газом',
+        'shortCircuit' => 'Короткое замыкание',
     ],
     'burntObject' => [
         'transport' => 'Транспорт',
