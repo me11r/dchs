@@ -429,7 +429,7 @@
                         </div>
                         <div class="select">
                             <select name="burn_object_id" id="burn_object_id">
-                                <option> -</option>
+                                <option value=""> -</option>
                                 {% for burn in burn_object %}
                                     <option value="{{ burn.id }}" {% if burn.id == ticket.burn_object_id %}selected{% endif %}>{{ burn.name }}</option>
                                 {% endfor %}
@@ -442,7 +442,7 @@
                         </div>
                         <div class="select">
                             <select name="trip_result_id" id="trip_result_id">
-                                <option> -</option>
+                                <option value=""> -</option>
                                 {% for trip_res in trip_result %}
                                     <option value="{{ trip_res.id }}" {% if trip_res.id == ticket.trip_result_id %}selected{% endif %}>{{ trip_res.name }}</option>
                                 {% endfor %}
