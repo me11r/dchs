@@ -70,5 +70,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('dict_id', '[0-9]+')
         ->where('row_id', '[0-9]+');
 
+    Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
+
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

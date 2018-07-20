@@ -30,6 +30,9 @@ class BurntObjectSeeder extends Seeder
             'Объекты жизнеобеспечения',
             'Дачный домик',
             'Объекты общепита',
+            'Гостиницы',
+            'Базы и склады ТМЦ',
+            'Прочие'
         ];
 
         foreach ($items as $item) {

@@ -10,6 +10,7 @@ abstract class Repository implements RepositoryInterface
     /** @var Model */
     protected $model;
 
+
     public function __construct()
     {
         $this->makeModel();
@@ -104,6 +105,16 @@ abstract class Repository implements RepositoryInterface
     public function where(string $attribute, string $conclusion, $value)
     {
         return $this->model->where($attribute, $conclusion, $value);
+    }
+
+    /**
+     * @param string $attribute
+     * @param array $values
+     * @return mixed
+     */
+    public function whereBetween(string $attribute, array $values)
+    {
+        return $this->model->whereBetween($attribute, $values);
     }
 
     /**
