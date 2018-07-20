@@ -97,7 +97,7 @@
         {% for item in fire.items %}
             <div>
                 <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area.name }}, {{ item.location }}:</b>
+                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
             </div>
             <div>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
