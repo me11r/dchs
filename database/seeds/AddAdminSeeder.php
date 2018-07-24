@@ -15,7 +15,7 @@ class AddAdminSeeder extends Seeder
         $user = \App\User::create([
             'name' => 'Администратор',
             'email' => 'admin@localhost',
-            'password' => bcrypt('password')
+            'password' => bcrypt('password8')
         ]);
 
         $user->rights()->sync([1,2,3,4,5,6,7]);
