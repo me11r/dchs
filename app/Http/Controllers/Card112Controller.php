@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dictionary\Street;
+use App\Http\Resources\Card112\Card112Resource;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
 use App\Models\ServiceType;
@@ -47,12 +48,12 @@ class Card112Controller extends Controller
     public function store(Request $request)
     {
         $this->repository->createFilledWithRelations($request->all());
-        return redirect('/card112');
+        return redirect(route('card112.index'));
     }
 
     public function show($id)
     {
-        // @TODO to do
+        // there is no task for this
     }
 
     public function edit($id)
@@ -61,20 +62,19 @@ class Card112Controller extends Controller
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect(ServiceType::orderBy('name')->get(['id', 'name']))->toArray())
-            ->with('model', $this->repository->where('id', '=', $id)->with(['serviceReactions', 'chronology'])->first())
+            ->with('model', new Card112Resource($this->repository->where('id', '=', $id)->with(['serviceReactions', 'chronology'])->first()))
             ->render();
     }
 
     public function update(Request $request, $id)
     {
-        //@TODO
-        abort('418', 'Раздел в разработке.');
+        $this->repository->updateFilledWithRelations($request->all(), $id);
+        return redirect(route('card112.edit', $id));
     }
 
     public function destroy($id)
     {
-        // @TODO to test
         $this->repository->delete($id);
-        return redirect('/card112');
+        return redirect(route('card112.index'));
     }
 }

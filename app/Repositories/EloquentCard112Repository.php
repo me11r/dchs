@@ -15,7 +15,7 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
 
     public function createFilledWithRelations(array $data): Card112
     {
-        $serviceReactions = $this->filterServiceReactions(array_get($data, 'serviceReactions', []));
+        $serviceReactions = $this->filterServiceReactions(array_get($data, 'service_reactions', []));
         $chronology = $this->filterChronology(array_get($data, 'chronology', []));
 
         /** @var $card112 Card112 */
@@ -27,6 +27,29 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
 
         foreach ($chronology as $item){
             $card112->chronology()->create($item);
+        }
+
+        return $card112;
+    }
+
+    public function updateFilledWithRelations(array $data, int $id): Card112
+    {
+        $serviceReactions = $this->filterServiceReactions(array_get($data, 'service_reactions', []));
+        $chronology = $this->filterChronology(array_get($data, 'chronology', []));
+
+        $this->update($data, $id);
+
+        /** @var $card112 Card112 */
+        $card112 = $this->find($id);
+
+        foreach ($serviceReactions as $serviceReaction){
+            $serviceReactionModel = $card112->serviceReactions()->find(array_get($serviceReaction, 'id'));
+            $serviceReactionModel->update($serviceReaction);
+        }
+
+        foreach ($chronology as $item){
+            $itemModel = $card112->chronology()->find(array_get($item, 'id'));
+            $itemModel->update($item);
         }
 
         return $card112;

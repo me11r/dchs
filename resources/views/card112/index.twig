@@ -6,6 +6,8 @@
         </h4>
     </div>
     <div class="columns is-gapless">
+        <div style="width: 100%; border-bottom: 1px solid #dbdbdb;">
+        </div>
         <div class="column is-narrow">
             <div style="border-bottom: 1px solid #dbdbdb">
                 <a href="{{ route('card112.create') }}" class="button is-success is-outlined"
@@ -33,11 +35,23 @@
                     <td>{{ item.street.area ? item.street.area.name : '-' }}</td>
                     <td class="has-text-right">{{ item.created_at|date('H:i d.m.Y') }}</td>
                     <td class="has-text-right">
-                        <a href="{{ route('card112.edit', item.id) }}"
-                           class="button is-small is-outlined is-primary">
-                            <i class="fas fa-pencil-alt"></i>&nbsp;
-                            Редактировать
-                        </a>
+                        <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                              method="POST"
+                              action="{{ route('card112.destroy', item.id) }}">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="_method" value="DELETE">
+
+                            <a href="{{ route('card112.edit', item.id) }}"
+                               class="button is-small is-outlined is-primary">
+                                <i class="fas fa-pencil-alt"></i>&nbsp;
+                                Редактировать
+                            </a>
+
+                            <button title="Удалить"
+                                    class="button is-small is-outlined is-danger">
+                                <i class="fas fa-trash"></i>&nbsp;
+                            </button>
+                        </form>
                     </td>
                 </tr>
             {% else %}

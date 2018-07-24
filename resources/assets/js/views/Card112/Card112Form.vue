@@ -1,8 +1,10 @@
 <template>
-    <section class="container">
+    <section
+        class="container"
+        v-if="formDataExists">
         <h4
             class="title"
-            style="padding: 3px 15px">Добавление: Карточка 112</h4>
+            style="padding: 3px 15px">{{ model.id ? 'Редактирование' : 'Добавление' }}: Карточка 112</h4>
         <form
             :action="this.formRoute"
             method="POST">
@@ -17,22 +19,22 @@
             <div class="tabs is-boxed">
                 <ul>
                     <li :class="{'is-active': currentTabIndex === 0}">
-                        <a @click="setTab(0)"><i class="fas fa-phone"/>Звонок</a>
+                        <a @click="setTab(0)"><i class="fas fa-phone"></i>Звонок</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 1}">
                         <a
                             @click="setTab(1)">
-                        <i class="fas fa-envelope"/>Службы</a>
+                        <i class="fas fa-envelope"></i>Службы</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 2}">
                         <a
                             @click="setTab(2)">
-                        <i class="fas fa-truck-moving"/>Информация с места проишествия</a>
+                        <i class="fas fa-truck-moving"></i>Информация с места проишествия</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 3}">
                         <a
                             @click="setTab(3)">
-                        <i class="fas fa-info-circle"/>Хронология событий</a>
+                        <i class="fas fa-info-circle"></i>Хронология событий</a>
                     </li>
                 </ul>
             </div>
@@ -103,7 +105,7 @@
                         <!--ТИП ПРОИСШЕСТВИЯ-->
                         <div class="field">
                             <p class="control">
-                                <label for="street_id">Происшествие</label>
+                                <label for="incident_type_id">Происшествие</label>
                             </p>
                             <div class="select">
                                 <select
@@ -128,7 +130,7 @@
                                 class="textarea"
                                 cols="30"
                                 rows="3"
-                                v-model="model.description"/>
+                                v-model="model.description"></textarea>
                         </div>
                         <div class="field is-grouped">
                             <!--ФИО ЗАЯВИТЕЛЯ-->
@@ -183,7 +185,7 @@
                                         <a
                                             class="button is-outlined is-small"
                                             @click="$refs['call_time_picker'].close()">
-                                            <i class="fas fa-check"/><span>Принять</span>
+                                            <i class="fas fa-check"></i><span>Принять</span>
                                         </a>
                                     </p>
                                 </div>
@@ -203,34 +205,36 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!--@TODO doesn't work in the Edit page-->
                                 <tr
-                                    v-for="serviceType in serviceTypes"
-                                    :key="serviceType.id">
+                                    v-for="serviceReaction in model.service_reactions"
+                                    :key="serviceReaction.service_type_id">
                                     <td>
-                                        {{ serviceType.name }}
+                                        {{ getServiceTypeNameById(serviceReaction.service_type_id) }}
                                         <input
                                             type="hidden"
-                                            v-model="model.serviceReactions[serviceType.id].service_type_id"
-                                            :name="'serviceReactions['+serviceType.id+'][service_type_id]'">
+                                            v-model="serviceReaction.service_type_id"
+                                            :name="'service_reactions['+serviceReaction.service_type_id+'][service_type_id]'">
+                                        <input
+                                            type="hidden"
+                                            v-model="serviceReaction.id"
+                                            :name="'service_reactions['+serviceReaction.service_type_id+'][id]'">
                                     </td>
                                     <td>
                                         <b-timepicker
                                             class="small-time-picker"
                                             icon="clock"
                                             icon-pack="far"
-                                            :ref="'service_reactions_message_time_picker_' + serviceType.id"
+                                            :ref="'service_reactions_message_time_picker_' + serviceReaction.service_type_id"
                                             type="text"
-                                            :name="'serviceReactions['+serviceType.id+'][message_time]'"
-                                            v-model="model.serviceReactions[serviceType.id].message_time">
+                                            v-model="serviceReaction.message_time"
+                                            :name="'service_reactions['+serviceReaction.service_type_id+'][message_time]'">
                                             <div
                                                 class="field is-grouped"
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
                                                         class="button is-primary is-small"
-                                                        @click="model.serviceReactions[serviceType.id].message_time = new Date();
-                                                                closeTimePickerByRefName('service_reactions_message_time_picker_' + serviceType.id)">
+                                                        @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'message_time')">
                                                         <b-icon
                                                             pack="far"
                                                             icon="clock"/>
@@ -240,8 +244,8 @@
                                                 <p class="control">
                                                     <a
                                                         class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('service_reactions_message_time_picker_' + serviceType.id)">
-                                                        <i class="fas fa-check"/><span>Принять</span>
+                                                        @click="closeTimePickerByRefName('service_reactions_message_time_picker_' + serviceReaction.service_type_id)">
+                                                        <i class="fas fa-check"></i><span>Принять</span>
                                                     </a>
                                                 </p>
                                             </div>
@@ -249,28 +253,28 @@
                                     </td>
                                     <td>
                                         <input
+                                            title="Фамилия принявшего сообщение"
                                             type="text"
                                             class="input"
-                                            v-model="model.serviceReactions[serviceType.id].name"
-                                            :name="'serviceReactions['+serviceType.id+'][name]'">
+                                            v-model="serviceReaction.name"
+                                            :name="'service_reactions['+serviceReaction.service_type_id+'][name]'">
                                     </td>
                                     <td>
                                         <b-timepicker
                                             class="small-time-picker"
                                             icon="clock"
                                             icon-pack="far"
-                                            :ref="'service_reactions_departure_time_picker_' + serviceType.id"
+                                            :ref="'service_reactions_departure_time_picker_' + serviceReaction.service_type_id"
                                             type="text"
-                                            :name="'serviceReactions['+serviceType.id+'][departure_time]'"
-                                            v-model="model.serviceReactions[serviceType.id].departure_time">
+                                            v-model="serviceReaction.departure_time"
+                                            :name="'service_reactions['+serviceReaction.service_type_id+'][departure_time]'">
                                             <div
                                                 class="field is-grouped"
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
                                                         class="button is-primary is-small"
-                                                        @click="model.serviceReactions[serviceType.id].departure_time = new Date();
-                                                                closeTimePickerByRefName('service_reactions_departure_time_picker_' + serviceType.id)">
+                                                        @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'departure_time')">
                                                         <b-icon
                                                             pack="far"
                                                             icon="clock"/>
@@ -280,8 +284,8 @@
                                                 <p class="control">
                                                     <a
                                                         class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('service_reactions_departure_time_picker_' + serviceType.id)">
-                                                        <i class="fas fa-check"/><span>Принять</span>
+                                                        @click="closeTimePickerByRefName('service_reactions_departure_time_picker_' + serviceReaction.service_type_id)">
+                                                        <i class="fas fa-check"></i><span>Принять</span>
                                                     </a>
                                                 </p>
                                             </div>
@@ -292,18 +296,17 @@
                                             class="small-time-picker"
                                             icon="clock"
                                             icon-pack="far"
-                                            :ref="'service_reactions_arrival_time_picker_' + serviceType.id"
+                                            :ref="'service_reactions_arrival_time_picker_' + serviceReaction.service_type_id"
                                             type="text"
-                                            :name="'serviceReactions['+serviceType.id+'][arrival_time]'"
-                                            v-model="model.serviceReactions[serviceType.id].arrival_time">
+                                            v-model="serviceReaction.arrival_time"
+                                            :name="'service_reactions['+serviceReaction.service_type_id+'][arrival_time]'">
                                             <div
                                                 class="field is-grouped"
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
                                                         class="button is-primary is-small"
-                                                        @click="model.serviceReactions[serviceType.id].arrival_time = new Date();
-                                                                closeTimePickerByRefName('service_reactions_arrival_time_picker_' + serviceType.id)">
+                                                        @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'arrival_time')">
                                                         <b-icon
                                                             pack="far"
                                                             icon="clock"/>
@@ -313,8 +316,8 @@
                                                 <p class="control">
                                                     <a
                                                         class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('service_reactions_arrival_time_picker_' + serviceType.id)">
-                                                        <i class="fas fa-check"/><span>Принять</span>
+                                                        @click="closeTimePickerByRefName('service_reactions_arrival_time_picker_' + serviceReaction.service_type_id)">
+                                                        <i class="fas fa-check"></i><span>Принять</span>
                                                     </a>
                                                 </p>
                                             </div>
@@ -329,7 +332,7 @@
                         <!--УТОЧНЕННЫЙ АДРЕС-->
                         <div class="field">
                             <p class="control">
-                                <label for="street_id">Уточненный адрес</label>
+                                <label for="additional_street_id">Уточненный адрес</label>
                             </p>
                             <div class="select">
                                 <select
@@ -348,7 +351,7 @@
                         <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
                         <div class="field">
                             <p class="control">
-                                <label for="street_id">Происшествие</label>
+                                <label for="additional_incident_type_id">Происшествие</label>
                             </p>
                             <div class="select">
                                 <select
@@ -373,7 +376,7 @@
                                 class="textarea"
                                 cols="30"
                                 rows="3"
-                                v-model="model.measures"/>
+                                v-model="model.measures"></textarea>
                         </div>
                         <!--ЗАДЕЙСТВОВАННЫЕ РЕСУРСЫ-->
                         <div class="field">
@@ -384,7 +387,7 @@
                                 class="textarea"
                                 cols="30"
                                 rows="3"
-                                v-model="model.resources"/>
+                                v-model="model.resources"></textarea>
                         </div>
                         <div class="field is-grouped">
                             <!--ПОСТРАДАВШИХ ЛЮДЕЙ/ДЕТЕЙ-->
@@ -429,7 +432,6 @@
                             </div>
                         </div>
                     </div>
-                    <!--@TODO doesn't work in the Edit page-->
                     <div :style="{'display': currentTabIndex === 3 ? 'block': 'none'}">
                         <h5 class="subtitle">Хронология событий:</h5>
                         <table class="table is-expanded is-striped is-fullwidth">
@@ -442,27 +444,29 @@
                             </thead>
                             <tbody>
                                 <tr
-                                    v-if="model.chronology"
-                                    v-for="i in [0,1,2,3,4]"
-                                    :key="i">
+                                    v-for="cItem in model.chronology"
+                                    :key="cItem.id">
                                     <td>
+                                        <input
+                                            type="hidden"
+                                            v-model="cItem.id"
+                                            :name="'chronology['+cItem.id+'][id]'">
                                         <b-timepicker
                                             class="small-time-picker"
                                             icon="clock"
                                             icon-pack="far"
-                                            :ref="'chronology_time_picker_' + i"
+                                            :ref="'chronology_time_picker_' + cItem.id"
                                             type="text"
-                                            :name="'chronology['+i+'][time]'"
-                                            :value="model.chronology[i].time"
-                                            v-model="model.chronology[i].time">
+                                            :name="'chronology['+cItem.id+'][time]'"
+                                            :value="cItem.time"
+                                            v-model="cItem.time">
                                             <div
                                                 class="field is-grouped"
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
                                                         class="button is-primary is-small"
-                                                        @click="model.chronology[i].time = new Date();
-                                                                closeTimePickerByRefName('chronology_time_picker_' + i)">
+                                                        @click="setCurrentTimeForChronology(cItem.id)">
                                                         <b-icon
                                                             pack="far"
                                                             icon="clock"/>
@@ -472,8 +476,8 @@
                                                 <p class="control">
                                                     <a
                                                         class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('chronology_time_picker_' + i)">
-                                                        <i class="fas fa-check"/><span>Принять</span>
+                                                        @click="closeTimePickerByRefName('chronology_time_picker_' + cItem.id)">
+                                                        <i class="fas fa-check"></i><span>Принять</span>
                                                     </a>
                                                 </p>
                                             </div>
@@ -481,17 +485,19 @@
                                     </td>
                                     <td>
                                         <input
+                                            placeholder="Комментарий"
                                             type="text"
                                             class="input"
-                                            v-model="model.chronology[i].comment"
-                                            :name="'chronology['+i+'][comment]'">
+                                            v-model="cItem.comment"
+                                            :name="'chronology['+cItem.id+'][comment]'">
                                     </td>
                                     <td>
                                         <input
+                                            placeholder="Дополнительный комментарий"
                                             type="text"
                                             class="input"
-                                            v-model="model.chronology[i].additional_comment"
-                                            :name="'chronology['+i+'][additional_comment]'">
+                                            v-model="cItem.additional_comment"
+                                            :name="'chronology['+cItem.id+'][additional_comment]'">
                                     </td>
                                 </tr>
                             </tbody>
@@ -509,13 +515,13 @@
                         <button
                             id="nexttab"
                             type="button"
-                            class="button is-primary is-outlined"><i class="fas fa-arrow-right"/>Следующий раздел
+                            class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>Следующий раздел
                         </button>
                     </p>
                     <p class="level-right">
                         <button
                             type="submit"
-                            class="button is-success"><i class="fas fa-check"/>Сохранить
+                            class="button is-success"><i class="fas fa-check"></i>Сохранить
                         </button>
                     </p>
                 </div>
@@ -525,7 +531,10 @@
 </template>
 
 <script>
+
 import moment from 'moment';
+import Buefy from 'buefy';
+import {_} from 'vue-underscore';
 
 export default {
     name: 'Card112Form',
@@ -543,6 +552,15 @@ export default {
             formRoute: ''
         };
     },
+    components: {
+        'b-icon': Buefy['Icon'],
+        'b-timepicker': Buefy['Timepicker']
+    },
+    computed: {
+        formDataExists() {
+            return !!window.card112FormData;
+        }
+    },
     methods: {
         setTab(tabIndex) {
             this.currentTabIndex = tabIndex;
@@ -550,29 +568,68 @@ export default {
         prepareModel() {
             this.model.call_time = this.model.call_time ? moment(this.model.call_time).toDate() : moment().toDate();
 
-            this.model.serviceReactions = this.model.serviceReactions || {};
-            this.serviceTypes.map((serviceType) => {
-                this.model.serviceReactions[serviceType.id] = {
+            this.model.service_reactions = this.model.service_reactions
+                ? this.prepareServiceReactions(this.model.service_reactions)
+                : this.getEmptyServiceReactions(this.serviceTypes);
+
+            this.model.chronology = this.model.chronology
+                ? this.prepareChronology(this.model.chronology)
+                : this.getEmptyChronology();
+        },
+        getEmptyChronology() {
+            let result = [];
+            [0, 1, 2, 3, 4].map((i) => {
+                result.push({
+                    id: i,
+                    time: moment().hour(0).minute(0).toDate(),
+                    comment: '',
+                    additional_comment: ''
+                });
+            });
+            return result;
+        },
+        getEmptyServiceReactions(serviceTypes) {
+            let result = [];
+            serviceTypes.map((serviceType) => {
+                result.push({
+                    id: null,
                     service_type_id: serviceType.id,
                     message_time: moment().hour(0).minute(0).toDate(),
                     name: '',
                     departure_time: moment().hour(0).minute(0).toDate(),
                     arrival_time: moment().hour(0).minute(0).toDate()
-                };
+                });
             });
-
-            this.model.chronology = this.model.chronology || {};
-            [0, 1, 2, 3, 4].map((i) => {
-                this.model.chronology[i] = {
-                    time: moment().hour(0).minute(0).toDate(),
-                    comment: '',
-                    additional_comment: ''
-                };
+            return result;
+        },
+        prepareServiceReactions(serviceReactions) {
+            return serviceReactions.map(function (item) {
+                item.message_time = moment(item.message_time, 'YYYY-MM-DD HH:mm:ss').toDate();
+                item.departure_time = moment(item.departure_time, 'YYYY-MM-DD HH:mm:ss').toDate();
+                item.arrival_time = moment(item.arrival_time, 'YYYY-MM-DD HH:mm:ss').toDate();
+                return item;
             });
+        },
+        prepareChronology(chronology) {
+            return chronology.map(function (item) {
+                item.time = moment(item.time, 'YYYY-MM-DD HH:mm:ss').toDate();
+                return item;
+            });
+        },
+        getServiceTypeNameById(id) {
+            return _.where(this.serviceTypes, {id: id})[0].name;
         },
         setCurrentCallTime() {
             this.model.call_time = moment().toDate();
             this.$refs['call_time_picker'].close();
+        },
+        setCurrentTimeForServiceType(serviceTypeId, column) {
+            _.where(this.model.service_reactions, {service_type_id: serviceTypeId})[0][column] = new Date();
+            this.closeTimePickerByRefName('service_reactions_' + column + '_picker_' + serviceTypeId);
+        },
+        setCurrentTimeForChronology(id) {
+            _.where(this.model.chronology, {id: id})[0]['time'] = new Date();
+            this.closeTimePickerByRefName('chronology_time_picker_' + id);
         },
         closeTimePickerByRefName(refName) {
             if (this.$refs[refName].close) {
