@@ -709,6 +709,17 @@
             ;
         }
 
+        // for demo ========
+        document.getElementById( "location" ).addEventListener("keyup", function() {
+            var value = document.getElementById( "location" ).value;
+            if (value.toLowerCase().indexOf("гоголя 133") >= 0) {
+                alert( "Школа: Гимназия №15" );
+                document.getElementById('storey_count').value = 4;
+                document.getElementById('fire_level_id').value = 3;
+            }
+        });
+        // ==================
+
         window.addEventListener('load', () => {
             Vue.use(Buefy.default);
             bindTimepickers();
