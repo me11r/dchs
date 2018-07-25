@@ -258,6 +258,7 @@
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
+                                                        v-if="model.id"
                                                         class="button is-primary is-small"
                                                         @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'departure_time')">
                                                         <b-icon
@@ -290,6 +291,7 @@
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
+                                                        v-if="model.id"
                                                         class="button is-primary is-small"
                                                         @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'arrival_time')">
                                                         <b-icon
