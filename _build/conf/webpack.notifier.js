@@ -6,7 +6,7 @@ module.exports = {
         new WebpackBuildNotifierPlugin({
             title: 'Webpack builder',
             logo: path.resolve('./img/favicon.png'),
-            suppressSuccess: true
+            suppressSuccess: false
         })
     ]
 };

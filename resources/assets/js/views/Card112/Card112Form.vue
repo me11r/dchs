@@ -47,19 +47,14 @@
                             <p class="control">
                                 <label for="street_id">Адрес</label>
                             </p>
-                            <div class="select">
-                                <select
-                                    id="street_id"
-                                    name="street_id"
-                                    v-model="model.street_id"
-                                    required>
-                                    <option
-                                        v-for="street in streets"
-                                        :key="street.id"
-                                        :value="street.id">{{ street.name }}
-                                    </option>
-                                </select>
-                            </div>
+                            <buefy-common-select
+                                id="street_id"
+                                :options="streetsOptions"
+                                v-model="model.street_id"/>
+                            <input
+                                type="hidden"
+                                name="street_id"
+                                v-model="model.street_id">
                         </div>
                         <div class="field is-grouped">
                             <!--ПЕРЕСЕЧЕНИЕ УЛИЦЫ 1-->
@@ -67,19 +62,14 @@
                                 <p class="control">
                                     <label for="crossroad_1_id">Пересечение улицы</label>
                                 </p>
-                                <div class="select">
-                                    <select
-                                        id="crossroad_1_id"
-                                        name="crossroad_1_id"
-                                        v-model="model.crossroad_1_id"
-                                        required>
-                                        <option
-                                            v-for="street in streets"
-                                            :key="street.id"
-                                            :value="street.id">{{ street.name }}
-                                        </option>
-                                    </select>
-                                </div>
+                                <buefy-common-select
+                                    id="crossroad_1_id"
+                                    :options="streetsOptions"
+                                    v-model="model.crossroad_1_id"/>
+                                <input
+                                    type="hidden"
+                                    name="crossroad_1_id"
+                                    v-model="model.crossroad_1_id">
                             </div>
                             <!--ПЕРЕСЕЧЕНИЕ УЛИЦЫ 2-->
                             <div
@@ -87,19 +77,14 @@
                                 <p class="control">
                                     <label for="crossroad_2_id">и улицы</label>
                                 </p>
-                                <div class="select">
-                                    <select
-                                        id="crossroad_2_id"
-                                        name="crossroad_2_id"
-                                        v-model="model.crossroad_2_id"
-                                        required>
-                                        <option
-                                            v-for="street in streets"
-                                            :key="street.id"
-                                            :value="street.id">{{ street.name }}
-                                        </option>
-                                    </select>
-                                </div>
+                                <buefy-common-select
+                                    id="crossroad_2_id"
+                                    :options="streetsOptions"
+                                    v-model="model.crossroad_2_id"/>
+                                <input
+                                    type="hidden"
+                                    name="crossroad_2_id"
+                                    v-model="model.crossroad_2_id">
                             </div>
                         </div>
                         <!--ТИП ПРОИСШЕСТВИЯ-->
@@ -335,17 +320,14 @@
                                 <label for="additional_street_id">Уточненный адрес</label>
                             </p>
                             <div class="select">
-                                <select
+                                <buefy-common-select
                                     id="additional_street_id"
+                                    :options="streetsOptions"
+                                    v-model="model.additional_street_id"/>
+                                <input
+                                    type="hidden"
                                     name="additional_street_id"
-                                    v-model="model.additional_street_id"
-                                    required>
-                                    <option
-                                        v-for="street in streets"
-                                        :key="street.id"
-                                        :value="street.id">{{ street.name }}
-                                    </option>
-                                </select>
+                                    v-model="model.additional_street_id">
                             </div>
                         </div>
                         <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
@@ -535,6 +517,8 @@
 import moment from 'moment';
 import Buefy from 'buefy';
 import {_} from 'vue-underscore';
+import {Card112Utils} from './card112utils';
+import BuefyCommonSelect from '../../components/BuefyCommonSelect';
 
 export default {
     name: 'Card112Form',
@@ -549,72 +533,39 @@ export default {
             currentTabIndex: 0,
             lastTabIndex: 3,
             method: 'POST',
-            formRoute: ''
+            formRoute: '',
+            card112Utils: Card112Utils
         };
     },
     components: {
         'b-icon': Buefy['Icon'],
-        'b-timepicker': Buefy['Timepicker']
+        'b-timepicker': Buefy['Timepicker'],
+        BuefyCommonSelect
     },
     computed: {
         formDataExists() {
             return !!window.card112FormData;
+        },
+        serviceTypeOptions() {
+            return this.serviceTypes.map((item) => {
+                return {
+                    'id': item.id,
+                    'text': item.name
+                };
+            });
+        },
+        streetsOptions() {
+            return this.streets.map((item) => {
+                return {
+                    'id': item.id,
+                    'text': item.name
+                };
+            });
         }
     },
     methods: {
         setTab(tabIndex) {
             this.currentTabIndex = tabIndex;
-        },
-        prepareModel() {
-            this.model.call_time = this.model.call_time ? moment(this.model.call_time).toDate() : moment().toDate();
-
-            this.model.service_reactions = this.model.service_reactions
-                ? this.prepareServiceReactions(this.model.service_reactions)
-                : this.getEmptyServiceReactions(this.serviceTypes);
-
-            this.model.chronology = this.model.chronology
-                ? this.prepareChronology(this.model.chronology)
-                : this.getEmptyChronology();
-        },
-        getEmptyChronology() {
-            let result = [];
-            [0, 1, 2, 3, 4].map((i) => {
-                result.push({
-                    id: i,
-                    time: moment().hour(0).minute(0).toDate(),
-                    comment: '',
-                    additional_comment: ''
-                });
-            });
-            return result;
-        },
-        getEmptyServiceReactions(serviceTypes) {
-            let result = [];
-            serviceTypes.map((serviceType) => {
-                result.push({
-                    id: null,
-                    service_type_id: serviceType.id,
-                    message_time: moment().hour(0).minute(0).toDate(),
-                    name: '',
-                    departure_time: moment().hour(0).minute(0).toDate(),
-                    arrival_time: moment().hour(0).minute(0).toDate()
-                });
-            });
-            return result;
-        },
-        prepareServiceReactions(serviceReactions) {
-            return serviceReactions.map(function (item) {
-                item.message_time = moment(item.message_time, 'YYYY-MM-DD HH:mm:ss').toDate();
-                item.departure_time = moment(item.departure_time, 'YYYY-MM-DD HH:mm:ss').toDate();
-                item.arrival_time = moment(item.arrival_time, 'YYYY-MM-DD HH:mm:ss').toDate();
-                return item;
-            });
-        },
-        prepareChronology(chronology) {
-            return chronology.map(function (item) {
-                item.time = moment(item.time, 'YYYY-MM-DD HH:mm:ss').toDate();
-                return item;
-            });
         },
         getServiceTypeNameById(id) {
             return _.where(this.serviceTypes, {id: id})[0].name;
@@ -624,11 +575,11 @@ export default {
             this.$refs['call_time_picker'].close();
         },
         setCurrentTimeForServiceType(serviceTypeId, column) {
-            _.where(this.model.service_reactions, {service_type_id: serviceTypeId})[0][column] = new Date();
+            _.where(this.model.service_reactions, {service_type_id: serviceTypeId})[0][column] = moment().toDate();
             this.closeTimePickerByRefName('service_reactions_' + column + '_picker_' + serviceTypeId);
         },
         setCurrentTimeForChronology(id) {
-            _.where(this.model.chronology, {id: id})[0]['time'] = new Date();
+            _.where(this.model.chronology, {id: id})[0]['time'] = moment().toDate();
             this.closeTimePickerByRefName('chronology_time_picker_' + id);
         },
         closeTimePickerByRefName(refName) {
@@ -644,10 +595,10 @@ export default {
             this.streets = window.card112FormData.streets;
             this.incidentTypes = window.card112FormData.incidentTypes;
             this.serviceTypes = window.card112FormData.serviceTypes;
-            this.model = window.card112FormData.model;
             this.method = window.card112FormData.method;
             this.formRoute = window.card112FormData.formRoute;
-            this.prepareModel();
+            this.model = window.card112FormData.model;
+            this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
         }
     }
 };
