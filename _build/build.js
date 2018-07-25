@@ -10,9 +10,9 @@ const watch = args.watch || false;
 
 const baseWebpack = require('./conf/webpack.base.' + confType);
 const prodWebpack = require('./conf/webpack.prod.' + confType);
+const webpackNotifier = require('./conf/webpack.notifier');
 
-
-let webpackConfig = merge(baseWebpack, prodWebpack, {watch: watch});
+let webpackConfig = merge(baseWebpack, prodWebpack, {watch: watch}, webpackNotifier);
 
 rm(path.join(__dirname, '..', 'public', 'assets', '**/*'), err => {
     if (err) throw  err;

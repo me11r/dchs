@@ -29,6 +29,19 @@ module.exports = {
             'error',
             'always'
         ],
+        "vue/html-self-closing":
+            [
+                "error",
+                {
+                    "html": {
+                        "normal": "never",
+                        "void": "never",
+                        "component": "always"
+                    },
+                    "svg": "always",
+                    "math": "always"
+                }
+            ],
         'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
         'space-before-function-paren': 'off'
     }

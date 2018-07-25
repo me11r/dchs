@@ -14,4 +14,8 @@ class Card112Chronology extends Model
         'comment',
         'additional_comment'
     ];
+
+    public $guarded = [
+        'id'
+    ];
 }
