@@ -19,8 +19,7 @@ class ChronologyResource extends JsonResource
             'id' => (int)$this->id,
             'card112_id' => (int)$this->card112_id,
             'time' => Carbon::parse($this->time)->format('Y-m-d H:i:s'),
-            'comment' => (string)$this->comment,
-            'additional_comment' => (string)$this->additional_comment,
+            'comment' => (string)$this->comment
         ];
     }
 }

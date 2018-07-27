@@ -4,27 +4,22 @@ export const Card112Utils = {
     prepareModel(model, serviceTypes) {
         model.call_time = model.call_time ? moment(model.call_time).toDate() : moment().toDate();
 
-        model.service_reactions = model.service_reactions
+        model.service_reactions = model.service_reactions.length > 0
             ? this.prepareServiceReactions(model.service_reactions)
             : this.getEmptyServiceReactions(serviceTypes);
 
-        model.chronology = model.chronology
+        model.chronology = model.chronology.length > 0
             ? this.prepareChronology(model.chronology)
-            : this.getEmptyChronology();
+            : [this.getEmptyChronologyItem()];
 
         return model;
     },
-    getEmptyChronology() {
-        let result = [];
-        [0, 1, 2, 3, 4].map((i) => {
-            result.push({
-                id: i,
-                time: moment().toDate(),
-                comment: '',
-                additional_comment: ''
-            });
-        });
-        return result;
+    getEmptyChronologyItem() {
+        return {
+            id: moment().valueOf(),
+            time: moment().hour(0).minute(0).toDate(),
+            comment: ''
+        };
     },
     getEmptyServiceReactions(serviceTypes) {
         let result = [];
@@ -32,10 +27,10 @@ export const Card112Utils = {
             result.push({
                 id: null,
                 service_type_id: serviceType.id,
-                message_time: moment().toDate(),
+                message_time: moment().hour(0).minute(0).toDate(),
                 name: '',
-                departure_time: moment().toDate(),
-                arrival_time: moment().toDate()
+                departure_time: moment().hour(0).minute(0).toDate(),
+                arrival_time: moment().hour(0).minute(0).toDate()
             });
         });
         return result;

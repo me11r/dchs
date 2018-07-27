@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Card112\Card112;
+use App\Models\Card112\Card112Chronology;
+use App\Models\Card112\Card112ServiceReaction;
 use App\Repositories\Contracts\Card112RepositoryInterface;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,13 +23,13 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
         /** @var $card112 Card112 */
         $card112 = $this->create($data);
 
-        foreach ($serviceReactions as $serviceReaction){
-            $card112->serviceReactions()->create($serviceReaction);
-        }
+        $card112->serviceReactions()->saveMany(array_map(function ($item){
+            return new Card112ServiceReaction($item);
+        }, $serviceReactions));
 
-        foreach ($chronology as $item){
-            $card112->chronology()->create($item);
-        }
+        $card112->chronology()->saveMany(array_map(function ($item){
+            return new Card112Chronology($item);
+        }, $chronology));
 
         return $card112;
     }
@@ -47,10 +49,10 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
             $serviceReactionModel->update($serviceReaction);
         }
 
-        foreach ($chronology as $item){
-            $itemModel = $card112->chronology()->find(array_get($item, 'id'));
-            $itemModel->update($item);
-        }
+        $card112->chronology()->delete();
+        $card112->chronology()->saveMany(array_map(function ($item){
+            return new Card112Chronology($item);
+        }, $chronology));
 
         return $card112;
     }
@@ -74,8 +76,7 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
         return array_filter($chronology, function ($item) {
             $validator = Validator::make($item, [
                 'time' => 'required',
-                'comment' => 'required',
-                'additional_comment' => 'required'
+                'comment' => 'required'
             ]);
             return !$validator->fails();
         });

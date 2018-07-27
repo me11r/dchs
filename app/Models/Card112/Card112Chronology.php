@@ -11,8 +11,7 @@ class Card112Chronology extends Model
     public $fillable = [
         'card112_id',
         'time',
-        'comment',
-        'additional_comment'
+        'comment'
     ];
 
     public $guarded = [

@@ -1,11 +1,9 @@
 <template>
     <b-autocomplete
-        rounded
         v-model="text"
         :data="filteredDataArray"
         :placeholder="placeholder"
         field="text"
-        icon="magnify"
         @select="select">
         <template slot="empty">{{ emptyText }}</template>
     </b-autocomplete>
@@ -71,14 +69,22 @@ export default {
             this.selected = option;
             const input = option && option.id ? option.id : null;
             this.$emit('input', input);
+        },
+        changeInitialOption() {
+            const initialOption = this.getOptionById(this.value);
+            if (initialOption) {
+                this.selected = initialOption;
+                this.text = this.selected.text;
+            }
+        }
+    },
+    watch: {
+        value() {
+            this.changeInitialOption();
         }
     },
     beforeMount() {
-        const initialOption = this.getOptionById(this.value);
-        if (initialOption) {
-            this.selected = initialOption;
-            this.text = this.selected.text;
-        }
+        this.changeInitialOption();
     }
 };
 </script>

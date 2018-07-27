@@ -4,6 +4,7 @@
     <script>
         window.card112FormData = {
             streets: {{ streets | json_encode() | raw }},
+            cityAreas: {{ cityAreas | json_encode() | raw }},
             incidentTypes: {{ incidentTypes | json_encode() | raw }},
             serviceTypes: {{ serviceTypes | json_encode() | raw }},
             model: {{ model | json_encode() | raw }},

@@ -19,22 +19,22 @@
             <div class="tabs is-boxed">
                 <ul>
                     <li :class="{'is-active': currentTabIndex === 0}">
-                        <a @click="setTab(0)"><i class="fas fa-phone"></i>Звонок</a>
+                        <a @click="setTab(0)"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 1}">
                         <a
                             @click="setTab(1)">
-                        <i class="fas fa-envelope"></i>Службы</a>
+                        <i class="fas fa-envelope"></i>&nbsp;Службы</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 2}">
                         <a
                             @click="setTab(2)">
-                        <i class="fas fa-truck-moving"></i>Информация с места проишествия</a>
+                        <i class="fas fa-truck-moving"></i>&nbsp;Информация с места проишествия</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 3}">
                         <a
                             @click="setTab(3)">
-                        <i class="fas fa-info-circle"></i>Хронология событий</a>
+                        <i class="fas fa-info-circle"></i>&nbsp;Хронология событий</a>
                     </li>
                 </ul>
             </div>
@@ -43,7 +43,7 @@
                     <div :style="{'display': currentTabIndex === 0? 'block': 'none'}">
                         <h5 class="subtitle">Первоначальная информация заявителя:</h5>
                         <!--АДРЕС-->
-                        <div class="field">
+                        <div class="control is-expanded">
                             <p class="control">
                                 <label for="street_id">Адрес</label>
                             </p>
@@ -56,16 +56,35 @@
                                 name="street_id"
                                 v-model="model.street_id">
                         </div>
+                        <!--РАЙОН-->
+                        <div class="control is-expanded">
+                            <p class="control">
+                                <label for="city_area_id">Район</label>
+                            </p>
+                            <div class="select">
+                                <select
+                                    id="city_area_id"
+                                    name="city_area_id"
+                                    v-model="model.city_area_id">
+                                    <option
+                                        v-for="item in cityAreasOptions"
+                                        :key="item.id"
+                                        :value="item.id">{{ item.text }}</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="field is-grouped">
                             <!--ПЕРЕСЕЧЕНИЕ УЛИЦЫ 1-->
-                            <div>
+                            <div class="control is-expanded">
                                 <p class="control">
                                     <label for="crossroad_1_id">Пересечение улицы</label>
                                 </p>
-                                <buefy-common-select
-                                    id="crossroad_1_id"
-                                    :options="streetsOptions"
-                                    v-model="model.crossroad_1_id"/>
+                                <div class="autocomplete control">
+                                    <buefy-common-select
+                                        id="crossroad_1_id"
+                                        :options="streetsOptions"
+                                        v-model="model.crossroad_1_id"/>
+                                </div>
                                 <input
                                     type="hidden"
                                     name="crossroad_1_id"
@@ -73,14 +92,16 @@
                             </div>
                             <!--ПЕРЕСЕЧЕНИЕ УЛИЦЫ 2-->
                             <div
-                                class="control is-expanded right-select">
+                                class="control is-expanded">
                                 <p class="control">
                                     <label for="crossroad_2_id">и улицы</label>
                                 </p>
-                                <buefy-common-select
-                                    id="crossroad_2_id"
-                                    :options="streetsOptions"
-                                    v-model="model.crossroad_2_id"/>
+                                <div class="autocomplete control">
+                                    <buefy-common-select
+                                        id="crossroad_2_id"
+                                        :options="streetsOptions"
+                                        v-model="model.crossroad_2_id"/>
+                                </div>
                                 <input
                                     type="hidden"
                                     name="crossroad_2_id"
@@ -258,7 +279,6 @@
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
-                                                        v-if="model.id"
                                                         class="button is-primary is-small"
                                                         @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'departure_time')">
                                                         <b-icon
@@ -291,7 +311,6 @@
                                                 style="justify-content: space-between">
                                                 <p class="control">
                                                     <a
-                                                        v-if="model.id"
                                                         class="button is-primary is-small"
                                                         @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'arrival_time')">
                                                         <b-icon
@@ -418,74 +437,84 @@
                     </div>
                     <div :style="{'display': currentTabIndex === 3 ? 'block': 'none'}">
                         <h5 class="subtitle">Хронология событий:</h5>
-                        <table class="table is-expanded is-striped is-fullwidth">
-                            <thead>
-                                <tr>
-                                    <th>Время</th>
-                                    <th>Комментарий</th>
-                                    <th>Дополнительная информация</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="cItem in model.chronology"
-                                    :key="cItem.id">
-                                    <td>
-                                        <input
-                                            type="hidden"
-                                            v-model="cItem.id"
-                                            :name="'chronology['+cItem.id+'][id]'">
-                                        <b-timepicker
-                                            class="small-time-picker"
-                                            icon="clock"
-                                            icon-pack="far"
-                                            :ref="'chronology_time_picker_' + cItem.id"
-                                            type="text"
-                                            :name="'chronology['+cItem.id+'][time]'"
-                                            :value="cItem.time"
-                                            v-model="cItem.time">
-                                            <div
-                                                class="field is-grouped"
-                                                style="justify-content: space-between">
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-primary is-small"
-                                                        @click="setCurrentTimeForChronology(cItem.id)">
-                                                        <b-icon
-                                                            pack="far"
-                                                            icon="clock"/>
-                                                        <span>Сейчас</span>
-                                                    </a>
-                                                </p>
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('chronology_time_picker_' + cItem.id)">
-                                                        <i class="fas fa-check"></i><span>Принять</span>
-                                                    </a>
-                                                </p>
-                                            </div>
-                                        </b-timepicker>
-                                    </td>
-                                    <td>
-                                        <input
-                                            placeholder="Комментарий"
-                                            type="text"
-                                            class="input"
-                                            v-model="cItem.comment"
-                                            :name="'chronology['+cItem.id+'][comment]'">
-                                    </td>
-                                    <td>
-                                        <input
-                                            placeholder="Дополнительный комментарий"
-                                            type="text"
-                                            class="input"
-                                            v-model="cItem.additional_comment"
-                                            :name="'chronology['+cItem.id+'][additional_comment]'">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="add_button">
+                            <button
+                                class="button is-small is-outlined is-success"
+                                type="button"
+                                @click.prevent="addEmptyChronologyItem()">
+                                <i class="fa fa-plus"></i>&nbsp;Добавить
+                            </button>
+                        </div>
+                        <div
+                            class="field is-grouped"
+                            v-for="cItem in model.chronology"
+                            :key="cItem.id">
+                            <input
+                                type="hidden"
+                                v-model="cItem.id"
+                                :name="'chronology['+cItem.id+'][id]'">
+                            <div class="control is-narrow">
+                                <label :for="'chronology['+cItem.id+'][time]'">Время</label>
+                                <b-timepicker
+                                    class="small-time-picker"
+                                    icon="clock"
+                                    icon-pack="far"
+                                    :ref="'chronology_time_picker_' + cItem.id"
+                                    type="text"
+                                    :name="'chronology['+cItem.id+'][time]'"
+                                    :value="cItem.time"
+                                    v-model="cItem.time">
+                                    <div
+                                        class="field is-grouped"
+                                        style="justify-content: space-between">
+                                        <p class="control">
+                                            <a
+                                                class="button is-primary is-small"
+                                                @click="setCurrentTimeForChronology(cItem.id)">
+                                                <b-icon
+                                                    pack="far"
+                                                    icon="clock"/>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                        <p class="control">
+                                            <a
+                                                class="button is-outlined is-small"
+                                                @click="closeTimePickerByRefName('chronology_time_picker_' + cItem.id)">
+                                                <i class="fas fa-check"></i><span>Принять</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>
+                            </div>
+                            <div class="control is-expanded">
+                                <label :for="'chronology['+cItem.id+'][comment]'">Ситуация</label>
+                                <input
+                                    placeholder="Комментарий"
+                                    type="text"
+                                    class="input input_95"
+                                    v-model="cItem.comment"
+                                    :name="'chronology['+cItem.id+'][comment]'">
+                                <button
+                                    class="button is-small is-outlined is-danger square-button-36"
+                                    @click.prevent="removeChronology(cItem.id)"
+                                    type="button"
+                                    title="Удалить">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!--ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ-->
+                        <div class="field">
+                            <label for="additional_comment">Дополнительная информация</label>
+                            <textarea
+                                name="additional_comment"
+                                id="additional_comment"
+                                class="textarea"
+                                cols="30"
+                                rows="3"
+                                v-model="model.additional_comment"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -520,7 +549,7 @@ import moment from 'moment';
 import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 import {Card112Utils} from './card112utils';
-import BuefyCommonSelect from '../../components/BuefyCommonSelect';
+import {BuefyCommonSelect} from '../../components';
 
 export default {
     name: 'Card112Form',
@@ -531,6 +560,7 @@ export default {
             streets: [],
             incidentTypes: [],
             serviceTypes: [],
+            cityAreas: [],
             model: {},
             currentTabIndex: 0,
             lastTabIndex: 3,
@@ -549,23 +579,24 @@ export default {
             return !!window.card112FormData;
         },
         serviceTypeOptions() {
-            return this.serviceTypes.map((item) => {
+            return this.commonOptionsMapping(this.serviceTypes);
+        },
+        streetsOptions() {
+            return this.commonOptionsMapping(this.streets);
+        },
+        cityAreasOptions() {
+            return this.commonOptionsMapping(this.cityAreas);
+        }
+    },
+    methods: {
+        commonOptionsMapping(array) {
+            return array.map((item) => {
                 return {
                     'id': item.id,
                     'text': item.name
                 };
             });
         },
-        streetsOptions() {
-            return this.streets.map((item) => {
-                return {
-                    'id': item.id,
-                    'text': item.name
-                };
-            });
-        }
-    },
-    methods: {
         setTab(tabIndex) {
             this.currentTabIndex = tabIndex;
         },
@@ -590,11 +621,33 @@ export default {
             } else {
                 this.$refs[refName][0].close();
             }
+        },
+        addEmptyChronologyItem() {
+            this.model.chronology.push(this.card112Utils.getEmptyChronologyItem());
+        },
+        removeChronology(id) {
+            if (confirm('Вы действительно хотите удалить эту запись?')) {
+                this.model.chronology = this.model.chronology.filter(function (item) {
+                    return item.id !== id;
+                });
+            }
+        },
+        setCityAreaIdByStreetId(streetId) {
+            const streetObject = _.where(this.streets, {id: streetId})[0];
+            if (streetObject) {
+                this.model.city_area_id = streetObject.city_area_id;
+            }
+        }
+    },
+    watch: {
+        'model.street_id'(newValue) {
+            this.setCityAreaIdByStreetId(newValue);
         }
     },
     beforeMount() {
         if (window.card112FormData) {
             this.streets = window.card112FormData.streets;
+            this.cityAreas = window.card112FormData.cityAreas;
             this.incidentTypes = window.card112FormData.incidentTypes;
             this.serviceTypes = window.card112FormData.serviceTypes;
             this.method = window.card112FormData.method;
@@ -607,10 +660,6 @@ export default {
 </script>
 
 <style scoped>
-    .right-select {
-        padding: 0 0 0 20px;
-    }
-
     .small-time-picker {
         max-width: 6rem;
     }
@@ -629,5 +678,16 @@ export default {
     .group_25 {
         width: 25%;
         padding: 0 0 0 20px;
+    }
+    .input.input_95{
+        width: 95%;
+        max-width: 95%;
+    }
+    .square-button-36{
+        height: 36px;
+        width: 36px;
+    }
+    .add_button {
+        padding: 0 0 20px 0;
     }
 </style>

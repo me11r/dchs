@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\Http\Resources\Card112\Card112Resource;
 use App\Models\Card112\Card112;
@@ -38,10 +39,11 @@ class Card112Controller extends Controller
     public function create()
     {
         return View::make('card112.create')
-            ->with('streets', collect(Street::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
+            ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect(ServiceType::orderBy('name')->get(['id', 'name']))->toArray())
-            ->with('model', new Card112())
+            ->with('model', new Card112Resource(new Card112()))
             ->render();
     }
 
@@ -59,7 +61,8 @@ class Card112Controller extends Controller
     public function edit($id)
     {
         return View::make('card112.edit')
-            ->with('streets', collect(Street::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
+            ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect(ServiceType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('model', new Card112Resource($this->repository->where('id', '=', $id)->with(['serviceReactions', 'chronology'])->first()))

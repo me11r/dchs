@@ -2,6 +2,7 @@
 
 namespace App\Models\Card112;
 
+use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\Models\IncidentType;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,9 @@ class Card112 extends Model
         'injured',
         'dead',
         'evacuated',
-        'hospitalized'
+        'hospitalized',
+        'additional_comment',
+        'city_area_id'
     ];
 
     /**
@@ -97,5 +100,13 @@ class Card112 extends Model
     public function chronology()
     {
         return $this->hasMany(Card112Chronology::class, 'card112_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function cityArea()
+    {
+        return $this->hasOne(CityArea::class, 'id', 'city_area_id');
     }
 }
