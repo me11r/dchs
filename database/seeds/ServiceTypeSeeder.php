@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 14.07.2018
- * Time: 14:47
- */
 
 class ServiceTypeSeeder extends \Illuminate\Database\Seeder
 {
@@ -45,8 +39,8 @@ class ServiceTypeSeeder extends \Illuminate\Database\Seeder
             "Служба спасения Алматы",
             "РАЙОНЫЙ ОТДЕЛ ЧС",
             "Служба химической и радиационной защиты",
-            "Казавиалесохрана"
-
+            "Казавиалесохрана",
+            "СПиАСР 103"
         ];
 
         foreach ($items as $item) {

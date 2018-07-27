@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Card112;
 
+use App\Http\Resources\CityAreaResource;
 use App\Http\Resources\IncidentTypeResource;
 use App\Http\Resources\StreetResource;
 use Carbon\Carbon;
@@ -43,6 +44,9 @@ class Card112Resource extends JsonResource
             'hospitalized' => (int)$this->hospitalized,
             'service_reactions' => $this->resource->relationLoaded('serviceReactions') ? ServiceReactionResource::collection($this->serviceReactions) : [],
             'chronology' => $this->resource->relationLoaded('chronology') ? ChronologyResource::collection($this->chronology) : [],
+            'additional_comment' => (string) $this->additional_comment,
+            'city_area_id' => (int) $this->city_area_id,
+            'city_area' => $this->resource->relationLoaded('cityArea') ? (new CityAreaResource($this->cityArea)) : null,
         ];
     }
 }
