@@ -69,7 +69,7 @@ class CardController extends AuthorizedController
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::all());
-        $this->set('fire_object', FireObject::all());
+        $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
         $this->set('burn_object', BurntObject::all());
         $this->set('trip_result', TripResult::all());
