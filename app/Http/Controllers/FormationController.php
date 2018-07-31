@@ -20,9 +20,14 @@ class FormationController extends AuthorizedController
     public function get101(Request $request)
     {
         $today = date('Y-m-d');
+        $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
+        if (!$has_today) {
+            (new FormationReport)
+                ->fill(['report_date' => $today])
+                ->save();
+        }
         $this
             ->set('today', $today)
-            ->set('has_today', (new FormationReport)->where('report_date', $today)->count() > 0)
             ->set('reports', (new FormationReport)->orderByDesc('report_date')->get());
     }
 
