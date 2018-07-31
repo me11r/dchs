@@ -24,7 +24,9 @@
                     {% if ticket.id %}
                         <div class="level is-marginless">
                         <div class="level-left"><label>Номер КУИ:</label>&nbsp;{{ ticket.id }}</div>
+{#
                         <div class="level-right has-text-right"><label>Время получения сообщения:</label>&nbsp;{{ ticket.created_at|date('d.m.Y H:i:s') }}</div>
+#}
                         </div>{% endif %}
                     <div class="field">
                         <label for="location">Место пожара (Адрес)</label>
@@ -150,7 +152,27 @@
                             <label for="caller_phone">Телефон заявителя</label>
                             <input type="text" class="input" name="caller_phone" id="caller_phone" value="{{ ticket.caller_phone|default('') }}"/>
                         </p>
-
+                    </div>
+                    <div class="field">
+                        <div id="control" data-component="timepicker" data-value="{{ attribute(ticket, 'register_time')|default(date().format('H:i')) }}">
+                            <label for="register_time">Время регистрации сообщения</label>
+                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value" style="max-width: 6rem;" name="register_time" :value="value">
+                                <div class="field is-grouped" style="justify-content: space-between">
+                                    <p class="control">
+                                        <a class="button is-primary is-small"
+                                           @click="()=> {value = new Date(); close();}">
+                                            <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a class="button is-outlined is-small" @click="close()">
+                                            <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
+                        </div>
                     </div>
                 </div>
                 <div id="tab_notify" class="is-hidden">
@@ -514,10 +536,16 @@
                         </div>
 
                         <div class="control">
-                            <label for="co2_poisoned_count">Получили отравления угарным/природным газом
+                            <label for="co2_poisoned_count">Получили отравления угарным газом
                             </label>
                             <input type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count" value="{{ ticket.co2_poisoned_count|default('') }}"/>
                         </div>
+                        <div class="control">
+                            <label for="ch4_poisoned_count">Получили отравления природным газом
+                            </label>
+                            <input type="number" class="input" name="ch4_poisoned_count" id="ch4_poisoned_count" value="{{ ticket.ch4_poisoned_count|default('') }}"/>
+                        </div>
+
                     </div>
                     <div class="field is-grouped">
                         <div class="control">
