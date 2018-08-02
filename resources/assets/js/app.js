@@ -11,7 +11,6 @@ import Navbar from './ui/Navbar';
 import Card from './Card101';
 import {Card112Form} from './views/Card112';
 import {MudflowProtectionForm} from './views/mudflowProtection';
-import {Card112Form} from './views/card112';
 import {HydrantMapList} from './views/hydrant-map';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
