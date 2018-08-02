@@ -9,6 +9,7 @@ import App from './App.vue';
 import Navbar from './ui/Navbar';
 import Card from './Card101';
 import {Card112Form} from './views/Card112';
+import {MudflowProtectionForm} from './views/mudflowProtection';
 
 Vue.config.productionTip = false;
 
@@ -24,3 +25,9 @@ new Vue({
     el: '#card112-form-block',
     render: h => h(Card112Form)
 });
+
+new Vue({
+    el: '#mudflowProtection-form-block',
+    render: h => h(MudflowProtectionForm)
+});
+

@@ -40,13 +40,24 @@ class ServiceTypeSeeder extends \Illuminate\Database\Seeder
             "РАЙОНЫЙ ОТДЕЛ ЧС",
             "Служба химической и радиационной защиты",
             "Казавиалесохрана",
-            "СПиАСР 103"
+            "СПиАСР 103",
+            "РГП Казгидромет",
+            "ТОО СОМЭ"
         ];
 
         foreach ($items as $item) {
-            \App\Models\ServiceType::firstOrCreate([
+            $service = \App\Models\ServiceType::firstOrCreate([
                 'name' => $item
             ]);
+            $service->update([
+                'info' => $this->getInfo($item)
+            ]);
         }
+    }
+
+    public function getInfo($item)
+    {
+        return $item === "РГП Казгидромет" || $item === "ГУ Казселезащита" ||
+        $item === "ТОО СОМЭ" ? true : false;
     }
 }

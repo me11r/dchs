@@ -1,0 +1,63 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">ГУ "Казселезащита"
+        </h4>
+    </div>
+    <div class="panel">
+        <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Информация</th>
+                <th>Наименование гидропостов и их отметка</th>
+                <th>Расход воды</th>
+                <th>Критический расход воды</th>
+                <th>Мутность воды</th>
+                <th>Максимальная мутность воды</th>
+                <th>Температура воздуха</th>
+                <th>Температура воды</th>
+                <th>Осадки</th>
+                <th>Высота снега</th>
+                <th>Погода</th>
+                <th>Комментарий</th>
+                <th class="has-text-right">Дата и время</th>
+                <th></th>
+            </tr>
+            </thead>
+            {% set index = 1 %}
+            {% for river in rivers %}
+                <tr>
+                    <td colspan="15" style="text-align: center"><b>{{ river.name }}</b></td>
+                </tr>
+                {% for gaugingStation in river.gaugingStations %}
+                    <tr>
+                        <td class="has-text-right">{{ index }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.information }}</td>
+                        <td>{{ gaugingStation.name }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.water_flow_rate }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.critical_water_flow_rate }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.turbidity_of_water }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.max_turbidity_of_water }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.air_temperature }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.water_temperature }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.precipitation }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.height_of_snow }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.weather }}</td>
+                        <td>{{ gaugingStation.mudflowProtection.comment }}</td>
+                        <td class="has-text-right">{{ gaugingStation.mudflowProtection.updated_at | date('d.m.Y H:i:s') }}</td>
+                        <td class="has-text-right">
+                            <a href="{{ route('mudflowProtection.edit', gaugingStation.mudflowProtection.id) }}"
+                               class="button is-small is-outlined is-primary">
+                                <i class="fas fa-pencil-alt"></i>&nbsp;
+                                Редактировать
+                            </a>
+                        </td>
+                    </tr>
+                    {% set index = index + 1 %}
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}

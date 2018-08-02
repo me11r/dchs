@@ -20,6 +20,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->registerTicket101();
         $this->registerFireObject();
         $this->registerBurntObject();
+        $this->registerServiceType();
+        $this->registerMudflowProtection();
+        $this->registerRiver();
+        $this->registerWeather();
+        $this->registerQuake();
     }
 
 
@@ -55,4 +60,45 @@ class RepositoryServiceProvider extends ServiceProvider
             EloquentCard112Repository::class
         );
     }
+
+    protected function registerServiceType()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\ServiceTypeInterface',
+            'App\Repositories\EloquentServiceTypeRepository'
+        );
+    }
+
+    protected function registerMudflowProtection()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\MudflowProtectionInterface',
+            'App\Repositories\EloquentMudflowProtectionRepository'
+        );
+    }
+
+    protected function registerRiver()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\RiverInterface',
+            'App\Repositories\EloquentRiverRepository'
+        );
+    }
+
+    protected function registerWeather()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\WeatherInterface',
+            'App\Repositories\EloquentWeatherRepository'
+        );
+    }
+
+    protected function registerQuake()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\QuakeInterface',
+            'App\Repositories\EloquentQuakeRepository'
+        );
+    }
+
 }
