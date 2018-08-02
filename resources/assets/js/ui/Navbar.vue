@@ -15,8 +15,8 @@
 
                 <div class="navbar-item"><a href="/card112" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-card"></i>&nbsp; Карточка 112</a></div>
                 <div class="navbar-item"><a href="/roadtrip/" class="button is-inline-block-widescreen is-block"><i class="fas fa-truck"></i>&nbsp; Путевой лист</a></div>
-                <div class="navbar-item"><a href="/pdf/dailyReport" target="_blank" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Суточный отчет</a>
-                </div>
+                <div class="navbar-item"><a href="/pdf/dailyReport" target="_blank" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Суточный отчет</a></div>
+                <div class="navbar-item"><a href="/information" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Информация</a></div>
                 <div class="navbar-item"><a href="/hydrant" class="button is-inline-block-widescreen is-block"><i class="fas fa-truck"></i>&nbsp; Расположение гидрантов</a></div>
 
             </div>

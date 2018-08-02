@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AddAdminSeeder::class);
 
         $this->call(DictionarySeeder::class);
+        $this->call(MudflowProtectionSeeder::class);
     }
 }
