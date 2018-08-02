@@ -71,6 +71,9 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('row_id', '[0-9]+');
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
+    Route::resource('/chats', 'ChatController');
+    Route::resource('/messages', 'MessageController');
+    Route::resource('/nicknames', 'NicknameController');
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

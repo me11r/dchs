@@ -17,6 +17,7 @@
                 <div class="navbar-item"><a href="/roadtrip/" class="button is-inline-block-widescreen is-block"><i class="fas fa-truck"></i>&nbsp; Путевой лист</a></div>
                 <div class="navbar-item"><a href="/pdf/dailyReport" target="_blank" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Суточный отчет</a>
                 </div>
+                <div class="navbar-item"><a href="/chats" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Ручной ввод хронометража</a></div>
 
             </div>
             <div class="navbar-end">

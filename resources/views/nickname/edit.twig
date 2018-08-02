@@ -1,0 +1,25 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">Позывной {{ model.name }}</h4>
+                <form action="{{ route('nicknames.update', model.id) }}" method="post">
+                    <input type="hidden"
+                           name="_method"
+                           value="PATCH">
+                    {{ csrf_field() }}
+                    <div class="field">
+                        <label for="name">Наименование</label>
+                        <input type="text" class="input" name="name" id="name" value="{{ model.name }}" required />
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        </button>
+                        <a href="{{ route('nicknames.index') }}" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
