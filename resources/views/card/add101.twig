@@ -24,7 +24,9 @@
                     {% if ticket.id %}
                         <div class="level is-marginless">
                         <div class="level-left"><label>Номер КУИ:</label>&nbsp;{{ ticket.id }}</div>
+{#
                         <div class="level-right has-text-right"><label>Время получения сообщения:</label>&nbsp;{{ ticket.created_at|date('d.m.Y H:i:s') }}</div>
+#}
                         </div>{% endif %}
                     <div class="field">
                         <label for="location">Место пожара (Адрес)</label>
@@ -150,7 +152,27 @@
                             <label for="caller_phone">Телефон заявителя</label>
                             <input type="text" class="input" name="caller_phone" id="caller_phone" value="{{ ticket.caller_phone|default('') }}"/>
                         </p>
-
+                    </div>
+                    <div class="field">
+                        <div id="control" data-component="timepicker" data-value="{{ attribute(ticket, 'register_time')|default(date().format('H:i')) }}">
+                            <label for="register_time">Время регистрации сообщения</label>
+                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value" style="max-width: 6rem;" name="register_time" :value="value">
+                                <div class="field is-grouped" style="justify-content: space-between">
+                                    <p class="control">
+                                        <a class="button is-primary is-small"
+                                           @click="()=> {value = new Date(); close();}">
+                                            <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a class="button is-outlined is-small" @click="close()">
+                                            <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
+                        </div>
                     </div>
                 </div>
                 <div id="tab_notify" class="is-hidden">
@@ -159,7 +181,7 @@
                         {% for name,title in gu_notify %}
                             <div class="control" data-component="timepicker" data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
                                 <label for="notify_{{ name }}_time">{{ title }}</label>
-                                <b-timepicker type="text" v-model="value" style="max-width: 4rem" name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">
+                                <b-timepicker @focus="closeAll()" type="text" v-model="value" style="max-width: 4rem" name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">
                                     <div class="field is-grouped" style="justify-content: space-between">
                                         <p class="control">
                                             <a class="button is-primary is-small"
@@ -180,7 +202,7 @@
                     </div>
                     <div class="field" data-component="timepicker" data-value="{{ ticket.next_notify_time|default('') }}">
                         <label for="next_notify_time">Время следующего взаимодействия</label>
-                        <b-timepicker v-model="value" type="text" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" :value="value">
+                        <b-timepicker @focus="closeAll()" v-model="value" type="text" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" :value="value">
                             <div class="field is-grouped" style="justify-content: space-between">
                                 <p class="control">
                                     <a class="button is-primary is-small"
@@ -213,7 +235,7 @@
                                 <tr>
                                     <td>{{ title }}</td>
                                     <td data-component="timepicker" data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
-                                        <b-timepicker class="is-rounded" type="text" name="call_{{ name }}_time" id="call_{{ name }}_time"
+                                        <b-timepicker @focus="closeAll()" class="is-rounded" type="text" name="call_{{ name }}_time" id="call_{{ name }}_time"
                                                       :value="value" icon="clock" icon-pack="far">
                                             <div class="field is-grouped" style="justify-content: space-between">
                                                 <p class="control">
@@ -234,7 +256,7 @@
                                     <td><input type="text" class="input" name="name_{{ name }}_recv" id="name_{{ name }}_recv"
                                                value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/></td>
                                     <td data-component="timepicker" data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
-                                        <b-timepicker icon="clock" icon-pack="far" type="text" name="arrival_{{ name }}" id="arrival_{{ name }}"
+                                        <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="arrival_{{ name }}" id="arrival_{{ name }}"
                                                       :value="value">
                                             <div class="field is-grouped" style="justify-content: space-between">
                                                 <p class="control">
@@ -277,7 +299,7 @@
                                 <td><input class="input" type="text" name="ph_{{ index }}_ot" id="ph_{{ index }}_ot"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"/></td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
-                                    <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -296,7 +318,7 @@
                                     </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}">
-                                    <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -315,7 +337,7 @@
                                     </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}">
-                                    <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -334,7 +356,7 @@
                                     </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}">
-                                    <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -353,7 +375,7 @@
                                     </b-timepicker>
                                 </td>
                                 <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}">
-                                    <b-timepicker icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -390,7 +412,7 @@
                         <div class="field is-grouped">
                             <div class="control is-narrow" data-component="timepicker" data-value="{{ attribute(ticket, 'update_' ~ index ~ '_time')|default('') }}">
                                 <label for="update_{{ index }}_time">Время</label>
-                                <b-timepicker icon="clock" icon-pack="far" name="update_{{ index }}_time" type="text" :value="value">
+                                <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" name="update_{{ index }}_time" type="text" :value="value">
                                     <div class="field is-grouped" style="justify-content: space-between">
                                         <p class="control">
                                             <a class="button is-primary is-small"
@@ -514,10 +536,16 @@
                         </div>
 
                         <div class="control">
-                            <label for="co2_poisoned_count">Получили отравления угарным/природным газом
+                            <label for="co2_poisoned_count">Получили отравления угарным газом
                             </label>
                             <input type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count" value="{{ ticket.co2_poisoned_count|default('') }}"/>
                         </div>
+                        <div class="control">
+                            <label for="ch4_poisoned_count">Получили отравления природным газом
+                            </label>
+                            <input type="number" class="input" name="ch4_poisoned_count" id="ch4_poisoned_count" value="{{ ticket.ch4_poisoned_count|default('') }}"/>
+                        </div>
+
                     </div>
                     <div class="field is-grouped">
                         <div class="control">
@@ -611,6 +639,7 @@
         </form>
     </section>
     <script>
+        let globalBus = new Vue({});
         let activeTab = 0;
 
         function setTab(i) {
@@ -644,7 +673,7 @@
                         dt.setMinutes(tm[1]);
                     }
                 }
-                return new Vue({
+                const me = new Vue({
                     el: element,
                     data: function () {
                         return {
@@ -656,9 +685,22 @@
                             if (this.$children[0]) {
                                 this.$children[0].close();
                             }
+                        },
+                        closeAll() {
+                            globalBus.$emit('closeAll', this);
                         }
+                    },
+                    mounted: function (item) {
+                        globalBus.$on('closeAll', (element) => {
+                            //console.log('global closeall', element);
+                            if (this.$el !== element) {
+                                this.close();
+                            }
+                        });
                     }
                 });
+
+                return me;
             });
         }
 
@@ -710,10 +752,10 @@
         }
 
         // for demo ========
-        document.getElementById( "location" ).addEventListener("keyup", function() {
-            var value = document.getElementById( "location" ).value;
+        document.getElementById("location").addEventListener("keyup", function () {
+            var value = document.getElementById("location").value;
             if (value.toLowerCase().indexOf("гоголя 133") >= 0) {
-                alert( "Школа: Гимназия №15" );
+                alert("Школа: Гимназия №15");
                 document.getElementById('storey_count').value = 4;
                 document.getElementById('fire_level_id').value = 3;
             }

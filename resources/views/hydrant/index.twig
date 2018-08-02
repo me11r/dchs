@@ -1,0 +1,19 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">Размещение гидрантов на карте
+        </h4>
+    </div>
+    <div class="panel">
+        <script>
+            window.hydrantListData = {
+                fireDepartments: {{ fireDepartments | json_encode() | raw }},
+                model: {{ model | json_encode() | raw }},
+            };
+        </script>
+
+        <div id="hydrant-map-list-block">
+        </div>
+    </div>
+{% endblock content %}

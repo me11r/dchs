@@ -4,6 +4,7 @@
 namespace App;
 
 
+use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireLevel;
 use App\Dictionary\FireObject;
@@ -442,7 +443,7 @@ class Ticket101 extends Model
 
     public function fire_object()
     {
-        return $this->hasOne(FireObject::class, 'id', 'fire_object_id');
+        return $this->hasOne(BurntObject::class, 'id', 'fire_object_id');
     }
 
     public function trip_result()
