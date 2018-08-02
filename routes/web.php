@@ -72,6 +72,9 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('row_id', '[0-9]+');
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
+    Route::resource('/chats', 'ChatController');
+    Route::resource('/messages', 'MessageController');
+    Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
     Route::resource('/weather', 'WeatherController');

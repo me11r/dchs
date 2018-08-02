@@ -1,0 +1,45 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">Новое сообщение</h4>
+                <form action="{{ route('messages.store', {'chatId': chat.id}) }}" method="post">
+                    <input type="hidden" name="chat_id" value="{{ chat.id }}">
+                    {{ csrf_field() }}
+                    <div class="field">
+                        <p class="control">
+                            <label for="nickname_id">Позывной</label>
+                        </p>
+                        <div class="select">
+                            <select name="nickname_id" id="nickname_id" required>
+                                <option value="">-</option>
+                                {% for nickname in nicknames %}
+                                    <option value="{{ nickname.id }}">{{ nickname.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <p class="control">
+                            <label for="name">Текст</label>
+                        </p>
+                        <textarea class="input" name="text" id="text" cols="50" rows="3" required></textarea>
+                    </div>
+                    <div class="field">
+                        <p class="control">
+                            <label for="datetime">Дата и время</label>
+                        </p>
+                        <input class="input" type="datetime-local" name="datetime" id="datetime" required>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        </button>
+                        <a href="{{ route('messages.index', {'chatId': chat.id}) }}"
+                           class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -4,8 +4,14 @@ namespace App\Providers;
 
 use App\Repositories\Contracts\Card112RepositoryInterface;
 use App\Repositories\Contracts\HydrantRepositoryInterface;
+use App\Repositories\Contracts\ChatInterface;
+use App\Repositories\Contracts\MessageInterface;
+use App\Repositories\Contracts\NicknameInterface;
 use App\Repositories\EloquentCard112Repository;
 use App\Repositories\EloquentHydrantRepository;
+use App\Repositories\EloquentChatRepository;
+use App\Repositories\EloquentMessageRepository;
+use App\Repositories\EloquentNicknameRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -22,6 +28,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->registerTicket101();
         $this->registerFireObject();
         $this->registerBurntObject();
+        $this->registerChat();
+        $this->registerMessage();
+        $this->registerNickname();
         $this->registerServiceType();
         $this->registerMudflowProtection();
         $this->registerRiver();
@@ -60,6 +69,30 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             Card112RepositoryInterface::class,
             EloquentCard112Repository::class
+        );
+    }
+
+    protected function registerChat()
+    {
+        $this->app->bind(
+            ChatInterface::class,
+            EloquentChatRepository::class
+        );
+    }
+
+    protected function registerMessage()
+    {
+        $this->app->bind(
+            MessageInterface::class,
+            EloquentMessageRepository::class
+        );
+    }
+
+    protected function registerNickname()
+    {
+        $this->app->bind(
+            NicknameInterface::class,
+            EloquentNicknameRepository::class
         );
     }
 
