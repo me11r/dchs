@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+']);
     Route::resource('/card112', 'Card112Controller');
+    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');
 
     Route::get('/formation/101', 'FormationController@get101');
     Route::get('/formation/addToday', 'FormationController@getAddToday');
@@ -74,6 +75,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
+    Route::resource('/information', 'InformationController');
+    Route::resource('/mudflowProtection', 'MudflowProtectionController');
+    Route::resource('/weather', 'WeatherController');
+    Route::resource('/quakes', 'QuakeController');
+
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

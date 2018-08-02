@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Repositories\Contracts\Card112RepositoryInterface;
+use App\Repositories\Contracts\HydrantRepositoryInterface;
 use App\Repositories\Contracts\ChatInterface;
 use App\Repositories\Contracts\MessageInterface;
 use App\Repositories\Contracts\NicknameInterface;
 use App\Repositories\EloquentCard112Repository;
+use App\Repositories\EloquentHydrantRepository;
 use App\Repositories\EloquentChatRepository;
 use App\Repositories\EloquentMessageRepository;
 use App\Repositories\EloquentNicknameRepository;
@@ -29,6 +31,12 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->registerChat();
         $this->registerMessage();
         $this->registerNickname();
+        $this->registerServiceType();
+        $this->registerMudflowProtection();
+        $this->registerRiver();
+        $this->registerWeather();
+        $this->registerQuake();
+        $this->registerHydrantRepository();
     }
 
 
@@ -55,7 +63,6 @@ class RepositoryServiceProvider extends ServiceProvider
             'App\Repositories\EloquentBurntObjectRepository'
         );
     }
-
 
     protected function registerCard112Repository()
     {
@@ -88,4 +95,53 @@ class RepositoryServiceProvider extends ServiceProvider
             EloquentNicknameRepository::class
         );
     }
+
+    protected function registerServiceType()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\ServiceTypeInterface',
+            'App\Repositories\EloquentServiceTypeRepository'
+        );
+    }
+
+    protected function registerMudflowProtection()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\MudflowProtectionInterface',
+            'App\Repositories\EloquentMudflowProtectionRepository'
+        );
+    }
+
+    protected function registerRiver()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\RiverInterface',
+            'App\Repositories\EloquentRiverRepository'
+        );
+    }
+
+    protected function registerWeather()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\WeatherInterface',
+            'App\Repositories\EloquentWeatherRepository'
+        );
+    }
+
+    protected function registerQuake()
+    {
+        $this->app->bind(
+            'App\Repositories\Contracts\QuakeInterface',
+            'App\Repositories\EloquentQuakeRepository'
+        );
+    }
+
+    protected function registerHydrantRepository()
+    {
+        $this->app->bind(
+            HydrantRepositoryInterface::class,
+            EloquentHydrantRepository::class
+        );
+    }
+
 }

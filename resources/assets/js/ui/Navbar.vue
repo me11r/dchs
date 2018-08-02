@@ -18,6 +18,8 @@
                 <div class="navbar-item"><a href="/pdf/dailyReport" target="_blank" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Суточный отчет</a>
                 </div>
                 <div class="navbar-item"><a href="/chats" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Ручной ввод хронометража</a></div>
+                <div class="navbar-item"><a href="/information" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Информация</a></div>
+                <div class="navbar-item"><a href="/hydrant" class="button is-inline-block-widescreen is-block"><i class="fas fa-truck"></i>&nbsp; Расположение гидрантов</a></div>
 
             </div>
             <div class="navbar-end">

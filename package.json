@@ -38,6 +38,7 @@
     "vue-style-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.16",
     "vue-underscore": "^0.1.4",
+    "vue-yandex-maps": "^0.7.13",
     "webpack": "^4.12.0",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-manifest-plugin": "^2.0.3",
