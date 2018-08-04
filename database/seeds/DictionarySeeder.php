@@ -71,5 +71,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(TripResultSeeder::class);
         $this->call(ServiceTypeSeeder::class);
         $this->call(IncidentTypeSeeder::class);
+        $this->call(RiverSeeder::class);
     }
 }

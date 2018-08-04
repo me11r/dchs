@@ -1,0 +1,60 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">Сообщения события {{ chat.name }}
+        </h4>
+    </div>
+    <div class="columns is-gapless">
+        <div style="width: 100%; border-bottom: 1px solid #dbdbdb;">
+        </div>
+        <div class="column is-narrow">
+            <div style="border-bottom: 1px solid #dbdbdb">
+                <a href="{{ route('messages.create', {'chatId': chat.id}) }}" class="button is-success is-outlined"
+                   style="margin: 2px 10px 2px">
+                    <i class="fas fa-plus"></i>&nbsp;Новое сообщение
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Позывной</th>
+                <th>Текст</th>
+                <th>Дата и время</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            {% for item in items %}
+                <tr>
+                    <td class="has-text-right">{{ loop.index }}</td>
+                    <td>{{ item.nickname.name }}</td>
+                    <td>{{ item.text }}</td>
+                    <td>{{ item.datetime | date('d.m.Y H:i:s') }}</td>
+                    <td class="has-text-right">
+                        <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                              method="POST"
+                              action="{{ route('messages.destroy', item.id) }}?chatId={{ chat.id }}">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="_method" value="DELETE">
+
+                            <a href="{{ route('messages.edit', item.id) }}?chatId={{ chat.id }}"
+                               class="button is-small is-outlined is-primary">
+                                <i class="fas fa-pencil-alt"></i>&nbsp;
+                                Редактировать
+                            </a>
+
+                            <button title="Удалить"
+                                    class="button is-small is-outlined is-danger">
+                                <i class="fas fa-trash"></i>&nbsp;
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}
