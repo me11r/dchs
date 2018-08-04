@@ -6,23 +6,11 @@
             {{ csrf_field() }}
             <div class="tabs is-boxed" id="">
                 <ul>
-                    <li><a href="#tab_call" onclick="window.add101.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
-                    </li>
-                    <li><a href="#tab_notify" onclick="window.add101.setTab(1);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
-                    </li>
-                    <li><a href="#tab_truck" onclick="window.add101.setTab(2);">
-                            <i class="fas fa-truck-moving"></i>&nbsp;Подразделения</a>
-                    </li>
-                    <li>
-                        <a href="#tab_other" onclick="window.add101.setTab(3);"><i class="fas fa-info-circle"></i>&nbsp;
-                            Прочее
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#tab_summary" onclick="window.add101.setTab(4);">
-                            <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
-                        </a>
-                    </li>
+                    <li><a href="#tab_call" onclick="setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a></li>
+                    <li><a href="#tab_notify" onclick="setTab(1);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a></li>
+                    <li><a href="#tab_truck" onclick="setTab(2);"><i class="fas fa-truck-moving"></i>&nbsp; Подразделения</a></li>
+                    <li><a href="#tab_other" onclick="setTab(3);"><i class="fas fa-info-circle"></i>&nbsp; Прочее</a></li>
+                    <li><a href="#tab_summary" onclick="setTab(4);"><i class="fas fa-check-double"></i>&nbsp;Итоги выезда</a></li>
                 </ul>
             </div>
             <div id="preload_pane" class="hero is-loading has-text-centered" style="height: 30vh; align-items: center">
@@ -35,26 +23,25 @@
                     <h5 class="subtitle">Сведения поступившие со звонком:</h5>
                     {% if ticket.id %}
                         <div class="level is-marginless">
-                            <div class="level-left">
-                                <label>Номер КУИ:</label>&nbsp;{{ ticket.id }}
-                            </div>
-                        </div>
-                    {% endif %}
+                        <div class="level-left"><label>Номер КУИ:</label>&nbsp;{{ ticket.id }}</div>
+{#
+                        <div class="level-right has-text-right"><label>Время получения сообщения:</label>&nbsp;{{ ticket.created_at|date('d.m.Y H:i:s') }}</div>
+#}
+                        </div>{% endif %}
                     <div class="field">
                         <label for="location">Место пожара (Адрес)</label>
-                        <textarea name="location" id="location" class="textarea" cols="30"
-                                  rows="3">{{ ticket.location|default('') }}</textarea>
+                        <textarea name="location" id="location" class="textarea" cols="30" rows="3">{{ ticket.location|default('') }}</textarea>
                     </div>
                     <div class="field">
                         <p class="control">
                             <label for="city_area">Район города</label>
                         </p>
+                        {#<input class="input" type="text" name="city_area" id="city_area" value="{{ ticket.city_area|default('') }}"/>#}
                         <div class="select">
                             <select name="city_area_id" id="city_area">
                                 <option value="">-</option>
                                 {% for area in city_area %}
-                                    <option value="{{ area.id }}"
-                                            {% if area.id == ticket.city_area_id %}selected{% endif %}>{{ area.name }}</option>
+                                    <option value="{{ area.id }}" {% if area.id == ticket.city_area_id %}selected{% endif %}>{{ area.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -116,8 +103,7 @@
                             <select name="fire_object_id" id="fire_object_id">
                                 <option value="">-</option>
                                 {% for object in fire_object %}
-                                    <option value="{{ object.id }}"
-                                            {% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>
+                                    <option value="{{ object.id }}" {% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -130,8 +116,7 @@
                             <select name="fire_level_id" id="fire_level_id">
                                 <option value="">-</option>
                                 {% for object in fire_levels %}
-                                    <option value="{{ object.id }}"
-                                            {% if object.id == ticket.fire_level_id %}selected{% endif %}>{{ object.name }}</option>
+                                    <option value="{{ object.id }}" {% if object.id == ticket.fire_level_id %}selected{% endif %}>{{ object.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -139,21 +124,18 @@
                     <div class="field">
                         <div class="checkbox">
                             <input type="hidden" name="people_in_danger" value="0"/>
-                            <input type="checkbox" name="people_in_danger" value="1" id="people_in_danger"
-                                   {% if ticket.people_in_danger %}checked{% endif %}/>
+                            <input type="checkbox" name="people_in_danger" value="1" id="people_in_danger" {% if ticket.people_in_danger %}checked{% endif %}/>
                             <label for="people_in_danger">Опасность для людей</label>
                         </div>
                     </div>
                     <div class="field is-grouped">
                         <p class="control">
                             <label for="storey_count">Этажность</label>
-                            <input type="number" class="input" name="storey_count" id="storey_count"
-                                   value="{{ ticket.storey_count|default('') }}"/>
+                            <input type="number" class="input" name="storey_count" id="storey_count" value="{{ ticket.storey_count|default('') }}"/>
                         </p>
                         <p class="control">
                             <label for="floor">На каком этаже пожар</label>
-                            <input type="number" class="input" name="floor" id="floor"
-                                   value="{{ ticket.floor|default('') }}"/>
+                            <input type="number" class="input" name="floor" id="floor" value="{{ ticket.floor|default('') }}"/>
                         </p>
                     </div>
                     <div class="field">
@@ -164,21 +146,17 @@
                     <div class="field is-grouped">
                         <p class="control is-expanded">
                             <label for="caller_name">ФИО Заявителя</label>
-                            <input type="text" class="input" name="caller_name" id="caller_name"
-                                   value="{{ ticket.caller_name|default('') }}"/>
+                            <input type="text" class="input" name="caller_name" id="caller_name" value="{{ ticket.caller_name|default('') }}"/>
                         </p>
                         <p class="control">
                             <label for="caller_phone">Телефон заявителя</label>
-                            <input type="text" class="input" name="caller_phone" id="caller_phone"
-                                   value="{{ ticket.caller_phone|default('') }}"/>
+                            <input type="text" class="input" name="caller_phone" id="caller_phone" value="{{ ticket.caller_phone|default('') }}"/>
                         </p>
                     </div>
                     <div class="field">
-                        <div id="control" data-component="timepicker"
-                             data-value="{{ attribute(ticket, 'register_time')|default(date().format('H:i')) }}">
+                        <div id="control" data-component="timepicker" data-value="{{ attribute(ticket, 'register_time')|default(date().format('H:i')) }}">
                             <label for="register_time">Время регистрации сообщения</label>
-                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
-                                          style="max-width: 6rem;" name="register_time" :value="value">
+                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value" style="max-width: 6rem;" name="register_time" :value="value">
                                 <div class="field is-grouped" style="justify-content: space-between">
                                     <p class="control">
                                         <a class="button is-primary is-small"
@@ -201,11 +179,9 @@
                     <h5 class="subtitle">Время сообщения руководству ГУ:</h5>
                     <div class="field is-grouped">
                         {% for name,title in gu_notify %}
-                            <div class="control" data-component="timepicker"
-                                 data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
+                            <div class="control" data-component="timepicker" data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
                                 <label for="notify_{{ name }}_time">{{ title }}</label>
-                                <b-timepicker @focus="closeAll()" type="text" v-model="value" style="max-width: 4rem"
-                                              name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">
+                                <b-timepicker @focus="closeAll()" type="text" v-model="value" style="max-width: 4rem" name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">
                                     <div class="field is-grouped" style="justify-content: space-between">
                                         <p class="control">
                                             <a class="button is-primary is-small"
@@ -224,11 +200,9 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="field" data-component="timepicker"
-                         data-value="{{ ticket.next_notify_time|default('') }}">
+                    <div class="field" data-component="timepicker" data-value="{{ ticket.next_notify_time|default('') }}">
                         <label for="next_notify_time">Время следующего взаимодействия</label>
-                        <b-timepicker @focus="closeAll()" v-model="value" type="text" style="max-width: 4rem"
-                                      name="next_notify_time" id="next_notify_time" :value="value">
+                        <b-timepicker @focus="closeAll()" v-model="value" type="text" style="max-width: 4rem" name="next_notify_time" id="next_notify_time" :value="value">
                             <div class="field is-grouped" style="justify-content: space-between">
                                 <p class="control">
                                     <a class="button is-primary is-small"
@@ -260,10 +234,8 @@
                             {% for name,title in service_notify %}
                                 <tr>
                                     <td>{{ title }}</td>
-                                    <td data-component="timepicker"
-                                        data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
-                                        <b-timepicker @focus="closeAll()" class="is-rounded" type="text"
-                                                      name="call_{{ name }}_time" id="call_{{ name }}_time"
+                                    <td data-component="timepicker" data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
+                                        <b-timepicker @focus="closeAll()" class="is-rounded" type="text" name="call_{{ name }}_time" id="call_{{ name }}_time"
                                                       :value="value" icon="clock" icon-pack="far">
                                             <div class="field is-grouped" style="justify-content: space-between">
                                                 <p class="control">
@@ -281,14 +253,10 @@
                                             </div>
                                         </b-timepicker>
                                     </td>
-                                    <td><input type="text" class="input" name="name_{{ name }}_recv"
-                                               id="name_{{ name }}_recv"
-                                               value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/>
-                                    </td>
-                                    <td data-component="timepicker"
-                                        data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
-                                        <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                      name="arrival_{{ name }}" id="arrival_{{ name }}"
+                                    <td><input type="text" class="input" name="name_{{ name }}_recv" id="name_{{ name }}_recv"
+                                               value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/></td>
+                                    <td data-component="timepicker" data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
+                                        <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="arrival_{{ name }}" id="arrival_{{ name }}"
                                                       :value="value">
                                             <div class="field is-grouped" style="justify-content: space-between">
                                                 <p class="control">
@@ -330,10 +298,8 @@
                                 <td class="has-text-right">{{ ssv }}</td>
                                 <td><input class="input" type="text" name="ph_{{ index }}_ot" id="ph_{{ index }}_ot"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"/></td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
+                                <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -351,10 +317,8 @@
                                         </div>
                                     </b-timepicker>
                                 </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
+                                <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}">
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -372,10 +336,8 @@
                                         </div>
                                     </b-timepicker>
                                 </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
+                                <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}">
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -393,10 +355,8 @@
                                         </div>
                                     </b-timepicker>
                                 </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
+                                <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}">
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -414,10 +374,8 @@
                                         </div>
                                     </b-timepicker>
                                 </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
+                                <td data-component="timepicker" data-value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}">
+                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text" name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -452,11 +410,9 @@
                     <h5 class="subtitle">Обстановка с места пожара:</h5>
                     {% for index in 1..5 %}
                         <div class="field is-grouped">
-                            <div class="control is-narrow" data-component="timepicker"
-                                 data-value="{{ attribute(ticket, 'update_' ~ index ~ '_time')|default('') }}">
+                            <div class="control is-narrow" data-component="timepicker" data-value="{{ attribute(ticket, 'update_' ~ index ~ '_time')|default('') }}">
                                 <label for="update_{{ index }}_time">Время</label>
-                                <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far"
-                                              name="update_{{ index }}_time" type="text" :value="value">
+                                <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" name="update_{{ index }}_time" type="text" :value="value">
                                     <div class="field is-grouped" style="justify-content: space-between">
                                         <p class="control">
                                             <a class="button is-primary is-small"
@@ -475,8 +431,7 @@
                             </div>
                             <div class="control is-expanded">
                                 <label for="update_{{ index }}_info">Ситуация</label>
-                                <input name="update_{{ index }}_info" type="text" class="input"
-                                       value="{{ attribute(ticket, 'update_' ~ index ~ '_info')|default('') }}"/>
+                                <input name="update_{{ index }}_info" type="text" class="input" value="{{ attribute(ticket, 'update_' ~ index ~ '_info')|default('') }}"/>
                             </div>
                         </div>
                     {% endfor %}
@@ -488,8 +443,7 @@
                 <div id="tab_summary" class="is-hidden">
                     <div class="field">
                         <label for="detailed_address">Уточненный адрес</label>
-                        <textarea name="detailed_address" id="detailed_address" cols="30" rows="3"
-                                  class="textarea"></textarea>
+                        <textarea name="detailed_address" id="detailed_address" cols="30" rows="3" class="textarea"></textarea>
                     </div>
                     <div class="field">
                         <div class="control">
@@ -499,8 +453,7 @@
                             <select name="burn_object_id" id="burn_object_id">
                                 <option value=""> -</option>
                                 {% for burn in burn_object %}
-                                    <option value="{{ burn.id }}"
-                                            {% if burn.id == ticket.burn_object_id %}selected{% endif %}>{{ burn.name }}</option>
+                                    <option value="{{ burn.id }}" {% if burn.id == ticket.burn_object_id %}selected{% endif %}>{{ burn.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -513,8 +466,7 @@
                             <select name="trip_result_id" id="trip_result_id">
                                 <option value=""> -</option>
                                 {% for trip_res in trip_result %}
-                                    <option value="{{ trip_res.id }}"
-                                            {% if trip_res.id == ticket.trip_result_id %}selected{% endif %}>{{ trip_res.name }}</option>
+                                    <option value="{{ trip_res.id }}" {% if trip_res.id == ticket.trip_result_id %}selected{% endif %}>{{ trip_res.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -541,8 +493,7 @@
                             <select name="result_fire_level_id" id="result_fire_level_id">
                                 <option value="">-</option>
                                 {% for fire_level in fire_levels %}
-                                    <option value="{{ fire_level.id }}"
-                                            {% if fire_level.id == ticket.result_fire_level_id %}selected{% endif %}>{{ fire_level.name }}</option>
+                                    <option value="{{ fire_level.id }}" {% if fire_level.id == ticket.result_fire_level_id %}selected{% endif %}>{{ fire_level.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -551,24 +502,21 @@
                         <div class="control">
                             <div class="checkbox">
                                 <input type="hidden" name="vu_found" value="0"/>
-                                <input type="checkbox" name="vu_found" id="vu_found" value="1"
-                                       {% if ticket.vu_found == 1 %}checked{% endif %}/>
+                                <input type="checkbox" name="vu_found" id="vu_found" value="1" {% if ticket.vu_found == 1 %}checked{% endif %}/>
                                 <label for="vu_found">Обнаружено ВУ</label>
                             </div>
                         </div>
                         <div class="control">
                             <div class="checkbox">
                                 <input type="hidden" name="animal_death" value="0"/>
-                                <input type="checkbox" name="animal_death" id="animal_death" value="1"
-                                       {% if ticket.animal_death == 1 %}checked{% endif %}/>
+                                <input type="checkbox" name="animal_death" id="animal_death" value="1" {% if ticket.animal_death == 1 %}checked{% endif %}/>
                                 <label for="animal_death">Гибель животных</label>
                             </div>
                         </div>
                         <div class="control">
                             <div class="checkbox">
                                 <input type="hidden" name="car_crash" value="0"/>
-                                <input type="checkbox" name="car_crash" id="car_crash" value="1"
-                                       {% if ticket.car_crash == 1 %}checked{% endif %}/>
+                                <input type="checkbox" name="car_crash" id="car_crash" value="1" {% if ticket.car_crash == 1 %}checked{% endif %}/>
                                 <label for="car_crash">Авария А/М при следовании на пожар, с жертвами</label>
                             </div>
                         </div>
@@ -579,27 +527,23 @@
                         <div class="control">
                             <label for="rescued_count">Спасено людей
                             </label>
-                            <input type="number" class="input" name="rescued_count" id="rescued_count"
-                                   value="{{ ticket.rescued_count|default('') }}"/>
+                            <input type="number" class="input" name="rescued_count" id="rescued_count" value="{{ ticket.rescued_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="evac_count">Эвакуировано людей
                             </label>
-                            <input type="number" class="input" name="evac_count" id="evac_count"
-                                   value="{{ ticket.evac_count|default('') }}"/>
+                            <input type="number" class="input" name="evac_count" id="evac_count" value="{{ ticket.evac_count|default('') }}"/>
                         </div>
 
                         <div class="control">
                             <label for="co2_poisoned_count">Получили отравления угарным газом
                             </label>
-                            <input type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count"
-                                   value="{{ ticket.co2_poisoned_count|default('') }}"/>
+                            <input type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count" value="{{ ticket.co2_poisoned_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="ch4_poisoned_count">Получили отравления природным газом
                             </label>
-                            <input type="number" class="input" name="ch4_poisoned_count" id="ch4_poisoned_count"
-                                   value="{{ ticket.ch4_poisoned_count|default('') }}"/>
+                            <input type="number" class="input" name="ch4_poisoned_count" id="ch4_poisoned_count" value="{{ ticket.ch4_poisoned_count|default('') }}"/>
                         </div>
 
                     </div>
@@ -607,39 +551,33 @@
                         <div class="control">
                             <label for="gpt_burns_count">Получили ожоги
                             </label>
-                            <input type="number" class="input" name="gpt_burns_count" id="gpt_burns_count"
-                                   value="{{ ticket.gpt_burns_count|default('') }}"/>
+                            <input type="number" class="input" name="gpt_burns_count" id="gpt_burns_count" value="{{ ticket.gpt_burns_count|default('') }}"/>
                         </div>
 
                         <div class="control">
                             <label for="people_death_count">Гибель людей
                             </label>
-                            <input type="number" class="input" name="people_death_count" id="people_death_count"
-                                   value="{{ ticket.people_death_count|default('') }}"/>
+                            <input type="number" class="input" name="people_death_count" id="people_death_count" value="{{ ticket.people_death_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="children_death_count">Гибель детей
                             </label>
-                            <input type="number" class="input" name="children_death_count" id="children_death_count"
-                                   value="{{ ticket.children_death_count|default('') }}"/>
+                            <input type="number" class="input" name="children_death_count" id="children_death_count" value="{{ ticket.children_death_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="hospitalized_count">Госпитализировано
                             </label>
-                            <input type="number" class="input" name="hospitalized_count" id="hospitalized_count"
-                                   value="{{ ticket.hospitalized_count|default('') }}"/>
+                            <input type="number" class="input" name="hospitalized_count" id="hospitalized_count" value="{{ ticket.hospitalized_count|default('') }}"/>
                         </div>
                     </div>
                     <div class="field">
                         <label for="more_info">Дополнительная информация</label>
-                        <textarea name="more_info" id="more_info" cols="30" rows="2"
-                                  class="textarea">{{ ticket.more_info|default('') }}</textarea>
+                        <textarea name="more_info" id="more_info" cols="30" rows="2" class="textarea">{{ ticket.more_info|default('') }}</textarea>
                     </div>
                     <div class="field">
                         <div class="checkbox">
                             <input type="hidden" name="hydrant_found" value="0"/>
-                            <input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"
-                                   {% if ticket.hydrant_found == 1 %}checked{% endif %}/>
+                            <input type="checkbox" name="hydrant_found" id="hydrant_found" value="1" {% if ticket.hydrant_found == 1 %}checked{% endif %}/>
                             <label for="hydrant_found">Наличие ПГ/ПВ</label>
                         </div>
                     </div>
@@ -647,14 +585,12 @@
                         <div class="control">
                             <label for="distance">Расстояние до места
                             </label>
-                            <input type="number" class="input" name="distance" id="distance"
-                                   value="{{ ticket.distance|default('') }}"/>
+                            <input type="number" class="input" name="distance" id="distance" value="{{ ticket.distance|default('') }}"/>
                         </div>
                     </div>
                     <div class="field">
                         <label for="owner">Владелец(дома,кв.,а/м)</label>
-                        <input type="text" id="owner" name="owner" value="{{ ticket.owner|default('') }}"
-                               class="input"/>
+                        <input type="text" id="owner" name="owner" value="{{ ticket.owner|default('') }}" class="input"/>
                     </div>
                     <h5 class="subtitle">Объяснения</h5>
                     <div class="field">
@@ -690,20 +626,149 @@
 
                 </div>
             </div>
-            <div class="panel"
-                 style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
                     <p class="level-left">
-                        <button id="nexttab" class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>&nbsp;
-                            Следующий раздел
-                        </button>
+                        <button id="nexttab" class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>&nbsp; Следующий раздел</button>
                     </p>
                     <p class="level-right">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
-                        </button>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
                     </p>
                 </div>
             </div>
         </form>
     </section>
+    <script>
+        let globalBus = new Vue({});
+        let activeTab = 0;
+
+        function setTab(i) {
+            let tabs = document.querySelectorAll('#cardadd101 .tabs li');
+            let panels = document.querySelectorAll('#cardadd101 .panels > div');
+            tabs[activeTab].classList.remove('is-active');
+            panels[activeTab].classList.add('is-hidden');
+            tabs[i].classList.add('is-active');
+            panels[i].classList.remove('is-hidden');
+            activeTab = i;
+        }
+
+        function nextTab(e) {
+            e.preventDefault();
+            let nextTab = activeTab + 1;
+            if (nextTab > 4) {
+                nextTab = 0;
+            }
+            setTab(nextTab);
+        }
+
+        function bindTimepickers() {
+            const pickers = document.querySelectorAll('[data-component="timepicker"]');
+            pickers.forEach((element) => {
+                const cdate = element.getAttribute('data-value');
+                let dt = new Date('01-01-1970 00:00');
+                if (cdate !== '') {
+                    const tm = cdate.split(':');
+                    if (tm.length > 1) {
+                        dt.setHours(tm[0]);
+                        dt.setMinutes(tm[1]);
+                    }
+                }
+                const me = new Vue({
+                    el: element,
+                    data: function () {
+                        return {
+                            value: dt
+                        }
+                    },
+                    methods: {
+                        close: function () {
+                            if (this.$children[0]) {
+                                this.$children[0].close();
+                            }
+                        },
+                        closeAll() {
+                            globalBus.$emit('closeAll', this);
+                        }
+                    },
+                    mounted: function (item) {
+                        globalBus.$on('closeAll', (element) => {
+                            //console.log('global closeall', element);
+                            if (this.$el !== element) {
+                                this.close();
+                            }
+                        });
+                    }
+                });
+
+                return me;
+            });
+        }
+
+        function bindAutocomplete() {
+            const autoc = document.querySelectorAll('[data-component="autocomplete"]');
+
+            autoc.forEach((element) => {
+                const sname = element.getAttribute('data-name');
+                const shid = element.getAttribute('data-hid');
+                return new Vue({
+                        el: element,
+                        data: {
+                            data: [],
+                            isFetching: false,
+                            selected: null,
+                            name: sname,
+                            hid: shid,
+                        },
+                        methods: {
+                            onSelect: function (selected) {
+                                this.hid = selected.id;
+                                this.name = selected.name;
+                            },
+                            getData: _.debounce(function () {
+                                const area = document.getElementById('city_area');
+                                const area_id = area[area.selectedIndex].value;
+                                this.data = [];
+                                this.isFetching = true;
+                                axios.get('/ajax/street/' + area_id + '/?q=' + this.name)
+                                    .then((response) => {
+                                            const data = response.data;
+                                            data.forEach((item) => {
+                                                this.data.push(item);
+                                            });
+
+                                            this.isFetching = false;
+                                        }
+                                    )
+                                    .catch(() => {
+                                        this.isFetching = false;
+                                    })
+                            }, 300)
+                        }
+                    }
+                )
+                    ;
+            })
+            ;
+        }
+
+        // for demo ========
+        document.getElementById("location").addEventListener("keyup", function () {
+            var value = document.getElementById("location").value;
+            if (value.toLowerCase().indexOf("гоголя 133") >= 0) {
+                alert("Школа: Гимназия №15");
+                document.getElementById('storey_count').value = 4;
+                document.getElementById('fire_level_id').value = 3;
+            }
+        });
+        // ==================
+
+        window.addEventListener('load', () => {
+            Vue.use(Buefy.default);
+            bindTimepickers();
+            bindAutocomplete();
+            document.getElementById('preload_pane').style.display = 'none';
+            setTab(activeTab);
+            document.getElementById('nexttab').addEventListener('click', nextTab);
+        });
+    </script>
 {% endblock content %}
