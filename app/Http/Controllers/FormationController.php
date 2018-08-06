@@ -10,9 +10,11 @@ namespace App\Http\Controllers;
 
 
 use App\FireDepartment;
+use App\FormationMudflowReport;
 use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationTechReport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FormationController extends AuthorizedController
@@ -284,7 +286,8 @@ class FormationController extends AuthorizedController
             'field_3_2',
             'field_3_3',
             'field_3_4',
-            'field_3_5'];
+            'field_3_5'
+        ];
         $tech_fields = [
             'field_0',
             'field_1',
@@ -322,7 +325,8 @@ class FormationController extends AuthorizedController
             'field_9_0',
             'field_9_1',
             'field_3',
-            'field_4',];
+            'field_4',
+        ];
 
         $this->set('departments', FireDepartment::all());
         $this->set('report', (new FormationReport)->find($form_id));
@@ -339,5 +343,33 @@ class FormationController extends AuthorizedController
     public function getServicesList(Request $request)
     {
 
+    }
+
+    public function getMudflow(Request $request)
+    {
+        $today = Carbon::today();
+        $has_today = ((new FormationMudflowReport())->where('report_date', $today)->count() > 0);
+        if (!$has_today) {
+            (new FormationMudflowReport())
+                ->fill(['report_date' => $today])
+                ->save();
+        }
+        $this->set('reports', FormationMudflowReport::all())
+            ->set('today', $today);
+    }
+
+    public function getEditMudflow(Request $request, $id)
+    {
+        $this->set('report', FormationMudflowReport::findOrFail($id));
+    }
+
+    public function postEditMudflow(Request $request, $id)
+    {
+        $report = FormationMudflowReport::findOrFail($id);
+        $report->fill($request->all())->saveOrFail();
+        return redirect('/formation/mudflow')->with('_message', [
+            'type' => 'success',
+            'text' => 'Строевая записка сохранена успешно'
+        ]);
     }
 }
