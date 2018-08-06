@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary\Street;
+use App\Models\SpecialPlan;
 use Illuminate\Http\Request;
 
 class AjaxController extends AuthorizedController
@@ -23,5 +24,10 @@ class AjaxController extends AuthorizedController
 
         $streets = $streets->get();
         return response()->json($streets, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function findSpecialPlan(Request $request) {
+        $specialPlan = SpecialPlan::where('location', '=', $request->get('location'))->first();
+        return response()->json($specialPlan, $specialPlan? 200 : 404, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 }
