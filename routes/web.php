@@ -61,6 +61,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('editmedical/{id}', 'FormationController@getEditMedical')->where('id', '[0-9]+');
         Route::post('editmedical/{id}', 'FormationController@postEditMedical')->where('id', '[0-9]+');
 
+        Route::get('savers', 'FormationController@getSavers');
+        Route::get('editsavers/{id}', 'FormationController@getEditSavers')->where('id', '[0-9]+');
+        Route::post('editsavers/{id}', 'FormationController@postEditSavers')->where('id', '[0-9]+');
+
     });
 
     Route::group(['prefix' => 'roadtrip'], function () {

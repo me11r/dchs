@@ -1,0 +1,68 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <h3 class="title">Оперативная информация ГУ «РОСО КЧС МВД РК»</h3>
+        <div>
+            <form action="" method="post">
+                {{ csrf_field() }}
+                <div>
+                    <div class="field">
+                        <label for="saved_people">Спасено/эвакуировано людей</label>
+                        <input type="number" class="input" id="saved_people" name="saved_people" value="{{ report.saved_people|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="saved_children">Из них детей</label>
+                        <input type="number" class="input" id="saved_children" name="saved_children" value="{{ report.saved_children|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="total">Общее количество выездов</label>
+                        <input type="number" class="input" id="total" name="total" value="{{ report.total|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="fires">Пожары</label>
+                        <input type="number" class="input" id="fires" name="fires" value="{{ report.fires|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="ignitions">Случаи горения
+                        </label>
+                        <input type="number" class="input" id="ignitions" name="ignitions" value="{{ report.ignitions|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="emergencies">Аварийно-спасательные работы
+                        </label>
+                        <input type="number" class="input" id="emergencies" name="emergencies" value="{{ report.emergencies|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="rescues">Спасательные операции
+                        </label>
+                        <input type="number" class="input" id="rescues" name="rescues" value="{{ report.rescues|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="searches">Поисковые работы
+                        </label>
+                        <input type="number" class="input" id="searches" name="searches" value="{{ report.searches|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="others">Другие выезда различного характера
+                        </label>
+                        <input type="number" class="input" id="others" name="others" value="{{ report.others|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="false_calls">Заведомо ложные выезда
+                        </label>
+                        <input type="number" class="input" id="false_calls" name="false_calls" value="{{ report.false_calls|default(0) }}"/>
+                    </div>
+                </div>
+                <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                    <div class="level">
+                        <p class="level-left">
+                        </p>
+                        <p class="level-right">
+                            <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

@@ -14,6 +14,7 @@ use App\FormationMedicalReport;
 use App\FormationMudflowReport;
 use App\FormationPersonsReport;
 use App\FormationReport;
+use App\FormationSaversReport;
 use App\FormationTechReport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -397,6 +398,34 @@ class FormationController extends AuthorizedController
         $report = FormationMedicalReport::findOrFail($id);
         $report->fill($request->all())->saveOrFail();
         return redirect('/formation/medical')->with('_message', [
+            'type' => 'success',
+            'text' => 'Строевая записка сохранена успешно'
+        ]);
+    }
+
+    public function getSavers(Request $request)
+    {
+        $today = Carbon::today();
+        $has_today = ((new FormationSaversReport())->where('report_date', $today)->count() > 0);
+        if (!$has_today) {
+            (new FormationSaversReport())
+                ->fill(['report_date' => $today])
+                ->save();
+        }
+        $this->set('reports', FormationSaversReport::all())
+            ->set('today', $today);
+    }
+
+    public function getEditSavers(Request $request, $id)
+    {
+        $this->set('report', FormationSaversReport::findOrFail($id));
+    }
+
+    public function postEditSavers(Request $request, $id)
+    {
+        $report = FormationSaversReport::findOrFail($id);
+        $report->fill($request->all())->saveOrFail();
+        return redirect('/formation/savers')->with('_message', [
             'type' => 'success',
             'text' => 'Строевая записка сохранена успешно'
         ]);
