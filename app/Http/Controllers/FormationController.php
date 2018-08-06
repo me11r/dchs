@@ -336,5 +336,8 @@ class FormationController extends AuthorizedController
             ->set('tech_fl', $tech_fieldlist);
     }
 
+    public function getServicesList(Request $request)
+    {
 
+    }
 }

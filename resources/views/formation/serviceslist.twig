@@ -1,0 +1,20 @@
+{% extends "layout/html" %}
+{% block content %}
+    <h3 class="title">Строевые записки</h3>
+    <table class="table is-narrow is-expanded is-hoverable is-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Служба взаимодействия</th>
+            <th>-</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>СП и АСР</td>
+                <td><a href="{{ url('formation/101') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock content %}

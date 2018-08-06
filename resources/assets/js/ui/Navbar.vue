@@ -10,8 +10,13 @@
 <!--
                 <div class="navbar-item"><a href="/card/112" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-card"></i>&nbsp; Карточка 112</a></div>
 -->
+                <div class="navbar-item">
+                    <a href="/formation" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Строевые записки</a>
+                </div>
+<!--
                 <div class="navbar-item"><a href="/formation/101" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-book"></i>&nbsp; Строевая записка 101</a>
                 </div>
+-->
 
                 <div class="navbar-item"><a href="/card112" class="button is-inline-block-widescreen is-block"><i class="fas fa-address-card"></i>&nbsp; Карточка 112</a></div>
                 <div class="navbar-item"><a href="/roadtrip/" class="button is-inline-block-widescreen is-block"><i class="fas fa-truck"></i>&nbsp; Путевой лист</a></div>

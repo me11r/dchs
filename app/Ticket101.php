@@ -414,6 +414,53 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePh9Dispatched($value)
  * @property-read \App\Dictionary\FireLevel $fire_level
  * @property-read \App\Dictionary\FireObject $fire_object
+ * @property string|null $detailed_address
+ * @property int|null $burn_object_id
+ * @property int|null $trip_result_id
+ * @property int|null $liquidation_method_id
+ * @property int|null $result_fire_level_id
+ * @property int $vu_found
+ * @property int $animal_death
+ * @property int $car_crash
+ * @property int|null $rescued_count
+ * @property int|null $evac_count
+ * @property int|null $co2_poisoned_count
+ * @property int|null $gpt_burns_count
+ * @property int|null $people_death_count
+ * @property int|null $children_death_count
+ * @property int|null $hospitalized_count
+ * @property string|null $more_info
+ * @property int $hydrant_found
+ * @property float|null $distance
+ * @property string|null $owner
+ * @property string|null $explanation
+ * @property int|null $ch4_poisoned_count
+ * @property string|null $register_time
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\FireDepartment[] $departments
+ * @property-read \App\Dictionary\LiquidationMethod $liquidation_method
+ * @property-read \App\Dictionary\TripResult $trip_result
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereAnimalDeath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereBurnObjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCarCrash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCh4PoisonedCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereChildrenDeathCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereCo2PoisonedCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereDetailedAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereDistance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereEvacCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereExplanation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereGptBurnsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereHospitalizedCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereHydrantFound($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereLiquidationMethodId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereMoreInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereOwner($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePeopleDeathCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereRegisterTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereRescuedCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereResultFireLevelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereTripResultId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereVuFound($value)
  */
 class Ticket101 extends Model
 {

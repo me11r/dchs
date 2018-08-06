@@ -31,24 +31,28 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/card112', 'Card112Controller');
     Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');
 
-    Route::get('/formation/101', 'FormationController@get101');
-    Route::get('/formation/addToday', 'FormationController@getAddToday');
-    Route::post('/formation/addToday', 'FormationController@postAddToday');
-    Route::get('/formation/add101persons/{form_id}/{dept_id?}', 'FormationController@getAdd101Persons')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+')
-        ->name('formation.101.add');
-    Route::post('/formation/add101persons/{form_id}/{dept_id?}', 'FormationController@postAdd101Persons')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+');
-    Route::get('/formation/add101tech/{form_id}/{dept_id?}', 'FormationController@getAdd101Tech')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+')
-        ->name('formation.101.add');
-    Route::post('/formation/add101tech/{form_id}/{dept_id?}', 'FormationController@postAdd101Tech')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+');
-    Route::get('/formation/view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
+    // Строевые записки
+    Route::group(['prefix' => 'formation'], function () {
+        Route::get('/', 'FormationController@getServicesList');
+        Route::get('101', 'FormationController@get101');
+        Route::get('addToday', 'FormationController@getAddToday');
+        Route::post('addToday', 'FormationController@postAddToday');
+        Route::get('add101persons/{form_id}/{dept_id?}', 'FormationController@getAdd101Persons')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+')
+            ->name('formation.101.add');
+        Route::post('add101persons/{form_id}/{dept_id?}', 'FormationController@postAdd101Persons')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+');
+        Route::get('add101tech/{form_id}/{dept_id?}', 'FormationController@getAdd101Tech')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+')
+            ->name('formation.101.add');
+        Route::post('add101tech/{form_id}/{dept_id?}', 'FormationController@postAdd101Tech')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+');
+        Route::get('view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
+    });
 
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
