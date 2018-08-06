@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Buefy from 'buefy';
 import axios from 'axios';
 import {_} from 'vue-underscore';
+import {BuefyCommonSelect} from '../components';
 
 export default class Add101Functions {
     constructor() {
@@ -119,5 +120,23 @@ export default class Add101Functions {
                 }
             });
         });
+    }
+
+    buildBuefyCommonSelects() {
+        document.querySelectorAll('[data-component="buefy-common-select"]')
+            .forEach(function (element) {
+                return new Vue({
+                    el: element,
+                    data: {
+                        selectedId: null
+                    },
+                    components: {
+                        BuefyCommonSelect
+                    },
+                    beforeMount() {
+                        this.selectedId = parseInt(element.dataset.value);
+                    }
+                });
+            });
     }
 }

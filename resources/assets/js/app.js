@@ -57,6 +57,7 @@ if (document.getElementById('cardadd101')) {
     window.addEventListener('load', () => {
         window.add101.bindTimepickers();
         window.add101.bindAutocomplete();
+        window.add101.buildBuefyCommonSelects();
         document.getElementById('preload_pane').style.display = 'none';
         window.add101.setTab(0);
         document.getElementById('nexttab').addEventListener('click', window.add101.nextTab);

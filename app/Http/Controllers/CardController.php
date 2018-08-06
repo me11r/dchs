@@ -15,6 +15,8 @@ use App\Dictionary\FireLevel;
 use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
+use App\FireDepartment;
+use App\Models\OperationalPlan;
 use App\Ticket101;
 use Illuminate\Http\Request;
 
@@ -74,6 +76,18 @@ class CardController extends AuthorizedController
         $this->set('burn_object', BurntObject::all());
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
+        $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item){
+            return [
+                'id' => $item->id,
+                'text' => $item->name
+            ];
+        })->toArray());
+        $this->set('fire_departments', collect(FireDepartment::all())->map(function ($item){
+            return [
+                'id' => $item->id,
+                'text' => $item->name
+            ];
+        })->toArray());
         $ticket = Ticket101::with(['crossroad_1', 'crossroad_2'])->findOrNew($card_id);
         $this->set('ticket', $ticket);
     }

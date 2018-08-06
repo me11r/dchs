@@ -124,20 +124,56 @@
                             </select>
                         </div>
                     </div>
-                    <div class="field">
+
+                    <div class="field is-grouped">
                         <p class="control">
-                            <label for="fire_level_id">Класс пожара</label>
+                            <label for="object_name">Наименование объекта</label>
+                            <input type="text"
+                                   class="input"
+                                   name="object_name"
+                                   id="object_name"
+                                   required
+                                   value="{{ ticket.object_name|default('') }}"/>
                         </p>
-                        <div class="select">
-                            <select name="fire_level_id" id="fire_level_id">
-                                <option value="">-</option>
-                                {% for object in fire_levels %}
-                                    <option value="{{ object.id }}"
-                                            {% if object.id == ticket.fire_level_id %}selected{% endif %}>{{ object.name }}</option>
-                                {% endfor %}
-                            </select>
+
+                        <p class="control" data-component="buefy-common-select" data-value="{{ ticket.operational_plan_id }}">
+                            <label for="operational_plan_id">Оперативный план</label>
+                            <input type="hidden"
+                                   name="operational_plan_id"
+                                   id="operational_plan_id"
+                                   v-model="selectedId">
+                            <buefy-common-select
+                                    :options='{{ operational_plans | json_encode() | raw }}'
+                                    :min-length="1"
+                                    v-model="selectedId"/>
+                        </p>
+
+                        <div class="control">
+                            <label for="fire_level_id">Ранг пожара</label>
+                            <div class="select" style="display: block">
+                                <select name="fire_level_id" id="fire_level_id">
+                                    <option value="">-</option>
+                                    {% for object in fire_levels %}
+                                        <option value="{{ object.id }}"
+                                                {% if object.id == ticket.fire_level_id %}selected{% endif %}>{{ object.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
+
+                        <p class="control" data-component="buefy-common-select" data-value="{{ ticket.fire_department_id }}">
+                            <label for="fire_department_id">Микроучасток</label>
+                            <input type="hidden"
+                                   name="fire_department_id"
+                                   id="fire_department_id"
+                                   v-model="selectedId">
+                            <buefy-common-select
+                                    :options='{{ fire_departments | json_encode() | raw }}'
+                                    :min-length="1"
+                                    v-model="selectedId"/>
+                        </p>
                     </div>
+
                     <div class="field">
                         <div class="checkbox">
                             <input type="hidden" name="people_in_danger" value="0"/>
