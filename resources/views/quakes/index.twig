@@ -1,0 +1,52 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">ТОО СОМЭ
+        </h4>
+    </div>
+    <div class="columns is-gapless">
+        <div style="width: 100%; border-bottom: 1px solid #dbdbdb;">
+        </div>
+        <div class="column is-narrow">
+            <div style="border-bottom: 1px solid #dbdbdb">
+                <a href="{{ route('quakes.create') }}" class="button is-success is-outlined"
+                   style="margin: 2px 10px 2px">
+                    <i class="fas fa-plus"></i>&nbsp;Добавить
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Описание</th>
+                <th>Дата и время Алматинского времени</th>
+                <th>Дата и время по Гринвичу</th>
+                <th>Эпицентр землетрясения</th>
+                <th>Энергетический класс землетрясения</th>
+                <th>Магнитуда MPV</th>
+                <th>Координаты эпицентра</th>
+                <th>Глубина</th>
+                <th>Сведения об ощутимости</th>
+            </tr>
+            </thead>
+            {% for item in items %}
+                <tr>
+                    <td class="has-text-right">{{ loop.index }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.date_almaty | date('d.m.Y H:i:s') }}</td>
+                    <td>{{ item.date_greenwich | date('d.m.Y H:i:s') }}</td>
+                    <td>{{ item.epicenter }}</td>
+                    <td>{{ item.energy_class }}</td>
+                    <td>{{ item.mpv }}</td>
+                    <td>{{ item.coordinates }}</td>
+                    <td>{{ item.deep }}</td>
+                    <td>{{ item.information }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}

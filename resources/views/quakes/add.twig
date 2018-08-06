@@ -1,0 +1,55 @@
+{% extends "layout/html" %}
+
+{% block content %}
+    <div class="container" xmlns="http://www.w3.org/1999/html">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">Добавить</h4>
+                <form action="{{ route('quakes.store') }}" method="post">
+                    {{ csrf_field() }}
+                    <div class="field">
+                        <label for="description">Описание</label>
+                        <textarea class="input" name="description" id="description" value="" required></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="date_almaty">Дата и время Алматинского времени</label>
+                        <input type="datetime-local" class="input" name="date_almaty" id="date_almaty" value="" required />
+                    </div>
+                    <div class="field">
+                        <label for="date_greenwich">Дата и время по Гринвичу</label>
+                        <input type="datetime-local" class="input" name="date_greenwich" id="date_greenwich" value="" required />
+                    </div>
+                    <div class="field">
+                        <label for="epicenter">Эпицентр землетрясения</label>
+                        <input type="text" class="input" name="epicenter" id="epicenter" value="" required/>
+                    </div>
+                    <div class="field">
+                        <label for="energy_class">Энергетический класс землетрясения</label>
+                        <input type="number" step="0.01" class="input" name="energy_class" id="energy_class" value="" required/>
+                    </div>
+                    <div class="field">
+                        <label for="mpv">Магнитуда MPV</label>
+                        <input type="number" step="0.01" class="input" name="mpv" id="mpv" value="" required/>
+                    </div>
+                    <div class="field">
+                        <label for="coordinates">Координаты эпицентра</label>
+                        <input type="text" class="input" name="coordinates" id="coordinates" value="" required/>
+                    </div>
+                    <div class="field">
+                        <label for="deep">Глубина</label>
+                        <input type="number" step="0.01" class="input" name="deep" id="deep" value="" required/>
+                    </div>
+                    <div class="field">
+                        <label for="information">Сведения об ощутимости</label>
+                        <input type="text" class="input" name="information" id="information" value="" required/>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        </button>
+                        <a href="{{ route('quakes.index') }}" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,13 @@
+{% extends "layout/html" %}
+
+{% block content %}
+    <script>
+        window.mudflowProtectionFormData = {
+            model: {{ model | json_encode() | raw }},
+            method: 'PATCH',
+            formRoute: '{{ route('mudflowProtection.update', model.id) }}'
+        };
+    </script>
+    <div id="mudflowProtection-form-block">
+    </div>
+{% endblock content %}

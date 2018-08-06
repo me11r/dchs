@@ -9,7 +9,8 @@ import axios from 'axios';
 import App from './App.vue';
 import Navbar from './ui/Navbar';
 import Card from './Card101';
-import {Card112Form} from './views/card112';
+import {Card112Form} from './views/Card112';
+import {MudflowProtectionForm} from './views/mudflowProtection';
 import {HydrantMapList} from './views/hydrant-map';
 
 import Add101Functions from './scripts/add101';
@@ -63,3 +64,8 @@ if (document.getElementById('cardadd101')) {
         document.getElementById('nexttab').addEventListener('click', window.add101.nextTab);
     });
 }
+
+new Vue({
+    el: '#mudflowProtection-form-block',
+    render: h => h(MudflowProtectionForm)
+});

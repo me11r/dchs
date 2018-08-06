@@ -76,6 +76,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(ServiceTypeSeeder::class);
         $this->call(IncidentTypeSeeder::class);
         $this->call(OperationalPlanSeeder::class);
-
+        $this->call(RiverSeeder::class);
     }
 }
