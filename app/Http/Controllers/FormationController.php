@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\FireDepartment;
+use App\FormationMedicalReport;
 use App\FormationMudflowReport;
 use App\FormationPersonsReport;
 use App\FormationReport;
@@ -372,4 +373,33 @@ class FormationController extends AuthorizedController
             'text' => 'Строевая записка сохранена успешно'
         ]);
     }
+
+    public function getMedical(Request $request)
+    {
+        $today = Carbon::today();
+        $has_today = ((new FormationMedicalReport())->where('report_date', $today)->count() > 0);
+        if (!$has_today) {
+            (new FormationMedicalReport())
+                ->fill(['report_date' => $today])
+                ->save();
+        }
+        $this->set('reports', FormationMedicalReport::all())
+            ->set('today', $today);
+    }
+
+    public function getEditMedical(Request $request, $id)
+    {
+        $this->set('report', FormationMedicalReport::findOrFail($id));
+    }
+
+    public function postEditMedical(Request $request, $id)
+    {
+        $report = FormationMedicalReport::findOrFail($id);
+        $report->fill($request->all())->saveOrFail();
+        return redirect('/formation/medical')->with('_message', [
+            'type' => 'success',
+            'text' => 'Строевая записка сохранена успешно'
+        ]);
+    }
+
 }

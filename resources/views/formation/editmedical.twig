@@ -1,0 +1,46 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <h3 class="title">Строевая записка ГУ «Центр медицины катастроф»</h3>
+        <div>
+            <form action="" method="post">
+                {{ csrf_field() }}
+                <div>
+                    <div class="field">
+                        <label for="manager">Подразделение</label>
+                        <input type="text" class="input" id="manager" name="manager" value="{{ report.manager|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="staffed">Штатное количество</label>
+                        <input type="number" class="input" id="staffed" name="staffed" value="{{ report.staffed|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="on_duty">На оперативном дежурстве</label>
+                        <input type="number" class="input" id="on_duty" name="on_duty" value="{{ report.on_duty|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="formation">Наименование формирования</label>
+                        <input type="text" class="input" id="formation" name="formation" value="{{ report.formation|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="people">Количество л/с</label>
+                        <input type="number" class="input" id="people" name="people" value="{{ report.people|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="tech">Количество техники</label>
+                        <input type="number" class="input" id="tech" name="tech" value="{{ report.tech|default(0) }}"/>
+                    </div>
+                </div>
+                <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                    <div class="level">
+                        <p class="level-left">
+                        </p>
+                        <p class="level-right">
+                            <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
