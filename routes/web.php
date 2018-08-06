@@ -7,6 +7,7 @@ Route::get('auth/password-reset', 'Auth\ResetPasswordController@getResetPassword
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'ajax'], function () {
         Route::get('street/{area_id?}', 'AjaxController@findStreet')->where('area_id', '[0-9]+');
+        Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
     });
 
     Route::group(['prefix' => 'admin'], function () {

@@ -1,34 +1,32 @@
 const path = require('path');
-const vueLoader = require('vue-loader/lib/plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
     devtool: 'source-map',
     resolve: {
-        extensions: ['.js', '.scss', '.vue'],
+        extensions: ['.js', '.scss', '.vue', '.json'],
         alias: {
             '@': 'resources/assets/js',
-            vue$: 'vue/dist/vue.runtime.esm.js'
-        },
+            'vue$': 'vue/dist/vue.esm.js'
+        }
     },
     entry: {
         app: ['./resources/assets/js/app.js']
     },
     output: {
         path: path.resolve(path.join(__dirname, '..', '..', 'public', 'assets')),
-        publicPath: '/assets/',
+        publicPath: '/assets/'
     },
     module: {
         rules: [
             {
                 test: /\.vue$/,
-                use: {
-                    loader: "vue-loader"
-                }
+                loader: 'vue-loader'
             },
             {
                 test: /\.js$/,
                 use: {
-                    loader: "babel-loader",
+                    loader: 'babel-loader'
                 },
                 exclude: file => (
                     /node_modules/.test(file) &&
@@ -38,7 +36,7 @@ module.exports = {
             {
                 test: /\.(png|jpe?g|gif)$/,
                 use: {
-                    loader: "file-loader",
+                    loader: 'file-loader',
                     options: {
                         limit: 4096,
                         name: '[name].[hash:8].[ext]',
@@ -50,7 +48,7 @@ module.exports = {
             {
                 test: /\.(woff2?|ttf|eot|svg)$/,
                 use: {
-                    loader: "file-loader",
+                    loader: 'file-loader',
                     options: {
                         limit: 4096,
                         name: '[name].[hash:8].[ext]',
@@ -62,6 +60,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new vueLoader()
+        new VueLoaderPlugin()
     ]
 };
