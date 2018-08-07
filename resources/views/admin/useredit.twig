@@ -1,0 +1,109 @@
+{% extends 'layout/html' %}
+{% block content %}
+    <div class="container">
+        <form action="{{ url('admin/users/edit/' ~ user.id|default('')) }}" method="post" id="add_user_form">
+            {{ csrf_field() }}
+            <h4 class="title">Редактирование пользователя</h4>
+
+            <div class="row">
+                <div class="col-md">
+                    <h5 class="subtitle">Реквизиты пользователя</h5>
+                    <div class="field ">
+                        <label for="fullname">ФИО пользователя</label>
+                        <input type="text" class="input {{ errors.has('fullname')?'is-danger' }}" name="fullname" id="fullname" value="{{ old('fullname')|default(user.name|default('')) }}"/>
+                        {% if errors.has('fullname') %}
+                            <span class="{{ errors.has('fullname')?'is-danger' }}">
+                                        <small>{{ errors.first('fullname') }}</small>
+                                    </span>
+                        {% endif %}
+                    </div>
+                    <div class="field ">
+                        <label for="email">Электронная почта</label>
+                        <input type="email" class="input {{ errors.has('email')?'is-danger' }}" name="email" id="email" value="{{ old('email')|default(user.email|default('')) }}"/>
+                        {% if errors.has('email') %}
+                            <span class="input-feedback">
+                                        <small>{{ errors.first('email') }}</small>
+                                    </span>
+                        {% endif %}
+                    </div>
+
+                    {% if user.id == 0 %}
+                        <div class="field">
+                            <label for="password">Пароль</label>
+                            <input type="password" class="input {{ errors.has('password')?'is-danger' }}" name="password" id="password" value=""/>
+                            {% if errors.has('password') %}
+                                <span class="input-feedback">
+                                        <small>{{ errors.first('password') }}</small>
+                                    </span>
+                            {% endif %}
+                        </div>
+                        <div class="field">
+                            <label for="password_confirmation">Пароль (повторно)</label>
+                            <input type="password" class="input" name="password_confirmation" id="password_confirmation" value=""/>
+                        </div>
+                    {% endif %}
+
+
+                </div>
+                <div class="col-md">
+                    <h5 class="subtitle">Разрешения и роли</h5>
+                    {#
+                                    <div class="field">
+                                        <label for="quick_rights" class="mr-sm-2">Роль</label>
+                                        <select name="quick_rights" id="quick_rights" class="custom-select mb-2 mr-sm-2 mb-sm-0">
+                                            <option value="0">--</option>
+                                            <option value="1">Администратор</option>
+                                            <option value="2">менеджер</option>
+                                            <option value="3">?</option>
+                                            <option value="4">?</option>
+                                        </select>
+                                    </div>
+                    #}
+                    {% set group_id = 0 %}
+                    {% for right in rights %}
+                        {% if group_id != right.right_group_id %}
+                            {% set group_id = right.right_group_id %}
+                            <h6>{{ right.group.title|default('') }}</h6>
+                        {% endif %}
+                        <div class="form-check">
+                            <label for="role_{{ right.id }}" class="form-check-label">
+                                <input type="checkbox" id="role_{{ right.id }}" name="role[{{ right.id }}]" value="{{ right.id }}"
+                                       class="form-check-input" {{ (old('role.'~ right.id ) or (user.hasRight(right.id)))?'checked' }}> {{ right.title|default('-?-') }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+    {#
+        <script>
+            $(function () {
+                $('#quick_rights').on('change', function (e) {
+                    var sel = {
+                        0: [1],
+                        1: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+                        2: [1,2,3,4,7,9,10],
+                        3: [1],
+                        4: [1],
+                    };
+                    const option = ($(this).val());
+                    for(var i = 1; i<= 13; i++)
+                    {
+                        var has = sel[option].indexOf(i) !== -1;
+                        $('#role_' + i).prop('checked', has);
+                    }
+                });
+            });
+        </script>
+    #}
+{% endblock content %}
