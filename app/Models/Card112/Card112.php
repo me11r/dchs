@@ -7,6 +7,62 @@ use App\Dictionary\Street;
 use App\Models\IncidentType;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Card112\Card112
+ *
+ * @property int $id
+ * @property int $street_id
+ * @property int $crossroad_1_id
+ * @property int $crossroad_2_id
+ * @property int $incident_type_id
+ * @property string|null $description
+ * @property string $caller_phone
+ * @property string $caller_name
+ * @property string $call_time
+ * @property int $additional_street_id
+ * @property int $additional_incident_type_id
+ * @property string $measures
+ * @property string $resources
+ * @property int $injured
+ * @property int|null $dead
+ * @property int $evacuated
+ * @property int $hospitalized
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property string|null $additional_comment
+ * @property int $city_area_id
+ * @property-read \App\Dictionary\Street $additionalAddress
+ * @property-read \App\Models\IncidentType $additionalIncident
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Card112\Card112Chronology[] $chronology
+ * @property-read \App\Dictionary\CityArea $cityArea
+ * @property-read \App\Dictionary\Street $crossroad1
+ * @property-read \App\Dictionary\Street $crossroad2
+ * @property-read \App\Models\IncidentType $incident
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Card112\Card112ServiceReaction[] $serviceReactions
+ * @property-read \App\Dictionary\Street $street
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereAdditionalComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereAdditionalIncidentTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereAdditionalStreetId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereCallTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereCallerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereCallerPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereCityAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereCrossroad1Id($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereCrossroad2Id($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereDead($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereEvacuated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereHospitalized($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereIncidentTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereInjured($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereMeasures($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereResources($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereStreetId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Card112 extends Model
 {
     /**

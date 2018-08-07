@@ -10,9 +10,16 @@ namespace App\Http\Controllers;
 
 
 use App\FireDepartment;
+use App\Formation\Migrations;
+use App\Formation\Operations;
+use App\Formation\Resources;
+use App\FormationMedicalReport;
+use App\FormationMudflowReport;
 use App\FormationPersonsReport;
 use App\FormationReport;
+use App\FormationSaversReport;
 use App\FormationTechReport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FormationController extends AuthorizedController
@@ -284,7 +291,8 @@ class FormationController extends AuthorizedController
             'field_3_2',
             'field_3_3',
             'field_3_4',
-            'field_3_5'];
+            'field_3_5'
+        ];
         $tech_fields = [
             'field_0',
             'field_1',
@@ -322,7 +330,8 @@ class FormationController extends AuthorizedController
             'field_9_0',
             'field_9_1',
             'field_3',
-            'field_4',];
+            'field_4',
+        ];
 
         $this->set('departments', FireDepartment::all());
         $this->set('report', (new FormationReport)->find($form_id));
@@ -336,5 +345,174 @@ class FormationController extends AuthorizedController
             ->set('tech_fl', $tech_fieldlist);
     }
 
+    public function getServicesList(Request $request)
+    {
+
+    }
+
+    public function getMudflow(Request $request)
+    {
+        $today = Carbon::today();
+        $has_today = ((new FormationMudflowReport())->where('report_date', $today)->count() > 0);
+        if (!$has_today) {
+            (new FormationMudflowReport())
+                ->fill(['report_date' => $today])
+                ->save();
+        }
+        $this->set('reports', FormationMudflowReport::all())
+            ->set('today', $today);
+    }
+
+    public function getEditMudflow(Request $request, $id)
+    {
+        $this->set('report', FormationMudflowReport::findOrFail($id));
+    }
+
+    public function postEditMudflow(Request $request, $id)
+    {
+        $report = FormationMudflowReport::findOrFail($id);
+        $report->fill($request->all())->saveOrFail();
+        return redirect('/formation/mudflow')->with('_message', [
+            'type' => 'success',
+            'text' => 'Строевая записка сохранена успешно'
+        ]);
+    }
+
+    public function getMedical(Request $request)
+    {
+        $today = Carbon::today();
+        $has_today = ((new FormationMedicalReport())->where('report_date', $today)->count() > 0);
+        if (!$has_today) {
+            (new FormationMedicalReport())
+                ->fill(['report_date' => $today])
+                ->save();
+        }
+        $this->set('reports', FormationMedicalReport::all())
+            ->set('today', $today);
+    }
+
+    public function getEditMedical(Request $request, $id)
+    {
+        $this->set('report', FormationMedicalReport::findOrFail($id));
+    }
+
+    public function postEditMedical(Request $request, $id)
+    {
+        $report = FormationMedicalReport::findOrFail($id);
+        $report->fill($request->all())->saveOrFail();
+        return redirect('/formation/medical')->with('_message', [
+            'type' => 'success',
+            'text' => 'Строевая записка сохранена успешно'
+        ]);
+    }
+
+    public function getSavers(Request $request)
+    {
+        $today = Carbon::today();
+        $has_today = ((new FormationSaversReport())->where('report_date', $today)->count() > 0);
+        if (!$has_today) {
+            (new FormationSaversReport())
+                ->fill(['report_date' => $today])
+                ->save();
+        }
+        $this->set('reports', FormationSaversReport::all())
+            ->set('today', $today);
+    }
+
+    public function getEditSavers(Request $request, $id)
+    {
+        $this->set('report', FormationSaversReport::findOrFail($id));
+    }
+
+    public function postEditSavers(Request $request, $id)
+    {
+        $report = FormationSaversReport::findOrFail($id);
+        $report->fill($request->all())->saveOrFail();
+        return redirect('/formation/savers')->with('_message', [
+            'type' => 'success',
+            'text' => 'Строевая записка сохранена успешно'
+        ]);
+    }
+
+    public function getSaversOperationsList(Request $request, $id)
+    {
+        $report = FormationSaversReport::with('operations')->findOrFail($id);
+        $operations = $report->operations;
+        $this->set('parent', $report)
+            ->set('reports', $operations);
+    }
+
+    public function getSaversOperation(Request $request, $parent_id, $id = 0)
+    {
+        $report = Operations::findOrNew($id);
+        $this->set('report', $report);
+    }
+
+    public function postSaversOperation(Request $request, $parent_id, $id = 0)
+    {
+        $report = Operations::findOrNew($id);
+        $report->fill($request->all());
+        /** @var FormationSaversReport $parent */
+        $parent = FormationSaversReport::findOrFail($parent_id);
+        $parent->operations()->save($report);
+        return redirect('/formation/savers/events/' . $parent_id)->with('_message', [
+            'type' => 'success',
+            'text' => "Успешно сохранено",
+        ]);
+    }
+
+    public function getSaversMigrationsList(Request $request, $id)
+    {
+        $report = FormationSaversReport::with('migrations')->findOrFail($id);
+        $operations = $report->migrations;
+        $this->set('parent', $report)
+            ->set('reports', $operations);
+    }
+
+    public function getSaversMigration(Request $request, $parent_id, $id = 0)
+    {
+        $report = Migrations::findOrNew($id);
+        $this->set('report', $report);
+    }
+
+    public function postSaversMigration(Request $request, $parent_id, $id = 0)
+    {
+        $report = Migrations::findOrNew($id);
+        $report->fill($request->all());
+        /** @var FormationSaversReport $parent */
+        $parent = FormationSaversReport::findOrFail($parent_id);
+        $parent->migrations()->save($report);
+        return redirect('/formation/savers/migrations/' . $parent_id)->with('_message', [
+            'type' => 'success',
+            'text' => "Успешно сохранено",
+        ]);
+    }
+
+    public function getSaversResourcesList(Request $request, $id)
+    {
+        $report = FormationSaversReport::with('resources')->findOrFail($id);
+        $operations = $report->resources;
+        $this->set('parent', $report)
+            ->set('reports', $operations);
+    }
+
+    public function getSaversResources(Request $request, $parent_id, $id = 0)
+    {
+        $report = Resources::findOrNew($id);
+        $this->set('report', $report);
+    }
+
+    public function postSaversResources(Request $request, $parent_id, $id = 0)
+    {
+        $report = Resources::findOrNew($id);
+        $report->fill($request->all());
+        /** @var FormationSaversReport $parent */
+        $parent = FormationSaversReport::findOrFail($parent_id);
+        $parent->resources()->save($report);
+        return redirect('/formation/savers/resources/' . $parent_id)->with('_message', [
+            'type' => 'success',
+            'text' => "Успешно сохранено",
+        ]);
+    }
 
 }

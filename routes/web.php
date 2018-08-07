@@ -32,24 +32,69 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/card112', 'Card112Controller');
     Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');
 
-    Route::get('/formation/101', 'FormationController@get101');
-    Route::get('/formation/addToday', 'FormationController@getAddToday');
-    Route::post('/formation/addToday', 'FormationController@postAddToday');
-    Route::get('/formation/add101persons/{form_id}/{dept_id?}', 'FormationController@getAdd101Persons')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+')
-        ->name('formation.101.add');
-    Route::post('/formation/add101persons/{form_id}/{dept_id?}', 'FormationController@postAdd101Persons')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+');
-    Route::get('/formation/add101tech/{form_id}/{dept_id?}', 'FormationController@getAdd101Tech')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+')
-        ->name('formation.101.add');
-    Route::post('/formation/add101tech/{form_id}/{dept_id?}', 'FormationController@postAdd101Tech')
-        ->where('form_id', '[0-9]+')
-        ->where('dept_id', '[0-9]+');
-    Route::get('/formation/view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
+    // Строевые записки
+    Route::group(['prefix' => 'formation'], function () {
+        Route::get('/', 'FormationController@getServicesList');
+        Route::get('101', 'FormationController@get101');
+        Route::get('addToday', 'FormationController@getAddToday');
+        Route::post('addToday', 'FormationController@postAddToday');
+        Route::get('add101persons/{form_id}/{dept_id?}', 'FormationController@getAdd101Persons')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+')
+            ->name('formation.101.add');
+        Route::post('add101persons/{form_id}/{dept_id?}', 'FormationController@postAdd101Persons')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+');
+        Route::get('add101tech/{form_id}/{dept_id?}', 'FormationController@getAdd101Tech')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+')
+            ->name('formation.101.add');
+        Route::post('add101tech/{form_id}/{dept_id?}', 'FormationController@postAdd101Tech')
+            ->where('form_id', '[0-9]+')
+            ->where('dept_id', '[0-9]+');
+        Route::get('view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
+
+        Route::get('mudflow', 'FormationController@getMudflow');
+        Route::get('editmudflow/{id}', 'FormationController@getEditMudflow')->where('id', '[0-9]+');
+        Route::post('editmudflow/{id}', 'FormationController@postEditMudflow')->where('id', '[0-9]+');
+
+        Route::get('medical', 'FormationController@getMedical');
+        Route::get('editmedical/{id}', 'FormationController@getEditMedical')->where('id', '[0-9]+');
+        Route::post('editmedical/{id}', 'FormationController@postEditMedical')->where('id', '[0-9]+');
+
+        Route::get('editsavers/{id}', 'FormationController@getEditSavers')->where('id', '[0-9]+');
+        Route::post('editsavers/{id}', 'FormationController@postEditSavers')->where('id', '[0-9]+');
+        // ГУ РОСО спасоперации итд
+        Route::group(['prefix' => 'savers'], function () {
+            //спасоперации
+            Route::get('events/{id}', 'FormationController@getSaversOperationsList')->where('id', '[0-9]+');
+            Route::get('event/{parent_id}/{id?}', 'FormationController@getSaversOperation')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            Route::post('event/{parent_id}/{id?}', 'FormationController@postSaversOperation')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            // перемещения
+            Route::get('migrations/{id}', 'FormationController@getSaversMigrationsList')->where('id', '[0-9]+');
+            Route::get('migration/{parent_id}/{id?}', 'FormationController@getSaversMigration')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            Route::post('migration/{parent_id}/{id?}', 'FormationController@postSaversMigration')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            // силы и средства
+            Route::get('resources/{id}', 'FormationController@getSaversResourcesList')->where('id', '[0-9]+');
+            Route::get('resource/{parent_id}/{id?}', 'FormationController@getSaversResources')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            Route::post('resource/{parent_id}/{id?}', 'FormationController@postSaversResources')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+
+            Route::get('/', 'FormationController@getSavers');
+        });
+
+    });
 
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
