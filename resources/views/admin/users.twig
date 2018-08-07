@@ -1,0 +1,98 @@
+{% extends 'layout/html' %}
+{% block content %}
+    <div class="container">
+        <div class="column"></div>
+        <div class="level">
+            <div class="level-left"><h4 class="title">Пользователи системы</h4></div>
+            <div class="level-right has-text-right"><a href="{{ url('admin/users/edit') }}" class="button is-success is-outlined"><i
+                            class="fas fa-plus"></i>&nbsp;Добавить пользователя</a></div>
+        </div>
+        <div>
+            <form action="" method="get">
+                <div class="field  {{ search != null?'is-success' }} has-addons">
+                    <div class="control is-expanded">
+                        <input type="search" class="input" name="search" value="{{ search|default('') }}"
+                               id="search-input"/>
+                    </div>
+                    <div class="control">
+                        {% if search != null %}
+                            <button class="button is-outlined is-success" type="submit" id="clear-search-button"><span><i
+                                            class="fa fa-close"></i><span
+                                            class="hidden-sm-down">&nbsp; Очистить</span></span></button>
+                        {% endif %}
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span
+                                        class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <td class="column">
+            <table class="table is-fullwidth is-striped is-narrow is-hoverable">
+                {% for user in users %}
+                    <tr class="{{ user.isBlocked()?'is-warning' }}">
+                        <td class="is-expanded">
+                            <i class="fas {{ user.isBlocked()?'fa-lock':'fa-user' }}"></i>&nbsp;{{ user.name }}
+                        </td>
+                        <td class="has-text-right">
+                            <a href="{{ url('admin/users/edit/' ~ user.id) }}" class="button is-outlined is-primary"><i
+                                        class="fa fa-edit"></i><span
+                                        class="hidden-md-down">&nbsp;Изменить</span></a>
+                            {% if (_user.id == 1) and (user.id != 1) %}
+                                <a href="{{ url('admin/users/impersonate/' ~ user.id) }}"
+                                   class="button is-warning"><i class="fa fa-umbrella"></i></a>
+                            {% endif %}
+                            {% if (user.id != 1) or ((user.id == 1) and (_user.id == 1)) %}
+                                <a href="{{ url('admin/users/passwd/' ~ user.id) }}" class="button is-outlined is-black"><i
+                                            class="fa fa-cog"></i><span
+                                            class="hidden-lg-down">&nbsp;Изменить пароль</span></a>
+                            {% endif %}
+                            {% if (user.id != 1) %}
+                                {% if user.hasRight(1) %}
+                                    <a href="{{ url('admin/users/lock/' ~ user.id) }}" class="button is-danger"><i
+                                                class="fa fa-lock"></i></a>
+                                {% else %}
+                                    <a href="{{ url('admin/users/lock/' ~ user.id) }}" class="button is-success"><i
+                                                class="fa fa-lock"></i></a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td rowspan="2">
+                            <h4>Нет пользователей для отображения</h4>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+    </div>
+
+    <div class="row padded-row">
+        <div class="col">{{ users.links()|raw }}</div>
+    </div>
+    <script>
+        function submit_on_enter(e) {
+            if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
+                console.log(e);
+                return false;
+            }
+            return true;
+        }
+
+
+        function clear_search(e) {
+            document.getElementById('search-input').setAttribute('value', '');
+        }
+
+        window.addEventListener('load', function (e) {
+            document.getElementById('search-input').addEventListener('keypress', submit_on_enter);
+            const clearbutton = document.getElementById('clear-search-button');
+            if (clearbutton) {
+                clearbutton.addEventListener('click', clear_search);
+            }
+        });
+
+    </script>
+{% endblock content %}

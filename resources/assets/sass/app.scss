@@ -1,9 +1,33 @@
 @import "variables";
-
 @import "../../../node_modules/bulma/bulma";
 @import "../../../node_modules/buefy/src/scss/buefy";
 @import "common";
 
 .app-navbar {
   border-bottom: 3px solid $primary;
+}
+
+.app-navbar .navbar-item > a:not(.navbar-link) {
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+}
+
+.form-buttons-bg {
+  background-color: $white-bis;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.form-modal-border {
+  border: 1px solid $grey-light;
+  border-radius: 4px;
+  box-shadow: 0 2px 1px fade_out($grey-light, .7);
+}
+
+.form-modal-header {
+  padding: .5rem .7rem;
+}
+
+.form-modal-body {
+  margin: 1rem 1.5rem;
 }
