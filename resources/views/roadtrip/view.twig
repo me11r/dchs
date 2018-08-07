@@ -1,10 +1,12 @@
 {% extends "layout/html" %}
 {% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU&coordorder=longlat&load=package.full&wizard=constructor" type="text/javascript"></script>
     <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
     <table class="table is-narrow">
         <tr>
             <td class="has-text-right is-bold">Место пожара (адрес)</td>
-            <td>{{ trip.ticket.address|default('-') }}</td>
+            <td>{{ trip.ticket.location|default('-') }}</td>
         </tr>
         <tr>
             <td class="has-text-right is-bold">Район города</td>
@@ -62,5 +64,51 @@
             <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
             <td>{{ trip.created_at|date('d.m.Y') }}</td>
         </tr>
+        <tr>
+            <td class="has-text-right is-bold">Маршрут</td>
+            <td id="routeLink">
+                <i class="fas fa-circle-notch fa-spin fa-2x has-text-info"></i>
+            </td>
+        </tr>
     </table>
+    <div id="map"
+         style="min-width: 300px; min-height: 300px; display:none;"></div>
 {% endblock content %}
+
+{% block scripts %}
+    <script type="application/javascript">
+        ymaps.ready(init);
+        let map;
+
+        function init() {
+            map = new ymaps.Map('map', {
+                center: [76.945456, 43.238286],//Almaty
+                zoom: 9
+            });
+        }
+        (function () {
+            setTimeout(() => {
+                let from = 'Алматы {{ trip.ticket.location }}';
+                let emergency = 'Алматы {{ trip.department.address }}';
+                let fromCoords = [];
+                ymaps.geocode(from, {
+                    results: 1
+                }).then(function (res) {
+                    let firstGeoObject = res.geoObjects.get(0);
+                    // Координаты геообъекта.
+                    fromCoords = firstGeoObject.geometry.getCoordinates();
+                    ymaps.geocode(emergency, {
+                        results: 1
+                    }).then(function (res) {
+                        let firstGeoObject = res.geoObjects.get(0),
+                            // Координаты геообъекта.
+                            toCoords = firstGeoObject.geometry.getCoordinates();
+                        let link = 'https://yandex.kz/maps/162/almaty/?ll=76.945456%2C43.238286&z=12&mode=routes&rtext=';
+                        link += fromCoords[1] + ','+fromCoords[0] + '~' + toCoords[1] + ',' + toCoords[0] + '&rtt=auto';
+                        $('#routeLink').html('<a href="' + link + '" target="_blank">Посмотреть маршрут</a>');
+                    });
+                });
+            }, 3000)
+        })()
+    </script>
+{% endblock scripts %}
