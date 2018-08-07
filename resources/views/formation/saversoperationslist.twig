@@ -1,0 +1,32 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="level">
+            <div class="level-left">
+                <h3 class="title">Спасоперации</h3>
+            </div>
+            <div class="level-right">
+                <a href="{{ url('/formation/savers/event/' ~ parent.id ~'/0') }}" class="button is-success is-outlined"><i class="fas fa-plus"></i>&nbsp; Создать запись</a>
+            </div>
+        </div>
+        <div>
+            <table class="table is-narrow is-hoverable is-striped is-fullwidth">
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Описание</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for report in reports %}
+                {% else %}
+                    <tr>
+                        <th colspan="3" class="has-text-centered"><h4 class="subtitle">Нет данных о спасоперациях</h4></th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

@@ -38,9 +38,29 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationSaversReport whereTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationSaversReport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $report_date
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Formation\Migrations[] $migrations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Formation\Operations[] $operations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Formation\Resources[] $resources
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationSaversReport whereReportDate($value)
  */
 class FormationSaversReport extends Model
 {
     protected $table = 'formation_savers_report';
     protected $guarded = ['id'];
+
+    public function operations()
+    {
+        return $this->hasMany(Formation\Operations::class);
+    }
+
+    public function migrations()
+    {
+        return $this->hasMany(Formation\Migrations::class);
+    }
+
+    public function resources()
+    {
+        return $this->hasMany(Formation\Resources::class);
+    }
 }

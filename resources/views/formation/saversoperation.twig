@@ -1,0 +1,26 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <h3 class="title">Спасоперация</h3>
+        <form action="" method="post">
+            {{ csrf_field() }}
+            <div class="field">
+                <label for="event_date">Дата</label>
+                <input type="text" id="event_date" class="input" name="event_date" value="{{ report.event_date|default(date('today')|date('Y-m-d')) }}"/>
+            </div>
+            <div class="field">
+                <label for="comment">Описание</label>
+                <textarea class="textarea" name="comment" id="comment" cols="30" rows="10">{{ report.comment|default('') }}</textarea>
+            </div>
+            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

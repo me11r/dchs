@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\FireDepartment;
+use App\Formation\Operations;
 use App\FormationMedicalReport;
 use App\FormationMudflowReport;
 use App\FormationPersonsReport;
@@ -429,6 +430,25 @@ class FormationController extends AuthorizedController
             'type' => 'success',
             'text' => 'Строевая записка сохранена успешно'
         ]);
+    }
+
+    public function getSaversOperationsList(Request $request, $id)
+    {
+        $report = FormationSaversReport::findOrFail($id);
+        $operations = $report->operations;
+        $this->set('parent', $report)
+            ->set('reports', $operations);
+    }
+
+    public function getSaversOperation(Request $request, $parent_id, $id = 0)
+    {
+        $report = Operations::findOrNew($id);
+        $this->set('report', $report);
+    }
+
+    public function postSaversOperation(Request $request, $parent_id, $id = 0)
+    {
+
     }
 
 }
