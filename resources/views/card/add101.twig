@@ -6,22 +6,22 @@
             {{ csrf_field() }}
             <div class="tabs is-boxed" id="">
                 <ul>
-                    <li><a href="#tab_call" onclick="window.add101.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
+                    <li><a href="#tab_call" onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
                     </li>
-                    <li><a href="#tab_notify" onclick="window.add101.setTab(1);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
+                    <li><a href="#tab_notify" onclick="window.add101tabs.setTab(1);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
                     </li>
                     <li>
-                        <a href="#tab_truck" onclick="window.add101.setTab(2);">
+                        <a href="#tab_truck" onclick="window.add101tabs.setTab(2);">
                             <i class="fas fa-truck-moving"></i>&nbsp;Подразделения
                         </a>
                     </li>
                     <li>
-                        <a href="#tab_other" onclick="window.add101.setTab(3);"><i class="fas fa-info-circle"></i>&nbsp;
+                        <a href="#tab_other" onclick="window.add101tabs.setTab(3);"><i class="fas fa-info-circle"></i>&nbsp;
                             Прочее
                         </a>
                     </li>
                     <li>
-                        <a href="#tab_summary" onclick="window.add101.setTab(4);">
+                        <a href="#tab_summary" onclick="window.add101tabs.setTab(4);">
                             <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
                         </a>
                     </li>
@@ -42,21 +42,28 @@
                             </div>
                         </div>
                     {% endif %}
-                    <div class="field">
+                    <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
                         <label for="location">Место пожара (Адрес)</label>
-                        <textarea name="location" id="location" class="textarea" cols="30"
-                                  rows="3">{{ ticket.location|default('') }}</textarea>
+                        <textarea name="location"
+                                  id="location"
+                                  class="textarea"
+                                  cols="30"
+                                  v-model="location"
+                                  rows="3">
+                        </textarea>
                     </div>
                     <div class="field">
                         <p class="control">
                             <label for="city_area">Район города</label>
                         </p>
-                        <div class="select">
-                            <select name="city_area_id" id="city_area">
+                        <div class="select"
+                             data-component="simple-select"
+                             data-value="{{ ticket.city_area_id }}"
+                             data-name="city_area_id">
+                            <select name="city_area_id" id="city_area" v-model="selectedId">
                                 <option value="">-</option>
                                 {% for area in city_area %}
-                                    <option value="{{ area.id }}"
-                                            {% if area.id == ticket.city_area_id %}selected{% endif %}>{{ area.name }}</option>
+                                    <option value="{{ area.id }}">{{ area.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -124,20 +131,69 @@
                             </select>
                         </div>
                     </div>
-                    <div class="field">
-                        <p class="control">
-                            <label for="fire_level_id">Класс пожара</label>
+
+                    <div class="field is-grouped">
+                        <p class="control"
+                           data-component="object-name-input"
+                           data-value="{{ ticket.object_name|default('') }}">
+                            <label for="object_name">Наименование объекта</label>
+                            <input type="text"
+                                   class="input"
+                                   name="object_name"
+                                   id="object_name"
+                                   v-model="object_name"
+                                   required/>
                         </p>
-                        <div class="select">
-                            <select name="fire_level_id" id="fire_level_id">
-                                <option value="">-</option>
-                                {% for object in fire_levels %}
-                                    <option value="{{ object.id }}"
-                                            {% if object.id == ticket.fire_level_id %}selected{% endif %}>{{ object.name }}</option>
-                                {% endfor %}
-                            </select>
+
+                        <p class="control"
+                           data-component="buefy-common-select"
+                           data-name="operational_plan_id"
+                           data-value="{{ ticket.operational_plan_id }}">
+                            <label for="operational_plan_id">Оперативный план</label>
+                            <input type="hidden"
+                                   name="operational_plan_id"
+                                   id="operational_plan_id"
+                                   v-model="selectedId">
+                            <buefy-common-select
+                                    :options='{{ operational_plans | json_encode() | raw }}'
+                                    :min-length="1"
+                                    v-model="selectedId">
+                            </buefy-common-select>
+                        </p>
+
+                        <div class="control">
+                            <label for="fire_level_id">Ранг пожара</label>
+                            <div class="select"
+                                 data-component="simple-select"
+                                 data-value="{{ ticket.fire_level_id }}"
+                                 data-name="fire_level_id"
+                                 style="display: block">
+                                <select name="fire_level_id" id="fire_level_id" v-model="selectedId">
+                                    <option value="">-</option>
+                                    {% for object in fire_levels %}
+                                        <option value="{{ object.id }}">{{ object.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
+
+                        <p class="control"
+                           data-name="fire_department_id"
+                           data-component="buefy-common-select"
+                           data-value="{{ ticket.fire_department_id }}">
+                            <label for="fire_department_id">Микроучасток</label>
+                            <input type="hidden"
+                                   name="fire_department_id"
+                                   id="fire_department_id"
+                                   v-model="selectedId">
+                            <buefy-common-select
+                                    :options='{{ fire_departments | json_encode() | raw }}'
+                                    :min-length="1"
+                                    v-model="selectedId">
+                            </buefy-common-select>
+                        </p>
                     </div>
+
                     <div class="field">
                         <div class="checkbox">
                             <input type="hidden" name="people_in_danger" value="0"/>
@@ -576,7 +632,6 @@
                         </div>
 
                     </div>
-                    <!-- -->
                     <div class="field is-grouped">
                         <div class="control">
                             <label for="rescued_count">Спасено людей
@@ -664,13 +719,13 @@
                             <label class="file-label">
                                 <input class="file-input" type="file">
                                 <span class="file-cta">
-        <span class="file-icon">
-          <i class="fas fa-upload"></i>
-        </span>
-        <span class="file-label">
-        Приложить объяснения очевидца
-        </span>
-      </span>
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Приложить объяснения очевидца
+                                    </span>
+                              </span>
                             </label>
                         </div>
                     </div>
@@ -679,13 +734,13 @@
                             <label class="file-label">
                                 <input class="file-input" type="file">
                                 <span class="file-cta">
-        <span class="file-icon">
-          <i class="fas fa-upload"></i>
-        </span>
-        <span class="file-label">
-        Приложить план пожара
-        </span>
-      </span>
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Приложить план пожара
+                                    </span>
+                                 </span>
                             </label>
                         </div>
                     </div>

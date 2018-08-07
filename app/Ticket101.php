@@ -11,6 +11,7 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
 use App\Dictionary\TripResult;
+use App\Models\OperationalPlan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -506,5 +507,15 @@ class Ticket101 extends Model
     public function departments()
     {
         return $this->belongsToMany(FireDepartment::class, 'roadtrip_plan', 'card_id', 'department_id');
+    }
+
+    public function operational_plan()
+    {
+        return $this->hasOne(OperationalPlan::class, 'id', 'operational_plan_id');
+    }
+
+    public function fire_department()
+    {
+        return $this->hasOne(OperationalPlan::class, 'id', 'operational_plan_id');
     }
 }
