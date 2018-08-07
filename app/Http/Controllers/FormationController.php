@@ -434,7 +434,7 @@ class FormationController extends AuthorizedController
 
     public function getSaversOperationsList(Request $request, $id)
     {
-        $report = FormationSaversReport::findOrFail($id);
+        $report = FormationSaversReport::with('operations')->findOrFail($id);
         $operations = $report->operations;
         $this->set('parent', $report)
             ->set('reports', $operations);
@@ -448,7 +448,15 @@ class FormationController extends AuthorizedController
 
     public function postSaversOperation(Request $request, $parent_id, $id = 0)
     {
-
+        $report = Operations::findOrNew($id);
+        $report->fill($request->all());
+        /** @var FormationSaversReport $parent */
+        $parent = FormationSaversReport::findOrFail($parent_id);
+        $parent->operations()->save($report);
+        return redirect('/formation/savers/events/' . $parent_id)->with('_message', [
+            'type' => 'success',
+            'text' => "Успешно сохранено",
+        ]);
     }
 
 }
