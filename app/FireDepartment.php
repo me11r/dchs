@@ -6,6 +6,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 
 /**
  * App\FireDepartment
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\FireDepartment withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\FireDepartment withoutTrashed()
- * @mixin \Eloquent
+ * @mixin \Eloquent | \Illuminate\Database\Eloquent\Builder
  * @property mixed $name
  */
 class FireDepartment extends Model
