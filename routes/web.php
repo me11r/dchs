@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('editsavers/{id}', 'FormationController@postEditSavers')->where('id', '[0-9]+');
         // ГУ РОСО спасоперации итд
         Route::group(['prefix' => 'savers'], function () {
+            //спасоперации
             Route::get('events/{id}', 'FormationController@getSaversOperationsList')->where('id', '[0-9]+');
             Route::get('event/{parent_id}/{id?}', 'FormationController@getSaversOperation')
                 ->where('parent_id', '[0-9]+')
@@ -73,6 +74,16 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('event/{parent_id}/{id?}', 'FormationController@postSaversOperation')
                 ->where('parent_id', '[0-9]+')
                 ->where('id', '[0-9]+');
+            // перемещения
+            Route::get('migrations/{id}', 'FormationController@getSaversMigrationsList')->where('id', '[0-9]+');
+            Route::get('migration/{parent_id}/{id?}', 'FormationController@getSaversMigration')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            Route::post('migration/{parent_id}/{id?}', 'FormationController@postSaversMigration')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            Route::get('/', 'FormationController@getSavers');
+
             Route::get('/', 'FormationController@getSavers');
         });
 
