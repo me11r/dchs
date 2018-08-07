@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\FireDepartment;
 use App\Formation\Migrations;
 use App\Formation\Operations;
@@ -19,6 +18,7 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
+use App\Services\FormationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -89,7 +89,6 @@ class FormationController extends AuthorizedController
             $model = new FormationPersonsReport();
         }
         $this->set('model', $model);
-
 
         $this->set('departments', FireDepartment::all())
             ->set('report', (new FormationReport)->find($form_id))
@@ -194,8 +193,7 @@ class FormationController extends AuthorizedController
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
-
-    public function getView101(Request $request, $form_id)
+    public function getView101(Request $request, $form_id, FormationService $formationService)
     {
         $people_fieldlist = [
             'В карауле по списку л/с',
@@ -333,16 +331,24 @@ class FormationController extends AuthorizedController
             'field_4',
         ];
 
-        $this->set('departments', FireDepartment::all());
+        $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
+        $departments = FireDepartment::whereNotIn('id', $excludedIds)->get();
+        $this->set('departments', $departments);
+        $this->set('excluded_departments', FireDepartment::whereIn('id', $excludedIds)->get());
+
         $this->set('report', (new FormationReport)->find($form_id));
         $tech = (new FormationTechReport)->where('form_id', $form_id)->get()->keyBy('dept_id');
         $people = (new FormationPersonsReport)->where('form_id', $form_id)->get()->keyBy('dept_id');
+
+        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+
         $this->set('people', $people)
             ->set('tech', $tech)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)
             ->set('people_fl', $people_fieldlist)
-            ->set('tech_fl', $tech_fieldlist);
+            ->set('tech_fl', $tech_fieldlist)
+            ->set('sumArray', $sumArray);
     }
 
     public function getServicesList(Request $request)
