@@ -13,8 +13,7 @@ export default class Tabs {
         this.activeTab = i;
     }
 
-    nextTab(e) {
-        e.preventDefault();
+    nextTab() {
         let nextTab = this.activeTab + 1;
         if (nextTab > 4) {
             nextTab = 0;

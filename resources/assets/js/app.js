@@ -44,14 +44,19 @@ if (document.getElementById(hydrantMapListBlock)) {
 
 // 101 карточка
 if (document.getElementById('cardadd101')) {
-    window.add101tabs = new Tabs();
+    const tabs = new Tabs();
+    window.add101tabs = tabs;
 
     window.addEventListener('load', () => {
         (new Add101Functions()).bindElements().bindPopupMessage();
 
         document.getElementById('preload_pane').style.display = 'none';
         window.add101tabs.setTab(0);
-        document.getElementById('nexttab').addEventListener('click', window.add101tabs.nextTab);
+        document.getElementById('nexttab')
+            .addEventListener('click', (e) => {
+                e.preventDefault();
+                tabs.nextTab();
+            });
     });
 }
 
