@@ -82,7 +82,14 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('migration/{parent_id}/{id?}', 'FormationController@postSaversMigration')
                 ->where('parent_id', '[0-9]+')
                 ->where('id', '[0-9]+');
-            Route::get('/', 'FormationController@getSavers');
+            // силы и средства
+            Route::get('resources/{id}', 'FormationController@getSaversResourcesList')->where('id', '[0-9]+');
+            Route::get('resource/{parent_id}/{id?}', 'FormationController@getSaversResources')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
+            Route::post('resource/{parent_id}/{id?}', 'FormationController@postSaversResources')
+                ->where('parent_id', '[0-9]+')
+                ->where('id', '[0-9]+');
 
             Route::get('/', 'FormationController@getSavers');
         });

@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\FireDepartment;
 use App\Formation\Migrations;
 use App\Formation\Operations;
+use App\Formation\Resources;
 use App\FormationMedicalReport;
 use App\FormationMudflowReport;
 use App\FormationPersonsReport;
@@ -482,6 +483,33 @@ class FormationController extends AuthorizedController
         $parent = FormationSaversReport::findOrFail($parent_id);
         $parent->migrations()->save($report);
         return redirect('/formation/savers/migrations/' . $parent_id)->with('_message', [
+            'type' => 'success',
+            'text' => "Успешно сохранено",
+        ]);
+    }
+
+    public function getSaversResourcesList(Request $request, $id)
+    {
+        $report = FormationSaversReport::with('resources')->findOrFail($id);
+        $operations = $report->resources;
+        $this->set('parent', $report)
+            ->set('reports', $operations);
+    }
+
+    public function getSaversResources(Request $request, $parent_id, $id = 0)
+    {
+        $report = Resources::findOrNew($id);
+        $this->set('report', $report);
+    }
+
+    public function postSaversResources(Request $request, $parent_id, $id = 0)
+    {
+        $report = Resources::findOrNew($id);
+        $report->fill($request->all());
+        /** @var FormationSaversReport $parent */
+        $parent = FormationSaversReport::findOrFail($parent_id);
+        $parent->resources()->save($report);
+        return redirect('/formation/savers/resources/' . $parent_id)->with('_message', [
             'type' => 'success',
             'text' => "Успешно сохранено",
         ]);

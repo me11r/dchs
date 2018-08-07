@@ -1,0 +1,45 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <h3 class="title">Строевая записка</h3>
+        <div>
+            <form action="" method="post">
+                {{ csrf_field() }}
+                <div>
+                    <div class="field">
+                        <label for="formation" class="">Подразделение</label>
+                        <input type="text" class="input" id="formation" name="formation" value="{{ report.formation|default('') }}" />
+                    </div>
+                    <div class="field">
+                        <label for="staff_count">Количество человек по штату
+                        </label>
+                        <input type="number" class="input" id="staff_count" name="staff_count" value="{{ report.staff_count|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="people_count">Количество человек в наличии
+                        </label>
+                        <input type="number" class="input" id="people_count" name="people_count" value="{{ report.people_count|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="on_duty">Всего/ из них на суточном дежурстве
+                        </label>
+                        <input type="number" class="input" id="on_duty" name="on_duty" value="{{ report.on_duty|default(0) }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="tech_count">Количество автотехники в боевом расчете
+                        </label>
+                        <input type="number" class="input" id="tech_count" name="tech_count" value="{{ report.tech_count|default(0) }}"/>
+                    </div>
+                <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                    <div class="level">
+                        <p class="level-left">
+                        </p>
+                        <p class="level-right">
+                            <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
