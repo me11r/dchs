@@ -65,10 +65,17 @@
 
             </div>
             <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="navbar-item"><a
-                        href="/dictionaries"
-                        class="button is-inline-block-widescreen is-block is-small"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a
+                        href="#"
+                        class="navbar-link is-small"><i class="fas fa-cog"></i>&nbsp;Управление</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            href="/dictionaries"
+                            class="navbar-item"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
+                        <a
+                            href="/admin/users"
+                            class="navbar-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
                     </div>
                 </div>
                 <div class="navbar-item">

@@ -31,34 +31,19 @@ class AdminController extends AuthorizedController
         $this->needRight(Right::CAN_MANAGE_USERS);
 
         $search = $request->input('search');
-        $users = User::with('rights')->with('office');
-        if (isset($search)) {
+        $users = User::with('rights');
+        if ($search !== null) {
             $users->where('name', 'like', $search . '%');
-            $users->orWhere('phone_mobile', 'like', '%' . $search . '%');
         }
         if (\Auth::user()->id !== 1) // not admin
         {
             $users->where('id', '<>', 1);
         }
         $users = $users->paginate($this->paginator_rows);
-        if (isset($search)) {
+        if ($search !== null) {
             $users->appends(['search' => $search]);
         }
         $this->set('users', $users)->set('search', $search);
-    }
-
-    /**
-     * @param $office_id
-     * @throws AccessDeniedException
-     */
-    public function getUsersOffice($office_id)
-    {
-        $this->needRight(Right::CAN_MANAGE_USERS);
-        $this->layout = 'admin/users';
-        $office = Office::findOrFail($office_id);
-        $users = User::where('office_id', '=', $office_id);
-        $users = $users->paginate($this->paginator_rows);
-        $this->set('users', $users)->set('office', $office)->set('search', '');
     }
 
     /**
@@ -70,13 +55,12 @@ class AdminController extends AuthorizedController
         $this->needRight(Right::CAN_MANAGE_USERS);
 
         $rights = Right::with('group')->orderBy('right_group_id')->get();
-        $offices = Office::all();
         $user = User::findOrNew($user_id);
         if (($user_id !== null) and (!$user->exists)) // not new, but don't exists
         {
             throw new AccessDeniedException();
         }
-        $this->set('rights', $rights)->set('user', $user)->set('offices', $offices);
+        $this->set('rights', $rights)->set('user', $user);
     }
 
     /**

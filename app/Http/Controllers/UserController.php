@@ -6,10 +6,6 @@ use Illuminate\Http\Request;
 
 class UserController extends AuthorizedController
 {
-    public function getCard($user_id)
-    {
-
-    }
 
     public function getPassword()
     {
@@ -27,17 +23,4 @@ class UserController extends AuthorizedController
         return redirect('/')->with('_message', ['type' => 'success', 'text' => 'Пароль пользователя успешно изменен']);
     }
 
-    public function getTelegram()
-    {
-        $user = \Auth::user();
-        if ($user->telegram_chat_id !== null)
-        {
-            return redirect('https://t.me/glotusbot');
-        }
-        if ($user->telegram_code === null)
-        {
-            $user->telegram_code = random_int(10000000, 99999999);
-            $user->save();
-        }
-    }
 }
