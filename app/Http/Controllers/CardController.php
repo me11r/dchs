@@ -76,6 +76,7 @@ class CardController extends AuthorizedController
         $this->set('burn_object', BurntObject::all());
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
+        $this->set('fire_object_options', FireObject::all());
         $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item){
             return [
                 'id' => $item->id,

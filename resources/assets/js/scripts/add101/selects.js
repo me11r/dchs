@@ -1,4 +1,3 @@
-import {BuefyCommonSelect} from '../../components';
 import {globalBus} from '../global-bus';
 import Vue from 'vue';
 
@@ -19,7 +18,9 @@ export default function bindSelects() {
                 mounted() {
                     this.selectedId = parseInt(element.dataset.value);
                     this.name = element.dataset.name;
-                    globalBus.$on('specialPlanFound', this.onSpecialPlanFound);
+                    if (element.dataset.special === 'specialPlan') {
+                        globalBus.$on('specialPlanFound', this.onSpecialPlanFound);
+                    }
                 }
             });
         });
