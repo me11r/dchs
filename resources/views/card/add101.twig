@@ -58,6 +58,7 @@
                         </p>
                         <div class="select"
                              data-component="simple-select"
+                             data-special="specialPlan"
                              data-value="{{ ticket.city_area_id }}"
                              data-name="city_area_id">
                             <select name="city_area_id" id="city_area" v-model="selectedId">
@@ -117,12 +118,37 @@
                             </b-autocomplete>
                         </div>
                     </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <label for="pre_information_id">Предварительная информация</label>
+                        </div>
+                        <div class="select"
+                             data-component="simple-select"
+                             data-value="{{ ticket.pre_information_id }}"
+                             data-name="pre_information_id"
+                             style="width:50%; padding-right: 6px;">
+                            <select name="pre_information_id"
+                                    id="pre_information_id"
+                                    v-model="selectedId"
+                                    style="width: 100%"
+                                    required>
+                                <option value="">-</option>
+                                {% for object in fire_object_options %}
+                                    <option value="{{ object.id }}">{{ object.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="field">
                         <p class="control">
                             <label for="fire_object_id">Что горит</label>
                         </p>
-                        <div class="select">
-                            <select name="fire_object_id" id="fire_object_id">
+                        <div class="select" style="width:50%; padding-right: 6px;">
+                            <select name="fire_object_id"
+                                    id="fire_object_id"
+                                    style="width: 100%">
                                 <option value="">-</option>
                                 {% for object in fire_object %}
                                     <option value="{{ object.id }}"
@@ -165,6 +191,7 @@
                             <label for="fire_level_id">Ранг пожара</label>
                             <div class="select"
                                  data-component="simple-select"
+                                 data-special="specialPlan"
                                  data-value="{{ ticket.fire_level_id }}"
                                  data-name="fire_level_id"
                                  style="display: block">
