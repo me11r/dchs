@@ -1,5 +1,12 @@
 {% extends "layout/html" %}
 {% block content %}
+    <script>
+        window.ticket101add = {
+            records: {{ ticket.other_records | json_encode() | raw }},
+            trunks: {{ trunks | json_encode() | raw }}
+        };
+    </script>
+
     <section class="container" id="cardadd101">
         <div class=""><h4 class="title" style="padding: 3px 15px">Добавление: Карточка 101</h4></div>
         <form action="" method="post">
@@ -535,36 +542,7 @@
                 </div>
                 <div id="tab_other" class="is-hidden">
                     <h5 class="subtitle">Обстановка с места пожара:</h5>
-                    {% for index in 1..5 %}
-                        <div class="field is-grouped">
-                            <div class="control is-narrow" data-component="timepicker"
-                                 data-value="{{ attribute(ticket, 'update_' ~ index ~ '_time')|default('') }}">
-                                <label for="update_{{ index }}_time">Время</label>
-                                <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far"
-                                              name="update_{{ index }}_time" type="text" :value="value">
-                                    <div class="field is-grouped" style="justify-content: space-between">
-                                        <p class="control">
-                                            <a class="button is-primary is-small"
-                                               @click="()=> {value = new Date(); close();}">
-                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                <span>Сейчас</span>
-                                            </a>
-                                        </p>
-                                        <p class="control">
-                                            <a class="button is-outlined is-small" @click="close()">
-                                                <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                            </a>
-                                        </p>
-                                    </div>
-                                </b-timepicker>
-                            </div>
-                            <div class="control is-expanded">
-                                <label for="update_{{ index }}_info">Ситуация</label>
-                                <input name="update_{{ index }}_info" type="text" class="input"
-                                       value="{{ attribute(ticket, 'update_' ~ index ~ '_info')|default('') }}"/>
-                            </div>
-                        </div>
-                    {% endfor %}
+                    <div id="ticket101_other_records"></div>
                     <div class="field">
                         <label for="add_info">Дополнительная информация</label>
                         <textarea name="add_info" id="add_info" class="textarea" cols="30" rows="3"></textarea>

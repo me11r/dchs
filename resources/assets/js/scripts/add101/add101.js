@@ -5,6 +5,8 @@ import bindLocationInput from './location-input';
 import bindObjectNameInput from './object-name-input';
 import bindSelects from './selects';
 import {globalBus} from '../global-bus';
+import Vue from 'vue';
+import OtherRecords from '../../components/ticket101/OtherRecords';
 
 export default class Add101Functions {
     bindElements() {
@@ -14,6 +16,7 @@ export default class Add101Functions {
         bindBuefyCommonSelects();
         bindObjectNameInput();
         bindSelects();
+        this.bindOtherRecordsBlock();
         return this;
     }
 
@@ -22,5 +25,9 @@ export default class Add101Functions {
             alert(specialPlan['object_name']);
         });
         return this;
+    }
+
+    bindOtherRecordsBlock() {
+        return new Vue({el: '#ticket101_other_records', render: h => h(OtherRecords)});
     }
 }
