@@ -12,6 +12,7 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
 use App\Dictionary\TripResult;
 use App\Models\OperationalPlan;
+use App\Models\Ticket101\Ticket101OtherRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -525,5 +526,13 @@ class Ticket101 extends Model
     public function fire_department()
     {
         return $this->hasOne(OperationalPlan::class, 'id', 'operational_plan_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function other_records()
+    {
+        return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
     }
 }

@@ -17,6 +17,8 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\FireDepartment;
 use App\Models\OperationalPlan;
+use App\Models\Ticket101\Ticket101OtherRecord;
+use App\Models\Trunk;
 use App\Ticket101;
 use Illuminate\Http\Request;
 
@@ -89,15 +91,31 @@ class CardController extends AuthorizedController
                 'text' => $item->name
             ];
         })->toArray());
-        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2'])->findOrNew($card_id);
+        $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
+        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records'])->findOrNew($card_id);
+
         $this->set('ticket', $ticket);
     }
 
     public function postAdd101(Request $request, $card_id = 0)
     {
+        $data = $request->all();
+        $otherRecords = array_get($data, 'other_records', []);
+        unset($data['other_records']);
+
         $card = Ticket101::findOrNew($card_id);
-        $card->fill($request->all());
+        $card->fill($data);
         $card->save();
+
+        $this->saveOtherRecords($card, $otherRecords);
+
         return redirect('/card/101')->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
+    }
+
+    private function saveOtherRecords(Ticket101 $ticket101, array $otherRecords) {
+        $ticket101->other_records()->delete();
+        $ticket101->other_records()->saveMany(array_map(function ($item){
+            return new Ticket101OtherRecord($item);
+        }, $otherRecords));
     }
 }
