@@ -64,15 +64,15 @@
             <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
             <td>{{ trip.created_at|date('d.m.Y') }}</td>
         </tr>
-        <tr>
+        {#<tr>
             <td class="has-text-right is-bold">Маршрут</td>
             <td id="routeLink">
                 <i class="fas fa-circle-notch fa-spin fa-2x has-text-info"></i>
             </td>
-        </tr>
+        </tr>#}
     </table>
     <div id="map"
-         style="min-width: 300px; min-height: 300px; display:none;"></div>
+         style="width: 560px;height: 300px; "></div>
 {% endblock content %}
 
 {% block scripts %}
@@ -83,7 +83,7 @@
         function init() {
             map = new ymaps.Map('map', {
                 center: [76.945456, 43.238286],//Almaty
-                zoom: 9
+                zoom: 9,
             });
         }
         (function () {
@@ -92,6 +92,23 @@
                 let emergency = 'Алматы {{ trip.department.address }}';
                 let fromCoords = [];
                 ymaps.geocode(from, {
+                    results: 1
+                }).then(function (res) {
+                    let firstGeoObject = res.geoObjects.get(0);
+                    // Координаты геообъекта.
+                    fromCoords = firstGeoObject.geometry.getCoordinates();
+                    ymaps.route([from, emergency], {avoidTrafficJams: true}).then(
+                        function (route) {
+                            map.geoObjects.add(route);
+                            map.setCenter(fromCoords, 13);
+                        },
+                        function (error) {
+                            alert('Возникла ошибка: ' + error.message);
+                        }
+                    );
+                });
+
+                /*ymaps.geocode(from, {
                     results: 1
                 }).then(function (res) {
                     let firstGeoObject = res.geoObjects.get(0);
@@ -107,7 +124,7 @@
                         link += fromCoords[1] + ','+fromCoords[0] + '~' + toCoords[1] + ',' + toCoords[0] + '&rtt=auto';
                         $('#routeLink').html('<a href="' + link + '" target="_blank">Посмотреть маршрут</a>');
                     });
-                });
+                });*/
             }, 3000)
         })()
     </script>
