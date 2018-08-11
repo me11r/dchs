@@ -471,6 +471,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereFireDepartmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereObjectName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereOperationalPlanId($value)
+ * @property int $pre_information_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Ticket101\Ticket101OtherRecord[] $other_records
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePreInformationId($value)
  */
 class Ticket101 extends Model
 {

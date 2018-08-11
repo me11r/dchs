@@ -18,6 +18,8 @@ class AddAdminSeeder extends Seeder
             'password' => bcrypt('password8')
         ]);
 
-        $user->rights()->sync([1,2,3,4,5,6,7]);
+        $rights = \App\Right::all(['id']);
+        $rights = $rights->pluck('id');
+        $user->rights()->sync($rights);
     }
 }

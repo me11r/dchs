@@ -10,10 +10,18 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary;
+use App\Right;
+use App\User;
 use Illuminate\Http\Request;
 
 class DictionaryController extends AuthorizedController
 {
+    public function __construct(Request $request)
+    {
+        parent::__construct();
+        $this->needRight(Right::CAN_EDIT_DICTIONARIES);
+    }
+
     public function getIndex()
     {
         $dicts = Dictionary::all();

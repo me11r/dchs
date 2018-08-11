@@ -35,6 +35,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
+ * @property int|null $fire_department_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereFireDepartmentId($value)
  */
 class User extends Authenticatable
 {
@@ -79,19 +81,23 @@ class User extends Authenticatable
     {
         /** @var array $rights */
         $rights = $this->rights->pluck('id')->toArray();
-        return count(array_intersect($rights, $rights_ids)) > 0;
+        return \count(array_intersect($rights, $rights_ids)) > 0;
     }
 
     public function hasAllRights($rights_ids)
     {
         /** @var array $rights */
         $rights = $this->rights->pluck('id')->toArray();
-        return count(array_intersect($rights, $rights_ids)) === count($rights);
+        return \count(array_intersect($rights, $rights_ids)) === count($rights);
     }
 
-    public function isBlocked()
+    public function isBlocked(): bool
     {
         return $this->hasRight(1) !== true;
+    }
+
+    public function department(){
+
     }
 
 }

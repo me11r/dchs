@@ -41,7 +41,8 @@
                         Путевой лист
                     </a>
                 </div>
-                <div class="navbar-item">
+                <div class="navbar-item"
+                v-if="hasRight(11)">
                     <a
                         href="/pdf/dailyReport"
                         target="_blank"
@@ -58,22 +59,28 @@
                     href="/information"
                     class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-address-book"></i>&nbsp;
                     Информация</a></div>
-                <div class="navbar-item"><a
-                    href="/hydrant"
-                    class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-truck"></i>&nbsp;
-                    Расположение гидрантов</a></div>
+                <div
+                    v-if="hasRight(10)"
+                    class="navbar-item"><a
+                        href="/hydrant"
+                        class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-truck"></i>&nbsp;
+                        Расположение гидрантов</a></div>
 
             </div>
             <div class="navbar-end">
-                <div class="navbar-item has-dropdown is-hoverable is-small">
+                <div
+                    class="navbar-item has-dropdown is-hoverable is-small"
+                    v-if="hasAnyRight(7,9)">
                     <a
                         href="#"
                         class="navbar-link is-small"><i class="fas fa-cog"></i>&nbsp;Управление</a>
                     <div class="navbar-dropdown">
                         <a
+                            v-if="hasRight(9)"
                             href="/dictionaries"
                             class="navbar-item"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
                         <a
+                            v-if="hasRight(7)"
                             href="/admin/users"
                             class="navbar-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
                     </div>
@@ -103,7 +110,8 @@ export default {
     data: function () {
         return {
             opened: false,
-            csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            rights: []
         };
     },
     computed: {
@@ -115,10 +123,31 @@ export default {
         toggleOpen: function () {
             this.opened = !this.opened;
         },
+
         logout: function () {
             document.getElementById('logout').submit();
+        },
+        hasRight: function (id) {
+            return this.rights[id] !== undefined;
+        },
+        hasAnyRight: function () {
+            const ids = Array.from(arguments);
+            let hasRight = false;
+            ids.forEach((value, index) => {
+                if (this.hasRight(value)) {
+                    hasRight = true;
+                }
+            });
+            return hasRight;
         }
+
+    },
+    mounted: function () {
+        window.axios.get('/ajax/rights/list').then((response) => {
+            this.rights = response.data;
+        });
     }
+
 };
 </script>
 
