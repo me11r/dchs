@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Vue from 'vue';
-import {_} from 'vue-underscore';
+import {_} from 'lodash';
 import {globalBus} from '../global-bus';
 
 export default function bindLocationInputApp() {
