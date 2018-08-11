@@ -28,6 +28,10 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Query\Builder|\App\FireDepartment withoutTrashed()
  * @mixin \Eloquent | \Illuminate\Database\Eloquent\Builder
  * @property mixed $name
+ * @property string|null $address
+ * @property int|null $city_area_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment whereCityAreaId($value)
  */
 class FireDepartment extends Model
 {

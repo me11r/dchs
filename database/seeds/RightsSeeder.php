@@ -17,7 +17,7 @@ class RightsSeeder extends Seeder
             ['id' => 1, 'title' => 'Общие права'],
             ['id' => 2, 'title' => 'Доступ к заявкам'],
             ['id' => 3, 'title' => 'Администрирование'],
-            //['id' => 5, 'title' => 'Общие права'],
+            ['id' => 4, 'title' => 'Общие права'],
 
         ]);
 
@@ -32,6 +32,10 @@ class RightsSeeder extends Seeder
             ['id' => 6, 'right_group_id' => 2, 'title' => 'Удаление заявок'],
 
             ['id' => 7, 'right_group_id' => 3, 'title' => 'Управление пользователями системы'],
+            ['id' => 9, 'right_group_id' => 3, 'title' => 'Редактирование справочников'],
+            ['id' => 8, 'right_group_id' => 4, 'title' => 'Получение путевых листов ПЧ'],
+            ['id' => 10, 'right_group_id' => 4, 'title' => 'Может изменять список гидрантов'],
+            ['id' => 11, 'right_group_id' => 4, 'title' => 'Может смотреть суточный отчет']
         ]);
     }
 }

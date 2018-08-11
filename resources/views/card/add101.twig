@@ -183,7 +183,7 @@
                         <p class="control"
                            data-component="buefy-common-select"
                            data-name="operational_plan_id"
-                           data-value="{{ ticket.operational_plan_id }}">
+                           data-value="{{ ticket.operational_plan_id|default(0) }}">
                             <label for="operational_plan_id">Оперативный план</label>
                             <input type="hidden"
                                    name="operational_plan_id"
@@ -216,7 +216,7 @@
                         <p class="control"
                            data-name="fire_department_id"
                            data-component="buefy-common-select"
-                           data-value="{{ ticket.fire_department_id }}">
+                           data-value="{{ ticket.fire_department_id|default(0) }}">
                             <label for="fire_department_id">Микроучасток</label>
                             <input type="hidden"
                                    name="fire_department_id"
