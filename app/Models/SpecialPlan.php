@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereObjectName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereOperationalPlanId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin \Eloquent | Builder
  */
 class SpecialPlan extends Model
 {

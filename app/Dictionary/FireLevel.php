@@ -4,6 +4,7 @@
 namespace App\Dictionary;
 
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin \Eloquent | Builder
  */
 class FireLevel extends Model
 {

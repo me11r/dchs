@@ -76,6 +76,9 @@
                         <a
                             href="/admin/users"
                             class="navbar-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
+                        <a
+                            href="/import"
+                            class="navbar-item"><i class="fas fa-arrow-down"></i>&nbsp;Импорт</a>
                     </div>
                 </div>
                 <div class="navbar-item">
