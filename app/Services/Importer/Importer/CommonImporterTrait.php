@@ -15,9 +15,6 @@ trait CommonImporterTrait
      */
     private function parseItems($filePath, $readerType = 'Xlsx'): array
     {
-        $reader = IOFactory::createReader($readerType);
-        $spreadsheet = $reader->load($filePath);
-        $worksheet = $spreadsheet->getActiveSheet();
-        return $worksheet->toArray();
+        return IOFactory::createReader($readerType)->load($filePath)->getActiveSheet()->toArray();
     }
 }
