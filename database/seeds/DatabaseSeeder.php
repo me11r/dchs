@@ -17,5 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DictionarySeeder::class);
         $this->call(MudflowProtectionSeeder::class);
         $this->call(SpecialPlanSeeder::class);
+
+        $this->call(FireDepartmentUsersSeeder::class);
     }
 }

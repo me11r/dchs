@@ -4,6 +4,13 @@
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU&coordorder=longlat&load=package.full&wizard=constructor" type="text/javascript"></script>
     <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
     <table class="table is-narrow">
+        {% if not trip.is_accepted %}
+            <tr>
+                <td class="has-text-right is-bold">Принять в работу</td>
+                <td>
+                    <form method="post" action="{{ url('/roadtrip/accept/' ~ trip.id) }}">{{ csrf_field() }}<button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Принять</button></form></td>
+            </tr>
+        {% endif %}
         <tr>
             <td class="has-text-right is-bold">Место пожара (адрес)</td>
             <td>{{ trip.ticket.location|default('-') }}</td>

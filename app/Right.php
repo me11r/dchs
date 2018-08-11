@@ -31,6 +31,9 @@ class Right extends Model
     const CAN_DELETE_REQUEST = 6;
 
     const CAN_MANAGE_USERS = 7;
+    const CAN_SEE_TRIP_PLAN = 8;
+    const CAN_EDIT_DICTIONARIES = 9;
+    const CAN_EDIT_HYDRANT_LOCATIONS = 10;
 
     protected $table = 'rights';
     protected $fillable = ['title', 'right_group_id'];

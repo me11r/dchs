@@ -8,6 +8,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'ajax'], function () {
         Route::get('street/{area_id?}', 'AjaxController@findStreet')->where('area_id', '[0-9]+');
         Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
+        Route::get('rights/list', 'AjaxController@getRightIds');
+        Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -98,6 +100,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
+        Route::post('/accept/{id}', 'RoadtripController@postAccept')->where('id', '[0-9]+');
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
             ->name('roadtrip.plan.view')
             ->where('plan_id', '[0-9]+');
