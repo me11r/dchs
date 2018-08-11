@@ -68,7 +68,7 @@
                         <div class="form-check">
                             <label for="role_{{ right.id }}" class="form-check-label">
                                 <input type="checkbox" id="role_{{ right.id }}" name="role[{{ right.id }}]" value="{{ right.id }}"
-                                       class="form-check-input" {{ (old('role.'~ right.id ) or (user.hasRight(right.id)))?'checked' }}> {{ right.title|default('-?-') }}
+                                       class="form-check-input" {{ (old('role.'~ right.id ) or (user.hasRight(right.id)))?'checking' }}> {{ right.title|default('-?-') }}
                             </label>
                         </div>
                     {% endfor %}
@@ -100,7 +100,7 @@
                     for(var i = 1; i<= 13; i++)
                     {
                         var has = sel[option].indexOf(i) !== -1;
-                        $('#role_' + i).prop('checked', has);
+                        $('#role_' + i).prop('checking', has);
                     }
                 });
             });

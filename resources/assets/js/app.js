@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 import '../sass/fonts.scss';
 import '../sass/auth.scss';
 import '../sass/app.scss';
@@ -9,9 +10,10 @@ import axios from 'axios';
 import App from './App.vue';
 import Navbar from './ui/Navbar';
 import Card from './Card101';
-import {Card112Form} from './views/Card112';
-import {MudflowProtectionForm} from './views/mudflowProtection';
-import {HydrantMapList} from './views/hydrant-map';
+import { Card112Form } from './views/Card112';
+import { MudflowProtectionForm } from './views/mudflowProtection';
+import { HydrantMapList } from './views/hydrant-map';
+import RoadtripNotifier from './ui/RoadtripNotifier';
 
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
@@ -52,15 +54,19 @@ if (document.getElementById('cardadd101')) {
 
         document.getElementById('preload_pane').style.display = 'none';
         window.add101tabs.setTab(0);
-        document.getElementById('nexttab')
-            .addEventListener('click', (e) => {
-                e.preventDefault();
-                tabs.nextTab();
-            });
+        document.getElementById('nexttab').addEventListener('click', (e) => {
+            e.preventDefault();
+            tabs.nextTab();
+        });
     });
 }
 
 new Vue({
     el: '#mudflowProtection-form-block',
     render: h => h(MudflowProtectionForm)
+});
+
+new Vue({
+    el: '#roadtrip-notifier',
+    render: h => h(RoadtripNotifier)
 });

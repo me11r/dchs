@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\FireDepartment;
 use App\RoadtripPlan;
 use App\Ticket101;
+use App\User;
+use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -14,11 +16,18 @@ class RoadtripController extends AuthorizedController
 {
     public function getIndex()
     {
+        /** @var User $user */
+        $user = Auth::user();
         $trips = RoadtripPlan::with(['ticket', 'department'])
-            ->where('is_closed', false)
-            ->get();
+            ->where('is_closed', false);
 
+        if ($user->department() !== null) {
+            $trips = $trips->where('department_id', $user->fire_department_id);
+        }
 
+        $trips = $trips->get();
+
+        $this->set('user', $user->load('department'));
         $this->set('trips', $trips);
     }
 
@@ -80,5 +89,18 @@ class RoadtripController extends AuthorizedController
                 'type' => 'success',
                 'text' => 'В подразделение отправлен путевой лист'
             ]);
+    }
+
+    public function postAccept(Request $request, $id)
+    {
+        $plan = RoadtripPlan::findOrFail($id);
+        if (!$plan->is_accepted) {
+            $plan->is_accepted = true;
+            $plan->save();
+        }
+        return redirect('/roadtrip/view/' . $id)->with('_message', [
+            'type' => 'success',
+            'text' => 'Путевой лист принят в работу!'
+        ]);
     }
 }

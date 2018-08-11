@@ -48,7 +48,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'last_login', 'office_id', 'phone_mobile', 'phone_landline', 'phone_extended'
+        'name',
+        'email',
+        'password',
+        'last_login',
+        'office_id',
+        'phone_mobile',
+        'phone_landline',
+        'phone_extended'
     ];
 
     /**
@@ -57,7 +64,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /*    public function rights_()
@@ -96,8 +104,9 @@ class User extends Authenticatable
         return $this->hasRight(1) !== true;
     }
 
-    public function department(){
-
+    public function department()
+    {
+        return $this->belongsTo(FireDepartment::class, 'fire_department_id', 'id');
     }
 
 }
