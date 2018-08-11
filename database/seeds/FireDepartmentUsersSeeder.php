@@ -15,7 +15,7 @@ class FireDepartmentUsersSeeder extends Seeder
             $deptuser->email = 'fd' . $department->id . '@localhost.local';
             $deptuser->fire_department_id = $department->id;
             $deptuser->save();
-            $deptuser->rights()->sync([1, 2, 8]);
+            $deptuser->rights()->sync([1, 2, 8, 11]);
         }
     }
 }
