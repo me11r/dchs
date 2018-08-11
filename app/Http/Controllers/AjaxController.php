@@ -30,8 +30,11 @@ class AjaxController extends AuthorizedController
 
     public function findSpecialPlan(Request $request)
     {
-        $specialPlan = SpecialPlan::where('location', '=', $request->get('location'))->first();
-        return response()->json($specialPlan, $specialPlan ? 200 : 404, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        $specialPlans = (new SpecialPlan)
+            ->where('location', 'like', '%' . $request->get('location') . '%')
+            ->limit(10)
+            ->get();
+        return response()->json($specialPlans, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function getRightIds(Request $request)
