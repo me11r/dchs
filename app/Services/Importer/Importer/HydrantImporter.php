@@ -144,6 +144,10 @@ class HydrantImporter implements ImporterInterface
      */
     private function getFireDepartmentIdByName(string $name): int
     {
+        $name = mb_strtolower($name);
+        $name = str_replace('микроучасток', '', $name);
+        $name = trim($name);
+
         $id = array_get($this->fireDepartments, $name, 0);
 
         if (!$id) {
