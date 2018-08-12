@@ -95,15 +95,21 @@ class SpecialPlanImporter implements ImporterInterface
         foreach ($items as $index => $rawItem) {
             if ($index > 0) {
                 $item = $this->getItemFromRawItem($rawItem);
-                if ($this->isItemValid($item)) {
+                $validator = $this->getValidator($item);
+                if (!$validator->fails()) {
                     $this->items[] = $item;
                 } else {
+                    $rawItem['errors'] = $this->getErrorsMessage($validator);
                     $this->incorrectItems[] = $rawItem;
                 }
             }
         }
     }
 
+    /**
+     * @param array $rawItem
+     * @return array
+     */
     private function getItemFromRawItem(array $rawItem): array
     {
         return [
@@ -112,20 +118,51 @@ class SpecialPlanImporter implements ImporterInterface
             'object_name' => array_get($rawItem, 2),
             'fire_department_id' => $this->getFireDepartmentIdByName((string)array_get($rawItem, 3)),
             'operational_plan_id' => $this->getOperationalPlanId((string)array_get($rawItem, 4)),
-            'location' => array_get($rawItem, 5)
+            'location' => array_get($rawItem, 5),
+            'year_of_development' => array_get($rawItem, 6),
         ];
     }
 
-    private function isItemValid(array $item): bool
+    /**
+     * @param $item
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    private function getValidator($item)
     {
-        return !Validator::make($item, [
+        return Validator::make($item, [
             'fire_level_id' => 'required|integer|min:1',
             'city_area_id' => 'required|integer|min:1',
             'object_name' => 'required|string|max:255',
             'fire_department_id' => 'required|integer|min:1',
             'operational_plan_id' => 'required|integer|min:1',
-            'location' => 'required|string|max:255',
-        ])->fails();
+            'location' => 'required|string'
+        ]);
+    }
+
+    /**
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return string
+     */
+    private function getErrorsMessage(\Illuminate\Contracts\Validation\Validator $validator): string
+    {
+        $errors = [];
+        foreach ($validator->errors()->getMessages() as $key => $value) {
+            switch ($key) {
+                case 'fire_level_id':
+                    $errors[] = 'Не удалось распознать ранг';
+                    break;
+                case 'city_area_id':
+                    $errors[] = 'Не удалось распознать район';
+                    break;
+                case 'fire_department_id':
+                    $errors[] = 'Не удалось распознать микроучасток';
+                    break;
+                default:
+                    $errors[] = implode(', ', $value);
+            }
+        }
+
+        return implode(', ', $errors);
     }
 
     /**
@@ -152,12 +189,17 @@ class SpecialPlanImporter implements ImporterInterface
      */
     private function getAreaIdByName(string $name): int
     {
+        $name = mb_strtolower($name);
+        $name = str_replace('район', '', $name);
+        $name = trim($name);
+
         $id = array_get($this->areas, $name, 0);
 
         if (!$id) {
-            $item = (new CityArea)->where('name', 'like', $name)->first();
+            $item = (new CityArea)->where('name', 'like', '%' . $name . '%')->first();
             if ($item) {
                 $id = $item->id;
+                $this->areas[$name] = $item->id;
             }
         }
 
@@ -170,6 +212,10 @@ class SpecialPlanImporter implements ImporterInterface
      */
     private function getFireDepartmentIdByName(string $name): int
     {
+        $name = mb_strtolower($name);
+        $name = str_replace('микроучасток', '', $name);
+        $name = trim($name);
+
         $id = array_get($this->fireDepartments, $name, 0);
 
         if (!$id) {

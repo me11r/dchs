@@ -32,5 +32,5 @@ class SpecialPlan extends Model
 {
     public $table = 'special_plans';
 
-    public $fillable = ['fire_level_id', 'city_area_id', 'object_name', 'fire_department_id', 'operational_plan_id', 'location'];
+    public $fillable = ['fire_level_id', 'city_area_id', 'object_name', 'fire_department_id', 'operational_plan_id', 'location', 'year_of_development'];
 }

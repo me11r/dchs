@@ -73,9 +73,11 @@ class HydrantImporter implements ImporterInterface
         foreach ($items as $index => $rawItem) {
             if ($index > 0) {
                 $item = $this->getItemFromRawItem($rawItem);
-                if ($this->isItemValid($item)) {
+                $validator = $this->getValidator($item);
+                if (!$validator->fails()) {
                     $this->items[] = $item;
                 } else {
+                    $rawItem['errors'] = $this->getErrorsMessage($validator);
                     $this->incorrectItems[] = $rawItem;
                 }
             }
@@ -91,8 +93,8 @@ class HydrantImporter implements ImporterInterface
         return [
             'number' => array_get($rawItem, 0),
             'address' => array_get($rawItem, 1),
-            'lat' => (float)array_get($rawItem, 2, 0),
-            'long' => (float)array_get($rawItem, 3, 0),
+            'lat' => array_get($rawItem, 2, 0),
+            'long' => array_get($rawItem, 3, 0),
             'specification' => array_get($rawItem, 4),
             'fire_department_id' => $this->getFireDepartmentIdByName((string)array_get($rawItem, 5)),
             'active' => (int)array_get($rawItem, 6, 1),
@@ -100,12 +102,32 @@ class HydrantImporter implements ImporterInterface
     }
 
     /**
-     * @param array $item
-     * @return bool
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return string
      */
-    private function isItemValid(array $item): bool
+    private function getErrorsMessage(\Illuminate\Contracts\Validation\Validator $validator): string
     {
-        return !Validator::make($item, [
+        $errors = [];
+        foreach ($validator->errors()->getMessages() as $key => $value) {
+            switch ($key) {
+                case 'fire_department_id':
+                    $errors[] = 'Не удалось распознать микроучасток';
+                    break;
+                default:
+                    $errors[] = implode(', ', $value);
+            }
+        }
+
+        return implode(', ', $errors);
+    }
+
+    /**
+     * @param $item
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    private function getValidator($item)
+    {
+        return Validator::make($item, [
             'number' => 'max:255',
             'address' => 'required|string|max:1000',
             'lat' => 'required|numeric',
@@ -113,7 +135,7 @@ class HydrantImporter implements ImporterInterface
             'specification' => 'required|string|max:65000',
             'fire_department_id' => 'required|integer|min:1',
             'active' => 'required|integer|min:0|max:1'
-        ])->fails();
+        ]);
     }
 
     /**

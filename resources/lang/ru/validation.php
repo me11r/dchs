@@ -142,6 +142,18 @@ return [
         'contact' => 'контактное лицо',
         'name' => 'наименование',
         'contract' => 'контракт',
+        'number' => 'номер',
+        'address' => 'адрес',
+        'lat' => 'широта',
+        'long' => 'долгота',
+        'specification' => 'спецификация',
+        'fire_department_id' => 'микроучасток',
+        'fire_level_id' => 'ранг',
+        'city_area_id' => 'район',
+        'object_name' => 'название объекта',
+        'operational_plan_id' => 'оперативный план',
+        'year_of_development' => 'год разработки',
+        'location' => 'адрес'
     ],
 
 ];
