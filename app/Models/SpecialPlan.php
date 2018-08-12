@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -25,11 +26,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereObjectName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereOperationalPlanId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin \Eloquent | Builder
  */
 class SpecialPlan extends Model
 {
     public $table = 'special_plans';
 
-    public $fillable = ['fire_level_id', 'city_area_id', 'object_name', 'fire_department_id', 'operational_plan_id', 'location'];
+    public $fillable = ['fire_level_id', 'city_area_id', 'object_name', 'fire_department_id', 'operational_plan_id', 'location', 'year_of_development'];
 }

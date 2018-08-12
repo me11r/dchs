@@ -34,6 +34,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/card112', 'Card112Controller');
     Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');
 
+    Route::get('/import', 'ImportController@index')->name('import.index');
+    Route::post('/import/special_plans', 'ImportController@specialPlans')->name('import.special_plans');
+    Route::post('/import/hydrants', 'ImportController@hydrants')->name('import.hydrants');
+
     // Строевые записки
     Route::group(['prefix' => 'formation'], function () {
         Route::get('/', 'FormationController@getServicesList');

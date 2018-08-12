@@ -1,0 +1,27 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">Импорт данных в справочники. {{ importName }}
+        </h4>
+    </div>
+    <hr>
+    <div class="panel" style="margin-left: 15px">
+        Импортировано: {{ importedItems | length }}
+        <br>
+        <br>
+        Не импортировано: {{ incorrectItems | length }}
+        <br>
+        <table class="table is-striped">
+            <tbody>
+            {% for row in incorrectItems %}
+                <tr>
+                    {% for col in row %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

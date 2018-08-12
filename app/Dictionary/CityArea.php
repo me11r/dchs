@@ -9,12 +9,13 @@
 namespace App\Dictionary;
 
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Dictionary\CityArea
  *
- * @mixin \Eloquent
+ * @mixin \Eloquent | Builder
  * @property int $id
  * @property string $name
  * @property \Carbon\Carbon|null $created_at

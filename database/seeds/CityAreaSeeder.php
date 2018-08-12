@@ -16,9 +16,10 @@ class CityAreaSeeder extends \Illuminate\Database\Seeder
             'Алмалинский',
             'Ауэзовский',
             'Бостандыкский',
-            'Жетысуйский',
-            'Медейский',
+            'Жетысуский',
+            'Медеуский',
             'Турксибский',
+            'Наурызбайский'
         ];
 
         foreach ($regions as $region) {

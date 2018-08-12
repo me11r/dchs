@@ -51,13 +51,26 @@
                     {% endif %}
                     <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
                         <label for="location">Место пожара (Адрес)</label>
-                        <textarea name="location"
-                                  id="location"
-                                  class="textarea"
-                                  cols="30"
-                                  v-model="location"
-                                  rows="3">
-                        </textarea>
+                        <input name="location"
+                               id="location"
+                               class="input"
+                               v-model="location"
+                               @blur="onBlur"
+                               @focus="onFocus">
+                        <div class="dropdown-menu"
+                             :style="{'display': showList? 'block': 'none'}"
+                             style="position: relative">
+                            <div class="dropdown-content">
+                                <a class="dropdown-item"
+                                   @click="selectItem(item)"
+                                   v-for="item in items">
+                                    <div class="row">
+                                        <span v-html="item.location"></span>
+                                        <small>, <span v-html="item.object_name"></span></small>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="field">
                         <p class="control">
