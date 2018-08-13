@@ -38,6 +38,7 @@ class FireDepartment extends Model
     use SoftDeletes;
     protected $table = 'fire_departments';
     protected $guarded = ['id'];
+    protected $fillable = ['title', 'address'];
 
     public function getNameAttribute()
     {

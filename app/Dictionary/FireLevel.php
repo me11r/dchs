@@ -24,4 +24,5 @@ class FireLevel extends Model
 {
     protected $table = 'dict_fire_level';
     protected $guarded = ['id'];
+    protected $fillable = ['name'];
 }

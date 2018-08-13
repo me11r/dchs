@@ -27,6 +27,7 @@ class Street extends Model
 {
     protected $table = 'streets';
     protected $guarded = ['id'];
+    protected $fillable = ['name'];
 
     public function area()
     {
