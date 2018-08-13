@@ -14,7 +14,9 @@
                 <thead>
                 <tr>
                     <th>№</th>
-                    <th>Наименование</th>
+                    {% for field in fields %}
+                        <th>{{ field }}</th>
+                    {% endfor %}
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
@@ -22,7 +24,9 @@
                 {% for record in dictionary %}
                     <tr>
                         <td>{{ record.id }}</td>
-                        <td>{{ record.name }}</td>
+                        {% for field in fields %}
+                            <td class="max-width: 20%">{{ attribute(record, field) }}</td>
+                        {% endfor %}
                         <td><a href="{{ url('dictionaries/edit/' ~ dictinfo.id ~ '/' ~ record.id) }}" class="button is-small is-primary is-outlined"><i class="fas fa-edit"></i>&nbsp;Изменить</a>
                         </td>
                     </tr>

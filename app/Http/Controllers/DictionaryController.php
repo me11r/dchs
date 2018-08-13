@@ -12,10 +12,26 @@ namespace App\Http\Controllers;
 use App\Dictionary;
 use App\Right;
 use App\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class DictionaryController extends AuthorizedController
 {
+    protected $hidden_attributes = [
+        'id', 'created_at', 'updated_at', 'deleted_at'
+    ];
+
+    protected function getEditableFields(Model $model) {
+        $attrs = $model->getFillable();
+        $attrs = array_filter($attrs, function ($elem) {
+            if (\in_array($elem, $this->hidden_attributes, true)) {
+                return false;
+            }
+            return true;
+        });
+        return $attrs;
+    }
+
     public function __construct(Request $request)
     {
         parent::__construct();
@@ -38,6 +54,8 @@ class DictionaryController extends AuthorizedController
         $this->set('dictinfo', $dictionary);
         $dict = new $dictionary->model;
         $this->set('dictionary', $dict->get());
+        $fields = $this->getEditableFields($dict);
+        $this->set('fields', $fields);
     }
 
     public function getEdit($dict_id, $row_id = 0)
@@ -46,6 +64,8 @@ class DictionaryController extends AuthorizedController
         $this->set('dictinfo', $dictionary);
         $dict = new $dictionary->model;
         $this->set('record', $dict->findOrNew($row_id));
+        $fields = $this->getEditableFields($dict);
+        $this->set('fields', $fields);
 
     }
 
