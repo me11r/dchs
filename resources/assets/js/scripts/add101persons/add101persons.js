@@ -23,6 +23,11 @@ export default class Add101Persons {
                     'field_3_5': ''
                 }
             },
+            computed: {
+                fieldsComputed() {
+                    return this.calculateTotalSum();
+                }
+            },
             watch: {
                 'departmentId'(newValue, oldValue) {
                     if (oldValue !== '' && oldValue !== newValue) {
@@ -31,39 +36,6 @@ export default class Add101Persons {
                         location.push(newValue);
                         window.location = location.join('/');
                     }
-                },
-                'inputs.field_2_1'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_2_2'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_2_3'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_2_4'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_2_5'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_3_0'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_3_1'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_3_2'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_3_3'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_3_4'() {
-                    this.calculateTotalSum();
-                },
-                'inputs.field_3_5'() {
-                    this.calculateTotalSum();
                 }
             },
             methods: {
