@@ -28,4 +28,5 @@ class BurntObject extends Model
 {
     protected $table = 'dict_burn_object';
     protected $guarded = ['id'];
+    protected $fillable = ['name'];
 }

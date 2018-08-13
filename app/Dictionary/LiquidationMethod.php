@@ -23,4 +23,6 @@ class LiquidationMethod extends Model
 {
     protected $table = 'dict_liquidation_method';
     protected $guarded = ['id'];
+    protected $fillable = ['name'];
+
 }

@@ -21,4 +21,6 @@ class TripResult extends Model
 {
     protected $table = 'dict_trip_result';
     protected $guarded = ['id'];
+    protected $fillable = ['name'];
+
 }

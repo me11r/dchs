@@ -29,4 +29,5 @@ class CityArea extends Model
 {
     protected $table = 'dict_city_area';
     protected $guarded = ['id'];
+    protected $fillable = ['name'];
 }
