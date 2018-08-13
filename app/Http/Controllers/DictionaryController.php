@@ -19,6 +19,10 @@ class DictionaryController extends AuthorizedController
     public function __construct(Request $request)
     {
         parent::__construct();
+    }
+
+    public function before()
+    {
         $this->needRight(Right::CAN_EDIT_DICTIONARIES);
     }
 

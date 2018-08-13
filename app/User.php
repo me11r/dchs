@@ -37,6 +37,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @property int|null $fire_department_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereFireDepartmentId($value)
+ * @property-read \App\FireDepartment $department
  */
 class User extends Authenticatable
 {
