@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
+    <div class="container" id="add-101-persons-form" data-department_value="{{ dept_id }}">
         <div class="level" style="margin-top: 20px">
             <div class="level-left">
                 <h4 class="title">Персонал строевой записки от {{ report.report_date }}</h4>
@@ -13,7 +13,10 @@
             <p class="control">
                 <label for="dept_id_selector">Пожарная часть</label>
             <div class="select">
-                <select class="select" name="dept_id" id="dept_id_selector">
+                <select class="select"
+                        name="dept_id"
+                        id="dept_id_selector"
+                        v-model="departmentId">
                     {% for department in departments %}
                         <option value="{{ department.id }}" {% if department.id == dept_id %}selected{% endif %}>&nbsp;{{ department.title }}&nbsp;</option>
                     {% endfor %}
@@ -37,17 +40,4 @@
             </div>
         </form>
     </div>
-
-    <script>
-        window.addEventListener('load', () => {
-            const selector = document.getElementById('dept_id_selector');
-            const dept_id = '{{ dept_id }}';
-            selector.addEventListener('change', (e) => {
-                let location = window.location.pathname.split('/');
-                location.pop();
-                location.push(e.target.value);
-                window.location = location.join('/');
-            });
-        });
-    </script>
 {% endblock content %}

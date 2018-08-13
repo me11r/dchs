@@ -18,6 +18,8 @@ import RoadtripNotifier from './ui/RoadtripNotifier';
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
 
+import Add101Persons from './scripts/add101persons/add101persons';
+
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
@@ -59,6 +61,12 @@ if (document.getElementById('cardadd101')) {
             tabs.nextTab();
         });
     });
+}
+
+// Расположение гидрантов на карте (список)
+const add101personsFormElement = document.getElementById('add-101-persons-form');
+if (add101personsFormElement) {
+    (new Add101Persons()).createApp(add101personsFormElement);
 }
 
 new Vue({
