@@ -23,6 +23,7 @@
                 </select>
             </div>
         </div>
+        <input type="hidden" :value="fieldsComputed">
         <form action="" method="post">
             {{ csrf_field() }}
             <input type="hidden" name="dept_id" value="{{ dept_id }}"/>
