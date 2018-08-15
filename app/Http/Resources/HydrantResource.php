@@ -19,7 +19,12 @@ class HydrantResource extends JsonResource
      */
     public function toArray($request)
     {
-        $department = $this->resource->relationLoaded('fireDepartment') ? (new Resource($this->fireDepartment)) : null;
+        $department = $this->resource->relationLoaded('fireDepartment') &&  $this->fireDepartment ? (new Resource($this->fireDepartment)) : null;
+        $description =
+            'Адрес: '. $this->address.
+            "<br>". 'Спецификация: ' .$this->specification .
+            ($department? "<br> Депаратамент: " . $department->title:'') .
+            '<br> Идентификатор: ' . $this->id;
         return [
             'id' => (int)$this->id,
             'address' => (string)$this->address,
@@ -27,7 +32,8 @@ class HydrantResource extends JsonResource
             'fire_department_id' => (int)$this->fire_department_id,
             'lat' => (float)$this->lat,
             'long' => (float)$this->long,
-            'outputDescription' => 'Адрес: '. $this->address. "<br>". 'Спецификация: ' .$this->specification . ($department? "<br> Депаратамент: " . $department->title:'')
+            'outputDescription' => $description,
+            'active' => (int)$this->active
         ];
     }
 }

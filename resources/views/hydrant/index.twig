@@ -1,18 +1,22 @@
 {% extends "layout/html" %}
 {% block content %}
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <script>
+        window.hydrantListData = {
+            fireDepartments: {{ fireDepartments | json_encode() | raw }},
+            model: {{ model | json_encode() | raw }},
+        };
+        ymaps.ready(function () {
+            window.ymaps = ymaps;
+            window.initHydrantMapList();
+        });
+    </script>
     <div class="">
         <h4 class="title"
             style="padding: 3px 15px">Размещение гидрантов на карте
         </h4>
     </div>
     <div class="panel">
-        <script>
-            window.hydrantListData = {
-                fireDepartments: {{ fireDepartments | json_encode() | raw }},
-                model: {{ model | json_encode() | raw }},
-            };
-        </script>
-
         <div id="hydrant-map-list-block">
         </div>
     </div>

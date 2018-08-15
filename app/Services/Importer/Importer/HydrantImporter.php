@@ -2,7 +2,6 @@
 
 namespace App\Services\Importer\Importer;
 
-
 use App\FireDepartment;
 use Illuminate\Support\Facades\Validator;
 
@@ -90,6 +89,8 @@ class HydrantImporter implements ImporterInterface
      */
     private function getItemFromRawItem(array $rawItem): array
     {
+        $active = array_get($rawItem, 6, 1);
+        $active = $active === null ? 1 : (int)$active;
         return [
             'number' => array_get($rawItem, 0),
             'address' => array_get($rawItem, 1),
@@ -97,7 +98,7 @@ class HydrantImporter implements ImporterInterface
             'long' => array_get($rawItem, 3, 0),
             'specification' => array_get($rawItem, 4),
             'fire_department_id' => $this->getFireDepartmentIdByName((string)array_get($rawItem, 5)),
-            'active' => (int)array_get($rawItem, 6, 1),
+            'active' => $active
         ];
     }
 

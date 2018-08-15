@@ -46,10 +46,10 @@
                         <label for="lat">Широта</label>
                         <input
                             type="number"
+                            step="0.000000000000001"
                             class="input"
                             name="lat"
                             id="lat"
-                            disabled
                             required
                             v-model="model['lat']">
                     </div>
@@ -57,11 +57,19 @@
                         <label for="long">Долгота</label>
                         <input
                             type="number"
+                            step="0.000000000000001"
                             class="input"
                             name="long"
                             id="long"
-                            disabled
                             v-model="model['long']">
+                    </div>
+                    <div class="field">
+                        <label for="active">Активен/исправен</label>
+                        <input
+                            type="checkbox"
+                            name="active"
+                            id="active"
+                            v-model="model['active']">
                     </div>
 
                     <hr>
@@ -150,7 +158,7 @@ export default {
 
     .popup-window {
         width: 300px;
-        height: 635px;
+        height: 665px;
         text-align: left;
         padding: 15px;
         position: absolute;
