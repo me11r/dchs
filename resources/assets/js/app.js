@@ -43,7 +43,9 @@ if (document.getElementById(card112FormBlockId)) {
 // Расположение гидрантов на карте (список)
 const hydrantMapListBlock = 'hydrant-map-list-block';
 if (document.getElementById(hydrantMapListBlock)) {
-    new Vue({el: '#' + hydrantMapListBlock, render: h => h(HydrantMapList)});
+    window.initHydrantMapList = () => {
+        new Vue({el: '#' + hydrantMapListBlock, render: h => h(HydrantMapList)});
+    };
 }
 
 // 101 карточка

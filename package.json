@@ -45,7 +45,8 @@
     "webpack-manifest-plugin": "^2.0.3",
     "webpack-merge": "^4.1.4",
     "webpack-serve": "^1.0.4",
-    "yargs": "^12.0.1"
+    "yargs": "^12.0.1",
+    "ymaps": "^0.1.1"
   },
   "name": "emergency-management.loc",
   "version": "1.0.0",
