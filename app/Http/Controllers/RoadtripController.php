@@ -21,7 +21,7 @@ class RoadtripController extends AuthorizedController
         $trips = RoadtripPlan::with(['ticket', 'department'])
             ->where('is_closed', false);
 
-        if ($user->department() !== null) {
+        if ($user->fire_department_id) {
             $trips = $trips->where('department_id', $user->fire_department_id);
         }
 
