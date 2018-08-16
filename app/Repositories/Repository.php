@@ -3,11 +3,12 @@
 namespace App\Repositories;
 
 use App\Repositories\Contracts\RepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class Repository implements RepositoryInterface
 {
-    /** @var Model */
+    /** @var Model | Builder */
     protected $model;
 
 

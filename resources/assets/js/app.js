@@ -6,6 +6,7 @@ import '../sass/app.scss';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import axios from 'axios';
+import VueLocalStorage from 'vue-localstorage'
 
 import App from './App.vue';
 import Navbar from './ui/Navbar';
@@ -30,6 +31,8 @@ Vue.config.productionTip = false;
 Vue.use(Buefy, {
     defaultIconPack: 'fas'
 });
+
+Vue.use(VueLocalStorage);
 
 new Vue({
     render: h => h(Navbar)
