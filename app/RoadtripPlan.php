@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \App\FireDepartment $department
  * @property-read \App\Ticket101 $ticket
+ * @property int $is_accepted
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\RoadtripPlan whereIsAccepted($value)
  */
 class RoadtripPlan extends Model
 {
