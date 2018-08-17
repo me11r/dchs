@@ -18,7 +18,9 @@
                     class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-address-card"></i>&nbsp;
                     Карточка 101</a>
                 </div>
-                <div class="navbar-item">
+                <div
+                    class="navbar-item"
+                    v-if="hasAnyRight(12,13,14,15,16,17)">
                     <a
                         href="/formation"
                         class="button is-inline-block-widescreen is-block is-small">
@@ -41,8 +43,9 @@
                         Путевой лист
                     </a>
                 </div>
-                <div class="navbar-item"
-                v-if="hasRight(11)">
+                <div
+                    class="navbar-item"
+                    v-if="hasRight(11)">
                     <a
                         href="/pdf/dailyReport"
                         target="_blank"

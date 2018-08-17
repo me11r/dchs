@@ -18,14 +18,28 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
+use App\Right;
 use App\Services\FormationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FormationController extends AuthorizedController
 {
+    public function before()
+    {
+        return $this->needAnyRight([
+            Right::CAN_ACCESS_FORMATION_REPORT_101,
+            Right::CAN_ACCESS_FORMATION_REPORT_ROSO,
+            Right::CAN_ACCESS_FORMATION_REPORT_CMK,
+            Right::CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION,
+            Right::CAN_ACCESS_FORMATION_REPORT_AIR_RESCUE,
+            Right::CAN_ACCESS_FORMATION_REPORT_ORTSERT
+        ]);
+    }
+
     public function get101(Request $request)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
         $today = date('Y-m-d');
         $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -40,6 +54,7 @@ class FormationController extends AuthorizedController
 
     public function getAddToday()
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
         $today = date('Y-m-d');
         $this
             ->set('today', $today)
@@ -50,6 +65,8 @@ class FormationController extends AuthorizedController
 
     public function postAddToday(Request $request)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
         $today = date('Y-m-d');
         $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -63,6 +80,8 @@ class FormationController extends AuthorizedController
 
     public function getAdd101Persons(Request $request, $form_id, $dept_id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
         $fieldlist = [
             'В карауле по списку л/с',
             'На лицо личного состава' => [
@@ -98,6 +117,8 @@ class FormationController extends AuthorizedController
 
     public function postAdd101Persons(Request $request, $form_id, $dept_id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
         $model = (new FormationPersonsReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
             $model = new FormationPersonsReport();
@@ -108,6 +129,8 @@ class FormationController extends AuthorizedController
 
     public function getAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
         $fieldlist = [
             'ГДЗС',
             'Аппараты',
@@ -185,6 +208,8 @@ class FormationController extends AuthorizedController
 
     public function postAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
         $model = (new FormationTechReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
             $model = new FormationTechReport();
@@ -195,6 +220,8 @@ class FormationController extends AuthorizedController
 
     public function getView101(Request $request, $form_id, FormationService $formationService)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
         $people_fieldlist = [
             'В карауле по списку л/с',
             'На лицо личного состава' => [
@@ -358,6 +385,8 @@ class FormationController extends AuthorizedController
 
     public function getMudflow(Request $request)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION);
+
         $today = Carbon::today();
         $has_today = ((new FormationMudflowReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -371,11 +400,15 @@ class FormationController extends AuthorizedController
 
     public function getEditMudflow(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION);
+
         $this->set('report', FormationMudflowReport::findOrFail($id));
     }
 
     public function postEditMudflow(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION);
+
         $report = FormationMudflowReport::findOrFail($id);
         $report->fill($request->all())->saveOrFail();
         return redirect('/formation/mudflow')->with('_message', [
@@ -386,6 +419,8 @@ class FormationController extends AuthorizedController
 
     public function getMedical(Request $request)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_CMK);
+
         $today = Carbon::today();
         $has_today = ((new FormationMedicalReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -399,11 +434,15 @@ class FormationController extends AuthorizedController
 
     public function getEditMedical(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_CMK);
+
         $this->set('report', FormationMedicalReport::findOrFail($id));
     }
 
     public function postEditMedical(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_CMK);
+
         $report = FormationMedicalReport::findOrFail($id);
         $report->fill($request->all())->saveOrFail();
         return redirect('/formation/medical')->with('_message', [
@@ -414,6 +453,8 @@ class FormationController extends AuthorizedController
 
     public function getSavers(Request $request)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $today = Carbon::today();
         $has_today = ((new FormationSaversReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -427,11 +468,15 @@ class FormationController extends AuthorizedController
 
     public function getEditSavers(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $this->set('report', FormationSaversReport::findOrFail($id));
     }
 
     public function postEditSavers(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = FormationSaversReport::findOrFail($id);
         $report->fill($request->all())->saveOrFail();
         return redirect('/formation/savers')->with('_message', [
@@ -442,6 +487,8 @@ class FormationController extends AuthorizedController
 
     public function getSaversOperationsList(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = FormationSaversReport::with('operations')->findOrFail($id);
         $operations = $report->operations;
         $this->set('parent', $report)
@@ -450,12 +497,16 @@ class FormationController extends AuthorizedController
 
     public function getSaversOperation(Request $request, $parent_id, $id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = Operations::findOrNew($id);
         $this->set('report', $report);
     }
 
     public function postSaversOperation(Request $request, $parent_id, $id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = Operations::findOrNew($id);
         $report->fill($request->all());
         /** @var FormationSaversReport $parent */
@@ -469,6 +520,8 @@ class FormationController extends AuthorizedController
 
     public function getSaversMigrationsList(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = FormationSaversReport::with('migrations')->findOrFail($id);
         $operations = $report->migrations;
         $this->set('parent', $report)
@@ -477,12 +530,16 @@ class FormationController extends AuthorizedController
 
     public function getSaversMigration(Request $request, $parent_id, $id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = Migrations::findOrNew($id);
         $this->set('report', $report);
     }
 
     public function postSaversMigration(Request $request, $parent_id, $id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = Migrations::findOrNew($id);
         $report->fill($request->all());
         /** @var FormationSaversReport $parent */
@@ -496,6 +553,8 @@ class FormationController extends AuthorizedController
 
     public function getSaversResourcesList(Request $request, $id)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = FormationSaversReport::with('resources')->findOrFail($id);
         $operations = $report->resources;
         $this->set('parent', $report)
@@ -504,12 +563,16 @@ class FormationController extends AuthorizedController
 
     public function getSaversResources(Request $request, $parent_id, $id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = Resources::findOrNew($id);
         $this->set('report', $report);
     }
 
     public function postSaversResources(Request $request, $parent_id, $id = 0)
     {
+        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+
         $report = Resources::findOrNew($id);
         $report->fill($request->all());
         /** @var FormationSaversReport $parent */

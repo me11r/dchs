@@ -14,7 +14,7 @@ class RightsSeeder extends Seeder
         \App\Rights\Group::truncate();
 
         \App\Rights\Group::insert([
-            ['id' => 1, 'title' => 'Общие права'],
+            ['id' => 1, 'title' => 'Доступ в систему'],
             ['id' => 2, 'title' => 'Доступ к заявкам'],
             ['id' => 3, 'title' => 'Администрирование'],
             ['id' => 4, 'title' => 'Общие права'],
@@ -37,5 +37,7 @@ class RightsSeeder extends Seeder
             ['id' => 10, 'right_group_id' => 4, 'title' => 'Может изменять список гидрантов'],
             ['id' => 11, 'right_group_id' => 4, 'title' => 'Может смотреть суточный отчет']
         ]);
+
+        $this->call(FormationReportsRights::class);
     }
 }

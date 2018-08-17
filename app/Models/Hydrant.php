@@ -26,6 +26,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereSpecification($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $number
+ * @property int|null $active
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereNumber($value)
  */
 class Hydrant extends Model
 {

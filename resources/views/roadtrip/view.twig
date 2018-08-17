@@ -25,6 +25,10 @@
             <td>{{ trip.ticket.location|default('-') }}</td>
         </tr>
         <tr>
+            <td class="has-text-right is-bold">Наименование объекта</td>
+            <td>{{ trip.ticket.object_name|default('-') }}</td>
+        </tr>
+        <tr>
             <td class="has-text-right is-bold">Район города</td>
             <td>{{ trip.ticket.city_area.name|default('-') }}</td>
         </tr>

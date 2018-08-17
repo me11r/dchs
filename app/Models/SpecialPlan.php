@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereOperationalPlanId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereUpdatedAt($value)
  * @mixin \Eloquent | Builder
+ * @property string|null $year_of_development
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereYearOfDevelopment($value)
  */
 class SpecialPlan extends Model
 {
