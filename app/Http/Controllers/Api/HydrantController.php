@@ -51,4 +51,16 @@ class HydrantController extends Controller
     {
         $this->repository->delete($id);
     }
+
+    public function getHydrantsForPointByRadius(Request $request)
+    {
+        $items = $this->repository
+            ->searchForPointByRadius(
+                (double)$request->get('latitude'),
+                (double)$request->get('longitude'),
+                (double)$request->get('distance')
+            )
+            ->all();
+        return HydrantResource::collection($items);
+    }
 }

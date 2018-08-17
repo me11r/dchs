@@ -6,6 +6,7 @@ import '../sass/app.scss';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import axios from 'axios';
+import VueLocalStorage from 'vue-localstorage'
 
 import App from './App.vue';
 import Navbar from './ui/Navbar';
@@ -14,6 +15,7 @@ import { Card112Form } from './views/Card112';
 import { MudflowProtectionForm } from './views/mudflowProtection';
 import { HydrantMapList } from './views/hydrant-map';
 import RoadtripNotifier from './ui/RoadtripNotifier';
+import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
@@ -30,6 +32,8 @@ Vue.use(Buefy, {
     defaultIconPack: 'fas'
 });
 
+Vue.use(VueLocalStorage);
+
 new Vue({
     render: h => h(Navbar)
 }).$mount('#navbar');
@@ -45,6 +49,14 @@ const hydrantMapListBlock = 'hydrant-map-list-block';
 if (document.getElementById(hydrantMapListBlock)) {
     window.initHydrantMapList = () => {
         new Vue({el: '#' + hydrantMapListBlock, render: h => h(HydrantMapList)});
+    };
+}
+
+// Карта в просмотре путевого листа
+const roadTripViewYandexMapBlockId = 'road-trip-view-yandex-map-block';
+if (document.getElementById(roadTripViewYandexMapBlockId)) {
+    window.initRoadTripViewMap = () => {
+        new Vue({el: '#' + roadTripViewYandexMapBlockId, render: h => h(RoadTripViewMap)});
     };
 }
 
