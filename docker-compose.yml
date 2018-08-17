@@ -1,0 +1,50 @@
+version: "3.3"
+
+services:
+  app-nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/current
+    networks:
+      - app-network
+
+  app-fpm:
+    image: php:7.2-fpm
+    volumes:
+      - ./:/current
+      - app-storage:/current/storage
+    networks:
+      - app-network
+    environment:
+      APP_ENV: local
+      APP_DEBUG: true
+      APP_KEY: 9f4d6a3e360026b1a557e7080ceca6db2bba8b1c
+      DB_CONNECTION: mysql
+      DB_HOST: app-db
+      DB_PORT: 3306
+      DB_USERNAME: emergency
+      DB_PASSWORD: emergency
+      DB_DATABASE: emergency
+
+  app-db:
+    image: mysql:5.7
+    volumes:
+      - app-db-data:/var/lib/mysql
+    networks:
+      - app-network
+    environment:
+      MYSQL_USER: emergency
+      MYSQL_PASSWORD: emergency
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: emergency
+
+
+volumes:
+  app-db-data:
+  app-code:
+  app-storage:
+
+networks:
+  app-network:
