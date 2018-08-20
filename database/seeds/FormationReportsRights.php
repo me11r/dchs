@@ -22,6 +22,7 @@ class FormationReportsRights extends Seeder
             ['id' => 15, 'title' => 'ГУ "Казселезащита"', 'right_group_id' => 5],
             ['id' => 16, 'title' => 'АО"Казавиаспас"', 'right_group_id' => 5],
             ['id' => 17, 'title' => 'АО "Өртсөндіруші"', 'right_group_id' => 5],
+            ['id' => 18, 'title' => 'ДЧС г.Алматы', 'right_group_id' => 5],
         ]);
     }
 }

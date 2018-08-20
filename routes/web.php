@@ -99,8 +99,16 @@ Route::group(['middleware' => 'auth'], function () {
 
             Route::get('/', 'FormationController@getSavers');
         });
-
     });
+
+    Route::group(['middleware' => 'rights.formation.record'],
+        function () {
+            Route::get('formation-record/{organisation}', 'FormationRecordController@singleIndex')->name('formation-record.single-index');
+            Route::get('formation-record/{id}/total-edit', 'FormationRecordController@totalEdit')->name('formation-record.total-edit');
+            Route::post('formation-record/{id}/total-update', 'FormationRecordController@totalUpdate')->name('formation-record.total-update');
+            Route::resource('formation-record', 'FormationRecordController');
+        }
+    );
 
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');

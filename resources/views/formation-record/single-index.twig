@@ -1,0 +1,38 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">Строевые записки {{ organisationName }}
+        </h4>
+    </div>
+    <div class="columns is-gapless">
+        <div style="width: 100%; border-bottom: 1px solid #dbdbdb;">
+        </div>
+    </div>
+    <div class="panel">
+        <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <thead>
+            <tr>
+                <th class="has-text-right" style="width: 110px">Дата и время</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            {% for item in items %}
+                <tr>
+                    <td class="has-text-right">{{ item.date|date('Y-m-d') }}</td>
+                    <td class="has-text-right">
+                        <a href="{{ route('formation-record.edit', item.id) }}"
+                           class="button is-small is-outlined is-primary">
+                            <i class="fas fa-pencil-alt"></i>&nbsp;
+                            Редактировать
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="is-centered"><h1 class="title">Нет записей</h1></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}
