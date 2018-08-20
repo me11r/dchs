@@ -4,9 +4,12 @@ services:
   app-nginx:
     image: nginx:alpine
     ports:
-      - "8080:80"
+      - "3080:80"
     volumes:
       - ./:/current
+      - ./_docker/routing/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./_docker/routing/fastcgi_params:/etc/nginx/fastcgi_params:ro
+      - ./_docker/routing/conf.d/:/etc/nginx/conf.d:ro
     networks:
       - app-network
 
@@ -15,12 +18,14 @@ services:
     volumes:
       - ./:/current
       - app-storage:/current/storage
+      - ./_docker/php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./_docker/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
     networks:
       - app-network
     environment:
       APP_ENV: local
-      APP_DEBUG: true
-      APP_KEY: 9f4d6a3e360026b1a557e7080ceca6db2bba8b1c
+      APP_DEBUG: "true"
+      APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
       DB_CONNECTION: mysql
       DB_HOST: app-db
       DB_PORT: 3306
@@ -30,7 +35,10 @@ services:
 
   app-db:
     image: mysql:5.7
+    ports:
+      - "33306:3306"
     volumes:
+      - ./database/dumps/dump-20-08-2018-dump.sql:/docker-entrypoint-initdb.d/init.sql
       - app-db-data:/var/lib/mysql
     networks:
       - app-network
