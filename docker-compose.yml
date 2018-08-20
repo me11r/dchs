@@ -3,6 +3,7 @@ version: "3.3"
 services:
   app-nginx:
     image: nginx:alpine
+    container_name: "app-nginx"
     ports:
       - "3080:80"
     volumes:
@@ -14,17 +15,17 @@ services:
       - app-network
 
   app-fpm:
-    image: php:7.2-fpm
+    image: ogorbunov/php:7.2-fpm-mysql
+    container_name: "app-fpm"
     volumes:
       - ./:/current
-      - app-storage:/current/storage
       - ./_docker/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./_docker/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
     networks:
       - app-network
     environment:
       APP_ENV: local
-      APP_DEBUG: "true"
+      APP_DEBUG: 1
       APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
       DB_CONNECTION: mysql
       DB_HOST: app-db
@@ -35,6 +36,7 @@ services:
 
   app-db:
     image: mysql:5.7
+    container_name: "app-db"
     ports:
       - "33306:3306"
     volumes:
@@ -52,7 +54,6 @@ services:
 volumes:
   app-db-data:
   app-code:
-  app-storage:
 
 networks:
   app-network:
