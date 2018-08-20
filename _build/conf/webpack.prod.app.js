@@ -1,7 +1,7 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CssMiniPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-//const BundleAnalyzerWebpackPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerWebpackPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
@@ -10,7 +10,10 @@ module.exports = {
     mode: 'production',
     devtool: 'source-map',
     output: {
-        filename: "[name].[contenthash:7].min.js"
+        filename: '[name].[contenthash:7].min.js'
+    },
+    performance: {
+        hints: false
     },
     optimization: {
         splitChunks: {
@@ -27,7 +30,7 @@ module.exports = {
                     priority: -20,
                     chunks: 'initial',
                     reuseExistingChunk: true
-                },
+                }
 
             }
         }
@@ -41,13 +44,13 @@ module.exports = {
                     [
                         CssMiniPlugin.loader,
                         {
-                            loader: "css-loader",
+                            loader: 'css-loader',
                             options: {
-                                importLoaders: 1,
+                                importLoaders: 1
                             }
                         },
-                        "postcss-loader",
-                        "sass-loader"
+                        'postcss-loader',
+                        'sass-loader'
                     ],
                 exclude: /node_modules/
             },
@@ -57,16 +60,16 @@ module.exports = {
                     [
                         CssMiniPlugin.loader,
                         {
-                            loader: "css-loader",
+                            loader: 'css-loader',
                             options: {
                                 importLoaders: 1
                             }
                         },
-                        "postcss-loader",
+                        'postcss-loader'
 
                     ],
                 exclude: /node_modules/
-            },
+            }
 
         ]
     },
@@ -75,7 +78,7 @@ module.exports = {
             {
                 from: path.resolve(path.join(__dirname, '..', '..', 'resources', 'static')),
                 to: '',
-                ignore: ['.*'],
+                ignore: ['.*']
             }
         ]),
         new UglifyJsPlugin({
@@ -85,11 +88,11 @@ module.exports = {
             sourceMap: true
         }),
         new CssMiniPlugin({
-            filename: "[name].[contenthash:7].min.css"
+            filename: '[name].[contenthash:7].min.css'
         }),
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.min\.css$/g,
-            cssProcessorOptions: {safe: true, discardComments: {removeAll: true}},
+            cssProcessorOptions: {safe: true, discardComments: {removeAll: true}}
         }),
         new ManifestPlugin({
             basePath: '/assets/'
