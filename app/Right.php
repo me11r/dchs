@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 
@@ -22,18 +23,28 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Right extends Model
 {
-    const CAN_LOGIN = 1;
+    public const CAN_LOGIN = 1;
 
-    const CAN_SEE_REQUEST = 2;
-    const CAN_ASSIGN_REQUEST = 3;
-    const CAN_CREATE_REQUEST = 4;
-    const CAN_EDIT_REQUEST = 5;
-    const CAN_DELETE_REQUEST = 6;
+    public const CAN_SEE_REQUEST = 2;
+    public const CAN_ASSIGN_REQUEST = 3;
+    public const CAN_CREATE_REQUEST = 4;
+    public const CAN_EDIT_REQUEST = 5;
+    public const CAN_DELETE_REQUEST = 6;
 
-    const CAN_MANAGE_USERS = 7;
-    const CAN_SEE_TRIP_PLAN = 8;
-    const CAN_EDIT_DICTIONARIES = 9;
-    const CAN_EDIT_HYDRANT_LOCATIONS = 10;
+    public const CAN_MANAGE_USERS = 7;
+    public const CAN_SEE_TRIP_PLAN = 8;
+    public const CAN_EDIT_DICTIONARIES = 9;
+    public const CAN_EDIT_HYDRANT_LOCATIONS = 10;
+
+    public const CAN_SEE_DAILY_REPORT = 11;
+
+    public const CAN_ACCESS_FORMATION_REPORT_101 = 12;
+    public const CAN_ACCESS_FORMATION_REPORT_ROSO = 13;
+    public const CAN_ACCESS_FORMATION_REPORT_CMK = 14;
+    public const CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION = 15;
+    public const CAN_ACCESS_FORMATION_REPORT_AIR_RESCUE = 16;
+    public const CAN_ACCESS_FORMATION_REPORT_ORTSERT = 17;
+    public const CAN_ACCESS_FORMATION_DCHS_ALMATY = 18;
 
     protected $table = 'rights';
     protected $fillable = ['title', 'right_group_id'];

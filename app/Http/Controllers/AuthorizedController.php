@@ -16,7 +16,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthorizedController extends Controller
 {
-    public function before() {}
+    public function before()
+    {
+    }
 
     public function __construct()
     {
@@ -36,8 +38,22 @@ class AuthorizedController extends Controller
     public function needRight($right)
     {
         $user = \Auth::user();
-        if (!isset($user)||(!$user->hasRight($right)))
-        {
+        if (!isset($user) || (!$user->hasRight($right))) {
+            throw new AccessDeniedException();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $rights
+     * @return bool
+     * @throws AccessDeniedException
+     */
+    public function needAnyRight(array $rights)
+    {
+        $user = \Auth::user();
+        if (!isset($user) || (!$user->hasAnyRight($rights))) {
             throw new AccessDeniedException();
         }
 

@@ -10,26 +10,58 @@
         </tr>
         </thead>
         <tbody>
+        {% if _user.hasRight(12) %}
             <tr>
                 <td>1</td>
                 <td>СП и АСР</td>
                 <td><a href="{{ url('formation/101') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
             </tr>
+        {% endif %}
+        {% if _user.hasRight(15) %}
             <tr>
                 <td>2</td>
                 <td>ГУ «Казселезащита»</td>
-                <td><a href="{{ url('formation/mudflow') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                {#<td><a href="{{ url('formation/mudflow') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>#}
+                <td><a href="{{ url('formation-record/mudflow') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
             </tr>
+        {% endif %}
+        {% if _user.hasRight(13) %}
             <tr>
                 <td>3</td>
                 <td>ГУ «РОСО КЧС МВД РК»</td>
                 <td><a href="{{ url('formation/savers') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
             </tr>
+        {% endif %}
+        {% if _user.hasRight(14) %}
             <tr>
                 <td>4</td>
                 <td>ГУ «Центр медицины катастроф»</td>
-                <td><a href="{{ url('formation/medical') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                {#<td><a href="{{ url('formation/medical') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>#}
+                <td><a href="{{ url('formation-record/medical') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
             </tr>
+        {% endif %}
+        {% if _user.hasRight(16) %}
+            <tr>
+                <td>5</td>
+                <td>АО "Казавиаспас"</td>
+                <td><a href="{{ url('formation-record/air_rescue') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+            </tr>
+        {% endif %}
+        {% if _user.hasRight(17) %}
+            <tr>
+                <td>6</td>
+                <td>АО "Өртсөндіруші"</td>
+                <td><a href="{{ url('formation-record/ort_sert') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+            </tr>
+        {% endif %}
+        {% if _user.hasRight(18) %}
+            <tr>
+                <td>7</td>
+                <td>ДЧС г.Алматы</td>
+                <td><a href="{{ url('formation-record') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+            </tr>
+        {% endif %}
+
         </tbody>
     </table>
 {% endblock content %}

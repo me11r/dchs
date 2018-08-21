@@ -1,0 +1,108 @@
+{% extends "layout/html" %}
+
+{% block content %}
+    <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }}
+        ({{ item.date|date('Y-m-d') }})</h4>
+
+    <form action="{{ route('formation-record.total-update', item.id) }}" method="POST">
+        {{ csrf_field() }}
+        <div class="big-table-container">
+            <table class="formation-record-table">
+                <thead>
+                <tr>
+                    <th rowspan="3">Наименование подразеления</th>
+                    <th rowspan="3">Руководящий состав</th>
+                    <th colspan="3">Личный состав</th>
+                    <th colspan="8">Техника</th>
+                    <th colspan="2">ГСМ</th>
+                    <th rowspan="3">Радиостанции</th>
+                    <th rowspan="3">Средства индивидуальной защиты органов дыхания</th>
+                    <th rowspan="3">Средства индивидуальной защиты(Костюмы л1 и пр.)</th>
+                    <th rowspan="3">Другие спасательные средства</th>
+                </tr>
+                <tr>
+                    {#Личный состав#}
+                    <th rowspan="2">По штату</th>
+                    <th rowspan="2">В наличии</th>
+                    <th rowspan="2">На оперативном дежурстве</th>
+                    {#Техника#}
+                    <th colspan="2">Основная</th>
+                    <th colspan="2">Специальная</th>
+                    <th colspan="2">Вспомогательная</th>
+                    <th colspan="2">Другая</th>
+                    {#ГСМ#}
+                    <th rowspan="2">Бензин</th>
+                    <th rowspan="2">Дизтопливо</th>
+                </tr>
+                <tr>
+                    {# Техника #}
+                    <th>На дежурстве(в боевом рассчете)</th>
+                    <th>В резерве</th>
+                    <th>На дежурстве(в боевом рассчете)</th>
+                    <th>В резерве</th>
+                    <th>На дежурстве(в боевом рассчете)</th>
+                    <th>В резерве</th>
+                    <th>На дежурстве(в боевом рассчете)</th>
+                    <th>В резерве</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rowItem in items %}
+                    {% include 'formation-record/tr-form' with {item: rowItem} %}
+                {% endfor %}
+                {% include 'formation-record/tr-total-form' with {item: item} %}
+                </tbody>
+            </table>
+
+            <div class="panel bottom_panel">
+                <div class="level" style="float:right; margin: 20px">
+                    <p class="level-right">
+                        <a href="{{ route('formation-record.index') }}"
+                           style="margin-right: 10px"
+                           class="button is-primary">Назад</a>
+                        <button
+                                type="submit"
+                                class="button is-success">
+                            <i class="fas fa-check"></i>Сохранить
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function calculateSum() {
+            var totals = {};
+            var inputs = document.querySelectorAll('input[type=number]');
+
+            inputs.forEach(function (element) {
+                var value = +(element.value);
+                var fieldName = element.dataset.field;
+
+                if (!totals[fieldName] && fieldName) {
+                    totals[fieldName] = 0;
+                }
+                if (!isNaN(value) && fieldName) {
+                    totals[fieldName] += value;
+                }
+            });
+            fillTotals(totals);
+        }
+
+        function fillTotals(totals) {
+            Object.keys(totals).map(function (fieldName, value) {
+                document.querySelectorAll('input[data-total=' + fieldName + ']')[0].setAttribute('value', totals[fieldName]);
+            });
+        }
+
+        document.querySelectorAll('input[type=number]').forEach(function (element) {
+            element.addEventListener('keyup', function (event) {
+                calculateSum();
+            })
+        });
+
+        calculateSum();
+    </script>
+
+{% endblock content %}
