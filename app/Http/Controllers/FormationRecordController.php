@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\FormationOrganisation;
 use App\Models\FormationRecord;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -62,7 +63,7 @@ class FormationRecordController extends Controller
 
     public function totalUpdate($id, Request $request)
     {
-        foreach ($request->get('items', []) as $itemId => $item){
+        foreach ($request->get('items', []) as $itemId => $item) {
             $itemModel = (new FormationRecord())->find($itemId);
             $itemModel->update($item);
         }
@@ -71,10 +72,16 @@ class FormationRecordController extends Controller
 
     private function createTodayForOrganisation($organisation)
     {
-        $todayData = [
-            'organisation' => $organisation,
-            'date' => date('Y-m-d')
-        ];
-        return (new FormationRecord())->firstOrCreate($todayData);
+        $today = Carbon::today();
+        $todayModel = (new FormationRecord())->where('date', $today)->where('organisation', $organisation)->first();
+        if (!$todayModel) {
+            $todayModel = (new FormationRecord())
+                ->fill([
+                    'organisation' => $organisation,
+                    'date' => date('Y-m-d')
+                ])
+                ->save();
+        }
+        return $todayModel;
     }
 }
