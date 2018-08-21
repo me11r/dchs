@@ -106,6 +106,8 @@ class CardController extends AuthorizedController
     public function postAdd101(Request $request, $card_id = 0)
     {
         $data = $request->all();
+        unset($data['comeback']);
+        $comeback = (bool)$request->get('comeback', false);
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
 
@@ -114,8 +116,11 @@ class CardController extends AuthorizedController
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
-
-        return redirect('/card/101')->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
+        $back = '/card/101';
+        if ($comeback) {
+            $back = '/card/add101/' . $card->id.'#returned';
+        }
+        return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
     }
 
     private function saveOtherRecords(Ticket101 $ticket101, array $otherRecords) {

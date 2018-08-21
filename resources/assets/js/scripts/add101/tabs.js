@@ -1,9 +1,23 @@
 export default class Tabs {
-    constructor() {
+    constructor () {
         this.activeTab = 0;
+        this.isNewForm = (document.getElementById('card-101-form-id').getAttribute('data-id') === '0');
+        console.log(document.getElementById('card-101-form-id').getAttribute('data-id'));
     }
 
-    setTab(i) {
+    setTab (i) {
+        if ((this.activeTab === 0) && (this.isNewForm === true) && (i !== 0)) {
+            const form = document.getElementById('card-101-form');
+            let valid = form.checkValidity();
+            if (valid) {
+                form.action += '?comeback=true';
+                return form.submit();
+            } else {
+                form.querySelector('button[type=submit]').click();
+            }
+            return false;
+        }
+
         let tabs = document.querySelectorAll('#cardadd101 .tabs li');
         let panels = document.querySelectorAll('#cardadd101 .panels > div');
         tabs[this.activeTab].classList.remove('is-active');
@@ -13,7 +27,7 @@ export default class Tabs {
         this.activeTab = i;
     }
 
-    nextTab() {
+    nextTab () {
         let nextTab = this.activeTab + 1;
         if (nextTab > 4) {
             nextTab = 0;

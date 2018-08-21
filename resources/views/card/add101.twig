@@ -10,26 +10,27 @@
 
     <section class="container" id="cardadd101">
         <div class=""><h4 class="title" style="padding: 3px 15px">Добавление: Карточка 101</h4></div>
-        <form action="" method="post">
+        <form action="" method="post" id="card-101-form">
             {{ csrf_field() }}
+            <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
             <div class="tabs is-boxed" id="">
                 <ul>
-                    <li><a href="#tab_call" onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
+                    <li><a onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
                     </li>
                     <li>
-                        <a href="#tab_truck" onclick="window.add101tabs.setTab(1);">
+                        <a onclick="window.add101tabs.setTab(1);">
                             <i class="fas fa-truck-moving"></i>&nbsp;Подразделения
                         </a>
                     </li>
-                    <li><a href="#tab_notify" onclick="window.add101tabs.setTab(2);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
+                    <li><a onclick="window.add101tabs.setTab(2);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
                     </li>
                     <li>
-                        <a href="#tab_other" onclick="window.add101tabs.setTab(3);"><i class="fas fa-info-circle"></i>&nbsp;
+                        <a onclick="window.add101tabs.setTab(3);"><i class="fas fa-info-circle"></i>&nbsp;
                             Прочее
                         </a>
                     </li>
                     <li>
-                        <a href="#tab_summary" onclick="window.add101tabs.setTab(4);">
+                        <a onclick="window.add101tabs.setTab(4);">
                             <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
                         </a>
                     </li>
