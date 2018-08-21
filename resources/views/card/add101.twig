@@ -3,8 +3,9 @@
     <script>
         window.ticket101add = {
             records: {{ ticket.other_records | json_encode() | raw }},
-            trunks: {{ trunks | json_encode() | raw }}
-        }
+            trunks: {{ trunks | json_encode() | raw }},
+            ticketId: {{ ticket.id }}
+        };
     </script>
 
     <section class="container" id="cardadd101">
@@ -304,7 +305,7 @@
                 </div>
                 <div id="tab-truck" class="is-hidden">
                     <h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>
-                    <table class="table is-narrow is-hoverable is-striped is-fullwidth">
+                    <table class="table is-narrow is-hoverable is-striped is-fullwidth" data-component="road-trip" >
                         <tr>
                             <th>Подразделение</th>
                             <th>Отделения</th>
@@ -313,13 +314,17 @@
                             <th>- локализации</th>
                             <th>- ликвидации</th>
                             <th>- возвращения</th>
-                            <th>-</th>
+                            <th>- <a @click="sendAllTripPlans()"
+                                     class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил и средств согласно рангу </a>
+                            </th>
                         </tr>
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right">{{ ssv }}</td>
                                 <td><input class="input" type="text" name="ph_{{ index }}_ot" id="ph_{{ index }}_ot"
-                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"/></td>
+                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"
+                                    />
+                                </td>
                                 <td data-component="timepicker"
                                     data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
                                     <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
