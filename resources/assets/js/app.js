@@ -77,10 +77,12 @@ if (document.getElementById('cardadd101')) {
         (new Add101Functions()).bindElements().bindPopupMessage();
 
         document.getElementById('preload_pane').style.display = 'none';
-        if (window.location.hash === '#returned') {
-            window.add101tabs.setTab(1);
+        const ret = window.location.hash.match(/#return=(\d+)/);
+        if (ret !== null) {
+            window.add101tabs.setTab(parseInt(ret[1]));
+        } else {
+            window.add101tabs.setTab(0);
         }
-        window.add101tabs.setTab(0);
         document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
