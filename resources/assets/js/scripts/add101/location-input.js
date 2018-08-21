@@ -61,9 +61,6 @@ export default function bindLocationInputApp() {
                 }
                 // =================================================
             },
-            sendAllTripPlans() {
-                console.log('post trips');
-            },
             selectItem(item) {
                 this.location = item.location;
                 globalBus.$emit('specialPlanFound', item);
