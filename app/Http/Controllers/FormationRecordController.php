@@ -78,7 +78,7 @@ class FormationRecordController extends Controller
             $todayModel = (new FormationRecord())
                 ->fill([
                     'organisation' => $organisation,
-                    'date' => date('Y-m-d')
+                    'date' => $today
                 ])
                 ->save();
         }
