@@ -17,6 +17,7 @@ export default function bindRoadTrip() {
                         }
                     });
                 }
+
             },
             gerQuery(i, part) {
                 return new Promise((resolve) => {
