@@ -39,27 +39,46 @@ export default function bindLocationInputApp() {
                     if(items[0].id === 4)
                     {
                         document.querySelector('[id="ph_1_ot"]').value = '2,3 отд';
+                        document.querySelector('[id="ph_1_text"]').style.color = 'green';
                         document.querySelector('[id="ph_2_ot"]').value = '1,2,3,4 отд';
+                        document.querySelector('[id="ph_2_text"]').style.color = 'green';
                         document.querySelector('[id="ph_3_ot"]').value = '1,2 отд';
+                        document.querySelector('[id="ph_3_text"]').style.color = 'green';
                         document.querySelector('[id="ph_5_ot"]').value = '1,2,5,6 отд';
+                        document.querySelector('[id="ph_5_text"]').style.color = 'green';
                         document.querySelector('[id="ph_6_ot"]').value = '1,2 отд';
+                        document.querySelector('[id="ph_6_text"]').style.color = 'green';
                         document.querySelector('[id="ph_7_ot"]').value = '2,5 отд';
+                        document.querySelector('[id="ph_7_text"]').style.color = 'green';
                         document.querySelector('[id="ph_8_ot"]').value = '1,2 отд';
+                        document.querySelector('[id="ph_8_text"]').style.color = 'green';
                         document.querySelector('[id="ph_11_ot"]').value = '1,2 отд';
+                        document.querySelector('[id="ph_11_text"]').style.color = 'green';
                         document.querySelector('[id="ph_12_ot"]').value = '2 отд';
+                        document.querySelector('[id="ph_12_text"]').style.color = 'green';
                         document.querySelector('[id="ph_13_ot"]').value = '1,2,4,5,7,8 отд';
+                        document.querySelector('[id="ph_13_text"]').style.color = 'green';
                         document.querySelector('[id="ph_15_ot"]').value = '4 отд';
+                        document.querySelector('[id="ph_15_text"]').style.color = 'green';
                         document.querySelector('[id="ph_16_ot"]').value = '1 отд';
+                        document.querySelector('[id="ph_16_text"]').style.color = 'green';
                     }
                     if(items[0].id === 951)
                     {
                         document.querySelector('[id="ph_8_ot"]').value = '1,2,3,5 отд';
+                        document.querySelector('[id="ph_8_text"]').style.color = 'green';
                         document.querySelector('[id="ph_1_ot"]').value = '1,2,3 отд';
+                        document.querySelector('[id="ph_1_text"]').style.color = 'green';
                         document.querySelector('[id="ph_2_ot"]').value = '2,3,4 отд';
+                        document.querySelector('[id="ph_2_text"]').style.color = 'green';
                         document.querySelector('[id="ph_3_ot"]').value = '1,2 отд';
+                        document.querySelector('[id="ph_3_text"]').style.color = 'green';
                         document.querySelector('[id="ph_6_ot"]').value = '1,2,3 отд';
+                        document.querySelector('[id="ph_6_text"]').style.color = 'green';
                         document.querySelector('[id="ph_9_ot"]').value = '2 отд';
+                        document.querySelector('[id="ph_9_text"]').style.color = 'green';
                         document.querySelector('[id="ph_13_ot"]').value = '1,2,4,7 отд';
+                        document.querySelector('[id="ph_13_text"]').style.color = 'green';
                     }
                 }
                 // =================================================
