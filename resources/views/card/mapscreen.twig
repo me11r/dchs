@@ -1,0 +1,37 @@
+{% extends "layout/empty" %}
+{% block content %}
+    <label id="vueexch">
+        exchange test
+        <input type="text" class="input" v-model="location" @input="notifyCard"/>
+    </label>
+    <script>
+        {% verbatim %}
+
+    const exchangeKey = 'mapscreenLocalStorageExchange'
+    new Vue({
+        el: '#vueexch',
+        data: function () {
+            return {
+                location: '',
+            }
+        },
+        methods: {
+            notifyCard: function () {
+                window.localStorage.setItem(exchangeKey, this.location)
+            },
+            onNotified: function (location) {
+                this.location = location
+            },
+        },
+        mounted: function () {
+            window.addEventListener('storage', (event) => {
+                if (event.key === exchangeKey)
+                {
+                    this.onNotified(event.newValue);
+                }
+            })
+        },
+    })
+    {% endverbatim %}
+    </script>
+{% endblock content %}
