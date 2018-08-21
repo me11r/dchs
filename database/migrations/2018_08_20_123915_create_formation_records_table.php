@@ -17,7 +17,7 @@ class CreateFormationRecordsTable extends Migration
             $table->increments('id');
 
             $table->string('organisation', 50);
-            $table->timestamp('date');
+            $table->date('date');
 
             $table->integer('field_1_0_0')->nullable();
             $table->integer('field_2_0_0')->nullable();
