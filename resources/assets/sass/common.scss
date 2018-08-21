@@ -27,3 +27,41 @@ legend {
   color: inherit;
   white-space: normal
 }
+
+.big-table-container {
+  padding: 0 10px;
+  overflow-x: auto;
+}
+
+.formation-record-table {
+  width: 100%;
+  font-size: 12px;
+}
+
+.formation-record-table th,
+.formation-record-table td,
+.formation-record-table {
+  text-align: center;
+  vertical-align: bottom;
+  text-wrap: normal;
+  border: solid 1px black;
+}
+
+.formation-record-table th {
+  padding: 10px;
+}
+
+.formation-record-table input {
+  border: none;
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
+
+.formation-record-table tr.total td {
+  font-weight: bold;
+}
+
+.formation-record-table input {
+  font-weight: inherit;
+}
