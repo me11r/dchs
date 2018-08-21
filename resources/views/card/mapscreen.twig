@@ -1,37 +1,21 @@
 {% extends "layout/empty" %}
 {% block content %}
-    <label id="vueexch">
-        exchange test
-        <input type="text" class="input" v-model="location" @input="notifyCard"/>
-    </label>
+    <script src="{{ manifest('/assets/vendor.js') }}"></script>
+    <script src="{{ manifest('/assets/app.js') }}"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
     <script>
-        {% verbatim %}
-
-    const exchangeKey = 'mapscreenLocalStorageExchange'
-    new Vue({
-        el: '#vueexch',
-        data: function () {
-            return {
-                location: '',
-            }
-        },
-        methods: {
-            notifyCard: function () {
-                window.localStorage.setItem(exchangeKey, this.location)
-            },
-            onNotified: function (location) {
-                this.location = location
-            },
-        },
-        mounted: function () {
-            window.addEventListener('storage', (event) => {
-                if (event.key === exchangeKey)
-                {
-                    this.onNotified(event.newValue);
-                }
-            })
-        },
-    })
-    {% endverbatim %}
+        ymaps.ready(function () {
+            window.ymaps = ymaps;
+            window.initCommonMapScreen();
+        });
     </script>
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">Карта
+        </h4>
+    </div>
+    <div class="panel">
+        <div id="common-map-screen-block">
+        </div>
+    </div>
 {% endblock content %}

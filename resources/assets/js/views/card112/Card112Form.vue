@@ -43,19 +43,35 @@
                     <div :style="{'display': currentTabIndex === 0? 'block': 'none'}">
                         <h5 class="subtitle">Первоначальная информация заявителя:</h5>
                         <!--АДРЕС-->
-                        <div class="control is-expanded">
-                            <p class="control">
-                                <label for="street_id">Адрес</label>
-                            </p>
-                            <buefy-common-select
-                                id="street_id"
-                                :options="streetsOptions"
-                                v-model="model.street_id"/>
+                        <div class="field">
+                            <label for="location">Адрес
+                                <a
+                                    :href="'/card/mapscreen'"
+                                    target="_blank"
+                                    class="button is-small is-light">
+                                    <i class="far fa-map"></i>&nbsp;Открыть карту
+                                </a>
+                            </label>
                             <input
-                                type="hidden"
-                                name="street_id"
-                                v-model="model.street_id">
+                                name="location"
+                                id="location"
+                                class="input"
+                                v-model="model.location">
                         </div>
+
+                        <!--<div class="control is-expanded">-->
+                        <!--<p class="control">-->
+                        <!--<label for="street_id">Адрес</label>-->
+                        <!--</p>-->
+                        <!--<buefy-common-select-->
+                        <!--id="street_id"-->
+                        <!--:options="streetsOptions"-->
+                        <!--v-model="model.street_id"/>-->
+                        <!--<input-->
+                        <!--type="hidden"-->
+                        <!--name="street_id"-->
+                        <!--v-model="model.street_id">-->
+                        <!--</div>-->
                         <!--РАЙОН-->
                         <div class="control is-expanded">
                             <p class="control">
@@ -550,6 +566,7 @@ import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 import {Card112Utils} from './card112utils';
 import {BuefyCommonSelect} from '../../components';
+import {locationExchangeKey, mapLocationExchangeKey} from '../../config/storage-keys';
 
 export default {
     name: 'Card112Form',
@@ -637,11 +654,17 @@ export default {
             if (streetObject) {
                 this.model.city_area_id = streetObject.city_area_id;
             }
+        },
+        notifyMap() {
+            window.localStorage.setItem(locationExchangeKey, this.model.location);
         }
     },
     watch: {
-        'model.street_id'(newValue) {
+        'model.crossroad_1_id'(newValue) {
             this.setCityAreaIdByStreetId(newValue);
+        },
+        'model.location'() {
+            this.notifyMap();
         }
     },
     beforeMount() {
@@ -655,6 +678,13 @@ export default {
             this.model = window.card112FormData.model;
             this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
         }
+    },
+    mounted() {
+        window.addEventListener('storage', (event) => {
+            if (event.key === mapLocationExchangeKey) {
+                this.model.location = event.newValue;
+            }
+        });
     }
 };
 </script>
