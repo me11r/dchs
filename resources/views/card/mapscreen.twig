@@ -1,0 +1,21 @@
+{% extends "layout/empty" %}
+{% block content %}
+    <script src="{{ manifest('/assets/vendor.js') }}"></script>
+    <script src="{{ manifest('/assets/app.js') }}"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <script>
+        ymaps.ready(function () {
+            window.ymaps = ymaps;
+            window.initCommonMapScreen();
+        });
+    </script>
+    <div class="">
+        <h4 class="title"
+            style="padding: 3px 15px">Карта
+        </h4>
+    </div>
+    <div class="panel">
+        <div id="common-map-screen-block">
+        </div>
+    </div>
+{% endblock content %}
