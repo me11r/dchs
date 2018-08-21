@@ -1,4 +1,5 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HardcodeSourcesPlugin = require('hard-source-webpack-plugin');
 const CssMiniPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 // const BundleAnalyzerWebpackPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -20,7 +21,7 @@ module.exports = {
             cacheGroups: {
                 vendors: {
                     name: 'vendor',
-                    test: /[\\\/]node_modules[\\\/]/,
+                    test: /node_modules/,
                     priority: -10,
                     chunks: 'initial'
                 },
@@ -96,6 +97,7 @@ module.exports = {
         }),
         new ManifestPlugin({
             basePath: '/assets/'
-        })
+        }),
+        new HardcodeSourcesPlugin()
     ]
 };
