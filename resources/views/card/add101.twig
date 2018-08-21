@@ -4,7 +4,7 @@
         window.ticket101add = {
             records: {{ ticket.other_records | json_encode() | raw }},
             trunks: {{ trunks | json_encode() | raw }},
-            ticketId: {{ ticket.id }}
+            ticketId: '{{ ticket.id }}'
         };
     </script>
 
@@ -320,7 +320,10 @@
                         </tr>
                         {% for index,ssv in ssv_out %}
                             <tr>
-                                <td class="has-text-right">{{ ssv }}</td>
+                                <td class="has-text-right"
+                                        {% if attribute(ticket,  'ph_' ~ index ~'_ot') != '' %}
+                                            style="color: green"
+                                        {% endif %} id="ph_{{ index }}_text">{{ ssv }}</td>
                                 <td><input class="input" type="text" name="ph_{{ index }}_ot" id="ph_{{ index }}_ot"
                                            value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"
                                     />
