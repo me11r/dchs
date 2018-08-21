@@ -12,6 +12,8 @@ class FormationRecordController extends Controller
 {
     public function singleIndex($organisation)
     {
+        $this->createTodayForOrganisation($organisation);
+
         return View::make('formation-record.single-index')
             ->with('items',
                 (new FormationRecord)
