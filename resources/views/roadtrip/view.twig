@@ -29,8 +29,12 @@
             <td>{{ trip.ticket.object_name|default('-') }}</td>
         </tr>
         <tr>
-            <td class="has-text-right is-bold">Район города</td>
-            <td>{{ trip.ticket.city_area.name|default('-') }}</td>
+            <td class="has-text-right is-bold">Телефон заявителя</td>
+            <td>{{ trip.ticket.caller_phone|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Подразделения</td>
+            <td>{{ trip.ticket['ph_' ~ trip.id ~'_ot']|default('-') }}</td>
         </tr>
         <tr>
             <td class="has-text-right is-bold">Пересечение улиц</td>
