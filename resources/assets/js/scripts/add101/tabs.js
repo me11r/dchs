@@ -2,7 +2,6 @@ export default class Tabs {
     constructor () {
         this.activeTab = 0;
         this.isNewForm = (document.getElementById('card-101-form-id').getAttribute('data-id') === '0');
-        console.log(document.getElementById('card-101-form-id').getAttribute('data-id'));
     }
 
     setTab (i) {
@@ -10,7 +9,7 @@ export default class Tabs {
             const form = document.getElementById('card-101-form');
             let valid = form.checkValidity();
             if (valid) {
-                form.action += '?comeback=true';
+                form.action += ('?comeback=' + i);
                 return form.submit();
             } else {
                 form.querySelector('button[type=submit]').click();
