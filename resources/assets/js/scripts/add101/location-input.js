@@ -36,7 +36,7 @@ export default function bindLocationInputApp() {
                 }
                 // @todo: for demo ================================
                 if(items.length > 0){
-                    if(items[0].object_name === 'Абылай хана, 62')
+                    if(items[0].id === 4)
                     {
                         document.querySelector('[id="ph_1_ot"]').value = '2,3 отд';
                         document.querySelector('[id="ph_2_ot"]').value = '1,2,3,4 отд';
@@ -51,7 +51,7 @@ export default function bindLocationInputApp() {
                         document.querySelector('[id="ph_15_ot"]').value = '4 отд';
                         document.querySelector('[id="ph_16_ot"]').value = '1 отд';
                     }
-                    if(items[0].object_name === 'пр.Достык,56')
+                    if(items[0].id === 951)
                     {
                         document.querySelector('[id="ph_8_ot"]').value = '1,2,3,5 отд';
                         document.querySelector('[id="ph_1_ot"]').value = '1,2,3 отд';
