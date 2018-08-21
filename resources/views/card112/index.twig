@@ -31,8 +31,8 @@
             {% for item in items %}
                 <tr>
                     <td class="has-text-right">{{ item.id }}</td>
-                    <td>{{ item.street.name }}</td>
-                    <td>{{ item.street.area ? item.street.area.name : '-' }}</td>
+                    <td>{{ item.location }}</td>
+                    <td>{{ '-' }}</td>
                     <td class="has-text-right">{{ item.created_at|date('H:i d.m.Y') }}</td>
                     <td class="has-text-right">
                         <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"

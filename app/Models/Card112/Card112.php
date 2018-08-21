@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Card112\Card112
  *
  * @property int $id
- * @property int $street_id
  * @property int $crossroad_1_id
  * @property int $crossroad_2_id
  * @property int $incident_type_id
@@ -74,7 +73,6 @@ class Card112 extends Model
      * @var array
      */
     public $fillable = [
-        'street_id',
         'crossroad_1_id',
         'crossroad_2_id',
         'incident_type_id',
@@ -91,7 +89,8 @@ class Card112 extends Model
         'evacuated',
         'hospitalized',
         'additional_comment',
-        'city_area_id'
+        'city_area_id',
+        'location'
     ];
 
     /**

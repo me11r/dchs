@@ -6,14 +6,13 @@ import '../sass/app.scss';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import axios from 'axios';
-import VueLocalStorage from 'vue-localstorage'
+import VueLocalStorage from 'vue-localstorage';
 
-import App from './App.vue';
 import Navbar from './ui/Navbar';
-import Card from './Card101';
-import { Card112Form } from './views/Card112';
-import { MudflowProtectionForm } from './views/mudflowProtection';
-import { HydrantMapList } from './views/hydrant-map';
+import {Card112Form} from './views/card112';
+import {MudflowProtectionForm} from './views/mudflowProtection';
+import {HydrantMapList} from './views/hydrant-map';
+import {CommonMapScreen} from './views/mapscreen';
 import RoadtripNotifier from './ui/RoadtripNotifier';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 
@@ -34,9 +33,12 @@ Vue.use(Buefy, {
 
 Vue.use(VueLocalStorage);
 
-new Vue({
-    render: h => h(Navbar)
-}).$mount('#navbar');
+// верхнее меню
+if (document.getElementById('navbar')) {
+    new Vue({
+        render: h => h(Navbar)
+    }).$mount('#navbar');
+}
 
 // Карточка 112 (форма добавления/редактировани)
 const card112FormBlockId = 'card112-form-block';
@@ -59,6 +61,12 @@ if (document.getElementById(roadTripViewYandexMapBlockId)) {
         new Vue({el: '#' + roadTripViewYandexMapBlockId, render: h => h(RoadTripViewMap)});
     };
 }
+
+// Общая карта для работы с карточками (101 и 112)
+const commonMapScreenBlockId = 'common-map-screen-block';
+window.initCommonMapScreen = () => {
+    new Vue({el: '#' + commonMapScreenBlockId, render: h => h(CommonMapScreen)});
+};
 
 // 101 карточка
 if (document.getElementById('cardadd101')) {

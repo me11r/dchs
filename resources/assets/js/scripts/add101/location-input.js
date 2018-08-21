@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Vue from 'vue';
 import {globalBus} from '../global-bus';
+import {locationExchangeKey, mapLocationExchangeKey} from '../../config/storage-keys';
 
 const lodash = require('lodash');
 
@@ -15,6 +16,7 @@ export default function bindLocationInputApp() {
         },
         methods: {
             searchLocationPlans: lodash.debounce(function () {
+                this.notifyMap();
                 axios.get('/ajax/find_special_plan', {
                     params: {
                         location: this.location
@@ -28,7 +30,8 @@ export default function bindLocationInputApp() {
             setData(items) {
                 this.items = items;
                 this.showList = this.items.length > 0;
-                if (this.items.length === 1 && this.items[0].location === this.location) {
+                if (this.items.length === 1 && this.items[0].location ===
+                    this.location) {
                     this.showList = false;
                 }
                 // @todo: for demo ================================
@@ -74,6 +77,9 @@ export default function bindLocationInputApp() {
             onFocus() {
                 this.setData([]);
                 this.searchLocationPlans();
+            },
+            notifyMap() {
+                window.localStorage.setItem(locationExchangeKey, this.location);
             }
         },
         watch: {
@@ -84,6 +90,11 @@ export default function bindLocationInputApp() {
             }
         },
         mounted() {
+            window.addEventListener('storage', (event) => {
+                if (event.key === mapLocationExchangeKey) {
+                    this.location = event.newValue;
+                }
+            });
             this.location = element.dataset.value;
         }
     });

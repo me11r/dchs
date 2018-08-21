@@ -51,7 +51,7 @@
                         </div>
                     {% endif %}
                     <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
-                        <label for="location">Место пожара (Адрес)</label>
+                        <label for="location">Место пожара (Адрес) <a href="{{ url('/card/mapscreen') }}" target="_blank" class="button is-small is-light"><i class="far fa-map"></i>&nbsp;Открыть карту</a></label>
                         <input name="location"
                                id="location"
                                class="input"
