@@ -35,7 +35,23 @@ class SpecialPlanSeeder extends Seeder
                 'fire_department_id' => 5,
                 'operational_plan_id' => 3,
                 'location' => 'ул. Емцова, 9 «Б»'
-            ]
+            ],
+            [
+                'fire_level_id' => 0,
+                'city_area_id' => 0,
+                'object_name' => 'Абылай хана, 62',
+                'fire_department_id' => 0,
+                'operational_plan_id' => 0,
+                'location' => 'Абылай хана, 62'
+            ],
+            [
+                'fire_level_id' => 0,
+                'city_area_id' => 0,
+                'object_name' => 'пр.Достык,56',
+                'fire_department_id' => 0,
+                'operational_plan_id' => 0,
+                'location' => 'пр.Достык,56'
+            ],
         ];
 
         foreach ($list as $item) {

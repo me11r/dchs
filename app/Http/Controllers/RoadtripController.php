@@ -77,11 +77,12 @@ class RoadtripController extends AuthorizedController
         $plan = new RoadtripPlan();
         $plan->fill([
             'card_id' => $ticket_id,
-            'department_id' => $dept_id,
+            'department_id' => $dept_id
         ])
             ->save();
         $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
         $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
+        $ticket->{'ph_' . $dept_id . '_ot'} = \request('part');
         $ticket->save();
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
