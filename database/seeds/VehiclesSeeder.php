@@ -171,15 +171,15 @@ class VehiclesSeeder extends Seeder
             ],
             [
                 'name' => 'АЦ-2,5-40',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'АЦ-2,5-40',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'АЦ-5-40',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'АЦ-8-40',
@@ -187,83 +187,83 @@ class VehiclesSeeder extends Seeder
             ],
             [
                 'name' => 'АЦТЛ-32',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'АКТП-54',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'АСА-20',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'Мотоцикл',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'Мотоцикл',
-                'fire_department_id' => 'CПЧ-7',
+                'fire_department_id' => 'СПЧ-7',
             ],
             [
                 'name' => 'АБР',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'АЦ-3,2-40',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'АЦ-5-40',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'АЦ-5-40',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'АЦ-5-70',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'АЛ-32',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'АКТП-90',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'Нива',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'Мотоцикл',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'Мотоцикл',
-                'fire_department_id' => 'CПЧ-8',
+                'fire_department_id' => 'СПЧ-8',
             ],
             [
                 'name' => 'АЦ-1-30',
-                'fire_department_id' => 'CПЧ-9',
+                'fire_department_id' => 'СПЧ-9',
             ],
             [
                 'name' => 'АЦ-6-40',
-                'fire_department_id' => 'CПЧ-9',
+                'fire_department_id' => 'СПЧ-9',
             ],
             [
                 'name' => 'АЦ-6-40',
-                'fire_department_id' => 'CПЧ-9',
+                'fire_department_id' => 'СПЧ-9',
             ],
             [
                 'name' => 'АБР',
-                'fire_department_id' => 'CПЧ-9',
+                'fire_department_id' => 'СПЧ-9',
             ],
             [
                 'name' => 'Горный будка',
-                'fire_department_id' => 'CПЧ-9',
+                'fire_department_id' => 'СПЧ-9',
             ],
             [
                 'name' => 'АЦ-2,5-40',
