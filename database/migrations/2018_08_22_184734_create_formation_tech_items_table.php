@@ -28,7 +28,7 @@ class CreateFormationTechItemsTable extends Migration
                 ->on('formation_tech_report')
                 ->onDelete('cascade');
 
-            $table->unsignedInteger('department')->default(1);
+            $table->integer('department')->nullable();
             $table->string('status');
 
             $table->timestamps();

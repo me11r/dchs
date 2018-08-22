@@ -35,7 +35,7 @@
                 </div>
 
             </div>
-            <div class="control column">
+            <div v-if="block_type !== 'repair'" class="control column">
                 <label :for="getName('department', item.id)">Отделение</label>
                 <input
                     required

@@ -213,13 +213,6 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
         $all = $request->all();
-
-//        $model = (new FormationTechReport())
-//            ->where('form_id', $form_id)
-//            ->where('dept_id', $dept_id)
-//            ->first();
-
-//        if ($model === null) {
         $model = FormationTechReport::updateOrCreate([
                 'form_id' => $form_id,
                 'dept_id' => $dept_id,
@@ -232,16 +225,13 @@ class FormationController extends AuthorizedController
                     FormationTechItem::create([
                         'vehicle_id' => $input,
                         'formation_tech_report_id' => $model->id,
-                        'department' => $inputs['department'][$input_key],
+                        'department' => $type != 'repair' ? $inputs['department'][$input_key] : null,
                         'status' => $type,
                     ]);
                 }
 
             }
         }
-//            $model = new FormationTechReport();
-//        }
-//        $model->fill($all)->save();
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
