@@ -24,6 +24,9 @@
             {{ csrf_field() }}
             <input type="hidden" name="dept_id" value="{{ dept_id }}"/>
             <input type="hidden" name="form_id" value="{{ form_id }}"/>
+
+            {% include "formation/tech.twig" with {model: model} %}
+
             {% include "formation/field.twig" with {fields: fieldlist, prefix: ''} %}
 
             <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
