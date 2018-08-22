@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="stylesheet" href="{{ mix('/assets/app.css') }}">
+    <link rel="stylesheet" href="{{ mix('assets/app.css') }}">
     <script>
         window.csrf_token = '{{ csrf_token() }}';
     </script>
@@ -26,7 +26,7 @@
     <div id="notification" class="notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
 {% endif %}
 {% block content %}{% endblock content %}
-<script src="{{ mix('/assets/app.js') }}"></script>
+<script src="{{ mix('assets/app.js') }}"></script>
 <script>
     window.addEventListener('load', () => {
         const notify = document.getElementById('notification');
