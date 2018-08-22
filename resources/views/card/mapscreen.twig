@@ -1,7 +1,7 @@
 {% extends "layout/empty" %}
 {% block content %}
-    <script src="{{ manifest('/assets/vendor.js') }}"></script>
-    <script src="{{ manifest('/assets/app.js') }}"></script>
+    {#<script src="{{ manifest('/assets/vendor.js') }}"></script>#}
+    <script src="{{ mix('/assets/app.js') }}"></script>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
     <script>
         ymaps.ready(function () {

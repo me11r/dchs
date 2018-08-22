@@ -96,12 +96,16 @@ if (add101personsFormElement) {
     (new Add101Persons()).createApp(add101personsFormElement);
 }
 
-new Vue({
-    el: '#mudflowProtection-form-block',
-    render: h => h(MudflowProtectionForm)
-});
+if (document.getElementById('mudflowProtection-form-block')){
+    new Vue({
+        el: '#mudflowProtection-form-block',
+        render: h => h(MudflowProtectionForm)
+    });
+}
 
-new Vue({
-    el: '#roadtrip-notifier',
-    render: h => h(RoadtripNotifier)
-});
+if (document.getElementById('roadtrip-notifier')) {
+    new Vue({
+        el: '#roadtrip-notifier',
+        render: h => h(RoadtripNotifier)
+    });
+}
