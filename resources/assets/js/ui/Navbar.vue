@@ -111,6 +111,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'Navbar',
     data: function () {
@@ -149,7 +151,7 @@ export default {
 
     },
     mounted: function () {
-        window.axios.get('/ajax/rights/list').then((response) => {
+        axios.get('/ajax/rights/list').then((response) => {
             this.rights = response.data;
         });
     }

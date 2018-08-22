@@ -113,7 +113,7 @@ return [
             'TwigBridge\Extension\Laravel\Translator',
             'TwigBridge\Extension\Laravel\Url',
 
-            App\TwigBridge\Extension\Webpack\Manifest::class
+//            App\TwigBridge\Extension\Webpack\Manifest::class
             // 'TwigBridge\Extension\Laravel\Gate',
 
             // 'TwigBridge\Extension\Laravel\Form',
@@ -185,6 +185,7 @@ return [
                         'last',
                         'mix',
             */
+            'mix'
         ],
 
         /*
