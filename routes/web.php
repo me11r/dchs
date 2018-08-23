@@ -143,6 +143,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
     Route::resource('/weather', 'WeatherController');
     Route::resource('/quakes', 'QuakeController');
+    Route::resource('/vehicles', 'VehicleController');
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

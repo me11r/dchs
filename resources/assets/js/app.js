@@ -14,6 +14,7 @@ import {MudflowProtectionForm} from './views/mudflowProtection';
 import {HydrantMapList} from './views/hydrant-map';
 import {CommonMapScreen} from './views/mapscreen';
 import RoadtripNotifier from './ui/RoadtripNotifier';
+import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 
 import Add101Functions from './scripts/add101/add101';
@@ -25,6 +26,7 @@ const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
+Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.config.productionTip = false;
 
 Vue.use(Buefy, {
@@ -107,5 +109,12 @@ if (document.getElementById('roadtrip-notifier')) {
     new Vue({
         el: '#roadtrip-notifier',
         render: h => h(RoadtripNotifier)
+    });
+}
+
+if (document.getElementById('tech_block_101')) {
+    new Vue({
+        el: '#tech_block_101',
+        // render: h => h(AddEdit101Tech)
     });
 }
