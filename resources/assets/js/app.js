@@ -112,9 +112,8 @@ if (document.getElementById('roadtrip-notifier')) {
     });
 }
 
-if (document.getElementById('tech_block_101')) {
+if (document.getElementById('vue')) {
     new Vue({
-        el: '#tech_block_101',
-        // render: h => h(AddEdit101Tech)
+        el: '#vue'
     });
 }
