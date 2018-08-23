@@ -40,7 +40,7 @@ services:
     ports:
       - "33306:3306"
     volumes:
-      - ./database/dumps/dump-20-08-2018-dump.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ./database/dumps/dump-20-08-2018-dump.sql:/docker-entrypoint-initdb.d/init.sql
       - app-db-data:/var/lib/mysql
     networks:
       - app-network
@@ -50,10 +50,31 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: emergency
 
+  app-node:
+    image: node:10
+    container_name: "app-node"
+    environment:
+      - NODE_ENV=development
+    working_dir: /current
+    command: [bash, -c, "npm install && npm run hot"]
+    ports:
+      - "8080:8080"
+    volumes:
+      - npm-cached:/current/node_modules
+      - npm-lock:/current
+      - ./public:/current/public
+      - ./resources:/current/resources
+      - ./package.json:/current/package.json
+      - ./webpack.mix.js:/current/webpack.mix.js
+    networks:
+      - app-network
 
 volumes:
   app-db-data:
   app-code:
+  npm-cached:
+  npm-lock:
 
 networks:
   app-network:
+
