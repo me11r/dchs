@@ -101,4 +101,8 @@ class FormationTechReport extends Model
 {
     protected $table = 'formation_tech_report';
     protected $guarded = ['id'];
+    protected $fillable = [
+        'form_id',
+        'dept_id',
+    ];
 }

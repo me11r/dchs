@@ -18,6 +18,8 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
+use App\Models\FormationTechItem;
+use App\Models\Vehicle;
 use App\Right;
 use App\Services\FormationService;
 use Carbon\Carbon;
@@ -138,20 +140,20 @@ class FormationController extends AuthorizedController
                 'Водяная',
                 'Грязевая',
             ],
-            'Пожарная техника' => [
-                'В боевом расчете' => [
-                    'Тип основного пожарного а/м',
-                    'Марка спец. пожарных а/м, мотоциклов'
-                ],
-                'В резерве' => [
-                    'Тип основного пожарного а/м',
-                    'Марка спец. пожарных а/м, мотоциклов'
-                ],
-                'На ремонте' => [
-                    'Тип основного пожарного а/м',
-                    'Марка спец. пожарных а/м, мотоциклов'
-                ],
-            ],
+//            'Пожарная техника' => [
+//                'В боевом расчете' => [
+//                    'Тип основного пожарного а/м',
+//                    'Марка спец. пожарных а/м, мотоциклов'
+//                ],
+//                'В резерве' => [
+//                    'Тип основного пожарного а/м',
+//                    'Марка спец. пожарных а/м, мотоциклов'
+//                ],
+//                'На ремонте' => [
+//                    'Тип основного пожарного а/м',
+//                    'Марка спец. пожарных а/м, мотоциклов'
+//                ],
+//            ],
             'Имеется на автомобилях в боевом расчете' => [
                 'Рукавов' => [
                     '125 мм',
@@ -202,6 +204,7 @@ class FormationController extends AuthorizedController
         $this->set('departments', FireDepartment::all())
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->get())
             ->set('dept_id', $dept_id);
 
     }
@@ -209,12 +212,26 @@ class FormationController extends AuthorizedController
     public function postAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+        $all = $request->all();
+        $model = FormationTechReport::updateOrCreate([
+                'form_id' => $form_id,
+                'dept_id' => $dept_id,
+            ], $all);
+        if($request->tech){
+            FormationTechItem::where('formation_tech_report_id', $model->id)
+                ->delete();
+            foreach ($request->tech as $type => $inputs) {
+                foreach ($inputs['vehicle_id'] as $input_key => $input) {
+                    FormationTechItem::create([
+                        'vehicle_id' => $input,
+                        'formation_tech_report_id' => $model->id,
+                        'department' => $type != 'repair' ? $inputs['department'][$input_key] : null,
+                        'status' => $type,
+                    ]);
+                }
 
-        $model = (new FormationTechReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
-        if ($model === null) {
-            $model = new FormationTechReport();
+            }
         }
-        $model->fill($request->all())->save();
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 

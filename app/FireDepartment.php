@@ -49,4 +49,9 @@ class FireDepartment extends Model
     {
         $this->attributes['title'] = $value;
     }
+
+    public function scopeTitle($q, $title)
+    {
+        return $q->where('title', $title);
+    }
 }
