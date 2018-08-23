@@ -22,7 +22,7 @@ class CreateEmergencySituationsTable extends Migration
             $table->string('place');
 
             $table->integer('city_area_id')->nullable();
-            $table->string('location ', 1000)->nullable();
+            $table->string('location', 1000)->nullable();
             $table->string('object_name')->nullable();
             $table->string('size')->nullable();
 

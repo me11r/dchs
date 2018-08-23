@@ -98,7 +98,7 @@ if (add101personsFormElement) {
     (new Add101Persons()).createApp(add101personsFormElement);
 }
 
-if (document.getElementById('mudflowProtection-form-block')){
+if (document.getElementById('mudflowProtection-form-block')) {
     new Vue({
         el: '#mudflowProtection-form-block',
         render: h => h(MudflowProtectionForm)
@@ -114,7 +114,9 @@ if (document.getElementById('roadtrip-notifier')) {
 
 if (document.getElementById('tech_block_101')) {
     new Vue({
-        el: '#tech_block_101',
+        el: '#tech_block_101'
         // render: h => h(AddEdit101Tech)
     });
 }
+
+require('./scripts/emergency-situation/edit-form');
