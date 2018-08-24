@@ -6277,7 +6277,7 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
-vue-hot-reload-api@^2.2.0:
+vue-hot-reload-api@2.3.0, vue-hot-reload-api@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.0.tgz#97976142405d13d8efae154749e88c4e358cf926"
 
@@ -6327,7 +6327,7 @@ vue-underscore@^0.1.4:
   dependencies:
     underscore "^1.8.3"
 
-vue-yandex-maps@^0.7.13:
+vue-yandex-maps@^0.7.15:
   version "0.7.15"
   resolved "https://registry.yarnpkg.com/vue-yandex-maps/-/vue-yandex-maps-0.7.15.tgz#d187144e8394e3c2e2c1095550b14f5e4ee3e927"
 
