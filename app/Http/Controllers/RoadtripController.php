@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\FireDepartment;
+use App\Models\FireDepartmentResult;
 use App\RoadtripPlan;
 use App\Ticket101;
 use App\User;
@@ -54,7 +55,7 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
-    public function getSend($dept_id, $ticket_id)
+    public function getSend($dept_id, $ticket_id, $departments = null)
     {
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
@@ -78,12 +79,25 @@ class RoadtripController extends AuthorizedController
         $plan->fill([
             'card_id' => $ticket_id,
             'department_id' => $dept_id
-        ])
-            ->save();
-        $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
-        $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
-        $ticket->{'ph_' . $dept_id . '_ot'} = \request('part');
-        $ticket->save();
+        ])->save();
+
+        FireDepartmentResult::updateOrCreate(
+            [
+                'fire_department_id' => $dept_id,
+                'ticket101_id' => $ticket_id,
+            ],
+            [
+                'dispatched' => true,
+                'dispatch_id' => $plan->id,
+                'departments' => \request('part'),
+            ]
+        );
+
+
+//        $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
+//        $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
+//        $ticket->{'ph_' . $dept_id . '_ot'} = \request('part');
+//        $ticket->save();
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
             ->with('_message', [

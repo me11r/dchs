@@ -1,55 +1,17 @@
-{#<fieldset class="">#}
-    {#<legend>{{ index }}</legend>#}
-    {#{% include "formation/field.twig" with {fields: field, prefix: prefix ~'_' ~ loop.index, model:model} %}#}
-{#</fieldset>#}
-{#<div class="field">#}
-    {#<label for="field{{ prefix }}_{{ index }}">{{ field }}</label>#}
-    {#<div class="control">#}
-        {#<input type="number"#}
-               {#:readonly="isReadonly('{{ prefix }}', '{{ index }}')"#}
-               {#step="1"#}
-               {#data-value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"#}
-               {#class="input add101persons-input"#}
-               {#name="field{{ prefix }}_{{ index }}"#}
-               {#v-model="inputs.{{ 'field' }}{{ prefix }}_{{ index }}"#}
-               {#id="field{{ prefix }}_{{ index }}"#}
-               {#value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"/>#}
-    {#</div>#}
-{#</div>#}
-<div id="tech_block_101">
+<div id="vue">
     <fieldset class="">
         <legend>Пожарная техника</legend>
         <fieldset class="">
             <legend>В боевом расчете</legend>
             <add-edit-tech report_id="{{ model.id }}" block_type="action" :vehicles="{{ vehicles }}"></add-edit-tech>
-
-            {#<div class="field">#}
-                {#<label for="field_4_1_0">125 мм</label>#}
-                {#<div class="control">#}
-                    {#<input type="number" :readonly="isReadonly('_4_1', '0')" step="1" data-value="" class="input add101persons-input" name="field_4_1_0" v-model="inputs.field_4_1_0" id="field_4_1_0" value="">#}
-                {#</div>#}
-            {#</div>#}
         </fieldset>
         <fieldset class="">
             <legend>В резерве</legend>
             <add-edit-tech report_id="{{ model.id }}" block_type="reserve" :vehicles="{{ vehicles }}"></add-edit-tech>
-
-            {#<div class="field">#}
-                {#<label for="field_4_1_0">125 мм</label>#}
-                {#<div class="control">#}
-                    {#<input type="number" :readonly="isReadonly('_4_1', '0')" step="1" data-value="" class="input add101persons-input" name="field_4_1_0" v-model="inputs.field_4_1_0" id="field_4_1_0" value="">#}
-                {#</div>#}
-            {#</div>#}
         </fieldset>
         <fieldset class="">
             <legend>На ремонте</legend>
             <add-edit-tech report_id="{{ model.id }}" block_type="repair" :vehicles="{{ vehicles }}"></add-edit-tech>
-            {#<div class="field">#}
-                {#<label for="field_4_1_0">125 мм</label>#}
-                {#<div class="control">#}
-                    {#<input type="number" :readonly="isReadonly('_4_1', '0')" step="1" data-value="" class="input add101persons-input" name="field_4_1_0" v-model="inputs.field_4_1_0" id="field_4_1_0" value="">#}
-                {#</div>#}
-            {#</div>#}
         </fieldset>
 
     </fieldset>

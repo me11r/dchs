@@ -322,17 +322,23 @@
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right"
-                                        {% if attribute(ticket,  'ph_' ~ index ~'_ot') != '' %}
+                                        {#{% if attribute(ticket,  'ph_' ~ index ~'_ot') != '' %}#}
+                                            {#style="color: green"#}
+                                        {#{% endif %} id="ph_{{ index }}_text">{{ ssv.name }}#}
+
+                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
                                             style="color: green"
-                                        {% endif %} id="ph_{{ index }}_text">{{ ssv }}</td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_ot" id="ph_{{ index }}_ot"
-                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"
+                                        {% endif %} id="ph_{{ ssv.id }}_text">{{ ssv.name }}
+                                    {#<input type="hidden" name="ph[ot][]">#}
+                                </td>
+                                <td><input class="input" type="text" name="ph[ot][{{ ssv.id }}]" id="ph_{{ ssv.id }}_ot"
+                                           value="{{ attribute(ssv.res,  'departments')|default('') }}"
                                     />
                                 </td>
                                 <td data-component="timepicker"
                                     data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
                                     <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
+                                                  name="ph[out_time][{{ ssv.id }}]" id="ph_{{ ssv.id }}_out_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -353,7 +359,7 @@
                                 <td data-component="timepicker"
                                     data-value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}">
                                     <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
+                                                  name="ph[arrive_time][{{ ssv.id }}]" id="ph_{{ ssv.id }}_arrive_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -374,7 +380,7 @@
                                 <td data-component="timepicker"
                                     data-value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}">
                                     <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
+                                                  name="ph[loc_time][{{ ssv.id }}]" id="ph_{{ ssv.id }}_loc_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -395,7 +401,7 @@
                                 <td data-component="timepicker"
                                     data-value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}">
                                     <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
+                                                  name="ph[liqv_time][{{ ssv.id }}]" id="ph_{{ ssv.id }}_liqv_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -416,7 +422,7 @@
                                 <td data-component="timepicker"
                                     data-value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}">
                                     <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
+                                                  name="ph[ret_time][{{ ssv.id }}]" id="ph_{{ ssv.id }}_ret_time"
                                                   :value="value">
                                         <div class="field is-grouped" style="justify-content: space-between">
                                             <p class="control">
@@ -435,8 +441,11 @@
                                     </b-timepicker>
                                 </td>
                                 <td>
-                                    {% if attribute(ticket, 'ph_' ~ index ~ '_dispatched') == 0 %}
-                                        <a href="{{ url('/roadtrip/send/'~index ~'/'~ticket.id) }}"
+                                    {% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}
+                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
+                                            {% set depts = ssv.res.departments  %}
+                                        {% endif %}
+                                        <a @click="sendOne({{ ssv.id }}, '')" {#href="{{ url('/roadtrip/send/'~ssv.id ~'/'~ticket.id ~'/'~ depts ?? ssv.departments) }}"#}
                                            class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
                                             подразделение</a>
                                     {% else %}

@@ -4,6 +4,9 @@
 namespace App;
 
 
+use App\Dictionary\CityArea;
+use App\Models\FireDepartmentResult;
+use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
@@ -53,5 +56,20 @@ class FireDepartment extends Model
     public function scopeTitle($q, $title)
     {
         return $q->where('title', $title);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'fire_department_main_id');
+    }
+
+    public function city_area()
+    {
+        return $this->belongsTo(CityArea::class, 'city_area_id');
+    }
+
+    public function results()
+    {
+        return $this->hasMany(FireDepartmentResult::class, 'fire_department_id');
     }
 }
