@@ -74,6 +74,12 @@
                         href="/vehicles"
                         class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-car"></i>&nbsp;
                         Транспортные средства</a></div>
+                <div
+                    v-if="hasRight(10)"
+                    class="navbar-item"><a
+                        href="/schedules"
+                        class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-fire"></i>&nbsp;
+                        Пожарные части</a></div>
 
             </div>
             <div class="navbar-end">

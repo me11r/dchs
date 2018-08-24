@@ -11,6 +11,7 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
 use App\Dictionary\TripResult;
+use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -537,5 +538,10 @@ class Ticket101 extends Model
     public function other_records()
     {
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
+    }
+
+    public function results()
+    {
+        return $this->hasMany(FireDepartmentResult::class, 'ticket101_id');
     }
 }

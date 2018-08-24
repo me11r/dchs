@@ -15,6 +15,7 @@ import {HydrantMapList} from './views/hydrant-map';
 import {CommonMapScreen} from './views/mapscreen';
 import RoadtripNotifier from './ui/RoadtripNotifier';
 import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
+import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 
 import Add101Functions from './scripts/add101/add101';
@@ -27,6 +28,8 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
 Vue.component('add-edit-tech', AddEdit101Tech);
+Vue.component('schedule', Schedule);
+
 Vue.config.productionTip = false;
 
 Vue.use(Buefy, {

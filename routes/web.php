@@ -121,9 +121,10 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('plan_id', '[0-9]+');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
-        Route::get('/send/{dept_id}/{ticket_id}', 'RoadtripController@getSend')
+        Route::get('/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@getSend')
             ->where('dept_id', '[0-9]+')
-            ->where('ticket_id', '[0-9]+');
+            ->where('ticket_id', '[0-9]+')
+            ->where('departments', '[0-9]+');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
@@ -144,6 +145,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/weather', 'WeatherController');
     Route::resource('/quakes', 'QuakeController');
     Route::resource('/vehicles', 'VehicleController');
+    Route::resource('/schedules', 'ScheduleController');
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');
