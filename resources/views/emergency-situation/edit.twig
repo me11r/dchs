@@ -1,0 +1,344 @@
+{% extends "layout/html" %}
+{% block content %}
+    <style>
+        .inline-field {
+            display: inline-block;
+        }
+
+        .field-half, .field-quarter {
+            padding: 0 10px 0 10px;
+            margin: 0 0 0 -5px;
+        }
+
+        .field-full {
+            width: 100%;
+        }
+
+        .field-half {
+            width: 50%;
+        }
+
+        .field-quarter {
+            width: 25%;
+        }
+
+        .field-third-part {
+            width: 33%;
+        }
+
+        .field-group {
+            display: block;
+        }
+
+        .select.full-width-select,
+        .select.full-width-select select {
+            width: 100%;
+        }
+    </style>
+
+    <div class="container">
+        <div class="panel"
+             id="emergency-situation-form">
+            <div class="box"
+                 style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="{{ item.id ? route('emergency-situation.update', {'id':item.id}) : route('emergency-situation.store') }}"
+                      method="post">
+                    {% if item.id %}
+                        {{ method_field('PATCH') }}
+                    {% endif %}
+
+                    {{ csrf_field() }}
+
+                    <div class="field field-quarter"
+                         id="emergency-situation-datepicker"
+                         data-value="{{ item.date| date("Y-m-d H:i:s") }}">
+                        <label for="incident_type">Дата</label>
+                        <input type="hidden" name="date" :value="dateToSave">
+                        <b-datepicker
+                                v-model="date"
+                                icon-pack="far"
+                                style="width: 100%"
+                                icon="calendar"
+                                :readonly="false">
+                        </b-datepicker>
+                    </div>
+                    <div class="field field-quarter"
+                         id="emergency-situation-timepicker"
+                         data-value="{{ item.time| date("Y-m-d H:i:s") }}">
+                        <label for="incident_type">Время</label>
+                        <input type="hidden" name="time" :value="timeToSave">
+                        <b-timepicker icon="clock"
+                                      icon-pack="far"
+                                      type="text"
+                                      :ref="'timepicker'"
+                                      v-model="time"
+                                      style="width: 100%">
+                            <div class="field is-grouped" style="justify-content: space-between">
+                                <p class="control">
+                                    <a class="button is-primary is-small"
+                                       @click="()=> {time = new Date(); closeTimePicker}">
+                                        <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                        <span>Сейчас</span>
+                                    </a>
+                                </p>
+                                <p class="control">
+                                    <a class="button is-outlined is-small"
+                                       @click="closeTimePicker()">
+                                        <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                    </a>
+                                </p>
+                            </div>
+                        </b-timepicker>
+                    </div>
+
+                    <div class="field field-quarter">
+                        <label for="incident_type">Тип инцидента</label>
+                        <input type="text"
+                               class="input"
+                               name="incident_type"
+                               id="incident_type"
+                               value="{{ item.incident_type }}"/>
+                    </div>
+
+                    <div class="field field-half inline-field">
+                        <p class="control">
+                            <label for="city_area">Район города</label>
+                        </p>
+                        <div class="select full-width-select">
+                            <select name="city_area_id" id="city_area">
+                                <option value="">-</option>
+                                {% for cityArea in cityAreas %}
+                                    <option
+                                            value="{{ cityArea.id }}"
+                                            {% if cityArea.id == item.city_area_id %}
+                                    selected
+                                            {% endif %}>
+                                        {{ cityArea.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="place">Населенный пункт</label>
+                        <input type="text"
+                               required
+                               class="input"
+                               name="place"
+                               id="place"
+                               value="{{ item.place }}"/>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="location">Место ЧС</label>
+                        <input type="text"
+                               class="input"
+                               name="location"
+                               id="location"
+                               value="{{ item.location }}"/>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="object_name">Название объекта</label>
+                        <input type="text"
+                               class="input"
+                               name="object_name"
+                               id="object_name"
+                               value="{{ item.object_name }}"/>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="size">Характер и масштаб ЧС</label>
+                        <input type="text"
+                               class="input"
+                               name="size"
+                               id="size"
+                               value="{{ item.size }}"/>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field inline-field field-quarter">
+                            <label for="died">Погибло</label>
+                            <input type="number"
+                                   class="input"
+                                   name="died"
+                                   id="died"
+                                   value="{{ item.died }}"/>
+                        </div>
+
+                        <div class="field inline-field field-quarter">
+                            <label for="died_children">Из них детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="died_children"
+                                   id="died_children"
+                                   value="{{ item.died_children }}"/>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field inline-field field-quarter">
+                            <label for="injured">Травмировано</label>
+                            <input type="number"
+                                   class="input"
+                                   name="injured"
+                                   id="injured"
+                                   value="{{ item.injured }}"/>
+                        </div>
+
+                        <div class="field inline-field field-quarter">
+                            <label for="injured_children">Из них детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="injured_children"
+                                   id="injured_children"
+                                   value="{{ item.injured_children }}"/>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field inline-field field-quarter">
+                            <label for="hospitalized">Госпитализировано</label>
+                            <input type="number"
+                                   class="input"
+                                   name="hospitalized"
+                                   id="hospitalized"
+                                   value="{{ item.hospitalized }}"/>
+                        </div>
+
+                        <div class="field inline-field field-quarter">
+                            <label for="hospitalized_children">Из них детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="hospitalized_children"
+                                   id="hospitalized_children"
+                                   value="{{ item.hospitalized_children }}"/>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field inline-field field-quarter">
+                            <label for="evacuated">Эвакуировано</label>
+                            <input type="number"
+                                   class="input"
+                                   name="evacuated"
+                                   id="evacuated"
+                                   value="{{ item.evacuated }}"/>
+                        </div>
+
+                        <div class="field inline-field field-quarter">
+                            <label for="evacuated_children">Из них детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="evacuated_children"
+                                   id="evacuated_children"
+                                   value="{{ item.evacuated_children }}"/>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field inline-field field-quarter">
+                            <label for="saved">Спасено</label>
+                            <input type="number"
+                                   class="input"
+                                   name="saved"
+                                   id="saved"
+                                   value="{{ item.saved }}"/>
+                        </div>
+
+                        <div class="field inline-field field-quarter">
+                            <label for="saved_children">Из них детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="saved_children"
+                                   id="saved_children"
+                                   value="{{ item.saved_children }}"/>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field inline-field field-quarter">
+                            <label for="lost">Пропало без вести</label>
+                            <input type="number"
+                                   class="input"
+                                   name="lost"
+                                   id="lost"
+                                   value="{{ item.lost }}"/>
+                        </div>
+
+                        <div class="field inline-field field-quarter">
+                            <label for="lost_children">Из них детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="lost_children"
+                                   id="lost_children"
+                                   value="{{ item.lost_children }}"/>
+                        </div>
+                    </div>
+
+                    <div class="field inline-field field-full">
+                        <label for="influence">Влияние чрезвычайной ситуации на работу других отраслей</label>
+                        <input type="text"
+                               class="input"
+                               name="influence"
+                               id="influence"
+                               value="{{ item.influence }}"/>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="involved">Силы и средства, задействованные в ликвидации ЧС</label>
+                        <input type="text"
+                               class="input"
+                               name="involved"
+                               id="involved"
+                               value="{{ item.involved }}"/>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="involved_services">Коммунальных и других служб</label>
+                        <input type="text"
+                               class="input"
+                               name="involved_services"
+                               id="involved_services"
+                               value="{{ item.involved_services }}"/>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="involved_people">Количество человек</label>
+                        <input type="number"
+                               class="input"
+                               name="involved_people"
+                               id="involved_people"
+                               value="{{ item.involved_people }}"/>
+                    </div>
+
+                    <div class="field inline-field field-half">
+                        <label for="involved_tech">Количество техники</label>
+                        <input type="number"
+                               class="input"
+                               name="involved_tech"
+                               id="involved_tech"
+                               value="{{ item.involved_tech }}"/>
+                    </div>
+
+                    <div class="field">
+                        <input type="checkbox"
+                               name="can_fix_themselves"
+                                {% if item.can_fix_themselves %} checked {% endif %}
+                               value="1"
+                               id="can_fix_themselves"/>
+                        <label for="can_fix_themselves">Возможность ликвидации ЧС собственными силами</label>
+                    </div>
+
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        </button>
+                        <a href="{{ url('/emergency-situation') }}" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

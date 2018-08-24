@@ -74,6 +74,11 @@
                         href="/vehicles"
                         class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-car"></i>&nbsp;
                         Транспортные средства</a></div>
+                <div
+                        class="navbar-item"><a
+                        href="/emergency-situation"
+                        class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                    Оперативная информация</a></div>
 
             </div>
             <div class="navbar-end">
@@ -165,6 +170,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+    .navbar-item {
+        padding: 0.5rem 0.75rem 0.5rem 0;
+    }
 </style>
