@@ -24,7 +24,7 @@
             <tr>
                 <td class="has-text-right is-bold">Выезд сил</td>
                 <td>
-                    <form method="post" action="{{ url('/roadtrip/force-out/' ~ trip.id) }}">{{ csrf_field() }}<button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Назначить</button></form></td>
+                    <form method="post" action="{{ url('/roadtrip/force-out/' ~ trip.id) }}">{{ csrf_field() }}<button type="submit" class="button is-info"><i class="far fa-bell"></i>&nbsp;Назначить</button></form></td>
             </tr>
         {% endif %}
         <tr>
