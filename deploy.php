@@ -11,7 +11,6 @@ set('application', 'Emergency');
 host('dechees.devpoint.kz')
     ->stage('staging')
     ->user('deployer')
-    ->identityFile('~/.ssh/id_rsa')
     ->set('deploy_path', '/mnt/{{hostname}}');
 
 set('rsync_src', __DIR__);
