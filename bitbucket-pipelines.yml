@@ -34,6 +34,7 @@ pipelines:
         image: php:7.2
         deployment: staging
         script:
+        - apt-get update && apt-get install openssh-client
         - echo "Deployment started"
         - curl -LO https://deployer.org/deployer.phar
         - mv deployer.phar /usr/local/bin/dep
