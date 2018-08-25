@@ -39,6 +39,7 @@ task('php-fpm:reload', function () {
     // /etc/sudoers.d/deployer: deployer ALL=NOPASSWD: /usr/sbin/service php7.0-fpm reload
     run('sudo service php7.2-fpm reload');
 });
+
 after('deploy:symlink', 'php-fpm:reload');
 
 desc('Make symlink for uploads');
@@ -56,7 +57,7 @@ before('deploy:symlink', 'deploy:public_uploads');
 
 //before('deploy:symlink', 'artisan:migrate');
 
-after('artisan:migrate', 'artisan:db:seed');
+//after('artisan:migrate', 'artisan:db:seed');
 
 //Запуск задач
 task('deploy', [
