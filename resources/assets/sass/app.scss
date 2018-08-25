@@ -43,4 +43,9 @@
   .field-label {
     margin-right: 0.25rem;
   }
+  .pagination-link {
+    &.is-current {
+      font-weight: bold;
+    }
+  }
 }
