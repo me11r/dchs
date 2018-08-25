@@ -10,7 +10,8 @@ set('application', 'Emergency');
 // Hosts
 host('dechees.devpoint.kz')
     ->stage('staging')
-    ->set('deploy_path', '/mnt/{{hostname}}');
+    ->set('deploy_path', '/mnt/{{hostname}}')
+    ->user('deployer');
 
 set('rsync_src', __DIR__);
 set('rsync_dest', '{{release_path}}');
@@ -50,11 +51,6 @@ task('deploy:public_uploads', function () {
     run('{{bin/symlink}} {{deploy_path}}/shared/storage/app/uploads {{release_path}}/public/uploads');
 });
 before('deploy:symlink', 'deploy:public_uploads');
-
-// Tasks
-
-// [Optional] if deploy fails automatically unlock.
-after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
 
