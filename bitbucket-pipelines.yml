@@ -17,19 +17,17 @@ pipelines:
     - step:
         caches:
         - node
+        - public
         name: Build Laravel Mix
         image: node:10.9
         script:
         - echo "Starting mix build"
         - npm install
         - npm run prod
-        artifacts:
-        - public/assets/app.css
-        - public/assets/app.js
-        - public/mix-manifest.json
     - step:
         caches:
         - vendor
+        - public
         name: Deploying to server
         image: php:7.2
         deployment: staging
@@ -43,3 +41,4 @@ pipelines:
 definitions:
   caches:
     vendor: vendor/**
+    public: public/**
