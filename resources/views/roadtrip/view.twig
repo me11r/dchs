@@ -20,6 +20,13 @@
                     <form method="post" action="{{ url('/roadtrip/accept/' ~ trip.id) }}">{{ csrf_field() }}<button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Принять</button></form></td>
             </tr>
         {% endif %}
+        {% if trip.result is defined and trip.result.out_time is null and trip.is_accepted %}
+            <tr>
+                <td class="has-text-right is-bold">Выезд сил</td>
+                <td>
+                    <form method="post" action="{{ url('/roadtrip/force-out/' ~ trip.id) }}">{{ csrf_field() }}<button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Назначить</button></form></td>
+            </tr>
+        {% endif %}
         <tr>
             <td class="has-text-right is-bold">Место пожара (адрес)</td>
             <td>{{ trip.ticket.location|default('-') }}</td>
@@ -81,8 +88,13 @@
         </tr>
         <tr>
             <td class="has-text-right is-bold">Время возвращение в ПЧ</td>
-            <td>{% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
-                    <form action="{{ url('/roadtrip/save/' ~ trip.id) }}" method="post">{{ csrf_field() }}<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</button></form>{% endif %}</td>
+            <td>
+                {% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
+                    <form action="{{ url('/roadtrip/save/' ~ trip.id) }}" method="post">{{ csrf_field() }}
+                        <button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</button>
+                    </form>
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <td class="has-text-right is-bold">Дата(день,месяц,год)</td>

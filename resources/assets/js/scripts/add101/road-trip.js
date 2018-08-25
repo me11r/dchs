@@ -5,7 +5,8 @@ export default function bindRoadTrip() {
     const element = document.querySelector('[data-component="road-trip"]');
     return new Vue({
         el: element,
-        data: {},
+        data: {
+        },
         methods: {
             sendAllTripPlans() {
                 let count = 0;
@@ -56,6 +57,6 @@ export default function bindRoadTrip() {
                     }
                 });
             },
-        }
+        },
     });
 }
