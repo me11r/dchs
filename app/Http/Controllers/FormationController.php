@@ -104,6 +104,7 @@ class FormationController extends AuthorizedController
                 'Командировка',
                 'Другие причины',
             ],
+            'ГДЗС',
         ];
         $this->set('fieldlist', $fieldlist);
 
@@ -136,26 +137,26 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $fieldlist = [
-            'ГДЗС',
+            null,
             'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
                 'Грязевая',
             ],
-//            'Пожарная техника' => [
-//                'В боевом расчете' => [
-//                    'Тип основного пожарного а/м',
-//                    'Марка спец. пожарных а/м, мотоциклов'
-//                ],
-//                'В резерве' => [
-//                    'Тип основного пожарного а/м',
-//                    'Марка спец. пожарных а/м, мотоциклов'
-//                ],
-//                'На ремонте' => [
-//                    'Тип основного пожарного а/м',
-//                    'Марка спец. пожарных а/м, мотоциклов'
-//                ],
-//            ],
+            null => [
+                null => [
+                    null,
+                    null
+                ],
+                null => [
+                    null,
+                    null
+                ],
+                null => [
+                    null,
+                    null
+                ],
+            ],
             'Имеется на автомобилях в боевом расчете' => [
                 'Рукавов' => [
                     '125 мм',
@@ -259,10 +260,11 @@ class FormationController extends AuthorizedController
                 'Командировка',
                 'Другие причины',
             ],
+            'ГДЗС'
         ];
 
         $tech_fieldlist = [
-            'ГДЗС',
+            null,
             'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
@@ -335,7 +337,8 @@ class FormationController extends AuthorizedController
             'field_3_2',
             'field_3_3',
             'field_3_4',
-            'field_3_5'
+            'field_3_5',
+            'field_1'
         ];
         $tech_fields = [
             'field_0',
