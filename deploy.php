@@ -10,7 +10,8 @@ set('application', 'Emergency');
 // Hosts
 host('dechees.devpoint.kz')
     ->stage('staging')
-    ->set('deploy_path', '/mnt/{{hostname}}');
+    ->set('deploy_path', '/mnt/{{hostname}}')
+    ->user('deployer');
 
 set('rsync_src', __DIR__);
 set('rsync_dest', '{{release_path}}');
