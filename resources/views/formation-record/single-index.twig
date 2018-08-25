@@ -1,9 +1,12 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="">
+    <div class="level">
+        <div class="level-left">
+        <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;К строевым запискам</a>
         <h4 class="title"
             style="padding: 3px 15px">Строевые записки {{ organisationName }}
         </h4>
+        </div>
     </div>
     <div class="columns is-gapless">
         <div style="width: 100%; border-bottom: 1px solid #dbdbdb;">
@@ -34,5 +37,6 @@
                 </tr>
             {% endfor %}
         </table>
+        {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
     </div>
 {% endblock content %}

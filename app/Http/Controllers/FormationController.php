@@ -42,6 +42,7 @@ class FormationController extends AuthorizedController
     public function get101(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+        $perpage = $request->get('per_page', 10);
         $today = date('Y-m-d');
         $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -51,7 +52,8 @@ class FormationController extends AuthorizedController
         }
         $this
             ->set('today', $today)
-            ->set('reports', (new FormationReport)->orderByDesc('report_date')->get());
+            ->set('per_page', $perpage)
+            ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
     }
 
     public function getAddToday()
@@ -403,7 +405,7 @@ class FormationController extends AuthorizedController
     public function getMudflow(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION);
-
+        $perPage = $request->get('per_page', 10);
         $today = Carbon::today();
         $has_today = ((new FormationMudflowReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -411,7 +413,9 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationMudflowReport::all())
+        $this
+            ->set('per_page', $perPage)
+            ->set('reports', FormationMudflowReport::orderBy('created_at', 'desc')->paginate($perPage))
             ->set('today', $today);
     }
 
@@ -437,7 +441,7 @@ class FormationController extends AuthorizedController
     public function getMedical(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_CMK);
-
+        $perPage = $request->get('per_page', 10);
         $today = Carbon::today();
         $has_today = ((new FormationMedicalReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -445,8 +449,9 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationMedicalReport::all())
-            ->set('today', $today);
+        $this->set('reports', FormationMedicalReport::orderBy('created_at', 'desc')->paginate($perPage))
+            ->set('today', $today)
+            ->set('per_page', $perPage);
     }
 
     public function getEditMedical(Request $request, $id)
@@ -471,7 +476,7 @@ class FormationController extends AuthorizedController
     public function getSavers(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
-
+        $perPage = $request->get('per_page', 10);
         $today = Carbon::today();
         $has_today = ((new FormationSaversReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -479,8 +484,10 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationSaversReport::all())
-            ->set('today', $today);
+        $this->set('reports', FormationSaversReport::orderBy('created_at')->paginate($perPage))
+            ->set('today', $today)
+            ->set('per_page', $perPage)
+        ;
     }
 
     public function getEditSavers(Request $request, $id)
