@@ -35,7 +35,9 @@ class CardController extends AuthorizedController
     public function get101(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])->paginate($perPage);
+        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+            ->orderBy('created_at','desc')
+            ->paginate($perPage);
         $this->set('tickets', $tickets)->set('per_page', $perPage);
     }
 

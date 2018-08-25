@@ -33,6 +33,7 @@ class Card112Controller extends Controller
                 'street',
                 'street.area'
             ])
+            ->orderBy('created_at', 'desc')
             ->paginate($perPage);
 
         return View::make('card112.index')
