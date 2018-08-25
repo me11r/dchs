@@ -1,23 +1,25 @@
 {% for index,field in fields %}
     {% if field is iterable %}
-        <fieldset class="">
+        <fieldset class="" {% if index == null %} style="display: none" {% endif %}>
             <legend>{{ index }}</legend>
             {% include "formation/field.twig" with {fields: field, prefix: prefix ~'_' ~ loop.index, model:model} %}
         </fieldset>
     {% else %}
-        <div class="field">
-            <label for="field{{ prefix }}_{{ index }}">{{ field }}</label>
-            <div class="control">
-                <input type="number"
-                       :readonly="isReadonly('{{ prefix }}', '{{ index }}')"
-                       step="1"
-                       data-value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"
-                       class="input add101persons-input"
-                       name="field{{ prefix }}_{{ index }}"
-                       v-model="inputs.{{ 'field' }}{{ prefix }}_{{ index }}"
-                       id="field{{ prefix }}_{{ index }}"
-                       value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"/>
+        {% if field != null %}
+            <div class="field">
+                <label for="field{{ prefix }}_{{ index }}">{{ field }}</label>
+                <div class="control">
+                    <input type="number"
+                           :readonly="isReadonly('{{ prefix }}', '{{ index }}')"
+                           step="1"
+                           data-value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"
+                           class="input add101persons-input"
+                           name="field{{ prefix }}_{{ index }}"
+                           v-model="inputs.{{ 'field' }}{{ prefix }}_{{ index }}"
+                           id="field{{ prefix }}_{{ index }}"
+                           value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"/>
+                </div>
             </div>
-        </div>
+        {% endif %}
     {% endif %}
 {% endfor %}
