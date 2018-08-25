@@ -24,10 +24,14 @@ pipelines:
         - echo "Starting mix build"
         - npm install
         - npm run prod
+        artifacts:
+        - public/assets/app.css
+        - public/assets/app.js
+        - public/fonts/*
+        - public/mix-manifest.json
     - step:
         caches:
         - vendor
-        - public
         name: Deploying to server
         image: php:7.2
         deployment: staging
