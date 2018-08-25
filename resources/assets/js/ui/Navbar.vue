@@ -1,8 +1,8 @@
 <template>
-    <nav class="navbar app-navbar">
+    <nav class="navbar app-navbar printing-invisible">
         <div class="navbar-brand">
             <a
-                class="navbar-item"
+                class="navbar-item navbar-logo"
                 href="/"><i class="fas fa-tty fa-fw fa-2x"></i></a>
             <a
                 role="button"
@@ -231,24 +231,48 @@ export default {
 
 <style lang="scss">
     @import "../../../assets/sass/variables";
-    .navbar-link {
-        font-size: .9rem;
-    }
-    .navbar-dropdown {
-        border-top-width: 3px;
+
+    .app-navbar {
+        min-height: 35px;
+        transition: all 1s ease-out;
         border-bottom: 3px solid $primary;
-        .dropdown-item {
-            i.fas {
-                transition: all 1s ease-out;
+
+        .navbar-item {
+            padding: 0.5rem 0.75rem 0.5rem 0;
+            &.navbar-logo {
+                color: $grey-dark;
+                padding: .5rem;
+                transition: color 1s ease-out;
+                &:hover {
+                    color: $red;
+                }
+            }
+            > a:not(.navbar-link) {
+                border: 1px solid #dbdbdb;
+                border-radius: 4px;
+                &:hover {
+                    color: $primary;
+                }
             }
         }
-        .dropdown-item:hover {
-            i.fas {
-                color: tomato;
+
+        .navbar-link {
+            font-size: .9rem;
+        }
+
+        .navbar-dropdown {
+            border-top-width: 3px;
+            border-bottom: 3px solid $primary;
+            .dropdown-item {
+                i.fas {
+                    transition: all 1s ease-out;
+                }
+            }
+            .dropdown-item:hover {
+                i.fas {
+                    color: tomato;
+                }
             }
         }
-    }
-    .navbar-item {
-        padding: 0.5rem 0.75rem 0.5rem 0;
     }
 </style>

@@ -40,7 +40,7 @@ services:
     ports:
       - "33306:3306"
     volumes:
-#      - ./database/dumps/dump-20-08-2018-dump.sql:/docker-entrypoint-initdb.d/init.sql
+      #- ./database/dumps/dump-25-08-2018.sql:/docker-entrypoint-initdb.d/init.sql
       - app-db-data:/var/lib/mysql
     networks:
       - app-network
