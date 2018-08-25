@@ -24,15 +24,20 @@ class Card112Controller extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $items = $this->repository->with([
-            'street',
-            'street.area'
-        ])->get();
+        $perPage = $request->get('per_page', 10);
+        $items = $this
+            ->repository
+            ->with([
+                'street',
+                'street.area'
+            ])
+            ->paginate($perPage);
 
         return View::make('card112.index')
             ->with('items', $items)
+            ->with('per_page', $perPage)
             ->render();
     }
 

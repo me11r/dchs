@@ -18,6 +18,22 @@
         </div>
     </div>
     <div class="panel">
+        <form method="get">
+            <div class="select">
+                <select name="per_page">
+                    <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
+                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                </select>
+            </div>
+
+            <button class="button is-small is-outlined is-success">
+                Обновить
+            </button>
+        </form>
+
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
             <thead>
             <tr>
@@ -60,5 +76,6 @@
                 </tr>
             {% endfor %}
         </table>
+        {{ items.appends({'per_page': per_page}).links() | raw }}
     </div>
 {% endblock content %}
