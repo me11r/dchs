@@ -36,7 +36,7 @@ pipelines:
         script:
         - ls ~/.ssh
         - cat ~/.ssh/config
-        - apt-get update && apt-get install -y openssh-client
+        - apt-get update && apt-get install -y openssh-client rsync
         - echo "Deployment started"
         - curl -LO https://deployer.org/deployer.phar
         - mv deployer.phar /usr/local/bin/dep
