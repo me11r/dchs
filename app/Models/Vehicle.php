@@ -12,14 +12,13 @@ class Vehicle extends Model
         'number',
         'fire_department_id',
         'vehicle_type_id',
+        'base',
+        'purpose',
+        'publish_year',
+        'number_old',
+        'reg_certificate',
+        'note',
     ];
-
-//    public $statuses = [
-//        'reserve' => 'В резерве',
-//        'action' => 'В боевом расчете',
-//        'repair' => 'На ремонте',
-//    ];
-
 
 
     public function fireDepartment()

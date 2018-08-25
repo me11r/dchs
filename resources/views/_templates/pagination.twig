@@ -1,0 +1,40 @@
+<nav class="pagination-template">
+    <hr/>
+    <div class="columns">
+        <div class="column">
+            {{ items.appends({'per_page': per_page}).links() | raw }}
+        </div>
+        <div class="column is-one-quarter">
+            <form method="get" id="pagination_change_form">
+                <div class="field is-horizontal">
+                    <div class="field-label is-small">
+                        <label class="label" for="per_page">Записей на страницу&nbsp;</label>
+                    </div>
+                    <div class="field-1">
+                        <div class="field is-narrow">
+                            <div class="select is-small">
+                                <select name="per_page" id="per_page">
+                                    <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
+                                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                    <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                </select>
+                            </div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', ()=>{
+                                    const perpageForm = document.getElementById('pagination_change_form');
+                                    const select = perpageForm.querySelector('select[name=per_page]');
+                                    select.addEventListener('change',(e)=>{
+                                        select.classList.add('is-loading');
+                                        perpageForm.submit();
+                                    });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>

@@ -30,6 +30,7 @@ class AdminController extends AuthorizedController
     {
         $this->needRight(Right::CAN_MANAGE_USERS);
 
+        $perpage = $request->get('per_page', 10);
         $search = $request->input('search');
         $users = User::with('rights');
         if ($search !== null) {
@@ -39,11 +40,11 @@ class AdminController extends AuthorizedController
         {
             $users->where('id', '<>', 1);
         }
-        $users = $users->paginate($this->paginator_rows);
+        $users = $users->paginate($perpage);
         if ($search !== null) {
             $users->appends(['search' => $search]);
         }
-        $this->set('users', $users)->set('search', $search);
+        $this->set('users', $users)->set('per_page', $perpage)->set('search', $search);
     }
 
     /**
