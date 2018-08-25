@@ -3,7 +3,7 @@
 namespace Deployer;
 
 require 'recipe/laravel.php';
-require 'vendor/deployer/recipes/recipe/rsync.php';
+require __DIR__ .'/vendor/deployer/recipes/recipe/rsync.php';
 // Project name
 set('application', 'Emergency');
 

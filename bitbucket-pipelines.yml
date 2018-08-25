@@ -26,6 +26,7 @@ pipelines:
         artifacts:
         - public/assets/app.css
         - public/assets/app.js
+        - public/fonts/*
         - public/mix-manifest.json
     - step:
         caches:
