@@ -4,6 +4,7 @@
 namespace App;
 
 
+use App\Models\FireDepartmentResult;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -44,5 +45,10 @@ class RoadtripPlan extends Model
     public function department()
     {
         return $this->belongsTo(FireDepartment::class);
+    }
+
+    public function result()
+    {
+        return $this->hasOne(FireDepartmentResult::class, 'dispatch_id');
     }
 }

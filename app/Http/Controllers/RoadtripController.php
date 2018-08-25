@@ -34,8 +34,9 @@ class RoadtripController extends AuthorizedController
 
     public function getView($plan_id)
     {
-        $trip = RoadtripPlan::with(['ticket', 'department'])
+        $trip = RoadtripPlan::with(['ticket', 'department', 'result'])
             ->findOrFail($plan_id);
+
         $this->set('trip', $trip);
     }
 
@@ -47,6 +48,10 @@ class RoadtripController extends AuthorizedController
             $plan->return_time = Carbon::now();
             $plan->save();
         }
+
+        $plan->result->ret_time = $plan->return_time;
+        $plan->result->save();
+
 
         return redirect(route('roadtrip.plan.view', ['plan_id' => $plan_id]))
             ->with('_message', [
@@ -116,6 +121,23 @@ class RoadtripController extends AuthorizedController
         return redirect('/roadtrip/view/' . $id)->with('_message', [
             'type' => 'success',
             'text' => 'Путевой лист принят в работу!'
+        ]);
+    }
+
+    public function postForceOut(Request $request, $id)
+    {
+        $plan = RoadtripPlan::findOrFail($id);
+        FireDepartmentResult::where('fire_department_id', $plan->department_id)
+            ->where('ticket101_id', $plan->card_id)
+            ->update(
+            [
+                'out_time' => now()->toTimeString(),
+            ]
+        );
+
+        return redirect('/roadtrip/view/' . $id)->with('_message', [
+            'type' => 'success',
+            'text' => 'Выезд сил одобрен'
         ]);
     }
 }
