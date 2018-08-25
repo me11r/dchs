@@ -17,7 +17,6 @@ pipelines:
     - step:
         caches:
         - node
-        - public
         name: Build Laravel Mix
         image: node:10.9
         script:
@@ -45,4 +44,3 @@ pipelines:
 definitions:
   caches:
     vendor: vendor/**
-    public: public/**
