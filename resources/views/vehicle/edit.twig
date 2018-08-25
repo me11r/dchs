@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
+    <div class="container" xmlns="http://www.w3.org/1999/html">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
@@ -10,13 +10,34 @@
                     {% endif %}
                     {{ csrf_field() }}
                     <div class="field">
+                        <label for="name">Модель</label>
+                        <input type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+                    <div class="field">
                         <label for="number">Гос. номер</label>
                         <input type="text" class="input" name="number" id="number" value="{{ attribute(record, 'number')|default('') }}"/>
                     </div>
                     <div class="field">
-                        <label for="name">Модель</label>
-                        <input type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                        <label for="number">Гос. номер (старый)</label>
+                        <input type="text" class="input" name="number_old" id="number_old" value="{{ attribute(record, 'number_old')|default('') }}"/>
                     </div>
+                    <div class="field">
+                        <label for="number">На базе (шасси)</label>
+                        <input type="text" class="input" name="base" id="base" value="{{ attribute(record, 'base')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="number">Год выпуска</label>
+                        <input type="text" class="input" name="publish_year" id="publish_year" value="{{ attribute(record, 'publish_year')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="number">Номер свидетельства регистрации</label>
+                        <input type="text" class="input" name="reg_certificate" id="reg_certificate" value="{{ attribute(record, 'reg_certificate')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="number">Примечание</label>
+                        <textarea class="input" name="note" id="note">{{ attribute(record, 'note')|default('') }}</textarea>
+                    </div>
+
                     <div class="field">
                         <label for="vehicle_type_id">Тип</label><br>
                         <select name="vehicle_type_id" id="vehicle_type_id" required>
