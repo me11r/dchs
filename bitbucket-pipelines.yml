@@ -47,4 +47,4 @@ pipelines:
 
 definitions:
   caches:
-    vendor: vendor/**
+    vendor: vendor
