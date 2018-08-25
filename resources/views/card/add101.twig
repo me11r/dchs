@@ -3,6 +3,7 @@
     <script>
         window.ticket101add = {
             records: {{ ticket.other_records | json_encode() | raw }},
+            other_records_unique: {{ other_records_unique | json_encode() | raw }},
             trunks: {{ trunks | json_encode() | raw }},
             ticketId: '{{ ticket.id }}'
         };
@@ -519,8 +520,9 @@
                         </div>
                     </div>
                     <div class="field">
+
                         <div class="control">
-                            <label for="liquidation_method_id">Потушено стволами</label>
+                            <label for="liquidation_method_id">Ликвидация достигнута</label>
                         </div>
                         <div class="select">
                             <select name="liquidation_method_id" id="liquidation_method_id">
@@ -532,18 +534,32 @@
                             </select>
                         </div>
                     </div>
-                    <div class="field">
+                    <br>
+                    <div id="ticket101_other_records_results"></div>
+                    <br>
+
+                    <div class="field is-grouped">
                         <div class="control">
+                            <p>
                             <label for="result_fire_level_id">Уточненный ранг пожара</label>
+                            <div class="select">
+                                <select name="result_fire_level_id" id="result_fire_level_id">
+                                    <option value="">-</option>
+                                    {% for fire_level in fire_levels %}
+                                        <option value="{{ fire_level.id }}"
+                                                {% if fire_level.id == ticket.result_fire_level_id %}selected{% endif %}>{{ fire_level.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            </p>
                         </div>
-                        <div class="select">
-                            <select name="result_fire_level_id" id="result_fire_level_id">
-                                <option value="">-</option>
-                                {% for fire_level in fire_levels %}
-                                    <option value="{{ fire_level.id }}"
-                                            {% if fire_level.id == ticket.result_fire_level_id %}selected{% endif %}>{{ fire_level.name }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="control">
+                            <label for="fire_dep_results_info">Участники тушения</label>
+                            <textarea class="input" type="text" id="fire_dep_results_info" value="">{{ fire_dep_results_info }}</textarea>
+                        </div>
+                        <div class="control">
+                            <label for="square_max">Площадь пожара</label>
+                            <input class="input" type="number" id="square_max" value="{{ max_square }}">
                         </div>
                     </div>
                     <div class="field is-grouped">
@@ -568,7 +584,7 @@
                                 <input type="hidden" name="car_crash" value="0"/>
                                 <input type="checkbox" name="car_crash" id="car_crash" value="1"
                                        {% if ticket.car_crash == 1 %}checked{% endif %}/>
-                                <label for="car_crash">Авария А/М при следовании на пожар, с жертвами</label>
+                                <label for="car_crash">Авария А/М при следовании на пожар</label>
                             </div>
                         </div>
 
@@ -634,13 +650,26 @@
                                   class="textarea">{{ ticket.more_info|default('') }}</textarea>
                     </div>
                     <div class="field">
-                        <div class="checkbox">
-                            <input type="hidden" name="hydrant_found" value="0"/>
-                            <input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"
-                                   {% if ticket.hydrant_found == 1 %}checked{% endif %}/>
-                            <label for="hydrant_found">Наличие ПГ/ПВ</label>
+                            {#<div class="checkbox">#}
+                            {#<input type="hidden" name="hydrant_found" value="0"/>#}
+                            {#<input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"#}
+                            {#{% if ticket.hydrant_found == 1 %}checked{% endif %}/>#}
+                            {#<label for="hydrant_found">Наличие ПГ/ПВ</label>#}
+                            {#</div>#}
+                        <div class="control">
+                            <label for="water_supply_source_id">Источник противопожарного водоснабжения</label>
                         </div>
+                        <div class="select">
+                            <select name="water_supply_source_id" id="water_supply_source_id">
+                                {% for object in water_sources %}
+                                    <option value="{{ object.id }}"
+                                            {% if object.id == ticket.water_supply_source_id %}{{ 'selected' }}{% endif %}>{{ object.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
                     </div>
+
                     <div class="field">
                         <div class="control">
                             <label for="distance">Расстояние до места
@@ -679,7 +708,7 @@
                                         <i class="fas fa-upload"></i>
                                     </span>
                                     <span class="file-label">
-                                        Приложить план пожара
+                                        Схема пожара
                                     </span>
                                  </span>
                             </label>
@@ -697,7 +726,7 @@
                         </button>
                     </p>
                     <p class="level-right">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Закрыть
                         </button>
                     </p>
                 </div>

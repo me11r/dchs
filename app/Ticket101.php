@@ -11,6 +11,7 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
 use App\Dictionary\TripResult;
+use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\Ticket101\Ticket101OtherRecord;
@@ -544,4 +545,11 @@ class Ticket101 extends Model
     {
         return $this->hasMany(FireDepartmentResult::class, 'ticket101_id');
     }
+
+    public function water_supply_source()
+    {
+        return $this->belongsTo(WaterSupplySource::class, 'water_supply_source_id');
+    }
+
+
 }
