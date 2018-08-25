@@ -21,7 +21,7 @@
     </script>
 </head>
 <body>
-<nav id="navbar"></nav>
+<nav id="navbar" class="app-navbar"></nav>
 {% if _message is defined %}
     <div id="notification" class="notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
 {% endif %}

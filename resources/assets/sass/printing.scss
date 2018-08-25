@@ -1,0 +1,15 @@
+@media print {
+  .printing-invisible {
+    display: none;
+    visibility: hidden;
+  }
+  .printing-full-width {
+    width: 100%;
+  }
+}
+@media screen {
+  .printing-visible {
+    display: none;
+    visibility: hidden;
+  }
+}

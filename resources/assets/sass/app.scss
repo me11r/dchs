@@ -2,14 +2,10 @@
 @import "../../../node_modules/bulma/bulma";
 @import "../../../node_modules/buefy/src/scss/buefy";
 @import "common";
+@import "printing";
 
-.app-navbar {
-  border-bottom: 3px solid $primary;
-}
-
-.app-navbar .navbar-item > a:not(.navbar-link) {
-  border: 1px solid #dbdbdb;
-  border-radius: 4px;
+.page-margin {
+  margin: 1rem 2rem 0;
 }
 
 .form-buttons-bg {
@@ -48,4 +44,8 @@
       font-weight: bold;
     }
   }
+}
+
+.print-button {
+  box-shadow: rgba(100, 100, 150, .2) 0 2px 16px;
 }
