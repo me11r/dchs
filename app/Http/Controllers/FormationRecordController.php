@@ -10,31 +10,35 @@ use Illuminate\Support\Facades\View;
 
 class FormationRecordController extends Controller
 {
-    public function singleIndex($organisation)
+    public function singleIndex(Request $request, $organisation)
     {
+        $perPage = $request->get('per_page', 10);
         $this->createTodayForOrganisation($organisation);
 
         return View::make('formation-record.single-index')
+            ->with('per_page', $perPage)
             ->with('items',
                 (new FormationRecord)
                     ->where('organisation', '=', $organisation)
                     ->orderBy('id', 'DESC')
-                    ->get())
+                    ->paginate($perPage))
             ->with('organisationName', FormationOrganisation::getNameByType($organisation));
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->get('per_page', 10);
         foreach (FormationOrganisation::$namesMapping as $organisation => $name) {
             $this->createTodayForOrganisation($organisation);
         }
 
         return View::make('formation-record.index')
+            ->with('per_page', $perPage)
             ->with('items',
                 (new FormationRecord)
                     ->where('organisation', '=', FormationOrganisation::DCHS_ALMATY)
                     ->orderBy('id', 'DESC')
-                    ->get())
+                    ->paginate($perPage))
             ->with('organisationName', FormationOrganisation::getNameByType(FormationOrganisation::DCHS_ALMATY));
     }
 

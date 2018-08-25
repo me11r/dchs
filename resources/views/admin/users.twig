@@ -68,10 +68,7 @@
                 {% endfor %}
             </table>
     </div>
-
-    <div class="row padded-row">
-        <div class="col">{{ users.links()|raw }}</div>
-    </div>
+    {% include "_templates/pagination" with {'items': users, 'per_page': per_page} %}
     <script>
         function submit_on_enter(e) {
             if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
