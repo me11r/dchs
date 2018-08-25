@@ -1,6 +1,7 @@
 <template>
     <div>
         <select
+            class="select printing-invisible"
             id="distance"
             name="distance"
             v-model="distance"
@@ -13,7 +14,7 @@
             </option>
         </select>
         <div
-            class="road-trip-view-yandex-map"
+            class="road-trip-view-yandex-map printing-full-width"
             :ref="'road-trip-view-yandex-map'"
             id="road-trip-view-yandex-map"></div>
     </div>
