@@ -76,6 +76,7 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         foreach ($dicts as $dict) {
             (new App\Dictionary())->fill($dict)->save();
         }
+        $this->call(WaterSupplySeeder::class);
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
         $this->call(FireDeptSeeder::class);
@@ -88,6 +89,5 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(OperationalPlanSeeder::class);
         $this->call(RiverSeeder::class);
         $this->call(TrunkSeeder::class);
-        $this->call(WaterSupplySeeder::class);
     }
 }
