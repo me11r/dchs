@@ -6,6 +6,7 @@ $primary-invert: findColorInvert($primary);
 $green: hsl(115, 72%, 35%);
 
 @import "../../../node_modules/bulma/sass/utilities/derived-variables";
+
 $pagination-current-background-color: $primary-invert;
 $pagination-current-color: $primary;
 
