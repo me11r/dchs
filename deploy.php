@@ -54,7 +54,7 @@ before('deploy:symlink', 'deploy:public_uploads');
 
 // Migrate database before symlink new release.
 
-before('deploy:symlink', 'artisan:migrate');
+//before('deploy:symlink', 'artisan:migrate');
 
 after('artisan:migrate', 'artisan:db:seed');
 
