@@ -1,0 +1,27 @@
+{% if paginator.hasPages() %}
+    <div class="container is-fluid">
+        <nav class="pagination is-small is-right" role="navigation" aria-label="pagination">
+            {% if not paginator.onFirstPage() %}
+            <a class="pagination-previous" rel="prev" href="{{ paginator.previousPageUrl() }}">&xlarr;&nbsp;Предыдущая&nbsp;</a>
+            {% endif %}
+            {% if paginator.hasMorePages() %}
+            <a class="pagination-next" rel="next" href="{{ paginator.nextPageUrl() }}">&nbsp;Следующая&nbsp;&xrarr;&nbsp;</a>
+            {% endif %}
+            <ul class="pagination-list">
+                {% for number,page in elements %}
+                    {% if page == '...' %} {# what the fuck is wrong with you, Taylor? #}
+                        <li><span class="pagination-ellipsis">&hellip;</span></li>
+                    {% else %}
+                        {% for number,url in page %}
+                            {% if paginator.currentPage() == number %}
+                                <li><span class="pagination-link is-current" aria-label="Goto page {{ number }}">{{ number }}</span></li>
+                                {% else %}
+                        <li><a href="{{ url }}" class="pagination-link" aria-label="Goto page {{ number }}">{{ number }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+{% endif %}

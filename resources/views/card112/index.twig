@@ -60,5 +60,6 @@
                 </tr>
             {% endfor %}
         </table>
+        {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
     </div>
 {% endblock content %}

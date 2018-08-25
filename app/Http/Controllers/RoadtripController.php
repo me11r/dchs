@@ -15,8 +15,9 @@ use Illuminate\Http\Request;
 
 class RoadtripController extends AuthorizedController
 {
-    public function getIndex()
+    public function getIndex(Request $request)
     {
+        $perpage = $request->get('per_page', 10);
         /** @var User $user */
         $user = Auth::user();
         $trips = RoadtripPlan::with(['ticket', 'department'])
@@ -26,10 +27,12 @@ class RoadtripController extends AuthorizedController
             $trips = $trips->where('department_id', $user->fire_department_id);
         }
 
-        $trips = $trips->get();
+        $trips = $trips
+            ->orderBy('created_at', 'desc')
+            ->paginate($perpage);
 
         $this->set('user', $user->load('department'));
-        $this->set('trips', $trips);
+        $this->set('trips', $trips)->set('per_page', $perpage);
     }
 
     public function getView($plan_id)

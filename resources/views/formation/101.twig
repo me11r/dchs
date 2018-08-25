@@ -2,6 +2,7 @@
 {% block content %}
     <div class="level">
         <div class="level-left">
+            <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;К строевым запискам</a>
             <h4 class="title" style="padding: 3px 15px">Строевая записка СП и АСР</h4>
         </div>
 {#
@@ -27,4 +28,5 @@
             </tr>
         {% endfor %}
     </table>
+    {% include "_templates/pagination" with {'items': reports, 'per_page': per_page} %}
 {% endblock content %}
