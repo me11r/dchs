@@ -4,150 +4,133 @@
     <script>
         window.roadTripViewData = {
             fromString: 'Алматы {{ trip.ticket.location }}',
-            emergencyString: 'Алматы {{ trip.department.address }}'
+            emergencyString: 'Алматы {{ trip.department.address }}',
         };
         ymaps.ready(function () {
             window.ymaps = ymaps;
             window.initRoadTripViewMap();
         });
     </script>
-    <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
-    <table class="table is-narrow">
-        {% if not trip.is_accepted %}
+    <div class="page-margin">
+        <div class="level">
+            <div class="level-left">
+                <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
+            </div>
+            <div class="level-right printing-invisible">
+                <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
+            </div>
+        </div>
+        <table class="table is-narrow printing-full-width">
+            {% if not trip.is_accepted %}
+                <tr class="printing-invisible">
+                    <td class="has-text-right is-bold">Принять в работу</td>
+                    <td>
+                        <form method="post" action="{{ url('/roadtrip/accept/' ~ trip.id) }}">{{ csrf_field() }}
+                            <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Принять</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
+                <tr class="printing-invisible">
+                    <td class="has-text-right is-bold">Выезд сил</td>
+                    <td>
+                        <form method="post" action="{{ url('/roadtrip/force-out/' ~ trip.id) }}">{{ csrf_field() }}
+                            <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Назначить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
-                <td class="has-text-right is-bold">Принять в работу</td>
-                <td>
-                    <form method="post" action="{{ url('/roadtrip/accept/' ~ trip.id) }}">{{ csrf_field() }}<button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Принять</button></form></td>
+                <td class="has-text-right is-bold">Место пожара (адрес)</td>
+                <td>{{ trip.ticket.location|default('-') }}</td>
             </tr>
-        {% endif %}
-        <tr>
-            <td class="has-text-right is-bold">Место пожара (адрес)</td>
-            <td>{{ trip.ticket.location|default('-') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Наименование объекта</td>
-            <td>{{ trip.ticket.object_name|default('-') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Район города</td>
-            <td>{{ trip.ticket.city_area.name|default('-') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Пересечение улиц</td>
-            <td>{% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Ранг пожара
-            </td>
-            <td>{{ trip.ticket.fire_level.name|default('?') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Объект горения</td>
-            <td>{{ trip.ticket.fire_object.name|default('?') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">
-                Этажность</td>
-            <td>{{ trip.ticket.storey_count|default('-') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">На каком этаже горит
-            </td>
-            <td>{{ trip.ticket.floor|default('-') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Конструктивные особенности</td>
-            <td>{{ trip.ticket.building_description|default('') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Наличие угрозы людям</td>
-            <td>{% if trip.ticket.people_in_danger ==1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">ФИО заявителя</td>
-            <td>{{ trip.ticket.caller_name|default('-') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Телефон заявителя</td>
-            <td>{{ trip.ticket.caller_phone|default('-') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Время получения сообщения о ЧС</td>
-            <td>{{ trip.ticket.created_at|date('d.m.Y H:i') }}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Время возвращение в ПЧ</td>
-            <td>{% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
-                    <form action="{{ url('/roadtrip/save/' ~ trip.id) }}" method="post">{{ csrf_field() }}<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</button></form>{% endif %}</td>
-        </tr>
-        <tr>
-            <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
-            <td>{{ trip.created_at|date('d.m.Y') }}</td>
-        </tr>
-        {#<tr>
-            <td class="has-text-right is-bold">Маршрут</td>
-            <td id="routeLink">
-                <i class="fas fa-circle-notch fa-spin fa-2x has-text-info"></i>
-            </td>
-        </tr>#}
-    </table>
-    {#<div id="map"#}
-         {#style="width: 560px;height: 300px; "></div>#}
+            <tr>
+                <td class="has-text-right is-bold">Наименование объекта</td>
+                <td>{{ trip.ticket.object_name|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Телефон заявителя</td>
+                <td>{{ trip.ticket.caller_phone|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Подразделения</td>
+                <td>{{ trip.ticket['ph_' ~ trip.department_id ~'_ot']|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Пересечение улиц</td>
+                <td>{% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Ранг пожара
+                </td>
+                <td>{{ trip.ticket.fire_level.name|default('?') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Объект горения</td>
+                <td>{{ trip.ticket.fire_object.name|default('?') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">
+                    Этажность
+                </td>
+                <td>{{ trip.ticket.storey_count|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">На каком этаже горит
+                </td>
+                <td>{{ trip.ticket.floor|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Конструктивные особенности</td>
+                <td>{{ trip.ticket.building_description|default('') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Наличие угрозы людям</td>
+                <td>{% if trip.ticket.people_in_danger ==1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">ФИО заявителя</td>
+                <td>{{ trip.ticket.caller_name|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Телефон заявителя</td>
+                <td>{{ trip.ticket.caller_phone|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Время получения сообщения о ЧС</td>
+                <td>{{ trip.ticket.created_at|date('d.m.Y H:i') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Время возвращение в ПЧ</td>
+                <td>
+                    {% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
+                        <div class="printing-invisible">
+                            <form action="{{ url('/roadtrip/save/' ~ trip.id) }}" method="post">{{ csrf_field() }}
+                                <button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</button>
+                            </form>
+                        </div>
+                        <div class="printing-visible">
+                            &ndash;
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
+                <td>{{ trip.created_at|date('d.m.Y') }}</td>
+            </tr>
+        </table>
 
-    <div id="road-trip-view-yandex-map-block"></div>
+        <div id="road-trip-view-yandex-map-block"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const printButton = document.getElementById('open-print-button');
+            printButton.addEventListener('click', (e) => {
+                window.print();
+                e.preventDefault();
+            });
+        });
+    </script>
 {% endblock content %}
-
-{#{% block scripts %}#}
-    {#<script type="application/javascript">#}
-        {#ymaps.ready(init);#}
-        {#let map;#}
-
-        {#function init() {#}
-            {#map = new ymaps.Map('map', {#}
-                {#center: [76.945456, 43.238286],//Almaty#}
-                {#zoom: 9,#}
-            {#});#}
-        {#}#}
-        {#(function () {#}
-            {#setTimeout(() => {#}
-                {#let from = 'Алматы {{ trip.ticket.location }}';#}
-                {#let emergency = 'Алматы {{ trip.department.address }}';#}
-                {#let fromCoords = [];#}
-                {#ymaps.geocode(from, {#}
-                    {#results: 1#}
-                {#}).then(function (res) {#}
-                    {#let firstGeoObject = res.geoObjects.get(0);#}
-                    {#// Координаты геообъекта.#}
-                    {#fromCoords = firstGeoObject.geometry.getCoordinates();#}
-                    {#ymaps.route([from, emergency], {avoidTrafficJams: true}).then(#}
-                        {#function (route) {#}
-                            {#map.geoObjects.add(route);#}
-                            {#map.setCenter(fromCoords, 13);#}
-                        {#},#}
-                        {#function (error) {#}
-                            {#alert('Возникла ошибка: ' + error.message);#}
-                        {#}#}
-                    {#);#}
-                {#});#}
-
-                {#/*ymaps.geocode(from, {#}
-                    {#results: 1#}
-                {#}).then(function (res) {#}
-                    {#let firstGeoObject = res.geoObjects.get(0);#}
-                    {#// Координаты геообъекта.#}
-                    {#fromCoords = firstGeoObject.geometry.getCoordinates();#}
-                    {#ymaps.geocode(emergency, {#}
-                        {#results: 1#}
-                    {#}).then(function (res) {#}
-                        {#let firstGeoObject = res.geoObjects.get(0),#}
-                            {#// Координаты геообъекта.#}
-                            {#toCoords = firstGeoObject.geometry.getCoordinates();#}
-                        {#let link = 'https://yandex.kz/maps/162/almaty/?ll=76.945456%2C43.238286&z=12&mode=routes&rtext=';#}
-                        {#link += fromCoords[1] + ','+fromCoords[0] + '~' + toCoords[1] + ',' + toCoords[0] + '&rtt=auto';#}
-                        {#$('#routeLink').html('<a href="' + link + '" target="_blank">Посмотреть маршрут</a>');#}
-                    {#});#}
-                {#});*/#}
-            {#}, 3000)#}
-        {#})()#}
-    {#</script>#}
-{#{% endblock scripts %}#}

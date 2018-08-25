@@ -42,5 +42,6 @@
                 </tr>
             {% endfor %}
         </table>
+        {% include "_templates/pagination" with {'items': tickets, 'per_page': per_page} %}
     </div>
 {% endblock content %}

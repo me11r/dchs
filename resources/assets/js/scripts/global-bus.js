@@ -1,3 +1,3 @@
-import Vue from 'Vue';
+import Vue from 'vue';
 
-export const globalBus = new Vue({});
+export const globalBus = new Vue({ });

@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/card112', 'Card112Controller');
     Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');
 
+    Route::resource('/emergency-situation', 'EmergencySituationController');
+
     Route::get('/import', 'ImportController@index')->name('import.index');
     Route::post('/import/special_plans', 'ImportController@specialPlans')->name('import.special_plans');
     Route::post('/import/hydrants', 'ImportController@hydrants')->name('import.hydrants');
@@ -116,14 +118,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
         Route::post('/accept/{id}', 'RoadtripController@postAccept')->where('id', '[0-9]+');
+        Route::post('/force-out/{id}', 'RoadtripController@postForceOut')->where('id', '[0-9]+');
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
             ->name('roadtrip.plan.view')
             ->where('plan_id', '[0-9]+');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
-        Route::get('/send/{dept_id}/{ticket_id}', 'RoadtripController@getSend')
+        Route::get('/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@getSend')
             ->where('dept_id', '[0-9]+')
-            ->where('ticket_id', '[0-9]+');
+            ->where('ticket_id', '[0-9]+')
+            ->where('departments', '[0-9]+');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
@@ -143,6 +147,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
     Route::resource('/weather', 'WeatherController');
     Route::resource('/quakes', 'QuakeController');
+    Route::resource('/vehicles', 'VehicleController');
+    Route::resource('/schedules', 'ScheduleController');
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

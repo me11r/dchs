@@ -306,7 +306,7 @@
                 </div>
                 <div id="tab-truck" class="is-hidden">
                     <h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>
-                    <table class="table is-narrow is-hoverable is-striped is-fullwidth" data-component="road-trip" >
+                    <table class="table is-narrow is-hoverable is-striped is-fullwidth" data-component="road-trip">
                         <tr>
                             <th>Подразделение</th>
                             <th>Отделения</th>
@@ -322,121 +322,35 @@
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right"
-                                        {% if attribute(ticket,  'ph_' ~ index ~'_ot') != '' %}
-                                            style="color: green"
-                                        {% endif %} id="ph_{{ index }}_text">{{ ssv }}</td>
-                                <td><input class="input" type="text" name="ph_{{ index }}_ot" id="ph_{{ index }}_ot"
-                                           value="{{ attribute(ticket,  'ph_' ~ index ~'_ot')|default('') }}"
+                                    {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
+                                        style="color: green"
+                                    {% endif %} id="ph_{{ ssv.id }}_text">{{ ssv.name }}
+                                </td>
+                                <td><input class="input" type="text" name="ph[ot][{{ ssv.id }}]" id="ph_{{ ssv.id }}_ot"
+                                           value="{{ attribute(ssv.res,  'departments')|default('') }}"
                                     />
                                 </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_out_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_out_time" id="ph_{{ index }}_out_time"
-                                                  :value="value">
-                                        <div class="field is-grouped" style="justify-content: space-between">
-                                            <p class="control">
-                                                <a class="button is-primary is-small"
-                                                   @click="()=> {value = new Date(); close();}">
-                                                    <b-icon pack="far" icon="clock"></b-icon>
-                                                    <span>Сейчас</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-outlined is-small" @click="close()">
-                                                    <i class="fas fa-check"></i><span>Принять</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </b-timepicker>
-                                </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_arrive_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_arrive_time" id="ph_{{ index }}_arrive_time"
-                                                  :value="value">
-                                        <div class="field is-grouped" style="justify-content: space-between">
-                                            <p class="control">
-                                                <a class="button is-primary is-small"
-                                                   @click="()=> {value = new Date(); close();}">
-                                                    <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                    <span>Сейчас</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-outlined is-small" @click="close()">
-                                                    <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </b-timepicker>
-                                </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_loc_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_loc_time" id="ph_{{ index }}_loc_time"
-                                                  :value="value">
-                                        <div class="field is-grouped" style="justify-content: space-between">
-                                            <p class="control">
-                                                <a class="button is-primary is-small"
-                                                   @click="()=> {value = new Date(); close();}">
-                                                    <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                    <span>Сейчас</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-outlined is-small" @click="close()">
-                                                    <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </b-timepicker>
-                                </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_liqv_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_liqv_time" id="ph_{{ index }}_liqv_time"
-                                                  :value="value">
-                                        <div class="field is-grouped" style="justify-content: space-between">
-                                            <p class="control">
-                                                <a class="button is-primary is-small"
-                                                   @click="()=> {value = new Date(); close();}">
-                                                    <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                    <span>Сейчас</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-outlined is-small" @click="close()">
-                                                    <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </b-timepicker>
-                                </td>
-                                <td data-component="timepicker"
-                                    data-value="{{ attribute(ticket,  'ph_' ~ index ~'_ret_time')|default('') }}">
-                                    <b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"
-                                                  name="ph_{{ index }}_ret_time" id="ph_{{ index }}_ret_time"
-                                                  :value="value">
-                                        <div class="field is-grouped" style="justify-content: space-between">
-                                            <p class="control">
-                                                <a class="button is-primary is-small"
-                                                   @click="()=> {value = new Date(); close();}">
-                                                    <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                    <span>Сейчас</span>
-                                                </a>
-                                            </p>
-                                            <p class="control">
-                                                <a class="button is-outlined is-small" @click="close()">
-                                                    <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </b-timepicker>
+                                <td>
+                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.out_time }} {% endif %}" readonly>
                                 </td>
                                 <td>
-                                    {% if attribute(ticket, 'ph_' ~ index ~ '_dispatched') == 0 %}
-                                        <a href="{{ url('/roadtrip/send/'~index ~'/'~ticket.id) }}"
+                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.arrive_time }} {% endif %}" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.loc_time }} {% endif %}" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.liqv_time }} {% endif %}" readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.ret_time }} {% endif %}" readonly>
+                                </td>
+                                <td>
+                                    {% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}
+                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
+                                            {% set depts = ssv.res.departments  %}
+                                        {% endif %}
+                                        <a @click="sendOne({{ ssv.id }}, '')" {#href="{{ url('/roadtrip/send/'~ssv.id ~'/'~ticket.id ~'/'~ depts ?? ssv.departments) }}"#}
                                            class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
                                             подразделение</a>
                                     {% else %}

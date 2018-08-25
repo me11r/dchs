@@ -5,7 +5,8 @@ export default function bindRoadTrip() {
     const element = document.querySelector('[data-component="road-trip"]');
     return new Vue({
         el: element,
-        data: {},
+        data: {
+        },
         methods: {
             sendAllTripPlans() {
                 let count = 0;
@@ -20,6 +21,7 @@ export default function bindRoadTrip() {
             },
             gerQuery(i, part) {
                 return new Promise((resolve) => {
+
                     if (part !== '') {
                         axios.get('/roadtrip/send/' + i + '/' + window.ticket101add.ticketId, {
                             params: {
@@ -33,7 +35,28 @@ export default function bindRoadTrip() {
                         resolve(i);
                     }
                 });
-            }
-        }
+            },
+            sendOne(i, part) {
+                return new Promise((resolve) => {
+                    if (part === '') {
+                        part = document.querySelector('[id="ph_' + i + '_ot"]').value;
+                    }
+
+                    if (part !== '') {
+                        axios.get('/roadtrip/send/' + i + '/' + window.ticket101add.ticketId, {
+                            params: {
+                                part: document.querySelector('[id="ph_' + i + '_ot"]').value
+                            }
+                        }).then((response) => {
+                            // resolve(i);
+                            window.location.href = '/card/add101/' + window.ticket101add.ticketId;
+                        }).catch(() => {
+                        });
+                    } else {
+                        resolve(i);
+                    }
+                });
+            },
+        },
     });
 }

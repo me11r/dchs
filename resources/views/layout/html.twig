@@ -10,29 +10,23 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#b91d47">
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-    {#<script src="https://unpkg.com/buefy"></script>#}
-    {#<link rel="stylesheet" href="https://unpkg.com/buefy/lib/buefy.min.css"/>#}
-    <link rel="stylesheet" href="{{ manifest('/assets/app.css') }}">
+
+    <link rel="stylesheet" href="{{ mix('assets/app.css') }}">
     <script>
         window.csrf_token = '{{ csrf_token() }}';
     </script>
 </head>
 <body>
-<nav id="navbar"></nav>
+<nav id="navbar" class="app-navbar"></nav>
 {% if _message is defined %}
     <div id="notification" class="notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
 {% endif %}
 {% block content %}{% endblock content %}
-<script src="{{ manifest('/assets/vendor.js') }}"></script>
-<script src="{{ manifest('/assets/app.js') }}"></script>
+<script src="{{ mix('assets/app.js') }}"></script>
 <script>
     window.addEventListener('load', () => {
         const notify = document.getElementById('notification');

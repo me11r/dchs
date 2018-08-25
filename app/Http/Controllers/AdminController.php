@@ -30,6 +30,7 @@ class AdminController extends AuthorizedController
     {
         $this->needRight(Right::CAN_MANAGE_USERS);
 
+        $perpage = $request->get('per_page', 10);
         $search = $request->input('search');
         $users = User::with('rights');
         if ($search !== null) {
@@ -39,11 +40,11 @@ class AdminController extends AuthorizedController
         {
             $users->where('id', '<>', 1);
         }
-        $users = $users->paginate($this->paginator_rows);
+        $users = $users->paginate($perpage);
         if ($search !== null) {
             $users->appends(['search' => $search]);
         }
-        $this->set('users', $users)->set('search', $search);
+        $this->set('users', $users)->set('per_page', $perpage)->set('search', $search);
     }
 
     /**
@@ -177,91 +178,8 @@ class AdminController extends AuthorizedController
 
         $user = User::findOrFail($user_id);
         $user->password = bcrypt($request->input('password'));
+        $user->save();
         return redirect('admin/users')->with('_message', ['type' => 'success', 'text' => 'Пароль пользователя успешно изменен']);
     }
 
-    /**
-     * @param Request $request
-     * @param bool $trashed
-     * @throws AccessDeniedException
-     */
-    public function getOffices(Request $request, $trashed = false)
-    {
-        $this->needRight(Right::CAN_MANAGE_OFFICES);
-        $offices = new Office();
-        if ($trashed !== false) {
-            $offices = $offices->withTrashed();
-        }
-        $offices = $offices->get();
-        $this->set('offices', $offices)->set('trashed', $trashed);
-    }
-
-    /**
-     * @param Request $request
-     * @param null $office_id
-     * @throws AccessDeniedException
-     */
-    public function getOffice(Request $request, $office_id = null)
-    {
-        $this->needRight(Right::CAN_MANAGE_OFFICES);
-        $office = Office::findOrNew($office_id);
-        $this->set('office', $office);
-    }
-
-    /**
-     * @param Request $request
-     * @param null $office_id
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Database\Eloquent\MassAssignmentException
-     * @throws AccessDeniedException
-     */
-    public function postOffice(Request $request, $office_id = null)
-    {
-        $this->needRight(Right::CAN_MANAGE_OFFICES);
-        $office = Office::findOrNew($office_id);
-        $rules = [
-            'title' => 'required|min:3',
-            'code' => ['required', 'size:3', Rule::unique('offices')->ignore($office_id)]
-        ];
-        if (($office_id !== null) and (!$office->exists)) // not new, but don't exists
-        {
-            throw new AccessDeniedException();
-        }
-        $this->validate($request, $rules);
-        $office->fill($request->only($office->fillable));
-        $office->save();
-
-        return redirect('admin/offices')->with('_message', ['type' => 'success', 'text' => 'Изменения в офисе сохранены']);
-    }
-
-    /**
-     * @param $office_id
-     * @throws AccessDeniedException
-     */
-    public function getOfficeDelete($office_id)
-    {
-        $this->needRight(Right::CAN_MANAGE_OFFICES);
-        $office = Office::findOrNew($office_id);
-        $this->set('office', $office);
-    }
-
-    /**
-     * @param $office_id
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws AccessDeniedException
-     * @throws \Exception
-     */
-    public function postOfficeDelete($office_id)
-    {
-        $this->needRight(Right::CAN_MANAGE_OFFICES);
-        $office = Office::findOrNew($office_id);
-        $office->delete();
-
-        return redirect('admin/offices')->with('_message', ['type' => 'success', 'Офис успешно удален из списка']);
-    }
-
-    public function getCities()
-    {
-        $this->needRight(Right::CAN_MANAGE_OFFICES);
-    }
 }

@@ -1,8 +1,8 @@
 <template>
-    <nav class="navbar app-navbar">
+    <nav class="navbar app-navbar printing-invisible">
         <div class="navbar-brand">
             <a
-                class="navbar-item"
+                class="navbar-item navbar-logo"
                 href="/"><i class="fas fa-tty fa-fw fa-2x"></i></a>
             <a
                 role="button"
@@ -13,27 +13,123 @@
             class="navbar-menu"
             :class="menuClass">
             <div class="navbar-start">
-                <div class="navbar-item"><a
-                    href="/card/101"
-                    class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-address-card"></i>&nbsp;
-                    Карточка 101</a>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a class="navbar-link is-small"><i class="fas fa-address-book"></i>&nbsp;Карточки</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            href="/card/101"
+                            class="dropdown-item is-small"><i class="fas fa-address-card"></i>&nbsp;
+                            Карточка 101</a>
+                        <a
+                            href="/card112"
+                            class="dropdown-item is-small"><i
+                            class="fas fa-address-card"></i>&nbsp; Карточка 112
+                        </a>
+                    </div>
                 </div>
                 <div
-                    class="navbar-item"
+                    class="navbar-item has-dropdown is-hoverable is-small"
                     v-if="hasAnyRight(12,13,14,15,16,17)">
                     <a
                         href="/formation"
-                        class="button is-inline-block-widescreen is-block is-small">
+                        class="navbar-link is-small">
                         <i class="fas fa-address-book"></i>&nbsp;
                         Строевые записки
                     </a>
+                    <div class="navbar-dropdown">
+                        <a
+                            href="/formation/101"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(12)"
+                        >
+                            <i class="fas fa-truck"></i>&nbsp;СП и АСР
+                        </a>
+                        <a
+                            href="/formation-record/mudflow"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(15)">
+                            <i class="fas fa-truck"></i>&nbsp;ГУ «Казселезащита»
+                        </a>
+                        <a
+                            href="/formation/savers"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(13)">
+                            <i class="fas fa-truck"></i>&nbsp;ГУ «РОСО КЧС МВД РК»
+                        </a>
+                        <a
+                            href="/formation-record/medical"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(14)">
+                            <i class="fas fa-truck"></i>&nbsp;ГУ «Центр медицины катастроф»
+                        </a>
+                        <a
+                            href="/formation-record/air_rescue"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(16)"
+                        >
+                            <i class="fas fa-truck"></i>&nbsp;АО "Казавиаспас"
+                        </a>
+                        <a
+                            href="/formation-record/ort_sert"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(17)">
+                            <i class="fas fa-truck"></i>&nbsp;АО "Өртсөндіруші"
+                        </a>
+                        <a
+                            href="/formation-record"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(18)">
+                            <i class="fas fa-truck"></i>&nbsp;ДЧС г.Алматы
+                        </a>
+
+                    </div>
                 </div>
-                <div class="navbar-item">
-                    <a
-                        href="/card112"
-                        class="button is-inline-block-widescreen is-block is-small"><i
-                        class="fas fa-address-card"></i>&nbsp; Карточка 112
-                    </a>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a class="navbar-link is-small"><i class="fas fa-inbox"></i>&nbsp;Ввод данных</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            href="/chats"
+                            class="dropdown-item is-small"><i class="fas fa-address-book"></i>&nbsp;
+                            Ручной ввод хронометража</a>
+                        <a
+                            v-if="hasRight(10)"
+                            href="/hydrant"
+                            class="dropdown-item is-small"><i class="fas fa-truck"></i>&nbsp;
+                            Расположение гидрантов</a>
+                        <a
+                            v-if="hasRight(10)"
+                            href="/vehicles"
+                            class="dropdown-item is-small"><i class="fas fa-car"></i>&nbsp;
+                            Транспортные средства</a>
+                        <a
+                            v-if="hasRight(10)"
+                            href="/schedules"
+                            class="dropdown-item is-small"><i class="fas fa-fire"></i>&nbsp;
+                            Пожарные части</a>
+                    </div>
+                </div>
+                <div
+                    class="navbar-item has-dropdown is-hoverable is-small"
+                    v-if="hasAnyRight(11)">
+                    <a class="navbar-link is-small"><i class="fas fa-receipt"></i>&nbsp;Отчетность</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            v-if="hasRight(11)"
+                            href="/pdf/dailyReport"
+                            target="_blank"
+                            class="dropdown-item is-small">
+                            <i class="fas fa-address-card"></i>&nbsp;
+                            Суточный отчет
+                        </a>
+                        <a
+                            href="/information"
+                            class="dropdown-item is-small"><i class="fas fa-address-book"></i>&nbsp;
+                            Информация</a>
+                        <a
+                            href="/emergency-situation"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                            Оперативная информация</a>
+                    </div>
                 </div>
                 <div class="navbar-item">
                     <a
@@ -43,32 +139,6 @@
                         Путевой лист
                     </a>
                 </div>
-                <div
-                    class="navbar-item"
-                    v-if="hasRight(11)">
-                    <a
-                        href="/pdf/dailyReport"
-                        target="_blank"
-                        class="button is-inline-block-widescreen is-block is-small">
-                        <i class="fas fa-address-book"></i>&nbsp;
-                        Суточный отчет
-                    </a>
-                </div>
-                <div class="navbar-item"><a
-                    href="/chats"
-                    class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-address-book"></i>&nbsp;
-                    Ручной ввод хронометража</a></div>
-                <div class="navbar-item"><a
-                    href="/information"
-                    class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-address-book"></i>&nbsp;
-                    Информация</a></div>
-                <div
-                    v-if="hasRight(10)"
-                    class="navbar-item"><a
-                        href="/hydrant"
-                        class="button is-inline-block-widescreen is-block is-small"><i class="fas fa-truck"></i>&nbsp;
-                        Расположение гидрантов</a></div>
-
             </div>
             <div class="navbar-end">
                 <div
@@ -111,6 +181,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'Navbar',
     data: function () {
@@ -149,7 +221,7 @@ export default {
 
     },
     mounted: function () {
-        window.axios.get('/ajax/rights/list').then((response) => {
+        axios.get('/ajax/rights/list').then((response) => {
             this.rights = response.data;
         });
     }
@@ -157,6 +229,50 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+    @import "../../../assets/sass/variables";
 
+    .app-navbar {
+        min-height: 35px;
+        transition: all 1s ease-out;
+        border-bottom: 3px solid $primary;
+
+        .navbar-item {
+            padding: 0.5rem 0.75rem 0.5rem 0;
+            &.navbar-logo {
+                color: $grey-dark;
+                padding: .5rem;
+                transition: color 1s ease-out;
+                &:hover {
+                    color: $red;
+                }
+            }
+            > a:not(.navbar-link) {
+                border: 1px solid #dbdbdb;
+                border-radius: 4px;
+                &:hover {
+                    color: $primary;
+                }
+            }
+        }
+
+        .navbar-link {
+            font-size: .9rem;
+        }
+
+        .navbar-dropdown {
+            border-top-width: 3px;
+            border-bottom: 3px solid $primary;
+            .dropdown-item {
+                i.fas {
+                    transition: all 1s ease-out;
+                }
+            }
+            .dropdown-item:hover {
+                i.fas {
+                    color: tomato;
+                }
+            }
+        }
+    }
 </style>

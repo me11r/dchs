@@ -16,7 +16,9 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\FireDepartment;
+use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
+use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
 use App\Ticket101;
@@ -32,8 +34,11 @@ class CardController extends AuthorizedController
 
     public function get101(Request $request)
     {
-        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])->get();
-        $this->set('tickets', $tickets);
+        $perPage = $request->get('per_page', 10);
+        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+            ->orderBy('created_at','desc')
+            ->paginate($perPage);
+        $this->set('tickets', $tickets)->set('per_page', $perPage);
     }
 
     public function getAdd101(Request $request, $card_id = 0)
@@ -75,7 +80,17 @@ class CardController extends AuthorizedController
             ' - П.16',
             ' - П. 17',
         ];
+        $ssv_out = FireDepartment::all();
+        if($card_id != 0){
+            foreach ($ssv_out as $key => $item) {
+                $ssv_out[$key]->res = $item->results()->where('ticket101_id', $card_id)->first();
+            }
+        }
+
+        $dep_results = FireDepartmentResult::all();
+
         $this->set('ssv_out', $ssv_out);
+        $this->set('dep_results', $dep_results);
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::all());
@@ -105,7 +120,8 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->all();
+        $data = $request->except('ph');
+
         unset($data['comeback']);
         $comeback = $request->get('comeback', false);
         $otherRecords = array_get($data, 'other_records', []);
@@ -117,9 +133,54 @@ class CardController extends AuthorizedController
 
         $this->saveOtherRecords($card, $otherRecords);
         $back = '/card/101';
+
+        $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
+            ->where('dict_fire_level_id', $data['fire_level_id'])
+            ->get();
+
+        $results_exists = FireDepartmentResult::where('ticket101_id', $card->id)
+            ->get()
+            ->count();
+
+        if(!$results_exists && $schedule->count()){
+            foreach ($schedule as $item) {
+                FireDepartmentResult::create([
+                    'ticket101_id' => $card->id,
+                    'fire_department_id' => $item->fire_department_id,
+                    'dispatched' => false,
+                    'departments' => $item->department,
+                ]);
+            }
+        }
+        else{
+            $results_req = $request->ph;
+            foreach ($results_req['ot'] as $control_id => $control) {
+                if($control){
+                    FireDepartmentResult::updateOrCreate(
+                        [
+                            'ticket101_id' => $card->id,
+                            'fire_department_id' => $control_id,
+                        ],
+                        [
+                            'ticket101_id' => $card->id,
+                            'fire_department_id' => $control_id,
+                            'departments' => $control,
+
+                            'out_time' => $request->input("ph.out_time.$control_id"),
+                            'arrive_time' => $request->input("ph.arrive_time.$control_id"),
+                            'loc_time' => $request->input("ph.loc_time.$control_id"),
+                            'liqv_time' => $request->input("ph.liqv_time.$control_id"),
+                            'ret_time' => $request->input("ph.ret_time.$control_id"),
+                        ]
+                    );
+                }
+            }
+        }
+
         if ($comeback) {
             $back = '/card/add101/' . $card->id.'#return='.$comeback;
         }
+
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
     }
 

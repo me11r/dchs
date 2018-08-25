@@ -2,14 +2,10 @@
 @import "../../../node_modules/bulma/bulma";
 @import "../../../node_modules/buefy/src/scss/buefy";
 @import "common";
+@import "printing";
 
-.app-navbar {
-  border-bottom: 3px solid $primary;
-}
-
-.app-navbar .navbar-item > a:not(.navbar-link) {
-  border: 1px solid #dbdbdb;
-  border-radius: 4px;
+.page-margin {
+  margin: 1rem 2rem 0;
 }
 
 .form-buttons-bg {
@@ -32,3 +28,24 @@
   margin: 1rem 1.5rem;
 }
 
+.pagination-template {
+  margin: 1rem 2rem;
+  hr {
+    margin: 2rem 1rem .5rem;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  }
+  .field-label {
+    margin-right: 0.25rem;
+  }
+  .pagination-link {
+    &.is-current {
+      font-weight: bold;
+    }
+  }
+}
+
+.print-button {
+  box-shadow: rgba(100, 100, 150, .2) 0 2px 16px;
+}

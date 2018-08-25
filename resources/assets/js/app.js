@@ -14,6 +14,8 @@ import {MudflowProtectionForm} from './views/mudflowProtection';
 import {HydrantMapList} from './views/hydrant-map';
 import {CommonMapScreen} from './views/mapscreen';
 import RoadtripNotifier from './ui/RoadtripNotifier';
+import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
+import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 
 import Add101Functions from './scripts/add101/add101';
@@ -24,6 +26,9 @@ import Add101Persons from './scripts/add101persons/add101persons';
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+
+Vue.component('add-edit-tech', AddEdit101Tech);
+Vue.component('schedule', Schedule);
 
 Vue.config.productionTip = false;
 
@@ -96,12 +101,24 @@ if (add101personsFormElement) {
     (new Add101Persons()).createApp(add101personsFormElement);
 }
 
-new Vue({
-    el: '#mudflowProtection-form-block',
-    render: h => h(MudflowProtectionForm)
-});
+if (document.getElementById('mudflowProtection-form-block')) {
+    new Vue({
+        el: '#mudflowProtection-form-block',
+        render: h => h(MudflowProtectionForm)
+    });
+}
 
-new Vue({
-    el: '#roadtrip-notifier',
-    render: h => h(RoadtripNotifier)
-});
+if (document.getElementById('roadtrip-notifier')) {
+    new Vue({
+        el: '#roadtrip-notifier',
+        render: h => h(RoadtripNotifier)
+    });
+}
+
+if (document.getElementById('vue')) {
+    new Vue({
+        el: '#vue'
+    });
+}
+
+require('./scripts/emergency-situation/edit-form');

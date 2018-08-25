@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\EmergencySituation;
+use App\Observers\EmergencySituationObserver;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +16,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        EmergencySituation::observe(EmergencySituationObserver::class);
+        Paginator::defaultView('pagination::default');
     }
 
     /**
@@ -23,6 +27,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\FireDepartment;
+use App\Models\FireDepartmentResult;
 use App\RoadtripPlan;
 use App\Ticket101;
 use App\User;
@@ -14,8 +15,9 @@ use Illuminate\Http\Request;
 
 class RoadtripController extends AuthorizedController
 {
-    public function getIndex()
+    public function getIndex(Request $request)
     {
+        $perpage = $request->get('per_page', 10);
         /** @var User $user */
         $user = Auth::user();
         $trips = RoadtripPlan::with(['ticket', 'department'])
@@ -25,16 +27,19 @@ class RoadtripController extends AuthorizedController
             $trips = $trips->where('department_id', $user->fire_department_id);
         }
 
-        $trips = $trips->get();
+        $trips = $trips
+            ->orderBy('created_at', 'desc')
+            ->paginate($perpage);
 
         $this->set('user', $user->load('department'));
-        $this->set('trips', $trips);
+        $this->set('trips', $trips)->set('per_page', $perpage);
     }
 
     public function getView($plan_id)
     {
-        $trip = RoadtripPlan::with(['ticket', 'department'])
+        $trip = RoadtripPlan::with(['ticket', 'department', 'result'])
             ->findOrFail($plan_id);
+
         $this->set('trip', $trip);
     }
 
@@ -47,6 +52,10 @@ class RoadtripController extends AuthorizedController
             $plan->save();
         }
 
+        $plan->result->ret_time = $plan->return_time;
+        $plan->result->save();
+
+
         return redirect(route('roadtrip.plan.view', ['plan_id' => $plan_id]))
             ->with('_message', [
                 'type' => 'sucess',
@@ -54,7 +63,7 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
-    public function getSend($dept_id, $ticket_id)
+    public function getSend($dept_id, $ticket_id, $departments = null)
     {
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
@@ -78,12 +87,25 @@ class RoadtripController extends AuthorizedController
         $plan->fill([
             'card_id' => $ticket_id,
             'department_id' => $dept_id
-        ])
-            ->save();
-        $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
-        $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
-        $ticket->{'ph_' . $dept_id . '_ot'} = \request('part');
-        $ticket->save();
+        ])->save();
+
+        FireDepartmentResult::updateOrCreate(
+            [
+                'fire_department_id' => $dept_id,
+                'ticket101_id' => $ticket_id,
+            ],
+            [
+                'dispatched' => true,
+                'dispatch_id' => $plan->id,
+                'departments' => \request('part'),
+            ]
+        );
+
+
+//        $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
+//        $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
+//        $ticket->{'ph_' . $dept_id . '_ot'} = \request('part');
+//        $ticket->save();
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
             ->with('_message', [
@@ -102,6 +124,23 @@ class RoadtripController extends AuthorizedController
         return redirect('/roadtrip/view/' . $id)->with('_message', [
             'type' => 'success',
             'text' => 'Путевой лист принят в работу!'
+        ]);
+    }
+
+    public function postForceOut(Request $request, $id)
+    {
+        $plan = RoadtripPlan::findOrFail($id);
+        FireDepartmentResult::where('fire_department_id', $plan->department_id)
+            ->where('ticket101_id', $plan->card_id)
+            ->update(
+            [
+                'out_time' => now()->toTimeString(),
+            ]
+        );
+
+        return redirect('/roadtrip/view/' . $id)->with('_message', [
+            'type' => 'success',
+            'text' => 'Выезд сил одобрен'
         ]);
     }
 }

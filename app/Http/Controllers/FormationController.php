@@ -18,6 +18,8 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
+use App\Models\FormationTechItem;
+use App\Models\Vehicle;
 use App\Right;
 use App\Services\FormationService;
 use Carbon\Carbon;
@@ -40,6 +42,7 @@ class FormationController extends AuthorizedController
     public function get101(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+        $perpage = $request->get('per_page', 10);
         $today = date('Y-m-d');
         $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -49,7 +52,8 @@ class FormationController extends AuthorizedController
         }
         $this
             ->set('today', $today)
-            ->set('reports', (new FormationReport)->orderByDesc('report_date')->get());
+            ->set('per_page', $perpage)
+            ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
     }
 
     public function getAddToday()
@@ -100,6 +104,7 @@ class FormationController extends AuthorizedController
                 'Командировка',
                 'Другие причины',
             ],
+            'ГДЗС',
         ];
         $this->set('fieldlist', $fieldlist);
 
@@ -132,24 +137,24 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $fieldlist = [
-            'ГДЗС',
+            null,
             'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
                 'Грязевая',
             ],
-            'Пожарная техника' => [
-                'В боевом расчете' => [
-                    'Тип основного пожарного а/м',
-                    'Марка спец. пожарных а/м, мотоциклов'
+            null => [
+                null => [
+                    null,
+                    null
                 ],
-                'В резерве' => [
-                    'Тип основного пожарного а/м',
-                    'Марка спец. пожарных а/м, мотоциклов'
+                null => [
+                    null,
+                    null
                 ],
-                'На ремонте' => [
-                    'Тип основного пожарного а/м',
-                    'Марка спец. пожарных а/м, мотоциклов'
+                null => [
+                    null,
+                    null
                 ],
             ],
             'Имеется на автомобилях в боевом расчете' => [
@@ -202,6 +207,7 @@ class FormationController extends AuthorizedController
         $this->set('departments', FireDepartment::all())
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->get())
             ->set('dept_id', $dept_id);
 
     }
@@ -209,12 +215,26 @@ class FormationController extends AuthorizedController
     public function postAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+        $all = $request->all();
+        $model = FormationTechReport::updateOrCreate([
+                'form_id' => $form_id,
+                'dept_id' => $dept_id,
+            ], $all);
+        if($request->tech){
+            FormationTechItem::where('formation_tech_report_id', $model->id)
+                ->delete();
+            foreach ($request->tech as $type => $inputs) {
+                foreach ($inputs['vehicle_id'] as $input_key => $input) {
+                    FormationTechItem::create([
+                        'vehicle_id' => $input,
+                        'formation_tech_report_id' => $model->id,
+                        'department' => $type != 'repair' ? $inputs['department'][$input_key] : null,
+                        'status' => $type,
+                    ]);
+                }
 
-        $model = (new FormationTechReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
-        if ($model === null) {
-            $model = new FormationTechReport();
+            }
         }
-        $model->fill($request->all())->save();
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
@@ -240,10 +260,11 @@ class FormationController extends AuthorizedController
                 'Командировка',
                 'Другие причины',
             ],
+            'ГДЗС'
         ];
 
         $tech_fieldlist = [
-            'ГДЗС',
+            null,
             'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
@@ -316,7 +337,8 @@ class FormationController extends AuthorizedController
             'field_3_2',
             'field_3_3',
             'field_3_4',
-            'field_3_5'
+            'field_3_5',
+            'field_1'
         ];
         $tech_fields = [
             'field_0',
@@ -386,7 +408,7 @@ class FormationController extends AuthorizedController
     public function getMudflow(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION);
-
+        $perPage = $request->get('per_page', 10);
         $today = Carbon::today();
         $has_today = ((new FormationMudflowReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -394,7 +416,9 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationMudflowReport::all())
+        $this
+            ->set('per_page', $perPage)
+            ->set('reports', FormationMudflowReport::orderBy('created_at', 'desc')->paginate($perPage))
             ->set('today', $today);
     }
 
@@ -420,7 +444,7 @@ class FormationController extends AuthorizedController
     public function getMedical(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_CMK);
-
+        $perPage = $request->get('per_page', 10);
         $today = Carbon::today();
         $has_today = ((new FormationMedicalReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -428,8 +452,9 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationMedicalReport::all())
-            ->set('today', $today);
+        $this->set('reports', FormationMedicalReport::orderBy('created_at', 'desc')->paginate($perPage))
+            ->set('today', $today)
+            ->set('per_page', $perPage);
     }
 
     public function getEditMedical(Request $request, $id)
@@ -454,7 +479,7 @@ class FormationController extends AuthorizedController
     public function getSavers(Request $request)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
-
+        $perPage = $request->get('per_page', 10);
         $today = Carbon::today();
         $has_today = ((new FormationSaversReport())->where('report_date', $today)->count() > 0);
         if (!$has_today) {
@@ -462,8 +487,10 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationSaversReport::all())
-            ->set('today', $today);
+        $this->set('reports', FormationSaversReport::orderBy('created_at')->paginate($perPage))
+            ->set('today', $today)
+            ->set('per_page', $perPage)
+        ;
     }
 
     public function getEditSavers(Request $request, $id)
