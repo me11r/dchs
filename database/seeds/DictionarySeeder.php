@@ -66,11 +66,17 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'dict_trunk',
                 'model' => \App\Models\Trunk::class
             ],
+            [
+                'title' => 'Источник противопожарного водоснабжения',
+                'table' => 'water_supply_sources',
+                'model' => \App\Dictionary\WaterSupplySource::class
+            ],
         ];
         (new App\Dictionary)->truncate();
         foreach ($dicts as $dict) {
             (new App\Dictionary())->fill($dict)->save();
         }
+        $this->call(WaterSupplySeeder::class);
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
         $this->call(FireDeptSeeder::class);

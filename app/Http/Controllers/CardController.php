@@ -15,6 +15,7 @@ use App\Dictionary\FireLevel;
 use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
+use App\Dictionary\WaterSupplySource;
 use App\FireDepartment;
 use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
@@ -23,6 +24,7 @@ use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
 use App\Ticket101;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CardController extends AuthorizedController
 {
@@ -115,7 +117,35 @@ class CardController extends AuthorizedController
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
         $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records'])->findOrNew($card_id);
 
+        $other_records_unique = $ticket->other_records()->groupBy('trunk_id')->get(['trunk_id', DB::raw('MAX(count) as count')]);
+        if($other_records_unique->count()){
+            $trunk_ids = $other_records_unique->pluck('trunk_id')->toArray();
+            $unique_count = $other_records_unique->pluck('count')->toArray();
+            $other_records_unique = Ticket101OtherRecord::whereIn('trunk_id', $trunk_ids)
+                ->where('ticket101_id', $ticket->id)
+                ->whereIn('count', $unique_count)
+                ->get();
+        }
+        else{
+            $other_records_unique = [];
+        }
+
+        $max_square = Ticket101OtherRecord::
+            where('ticket101_id', $ticket->id)
+            ->max('square');
+
+        $fire_dep_results_info = '';
+        foreach ($ticket->results()->where('dispatched', true)->get() as $item) {
+            $fire_dep_results_info .= "{$item->department->name}: {$item->departments}; ";
+        }
+
+        $water_sources = WaterSupplySource::all();
+
+        $this->set('fire_dep_results_info', $fire_dep_results_info);
+        $this->set('water_sources', $water_sources);
+        $this->set('max_square', $max_square);
         $this->set('ticket', $ticket);
+        $this->set('other_records_unique', $other_records_unique);
     }
 
     public function postAdd101(Request $request, $card_id = 0)
