@@ -52,11 +52,6 @@ task('deploy:public_uploads', function () {
 });
 before('deploy:symlink', 'deploy:public_uploads');
 
-// Tasks
-
-// [Optional] if deploy fails automatically unlock.
-after('deploy:failed', 'deploy:unlock');
-
 // Migrate database before symlink new release.
 
 before('deploy:symlink', 'artisan:migrate');
