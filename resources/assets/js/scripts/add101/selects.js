@@ -1,3 +1,4 @@
+import {areaIdFound} from '../../config/storage-keys';
 import {globalBus} from '../global-bus';
 import Vue from 'vue';
 
@@ -20,6 +21,13 @@ export default function bindSelects() {
                     this.name = element.dataset.name;
                     if (element.dataset.special === 'specialPlan') {
                         globalBus.$on('specialPlanFound', this.onSpecialPlanFound);
+                    }
+                    if (element.dataset.name === 'city_area_id') {
+                        window.addEventListener('storage', (event) => {
+                            if (event.key === areaIdFound) {
+                                this.selectedId = parseInt(event.newValue);
+                            }
+                        });
                     }
                 }
             });
