@@ -11,9 +11,11 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
 use App\Dictionary\TripResult;
+use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -544,4 +546,37 @@ class Ticket101 extends Model
     {
         return $this->hasMany(FireDepartmentResult::class, 'ticket101_id');
     }
+
+    public function water_supply_source()
+    {
+        return $this->belongsTo(WaterSupplySource::class, 'water_supply_source_id');
+    }
+
+    public function scopeCanEditTicket($q)
+    {
+        $created_date = $this->created_at;
+        if($created_date == null){
+            return true;
+        }
+        $is_yesterday = $created_date->isYesterday();
+        $is_today = $created_date->isToday();
+        $pass_after_9 = now()->format('H') > 9;
+
+        if(!$is_yesterday && !$is_today){
+            return false;
+        }
+        elseif($is_today && !$pass_after_9){
+            return true;
+        }
+        elseif($is_today){
+            return true;
+        }
+        elseif($is_yesterday && !$pass_after_9){
+            return false;
+        }
+
+        return false;
+    }
+
+
 }
