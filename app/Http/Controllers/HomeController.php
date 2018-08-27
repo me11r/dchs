@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Importer\Importer\CommonImporterTrait;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    use CommonImporterTrait;
     /**
      * Create a new controller instance.
      *
@@ -26,6 +24,5 @@ class HomeController extends Controller
      */
     public function getIndex()
     {
-
     }
 }
