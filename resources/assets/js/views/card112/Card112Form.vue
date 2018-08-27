@@ -566,7 +566,7 @@ import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 import {Card112Utils} from './card112utils';
 import {BuefyCommonSelect} from '../../components';
-import {locationExchangeKey, mapLocationExchangeKey} from '../../config/storage-keys';
+import {locationExchangeKey, mapLocationExchangeKey, areaIdFound} from '../../config/storage-keys';
 
 export default {
     name: 'Card112Form',
@@ -683,6 +683,9 @@ export default {
         window.addEventListener('storage', (event) => {
             if (event.key === mapLocationExchangeKey) {
                 this.model.location = event.newValue;
+            }
+            if (event.key === areaIdFound) {
+                this.model.city_area_id = parseInt(event.newValue);
             }
         });
     }
