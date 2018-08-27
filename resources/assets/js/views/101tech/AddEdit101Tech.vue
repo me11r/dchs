@@ -13,10 +13,7 @@
             class="field is-grouped"
             v-for="item in records_"
             :key="item.id">
-            <!--<input-->
-                <!--type="hidden"-->
-                <!--v-model="item.id"-->
-                <!--:name="getName('vehicle_id', item.id)">-->
+
             <div class="control column is-four-fifths">
                 <label :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
                 <div class="select">
@@ -35,18 +32,37 @@
                 </div>
 
             </div>
-            <div v-if="block_type !== 'repair'" class="control column">
+            <div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
                 <label :for="getName('department', item.id)">Отделение</label>
                 <input
                     required
                     placeholder="Отделение"
                     type="number"
                     class="input"
-                    max="8"
+                    max="82"
                     min="1"
                     v-model="item.department"
                     @change="departmentCheck($event)"
                     :name="getName('department', item.id)">
+            </div>
+
+            <div v-if="block_type === 'reserve'" class="control column">
+                <label :for="getName('reserve', item.id)">Резерв</label><br>
+                <div class="select">
+                    <select
+                            required
+                            title=""
+                            :name="getName('reserve', item.id)"
+                            :id="getName('reserve', item.id)"
+                            v-model="item.reserve">
+                        <option
+                                v-for="x in 5"
+                                :key="'vehicle_reserve' + x"
+                                :value="x">Резерв{{ x }}
+                        </option>
+                    </select>
+                </div>
+
             </div>
 
             <div class="control column">
@@ -96,7 +112,7 @@ export default {
             trunks: [],
             block_type_: this.block_type,
             vehicles_: this.vehicles,
-            report_id_: this.report_id,
+            report_id_: this.report_id
         };
     },
     components: {
@@ -104,7 +120,7 @@ export default {
     },
     methods: {
         getName(control, id){
-            return 'tech'+`[${this.block_type_}]`+`[${control}][${id}]`;
+            return 'tech' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
