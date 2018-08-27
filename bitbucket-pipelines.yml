@@ -2,24 +2,46 @@ pipelines:
   branches:
     production:
     - step:
+        caches:
+        - composer
+        - vendor
         name: Build PHP part
         image: php:7.2
         script:
         - echo "Starting php build"
+        - export COMPOSER_ALLOW_SUPERUSER=1
         - apt-get update && apt-get install -y unzip
         - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-        - composer global require hirak/prestissimo
-        - composer install
+        - composer install --ignore-platform-reqs --no-suggest --no-progress
+        - composer du --ignore-platform-reqs
     - step:
+        caches:
+        - node
         name: Build Laravel Mix
         image: node:10.9
         script:
         - echo "Starting mix build"
         - npm install
         - npm run prod
+        artifacts:
+        - public/assets/app.css
+        - public/assets/app.js
+        - public/fonts/*
+        - public/mix-manifest.json
     - step:
+        caches:
+        - vendor
         name: Deploying to server
-        image: ogorbunov/php:deployer
+        image: php:7.2
         deployment: staging
         script:
+        - apt-get update && apt-get install -y openssh-client rsync
         - echo "Deployment started"
+        - curl -LO https://deployer.org/deployer.phar
+        - mv deployer.phar /usr/local/bin/dep
+        - chmod +x /usr/local/bin/dep
+        - dep deploy dechees.devpoint.kz
+
+definitions:
+  caches:
+    vendor: vendor
