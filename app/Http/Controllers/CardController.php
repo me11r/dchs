@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 08.07.2018
- * Time: 18:51
- */
 
 namespace App\Http\Controllers;
 
@@ -31,7 +25,7 @@ class CardController extends AuthorizedController
 
     public function getMapscreen(Request $request)
     {
-
+        $this->set('areas', (new CityArea())->get()->toArray());
     }
 
     public function get101(Request $request)
@@ -157,7 +151,13 @@ class CardController extends AuthorizedController
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
 
+
+
         $card = Ticket101::findOrNew($card_id);
+        $canEditTicket = $card->canEditTicket();
+        if(!$canEditTicket){
+            return redirect('/card/add101/')->with('_message', ['type' => 'error', 'text' => 'Данные не могут быть сохранены. Архивная карточка']);
+        }
         $card->fill($data);
         $card->save();
 
