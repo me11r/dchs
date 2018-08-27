@@ -51,13 +51,20 @@ task('deploy:public_uploads', function () {
     // Symlink shared dir to release dir
     run('{{bin/symlink}} {{deploy_path}}/shared/storage/app/uploads {{release_path}}/public/uploads');
 });
+
+desc('Migrate selected seeder for staging');
+task('deploy:db:seed', function (){
+    $output = run('{{bin/php}} {{release_path}}/artisan db:seed --force --class=StagingDeploySeeder');
+    writeln('<info>' . $output . '</info>');
+});
+
 before('deploy:symlink', 'deploy:public_uploads');
 
 // Migrate database before symlink new release.
 
 //before('deploy:symlink', 'artisan:migrate');
 
-//after('artisan:migrate', 'artisan:db:seed');
+after('artisan:migrate', 'deploy:db:seed');
 
 //Запуск задач
 task('deploy', [
