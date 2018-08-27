@@ -15,6 +15,10 @@ class VehiclesSeeder extends Seeder
     {
 //        \App\Models\Vehicle::where('id', '>', 0)->delete();
 
+        if(!\App\Models\VehicleType::all()->count()){
+            $this->call(VehicleTypesSeeder::class);
+        }
+
         foreach ($this->getData() as $vehicle) {
 
             \App\Models\Vehicle::updateOrCreate($vehicle, $vehicle);
@@ -44,6 +48,7 @@ class VehiclesSeeder extends Seeder
             $changed_keys['number'] = trim($temp_item[6]);
             $changed_keys['reg_certificate'] = $temp_item[7];
             $changed_keys['note'] = $temp_item[8];
+
             $raw_data_less[] = $changed_keys;
         }
 
@@ -65,7 +70,7 @@ class VehiclesSeeder extends Seeder
                     $vehicle_type = \App\Models\VehicleType::where('name', 'like', "$vehicle_types[1]%")->first();
                 }
                 else{
-                    $vehicle_type = \App\Models\VehicleType::where('name', 'like', "Вспом%")->first();
+                    $vehicle_type = \App\Models\VehicleType::where('name', 'like', "$vehicle_types[2]%")->first();
                 }
 
                 if($vehicle_type){

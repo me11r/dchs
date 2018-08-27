@@ -228,8 +228,9 @@ class FormationController extends AuthorizedController
                     FormationTechItem::create([
                         'vehicle_id' => $input,
                         'formation_tech_report_id' => $model->id,
-                        'department' => $type != 'repair' ? $inputs['department'][$input_key] : null,
+                        'department' => ($type != 'repair' && $type != 'reserve') ? $inputs['department'][$input_key] : null,
                         'status' => $type,
+                        'reserve' => $inputs['reserve'][$input_key] ?? null,
                     ]);
                 }
 

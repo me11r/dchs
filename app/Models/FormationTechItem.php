@@ -12,6 +12,7 @@ class FormationTechItem extends Model
         'formation_tech_report_id',
         'department',
         'status',
+        'reserve',
     ];
 
     public function scopeStatus($q, $status)
