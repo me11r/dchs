@@ -14,6 +14,10 @@ pipelines:
         - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
         - composer install --ignore-platform-reqs --no-suggest --no-progress
         - composer du
+        artifacts:
+        - vendor/autoload.php
+        - vendor/composer/*
+
     - step:
         caches:
         - node
