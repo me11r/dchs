@@ -29,7 +29,7 @@ class CardController extends AuthorizedController
 
     public function getMapscreen(Request $request)
     {
-
+        $this->set('areas', (new CityArea())->get()->toArray());
     }
 
     public function get101(Request $request)

@@ -10,8 +10,9 @@
 
 <script>
 
-import {locationExchangeKey, mapLocationExchangeKey} from '../../config/storage-keys';
+import {locationExchangeKey, mapLocationExchangeKey, areaIdFound} from '../../config/storage-keys';
 import * as lodash from 'lodash';
+// import _ from 'vue-underscore';
 
 export default {
     name: 'CommonMapScreen',
@@ -20,7 +21,8 @@ export default {
             location: '',
             ymaps: window.ymaps,
             map: {},
-            currentCity: 'Алматы'
+            currentCity: 'Алматы',
+            areas: []
         };
     },
     methods: {
@@ -30,7 +32,7 @@ export default {
                 this.findPointOnTheMap();
             }
         },
-        findPointOnTheMap: lodash.debounce(function() {
+        findPointOnTheMap: lodash.debounce(function () {
             this.map.geoObjects.removeAll();
             this.ymaps
                 .geocode(this.currentCity + ' ' + this.location, {results: 1})
@@ -42,6 +44,10 @@ export default {
                         firstGeoObject.properties.set('iconCaption', firstGeoObject.properties.get('name'));
                         this.map.geoObjects.add(firstGeoObject);
                         this.map.setBounds(bounds, {checkZoomRange: true});
+                        this.detectArea(
+                            firstGeoObject.geometry.getBounds()[0][0],
+                            firstGeoObject.geometry.getBounds()[0][1]
+                        );
                     }
                 });
         }, 500),
@@ -66,6 +72,40 @@ export default {
                             .replace(/(^|\s+)улица(\s+|$)/g, '')
                             .replace(/(^|\s+)проспект(\s+|$)/g, '');
                         window.localStorage.setItem(mapLocationExchangeKey, this.location);
+                        this.detectArea(
+                            firstGeoObject.geometry.getBounds()[0][0],
+                            firstGeoObject.geometry.getBounds()[0][1]
+                        );
+                    }
+                });
+        },
+        detectArea(lat, long) {
+            const self = this;
+            this.ymaps
+                .geocode(lat + ',' + long, {results: 1, kind: 'district'})
+                .then((result) => {
+                    const firstGeoObject = result.geoObjects.get(0);
+
+                    if (firstGeoObject) {
+                        const metaData = firstGeoObject.properties.get('metaDataProperty').GeocoderMetaData;
+                        if (metaData.Address && metaData.Address.Components) {
+                            metaData
+                                .Address
+                                .Components
+                                .map((item) => {
+                                    if (item.kind === 'district') {
+                                        let districtName = item.name
+                                            .replace(/(^|\s+)район(\s+|$)/g, '')
+                                            .replace(/(^|\s+)Район(\s+|$)/g, '')
+                                            .toLowerCase();
+                                        let districtModel = lodash.find(self.areas, {'name': districtName});
+
+                                        if (districtModel) {
+                                            window.localStorage.setItem(areaIdFound, districtModel.id);
+                                        }
+                                    }
+                                });
+                        }
                     }
                 });
         },
@@ -73,7 +113,7 @@ export default {
             const self = this;
             this.map = new this.ymaps.Map(this.$refs['common-map-screen-yandex-map'], {
                 center: [43.259743, 76.926573],
-                zoom: 13,
+                zoom: 16,
                 behaviors: ['drag', 'scrollZoom']
             });
             this.map.events.add('dblclick', (event) => {
@@ -83,6 +123,11 @@ export default {
     },
     mounted() {
         this.initMap();
+        this.areas = window.areas.map((item) => {
+            item.name = item.name.toLowerCase();
+            return item;
+        });
+
         window.addEventListener('storage', (event) => {
             if (event.key === locationExchangeKey) {
                 this.onLocationInput(event.newValue);
