@@ -37,4 +37,9 @@ class FormationMedicalReport extends Model
 {
     protected $table = 'formation_medical_report';
     protected $guarded = ['id'];
+
+    public function scopeTodayRecords($q)
+    {
+        return $q->whereDate('report_date', date('Y-m-d'));
+    }
 }

@@ -1,30 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+use Illuminate\Database\Seeder;
 
-use App\Services\Importer\Importer\CommonImporterTrait;
-use Illuminate\Http\Request;
-
-class HomeController extends Controller
+class SchedulesSeeder extends Seeder
 {
-    use CommonImporterTrait;
+    use \App\Services\Importer\Importer\CommonImporterTrait;
+
     /**
-     * Create a new controller instance.
+     * Run the database seeds.
      *
      * @return void
      */
-    public function __construct()
+    public function run()
     {
-        parent::__construct();
-        $this->middleware('auth');
+        foreach ($this->getData() as $item) {
+
+            \App\Models\Schedule::updateOrCreate($item, $item);
+        }
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getIndex()
+    public function getData()
     {
         $raw_data = $this->parseItems(database_path('seeds/sources/schedules.xlsx'));
 
@@ -57,11 +52,10 @@ class HomeController extends Controller
 
             }
             else{
-                $c = $raw_data_less[$key];
                 unset($raw_data_less[$key]);
             }
         }
 
-        $f = 1;
+        return $raw_data_less;
     }
 }

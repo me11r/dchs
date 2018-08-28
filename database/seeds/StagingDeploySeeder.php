@@ -6,6 +6,6 @@ class StagingDeploySeeder extends Seeder
 {
     public function run()
     {
-        $this->call(VehiclesSeeder::class);
+        $this->call(SchedulesSeeder::class);
     }
 }
