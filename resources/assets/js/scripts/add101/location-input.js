@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Vue from 'vue';
 import {globalBus} from '../global-bus';
-import {locationExchangeKey, mapLocationExchangeKey} from '../../config/storage-keys';
+import {MAP_LOCATION_EXCHANGE_KEY} from '../../config/storage-keys';
+import YandexMapsBus from '../../scripts/yandex-maps-bus';
 
 const lodash = require('lodash');
 
@@ -12,11 +13,12 @@ export default function bindLocationInputApp() {
         data: {
             location: '',
             showList: false,
-            items: []
+            items: [],
+            yandexMapsBus: {},
+            currentCity: 'Алматы'
         },
         methods: {
             searchLocationPlans: lodash.debounce(function () {
-                this.notifyMap();
                 axios.get('/ajax/find_special_plan', {
                     params: {
                         location: this.location
@@ -98,23 +100,28 @@ export default function bindLocationInputApp() {
                 this.searchLocationPlans();
             },
             notifyMap() {
-                window.localStorage.setItem(locationExchangeKey, this.location);
+                // window.localStorage.setItem(LOCATION_EXCHANGE_KEY, this.location);
+                if (this.location.length > 0){
+                    this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.location);
+                }
             }
         },
         watch: {
             location(newValue, oldValue) {
                 if (newValue !== oldValue) {
                     this.searchLocationPlans();
+                    this.notifyMap();
                 }
             }
         },
         mounted() {
             window.addEventListener('storage', (event) => {
-                if (event.key === mapLocationExchangeKey) {
+                if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
                     this.location = event.newValue;
                 }
             });
             this.location = element.dataset.value;
+            this.yandexMapsBus = new YandexMapsBus();
         }
     });
 }

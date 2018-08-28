@@ -1,3 +1,5 @@
-export const locationExchangeKey = 'locationMapScreenLocalStorageExchange';
-export const mapLocationExchangeKey = 'mapLocationMapScreenLocalStorageExchange';
-export const areaIdFound = 'mapAreaIdFound';
+export const LOCATION_EXCHANGE_KEY = 'LOCATION_EXCHANGE_KEY';
+export const MAP_LOCATION_EXCHANGE_KEY = 'MAP_LOCATION_EXCHANGE_KEY';
+export const AREA_ID_FOUND = 'AREA_ID_FOUND';
+export const LOCATION_COORDINATES_FOUND = 'LOCATION_COORDINATES_FOUND';
+export const YANDEX_HOUSE_FOUND = 'YANDEX_HOUSE_FOUND';
