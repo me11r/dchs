@@ -21,7 +21,7 @@
         {% for report in reports %}
             <tr class="{% if report.report_date == today %}is-primary{% else %}{% endif %}">
                 <td>{{ report.report_date }}</td>
-                <td class="has-text-right"><a href="{{ url('formation/add101persons/' ~ report.id ~ '/1') }}" class="button is-primary is-outlined"><i class="fas fa-user"></i>&nbsp;Указать персонал</a>
+                <td class="has-text-right"><a href="{{ url('formation/add101persons/' ~ report.id ~ '/1') }}" class="button is-primary is-outlined"><i class="fas fa-user"></i>&nbsp;Указать личный состав</a>
                 <a href="{{ url('formation/add101tech/' ~ report.id ~ '/1') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp; Указать технику</a>
                     <a href="{{ url('/formation/view101/' ~ report.id) }}" class="button is-primary"><i class="fas fa-receipt"></i>&nbsp; Смотреть строевую записку</a>
                 </td>
