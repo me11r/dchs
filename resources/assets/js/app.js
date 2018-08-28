@@ -29,6 +29,15 @@ axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
+Vue.component('v-navbar', Navbar);
+Vue.component('card112', Card112Form);
+Vue.component('mudflow-protection-form', MudflowProtectionForm);
+Vue.component('hydrants-map', HydrantMapList);
+Vue.component('common-map', CommonMapScreen);
+Vue.component('roadtrip-notifier', RoadtripNotifier);
+Vue.component('roadtrip-map', RoadTripViewMap);
+Vue.component('tabs', Tabs);
+Vue.component('persons-101', Add101Persons);
 
 Vue.config.productionTip = false;
 

@@ -142,4 +142,9 @@ class FormationTechReport extends Model
         'field_3',
         'field_4',
     ];
+
+    public function scopeTodayRecords($q)
+    {
+        return $q->whereDate('created_at', date('Y-m-d'));
+    }
 }

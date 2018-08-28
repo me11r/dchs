@@ -7,6 +7,7 @@
             <th>#</th>
             <th>Служба взаимодействия</th>
             <th>-</th>
+            <th>-</th>
         </tr>
         </thead>
         <tbody>
@@ -14,7 +15,20 @@
             <tr>
                 <td>1</td>
                 <td>СП и АСР</td>
-                <td><a href="{{ url('formation/101') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td>
+                    <a href="{{ url('formation/101') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a>
+                </td>
+                <td>
+                    <label>
+                        {% if formation_tech_reports > 0 and formation_person_reports > 0 %}
+                            <input type="checkbox" disabled checked >
+                            {#Строевые записки заполнены#}
+                        {% else %}
+                            <input type="checkbox" disabled >
+                            {#Строевые записки не заполнены#}
+                        {% endif %}
+                    </label>
+                </td>
             </tr>
         {% endif %}
         {% if _user.hasRight(15) %}
@@ -23,6 +37,17 @@
                 <td>ГУ «Казселезащита»</td>
                 {#<td><a href="{{ url('formation/mudflow') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>#}
                 <td><a href="{{ url('formation-record/mudflow') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td>
+                    <label>
+                        {% if formation_mudflow_reports > 0 %}
+                            <input type="checkbox" disabled checked >
+                            {#Строевые записки заполнены#}
+                        {% else %}
+                            <input type="checkbox" disabled >
+                            {#Строевые записки не заполнены#}
+                        {% endif %}
+                    </label>
+                </td>
             </tr>
         {% endif %}
         {% if _user.hasRight(13) %}

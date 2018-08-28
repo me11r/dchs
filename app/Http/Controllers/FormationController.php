@@ -228,8 +228,9 @@ class FormationController extends AuthorizedController
                     FormationTechItem::create([
                         'vehicle_id' => $input,
                         'formation_tech_report_id' => $model->id,
-                        'department' => $type != 'repair' ? $inputs['department'][$input_key] : null,
+                        'department' => ($type != 'repair' && $type != 'reserve') ? $inputs['department'][$input_key] : null,
                         'status' => $type,
+                        'reserve' => $inputs['reserve'][$input_key] ?? null,
                     ]);
                 }
 
@@ -402,7 +403,15 @@ class FormationController extends AuthorizedController
 
     public function getServicesList(Request $request)
     {
+        $formation_tech_reports = FormationTechReport::todayRecords()->count();
+        $formation_person_reports = FormationPersonsReport::todayRecords()->count();
+        $formation_medical_reports = FormationMedicalReport::todayRecords()->count();
+        $formation_mudflow_reports = FormationMudflowReport::todayRecords()->count();
 
+        $this->set('formation_tech_reports', $formation_tech_reports);
+        $this->set('formation_person_reports', $formation_person_reports);
+        $this->set('formation_medical_reports', $formation_medical_reports);
+        $this->set('formation_mudflow_reports', $formation_mudflow_reports);
     }
 
     public function getMudflow(Request $request)
