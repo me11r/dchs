@@ -14,7 +14,7 @@ pipelines:
         - composer install --ignore-platform-reqs --no-suggest --no-progress
         - composer du
         artifacts:
-        - vendor
+        - vendor/*
 
     - step:
         caches:
