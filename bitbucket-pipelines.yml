@@ -14,7 +14,7 @@ pipelines:
         - composer install --ignore-platform-reqs --no-suggest --no-progress
         - composer du
         artifacts:
-        - vendor/*
+        - vendor/**
 
     - step:
         caches:
@@ -30,6 +30,7 @@ pipelines:
         - public/assets/app.js
         - public/fonts/*
         - public/mix-manifest.json
+
     - step:
         name: Deploying to server
         image: php:7.2
