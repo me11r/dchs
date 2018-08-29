@@ -10,9 +10,14 @@
 
 <script>
 
-import {locationExchangeKey, mapLocationExchangeKey, areaIdFound} from '../../config/storage-keys';
-import * as lodash from 'lodash';
-// import _ from 'vue-underscore';
+import {
+    LOCATION_EXCHANGE_KEY,
+    MAP_LOCATION_EXCHANGE_KEY,
+    AREA_ID_FOUND,
+    LOCATION_COORDINATES_FOUND,
+    YANDEX_HOUSE_FOUND} from '../../config/storage-keys';
+import * as _ from 'lodash';
+import YandexMapsBus from '../../scripts/yandex-maps-bus';
 
 export default {
     name: 'CommonMapScreen',
@@ -22,98 +27,71 @@ export default {
             ymaps: window.ymaps,
             map: {},
             currentCity: 'Алматы',
-            areas: []
+            yandexMapsBus: {},
+            zoom: 16
         };
     },
     methods: {
-        onLocationInput(location) {
-            if (this.location !== location) {
-                this.location = location;
-                this.findPointOnTheMap();
-            }
-        },
-        findPointOnTheMap: lodash.debounce(function () {
-            this.map.geoObjects.removeAll();
-            this.ymaps
-                .geocode(this.currentCity + ' ' + this.location, {results: 1})
-                .then((result) => {
-                    const firstGeoObject = result.geoObjects.get(0);
-                    if (firstGeoObject) {
-                        const bounds = firstGeoObject.properties.get('boundedBy');
-                        firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
-                        firstGeoObject.properties.set('iconCaption', firstGeoObject.properties.get('name'));
-                        this.map.geoObjects.add(firstGeoObject);
-                        this.map.setBounds(bounds, {checkZoomRange: true});
-                        this.detectArea(
-                            firstGeoObject.geometry.getBounds()[0][0],
-                            firstGeoObject.geometry.getBounds()[0][1]
-                        );
-                    }
-                });
-        }, 500),
         doubleClickOnTheMap(event) {
             const coords = event.get('coords');
-            this.map.geoObjects.removeAll();
+            this.resetAllObjects();
             this.ymaps
                 .geocode(coords[0] + ',' + coords[1], {results: 1})
                 .then((result) => {
-                    const firstGeoObject = result.geoObjects.get(0);
-                    if (firstGeoObject) {
-                        const bounds = firstGeoObject.properties.get('boundedBy');
-
-                        firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
-                        firstGeoObject.properties.set('iconCaption', firstGeoObject.properties.get('name'));
-
-                        this.map.geoObjects.add(firstGeoObject);
-                        this.map.setBounds(bounds, {checkZoomRange: true});
-
-                        this.location = firstGeoObject.properties
-                            .get('name')
-                            .replace(/(^|\s+)улица(\s+|$)/g, '')
-                            .replace(/(^|\s+)проспект(\s+|$)/g, '');
-                        window.localStorage.setItem(mapLocationExchangeKey, this.location);
-                        this.detectArea(
-                            firstGeoObject.geometry.getBounds()[0][0],
-                            firstGeoObject.geometry.getBounds()[0][1]
+                    const geoObject = result['geoObjects'].get(0);
+                    if (geoObject) {
+                        this.setPointOnTheMap(
+                            geoObject.geometry.getBounds()[0][0],
+                            geoObject.geometry.getBounds()[0][1],
+                            geoObject.properties.get('name')
                         );
+                        this.detectLocation(geoObject);
+                        this.detectArea(geoObject);
                     }
                 });
         },
-        detectArea(lat, long) {
-            const self = this;
-            this.ymaps
-                .geocode(lat + ',' + long, {results: 1, kind: 'district'})
-                .then((result) => {
-                    const firstGeoObject = result.geoObjects.get(0);
-
-                    if (firstGeoObject) {
-                        const metaData = firstGeoObject.properties.get('metaDataProperty').GeocoderMetaData;
-                        if (metaData.Address && metaData.Address.Components) {
-                            metaData
-                                .Address
-                                .Components
-                                .map((item) => {
-                                    if (item.kind === 'district') {
-                                        let districtName = item.name
-                                            .replace(/(^|\s+)район(\s+|$)/g, '')
-                                            .replace(/(^|\s+)Район(\s+|$)/g, '')
-                                            .toLowerCase();
-                                        let districtModel = lodash.find(self.areas, {'name': districtName});
-
-                                        if (districtModel) {
-                                            window.localStorage.setItem(areaIdFound, districtModel.id);
-                                        }
-                                    }
-                                });
-                        }
+        houseFound(lat, long, name) {
+            this.resetAllObjects();
+            this.setPointOnTheMap(lat, long, name);
+        },
+        resetAllObjects() {
+            this.map.geoObjects.removeAll();
+        },
+        setPointOnTheMap(lat, long, name) {
+            const geoObject = new ymaps.GeoObject({
+                    geometry: {
+                        type: "Point",
+                        coordinates: [lat, long]
+                    },
+                    properties: {
+                        iconContent: name
                     }
+                }, {
+                    preset: 'islands#darkBlueStretchyIcon',
+                    draggable: false
                 });
+            this.map.geoObjects.add(geoObject);
+            this.map.setZoom(this.zoom);
+            this.map.panTo([lat, long]);
+        },
+        detectLocation(geoObject) {
+            this.location = geoObject.properties
+                .get('name')
+                .replace(/(^|\s+)улица(\s+|$)/g, '')
+                .replace(/(^|\s+)проспект(\s+|$)/g, '');
+            window.localStorage.setItem(MAP_LOCATION_EXCHANGE_KEY, this.location);
+        },
+        detectArea(geoObject) {
+            this.yandexMapsBus.detectArea(
+                geoObject.geometry.getBounds()[0][0],
+                geoObject.geometry.getBounds()[0][1]
+            );
         },
         initMap() {
             const self = this;
             this.map = new this.ymaps.Map(this.$refs['common-map-screen-yandex-map'], {
                 center: [43.259743, 76.926573],
-                zoom: 16,
+                zoom: self.zoom,
                 behaviors: ['drag', 'scrollZoom']
             });
             this.map.events.add('dblclick', (event) => {
@@ -123,14 +101,17 @@ export default {
     },
     mounted() {
         this.initMap();
-        this.areas = window.areas.map((item) => {
-            item.name = item.name.toLowerCase();
-            return item;
-        });
+        this.yandexMapsBus = new YandexMapsBus();
+        let initHouseData = window.localStorage.getItem(YANDEX_HOUSE_FOUND);
+        if (initHouseData){
+            initHouseData = JSON.parse(initHouseData);
+            this.houseFound(initHouseData['lat'], initHouseData['long'], initHouseData['name']);
+        }
 
         window.addEventListener('storage', (event) => {
-            if (event.key === locationExchangeKey) {
-                this.onLocationInput(event.newValue);
+            if (event.key === YANDEX_HOUSE_FOUND) {
+                let data = JSON.parse(event.newValue);
+                this.houseFound(data['lat'], data['long'], data['name']);
             }
         });
     }

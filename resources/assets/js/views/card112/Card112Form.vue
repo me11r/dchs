@@ -566,7 +566,9 @@ import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 import {Card112Utils} from './card112utils';
 import {BuefyCommonSelect} from '../../components';
-import {locationExchangeKey, mapLocationExchangeKey, areaIdFound} from '../../config/storage-keys';
+import {MAP_LOCATION_EXCHANGE_KEY, AREA_ID_FOUND} from '../../config/storage-keys';
+import {globalBus} from '../../scripts/global-bus';
+import YandexMapsBus from '../../scripts/yandex-maps-bus';
 
 export default {
     name: 'Card112Form',
@@ -578,12 +580,17 @@ export default {
             incidentTypes: [],
             serviceTypes: [],
             cityAreas: [],
-            model: {},
+            model: {
+                location:'',
+                city_area_id: ''
+            },
             currentTabIndex: 0,
             lastTabIndex: 3,
             method: 'POST',
             formRoute: '',
-            card112Utils: Card112Utils
+            card112Utils: Card112Utils,
+            yandexMapsBus: {},
+            currentCity: 'Алматы'
         };
     },
     components: {
@@ -656,13 +663,13 @@ export default {
             }
         },
         notifyMap() {
-            window.localStorage.setItem(locationExchangeKey, this.model.location);
+            this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.model.location);
         }
     },
     watch: {
-        'model.crossroad_1_id'(newValue) {
-            this.setCityAreaIdByStreetId(newValue);
-        },
+        // 'model.crossroad_1_id'(newValue) {
+        //     this.setCityAreaIdByStreetId(newValue);
+        // },
         'model.location'() {
             this.notifyMap();
         }
@@ -680,13 +687,20 @@ export default {
         }
     },
     mounted() {
+        this.yandexMapsBus = new YandexMapsBus();
         window.addEventListener('storage', (event) => {
-            if (event.key === mapLocationExchangeKey) {
+            if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
                 this.model.location = event.newValue;
             }
-            if (event.key === areaIdFound) {
-                this.model.city_area_id = parseInt(event.newValue);
-            }
+
+            window.addEventListener('storage', (event) => {
+                if (event.key === AREA_ID_FOUND) {
+                    this.model.city_area_id  = parseInt(event.newValue);
+                }
+            });
+        });
+        globalBus.$on(AREA_ID_FOUND, (value) => {
+            this.model.city_area_id = value;
         });
     }
 };

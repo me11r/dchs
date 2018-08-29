@@ -26,9 +26,9 @@ class FireDeptSeeder extends Seeder
             'ПП-16',
             'ПП-17',
             'СО',
-            'ПЧ-7',
-            'ПЧ-17',
-            'ПЧ-8'
+//            'ПЧ-7',
+//            'ПЧ-17',
+//            'ПЧ-8'
         ];
         (new App\FireDepartment)->truncate();
         foreach ($departments as $department) {
