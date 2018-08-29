@@ -4,7 +4,6 @@ pipelines:
     - step:
         caches:
         - composer
-        - vendor
         name: Build PHP part
         image: php:7.2
         script:
@@ -15,8 +14,7 @@ pipelines:
         - composer install --ignore-platform-reqs --no-suggest --no-progress
         - composer du
         artifacts:
-        - vendor/autoload.php
-        - vendor/composer/*
+        - vendor
 
     - step:
         caches:
@@ -33,8 +31,6 @@ pipelines:
         - public/fonts/*
         - public/mix-manifest.json
     - step:
-        caches:
-        - vendor
         name: Deploying to server
         image: php:7.2
         deployment: staging
@@ -45,7 +41,3 @@ pipelines:
         - mv deployer.phar /usr/local/bin/dep
         - chmod +x /usr/local/bin/dep
         - dep deploy dechees.devpoint.kz
-
-definitions:
-  caches:
-    vendor: vendor
