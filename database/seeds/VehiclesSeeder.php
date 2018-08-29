@@ -13,7 +13,7 @@ class VehiclesSeeder extends Seeder
      */
     public function run()
     {
-//        \App\Models\Vehicle::where('id', '>', 0)->delete();
+        \App\Models\Vehicle::where('id', '>', 0)->delete();
 
         if(!\App\Models\VehicleType::all()->count()){
             $this->call(VehicleTypesSeeder::class);

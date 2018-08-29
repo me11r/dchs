@@ -17,6 +17,7 @@ import RoadtripNotifier from './ui/RoadtripNotifier';
 import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
+// import YandexMapsBus from './scripts/yandex-maps-bus';
 
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
@@ -29,6 +30,15 @@ axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
+Vue.component('v-navbar', Navbar);
+Vue.component('card112', Card112Form);
+Vue.component('mudflow-protection-form', MudflowProtectionForm);
+Vue.component('hydrants-map', HydrantMapList);
+Vue.component('common-map', CommonMapScreen);
+Vue.component('roadtrip-notifier', RoadtripNotifier);
+Vue.component('roadtrip-map', RoadTripViewMap);
+Vue.component('tabs', Tabs);
+Vue.component('persons-101', Add101Persons);
 
 Vue.config.productionTip = false;
 
@@ -48,7 +58,9 @@ if (document.getElementById('navbar')) {
 // Карточка 112 (форма добавления/редактировани)
 const card112FormBlockId = 'card112-form-block';
 if (document.getElementById(card112FormBlockId)) {
-    new Vue({el: '#' + card112FormBlockId, render: h => h(Card112Form)});
+    window.addEventListener('load', () => {
+        new Vue({el: '#' + card112FormBlockId, render: h => h(Card112Form)});
+    });
 }
 
 // Расположение гидрантов на карте (список)

@@ -56,4 +56,9 @@ class FormationPersonsReport extends Model
 {
     protected $table = 'formation_persons_report';
     protected $guarded = ['id'];
+
+    public function scopeTodayRecords($q)
+    {
+        return $q->whereDate('created_at', date('Y-m-d'));
+    }
 }
