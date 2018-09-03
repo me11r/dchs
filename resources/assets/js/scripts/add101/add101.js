@@ -31,6 +31,13 @@ export default class Add101Functions {
         return this;
     }
 
+    buildingFound() {
+        globalBus.$on('building_found', (building) => {
+            alert(building['id']);
+        });
+        return this;
+    }
+
     bindOtherRecordsBlock() {
         return new Vue({el: '#ticket101_other_records', render: h => h(OtherRecords)});
     }

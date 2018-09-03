@@ -6,6 +6,7 @@ class StagingDeploySeeder extends Seeder
 {
     public function run()
     {
-        $this->call(SchedulesSeeder::class);
+        $this->call(BurntObjectsSeeder::class);
+        $this->call(BuildingsSeeder::class);
     }
 }

@@ -21,6 +21,7 @@ import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
+import FireObject from './views/FireObject';
 
 import Add101Persons from './scripts/add101persons/add101persons';
 
@@ -39,6 +40,7 @@ Vue.component('roadtrip-notifier', RoadtripNotifier);
 Vue.component('roadtrip-map', RoadTripViewMap);
 Vue.component('tabs', Tabs);
 Vue.component('persons-101', Add101Persons);
+Vue.component('fire-object', FireObject);
 
 Vue.config.productionTip = false;
 
@@ -124,6 +126,12 @@ if (document.getElementById('roadtrip-notifier')) {
     new Vue({
         el: '#roadtrip-notifier',
         render: h => h(RoadtripNotifier)
+    });
+}
+
+if (document.getElementById('fire-object-div')) {
+    new Vue({
+        el: '#fire-object-div'
     });
 }
 
