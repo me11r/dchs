@@ -9,6 +9,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\CityMicroArea;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,11 +27,57 @@ use Illuminate\Database\Eloquent\Model;
 class Street extends Model
 {
     protected $table = 'streets';
+    public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'city_area_id',
+        'city_micro_area_id',
+    ];
 
     public function area()
     {
         return $this->belongsTo(CityArea::class, 'city_area_id', 'id');
     }
+
+    public static function createStreetIfNotExists($street_name, $area_name, $micro_area = null)
+    {
+        if($area_name){
+            $area_entity = CityArea::name($area_name)->first();
+            if(!$area_entity) return null;
+            if($micro_area){
+                $micro_area_arr = [
+                    'name' => $micro_area,
+                    'city_area_id' => $area_entity->id,
+                ];
+                $micro_area = CityMicroArea::firstOrCreate($micro_area_arr);
+            }
+
+            if($street_name){
+                $street_arr = [
+                    'name' => $street_name,
+                    'city_area_id' => $area_entity->id,
+                    'city_micro_area_id' => $micro_area? $micro_area->id : null,
+                ];
+
+                $street = Street::firstOrCreate([
+                    'name' => $street_name,
+                    'city_area_id' => $area_entity->id,
+                ], $street_arr);
+            }
+
+            $result = [
+                'city_area' => $area_entity ?? null,
+                'micro_area' => $micro_area ?? null,
+                'street' => $street ?? null,
+            ];
+
+            return $result;
+        }
+
+        return null;
+
+    }
+
+
 }
