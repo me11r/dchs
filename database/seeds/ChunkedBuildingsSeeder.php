@@ -238,7 +238,7 @@ class ChunkedBuildingsSeeder extends Seeder
         $meta['name'] = implode(' ', [$meta['city_micro_area_id'], $meta['street_id'], $meta['building_number']]);
         $meta['square'] = $this->formatNumeric($meta['square']);
         $meta['square_total'] = $this->formatNumeric($meta['square_total']);
-        $meta['number_of_storeys'] = $this->formatNumeric($meta['number_of_storeys']);
+        $meta['number_of_storeys'] = $this->parseStoreyCount($this->formatNumeric($meta['number_of_storeys']));
         $cityAreaId = $this->addCityArea($meta['city_area_id']);
         $microAreaId = $this->addMicroArea($meta['city_micro_area_id'], ['city_area_id' => $cityAreaId]);
         $streetId = $this->addStreet($meta['street_id'], ['city_area_id' => $cityAreaId, 'city_micro_area_id' => $microAreaId]);
@@ -314,5 +314,15 @@ class ChunkedBuildingsSeeder extends Seeder
             }
         }
         return true;
+    }
+
+    public function parseStoreyCount($storey)
+    {
+        if (!is_numeric($storey)) {
+            preg_match('~.*(\d+)$~i', $storey, $matches);
+            $value = array_pop($matches);
+            return (int)$value;
+        }
+        return (int)$storey;
     }
 }
