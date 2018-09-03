@@ -42,38 +42,25 @@ class ChunkReadFilter implements IReadFilter
         return $this->worksheets[$this->worksheet];
     }
 
-    public function hasNextSheet(): bool
+    public function next(): bool
     {
-        return (\count($this->worksheets) <= ($this->worksheet + 1));
-    }
-
-    public function nextSheet(): self
-    {
-        $this->worksheet++;
-        $this->setWorksheet($this->worksheet);
-        return $this;
-    }
-
-    public function next(): self
-    {
-        $this->chunkStart += $this->chunkSize;
-        return $this;
+        if ($this->hasNextChunk()) {
+            $this->chunkStart += $this->chunkSize;
+            return true;
+        }
+        return false;
     }
 
     public function hasNextChunk(): bool
     {
         $info = $this->getWorksheetInfo();
-        return ($this->chunkEnd() >= (int)$info['totalRows']);
+        return ($this->chunkEnd() <= (int)$info['totalRows']);
     }
 
     public function advance(): bool
     {
         if ($this->hasNextChunk()) {
             $this->next();
-            return true;
-        }
-        if ($this->hasNextSheet()) {
-            $this->nextSheet();
             return true;
         }
         return false;
@@ -106,7 +93,7 @@ class ChunkReadFilter implements IReadFilter
 
     private function matchesWorksheet(string $sheetname): bool
     {
-        return $this->worksheets[$this->worksheet] === $sheetname;
+        return $this->worksheets[$this->worksheet]['worksheetName'] === $sheetname;
     }
 
     private function inChunkRange($row): bool

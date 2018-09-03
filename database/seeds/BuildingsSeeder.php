@@ -1,13 +1,20 @@
 <?php
 
+use App\Services\ChunkedImporter\ChunkedImporter;
 use Illuminate\Database\Seeder;
 
 class BuildingsSeeder extends Seeder
 {
     use \App\Services\Importer\Importer\CommonImporterTrait;
 
-    private function getReader(){
-
+    /**
+     * @return ChunkedImporter
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    private function getReader(): ChunkedImporter
+    {
+        return ChunkedImporter::create(database_path('seeds/sources/buildings1.xlsx'), range('A', 'K'), 2);
     }
 
     /**
@@ -16,6 +23,7 @@ class BuildingsSeeder extends Seeder
      * @return void
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function run()
     {
@@ -25,17 +33,20 @@ class BuildingsSeeder extends Seeder
         \DB::table('wall_materials')->delete();
 
         echo "Таблицы очищены" . PHP_EOL;
-
+        //$reader = $this->getReader();
         if (Cache::get('buildings_valid_keys') == null) {
             $raw_data = $this->parseAllBooks(database_path('seeds/sources/buildings1.xlsx'));
             echo "Данные Excel загружены в память" . PHP_EOL;
 
             if (Cache::get('buildings') == null) {
+
                 $to_cache = [];
                 foreach ($raw_data as $raw_datum) {
                     $temp_array = $raw_datum->toArray();
+                    //dd($temp_array[1]);
                     $to_cache[$temp_array[1][5]] = $temp_array;
                 }
+
 
                 \Illuminate\Support\Facades\Cache::put('buildings', $to_cache, 320);
             }
