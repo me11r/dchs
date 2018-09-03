@@ -13,7 +13,7 @@ class LookupEnum
     private $meta = [];
     private $addedId = 0;
 
-    public function getItemId(string $item, array $meta = [])
+    public function getItemId($item, array $meta = [])
     {
         if (empty($item) || $item === null) {
             return null;
@@ -76,6 +76,8 @@ class ChunkedBuildingsSeeder extends Seeder
     private $materials;
     /** @var LookupEnum */
     private $buildings;
+    /** @var LookupEnum */
+    private $fireObject;
 
 
     /**
@@ -128,6 +130,7 @@ class ChunkedBuildingsSeeder extends Seeder
             $this->command->info('Inserted: ' . $sheetRows);
             $this->command->info('RowCount: ' . $rowCount);
             $this->command->error(round(memory_get_usage() / 1024 / 1204, 2) . ' Mb');
+            $this->savePartialBuildings();
             gc_collect_cycles();
         });
 
@@ -153,7 +156,10 @@ class ChunkedBuildingsSeeder extends Seeder
         $values = $lookup->getCurrentMeta();
         $model::unguard();
         foreach ($values as $id => $row) {
-            $model::create($row);
+            /** @var Eloquent $eq */
+            $eq = $model::findOrNew($id);
+            $eq->fill($row);
+            $eq->save();
         }
         $model::reguard();
     }
@@ -164,7 +170,8 @@ class ChunkedBuildingsSeeder extends Seeder
             \App\Models\WallMaterial::class => $this->materials,
             \App\Models\CityMicroArea::class => $this->microArea,
             \App\Dictionary\Street::class => $this->streets,
-            \App\Models\Building::class => $this->buildings
+            \App\Dictionary\FireObject::class => $this->fireObject,
+            //\App\Models\Building::class => $this->buildings
         ];
 
         foreach ($models as $model => $lookup) {
@@ -174,6 +181,20 @@ class ChunkedBuildingsSeeder extends Seeder
         }
     }
 
+    public function savePartialBuildings()
+    {
+        \App\Models\Building::unguard();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        $buildings = $this->buildings->getCurrentMeta();
+        foreach ($buildings as $id => $building) {
+            $build = \App\Models\Building::findOrNew($id);
+            $build->fill($building);
+            $build->save();
+        }
+        $this->buildings->clean();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
     public function prepareCaches()
     {
         $this->streets = new LookupEnum();
@@ -181,7 +202,9 @@ class ChunkedBuildingsSeeder extends Seeder
         $this->microArea = new LookupEnum();
         $this->buildings = new LookupEnum();
         $this->cityArea = new LookupEnum();
+        $this->fireObject = new LookupEnum();
         $this->cityArea->loadFromCollection(\App\Dictionary\CityArea::all());
+        $this->fireObject->loadFromCollection(\App\Dictionary\FireObject::all());
         $this->command->info('Lookup objects created');
     }
 
@@ -222,35 +245,37 @@ class ChunkedBuildingsSeeder extends Seeder
         $meta['city_area_id'] = $cityAreaId;
         $meta['city_micro_area_id'] = $microAreaId;
         $meta['street_id'] = $streetId;
-        if (is_array($meta['wall_material_id'])) {
-            dd($meta, $meta['wall_material_id']);
-        }
+        $meta['object_type_id'] = $this->addFireObject($meta['object_type_id']);
         $meta['wall_material_id'] = $this->addWallMaterial($meta['wall_material_id']);
 
         return $this->buildings->getItemId($meta['name'], $meta);
     }
 
-    public function addStreet(string $name, array $meta)
+    public function addStreet($name, array $meta)
     {
         return $this->streets->getItemId($name, $meta);
     }
 
-    public function addWallMaterial(string $material)
+    public function addWallMaterial($material)
     {
         return $this->materials->getItemId($material);
     }
 
-    public function addMicroArea(string $name, array $meta)
+    public function addMicroArea($name, array $meta)
     {
         return $this->microArea->getItemId($name, $meta);
     }
 
-    private function addCityArea(string $name)
+    private function addCityArea($name)
     {
         return $this->cityArea->getItemId($name);
     }
 
-    public function formatNumeric(string $value)
+    private function addFireObject($name) {
+        return $this->fireObject->getItemId($name);
+    }
+
+    public function formatNumeric($value)
     {
         if ($value === null) {
             return null;
@@ -269,6 +294,7 @@ class ChunkedBuildingsSeeder extends Seeder
         $null = [
             '<Null>',
             '<NULL>',
+            '-',
             'не уст.'
         ];
 
