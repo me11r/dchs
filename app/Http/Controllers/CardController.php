@@ -151,8 +151,6 @@ class CardController extends AuthorizedController
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
 
-
-
         $card = Ticket101::findOrNew($card_id);
         $canEditTicket = $card->canEditTicket();
         if(!$canEditTicket){
