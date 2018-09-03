@@ -184,6 +184,7 @@ class ChunkedBuildingsSeeder extends Seeder
     public function savePartialBuildings()
     {
         \App\Models\Building::unguard();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         $buildings = $this->buildings->getCurrentMeta();
         foreach ($buildings as $id => $building) {
             $build = \App\Models\Building::findOrNew($id);
@@ -191,6 +192,7 @@ class ChunkedBuildingsSeeder extends Seeder
             $build->save();
         }
         $this->buildings->clean();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     public function prepareCaches()
