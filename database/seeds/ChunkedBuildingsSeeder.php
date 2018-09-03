@@ -243,9 +243,7 @@ class ChunkedBuildingsSeeder extends Seeder
         $meta['city_area_id'] = $cityAreaId;
         $meta['city_micro_area_id'] = $microAreaId;
         $meta['street_id'] = $streetId;
-        if (is_array($meta['wall_material_id'])) {
-            dd($meta, $meta['wall_material_id']);
-        }
+        $meta['object_type_id'] = $this->addFireObject($meta['object_type_id']);
         $meta['wall_material_id'] = $this->addWallMaterial($meta['wall_material_id']);
 
         return $this->buildings->getItemId($meta['name'], $meta);
@@ -269,6 +267,10 @@ class ChunkedBuildingsSeeder extends Seeder
     private function addCityArea($name)
     {
         return $this->cityArea->getItemId($name);
+    }
+
+    private function addFireObject($name) {
+        return $this->fireObject->getItemId($name);
     }
 
     public function formatNumeric($value)
