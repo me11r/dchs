@@ -35,7 +35,7 @@ class FormationReport extends Model
 //        }
 
         $time = Carbon::now();
-        $some_date = Carbon::create($time->year, $time->month, $time->day - 1);
+//        $some_date = Carbon::create($time->year, $time->month, $time->day - 1);
 
         $morning_begin = Carbon::create($time->year, $time->month, $time->day, 8, 0, 0); //set time to 08:00
         $morning_end = Carbon::create($time->year, $time->month, $time->day, 9, 0, 0); //set time to 09:00
@@ -43,10 +43,10 @@ class FormationReport extends Model
         $evening_begin = Carbon::create($time->year, $time->month, $time->day, 18, 0, 0); //set time to 18:00
         $evening_end = Carbon::create($time->year, $time->month, $time->day, 19, 0, 0); //set time to 19:00
 
-        if($some_date->isYesterday()){
+        if($created_date->isYesterday()){
             $is_between = $time->between($morning_begin, $morning_end, true);
         }
-        elseif($some_date->isToday()){
+        elseif($created_date->isToday()){
             $is_between = $time->between($evening_begin, $evening_end, true);
         }
 
