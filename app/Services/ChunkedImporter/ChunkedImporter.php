@@ -68,6 +68,7 @@ class ChunkedImporter
         foreach ($this->worksheets as $key => $worksheet) {
             $this->filter->setWorksheet($key);
             $this->reader->setLoadSheetsOnly($worksheet['worksheetName']);
+            $this->reader->setReadDataOnly(true);
             $this->eachChunk($callable);
         }
     }

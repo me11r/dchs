@@ -31,7 +31,8 @@ class ChunkedBuildingsSeeder extends Seeder
     {
         $reader = $this->getReader();
         $reader->eachSheet(function ($sheet){
-            dd($sheet);
+            dd($sheet->toArray());
+            $this->command->info('SHEET');
         });
     }
 }
