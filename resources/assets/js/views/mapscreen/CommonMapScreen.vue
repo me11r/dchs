@@ -100,6 +100,8 @@ export default {
                                             .toLowerCase();
                                         let districtModel = lodash.find(self.areas, {'name': districtName});
 
+                                        console.dir(metaData);
+
                                         if (districtModel) {
                                             window.localStorage.setItem(areaIdFound, districtModel.id);
                                         }

@@ -164,22 +164,51 @@
                         </div>
                     </div>
 
-                    <div class="field">
-                        <p class="control">
-                            <label for="fire_object_id">Что горит</label>
-                        </p>
-                        <div class="select" style="width:50%; padding-right: 6px;">
-                            <select name="fire_object_id"
-                                    id="fire_object_id"
-                                    style="width: 100%">
-                                <option value="">-</option>
-                                {% for object in fire_object %}
-                                    <option value="{{ object.id }}"
-                                            {% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>
-                                {% endfor %}
-                            </select>
+                    <div id="fire-object-div">
+                        <fire-object :fire_objects="{{ fire_object }}" :ticket="{{ ticket }}"></fire-object>
+                    </div>
+                    <br>
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <label for="wall_material_id">Материал стен</label>
+                            <input
+                                   id="wall_material_id"
+                                   class="input">
+                        </div>
+                        <div class="control">
+                            <label for="year_of_development">Год постройки</label>
+                            <input
+                                   id="year_of_development"
+                                   class="input">
+                        </div>
+                        <div class="control">
+                            <label for="square">Площадь объекта</label>
+                            <input
+                                   id="square"
+                                   class="input">
                         </div>
                     </div>
+
+
+
+
+
+                    {#<div class="field">#}
+                        {#<p class="control">#}
+                            {#<label for="fire_object_id">Что горит</label>#}
+                        {#</p>#}
+                        {#<div class="select" style="width:50%; padding-right: 6px;">#}
+                            {#<select name="fire_object_id"#}
+                                    {#id="fire_object_id"#}
+                                    {#style="width: 100%">#}
+                                {#<option value="">-</option>#}
+                                {#{% for object in fire_object %}#}
+                                    {#<option value="{{ object.id }}"#}
+                                            {#{% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>#}
+                                {#{% endfor %}#}
+                            {#</select>#}
+                        {#</div>#}
+                    {#</div>#}
 
                     <div class="field is-grouped">
                         <p class="control"

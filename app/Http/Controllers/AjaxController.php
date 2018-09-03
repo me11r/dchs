@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary\Street;
+use App\Models\Building;
 use App\Models\SpecialPlan;
 use App\RoadtripPlan;
 use Auth;
@@ -13,6 +14,8 @@ class AjaxController extends AuthorizedController
 {
     public function findStreet(Request $request, $area_id = null)
     {
+        $result = [];
+
         $streets = Street::with('area');
         if ($area_id !== null) {
             $streets = $streets->where('city_area_id', $area_id);
@@ -20,8 +23,12 @@ class AjaxController extends AuthorizedController
         $txt = $request->get('q', '');
         $txt = str_replace('%', '', $txt);
 
+        $result['building'] = Building::address($txt)
+            ->with(['city_area', 'street', 'city_micro_area', 'object_type', 'wall_material'])
+            ->first();
+
         $streets = $streets
-            ->where('name', 'like', $txt . '%')
+            ->where('name', 'like', "%$txt%")
             ->limit(30);
 
         $streets = $streets->get();
@@ -30,11 +37,24 @@ class AjaxController extends AuthorizedController
 
     public function findSpecialPlan(Request $request)
     {
+        $result = [];
+        $location = $request->location;
         $specialPlans = (new SpecialPlan)
-            ->where('location', 'like', '%' . $request->get('location') . '%')
+            ->where('location', 'like', "%$location%")
             ->limit(10)
             ->get();
-        return response()->json($specialPlans, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+
+        $home = trim(explode(',', $location)[1] ?? null);
+        if($home){
+            $location = str_replace([',', ' ', $home], '', $location);
+        }
+
+        $result['special_plans'] = $specialPlans;
+        $result['building'] = Building::address($location, $home)
+            ->with(['city_area', 'street', 'city_micro_area', 'object_type', 'wall_material'])
+            ->first();
+
+        return response()->json($result, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function getRightIds(Request $request)

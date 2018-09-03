@@ -9,6 +9,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\CityMicroArea;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,4 +31,14 @@ class CityArea extends Model
     protected $table = 'dict_city_area';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public function scopeName($q, $title)
+    {
+        return $q->where('name', $title);
+    }
+
+    public function city_micro_areas()
+    {
+        return $this->hasMany(CityMicroArea::class, 'city_area_id');
+    }
 }

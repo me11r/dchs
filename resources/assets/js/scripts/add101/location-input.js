@@ -28,12 +28,34 @@ export default function bindLocationInputApp() {
                 });
             }, 300),
             setData(items) {
-                this.items = items;
+                if (items.special_plans !== undefined) {
+                    this.items = items.special_plans;
+                } else {
+                    this.items = items;
+                }
                 this.showList = this.items.length > 0;
                 if (this.items.length === 1 && this.items[0].location ===
                     this.location) {
                     this.showList = false;
                 }
+
+                if (items.building) {
+                    //todo: $emit не работает глобально?
+                    // this.$emit('building_found', items.building.object_type_id);
+                    console.dir({
+                        object_type: items.building.object_type.name,
+                        street_name: items.building.street.name,
+                        home_number: items.building.building_number,
+                        city_area: items.building.city_area.name
+                    });
+                    document.getElementById('fire_object_id').value = items.building.object_type_id;
+                    document.getElementById('square').value = items.building.square;
+                    document.getElementById('wall_material_id').value = items.building.wall_material.name;
+                    document.getElementById('year_of_development').value = items.building.year_of_development;
+
+                    document.querySelector('[id="storey_count"]').value = items.building.number_of_storeys;
+                }
+
                 // @todo: for demo ================================
                 if(items.length > 0){
                     if(items[0].id === 4)
