@@ -44,10 +44,10 @@ class ChunkedImporter
         }
         /** @var Xlsx $reader */
         $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($format);
-        $reader->setReadDataOnly(true);
         $worksheets = $reader->listWorksheetInfo($filename);
         $filter = new ChunkReadFilter($chunkSize, $startRow, $worksheets, $columns);
         $reader->setReadFilter($filter);
+        $reader->setReadDataOnly(true);
         return new self($filename, $worksheets, $reader, $filter);
     }
 
@@ -67,6 +67,7 @@ class ChunkedImporter
     {
         foreach ($this->worksheets as $key => $worksheet) {
             $this->filter->setWorksheet($key);
+            dd($worksheet);
             $this->reader->setLoadSheetsOnly($worksheet['title']);
             $this->eachChunk($callable);
         }

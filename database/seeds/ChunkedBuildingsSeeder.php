@@ -30,7 +30,7 @@ class ChunkedBuildingsSeeder extends Seeder
     public function run(): void
     {
         $reader = $this->getReader();
-        $reader->eachChunk(function ($sheet){
+        $reader->eachSheet(function ($sheet){
             dd($sheet);
         });
     }
