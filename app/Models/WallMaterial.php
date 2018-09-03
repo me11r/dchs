@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\WallMaterial
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WallMaterial name($title)
+ * @mixin \Eloquent
+ */
 class WallMaterial extends Model
 {
     protected $fillable = [

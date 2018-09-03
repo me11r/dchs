@@ -96,6 +96,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport todayRecords()
  */
 class FormationTechReport extends Model
 {

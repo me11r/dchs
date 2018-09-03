@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\FormationMudflowReport withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\FormationMudflowReport withoutTrashed()
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationMudflowReport todayRecords()
  */
 class FormationMudflowReport extends Model
 {

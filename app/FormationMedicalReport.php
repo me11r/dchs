@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationMedicalReport whereTech($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationMedicalReport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationMedicalReport todayRecords()
  */
 class FormationMedicalReport extends Model
 {
