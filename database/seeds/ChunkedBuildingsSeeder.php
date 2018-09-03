@@ -294,6 +294,7 @@ class ChunkedBuildingsSeeder extends Seeder
         $null = [
             '<Null>',
             '<NULL>',
+            '-',
             'не уст.'
         ];
 
