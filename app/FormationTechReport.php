@@ -9,6 +9,7 @@
 namespace App;
 
 
+use App\Models\FormationTechItem;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -146,5 +147,10 @@ class FormationTechReport extends Model
     public function scopeTodayRecords($q)
     {
         return $q->whereDate('created_at', date('Y-m-d'));
+    }
+
+    public function formation_tech_items()
+    {
+        return $this->hasMany(FormationTechItem::class, 'formation_tech_report_id');
     }
 }
