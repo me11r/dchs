@@ -5,7 +5,7 @@
             v-for="item in records"
             :key="item.id">
 
-            <div class="control is-narrow">
+            <div class="control">
                 <label :for="'other_records['+item.id+'][trunk_id]'">Наименование ствола</label>
                 <div class="select">
                     <select
@@ -21,7 +21,7 @@
                 </div>
             </div>
 
-            <div class="control is-narrow">
+            <div class="control">
                 <label :for="'other_records['+item.id+'][count]'">Количество</label>
                 <input
                     placeholder="Количество"

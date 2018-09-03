@@ -550,27 +550,30 @@
                             </select>
                         </div>
                     </div>
-                    <div class="field">
-
-                        <div class="control">
-                            <label for="liquidation_method_id">Ликвидация достигнута</label>
+                    <div class="field is-grouped">
+                        <div class="field control">
+                            <div class="control">
+                                <label for="liquidation_method_id">Ликвидация достигнута</label>
+                            </div>
+                            <div class="select control">
+                                <select name="liquidation_method_id" id="liquidation_method_id">
+                                    <option value="">-</option>
+                                    {% for liquidation_method in liquidation_methods %}
+                                        <option value="{{ liquidation_method.id }}"
+                                                {% if liquidation_method.id == ticket.liquidation_method_id %}selected{% endif %}>{{ liquidation_method.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
-                        <div class="select">
-                            <select name="liquidation_method_id" id="liquidation_method_id">
-                                <option value="">-</option>
-                                {% for liquidation_method in liquidation_methods %}
-                                    <option value="{{ liquidation_method.id }}"
-                                            {% if liquidation_method.id == ticket.liquidation_method_id %}selected{% endif %}>{{ liquidation_method.name }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="control">
+                            <div id="ticket101_other_records_results"></div>
                         </div>
                     </div>
                     <br>
-                    <div id="ticket101_other_records_results"></div>
                     <br>
 
                     <div class="field is-grouped">
-                        <div class="control">
+                        <div class="control is-three-fifths">
                             <p>
                             <label for="result_fire_level_id">Уточненный ранг пожара</label>
                             <div class="select">
@@ -591,6 +594,9 @@
                         <div class="control">
                             <label for="square_max">Площадь пожара</label>
                             <input class="input" type="number" id="square_max" value="{{ max_square }}">
+                        </div>
+                        <div class="control">
+                            <span class="field">м<sup><small>2</small></sup></span>
                         </div>
                     </div>
                     <div class="field is-grouped">
