@@ -7,6 +7,19 @@ use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Building
+ *
+ * @property-read \App\Dictionary\CityArea $city_area
+ * @property-read \App\Models\CityMicroArea $city_micro_area
+ * @property-read \App\Dictionary\BurntObject $object_type
+ * @property-read \App\Dictionary\Street $street
+ * @property-read \App\Models\WallMaterial $wall_material
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building address($location, $home = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building name($title)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building number($number)
+ * @mixin \Eloquent
+ */
 class Building extends Model
 {
     protected $fillable = [

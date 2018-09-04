@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\BurntObject whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\BurntObject whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\BurntObject name($title)
  */
 class BurntObject extends Model
 {

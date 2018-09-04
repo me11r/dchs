@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CityMicroArea[] $city_micro_areas
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea name($title)
  */
 class CityArea extends Model
 {

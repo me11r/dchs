@@ -61,6 +61,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereStreetId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $location
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereLocation($value)
  */
 class Card112 extends Model
 {

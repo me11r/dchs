@@ -51,6 +51,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport todayRecords()
  */
 class FormationPersonsReport extends Model
 {
