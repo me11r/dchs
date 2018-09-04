@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Ticket101 $ticket
  * @property int $is_accepted
  * @method static \Illuminate\Database\Eloquent\Builder|\App\RoadtripPlan whereIsAccepted($value)
+ * @property-read \App\Models\FireDepartmentResult $result
  */
 class RoadtripPlan extends Model
 {

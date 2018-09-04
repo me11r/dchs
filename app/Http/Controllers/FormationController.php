@@ -71,11 +71,12 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
-        $today = date('Y-m-d');
-        $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
+        $tomorrow = date('Y-m-d', strtotime('tomorrow'));
+
+        $has_today = ((new FormationReport)->where('report_date', $tomorrow)->count() > 0);
         if (!$has_today) {
             (new FormationReport)
-                ->fill(['report_date' => $today])
+                ->fill(['report_date' => $tomorrow])
                 ->save();
         }
 
@@ -123,6 +124,12 @@ class FormationController extends AuthorizedController
     public function postAdd101Persons(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
+        $formationReport = FormationReport::find($form_id);
+        $canEditReport = $formationReport->canEditReport();
+        if(!$canEditReport){
+            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+        }
 
         $model = (new FormationPersonsReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
@@ -215,7 +222,13 @@ class FormationController extends AuthorizedController
     public function postAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
         $all = $request->all();
+        $formationReport = FormationReport::find($form_id);
+        $canEditReport = $formationReport->canEditReport();
+        if(!$canEditReport){
+            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+        }
         $model = FormationTechReport::updateOrCreate([
                 'form_id' => $form_id,
                 'dept_id' => $dept_id,
@@ -387,10 +400,13 @@ class FormationController extends AuthorizedController
         $this->set('excluded_departments', FireDepartment::whereIn('id', $excludedIds)->get());
 
         $this->set('report', (new FormationReport)->find($form_id));
-        $tech = (new FormationTechReport)->where('form_id', $form_id)->get()->keyBy('dept_id');
+        $tech = (new FormationTechReport)->with('formation_tech_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
         $people = (new FormationPersonsReport)->where('form_id', $form_id)->get()->keyBy('dept_id');
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+
+//        $tech_items = FormationTechReport::with('formation_tech_items')->where('form_id', $form_id)->get();
+
 
         $this->set('people', $people)
             ->set('tech', $tech)

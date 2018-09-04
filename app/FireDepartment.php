@@ -35,6 +35,10 @@ use Illuminate\Database\Query\Builder;
  * @property int|null $city_area_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment whereCityAreaId($value)
+ * @property-read \App\Dictionary\CityArea|null $city_area
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FireDepartmentResult[] $results
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Schedule[] $schedules
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment title($title)
  */
 class FireDepartment extends Model
 {

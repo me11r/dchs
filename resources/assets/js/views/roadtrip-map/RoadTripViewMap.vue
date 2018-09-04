@@ -47,7 +47,7 @@ export default {
                     clusterCaption: item['outputDescription']
                 },
                 {
-                    preset: parseInt(item['active']) === 1 ? 'islands#greenIcon' : 'islands#redIcon',
+                    preset: parseInt(item['active']) === 1 ? 'islands#greenIcon' : 'islands#blackDotIcon',
                     draggable: false
                 });
         },
@@ -119,7 +119,7 @@ export default {
         }
     },
     beforeMount() {
-        this.distance = parseInt(this.$localStorage.get('road_trip_hydrants_distance', 150));
+        this.distance = parseInt(this.$localStorage.get('road_trip_hydrants_distance', 1000));
         this.fromString = window.roadTripViewData.fromString;
         this.emergencyString = window.roadTripViewData.emergencyString;
     },

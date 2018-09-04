@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 19.07.2018
- * Time: 21:07
- */
 
 namespace App\Dictionary;
 
@@ -23,10 +17,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\BurntObject whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\BurntObject whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\BurntObject name($title)
  */
 class BurntObject extends Model
 {
     protected $table = 'dict_burn_object';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public function scopeName($q, $title)
+    {
+        return $q->where('name', $title);
+    }
 }

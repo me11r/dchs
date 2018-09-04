@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel whereUpdatedAt($value)
  * @mixin \Eloquent | Builder
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel name($title)
  */
 class FireLevel extends Model
 {

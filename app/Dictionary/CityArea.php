@@ -9,6 +9,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\CityMicroArea;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,10 +25,22 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CityMicroArea[] $city_micro_areas
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea name($title)
  */
 class CityArea extends Model
 {
     protected $table = 'dict_city_area';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public function scopeName($q, $title)
+    {
+        return $q->where('name', $title);
+    }
+
+    public function city_micro_areas()
+    {
+        return $this->hasMany(CityMicroArea::class, 'city_area_id');
+    }
 }
