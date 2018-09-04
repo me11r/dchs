@@ -37,6 +37,7 @@ class BuildingsSeeder extends Seeder
         if (Cache::get('buildings_valid_keys') == null) {
             $raw_data = $this->parseAllBooks(database_path('seeds/sources/buildings1.xlsx'));
             echo "Данные Excel загружены в память" . PHP_EOL;
+            $this->command->info(round(memory_get_usage() / 1024 / 1024, 2) . ' Mb');
 
             if (Cache::get('buildings') == null) {
 
@@ -93,6 +94,7 @@ class BuildingsSeeder extends Seeder
                         echo "**********{$now}**********" . PHP_EOL;
                         echo "Обработано: $count1 записей" . PHP_EOL;
                         echo "Осталось:   $count записей" . PHP_EOL;
+                        $this->command->info(round(memory_get_usage() / 1024 / 1024, 2) . ' Mb');
                         echo "**********Прошло: {$time_end}**********" . PHP_EOL;
                     }
                 } catch (Exception $e) {
@@ -125,6 +127,7 @@ class BuildingsSeeder extends Seeder
                     echo "=========={$now}============" . PHP_EOL;
                     echo "Обработано: $count1 записей" . PHP_EOL;
                     echo "Осталось:   $count записей" . PHP_EOL;
+                    $this->command->info(round(memory_get_usage() / 1024 / 1024, 2) . ' Mb');
                     echo "========Прошло: {$time_end}============" . PHP_EOL;
 
 //                    return $result;
