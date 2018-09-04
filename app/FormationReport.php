@@ -30,12 +30,8 @@ class FormationReport extends Model
     public function scopeCanEditReport($q)
     {
         $created_date = $this->created_at;
-//        if($created_date == null){
-//            return true;
-//        }
 
         $time = Carbon::now();
-//        $some_date = Carbon::create($time->year, $time->month, $time->day - 1);
 
         $morning_begin = Carbon::create($time->year, $time->month, $time->day, 8, 0, 0); //set time to 08:00
         $morning_end = Carbon::create($time->year, $time->month, $time->day, 9, 0, 0); //set time to 09:00
@@ -51,30 +47,5 @@ class FormationReport extends Model
         }
 
         return $is_between ?? false;
-
-
-
-
-
-
-
-        $is_yesterday = $created_date->isYesterday();
-        $is_today = $created_date->isToday();
-        $pass_after_9 = now()->format('H') > 9;
-
-        if(!$is_yesterday && !$is_today){
-            return false;
-        }
-        elseif($is_today && !$pass_after_9){
-            return true;
-        }
-        elseif($is_today){
-            return true;
-        }
-        elseif($is_yesterday && !$pass_after_9){
-            return false;
-        }
-
-        return false;
     }
 }

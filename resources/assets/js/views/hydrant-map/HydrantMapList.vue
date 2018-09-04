@@ -81,7 +81,7 @@ export default {
                     balloonContentBody: '<button class="button is-success edit-hydrant-button is-small" data-id="' + id + '">Редактировать</button>'
                 },
                 {
-                    preset: parseInt(item['active']) === 1 ? 'islands#blueIcon' : 'islands#redIcon',
+                    preset: parseInt(item['active']) === 1 ? 'islands#blueIcon' : 'islands#blackDotIcon',
                     draggable: true
                 });
             placemark.events.add('click', (event) => {
