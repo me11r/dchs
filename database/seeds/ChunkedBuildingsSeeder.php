@@ -140,11 +140,16 @@ class ChunkedBuildingsSeeder extends Seeder
 
     public function cleanTables()
     {
-        \DB::table('streets')->delete();
-        \DB::table('buildings')->delete();
-        \DB::table('city_micro_areas')->delete();
-        \DB::table('wall_materials')->delete();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        \DB::table('streets')->truncate();
+        \DB::table('buildings')->truncate();
+        \DB::table('city_micro_areas')->truncate();
+        \DB::table('wall_materials')->truncate();
         $this->command->info('Tables cleared');
+
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
     }
 
     /**
