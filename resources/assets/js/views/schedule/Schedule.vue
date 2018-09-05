@@ -162,7 +162,7 @@ export default {
             }
         },
 
-        // getTech() {
+        // getStaff() {
         //     let self = this;
         //     axios.get('/api/101/get-tech', {
         //         params: {
@@ -175,7 +175,7 @@ export default {
         // }
     },
     beforeMount() {
-        // this.getTech();
+        // this.getStaff();
     }
 };
 </script>

@@ -6,7 +6,8 @@
                 <h4 class="title">Личный состав от {{ report.report_date }}</h4>
             </div>
             <div class="level-right">
-                <a href="{{ url('/formation/add101tech/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i class="fas fa-truck-moving"></i>&nbsp;Данные техники</a>
+                <a href="{{ url('/formation/add101tech/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i
+                            class="fas fa-truck-moving"></i>&nbsp;Данные техники</a>
             </div>
         </div>
         <div class="field">
@@ -18,7 +19,9 @@
                         id="dept_id_selector"
                         v-model="departmentId">
                     {% for department in departments %}
-                        <option value="{{ department.id }}" {% if department.id == dept_id %}selected{% endif %}>&nbsp;{{ department.title }}&nbsp;</option>
+                        <option value="{{ department.id }}" {% if department.id == dept_id %}selected{% endif %}>
+                            &nbsp;{{ department.title }}&nbsp;
+                        </option>
                     {% endfor %}
                 </select>
             </div>
@@ -28,14 +31,94 @@
             {{ csrf_field() }}
             <input type="hidden" name="dept_id" value="{{ dept_id }}"/>
             <input type="hidden" name="form_id" value="{{ form_id }}"/>
-            {% include "formation/field.twig" with {fields: fieldlist, prefix: '', model: model} %}
+            {#{% include "formation/field.twig" with {fields: fieldlist, prefix: '', model: model} %}#}
 
-            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+            <div class="field"><label for="field_0">В карауле по списку л/с</label>
+                <div class="control">
+                    <input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="field_0"
+                           id="field_0" value="" class="input add101persons-input">
+                </div>
+            </div>
+            <fieldset>
+                <legend>На лицо личного состава</legend>
+                <div class="field">
+                    <label for="field_2_0">Всего</label>
+                    <div class="control">
+                        <input v-model="totalActive" type="number" readonly="readonly" step="1" data-value=""
+                               name="field_2_0" id="field_2_0" value=""
+                               class="input add101persons-input">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="field_2_1">Нач. караулов</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="head_guards"></staff-101>
+                </div>
+                <div class="field">
+                    <label for="field_2_2">Ком. отделений</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="commander_squads"></staff-101>
+                </div>
+                <div class="field">
+                    <label for="field_2_3">Водители</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="drivers"></staff-101>
+
+                </div>
+                <div class="field"><label for="field_2_4">Ряд. состав</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="privates"></staff-101>
+
+                </div>
+                <div class="field"><label for="field_2_5">Диспетчеров</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="dispatchers"></staff-101>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Отсутствуют</legend>
+                <div class="field">
+                    <label for="field_2_1">Отпуск</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="vacation"></staff-101>
+                </div>
+                <div class="field">
+                    <label for="field_2_2">Учебный</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="study"></staff-101>
+                </div>
+                <div class="field">
+                    <label for="field_2_3">Декрет</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="maternity"></staff-101>
+
+                </div>
+                <div class="field"><label for="field_2_4">Больные</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="sick"></staff-101>
+
+                </div>
+                <div class="field"><label for="field_2_5">Командировка</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="business_trip"></staff-101>
+                </div>
+                <div class="field"><label for="field_2_5">Другие причины</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="other"></staff-101>
+                </div>
+            </fieldset>
+            <div class="field"><label for="field_1">ГДЗС</label>
+                <div class="control"><input type="number" step="1" data-value="" name="field_1" id="field_1" value=""
+                                            class="input add101persons-input"></div>
+            </div>
+            <div class="panel"
+                 style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
                     <p class="level-left">
                     </p>
                     <p class="level-right">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                        </button>
                     </p>
                 </div>
             </div>
