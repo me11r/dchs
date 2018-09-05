@@ -18,7 +18,9 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
+use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
+use App\Models\Staff;
 use App\Models\Vehicle;
 use App\Right;
 use App\Services\FormationService;
@@ -88,26 +90,30 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $fieldlist = [
-            'В карауле по списку л/с',
-            'На лицо личного состава' => [
-                'Всего',
-                'Нач. караулов',
-                'Ком. отделений',
-                'Водители',
-                'Ряд. состав',
-                'Диспетчеров',
-            ],
-            'Отсутствуют' => [
-                'Отпуск',
-                'Учебный',
-                'Декрет',
-                'Больные',
-                'Командировка',
-                'Другие причины',
-            ],
+//            'В карауле по списку л/с',
+//            'На лицо личного состава' => [
+//                'Всего',
+//                'Нач. караулов',
+//                'Ком. отделений',
+//                'Водители',
+//                'Ряд. состав',
+//                'Диспетчеров',
+//            ],
+//            'Отсутствуют' => [
+//                'Отпуск',
+//                'Учебный',
+//                'Декрет',
+//                'Больные',
+//                'Командировка',
+//                'Другие причины',
+//            ],
             'ГДЗС',
         ];
         $this->set('fieldlist', $fieldlist);
+
+        $staff = Staff::where('department_id', $dept_id)->get();
+
+        $this->set('staff', $staff);
 
         $model = (new FormationPersonsReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
@@ -126,16 +132,40 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $formationReport = FormationReport::find($form_id);
-        $canEditReport = $formationReport->canEditReport();
-        if(!$canEditReport){
-            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
-        }
+//        $canEditReport = $formationReport->canEditReport();
+//        if(!$canEditReport){
+//            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+//        }
 
         $model = (new FormationPersonsReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
             $model = new FormationPersonsReport();
         }
-        $model->fill($request->all())->save();
+        $f = $request->all();
+        $all = $request->except('staff');
+        $model->fill($all)->save();
+
+        foreach ($request->staff as $rank => $items) {
+            if(!in_array($rank, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                $data['status'] = 'active';
+            }
+            else{
+                $data['status'] = 'inactive';
+            }
+            $data['rank'] = $rank;
+
+
+            foreach ($items as $item) {
+                $data['staff_id'] = $item;
+                $data['report_id'] = $model->id;
+
+                $staffItem = FormationPersonsItem::updateOrCreate([
+                    'staff_id' => $item
+                ], $data);
+            }
+        }
+
+
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 

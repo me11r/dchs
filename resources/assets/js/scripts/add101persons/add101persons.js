@@ -21,12 +21,14 @@ export default class Add101Persons {
                     'field_3_3': '',
                     'field_3_4': '',
                     'field_3_5': ''
-                }
+                },
+                total: 0,
+                totalActive: 0,
             },
             computed: {
                 fieldsComputed() {
                     return this.calculateTotalSum();
-                }
+                },
             },
             watch: {
                 'departmentId'(newValue, oldValue) {
@@ -71,6 +73,23 @@ export default class Add101Persons {
                     }
                 });
                 this.calculateTotalSum();
+
+                this.$on('totalChange', function (change) {
+                    this.total += change;
+                });
+
+                this.$on('activeChange', function (change) {
+                    this.totalActive += change;
+                });
+
+                this.$on('totalSet', function (count) {
+                    this.total += count;
+                });
+
+                this.$on('totalActiveSet', function (count) {
+                    this.totalActive += count;
+                });
+
             }
         });
     }
