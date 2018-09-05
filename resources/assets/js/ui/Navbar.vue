@@ -76,6 +76,12 @@
                             <i class="fas fa-truck"></i>&nbsp;АО "Өртсөндіруші"
                         </a>
                         <a
+                            href="/formation-record/emergency_almaty"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(17)">
+                            <i class="fas fa-truck"></i>&nbsp;Служба спасения г.Алматы
+                        </a>
+                        <a
                             href="/formation-record"
                             class="dropdown-item is-small"
                             v-if="hasRight(18)">
@@ -151,14 +157,14 @@
                         <a
                             v-if="hasRight(9)"
                             href="/dictionaries"
-                            class="navbar-item"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
+                            class="dropdown-item"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
                         <a
                             v-if="hasRight(7)"
                             href="/admin/users"
-                            class="navbar-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
+                            class="dropdown-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
                         <a
                             href="/import"
-                            class="navbar-item"><i class="fas fa-arrow-down"></i>&nbsp;Импорт</a>
+                            class="dropdown-item"><i class="fas fa-arrow-down"></i>&nbsp;Импорт</a>
                     </div>
                 </div>
                 <div class="navbar-item">

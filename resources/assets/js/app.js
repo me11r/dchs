@@ -24,6 +24,7 @@ import Tabs from './scripts/add101/tabs';
 import FireObject from './views/FireObject';
 
 import Add101Persons from './scripts/add101persons/add101persons';
+import Add101Staff from './views/101staff/AddEdit101Staff';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -41,6 +42,8 @@ Vue.component('roadtrip-map', RoadTripViewMap);
 Vue.component('tabs', Tabs);
 Vue.component('persons-101', Add101Persons);
 Vue.component('fire-object', FireObject);
+
+Vue.component('staff-101', Add101Staff);
 
 Vue.config.productionTip = false;
 

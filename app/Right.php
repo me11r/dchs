@@ -45,6 +45,7 @@ class Right extends Model
     public const CAN_ACCESS_FORMATION_REPORT_AIR_RESCUE = 16;
     public const CAN_ACCESS_FORMATION_REPORT_ORTSERT = 17;
     public const CAN_ACCESS_FORMATION_DCHS_ALMATY = 18;
+    public const CAN_ACCESS_FORMATION_EMERGENCY_ALMATY = 19;
 
     protected $table = 'rights';
     protected $fillable = ['title', 'right_group_id'];

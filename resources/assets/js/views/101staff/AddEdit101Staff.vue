@@ -15,50 +15,18 @@
             :key="item.id">
 
             <div class="control column is-four-fifths">
-                <label :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
+                <label :for="getName('staff_id', item.id)">Ф.И.О.</label><br>
                 <div class="select">
                     <select
                             required
                             title=""
-                            :name="getName('vehicle_id', item.id)"
-                            :id="getName('vehicle_id', item.id)"
-                            v-model="item.vehicle_id">
+                            :name="getName('staff_id', item.id)"
+                            :id="getName('staff_id', item.id)"
+                            v-model="item.staff_id">
                         <option
-                                v-for="vehicle in vehicles"
-                                :key="'vehicle_' + vehicle.id"
-                                :value="vehicle.id">{{ vehicle.name }} {{ vehicle.number }}
-                        </option>
-                    </select>
-                </div>
-
-            </div>
-            <div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
-                <label :for="getName('department', item.id)">Отделение</label>
-                <input
-                    required
-                    placeholder="Отделение"
-                    type="number"
-                    class="input"
-                    max="82"
-                    min="1"
-                    v-model="item.department"
-                    @change="departmentCheck($event)"
-                    :name="getName('department', item.id)">
-            </div>
-
-            <div v-if="block_type === 'reserve'" class="control column">
-                <label :for="getName('reserve', item.id)">Резерв</label><br>
-                <div class="select">
-                    <select
-                            required
-                            title=""
-                            :name="getName('reserve', item.id)"
-                            :id="getName('reserve', item.id)"
-                            v-model="item.reserve">
-                        <option
-                                v-for="x in 5"
-                                :key="'vehicle_reserve' + x"
-                                :value="x">Резерв{{ x }}
+                                v-for="s in staff"
+                                :key="'staff_' + s.id"
+                                :value="s.id">{{ s.name }}
                         </option>
                     </select>
                 </div>
@@ -84,7 +52,6 @@
 import moment from 'moment';
 import axios from 'axios';
 import Buefy from 'buefy';
-import {_} from 'vue-underscore';
 
 export default {
     name: 'OtherRecords',
@@ -93,11 +60,15 @@ export default {
             type: String,
             default: ''
         },
-        report_id: {
-            type: String,
-            default: ''
+        active: {
+            type: Boolean,
+            default: true
         },
-        vehicles: {
+        modelId: {
+            type: Number,
+            default: 0
+        },
+        staff: {
             type: Array,
             default: () => []
         },
@@ -111,8 +82,10 @@ export default {
             records_: this.records,
             trunks: [],
             block_type_: this.block_type,
-            vehicles_: this.vehicles,
-            report_id_: this.report_id
+            staff_: this.staff,
+            model_id_: this.modelId,
+            total: 0,
+            isActive_: this.active,
         };
     },
     components: {
@@ -120,10 +93,14 @@ export default {
     },
     methods: {
         getName(control, id){
-            return 'tech' + `[${this.block_type_}]` + `[${control}][${id}]`;
+            return 'staff' + `[${this.block_type_}]` + `[${id}]`;
         },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
+            this.$parent.$emit('totalChange', 1);
+            if (this.isActive_ === true) {
+                this.$parent.$emit('activeChange', 1);
+            }
         },
         addItem(item) {
             this.records_.push(item);
@@ -159,27 +136,34 @@ export default {
                 this.records_ = this.records_.filter(function (item) {
                     return item.id !== id;
                 });
+                this.$parent.$emit('totalChange', -1);
+
+                if (this.isActive_ === true) {
+                    this.$parent.$emit('activeChange', -1);
+                }
             }
         },
 
         getStaff() {
             let self = this;
-            axios.get('/api/101/get-tech', {
+            axios.get('/api/101/get-staff', {
                 params: {
-                    status: self.block_type_,
-                    id: self.report_id_
+                    rank: self.block_type_,
+                    id: self.model_id_
                 }
             }).then((resp) => {
                 self.records_ = resp.data;
+                self.$parent.$emit('totalSet', resp.data.length);
+
+                if (self.isActive_ === true) {
+                    self.$parent.$emit('totalActiveSet', resp.data.length);
+                }
+
             });
         }
     },
     beforeMount() {
         this.getStaff();
-        // this.prepareRecords(window.ticket101add.records);
-        // this.vehicles = window.vehicles.records;
-        // this.vehicles = this.test;
-        // console.dir(this.vehicles);
     }
 };
 </script>
