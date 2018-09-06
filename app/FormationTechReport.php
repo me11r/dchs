@@ -10,6 +10,7 @@ namespace App;
 
 
 use App\Models\FormationTechItem;
+use App\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -135,7 +136,11 @@ class FormationTechReport extends Model
         'reserved_gasoline',
         'reserved_diesel',
         'generator',
-        'head_guard',
+
+        'exhauster',
+        'girs',
+        'iup',
+        'head_guard_id',
     ];
 
     public function scopeTodayRecords($q)
@@ -146,5 +151,10 @@ class FormationTechReport extends Model
     public function formation_tech_items()
     {
         return $this->hasMany(FormationTechItem::class, 'formation_tech_report_id');
+    }
+
+    public function head_guard()
+    {
+        return $this->belongsTo(Staff::class, 'head_guard_id');
     }
 }

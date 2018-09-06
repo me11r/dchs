@@ -70,23 +70,36 @@
                                 {{ action.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
-                        <td>-</td>
+                        <td>
+                            {% for action in dept.tech_action %}
+                                {{ action.vehicle.base|default('-') }}<br>
+                            {% endfor %}
+                        </td>
                         <td>
                             {% for tech_reserve in dept.tech_reserve %}
                                 {{ tech_reserve.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
-                        <td>-</td>
+                        <td>
+                            {% for tech_reserve in dept.tech_reserve %}
+                                {{ tech_reserve.vehicle.base|default('-') }}<br>
+                            {% endfor %}
+                        </td>
                         <td>
                             {% for tech_repair in dept.tech_repair %}
                                 {{ tech_repair.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
-                        <td>-</td>
+                        <td>
+                            {% for tech_repair in dept.tech_repair %}
+                                {{ tech_repair.vehicle.base|default('-') }}<br>
+                            {% endfor %}
+                        </td>
 
                         {% for tch in tech_fields2 %}
                             <td>{{ tech[dept.id][tch]|default('-') }}</td>
                         {% endfor %}
+                        <td>{{ tech[dept.id].head_guard.name|default('-') }}</td>
                     </tr>
                 {% endfor %}
 
@@ -113,7 +126,7 @@
                     </td>
                     <td>
                         <b>
-                            0
+                            {{ tech_items_count.tech_action|default('0') }}
                         </b>
                     </td>
                     <td>
@@ -123,7 +136,7 @@
                     </td>
                     <td>
                         <b>
-                            0
+                            {{ tech_items_count.tech_reserve|default('0') }}
                         </b>
                     </td>
                     <td>
@@ -133,7 +146,7 @@
                     </td>
                     <td>
                         <b>
-                            0
+                            {{ tech_items_count.tech_repair|default('0') }}
                         </b>
                     </td>
                     {% for item in ttl_count %}
