@@ -226,16 +226,39 @@
             </fieldset>
 
             <div class="field">
-                <label for="field_3">генератор/дымосос/гирсы,ИУП</label>
+                <label for="field_3">Генератор</label>
                 <div class="control">
                     <input type="number" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="generator" id="field_3" value="{{ model.generator }}">
+                </div>
+            </div>
+            <div class="field">
+                <label for="field_3">Дымосос</label>
+                <div class="control">
+                    <input type="number" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="exhauster" id="field_3" value="{{ model.exhauster }}">
+                </div>
+            </div>
+            <div class="field">
+                <label for="field_3">Гирсы</label>
+                <div class="control">
+                    <input type="number" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="girs" id="field_3" value="{{ model.girs }}">
+                </div>
+            </div>
+            <div class="field">
+                <label for="field_3">ИУП</label>
+                <div class="control">
+                    <input type="number" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="iup" id="field_3" value="{{ model.iup }}">
                 </div>
             </div>
 
             <div class="field">
                 <label for="field_4">Ф.И.О Начальника караула или лица его подменяющего</label>
                 <div class="control">
-                    <input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">
+                    <select class="select" name="head_guard_id" id="head_guard_id">
+                        {% for person in staff %}
+                            <option {{ person.id == model.head_guard_id ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>
+                        {% endfor %}
+                    </select>
+                    {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
                 </div>
             </div>
 
