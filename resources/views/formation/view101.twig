@@ -50,46 +50,41 @@
                             </th>
                         {% endif %}
                     {% endfor %}
-                    {#<th class="rotate">#}
-                        {#<div>#}
-                            {#<span>Пожарная техника-В боевом расчете: Тип основного пожарного а/м</span>#}
-                        {#</div>#}
-                    {#</th>#}
-                    {#<th class="rotate">#}
-                        {#<div>#}
-                            {#<span>Пожарная техника-В боевом расчете: Марка спец. пожарных а/м, мотоциклов</span>#}
-                        {#</div>#}
-                    {#</th>#}
-                    {#<th class="rotate">#}
-                        {#<div>#}
-                            {#<span>Пожарная техника-В резерве: Тип основного пожарного а/м</span>#}
-                        {#</div>#}
-                    {#</th>#}
-                    {#<th class="rotate">#}
-                        {#<div>#}
-                            {#<span>Пожарная техника-В резерве: Марка спец. пожарных а/м, мотоциклов</span>#}
-                        {#</div>#}
-                    {#</th>#}
-                    {#<th class="rotate">#}
-                        {#<div>#}
-                            {#<span>Пожарная техника-На ремонте: Тип основного пожарного а/м</span>#}
-                        {#</div>#}
-                    {#</th>#}
-                    {#<th class="rotate">#}
-                        {#<div>#}
-                            {#<span>Пожарная техника-На ремонте: Марка спец. пожарных а/м, мотоциклов</span>#}
-                        {#</div>#}
-                    {#</th>#}
 
                 </tr>
                 </thead>
                 {% for dept in departments %}
                     <tr>
                         <td>{{ dept.title }}</td>
+
                         {% for ppl in people_fields %}
                             <td>{{ people[dept.id][ppl]|default('-') }}</td>
                         {% endfor %}
+
                         {% for tch in tech_fields %}
+                            <td>{{ tech[dept.id][tch]|default('-') }}</td>
+                        {% endfor %}
+
+                        <td>
+                            {% for action in dept.tech_action %}
+                                {{ action.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>-</td>
+                        <td>
+                            {% for tech_reserve in dept.tech_reserve %}
+                                {{ tech_reserve.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>-</td>
+                        <td>
+                            {% for tech_repair in dept.tech_repair %}
+                                {{ tech_repair.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>-</td>
+
+                        {% for tch in tech_fields2 %}
                             <td>{{ tech[dept.id][tch]|default('-') }}</td>
                         {% endfor %}
                     </tr>
@@ -111,6 +106,43 @@
                             </b>
                         </td>
                     {% endfor %}
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_action|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            0
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_reserve|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            0
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_repair|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            0
+                        </b>
+                    </td>
+                    {% for item in ttl_count %}
+                        <td>
+                            <b>
+                                {{ item }}
+                            </b>
+                        </td>
+                    {% endfor %}
                 </tr>
 
                 {% for dept in excluded_departments %}
@@ -120,6 +152,28 @@
                             <td>{{ people[dept.id][ppl]|default('-') }}</td>
                         {% endfor %}
                         {% for tch in tech_fields %}
+                            <td>{{ tech[dept.id][tch]|default('-') }}</td>
+                        {% endfor %}
+                        <td>
+                            {% for action in dept.tech_action %}
+                                {{ action.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>-</td>
+                        <td>
+                            {% for tech_reserve in dept.tech_reserve %}
+                                {{ tech_reserve.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>-</td>
+                        <td>
+                            {% for tech_repair in dept.tech_repair %}
+                                {{ tech_repair.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>-</td>
+
+                        {% for tch in tech_fields2 %}
                             <td>{{ tech[dept.id][tch]|default('-') }}</td>
                         {% endfor %}
                     </tr>
