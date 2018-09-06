@@ -110,7 +110,7 @@ class ChunkedBuildingsSeeder extends Seeder
             $sheet->garbageCollect();
             if ($sheet->getTitle() !== $curSheet) {
                 $curSheet = $sheet->getTitle();
-                $this->command->info('Processing sheet ' . $sheet->getTitle());
+//                $this->command->info('Processing sheet ' . $sheet->getTitle());
                 $this->command->warn('Previous sheet : ' . $sheetRows);
                 $sheetRows = 0;
             }

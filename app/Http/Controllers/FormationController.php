@@ -19,6 +19,7 @@ use App\Models\Vehicle;
 use App\Right;
 use App\Services\FormationService;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 
 class FormationController extends AuthorizedController
@@ -174,9 +175,12 @@ class FormationController extends AuthorizedController
         }
         $this->set('model', $model);
 
+        $staff = Staff::where('department_id', $dept_id)->get();
+
         $this->set('departments', FireDepartment::all())
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('staff', $staff)
             ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->get())
             ->set('dept_id', $dept_id);
 
@@ -192,7 +196,7 @@ class FormationController extends AuthorizedController
         $canEditReport = $formationReport->canEditReport();
 
         if(!$canEditReport){
-            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+//            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
         }
 
         $model = FormationTechReport::updateOrCreate([
@@ -308,7 +312,10 @@ class FormationController extends AuthorizedController
                 'Бензин',
                 'Дизель'
             ],
-            'генератор/дымосос/гирсы,ИУП',
+            'генератор',
+            'дымосос',
+            'гирсы',
+            'ИУП',
             'Ф.И.О Начальника караула или лица его подменяющего'
         ];
         $people_fields = [
@@ -360,7 +367,10 @@ class FormationController extends AuthorizedController
             'reserved_gasoline',
             'reserved_diesel',
             'generator',
-            'head_guard',
+            'exhauster',
+            'girs',
+            'iup',
+//            'head_guard_id',
         ];
 
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
@@ -387,20 +397,23 @@ class FormationController extends AuthorizedController
         }
 
         $ttl_count = [];
+        $tech_fields_temp = $tech_fields2;
+        $tech_fields_temp[] = 'head_guard_id';
 
         foreach ($departments as $dep) {
             $tech_items_count['tech_action'] += count($dep->tech_action);
             $tech_items_count['tech_reserve'] += count($dep->tech_reserve);
             $tech_items_count['tech_repair'] += count($dep->tech_repair);
 
+
             if(isset($tech[$dep->id])){
-                foreach ($tech_fields2 as $item) {
+                foreach ($tech_fields_temp as $item) {
                     if($item != null){
                         if(!isset($ttl_count[$item])){
                             $ttl_count[$item] = 0;
                         }
 
-                        if($item != 'head_guard'){
+                        if($item != 'head_guard_id'){
                             $ttl_count[$item] += (float)$tech[$dep->id]->$item ?? 0;
 
                         }
@@ -414,6 +427,32 @@ class FormationController extends AuthorizedController
         }
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+
+//        $html = view('pdf/formation-report', [
+//            'people' => $people,
+//            'tech' => $tech,
+//            'people_fields' => $people_fields,
+//            'tech_fields' => $tech_fields,
+//            'tech_fields2' => $tech_fields2,
+//            'people_fl' => $people_fieldlist,
+//            'tech_fl' => $tech_fieldlist,
+//            'tech_items_count' => $tech_items_count,
+//            'ttl_count' => $ttl_count,
+//            'sumArray' => $sumArray,
+//            'departments' => $departments,
+//            'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
+//            'report' => FormationReport::find($form_id),
+//        ])->render();
+//
+//        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+//        $date = date('d-m-Y');
+//        $file_name = "Суточный отчет - $date.pdf";
+//
+//        $dompdf = new Dompdf();
+//        $dompdf->loadHTML($html, 'UTF-8');
+//        $dompdf->setPaper('A4', 'landscape');
+//        $dompdf->render();
+//        $dompdf->stream($file_name);
 
 
         $this->set('people', $people)
