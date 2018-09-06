@@ -35,7 +35,7 @@
 
             <div class="field"><label for="field_0">В карауле по списку л/с</label>
                 <div class="control">
-                    <input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="field_0"
+                    <input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="total"
                            id="field_0" value="" class="input add101persons-input">
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     <label for="field_2_0">Всего</label>
                     <div class="control">
                         <input v-model="totalActive" type="number" readonly="readonly" step="1" data-value=""
-                               name="field_2_0" id="field_2_0" value=""
+                               name="total_active" id="field_2_0" value=""
                                class="input add101persons-input">
                     </div>
                 </div>
@@ -108,8 +108,10 @@
                 </div>
             </fieldset>
             <div class="field"><label for="field_1">ГДЗС</label>
-                <div class="control"><input type="number" step="1" data-value="" name="field_1" id="field_1" value=""
-                                            class="input add101persons-input"></div>
+                <div class="control">
+                    <input type="number" step="1" data-value="" name="gas_smoke_protection_service" id="gas_smoke_protection_service" value="{{ model.gas_smoke_protection_service ?? 0 }}"
+                                            class="input add101persons-input">
+                </div>
             </div>
             <div class="panel"
                  style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
