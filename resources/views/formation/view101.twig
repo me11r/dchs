@@ -5,8 +5,18 @@
             <div class="level-left">
                 <h4 class="title">Строевая записка от {{ report.report_date }}</h4>
             </div>
-            <div class="level-right has-text-right">
-                <a href="/pdf/report101" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как PDF</a>
+            <div class="level-right has-text-left">
+                {% if user.hasRight(20) %}
+                    {% if not report.is_approved %}
+                        <form method="post" action="/formation/approve101/{{ report.id }}">
+                            {{ csrf_field() }}
+                            <button type="submit" class="button is-primary"><i class="fas fa-adjust"></i>&nbsp; Утвердить</button>
+                        </form>
+                    {% else %}
+                        <a class="button is-disabled" href="#">Утверждено</a>
+                    {% endif %}
+                {% endif %}
+                <a style="margin: 10px;" target="_blank" href="/pdf/report101" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как PDF</a>
             </div>
         </div>
         <div class="tbl" style="overflow-x: scroll">

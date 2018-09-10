@@ -15,6 +15,7 @@ use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\Models\WallMaterial;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -579,6 +580,11 @@ class Ticket101 extends Model
         }
 
         return false;
+    }
+
+    public function wall_material()
+    {
+        return $this->belongsTo(WallMaterial::class, 'wall_material_id');
     }
 
 

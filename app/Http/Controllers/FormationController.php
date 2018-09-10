@@ -16,11 +16,13 @@ use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Spipu\Html2Pdf\Html2Pdf;
 
@@ -197,8 +199,12 @@ class FormationController extends AuthorizedController
         $formationReport = FormationReport::find($form_id);
         $canEditReport = $formationReport->canEditReport();
 
+        if($formationReport->is_approved){
+            $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
+        }
+
         if(!$canEditReport){
-//            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
         }
 
         $model = FormationTechReport::updateOrCreate([
@@ -429,6 +435,7 @@ class FormationController extends AuthorizedController
         }
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+        $user = Auth::user();
 
         $dataToReport = [
             'people' => $people,
@@ -467,6 +474,7 @@ class FormationController extends AuthorizedController
 
         $this->set('people', $people)
             ->set('tech', $tech)
+            ->set('user', $user)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)
             ->set('tech_fields2', $tech_fields2)
@@ -693,6 +701,20 @@ class FormationController extends AuthorizedController
         return redirect('/formation/savers/resources/' . $parent_id)->with('_message', [
             'type' => 'success',
             'text' => "Успешно сохранено",
+        ]);
+    }
+
+    public function postApproveReport101($id)
+    {
+        $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
+
+        $report = FormationReport::find($id);
+        $report->is_approved = true;
+        $report->save();
+
+        return back()->with('_message', [
+            'type' => 'success',
+            'text' => "Успешно утверждено",
         ]);
     }
 
