@@ -535,7 +535,7 @@ class Ticket101 extends Model
 
     public function fire_department()
     {
-        return $this->hasOne(OperationalPlan::class, 'id', 'operational_plan_id');
+        return $this->belongsTo(FireDepartment::class,'fire_department_id');
     }
 
     /**
