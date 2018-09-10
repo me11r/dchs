@@ -8,6 +8,8 @@ use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Cache;
+use Spipu\Html2Pdf\Html2Pdf;
 
 class ReportController extends AuthorizedController
 {
@@ -42,5 +44,18 @@ class ReportController extends AuthorizedController
         $dompdf->render();
 
         $dompdf->stream($file_name);
+    }
+
+    public function getReport101()
+    {
+        if($data = Cache::get('report101_data')){
+            $html = view('pdf/formation-report', $data);
+
+            $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+            $html2pdf = new Html2Pdf('L');
+            $html2pdf->writeHTML($html);
+            $html2pdf->output('report101.pdf');
+        }
     }
 }
