@@ -60,6 +60,8 @@ class FormationPersonsReport extends Model
 
     protected $fillable = [
         'total',
+        'form_id',
+        'dept_id',
         'active',
         'head_guards',
         'commander_squads',
