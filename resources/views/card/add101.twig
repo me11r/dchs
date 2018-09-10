@@ -55,7 +55,10 @@
                         </div>
                     {% endif %}
                     <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
-                        <label for="location">Место пожара (Адрес) <a href="{{ url('/card/mapscreen') }}" target="_blank" class="button is-small is-light"><i class="far fa-map"></i>&nbsp;Открыть карту</a></label>
+                        <label for="location">Место пожара (Адрес) <a href="{{ url('/card/mapscreen') }}"
+                                                                      target="_blank"
+                                                                      class="button is-small is-light"><i
+                                        class="far fa-map"></i>&nbsp;Открыть карту</a></label>
                         <input name="location"
                                id="location"
                                class="input"
@@ -173,43 +176,54 @@
                     <div class="field is-grouped">
                         <div class="control">
                             <label for="wall_material_id">Материал стен</label>
-                            <input
-                                   id="wall_material_id"
-                                   class="input">
+                            {#<input#}
+                                    {#id="wall_material_id"#}
+                                    {#class="input">#}
+                            <select class="select" name="wall_material_id" id="wall_material_id" required="required"
+                                    style="width: 100%;">
+                                <option value="">-</option>
+                                {% for wall_material in wall_materials %}
+                                    <option {{ ticket.wall_material_id == wall_material.id ? 'selected' : '' }} value="{{ wall_material.id }}">{{ wall_material.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="control">
                             <label for="year_of_development">Год постройки</label>
                             <input
-                                   id="year_of_development"
-                                   class="input">
+                                    id="year_of_development"
+                                    name="year_of_development"
+                                    class="input"
+                                    value="{{ ticket.year_of_development }}"
+                            >
                         </div>
                         <div class="control">
                             <label for="square">Площадь объекта</label>
                             <input
-                                   id="square"
-                                   class="input">
+                                    id="square"
+                                    name="building_square"
+                                    class="input"
+                                    value="{{ ticket.building_square }}"
+
+                            >
                         </div>
                     </div>
 
 
-
-
-
                     {#<div class="field">#}
-                        {#<p class="control">#}
-                            {#<label for="fire_object_id">Что горит</label>#}
-                        {#</p>#}
-                        {#<div class="select" style="width:50%; padding-right: 6px;">#}
-                            {#<select name="fire_object_id"#}
-                                    {#id="fire_object_id"#}
-                                    {#style="width: 100%">#}
-                                {#<option value="">-</option>#}
-                                {#{% for object in fire_object %}#}
-                                    {#<option value="{{ object.id }}"#}
-                                            {#{% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>#}
-                                {#{% endfor %}#}
-                            {#</select>#}
-                        {#</div>#}
+                    {#<p class="control">#}
+                    {#<label for="fire_object_id">Что горит</label>#}
+                    {#</p>#}
+                    {#<div class="select" style="width:50%; padding-right: 6px;">#}
+                    {#<select name="fire_object_id"#}
+                    {#id="fire_object_id"#}
+                    {#style="width: 100%">#}
+                    {#<option value="">-</option>#}
+                    {#{% for object in fire_object %}#}
+                    {#<option value="{{ object.id }}"#}
+                    {#{% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>#}
+                    {#{% endfor %}#}
+                    {#</select>#}
+                    {#</div>#}
                     {#</div>#}
 
                     <div class="field is-grouped">
@@ -348,39 +362,50 @@
                             <th>- ликвидации</th>
                             <th>- возвращения</th>
                             <th>- <a @click="sendAllTripPlans()"
-                                     class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил и средств согласно рангу </a>
+                                     class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил
+                                    и средств согласно рангу </a>
                             </th>
                         </tr>
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right"
-                                    {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
-                                        style="color: green"
-                                    {% endif %} id="ph_{{ ssv.id }}_text">{{ ssv.name }}
+                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
+                                            style="color: green"
+                                        {% endif %} id="ph_{{ ssv.id }}_text">{{ ssv.name }}
                                 </td>
                                 <td><input class="input" type="text" name="ph[ot][{{ ssv.id }}]" id="ph_{{ ssv.id }}_ot"
                                            value="{{ attribute(ssv.res,  'departments')|default('') }}"
                                     />
                                 </td>
                                 <td>
-                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.out_time }} {% endif %}" readonly>
+                                    <input type="text" class="input"
+                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.out_time }} {% endif %}"
+                                           readonly>
                                 </td>
                                 <td>
-                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.arrive_time }} {% endif %}" readonly>
+                                    <input type="text" class="input"
+                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.arrive_time }} {% endif %}"
+                                           readonly>
                                 </td>
                                 <td>
-                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.loc_time }} {% endif %}" readonly>
+                                    <input type="text" class="input"
+                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.loc_time }} {% endif %}"
+                                           readonly>
                                 </td>
                                 <td>
-                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.liqv_time }} {% endif %}" readonly>
+                                    <input type="text" class="input"
+                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.liqv_time }} {% endif %}"
+                                           readonly>
                                 </td>
                                 <td>
-                                    <input type="text" class="input" value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.ret_time }} {% endif %}" readonly>
+                                    <input type="text" class="input"
+                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.ret_time }} {% endif %}"
+                                           readonly>
                                 </td>
                                 <td>
                                     {% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}
                                         {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
-                                            {% set depts = ssv.res.departments  %}
+                                            {% set depts = ssv.res.departments %}
                                         {% endif %}
                                         <a @click="sendOne({{ ssv.id }}, '')" {#href="{{ url('/roadtrip/send/'~ssv.id ~'/'~ticket.id ~'/'~ depts ?? ssv.departments) }}"#}
                                            class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
@@ -575,7 +600,7 @@
                     <div class="field is-grouped">
                         <div class="control is-three-fifths">
                             <p>
-                            <label for="result_fire_level_id">Уточненный ранг пожара</label>
+                                <label for="result_fire_level_id">Уточненный ранг пожара</label>
                             <div class="select">
                                 <select name="result_fire_level_id" id="result_fire_level_id">
                                     <option value="">-</option>
@@ -589,7 +614,8 @@
                         </div>
                         <div class="control">
                             <label for="fire_dep_results_info">Участники тушения</label>
-                            <textarea class="input" type="text" id="fire_dep_results_info" value="">{{ fire_dep_results_info }}</textarea>
+                            <textarea class="input" type="text" id="fire_dep_results_info"
+                                      value="">{{ fire_dep_results_info }}</textarea>
                         </div>
                         <div class="control">
                             <label for="square_max">Площадь пожара</label>
@@ -687,12 +713,12 @@
                                   class="textarea">{{ ticket.more_info|default('') }}</textarea>
                     </div>
                     <div class="field">
-                            {#<div class="checkbox">#}
-                            {#<input type="hidden" name="hydrant_found" value="0"/>#}
-                            {#<input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"#}
-                            {#{% if ticket.hydrant_found == 1 %}checked{% endif %}/>#}
-                            {#<label for="hydrant_found">Наличие ПГ/ПВ</label>#}
-                            {#</div>#}
+                        {#<div class="checkbox">#}
+                        {#<input type="hidden" name="hydrant_found" value="0"/>#}
+                        {#<input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"#}
+                        {#{% if ticket.hydrant_found == 1 %}checked{% endif %}/>#}
+                        {#<label for="hydrant_found">Наличие ПГ/ПВ</label>#}
+                        {#</div>#}
                         <div class="control">
                             <label for="water_supply_source_id">Источник противопожарного водоснабжения</label>
                         </div>

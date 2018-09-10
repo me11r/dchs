@@ -86,6 +86,18 @@
                 <td>{{ trip.ticket.building_description|default('') }}</td>
             </tr>
             <tr>
+                <td class="has-text-right is-bold">Материал стен</td>
+                <td>{{ trip.ticket.wall_material.name|default('') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Год постройки</td>
+                <td>{{ trip.ticket.year_of_development|default('') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Площадь объекта</td>
+                <td>{{ trip.ticket.building_square|default('') }}</td>
+            </tr>
+            <tr>
                 <td class="has-text-right is-bold">Наличие угрозы людям</td>
                 <td>{% if trip.ticket.people_in_danger ==1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
             </tr>

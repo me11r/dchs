@@ -5,12 +5,22 @@
             <div class="level-left">
                 <h4 class="title">Строевая записка от {{ report.report_date }}</h4>
             </div>
-            <div class="level-right has-text-right">
-                <a href="" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как PDF</a>
+            <div class="level-right has-text-left">
+                {% if user.hasRight(20) %}
+                    {% if not report.is_approved %}
+                        <form method="post" action="/formation/approve101/{{ report.id }}">
+                            {{ csrf_field() }}
+                            <button type="submit" class="button is-primary"><i class="fas fa-adjust"></i>&nbsp; Утвердить</button>
+                        </form>
+                    {% else %}
+                        <a class="button is-disabled" href="#">Утверждено</a>
+                    {% endif %}
+                {% endif %}
+                <a style="margin: 10px;" target="_blank" href="/pdf/report101" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как PDF</a>
             </div>
         </div>
         <div class="tbl" style="overflow-x: scroll">
-            <table class="detailed-table table is-small is-fullwidth is-narrow is-hoverable" style="font-size: .7rem">
+            <table id="main_table" class="detailed-table table is-small is-fullwidth is-narrow is-hoverable" style="font-size: .7rem">
                 <thead>
                 <tr>
                     <th class="rotate">
@@ -194,6 +204,99 @@
             </table>
         </div>
     </div>
+    {#<script#}
+            {#src="https://code.jquery.com/jquery-3.3.1.min.js"#}
+            {#crossorigin="anonymous"></script>#}
+    {#<script src="/kayalshri-tableExport/tableExport.js"></script>#}
+    {#<script src="/kayalshri-tableExport/jquery.base64.js"></script>#}
+    {#<script type="text/javascript" src="/kayalshri-tableExport/jspdf/libs/sprintf.js"></script>#}
+    {#<script type="text/javascript" src="/kayalshri-tableExport/jspdf/jspdf.js"></script>#}
+    {#<script type="text/javascript" src="/kayalshri-tableExport/jspdf/libs/base64.js"></script>#}
+    {#<script>#}
+        {#demoFromHTML();#}
+        {#function demoFromHTML() {#}
+            {#// var string = doc.output('datauristring');#}
+            {#// var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"#}
+            {#// var x = window.open();#}
+            {#// x.document.open();#}
+            {#// x.document.write(iframe);#}
+            {#// x.document.close();#}
+
+            {#$('#main_table').tableExport({type:'pdf',escape:'false', htmlContent:'false'});#}
+        {#}#}
+    {#</script>#}
+    {#<style type="text/css">#}
+        {#.tg  {border-collapse:collapse;border-spacing:0;}#}
+        {#.tg td{/*padding:10px 5px;*/border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}#}
+        {#.tg th{font-size:14px;font-weight:normal;/*padding:10px;*/border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}#}
+        {#.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}#}
+        {#.rotate {/*transform: rotate(-90deg*/); /*padding: 12px !important;*/}#}
+    {#</style>#}
+    {#<table class="tg">#}
+        {#<tr>#}
+            {#<th class="tg-0pky">ПЧ</th>#}
+            {#<th class="tg-0pky">В карауле</th>#}
+            {#<th class="tg-0pky" colspan="6">ЛС на лицо<br></th>#}
+            {#<th class="tg-0pky" colspan="6">Отсутствуют</th>#}
+            {#<th class="tg-0pky" rowspan="3">ГДЗС</th>#}
+            {#<th class="tg-0pky" rowspan="3">Аппараты</th>#}
+            {#<th class="tg-0pky" rowspan="3">Мотопомны#}
+                {#<br>Грязевая/водяная</th>#}
+            {#<th class="tg-0pky" colspan="6">Пожарная техника</th>#}
+        {#</tr>#}
+        {#<tr>#}
+            {#<td class="tg-0pky" rowspan="2"></td>#}
+            {#<td class="tg-0pky" rowspan="2"></td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">всего<br></td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">нач.кар</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">ком.отд<br></td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">шоферы</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">ряд состав</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">диспетчеров</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">Отпуск<br></td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">Учебный</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">Декрет</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">Больные</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">Командировка</td>#}
+            {#<td class="tg-0pky rotate" rowspan="2">Др причины</td>#}
+            {#<td class="tg-0pky" colspan="2">В боевом расчете</td>#}
+            {#<td class="tg-0pky" colspan="2">В резерве</td>#}
+            {#<td class="tg-0pky" colspan="2">На ремонте</td>#}
+        {#</tr>#}
+        {#<tr>#}
+            {#<td style="height: 30px" class="tg-0pky rotate">Тип осн. пожарного а/м<br></td>#}
+            {#<td class="tg-0pky rotate">Марка</td>#}
+            {#<td class="tg-0pky rotate">Тип осн. а/м</td>#}
+            {#<td class="tg-0pky rotate">Марка</td>#}
+            {#<td class="tg-0pky rotate">Тип осн. а/м<br></td>#}
+            {#<td class="tg-0pky rotate">Марка</td>#}
+        {#</tr>#}
+        {#<tr>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+            {#<td class="tg-0pky"></td>#}
+        {#</tr>#}
+    {#</table>#}
     <style>
         th.rotate {
             /* Something you can count on */

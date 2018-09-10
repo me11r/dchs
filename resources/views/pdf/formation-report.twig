@@ -215,9 +215,10 @@
             {#</table>#}
             <style type="text/css">
                 .tg  {border-collapse:collapse;border-spacing:0;}
-                .tg td{padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-                .tg th{font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+                .tg td{/*padding:10px 5px;*/font-size:6px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+                .tg th{font-size:6px;font-weight:normal;/*padding:10px;*/border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
                 .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+                .rotate {transform: rotate(-90deg); /*padding: 12px !important;*/}
             </style>
             <table class="tg">
                 <tr>
@@ -227,35 +228,143 @@
                     <th class="tg-0pky" colspan="6">Отсутствуют</th>
                     <th class="tg-0pky" rowspan="3">ГДЗС</th>
                     <th class="tg-0pky" rowspan="3">Аппараты</th>
-                    <th class="tg-0pky" rowspan="3">Мотопомны Грязевая/водяная</th>
+                    <th class="tg-0pky" rowspan="3">Мотопомны Грязевая<br></th>
+                    <th class="tg-0lax" rowspan="3">Водяная<br></th>
                     <th class="tg-0pky" colspan="6">Пожарная техника</th>
                 </tr>
                 <tr>
                     <td class="tg-0pky" rowspan="2"></td>
                     <td class="tg-0pky" rowspan="2"></td>
-                    <td class="tg-0pky" rowspan="2">всего<br></td>
-                    <td class="tg-0pky" rowspan="2">нач.кар</td>
-                    <td class="tg-0pky" rowspan="2">ком.отд<br></td>
-                    <td class="tg-0pky" rowspan="2">шоферы</td>
-                    <td class="tg-0pky" rowspan="2">ряд состав</td>
-                    <td class="tg-0pky" rowspan="2">диспетчеров</td>
-                    <td class="tg-0pky" rowspan="2">Отпуск<br></td>
-                    <td class="tg-0pky" rowspan="2">Учебный</td>
-                    <td class="tg-0pky" rowspan="2">Декрет</td>
-                    <td class="tg-0pky" rowspan="2">Больные</td>
-                    <td class="tg-0pky" rowspan="2">Командировка</td>
-                    <td class="tg-0pky" rowspan="2">Др причины</td>
+                    <td class="tg-0pky rotate" rowspan="2">всего<br></td>
+                    <td class="tg-0pky rotate" rowspan="2">нач.кар</td>
+                    <td class="tg-0pky rotate" rowspan="2">ком.отд<br></td>
+                    <td class="tg-0pky rotate" rowspan="2">шоферы</td>
+                    <td class="tg-0pky rotate" rowspan="2">ряд состав</td>
+                    <td class="tg-0pky rotate" rowspan="2">диспетчеров</td>
+                    <td class="tg-0pky rotate" rowspan="2">Отпуск<br></td>
+                    <td class="tg-0pky rotate" rowspan="2">Учебный</td>
+                    <td class="tg-0pky rotate" rowspan="2">Декрет</td>
+                    <td class="tg-0pky rotate" rowspan="2">Больные</td>
+                    <td class="tg-0pky rotate" rowspan="2">Командировка</td>
+                    <td class="tg-0pky rotate" rowspan="2">Др причины</td>
                     <td class="tg-0pky" colspan="2">В боевом расчете</td>
                     <td class="tg-0pky" colspan="2">В резерве</td>
                     <td class="tg-0pky" colspan="2">На ремонте</td>
                 </tr>
                 <tr>
-                    <td class="tg-0pky">Тип осн. пожарного а/м<br></td>
-                    <td class="tg-0pky">Марка</td>
-                    <td class="tg-0pky">Тип осн. а/м</td>
-                    <td class="tg-0pky">Марка</td>
-                    <td class="tg-0pky">Тип осн. а/м<br></td>
-                    <td class="tg-0pky">Марка</td>
+                    <td style="height: 30px" class="tg-0pky rotate">Тип осн. пожарного а/м<br></td>
+                    <td class="tg-0pky rotate">Марка</td>
+                    <td class="tg-0pky rotate">Тип осн. а/м</td>
+                    <td class="tg-0pky rotate">Марка</td>
+                    <td class="tg-0pky rotate">Тип осн. а/м<br></td>
+                    <td class="tg-0pky rotate">Марка</td>
+                </tr>
+                {% for dept in departments %}
+                    <tr>
+                        <td>{{ dept.title }}</td>
+
+                        {% for ppl in people_fields %}
+                            <td>{{ people[dept.id][ppl]|default('-') }}</td>
+                        {% endfor %}
+
+                        {% for tch in tech_fields %}
+                            <td>{{ tech[dept.id][tch]|default('-') }}</td>
+                        {% endfor %}
+
+                        <td>
+                            {% for action in dept.tech_action %}
+                                {{ action.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for action in dept.tech_action %}
+                                {{ action.vehicle.base|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for tech_reserve in dept.tech_reserve %}
+                                {{ tech_reserve.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for tech_reserve in dept.tech_reserve %}
+                                {{ tech_reserve.vehicle.base|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for tech_repair in dept.tech_repair %}
+                                {{ tech_repair.vehicle.name|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for tech_repair in dept.tech_repair %}
+                                {{ tech_repair.vehicle.base|default('-') }}<br>
+                            {% endfor %}
+                        </td>
+
+
+
+                        {#{% for tch in tech_fields2 %}#}
+                            {#<td>{{ tech[dept.id][tch]|default('-') }}</td>#}
+                        {#{% endfor %}#}
+                        {#<td>{{ tech[dept.id].head_guard.name|default('-') }}</td>#}
+                    </tr>
+
+
+                {% endfor %}
+                <tr>
+                    <td><b>Итого</b></td>
+                    {% for ppl in people_fields %}
+                        <td><b>{{ sumArray['people'][ppl]|default(0) }}</b></td>
+                    {% endfor %}
+                    {% for tch in tech_fields %}
+                        <td>
+                            <b>
+                                {% if tch == 'field_4' %}
+                                    -
+                                {% else %}
+                                    {{ sumArray['tech'][tch]|default(0) }}
+                                {% endif %}
+                            </b>
+                        </td>
+                    {% endfor %}
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_action|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_action|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_reserve|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_reserve|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_repair|default('0') }}
+                        </b>
+                    </td>
+                    <td>
+                        <b>
+                            {{ tech_items_count.tech_repair|default('0') }}
+                        </b>
+                    </td>
+                    {#{% for item in ttl_count %}#}
+                        {#<td>#}
+                            {#<b>#}
+                                {#{{ item }}#}
+                            {#</b>#}
+                        {#</td>#}
+                    {#{% endfor %}#}
                 </tr>
                 <tr>
                     <td class="tg-0pky"></td>
@@ -282,406 +391,129 @@
                     <td class="tg-0pky"></td>
                     <td class="tg-0pky"></td>
                 </tr>
+            </table>
+            <br>
+            <br>
+            <table class="tg">
                 <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
+                    <th class="tg-xldj" rowspan="2">ПЧ</th>
+                    <th class="tg-0pky" colspan="17">Имеется на автомобилях в боевом расчете</th>
+                    <th class="tg-xldj" rowspan="2"><span style="font-weight:inherit;font-style:inherit">Пенообразователя на складе</span></th>
+                    <th class="tg-0pky" colspan="3">количество<br>неисправных<br>водоисточников</th>
+                    <th class="tg-0pky" colspan="2">В боевом расчете</th>
+                    <th class="tg-0pky" colspan="2"><span style="font-weight:inherit;font-style:inherit">В резерве</span></th>
+                    <th class="tg-0pky" rowspan="2"><span style="font-weight:700">генератор</span></th>
+                    <th class="tg-0pky" rowspan="2">дымосос</th>
+                    <th class="tg-0pky" rowspan="2">гирсы</th>
+                    <th class="tg-0pky" rowspan="2">ИУП</th>
+                    <th class="tg-0pky" rowspan="2">Ф.И.О Начальника караула или лица его подменяющего</th>
                 </tr>
                 <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
+                    <td class="tg-0pky">Рукавов: 125 мм</td>
+                    <td class="tg-0pky">Рукавов: 75 мм</td>
+                    <td class="tg-0pky">Рукавов: 77 мм</td>
+                    <td class="tg-0pky">Рукавов: 51 мм</td>
+                    <td class="tg-0pky">Лафетн. Ств. стац</td>
+                    <td class="tg-0pky">Лафетн. Ств. переносной</td>
+                    <td class="tg-0pky">ГПС-600</td>
+                    <td class="tg-0pky">Пурга</td>
+                    <td class="tg-0pky">Переносная радиосатнция</td>
+                    <td class="tg-0pky">Электрофонари</td>
+                    <td class="tg-0pky"><br>Прожектора<br></td>
+                    <td class="tg-0pky">ТОК/Л-1</td>
+                    <td class="tg-0pky">Ранцевые аппараты</td>
+                    <td class="tg-0pky">Лопаты</td>
+                    <td class="tg-0pky">Хлопушки</td>
+                    <td class="tg-0pky">Спасательные веревки</td>
+                    <td class="tg-0pky">Пенообразователя</td>
+                    <td class="tg-0pky">Уличный<br></td>
+                    <td class="tg-0pky">Объектовый<br></td>
+                    <td class="tg-0pky">ПВ</td>
+                    <td class="tg-0pky">Бензин</td>
+                    <td class="tg-0pky">Дизель</td>
+                    <td class="tg-0pky">Бензин</td>
+                    <td class="tg-0pky">Дизель</td>
                 </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
-                <tr>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                    <td class="tg-0pky"></td>
-                </tr>
+                {% for dept in departments %}
+
+                    <tr>
+                        <td>{{ dept.title }}</td>
+
+                        {% for tch in tech_fields2 %}
+                            <td class="tg-0pky">{{ tech[dept.id][tch]|default('-') }}</td>
+                        {% endfor %}
+                        <td class="tg-0pky">{{ tech[dept.id].head_guard.name|default('-') }}</td>
+                        <td>
+                            <b>
+                                {{ tech_items_count.tech_action|default('0') }}
+                            </b>
+                        </td>
+                        <td>
+                            <b>
+                                {{ tech_items_count.tech_action|default('0') }}
+                            </b>
+                        </td>
+                        <td>
+                            <b>
+                                {{ tech_items_count.tech_reserve|default('0') }}
+                            </b>
+                        </td>
+                        <td>
+                            <b>
+                                {{ tech_items_count.tech_reserve|default('0') }}
+                            </b>
+                        </td>
+                        <td>
+                            <b>
+                                {{ tech_items_count.tech_repair|default('0') }}
+                            </b>
+                        </td>
+                        <td>
+                            <b>
+                                {{ tech_items_count.tech_repair|default('0') }}
+                            </b>
+                        </td>
+                        {% for item in ttl_count %}
+                            <td>
+                                <b>
+                                    {{ item }}
+                                </b>
+                            </td>
+                        {% endfor %}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                        {#<td class="tg-0pky"></td>#}
+                    </tr>
+                {% endfor %}
+
             </table>
         </div>
     </div>

@@ -16,11 +16,15 @@ use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Spipu\Html2Pdf\Html2Pdf;
 
 class FormationController extends AuthorizedController
 {
@@ -195,8 +199,12 @@ class FormationController extends AuthorizedController
         $formationReport = FormationReport::find($form_id);
         $canEditReport = $formationReport->canEditReport();
 
+        if($formationReport->is_approved){
+            $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
+        }
+
         if(!$canEditReport){
-//            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
         }
 
         $model = FormationTechReport::updateOrCreate([
@@ -255,7 +263,7 @@ class FormationController extends AuthorizedController
         ];
 
         $tech_fieldlist = [
-            null,
+//            null,
             'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
@@ -335,7 +343,7 @@ class FormationController extends AuthorizedController
             'gas_smoke_protection_service'
         ];
         $tech_fields = [
-            null,
+//            null,
             null,
             'motor_water_pump',
             'motor_mud_pump',
@@ -427,36 +435,46 @@ class FormationController extends AuthorizedController
         }
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+        $user = Auth::user();
 
-//        $html = view('pdf/formation-report', [
-//            'people' => $people,
-//            'tech' => $tech,
-//            'people_fields' => $people_fields,
-//            'tech_fields' => $tech_fields,
-//            'tech_fields2' => $tech_fields2,
-//            'people_fl' => $people_fieldlist,
-//            'tech_fl' => $tech_fieldlist,
-//            'tech_items_count' => $tech_items_count,
-//            'ttl_count' => $ttl_count,
-//            'sumArray' => $sumArray,
-//            'departments' => $departments,
-//            'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
-//            'report' => FormationReport::find($form_id),
-//        ])->render();
-//
+        $dataToReport = [
+            'people' => $people,
+            'tech' => $tech,
+            'people_fields' => $people_fields,
+            'tech_fields' => $tech_fields,
+            'tech_fields2' => $tech_fields2,
+            'people_fl' => $people_fieldlist,
+            'tech_fl' => $tech_fieldlist,
+            'tech_items_count' => $tech_items_count,
+            'ttl_count' => $ttl_count,
+            'sumArray' => $sumArray,
+            'departments' => $departments,
+            'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
+            'report' => FormationReport::find($form_id),
+        ];
+
+        Cache::put('report101_data', $dataToReport, 3600);
+
+//        $html = view('pdf/formation-report', $dataToReport);
+
 //        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
 //        $date = date('d-m-Y');
 //        $file_name = "Суточный отчет - $date.pdf";
-//
+
 //        $dompdf = new Dompdf();
 //        $dompdf->loadHTML($html, 'UTF-8');
 //        $dompdf->setPaper('A4', 'landscape');
 //        $dompdf->render();
 //        $dompdf->stream($file_name);
 
+//        $html2pdf = new Html2Pdf('L');
+//        $html2pdf->writeHTML($html);
+//        $html2pdf->output('fff.pdf');
+
 
         $this->set('people', $people)
             ->set('tech', $tech)
+            ->set('user', $user)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)
             ->set('tech_fields2', $tech_fields2)
@@ -683,6 +701,20 @@ class FormationController extends AuthorizedController
         return redirect('/formation/savers/resources/' . $parent_id)->with('_message', [
             'type' => 'success',
             'text' => "Успешно сохранено",
+        ]);
+    }
+
+    public function postApproveReport101($id)
+    {
+        $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
+
+        $report = FormationReport::find($id);
+        $report->is_approved = true;
+        $report->save();
+
+        return back()->with('_message', [
+            'type' => 'success',
+            'text' => "Успешно утверждено",
         ]);
     }
 

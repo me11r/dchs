@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('101', 'FormationController@get101');
         Route::get('addToday', 'FormationController@getAddToday');
         Route::post('addToday', 'FormationController@postAddToday');
+        Route::post('approve101/{id}', 'FormationController@postApproveReport101');
         Route::get('add101persons/{form_id}/{dept_id?}', 'FormationController@getAdd101Persons')
             ->where('form_id', '[0-9]+')
             ->where('dept_id', '[0-9]+')
@@ -140,6 +141,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->where('row_id', '[0-9]+');
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
+    Route::get('/pdf/report101', 'ReportController@getReport101')->name('report101');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');

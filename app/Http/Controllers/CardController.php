@@ -16,6 +16,7 @@ use App\Models\OperationalPlan;
 use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
+use App\Models\WallMaterial;
 use App\Ticket101;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +78,7 @@ class CardController extends AuthorizedController
             ' - П. 17',
         ];
         $ssv_out = FireDepartment::all();
+        $wall_materials = WallMaterial::all();
         if($card_id != 0){
             foreach ($ssv_out as $key => $item) {
                 $ssv_out[$key]->res = $item->results()->where('ticket101_id', $card_id)->first();
@@ -85,6 +87,7 @@ class CardController extends AuthorizedController
 
         $dep_results = FireDepartmentResult::all();
 
+        $this->set('wall_materials', $wall_materials);
         $this->set('ssv_out', $ssv_out);
         $this->set('dep_results', $dep_results);
         $this->set('gu_notify', $gu_notify);
