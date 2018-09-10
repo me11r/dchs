@@ -115,7 +115,7 @@ class FormationController extends AuthorizedController
 
         $formationReport = FormationReport::find($form_id);
         $canEditReport = $formationReport->canEditReport();
-        if(!$canEditReport){
+        if(!$canEditReport && Auth::id() != 1){
             return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
         }
 
@@ -129,6 +129,8 @@ class FormationController extends AuthorizedController
         }
         $all = [
             'total' => $request->total,
+            'form_id' => $form_id,
+            'dept_id' => $dept_id,
             'active' => $request->total_active,
             'head_guards' => count($request->input('staff.head_guards', [])),
             'commander_squads' => count($request->input('staff.commander_squads', [])),
@@ -203,7 +205,7 @@ class FormationController extends AuthorizedController
             $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
         }
 
-        if(!$canEditReport){
+        if(!$canEditReport && Auth::id() != 1){
             return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
         }
 
