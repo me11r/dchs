@@ -47,6 +47,8 @@ class Right extends Model
     public const CAN_ACCESS_FORMATION_DCHS_ALMATY = 18;
     public const CAN_ACCESS_FORMATION_EMERGENCY_ALMATY = 19;
 
+    public const CAN_APPROVE_FORMATION_REPORT_101 = 20;
+
     protected $table = 'rights';
     protected $fillable = ['title', 'right_group_id'];
 
