@@ -81,6 +81,12 @@
                 </td>
                 <td>{{ trip.ticket.floor|default('-') }}</td>
             </tr>
+            {% if trip.ticket.operational_plan_id %}
+                <tr>
+                    <td class="has-text-right is-bold">№ оперативного плана</td>
+                    <td>{{ trip.ticket.operational_plan.name|default('') }}</td>
+                </tr>
+            {% endif %}
             <tr>
                 <td class="has-text-right is-bold">Конструктивные особенности</td>
                 <td>{{ trip.ticket.building_description|default('') }}</td>
