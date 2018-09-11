@@ -109,6 +109,11 @@
                             Транспортные средства</a>
                         <a
                             v-if="hasRight(10)"
+                            href="/staff"
+                            class="dropdown-item is-small"><i class="fas fa-child"></i>&nbsp;
+                            Личный состав</a>
+                        <a
+                            v-if="hasRight(10)"
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire"></i>&nbsp;
                             Пожарные части</a>

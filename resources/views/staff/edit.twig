@@ -1,0 +1,52 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" xmlns="http://www.w3.org/1999/html">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="{{ record is defined ? route('staff.update', {'id':record.id}) : route('staff.store')}}" method="post">
+                    {% if record is defined %}
+                        {{  method_field('PUT') }}
+                    {% endif %}
+                    {{ csrf_field() }}
+                    <div class="field">
+                        <label for="name">Ф.И.О.</label>
+                        <input type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="number">Дата рождения (дд.мм.гггг)</label>
+                        <input type="text" class="input" name="date_birth" id="date_birth" value="{{ attribute(record, 'date_birth')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="number">Звание</label>
+                        <input type="text" class="input" name="rank" id="rank" value="{{ attribute(record, 'rank')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="number">Должность</label>
+                        <input type="text" class="input" name="position" id="position" value="{{ attribute(record, 'position')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">ПЧ</label><br>
+                        <select class="select" name="department_id" id="department_id" required>
+                            {% for fire_department in fire_departments %}
+                                <option value="{{ fire_department.id }}" {% if fire_department.id == attribute(record, 'department_id')|default('') %}selected{% endif %}>{{ fire_department.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="name">Статус</label><br>
+                        <select class="select" name="status" id="status" required>
+                            {% for key, status in statuses %}
+                                <option value="{{ key }}" {% if key == attribute(record, 'status')|default('') %}selected{% endif %}>{{ status }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="{{ url('/staff') }}" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
