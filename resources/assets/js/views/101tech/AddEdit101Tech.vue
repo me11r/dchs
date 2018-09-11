@@ -97,6 +97,10 @@ export default {
             type: String,
             default: ''
         },
+        fire_dep_id: {
+            type: String,
+            default: ''
+        },
         vehicles: {
             type: Array,
             default: () => []
@@ -112,6 +116,7 @@ export default {
             trunks: [],
             block_type_: this.block_type,
             vehicles_: this.vehicles,
+            fire_dep_id_: this.fire_dep_id,
             report_id_: this.report_id
         };
     },
@@ -167,7 +172,8 @@ export default {
             axios.get('/api/101/get-tech', {
                 params: {
                     status: self.block_type_,
-                    id: self.report_id_
+                    id: self.report_id_,
+                    fire_dep_id: self.fire_dep_id_
                 }
             }).then((resp) => {
                 self.records_ = resp.data;
