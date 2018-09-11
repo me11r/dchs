@@ -35,7 +35,7 @@ class Hydrant extends Model
 {
     public $table = 'hydrants';
 
-    public $fillable = ['address', 'specification', 'fire_department_id', 'lat', 'long', 'number', 'active'];
+    public $fillable = ['address', 'specification', 'fire_department_id', 'lat', 'long', 'number', 'active', 'correction_date', 'operator_name'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
