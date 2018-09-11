@@ -47,13 +47,7 @@
             <div class="panels">
                 <div id="tab_call" class="is-hidden">
                     <h5 class="subtitle">Сведения поступившие со звонком:</h5>
-                    {% if ticket.id %}
-                        <div class="level is-marginless">
-                            <div class="level-left">
-                                <label>Номер КУИ:</label>&nbsp;{{ ticket.id }}
-                            </div>
-                        </div>
-                    {% endif %}
+
                     <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
                         <label for="location">Место пожара (Адрес) <a href="{{ url('/card/mapscreen') }}"
                                                                       target="_blank"
@@ -542,6 +536,16 @@
                     </div>
                 </div>
                 <div id="tab_summary" class="is-hidden">
+
+                    <div class="control">
+                        <label for="kui">Номер КУИ:
+                        </label>
+                        {% if ticket.kui is defined %}
+                            <input type="text" class="input" name="kui" id="kui" value="{{ ticket.kui|default('') }}"/>
+                        {% else %}
+                            <input type="text" class="input" name="kui" id="kui" value="{{ ticket.id|default('') }}"/>
+                        {% endif %}
+                    </div>
                     <div class="field">
                         <label for="detailed_address">Уточненный адрес</label>
                         <textarea name="detailed_address" id="detailed_address" cols="30" rows="3"
