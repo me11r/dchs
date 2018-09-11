@@ -9,6 +9,7 @@
 namespace App;
 
 
+use App\Models\FormationPersonsItem;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -80,5 +81,10 @@ class FormationPersonsReport extends Model
     public function scopeTodayRecords($q)
     {
         return $q->whereDate('created_at', date('Y-m-d'));
+    }
+
+    public function formation_person_items()
+    {
+        return $this->hasMany(FormationPersonsItem::class, 'report_id');
     }
 }

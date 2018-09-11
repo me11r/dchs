@@ -243,6 +243,8 @@ class FormationController extends AuthorizedController
             'tech_repair' => 0,
         ];
 
+        $dept13_people = [];
+
         $people_fieldlist = [
             'В карауле по списку л/с',
             'На лицо личного состава' => [
@@ -384,14 +386,24 @@ class FormationController extends AuthorizedController
         ];
 
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
-        $departments = FireDepartment::whereNotIn('id', $excludedIds)->get();
+//        $departments = FireDepartment::whereNotIn('id', $excludedIds)->get();
+        $departments = FireDepartment::all();
 
         $this->set('departments', $departments);
         $this->set('excluded_departments', FireDepartment::whereIn('id', $excludedIds)->get());
 
         $this->set('report', (new FormationReport)->find($form_id));
         $tech = (new FormationTechReport)->with('formation_tech_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
-        $people = (new FormationPersonsReport)->where('form_id', $form_id)->get()->keyBy('dept_id');
+        $people = (new FormationPersonsReport)->with('formation_person_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
+
+        // лс ПЧ-13
+        if(isset($people[13])){
+            foreach ($people[13]->formation_person_items as $item) {
+                if($item->status == 'active'){
+                    $dept13_people[$item->rank][] = $item->staff;
+                }
+            }
+        }
 
         foreach ($departments as $key => $dep) {
             if(isset($tech[$dep->id]) && $tech[$dep->id]->formation_tech_items->count()){
@@ -476,6 +488,7 @@ class FormationController extends AuthorizedController
 
         $this->set('people', $people)
             ->set('tech', $tech)
+            ->set('dept13_people', $dept13_people)
             ->set('user', $user)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)
