@@ -1,0 +1,45 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <h4 style="" class="title">Список ЛС</h4>
+            <div class="level-right has-text-right">
+                <a href="{{ route('staff.create') }}" class="button is-success"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+            </div>
+            <table class="table is-narrow is-hoverable is-selectable">
+                <thead>
+                <tr>
+                    <th>Ф.И.О.</th>
+                    <th>Звание</th>
+                    <th>Должность</th>
+                    <th>ПЧ</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {% for item in items %}
+                    <tr>
+                        <td><i class="fas fa-list-ol"></i>&nbsp;{{ item.name }}</td>
+                        <td>{{ item.rank }}</td>
+                        <td>{{ item.position }}</td>
+                        <td>{{ item.department.name ?? '' }}</td>
+                        <td>
+                            <a class="button is-outlined is-small" href="{{ route('staff.edit', {'id':item.id}) }}">
+                                <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+
+                            <form method="post" action="{{ route('staff.destroy', {'id':item.id}) }}">
+                                {{ csrf_field() }}
+                                {{  method_field('DELETE') }}
+                                <button onclick="return confirm('Удалить запись?');" class="button is-outlined is-small">
+                                    <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <li><h3 class="is-danger">Нет ЛС</h3></li>
+                {% endfor %}
+            </table>
+            {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+
+        </div>
+    </div>
+{% endblock content %}

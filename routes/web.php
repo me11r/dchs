@@ -150,6 +150,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/weather', 'WeatherController');
     Route::resource('/quakes', 'QuakeController');
     Route::resource('/vehicles', 'VehicleController');
+    Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
 
 
