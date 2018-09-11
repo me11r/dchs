@@ -187,7 +187,7 @@ class FormationController extends AuthorizedController
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
             ->set('staff', $staff)
-            ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->get())
+            ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->where('fire_department_id',$dept_id)->get())
             ->set('dept_id', $dept_id);
 
     }
