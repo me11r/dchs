@@ -61,6 +61,7 @@ export default class YandexMapsBus {
                                 if (districtModel) {
                                     window.localStorage.setItem(AREA_ID_FOUND, districtModel.id);
                                     globalBus.$emit(AREA_ID_FOUND, districtModel.id);
+                                    globalBus.$emit('city_area_selected', districtModel);
                                 }
                             }
                         });

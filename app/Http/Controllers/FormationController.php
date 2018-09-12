@@ -13,6 +13,7 @@ use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
 use App\Models\FormationPersonsItem;
+use App\Models\FormationRecord;
 use App\Models\FormationTechItem;
 use App\Models\Staff;
 use App\Models\Vehicle;
@@ -506,11 +507,27 @@ class FormationController extends AuthorizedController
         $formation_person_reports = FormationPersonsReport::todayRecords()->count();
         $formation_medical_reports = FormationMedicalReport::todayRecords()->count();
         $formation_mudflow_reports = FormationMudflowReport::todayRecords()->count();
+        $formation_savers_reports = FormationSaversReport::todayRecords()->count();
+
+        $medical_filled = FormationRecord::todayRecord('medical')->filled()->count();
+        $mudflow_filled = FormationRecord::todayRecord('mudflow')->filled()->count();
+        $savers_filled = FormationRecord::todayRecord('roso')->filled()->count();
+        $air_filled = FormationRecord::todayRecord('air_rescue')->filled()->count();
+        $ort_sert_filled = FormationRecord::todayRecord('ort_sert')->filled()->count();
+        $emergency_filled = FormationRecord::todayRecord('emergency_almaty')->filled()->count();
 
         $this->set('formation_tech_reports', $formation_tech_reports);
         $this->set('formation_person_reports', $formation_person_reports);
         $this->set('formation_medical_reports', $formation_medical_reports);
         $this->set('formation_mudflow_reports', $formation_mudflow_reports);
+        $this->set('formation_savers_reports', $formation_savers_reports);
+
+        $this->set('medical_filled', $medical_filled);
+        $this->set('mudflow_filled', $mudflow_filled);
+        $this->set('savers_filled', $savers_filled);
+        $this->set('air_filled', $air_filled);
+        $this->set('ort_sert_filled', $ort_sert_filled);
+        $this->set('emergency_filled', $emergency_filled);
     }
 
     public function getMudflow(Request $request)
@@ -724,12 +741,20 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
 
         $report = FormationReport::find($id);
-        $report->is_approved = true;
+
+        if($report->is_approved ?? Auth::id() == 1){
+            $report->is_approved = false;
+            $text = "Утверждение отменено";
+        }
+        else{
+            $report->is_approved = true;
+            $text = "Успешно утверждено";
+        }
         $report->save();
 
         return back()->with('_message', [
             'type' => 'success',
-            'text' => "Успешно утверждено",
+            'text' => $text,
         ]);
     }
 

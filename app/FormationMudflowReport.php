@@ -50,4 +50,14 @@ class FormationMudflowReport extends Model
     {
         return $q->whereDate('report_date', date('Y-m-d'));
     }
+
+    public function scopeWhereFilled($q)
+    {
+        return $q->where('formation', '!=', null)
+            ->where('position', '!=', null)
+            ->where('name', '!=', null)
+            ->where('nickname', '!=', null)
+            ->where('phone', '!=', null)
+            ->where('resources', '!=', null);
+    }
 }

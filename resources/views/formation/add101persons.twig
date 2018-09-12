@@ -126,7 +126,7 @@
             </fieldset>
             <div class="field"><label for="field_1">ГДЗС</label>
                 <div class="control">
-                    <input type="number" step="1" data-value="" name="gas_smoke_protection_service" id="gas_smoke_protection_service" value="{{ model.gas_smoke_protection_service ?? 0 }}"
+                    <input min=0 oninput="validity.valid||(value='');" type="number" step="1" data-value="" name="gas_smoke_protection_service" id="gas_smoke_protection_service" value="{{ model.gas_smoke_protection_service ?? 0 }}"
                                             class="input add101persons-input">
                 </div>
             </div>

@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Formation\Operations[] $operations
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Formation\Resources[] $resources
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationSaversReport whereReportDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationMudflowReport todayRecords()
+
  */
 class FormationSaversReport extends Model
 {
@@ -62,5 +64,25 @@ class FormationSaversReport extends Model
     public function resources()
     {
         return $this->hasMany(Formation\Resources::class);
+    }
+
+    public function scopeTodayRecords($q)
+    {
+        return $q->whereDate('report_date', date('Y-m-d'));
+    }
+
+    public function scopeWhereFilled($q)
+    {
+        return $q->where('saved_people', '!=', 0)
+            ->where('saved_people', '!=', 0)
+            ->where('saved_children', '!=', 0)
+            ->where('fires', '!=', 0)
+            ->where('ignitions', '!=', 0)
+            ->where('emergencies', '!=', 0)
+            ->where('rescues', '!=', 0)
+            ->where('searches', '!=', 0)
+            ->where('others', '!=', 0)
+            ->where('false_calls', '!=', 0)
+            ->where('total', '!=', 0);
     }
 }
