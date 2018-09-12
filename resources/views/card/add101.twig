@@ -294,12 +294,12 @@
                     <div class="field is-grouped">
                         <p class="control">
                             <label for="storey_count">Этажность</label>
-                            <input type="number" class="input" name="storey_count" id="storey_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="storey_count" id="storey_count"
                                    value="{{ ticket.storey_count|default('') }}"/>
                         </p>
                         <p class="control">
                             <label for="floor">На каком этаже пожар</label>
-                            <input type="number" class="input" name="floor" id="floor"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="floor" id="floor"
                                    value="{{ ticket.floor|default('') }}"/>
                         </p>
                     </div>
@@ -623,7 +623,7 @@
                         </div>
                         <div class="control">
                             <label for="square_max">Площадь пожара</label>
-                            <input class="input" type="number" id="square_max" value="{{ max_square }}">
+                            <input min=0 oninput="validity.valid||(value='');" class="input" type="number" id="square_max" value="{{ max_square }}">
                         </div>
                         <div class="control">
                             <span class="field">м<sup><small>2</small></sup></span>
@@ -660,26 +660,26 @@
                         <div class="control">
                             <label for="rescued_count">Спасено людей
                             </label>
-                            <input type="number" class="input" name="rescued_count" id="rescued_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="rescued_count" id="rescued_count"
                                    value="{{ ticket.rescued_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="evac_count">Эвакуировано людей
                             </label>
-                            <input type="number" class="input" name="evac_count" id="evac_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="evac_count" id="evac_count"
                                    value="{{ ticket.evac_count|default('') }}"/>
                         </div>
 
                         <div class="control">
                             <label for="co2_poisoned_count">Получили отравления угарным газом
                             </label>
-                            <input type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count"
                                    value="{{ ticket.co2_poisoned_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="ch4_poisoned_count">Получили отравления природным газом
                             </label>
-                            <input type="number" class="input" name="ch4_poisoned_count" id="ch4_poisoned_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="ch4_poisoned_count" id="ch4_poisoned_count"
                                    value="{{ ticket.ch4_poisoned_count|default('') }}"/>
                         </div>
 
@@ -688,26 +688,26 @@
                         <div class="control">
                             <label for="gpt_burns_count">Получили ожоги
                             </label>
-                            <input type="number" class="input" name="gpt_burns_count" id="gpt_burns_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="gpt_burns_count" id="gpt_burns_count"
                                    value="{{ ticket.gpt_burns_count|default('') }}"/>
                         </div>
 
                         <div class="control">
                             <label for="people_death_count">Гибель людей
                             </label>
-                            <input type="number" class="input" name="people_death_count" id="people_death_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="people_death_count" id="people_death_count"
                                    value="{{ ticket.people_death_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="children_death_count">Гибель детей
                             </label>
-                            <input type="number" class="input" name="children_death_count" id="children_death_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="children_death_count" id="children_death_count"
                                    value="{{ ticket.children_death_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="hospitalized_count">Госпитализировано
                             </label>
-                            <input type="number" class="input" name="hospitalized_count" id="hospitalized_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="hospitalized_count" id="hospitalized_count"
                                    value="{{ ticket.hospitalized_count|default('') }}"/>
                         </div>
                     </div>
@@ -741,7 +741,7 @@
                         <div class="control">
                             <label for="distance">Расстояние до места
                             </label>
-                            <input type="number" class="input" name="distance" id="distance"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="distance" id="distance"
                                    value="{{ ticket.distance|default('') }}"/>
                         </div>
                     </div>

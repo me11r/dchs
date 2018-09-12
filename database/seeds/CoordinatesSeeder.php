@@ -12,7 +12,8 @@ class CoordinatesSeeder extends Seeder
     public function run()
     {
         $geo = new \App\Services\GeoService();
-        $totalCount = \App\Models\Building::all()->count();
+        $totalCount = \App\Models\Building::whereNull('lat')->count();
+        $this->command->line("Records to process:{$totalCount}");
         foreach (\App\Models\Building::all() as $key => $item) {
             $address = '';
             $address .= $item->city_area->name.' район ';

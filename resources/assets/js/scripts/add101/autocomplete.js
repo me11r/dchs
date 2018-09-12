@@ -2,6 +2,8 @@ import axios from 'axios';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import {_} from 'vue-underscore';
+import {globalBus} from "../global-bus";
+import {AREA_ID_FOUND} from "../../config/storage-keys";
 
 export default function bindAutocomplete() {
     const autoc = document.querySelectorAll('[data-component="autocomplete"]');
@@ -35,7 +37,8 @@ export default function bindAutocomplete() {
                     axios.get('/ajax/street/' + areaId + '/?q=' + this.name)
                         .then((response) => {
                             const data = response.data;
-                            data.forEach((item) => {
+
+                            data.streets.forEach((item) => {
                                 this.data.push(item);
                             });
                             this.isFetching = false;

@@ -7,7 +7,7 @@
             <th>#</th>
             <th>Служба взаимодействия</th>
             <th>-</th>
-            <th>-</th>
+            <th>Статус</th>
         </tr>
         </thead>
         <tbody>
@@ -21,11 +21,9 @@
                 <td>
                     <label>
                         {% if formation_tech_reports > 0 and formation_person_reports > 0 %}
-                            <input type="checkbox" disabled checked >
-                            {#Строевые записки заполнены#}
+                            <p>Заполнена</p>
                         {% else %}
-                            <input type="checkbox" disabled >
-                            {#Строевые записки не заполнены#}
+                            <p>Не заполнена</p>
                         {% endif %}
                     </label>
                 </td>
@@ -39,12 +37,10 @@
                 <td><a href="{{ url('formation-record/mudflow') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
                 <td>
                     <label>
-                        {% if formation_mudflow_reports > 0 %}
-                            <input type="checkbox" disabled checked >
-                            {#Строевые записки заполнены#}
+                        {% if mudflow_filled > 0 %}
+                            <p>Заполнена</p>
                         {% else %}
-                            <input type="checkbox" disabled >
-                            {#Строевые записки не заполнены#}
+                            <p>Не заполнена</p>
                         {% endif %}
                     </label>
                 </td>
@@ -55,6 +51,15 @@
                 <td>3</td>
                 <td>ГУ «РОСО КЧС МВД РК»</td>
                 <td><a href="{{ url('formation/savers') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td>
+                    <label>
+                        {% if savers_filled > 0 %}
+                            <p>Заполнена</p>
+                        {% else %}
+                            <p>Не заполнена</p>
+                        {% endif %}
+                    </label>
+                </td>
             </tr>
         {% endif %}
         {% if _user.hasRight(14) %}
@@ -63,6 +68,15 @@
                 <td>ГУ «Центр медицины катастроф»</td>
                 {#<td><a href="{{ url('formation/medical') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>#}
                 <td><a href="{{ url('formation-record/medical') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td>
+                    <label>
+                        {% if medical_filled > 0 %}
+                            <p>Заполнена</p>
+                        {% else %}
+                            <p>Не заполнена</p>
+                        {% endif %}
+                    </label>
+                </td>
             </tr>
         {% endif %}
         {% if _user.hasRight(16) %}
@@ -70,6 +84,15 @@
                 <td>5</td>
                 <td>АО "Казавиаспас"</td>
                 <td><a href="{{ url('formation-record/air_rescue') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td>
+                    <label>
+                        {% if air_filled > 0 %}
+                            <p>Заполнена</p>
+                        {% else %}
+                            <p>Не заполнена</p>
+                        {% endif %}
+                    </label>
+                </td>
             </tr>
         {% endif %}
         {% if _user.hasRight(17) %}
@@ -77,6 +100,15 @@
                 <td>6</td>
                 <td>АО "Өртсөндіруші"</td>
                 <td><a href="{{ url('formation-record/ort_sert') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td>
+                    <label>
+                        {% if ort_sert_filled > 0 %}
+                            <p>Заполнена</p>
+                        {% else %}
+                            <p>Не заполнена</p>
+                        {% endif %}
+                    </label>
+                </td>
             </tr>
         {% endif %}
         {% if _user.hasRight(18) %}
@@ -84,6 +116,15 @@
                 <td>7</td>
                 <td>ДЧС г.Алматы</td>
                 <td><a href="{{ url('formation-record') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td>
+                    <label>
+                        {% if emergency_filled > 0 %}
+                            <p>Заполнена</p>
+                        {% else %}
+                            <p>Не заполнена</p>
+                        {% endif %}
+                    </label>
+                </td>
             </tr>
         {% endif %}
 

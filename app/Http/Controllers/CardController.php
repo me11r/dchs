@@ -92,7 +92,7 @@ class CardController extends AuthorizedController
         $this->set('dep_results', $dep_results);
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
-        $this->set('city_area', CityArea::all());
+        $this->set('city_area', CityArea::with(['fire_departments'])->get());
         $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
         $this->set('burn_object', BurntObject::all());

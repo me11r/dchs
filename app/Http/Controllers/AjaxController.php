@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary\Street;
+use App\FireDepartment;
 use App\Models\Building;
 use App\Models\SpecialPlan;
 use App\RoadtripPlan;
@@ -32,7 +33,12 @@ class AjaxController extends AuthorizedController
             ->limit(30);
 
         $streets = $streets->get();
-        return response()->json($streets, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        $fireDept = FireDepartment::where('cit_area_id', $area_id)->first();
+        $result = [
+            'streets' => $streets,
+            'fireDept' => $fireDept,
+        ];
+        return response()->json($result, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function findSpecialPlan(Request $request)

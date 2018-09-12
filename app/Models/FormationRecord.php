@@ -64,4 +64,34 @@ class FormationRecord extends Model
     {
         return FormationOrganisation::getNameByType($this->organisation);
     }
+
+    public function scopeTodayRecord($q, $organisation)
+    {
+        return $q->whereDate('date', date('Y-m-d'))
+            ->where('organisation', $organisation);
+    }
+
+    public function scopeFilled($q)
+    {
+        return $q
+            ->whereNotNull('field_1_0_0')
+            ->whereNotNull('field_2_0_0')
+            ->whereNotNull('field_2_1_0')
+            ->whereNotNull('field_2_2_0')
+            ->whereNotNull('field_3_0_0')
+            ->whereNotNull('field_3_0_1')
+            ->whereNotNull('field_3_1_0')
+            ->whereNotNull('field_3_1_1')
+            ->whereNotNull('field_3_2_0')
+            ->whereNotNull('field_3_2_1')
+            ->whereNotNull('field_3_3_0')
+            ->whereNotNull('field_3_3_1')
+            ->whereNotNull('field_4_0_0')
+            ->whereNotNull('field_4_1_0')
+            ->whereNotNull('field_5_0_0')
+            ->whereNotNull('field_6_0_0')
+            ->whereNotNull('field_7_0_0')
+            ->whereNotNull('field_8_0_0')
+            ;
+    }
 }

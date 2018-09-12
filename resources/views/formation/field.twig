@@ -9,7 +9,7 @@
             <div class="field">
                 <label for="field{{ prefix }}_{{ index }}">{{ field }}</label>
                 <div class="control">
-                    <input type="number"
+                    <input type="number" min=0 oninput="validity.valid||(value='');"
                            :readonly="isReadonly('{{ prefix }}', '{{ index }}')"
                            step="1"
                            data-value="{{ attribute(model, 'field' ~  prefix ~'_'~ index ) }}"

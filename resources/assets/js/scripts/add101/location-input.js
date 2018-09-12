@@ -45,12 +45,14 @@ export default function bindLocationInputApp() {
                     // todo: $emit не работает глобально?
                     // this.$emit('building_found', items.building.object_type_id);
 
-                    console.dir({
-                        object_type: items.building.object_type.name,
-                        street_name: items.building.street.name,
-                        home_number: items.building.building_number,
-                        city_area: items.building.city_area.name
-                    });
+                    // console.dir({
+                    //     object_type: items.building.object_type.name,
+                    //     street_name: items.building.street.name,
+                    //     home_number: items.building.building_number,
+                    //     city_area: items.building.city_area.name,
+                    //     items: items
+                    // });
+
                     document.getElementById('wall_material_id').value = items.building.wall_material_id;
                     document.getElementById('fire_object_id').value = items.building.object_type_id;
                     document.getElementById('square').value = items.building.square;
@@ -123,7 +125,7 @@ export default function bindLocationInputApp() {
             },
             notifyMap() {
                 // window.localStorage.setItem(LOCATION_EXCHANGE_KEY, this.location);
-                if (this.location.length > 0){
+                if (this.location.length > 0) {
                     this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.location);
                 }
             }
