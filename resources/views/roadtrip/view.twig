@@ -50,6 +50,10 @@
                 <td>{{ trip.ticket.object_name|default('-') }}</td>
             </tr>
             <tr>
+                <td class="has-text-right is-bold">Состав высылаемых сил и средств</td>
+                <td>{{ trip.result.departments|default('-') }}</td>
+            </tr>
+            <tr>
                 <td class="has-text-right is-bold">Телефон заявителя</td>
                 <td>{{ trip.ticket.caller_phone|default('-') }}</td>
             </tr>

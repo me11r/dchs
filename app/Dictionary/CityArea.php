@@ -9,6 +9,7 @@
 namespace App\Dictionary;
 
 
+use App\FireDepartment;
 use App\Models\CityMicroArea;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -42,5 +43,10 @@ class CityArea extends Model
     public function city_micro_areas()
     {
         return $this->hasMany(CityMicroArea::class, 'city_area_id');
+    }
+
+    public function fire_departments()
+    {
+        return $this->hasMany(FireDepartment::class, 'city_area_id');
     }
 }
