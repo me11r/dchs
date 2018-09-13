@@ -26,6 +26,7 @@
     <div id="notification" class="notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
 {% endif %}
 {% block content %}{% endblock content %}
+<div id="roadtrip_notifier"></div>
 <script src="{{ mix('assets/app.js') }}"></script>
 <script>
     window.addEventListener('load', () => {
@@ -44,6 +45,5 @@
         transition: opacity ease-out 5s;
     }
 </style>
-<div id="roadtrip-notifier"></div>
 </body>
 </html>
