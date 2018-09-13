@@ -302,7 +302,8 @@ class FormationController extends AuthorizedController
                 'Переносная радиосатнция',
                 'Электрофонари',
                 'Прожектора',
-                'ТОК/Л-1',
+                'ТОК',
+                'Л-1',
                 'Ранцевые аппараты',
                 'Лопаты',
                 'Хлопушки',
@@ -365,7 +366,8 @@ class FormationController extends AuthorizedController
             'radio_station_portable',
             'flashlight',
             'searchlight',
-            'tok_l1',
+            'tok',
+            'l1',
             'knapsack_devices',
             'shovel',
             'flapper',
@@ -446,7 +448,6 @@ class FormationController extends AuthorizedController
                     }
                 }
             }
-
         }
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
