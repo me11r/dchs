@@ -37,7 +37,7 @@ Vue.component('card112', Card112Form);
 Vue.component('mudflow-protection-form', MudflowProtectionForm);
 Vue.component('hydrants-map', HydrantMapList);
 Vue.component('common-map', CommonMapScreen);
-Vue.component('roadtrip-notifier', RoadtripNotifier);
+// Vue.component('roadtrip-notifier', RoadtripNotifier);
 Vue.component('roadtrip-map', RoadTripViewMap);
 Vue.component('tabs', Tabs);
 Vue.component('persons-101', Add101Persons);
@@ -125,9 +125,9 @@ if (document.getElementById('mudflowProtection-form-block')) {
     });
 }
 
-if (document.getElementById('roadtrip-notifier')) {
+if (document.getElementById('roadtrip_notifier')) {
     new Vue({
-        el: '#roadtrip-notifier',
+        el: '#roadtrip_notifier',
         render: h => h(RoadtripNotifier)
     });
 }
