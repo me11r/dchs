@@ -56,10 +56,10 @@ class RoadtripController extends AuthorizedController
         $plan->result->save();
 
 
-        return redirect(route('roadtrip.plan.view', ['plan_id' => $plan_id]))
+        return back()
             ->with('_message', [
-                'type' => 'sucess',
-                'message' => 'Путевой лист закрыт'
+                'type' => 'success',
+                'text' => 'Путевой лист закрыт'
             ]);
     }
 
@@ -100,12 +100,6 @@ class RoadtripController extends AuthorizedController
                 'departments' => \request('part'),
             ]
         );
-
-
-//        $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
-//        $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
-//        $ticket->{'ph_' . $dept_id . '_ot'} = \request('part');
-//        $ticket->save();
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
             ->with('_message', [
