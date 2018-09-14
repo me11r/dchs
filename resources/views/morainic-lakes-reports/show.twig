@@ -1,0 +1,97 @@
+{% extends "layout/html" %}
+{% block content %}
+    <h4 class="title" style="padding: 3px 15px">Сводная информация по мореным озерам на {{ 'now'|date('Y-m-d') }}</h4>
+    <div class="panel">
+        <table class="formation-record-table">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Наименование озера и абс.высота</th>
+                <th>Первоначальный объём воды, (тыс.куб.м)</th>
+                <th>Текущий объём воды, (тыс.куб.м)</th>
+                <th>Приток воды с ледника, (л/с)</th>
+                <th>Отвод воды через эвак. канал</th>
+                <th>Отвод воды через насосы, (л/сек)</th>
+                <th>Отвод воды через Сифоны, л/с)</th>
+                <th>Всего сброшено воды,(тыс.куб.м) за сутки</th>
+                <th>Всего сброшено воды,(тыс.куб.м) с начала работы</th>
+                <th>Понижение от первоначального уровня, (м).</th>
+                <th>t0 воды</th>
+                <th>t0 воздуха</th>
+                <th>Нулевая изотерма</th>
+                {#<th></th>#}
+            </tr>
+            </thead>
+            {% for item in lakesSummary %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.lake.name ~ ' ' ~ item.lake.altitude }}</td>
+                    <td>{{ item.initial_volume }}</td>
+                    <td>{{ item.current_volume }}</td>
+                    <td>{{ item.inflow_glacier }}</td>
+                    <td>{{ item.drainage_via_evacuation_channel }}</td>
+                    <td>{{ item.drainage_via_pump }}</td>
+                    <td>{{ item.drainage_via_siphon }}</td>
+                    <td>{{ item.water_dropped_day }}</td>
+                    <td>{{ item.water_dropped_total }}</td>
+                    <td>{{ item.lowering_from_initial1 }}</td>
+                    <td>{{ item.lowering_from_initial2 }}</td>
+                    <td>{{ item.temperature_water }}</td>
+                    <td>{{ item.temperature_air }}</td>
+                    <td>{{ item.zero_isotherm }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2" rowspan="2">Всего:</td>
+                <td rowspan="2"><span class="has-text-weight-bold">{{ lakesSumRaw.sum('initial_volume') }}</span></td>
+                <td rowspan="2"><span class="has-text-weight-bold">{{ lakesSumRaw.sum('current_volume') }}</span></td>
+                <td rowspan="2"><span class="has-text-weight-bold">{{ lakesSumRaw.sum('inflow_glacier') }}</span></td>
+                <td>{{ lakesSumRaw.sum('drainage_via_evacuation_channel') }}</td>
+                <td>{{ lakesSumRaw.sum('drainage_via_pump') }}</td>
+                <td>{{ lakesSumRaw.sum('drainage_via_siphon') }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="3">total calc</td>
+                <td>calc</td>
+                <td>calc</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Сравнение с 10.09.18.</td>
+                <td></td>
+                <td>1</td>
+                <td>2</td>
+                <td colspan="3">-</td>
+                <td>3</td>
+                <td>4</td>
+                <td></td>
+                <td></td>
+                <td>5</td>
+                <td></td>
+                <td></td>
+            </tr>
+
+        </table>
+        <form action="/morainic-lakes-reports/{{ date }}/update" method="post">
+            {{ csrf_field() }}
+            <div class="column">
+                <label for="note">Примечание</label>
+                <textarea class="textarea" name="note">{{ note|default('') }}</textarea>
+            </div>
+            <div class="column">
+                <button class="button is-primary">Сохранить</button>
+            </div>
+
+        </form>
+    </div>
+{% endblock content %}
