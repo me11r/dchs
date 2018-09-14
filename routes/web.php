@@ -152,6 +152,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/vehicles', 'VehicleController');
     Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
+    Route::resource('/morainic-lakes', 'MorainicLakeController');
+    Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
+    Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
+    Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

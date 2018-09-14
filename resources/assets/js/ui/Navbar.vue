@@ -117,6 +117,11 @@
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire"></i>&nbsp;
                             Пожарные части</a>
+                        <a
+                            v-if="hasRight(10)"
+                            href="/morainic-lakes"
+                            class="dropdown-item is-small"><i class="fas fa-allergies"></i>&nbsp;
+                            Моренные озера</a>
                     </div>
                 </div>
                 <div

@@ -27,25 +27,30 @@
                 <th>&nbsp;</th>
             </tr>
             </thead>
-            {% for item in items %}
                 <tr>
-                    <td class="has-text-right">{{ loop.index }}</td>
+                    <td class="has-text-right">1</td>
                     <td>
-                        <a href="{{ item.name == 'ГУ Казселезащита' ? route('mudflowProtection.index') :
-                        (item.name == 'РГП Казгидромет' ? route('weather.index') : route('quakes.index'))}}">
-                            {{ item.name }}
-                        </a>
+                        <a href="/mudflowProtection">ГУ Казселезащита</a>
                     </td>
-                    <td class="has-text-right"></td>
                     <td class="has-text-right">
-                        {#<a href="{{ route('information.edit', item.id) }}"#}
-                           {#class="button is-small is-outlined is-primary">#}
-                            {#<i class="fas fa-pencil-alt"></i>&nbsp;#}
-                            {#Редактировать#}
-                        {#</a>#}
+                        <a class="button is-primary" href="/morainic-lakes">Моренные озера</a>
+                        <a class="button is-primary" href="/morainic-lakes-summaries">Гидрометеорологические данные</a>
                     </td>
                 </tr>
-            {% endfor %}
+                <tr>
+                    <td class="has-text-right">2</td>
+                    <td>
+                        <a href="/weather">РГП Казгидромет</a>
+                    </td>
+                    <td class="has-text-right"></td>
+                </tr>
+                <tr>
+                    <td class="has-text-right">3</td>
+                    <td>
+                        <a href="/quakes">ТОО СОМЭ</a>
+                    </td>
+                    <td class="has-text-right"></td>
+                </tr>
         </table>
     </div>
 {% endblock content %}

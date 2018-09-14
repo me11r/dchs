@@ -1,0 +1,166 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="level" style="margin-top: 20px">
+            <div class="level-left">
+                <h4 class="title">Сводная информация по озерам</h4>
+            </div>
+        </div>
+        {#<div class="field">#}
+            {#<p class="control">#}
+                {#<label for="dept_id_selector">Озеро</label>#}
+            {#<div class="select">#}
+                {#<select class="select" name="lake_id_select" id="lake_id_select">#}
+                    {#{% for lake in lakes %}#}
+                        {#<option value="{{ lake.id }}" {% if lake.id == dept_id %}selected{% endif %}>&nbsp;{{ lake.name }}&nbsp;</option>#}
+                    {#{% endfor %}#}
+                {#</select>#}
+            {#</div>#}
+        {#</div>#}
+        <form action="{{ record is defined ? route('morainic-lakes-summaries.update', {'id':record.id}) : route('morainic-lakes-summaries.store')}}" method="post">
+            {% if record is defined %}
+                {{  method_field('PUT') }}
+            {% endif %}
+            {{ csrf_field() }}
+            {#<input type="hidden" name="lake_id" value="{{ lake_id }}"/>#}
+            {#<input type="hidden" name="summary_id" value="{{ summary_id }}"/>#}
+
+            {#{% include "formation/tech.twig" with {model: model} %}#}
+
+            {#{% include "formation/field.twig" with {fields: fieldlist, prefix: ''} %}#}
+            {% for lake in lakes %}
+                <h5 class="title">{{ lake.name }}</h5>
+                <br>
+                <div class="field">
+                    <label for="field_1">Первоначальный объём воды, (тыс.куб.м)</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][initial_volume]" id="initial_volume_{{ lake.id }}" value="{{ model.initial_volume|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Текущий объём воды, (тыс.куб.м)</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][current_volume]" id="current_volume" value="{{ model.current_volume|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Приток воды с ледника, (л/с)</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][inflow_glacier]" id="inflow_glacier" value="{{ model.inflow_glacier|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Отвод воды через эвак. канал</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][drainage_via_evacuation_channel]" id="drainage_via_evacuation_channel" value="{{ model.drainage_via_evacuation_channel|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Отвод воды через насосы, (л/сек)</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][drainage_via_pump]" id="drainage_via_pump" value="{{ model.drainage_via_pump|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Отвод воды через сифоны, л/с)</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][drainage_via_siphon]" id="drainage_via_siphon" value="{{ model.drainage_via_siphon|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Всего сброшено воды,(тыс.куб.м) за сутки</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][water_dropped_day]" id="water_dropped_day" value="{{ model.water_dropped_day|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Всего сброшено воды,(тыс.куб.м) с начала работы</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][water_dropped_total]" id="water_dropped_total" value="{{ model.water_dropped_total|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Понижение от первоначального уровня, (м).</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][lowering_from_initial1]" id="lowering_from_initial1" value="{{ model.lowering_from_initial1|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Понижение от первоначального уровня, (м).</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][lowering_from_initial2]" id="lowering_from_initial2" value="{{ model.lowering_from_initial2|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">t0 воды</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][temperature_water]" id="temperature_water" value="{{ model.temperature_water|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">t0 воздуха</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][temperature_air]" id="temperature_air" value="{{ model.temperature_air|default('') }}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="field_1">Нулевая изотерма</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][zero_isotherm]" id="zero_isotherm" value="{{ model.zero_isotherm|default('') }}">
+                    </div>
+                </div>
+            {% endfor %}
+
+
+
+
+            {#<div class="field">#}
+                {#<label for="field_4">Ф.И.О Начальника караула или лица его подменяющего</label>#}
+                {#<div class="control">#}
+                    {#<select class="select" name="head_guard_id" id="head_guard_id">#}
+                        {#{% for person in staff %}#}
+                            {#<option {{ person.id == model.head_guard_id ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>#}
+                        {#{% endfor %}#}
+                    {#</select>#}
+                    {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
+                {#</div>#}
+            {#</div>#}
+
+            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                    </p>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    {#<script>#}
+        {#window.addEventListener('load', () => {#}
+            {#const selector = document.getElementById('lake_id_select');#}
+            {#const dept_id = '{{ dept_id }}';#}
+            {#selector.addEventListener('change', (e) => {#}
+                {#let location = window.location.pathname.split('/');#}
+                {#location.pop();#}
+                {#location.push(e.target.value);#}
+                {#window.location = location.join('/');#}
+            {#});#}
+        {#});#}
+    {#</script>#}
+{% endblock content %}
