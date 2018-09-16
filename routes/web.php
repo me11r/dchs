@@ -123,6 +123,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
             ->name('roadtrip.plan.view')
             ->where('plan_id', '[0-9]+');
+        Route::get('/print/{id}', 'RoadtripController@getPrint')
+            ->where('id', '[0-9]+')
+            ->name('roadtrip.plan.print');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
         Route::get('/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@getSend')

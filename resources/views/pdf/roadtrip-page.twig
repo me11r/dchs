@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>
+<html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>
+<html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="ru"> <!--<![endif]-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <style>
+        * {
+            font-family: DejaVu Sans;
+        }
+    </style>
+</head>
+<body>
+<div class="page-margin">
+    <div class="level">
+        <div class="level-left">
+            <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
+        </div>
+        <div class="level-right printing-invisible">
+            <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
+        </div>
+    </div>
+    <table class="table is-narrow printing-full-width">
+        {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
+            <tr class="printing-invisible">
+                <td class="has-text-right is-bold">Выезд сил</td>
+                <td>
+-
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td class="has-text-right is-bold">Место пожара (адрес)</td>
+            <td>{{ trip.ticket.location|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Наименование объекта</td>
+            <td>{{ trip.ticket.object_name|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Состав высылаемых сил и средств</td>
+            <td>{{ trip.result.departments|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Телефон заявителя</td>
+            <td>{{ trip.ticket.caller_phone|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Подразделения</td>
+            <td>{{ trip.ticket['ph_' ~ trip.department_id ~'_ot']|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Пересечение улиц</td>
+            <td>{% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Ранг пожара
+            </td>
+            <td>{{ trip.ticket.fire_level.name|default('?') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Объект горения</td>
+            <td>{{ trip.ticket.fire_object.name|default('?') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">
+                Этажность
+            </td>
+            <td>{{ trip.ticket.storey_count|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">На каком этаже горит
+            </td>
+            <td>{{ trip.ticket.floor|default('-') }}</td>
+        </tr>
+        {% if trip.ticket.operational_plan_id %}
+            <tr>
+                <td class="has-text-right is-bold">№ оперативного плана</td>
+                <td>{{ trip.ticket.operational_plan.name|default('') }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td class="has-text-right is-bold">Конструктивные особенности</td>
+            <td>{{ trip.ticket.building_description|default('') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Материал стен</td>
+            <td>{{ trip.ticket.wall_material.name|default('') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Год постройки</td>
+            <td>{{ trip.ticket.year_of_development|default('') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Площадь объекта</td>
+            <td>{{ trip.ticket.building_square|default('') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Наличие угрозы людям</td>
+            <td>{% if trip.ticket.people_in_danger ==1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">ФИО заявителя</td>
+            <td>{{ trip.ticket.caller_name|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Телефон заявителя</td>
+            <td>{{ trip.ticket.caller_phone|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Время получения сообщения о ЧС</td>
+            <td>{{ trip.ticket.created_at|date('d.m.Y H:i') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Время возвращение в ПЧ</td>
+            <td>
+                {% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
+                                       <div class="printing-visible">
+                        &ndash;
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
+            <td>{{ trip.created_at|date('d.m.Y') }}</td>
+        </tr>
+    </table>
+
+    <div id="road-trip-view-yandex-map-block"></div>
+</div>
+</body>
+</html>
