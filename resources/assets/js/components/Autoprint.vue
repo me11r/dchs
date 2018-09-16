@@ -15,9 +15,7 @@ export default {
 
     methods: {
         send: function(data) {
-            axios.post('http://localhost:13800/print/', {
-                data: data
-            }).then(response => {
+            axios.post('http://localhost:13800/print/', data).then(response => {
                 console.log('Repsonse', response);
             });
         }
@@ -25,7 +23,7 @@ export default {
     mounted: function() {
         const url = window.location.pathname.split('/');
         this.id = parseInt(url.pop());
-        axios.get('/roadtrip/print/' + this.id)
+        axios.get('/roadtrip/print/' + this.id, {responseType: 'arraybuffer'})
             .then(response => {
                 this.send(response.data);
             });
