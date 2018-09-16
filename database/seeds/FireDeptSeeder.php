@@ -26,6 +26,7 @@ class FireDeptSeeder extends Seeder
             'ПП-16',
             'ПП-17',
             'СО',
+            'ОД',
 //            'ПЧ-7',
 //            'ПЧ-17',
 //            'ПЧ-8'
