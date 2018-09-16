@@ -25,7 +25,7 @@
                             id="specification"
                             class="textarea"
                             cols="30"
-                            rows="3"
+                            rows="2"
                             required
                             v-model="model.specification"></textarea>
                     </div>
@@ -182,7 +182,7 @@ export default {
 
     .popup-window {
         width: 300px;
-        height: 800px;
+        height: 850px;
         text-align: left;
         padding: 15px;
         position: absolute;

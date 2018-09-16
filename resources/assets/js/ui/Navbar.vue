@@ -150,7 +150,7 @@
                 <div class="navbar-item">
                     <a
                         href="/roadtrip/"
-                        class="button is-inline-block-widescreen is-block is-small">
+                        class="button is-inline-block-widescreen is-block">
                         <i class="fas fa-truck"></i>&nbsp;
                         Путевой лист
                     </a>
@@ -186,7 +186,7 @@
                             name="_token"
                             :value="csrf"><a
                                 @click="logout"
-                                class="is-inline-block-widescreen is-block button is-primary is-outlined is-small">
+                                class="is-inline-block-widescreen is-block button is-primary is-outlined">
                                 <i class="fas fa-door-open"></i>&nbsp;Выход
                             </a>
                     </form>
@@ -273,7 +273,8 @@ export default {
         }
 
         .navbar-link {
-            font-size: .9rem;
+            /*font-size: .9rem;*/
+            font-size: 1.2rem;
         }
 
         .navbar-dropdown {
