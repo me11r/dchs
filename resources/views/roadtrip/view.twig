@@ -145,6 +145,7 @@
         </table>
 
         <div id="road-trip-view-yandex-map-block"></div>
+        <div id="autoprint" data-id="{{ trip.id }}"></div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -153,6 +154,7 @@
                 window.print();
                 e.preventDefault();
             });
+
         });
     </script>
 {% endblock content %}

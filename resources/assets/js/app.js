@@ -26,6 +26,8 @@ import FireObject from './views/FireObject';
 import Add101Persons from './scripts/add101persons/add101persons';
 import Add101Staff from './views/101staff/AddEdit101Staff';
 
+import AutoPrint from './components/Autoprint';
+
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
@@ -80,7 +82,10 @@ if (document.getElementById(hydrantMapListBlock)) {
 const roadTripViewYandexMapBlockId = 'road-trip-view-yandex-map-block';
 if (document.getElementById(roadTripViewYandexMapBlockId)) {
     window.initRoadTripViewMap = () => {
-        new Vue({el: '#' + roadTripViewYandexMapBlockId, render: h => h(RoadTripViewMap)});
+        new Vue({
+            el: '#' + roadTripViewYandexMapBlockId,
+            render: h => h(RoadTripViewMap)
+        });
     };
 }
 
@@ -113,7 +118,8 @@ if (document.getElementById('cardadd101')) {
 }
 
 // Расположение гидрантов на карте (список)
-const add101personsFormElement = document.getElementById('add-101-persons-form');
+const add101personsFormElement = document.getElementById(
+    'add-101-persons-form');
 if (add101personsFormElement) {
     (new Add101Persons()).createApp(add101personsFormElement);
 }
@@ -141,6 +147,13 @@ if (document.getElementById('fire-object-div')) {
 if (document.getElementById('vue')) {
     new Vue({
         el: '#vue'
+    });
+}
+
+if (document.getElementById('autoprint')) {
+    new Vue({
+        el: '#autoprint',
+        render: h => h(AutoPrint)
     });
 }
 
