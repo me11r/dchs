@@ -54,6 +54,9 @@ export default function bindLocationInputApp() {
                     // });
 
                     // document.getElementById('wall_material_id').value = items.building.wall_material.name;
+                    // if (document.getElementById('card-101-form-id').dataset.id !== 0 && document.getElementById('wall_material_id').value !== '') {
+                    // }
+
                     document.getElementById('wall_material_id').value = items.building.wall_material_id;
                     document.getElementById('fire_object_id').value = items.building.object_type_id;
                     document.getElementById('square').value = items.building.square;
