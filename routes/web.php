@@ -160,6 +160,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
 
+    Route::group(['prefix' => 'reports/101', 'as' => 'reports.'], function () {
+        Route::get('/staff', 'ReportController@getReport101Staff')->name('staff');
+        Route::get('/vehicles', 'ReportController@getReport101Vehicles')->name('vehicles');
+    });
+
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

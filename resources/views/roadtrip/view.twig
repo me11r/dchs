@@ -54,10 +54,6 @@
                 <td>{{ trip.result.departments|default('-') }}</td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">Телефон заявителя</td>
-                <td>{{ trip.ticket.caller_phone|default('-') }}</td>
-            </tr>
-            <tr>
                 <td class="has-text-right is-bold">Подразделения</td>
                 <td>{{ trip.ticket['ph_' ~ trip.department_id ~'_ot']|default('-') }}</td>
             </tr>
