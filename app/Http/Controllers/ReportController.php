@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Staff;
 use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
@@ -57,5 +58,16 @@ class ReportController extends AuthorizedController
             $html2pdf->writeHTML($html);
             $html2pdf->output('report101.pdf');
         }
+    }
+
+    public function getReport101Staff()
+    {
+        $staff = Staff::all();
+        return view('reports.view', compact('staff'));
+    }
+
+    public function getReport101Vehicles()
+    {
+        return view('');
     }
 }

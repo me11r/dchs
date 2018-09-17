@@ -145,12 +145,20 @@
                             href="/emergency-situation"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Оперативная информация</a>
+                        <a
+                            href="/reports/staff-101"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                            Отчет по ЛС</a>
+                        <a
+                            href="/reports/vehicles-101"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                            Отчет по технике</a>
                     </div>
                 </div>
                 <div class="navbar-item">
                     <a
                         href="/roadtrip/"
-                        class="button is-inline-block-widescreen is-block is-small">
+                        class="button is-inline-block-widescreen is-block">
                         <i class="fas fa-truck"></i>&nbsp;
                         Путевой лист
                     </a>
@@ -186,7 +194,7 @@
                             name="_token"
                             :value="csrf"><a
                                 @click="logout"
-                                class="is-inline-block-widescreen is-block button is-primary is-outlined is-small">
+                                class="is-inline-block-widescreen is-block button is-primary is-outlined">
                                 <i class="fas fa-door-open"></i>&nbsp;Выход
                             </a>
                     </form>
@@ -273,7 +281,8 @@ export default {
         }
 
         .navbar-link {
-            font-size: .9rem;
+            /*font-size: .9rem;*/
+            font-size: 1.2rem;
         }
 
         .navbar-dropdown {
