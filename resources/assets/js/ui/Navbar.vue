@@ -145,6 +145,14 @@
                             href="/emergency-situation"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Оперативная информация</a>
+                        <a
+                            href="/reports/staff-101"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                            Отчет по ЛС</a>
+                        <a
+                            href="/reports/vehicles-101"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                            Отчет по технике</a>
                     </div>
                 </div>
                 <div class="navbar-item">
