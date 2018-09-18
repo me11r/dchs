@@ -12,6 +12,7 @@ use App\User;
 use Auth;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 
 class RoadtripController extends AuthorizedController
@@ -141,17 +142,27 @@ class RoadtripController extends AuthorizedController
 
     public function getPrint(Request $request, $id)
     {
+//        $image_path = $request->get('image_path');
+
         $this->noLayout();
-        $html = view('pdf.roadtrip-page', ['trip' => RoadtripPlan::with(['ticket', 'department', 'result'])->find($id)])
+        $html = view(
+            'pdf.roadtrip-page',
+            [
+                'trip' => RoadtripPlan::with(['ticket', 'department', 'result'])->find($id),
+                'image_path' => $request->get('image_path')
+            ])
             ->render();
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
 
+        $options = new Options();
+        $options->setIsRemoteEnabled(true);
 
         $dompdf = new Dompdf();
+        $dompdf->setOptions($options);
         $dompdf->loadHtml($html, 'UTF-8');
         $dompdf->render();
 
-        $pdf = $dompdf->output();
+        $pdf = $dompdf->output(['isRemoteEnabled' => true]);
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf;
         }, 'roadtrip-'.$id.'.pdf', ['Content-type' => 'application/pdf']);
