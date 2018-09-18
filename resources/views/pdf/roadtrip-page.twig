@@ -136,6 +136,11 @@
             <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
             <td>{{ trip.created_at|date('d.m.Y') }}</td>
         </tr>
+        <tr>
+            <td colspan="2">
+                <img style="height: 240px" src="{{ image_path }}">
+            </td>
+        </tr>
     </table>
 
     <div id="road-trip-view-yandex-map-block"></div>
