@@ -11,4 +11,14 @@ class MorainicLake extends Model
         'altitude',
     ];
 
+    public function summary()
+    {
+        return $this->hasMany(MorainicLakeSummary::class, 'morainic_lake_id');
+    }
+
+    public function oneSummary($date)
+    {
+        return $this->summary()->where('date', $date)->first();
+    }
+
 }
