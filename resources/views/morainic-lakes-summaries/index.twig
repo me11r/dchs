@@ -17,14 +17,20 @@
                 {% for item in items %}
                     <tr>
                         <td>{{ item.date }}</td>
-                        <td><a class="button is-outlined is-small" href="{{ route('morainic-lakes-summaries.edit', {'id':item.id}) }}">
-                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a></td>
+                        <td>
+                            <a class="button is-outlined is-small" href="{{ route('morainic-lakes-summaries.edit', {'id':item.date}) }}">
+                                <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+                            <a class="button is-outlined is-small" href="{{ route('morainic-lakes-summaries.show', {'id':item.date}) }}">
+                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a>
+                        </td>
                     </tr>
                 {% else %}
                     <tr>
                         <td>{{  "now"|date("d/m/Y") }}</td>
-                        <td><a class="button is-outlined is-small" href="/morainic-lakes-reports/{{  "now"|date("d-m-Y") }}">
-                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a></td>
+                        <td>
+                            <a class="button is-outlined is-small" href="/morainic-lakes-reports/{{  "now"|date("d-m-Y") }}">
+                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a>
+                        </td>
                     </tr>
                 {% endfor %}
                 {#{% for item in items %}#}
