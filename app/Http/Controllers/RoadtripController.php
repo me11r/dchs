@@ -11,6 +11,7 @@ use App\Ticket101;
 use App\User;
 use Auth;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 
 class RoadtripController extends AuthorizedController
@@ -127,14 +128,32 @@ class RoadtripController extends AuthorizedController
         FireDepartmentResult::where('fire_department_id', $plan->department_id)
             ->where('ticket101_id', $plan->card_id)
             ->update(
-            [
-                'out_time' => now()->toTimeString(),
-            ]
-        );
+                [
+                    'out_time' => now()->toTimeString(),
+                ]
+            );
 
         return redirect('/roadtrip/view/' . $id)->with('_message', [
             'type' => 'success',
             'text' => 'Выезд сил одобрен'
         ]);
+    }
+
+    public function getPrint(Request $request, $id)
+    {
+        $this->noLayout();
+        $html = view('pdf.roadtrip-page', ['trip' => RoadtripPlan::with(['ticket', 'department', 'result'])->find($id)])
+            ->render();
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->render();
+
+        $pdf = $dompdf->output();
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf;
+        }, 'roadtrip-'.$id.'.pdf', ['Content-type' => 'application/pdf']);
     }
 }
