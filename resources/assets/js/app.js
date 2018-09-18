@@ -27,8 +27,6 @@ import Add101Persons from './scripts/add101persons/add101persons';
 import Add101Staff from './views/101staff/AddEdit101Staff';
 import Report101 from './views/101staff/Report101';
 
-import AutoPrint from './components/Autoprint';
-
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
@@ -149,13 +147,6 @@ if (document.getElementById('fire-object-div')) {
 if (document.getElementById('vue')) {
     new Vue({
         el: '#vue'
-    });
-}
-
-if (document.getElementById('autoprint')) {
-    new Vue({
-        el: '#autoprint',
-        render: h => h(AutoPrint)
     });
 }
 
