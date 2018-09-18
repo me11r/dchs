@@ -59,9 +59,9 @@ class MorainicLakeSummaryController extends Controller
     public function store(Request $request)
     {
         $all = $request->all();
-        foreach ($request->input('lake', []) as $key => $item) {
+        foreach ($request->input('lake', []) as $id => $item) {
             $date = date('Y-m-d');
-            $item['morainic_lake_id'] = $key;
+            $item['morainic_lake_id'] = $id;
             $item['date'] = $date;
 
 //            MorainicLakeSummary::updateOrCreate(['morainic_lake_id' => $key, 'date' => $date],$item);
@@ -79,7 +79,11 @@ class MorainicLakeSummaryController extends Controller
      */
     public function show($id)
     {
-        //
+        $lakesSummary = $this->repository::where('date', $id)->get();
+        $lakesSumRaw = $this->repository::where('date', $id);
+        $date = $id;
+        $report = MorainicLakeReport::where('date', $date)->first();
+        return view('morainic-lakes-reports.show', compact('lakesSummary', 'lakesSumRaw', 'date', 'report'));
     }
 
     /**
@@ -91,10 +95,11 @@ class MorainicLakeSummaryController extends Controller
     public function edit($id)
     {
         $title = 'Редактировать запись';
-        $record = $this->repository::find($id);
+        $records = $this->repository::where('date', $id)->get();
         $lakes = MorainicLake::all();
+        $date = $id;
 
-        return view("$this->table.edit", compact('title', 'record', 'lakes'));
+        return view("$this->table.edit", compact('title', 'records', 'lakes', 'date'));
     }
 
     /**
@@ -106,8 +111,14 @@ class MorainicLakeSummaryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $repo = $this->repository->find($id);
-        $repo->update($request->all());
+
+        foreach ($request->input('lake', []) as $key_id => $item) {
+            $item['morainic_lake_id'] = $key_id;
+            $item['date'] = $id;
+
+            MorainicLakeSummary::updateOrCreate(['morainic_lake_id' => $key_id, 'date' => $id],$item);
+        }
+
         return redirect()->route("$this->table.index");
     }
 

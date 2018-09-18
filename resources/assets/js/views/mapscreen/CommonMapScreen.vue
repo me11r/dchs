@@ -49,10 +49,12 @@ export default {
                         this.detectArea(geoObject);
                     }
                 });
+            window.localStorage.setItem('fire_department_id_found', this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.map));
         },
         houseFound(lat, long, name) {
             this.resetAllObjects();
             this.setPointOnTheMap(lat, long, name);
+            window.localStorage.setItem('fire_department_id_found', this.yandexMapsBus.fireDepartmentArea(lat, long, this.map));
         },
         resetAllObjects() {
             this.map.geoObjects.removeAll();
