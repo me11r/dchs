@@ -58,9 +58,9 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="3">total calc</td>
-                <td>calc</td>
-                <td>calc</td>
+                <td colspan="3">{{ lakesSumRaw.sum('drainage_via_evacuation_channel') + lakesSumRaw.sum('drainage_via_pump') + lakesSumRaw.sum('drainage_via_siphon') }}</td>
+                <td>{{  lakesSumRaw.sum('water_dropped_day')  }}</td>
+                <td>{{  lakesSumRaw.sum('water_dropped_total')  }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -86,7 +86,7 @@
             {{ csrf_field() }}
             <div class="column">
                 <label for="note">Примечание</label>
-                <textarea class="textarea" name="note">{{ note|default('') }}</textarea>
+                <textarea class="textarea" name="note">{{ report.note|default('') }}</textarea>
             </div>
             <div class="column">
                 <button class="button is-primary">Сохранить</button>
