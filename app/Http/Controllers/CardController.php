@@ -165,9 +165,11 @@ class CardController extends AuthorizedController
         $this->saveOtherRecords($card, $otherRecords);
         $back = '/card/101';
 
-        $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
-            ->where('dict_fire_level_id', $data['fire_level_id'])
-            ->get();
+        if(!$request->operational_plan_id){
+            $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
+                ->where('dict_fire_level_id', $data['fire_level_id'])
+                ->get();
+        }
 
         $results_exists = FireDepartmentResult::where('ticket101_id', $card->id)
             ->get()

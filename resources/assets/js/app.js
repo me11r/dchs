@@ -118,8 +118,7 @@ if (document.getElementById('cardadd101')) {
 }
 
 // Расположение гидрантов на карте (список)
-const add101personsFormElement = document.getElementById(
-    'add-101-persons-form');
+const add101personsFormElement = document.getElementById('add-101-persons-form');
 if (add101personsFormElement) {
     (new Add101Persons()).createApp(add101personsFormElement);
 }
