@@ -162,7 +162,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'reports/101', 'as' => 'reports.'], function () {
         Route::get('/staff', 'ReportController@getReport101Staff')->name('staff');
+        Route::post('/staff', 'ReportController@postReport101Staff')->name('staff_post');
         Route::get('/vehicles', 'ReportController@getReport101Vehicles')->name('vehicles');
+        Route::post('/vehicles', 'ReportController@postReport101Vehicles')->name('vehicles_post');
     });
 
 

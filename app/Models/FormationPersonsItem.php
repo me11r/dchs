@@ -22,4 +22,11 @@ class FormationPersonsItem extends Model
     {
         return $q->where('rank', $rank);
     }
+
+    public function scopeGetStat($q, $staff_id, $date_begin, $date_end, $status = 'active')
+    {
+        return $q->where('staff_id', $staff_id)
+            ->where('status', $status)
+            ->whereBetween('updated_at',[$date_begin, $date_end]);
+    }
 }

@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\FormationPersonsItem;
+use App\Models\FormationTechItem;
 use App\Models\Staff;
+use App\Models\Vehicle;
 use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use Dompdf\Dompdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Spipu\Html2Pdf\Html2Pdf;
 
@@ -62,12 +66,54 @@ class ReportController extends AuthorizedController
 
     public function getReport101Staff()
     {
-        $staff = Staff::all();
-        return view('reports.view', compact('staff'));
+        $staff = Staff::orderBy('name')->get();
+        return view('reports.101.staff', compact('staff'));
+    }
+
+    public function postReport101Staff(Request $request)
+    {
+        $staff_id = $request->staff_id;
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+
+        $active = FormationPersonsItem::getStat($staff_id, $date_begin, $date_end, 'active');
+        $inactive = FormationPersonsItem::getStat($staff_id, $date_begin, $date_end, 'inactive');
+
+        $result['active_count'] = $active->count();
+        $result['inactive_count'] = $inactive->count();
+        $result['vacation_count'] = $inactive->where('rank', 'vacation')->count();
+        $result['study_count'] = $inactive->where('rank', 'study')->count();
+        $result['maternity_count'] = $inactive->where('rank', 'maternity')->count();
+        $result['sick_count'] = $inactive->where('rank', 'sick')->count();
+        $result['business_trip_count'] = $inactive->where('rank', 'business_trip')->count();
+        $result['other_count'] = $inactive->where('rank', 'other')->count();
+
+
+        return response()->json($result);
     }
 
     public function getReport101Vehicles()
     {
-        return view('');
+        $vehicles = Vehicle::with(['fireDepartment', 'vehicleType'])->get();
+
+        return view('reports.101.vehicles', compact('vehicles'));
+    }
+
+    public function postReport101Vehicles(Request $request)
+    {
+        $vehicle_id = $request->vehicle_id;
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+
+        $active = FormationTechItem::getStat($vehicle_id, $date_begin, $date_end, 'action');
+        $repair = FormationTechItem::getStat($vehicle_id, $date_begin, $date_end, 'repair');
+        $reserve = FormationTechItem::getStat($vehicle_id, $date_begin, $date_end, 'reserve');
+
+        $result['active_count'] = $active->count();
+        $result['repair_count'] = $repair->count();
+        $result['reserve_count'] = $reserve->count();
+
+
+        return response()->json($result);
     }
 }
