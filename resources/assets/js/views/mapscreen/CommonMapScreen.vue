@@ -30,7 +30,8 @@ export default {
             map: {},
             currentCity: 'Алматы',
             yandexMapsBus: {},
-            zoom: 16
+            zoom: 16,
+            fireDepartmentAreas: []
         };
     },
     methods: {
@@ -51,21 +52,23 @@ export default {
                         this.detectArea(geoObject);
                     }
                 });
-            // console.dir(this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.map))
-            let dept_id = this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.map);
+
+            let dept_id = this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.fireDepartmentAreas, this.map);
             window.localStorage.setItem('fire_department_id_found', dept_id);
             window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, dept_id);
             globalBus.$emit('is_common_house', dept_id);
+
             console.dir(dept_id);
 
         },
         houseFound(lat, long, name) {
             this.resetAllObjects();
             this.setPointOnTheMap(lat, long, name);
-            let dept_id = this.yandexMapsBus.fireDepartmentArea(lat, long, this.map);
+            this.initFireDepartmentAreas();
+            console.dir(this.fireDepartmentAreas)
+            let dept_id = this.yandexMapsBus.fireDepartmentArea(lat, long, this.fireDepartmentAreas, this.map);
             window.localStorage.setItem('fire_department_id_found', dept_id);
             window.localStorage.setItem('YANDEX_FIRE_DEPT_FOUND', dept_id);
-            // globalBus.$emit('is_common_house', dept_id);
 
         },
         resetAllObjects() {
@@ -111,11 +114,24 @@ export default {
             this.map.events.add('dblclick', (event) => {
                 self.doubleClickOnTheMap(event);
             });
+            this.initFireDepartmentAreas();
+        },
+        initFireDepartmentAreas() {
+
+            // var polygons = this.fireDepartmentAreas.length > 0 ? this.fireDepartmentAreas : this.yandexMapsBus.polygons();
+            var polygons = this.yandexMapsBus.polygons();
+            if(this.fireDepartmentAreas.length === 0){
+                this.fireDepartmentAreas = polygons;
+            }
+            // Добавляем многоугольник на карту.
+            for (let polygon in polygons) {
+                this.map.geoObjects.add(polygons[polygon]);
+            }
         }
     },
     mounted() {
-        this.initMap();
         this.yandexMapsBus = new YandexMapsBus();
+        this.initMap();
         let initHouseData = window.localStorage.getItem(YANDEX_HOUSE_FOUND);
         if (initHouseData){
             initHouseData = JSON.parse(initHouseData);
