@@ -154,6 +154,10 @@ class CardController extends AuthorizedController
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
 
+        if($request->operational_plan_id == 'NaN'){
+            $data['operational_plan_id'] = null;
+        }
+
         $card = Ticket101::findOrNew($card_id);
         $canEditTicket = $card->canEditTicket();
         if(!$canEditTicket){
@@ -165,7 +169,7 @@ class CardController extends AuthorizedController
         $this->saveOtherRecords($card, $otherRecords);
         $back = '/card/101';
 
-        if(!$request->operational_plan_id && $request->operational_plan_id != 'NaN'){
+        if(!$request->operational_plan_id || $request->operational_plan_id == 'NaN'){
             $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
                 ->where('dict_fire_level_id', $data['fire_level_id'])
                 ->get();
