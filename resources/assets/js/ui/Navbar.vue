@@ -146,11 +146,11 @@
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Оперативная информация</a>
                         <a
-                            href="/reports/staff-101"
+                            href="/reports/101/staff"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Отчет по ЛС</a>
                         <a
-                            href="/reports/vehicles-101"
+                            href="/reports/101/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Отчет по технике</a>
                     </div>

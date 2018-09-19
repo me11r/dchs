@@ -51,4 +51,11 @@ class FormationTechItem extends Model
     {
         return $this->belongsTo(FormationTechReport::class, 'formation_tech_report_id');
     }
+
+    public function scopeGetStat($q, $vehicle_id, $date_begin, $date_end, $status = 'action')
+    {
+        return $q->where('vehicle_id', $vehicle_id)
+            ->where('status', $status)
+            ->whereBetween('updated_at',[$date_begin, $date_end]);
+    }
 }
