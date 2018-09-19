@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Vue from 'vue';
 import {globalBus} from '../global-bus';
-import {MAP_LOCATION_EXCHANGE_KEY} from '../../config/storage-keys';
+import {MAP_LOCATION_EXCHANGE_KEY, YANDEX_FIRE_DEPT_FOUND} from '../../config/storage-keys';
 import YandexMapsBus from '../../scripts/yandex-maps-bus';
 
 const lodash = require('lodash');
@@ -37,9 +37,9 @@ export default function bindLocationInputApp() {
                     document.getElementById('fire_level_id').value = 1;
                     this.items = items;
 
-                    let dept_id = window.localStorage.getItem('fire_department_id_found');
+                    let dept_id = window.localStorage.getItem(YANDEX_FIRE_DEPT_FOUND);
                     globalBus.$emit('is_common_house', dept_id);
-                    console.dir('dept_id');
+                    // console.dir('dept_id');
                     console.dir(dept_id);
                 }
                 this.showList = this.items.length > 0;
@@ -142,6 +142,9 @@ export default function bindLocationInputApp() {
             window.addEventListener('storage', (event) => {
                 if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
                     this.location = event.newValue;
+                }
+                else if (event.key === YANDEX_FIRE_DEPT_FOUND) {
+                    globalBus.$emit('is_common_house', event.newValue);
                 }
             });
             this.location = element.dataset.value;

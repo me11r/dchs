@@ -28,8 +28,8 @@ class MorainicLakeSummaryController extends Controller
     {
         $per_page = 20;
 
-        $items = MorainicLakeReport::all();
-//        $items = $this->repository->paginate($per_page);
+        $items = MorainicLakeReport::orderBy('date', 'desc')->paginate($per_page);
+//        $items = $this->repository->orderBy('date', 'desc')->paginate($per_page)->unique('date');
 
         return view("$this->table.index", compact('items', 'per_page'));
     }
@@ -59,15 +59,15 @@ class MorainicLakeSummaryController extends Controller
     public function store(Request $request)
     {
         $all = $request->all();
+        $date = date('Y-m-d');
+        $report = MorainicLakeReport::firstOrCreate(['date' => $date]);
         foreach ($request->input('lake', []) as $id => $item) {
-            $date = date('Y-m-d');
             $item['morainic_lake_id'] = $id;
             $item['date'] = $date;
 
-//            MorainicLakeSummary::updateOrCreate(['morainic_lake_id' => $key, 'date' => $date],$item);
-            $this->repository->create($item);
+            MorainicLakeSummary::updateOrCreate(['morainic_lake_id' => $id, 'date' => $date],$item);
+//            $this->repository->create($item);
         }
-//        $this->repository->create($request->all());
         return redirect()->route("$this->table.index");
     }
 
