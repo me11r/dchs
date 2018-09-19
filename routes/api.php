@@ -3,6 +3,7 @@
 Route::group(
     [
         // @TODO middleware doesn't work
+        // @TODO middleware works but with Laravel Passport
 //        'middleware' => ['auth:api'],
         'namespace' => 'Api'
     ],
@@ -11,5 +12,6 @@ Route::group(
         Route::get('101/get-tech', 'FormationTechController@index');
         Route::get('101/get-staff', 'FormationStaffController@index');
         Route::apiResource('hydrant', 'HydrantController');
+        Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
     }
 );

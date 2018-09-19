@@ -31,6 +31,8 @@ export default class YandexMapsBus {
                         geoObject.geometry.getBounds()[0][0],
                         geoObject.geometry.getBounds()[0][1]
                     );
+                    // console.dir(geoObject.geometry.getBounds()[0][0]);
+                    this.fireDepartmentArea(geoObject.geometry.getBounds()[0][0], geoObject.geometry.getBounds()[0][1], this.ymaps);
                     window.localStorage.setItem(
                         YANDEX_HOUSE_FOUND,
                         JSON.stringify({
@@ -41,6 +43,7 @@ export default class YandexMapsBus {
                     );
                 }
             });
+
     }
 
     detectArea(lat, long) {
@@ -70,9 +73,29 @@ export default class YandexMapsBus {
             });
     }
 
+
     fireDepartmentArea(lat, long, map) {
+
+        var polygons = this.polygons();
+
+        // Добавляем многоугольник на карту.
+        for (var polygon in polygons) {
+            map.geoObjects.add(polygons[polygon]);
+
+            // console.dir([lat, long]);
+
+            let area = polygons[polygon];
+
+            if (area.geometry.contains([lat, long])){
+                // map.geoObjects.remove(area);
+                return polygon;
+            }
+        }
+    }
+
+    polygons() {
         var polygons = [];
-        polygons[0] = new ymaps.Polygon([
+        polygons[1] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -146,7 +169,7 @@ export default class YandexMapsBus {
         });
 
 
-        polygons[1] = new ymaps.Polygon([
+        polygons[2] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -213,7 +236,7 @@ export default class YandexMapsBus {
             strokeWidth: 3
         });
 
-        polygons[2] = new ymaps.Polygon([
+        polygons[3] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -290,7 +313,7 @@ export default class YandexMapsBus {
             strokeWidth: 3
         });
 
-        polygons[3] = new ymaps.Polygon([
+        polygons[4] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -386,7 +409,7 @@ export default class YandexMapsBus {
         });
 
 
-        polygons[4] = new ymaps.Polygon([
+        polygons[5] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -507,7 +530,7 @@ export default class YandexMapsBus {
         });
 
 
-        polygons[5] = new ymaps.Polygon([
+        polygons[6] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -748,7 +771,7 @@ export default class YandexMapsBus {
         });
 
 
-        polygons[6] = new ymaps.Polygon([
+        polygons[7] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -825,7 +848,7 @@ export default class YandexMapsBus {
         });
 
 
-        polygons[7] = new ymaps.Polygon([
+        polygons[8] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -915,7 +938,7 @@ export default class YandexMapsBus {
         });
 
 
-        polygons[8] = new ymaps.Polygon([
+        polygons[9] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -999,7 +1022,7 @@ export default class YandexMapsBus {
         });
 
 
-        polygons[9] = new ymaps.Polygon([
+        polygons[10] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1077,7 +1100,7 @@ export default class YandexMapsBus {
 
 
 
-        polygons[10] = new ymaps.Polygon([
+        polygons[11] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1151,7 +1174,7 @@ export default class YandexMapsBus {
 
 
 
-        polygons[11] = new ymaps.Polygon([
+        polygons[12] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1241,7 +1264,7 @@ export default class YandexMapsBus {
 
 
 
-        polygons[12] = new ymaps.Polygon([
+        polygons[18] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1319,7 +1342,7 @@ export default class YandexMapsBus {
 
 
 
-        polygons[13] = new ymaps.Polygon([
+        polygons[14] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1406,7 +1429,7 @@ export default class YandexMapsBus {
 
 
 
-        polygons[14] = new ymaps.Polygon([
+        polygons[15] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1522,7 +1545,7 @@ export default class YandexMapsBus {
 
 
 
-        polygons[15] = new ymaps.Polygon([
+        polygons[16] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1790,7 +1813,7 @@ export default class YandexMapsBus {
 
 
 
-        polygons[16] = new ymaps.Polygon([
+        polygons[17] = new ymaps.Polygon([
             // Указываем координаты вершин многоугольника.
             // Координаты вершин внешнего контура.
             [
@@ -1965,19 +1988,6 @@ export default class YandexMapsBus {
             strokeWidth: 3
         });
 
-
-        // Добавляем многоугольник на карту.
-        for (var polygon in polygons) {
-            map.geoObjects.add(polygons[polygon]);
-
-            // console.dir([lat, long]);
-
-            let area = polygons[polygon];
-
-            if(area.geometry.contains([lat, long])){
-                map.geoObjects.remove(area);
-                return polygon;
-            }
-        }
+        return polygons;
     }
 }

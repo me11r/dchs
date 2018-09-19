@@ -30,6 +30,10 @@ export default function bindBuefyCommonSelects() {
                             this.selectedId = resp.id;
                             this.name = resp.title;
                         });
+
+                        globalBus.$on('is_common_house', (value) => {
+                            this.selectedId = parseInt(value);
+                        });
                     }
                 }
             });

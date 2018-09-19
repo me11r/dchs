@@ -32,9 +32,15 @@ export default function bindLocationInputApp() {
             setData(items) {
                 if (items.special_plans !== undefined) {
                     this.items = items.special_plans;
-                } else {
+                }
+                else {
                     document.getElementById('fire_level_id').value = 1;
                     this.items = items;
+
+                    let dept_id = window.localStorage.getItem('fire_department_id_found');
+                    globalBus.$emit('is_common_house', dept_id);
+                    console.dir('dept_id');
+                    console.dir(dept_id);
                 }
                 this.showList = this.items.length > 0;
                 if (this.items.length === 1 && this.items[0].location === this.location) {
@@ -42,20 +48,6 @@ export default function bindLocationInputApp() {
                 }
 
                 if (items.building) {
-                    // todo: $emit не работает глобально?
-                    // this.$emit('building_found', items.building.object_type_id);
-
-                    // console.dir({
-                    //     object_type: items.building.object_type.name,
-                    //     street_name: items.building.street.name,
-                    //     home_number: items.building.building_number,
-                    //     city_area: items.building.city_area.name,
-                    //     items: items
-                    // });
-
-                    // document.getElementById('wall_material_id').value = items.building.wall_material.name;
-                    // if (document.getElementById('card-101-form-id').dataset.id !== 0 && document.getElementById('wall_material_id').value !== '') {
-                    // }
 
                     document.getElementById('wall_material_id').value = items.building.wall_material_id;
                     document.getElementById('fire_object_id').value = items.building.object_type_id;
