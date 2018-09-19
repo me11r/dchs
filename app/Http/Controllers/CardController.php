@@ -155,7 +155,7 @@ class CardController extends AuthorizedController
         unset($data['other_records']);
 
         if($request->operational_plan_id == 'NaN'){
-            $data['operational_plan_id'] = null;
+            $data['operational_plan_id'] = 0;
         }
 
         $card = Ticket101::findOrNew($card_id);
