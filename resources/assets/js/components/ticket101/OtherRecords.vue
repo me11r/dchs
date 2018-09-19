@@ -4,7 +4,7 @@
             <button
                 class="button is-small is-outlined is-success"
                 type="button"
-                @click.prevent="addEmptyItem()">
+                @click.prevent="createNewItem()">
                 <i class="fa fa-plus"></i>&nbsp;Добавить
             </button>
         </div>
@@ -21,6 +21,7 @@
                 <label :for="'other_records['+item.id+'][time]'">Время</label>
                 <b-timepicker
                     class="small-time-picker"
+                    @change="postItems()"
                     icon="clock"
                     icon-pack="far"
                     :ref="'other_records_time_picker_' + item.id"
@@ -56,6 +57,7 @@
                 <input
                     required
                     placeholder="Комментарий"
+                    @change="postItems()"
                     type="text"
                     class="input"
                     v-model="item.comment"
@@ -68,6 +70,7 @@
                     <select
                         required
                         title="Ствол"
+                        @change="postItems()"
                         :name="'other_records['+item.id+'][trunk_id]'"
                         :id="'other_records['+item.id+'][trunk_id]'"
                         v-model="item.trunk_id">
@@ -85,6 +88,7 @@
                 <input
                     required
                     placeholder="Количество"
+                    @change="postItems()"
                     type="number"
                     class="input"
                     v-model="item.count"
@@ -96,6 +100,7 @@
                 <input
                     required
                     placeholder="Площадь"
+                    @change="postItems()"
                     type="number"
                     class="input"
                     step="0.01"
@@ -121,6 +126,7 @@
 <script>
 import moment from 'moment';
 import Buefy from 'buefy';
+import axios from 'axios';
 import {_} from 'vue-underscore';
 
 export default {
@@ -136,6 +142,39 @@ export default {
         'b-timepicker': Buefy['Timepicker']
     },
     methods: {
+        createNewItem() {
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+            let card_data = window.ticket101add;
+
+            axios.post('/api/101card/save-other-records', {
+                    ticket_id: card_data.ticketId,
+            }).then((response) => {
+                let data = response.data;
+                console.dir(data);
+
+                this.addItem({
+                    id: data.id,
+                    time: moment().hour(0).minute(0).toDate(),
+                    comment: '',
+                    trunk_id: 1,
+                    count: 0,
+                    square: 0
+                });
+            });
+        },
+        postItems() {
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+            let card_data = window.ticket101add;
+
+            axios.post('/api/101card/save-other-records', {
+                ticket_id: card_data.ticketId,
+                records: this.records,
+            });
+        },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
         },

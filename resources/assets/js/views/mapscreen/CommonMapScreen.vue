@@ -49,6 +49,7 @@ export default {
                         this.detectArea(geoObject);
                     }
                 });
+            // console.dir(this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.map))
             window.localStorage.setItem('fire_department_id_found', this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.map));
         },
         houseFound(lat, long, name) {
@@ -108,6 +109,12 @@ export default {
         if (initHouseData){
             initHouseData = JSON.parse(initHouseData);
             this.houseFound(initHouseData['lat'], initHouseData['long'], initHouseData['name']);
+        }
+
+        let cityAreas = this.yandexMapsBus.polygons();
+
+        for (var polygon in cityAreas) {
+            this.map.geoObjects.add(cityAreas[polygon]);
         }
 
         window.addEventListener('storage', (event) => {

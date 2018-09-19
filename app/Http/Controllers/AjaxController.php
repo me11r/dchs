@@ -7,6 +7,7 @@ use App\Dictionary\Street;
 use App\FireDepartment;
 use App\Models\Building;
 use App\Models\SpecialPlan;
+use App\OperationalCard;
 use App\RoadtripPlan;
 use Auth;
 use Illuminate\Http\Request;
@@ -50,12 +51,20 @@ class AjaxController extends AuthorizedController
             ->limit(10)
             ->get();
 
+        $operational_cards = OperationalCard::location($location)
+            ->orWhere('object_name', 'like', "%$location%")
+            ->limit(10)
+            ->get();
+
+        $specialPlans = $specialPlans->merge($operational_cards);
+
         $home = trim(explode(',', $location)[1] ?? null);
         if($home){
             $location = str_replace([',', ' ', $home], '', $location);
         }
 
         $result['special_plans'] = $specialPlans;
+        $result['schedule'] = $specialPlans;
         $result['building'] = Building::address($location, $home)
             ->with(['city_area', 'street', 'city_micro_area', 'object_type', 'wall_material'])
             ->first();

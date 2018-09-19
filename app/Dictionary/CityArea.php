@@ -11,6 +11,7 @@ namespace App\Dictionary;
 
 use App\FireDepartment;
 use App\Models\CityMicroArea;
+use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,4 +50,5 @@ class CityArea extends Model
     {
         return $this->hasMany(FireDepartment::class, 'city_area_id');
     }
+
 }
