@@ -32,7 +32,7 @@ export default class YandexMapsBus {
                         geoObject.geometry.getBounds()[0][1]
                     );
                     // console.dir(geoObject.geometry.getBounds()[0][0]);
-                    this.fireDepartmentArea(geoObject.geometry.getBounds()[0][0], geoObject.geometry.getBounds()[0][1], this.ymaps);
+                    // this.fireDepartmentArea(geoObject.geometry.getBounds()[0][0], geoObject.geometry.getBounds()[0][1], this.ymaps);
                     window.localStorage.setItem(
                         YANDEX_HOUSE_FOUND,
                         JSON.stringify({
@@ -74,23 +74,27 @@ export default class YandexMapsBus {
     }
 
 
-    fireDepartmentArea(lat, long, map) {
+    fireDepartmentArea(lat, long, polygons, map) {
 
-        var polygons = this.polygons();
+        // var polygons = this.polygons();
 
         // Добавляем многоугольник на карту.
         for (var polygon in polygons) {
-            map.geoObjects.add(polygons[polygon]);
 
             // console.dir([lat, long]);
 
             let area = polygons[polygon];
 
+            map.geoObjects.add(area);
+
+
             if (area.geometry.contains([lat, long])){
-                // map.geoObjects.remove(area);
+                map.geoObjects.remove(area);
                 return polygon;
             }
+            map.geoObjects.remove(area);
         }
+        return 'no fd dound';
     }
 
     polygons() {
