@@ -175,7 +175,7 @@ class CardController extends AuthorizedController
             ->get()
             ->count();
 
-        if(!$results_exists && $schedule->count()){
+        if(!$results_exists && isset($schedule) && $schedule->count()){
             foreach ($schedule as $item) {
                 FireDepartmentResult::create([
                     'ticket101_id' => $card->id,
