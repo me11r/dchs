@@ -34,7 +34,7 @@ class AjaxController extends AuthorizedController
             ->limit(30);
 
         $streets = $streets->get();
-        $fireDept = FireDepartment::where('cit_area_id', $area_id)->first();
+        $fireDept = FireDepartment::where('city_area_id', $area_id)->first();
         $result = [
             'streets' => $streets,
             'fireDept' => $fireDept,
