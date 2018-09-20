@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <h4 class="title" style="padding: 3px 15px">Сводная информация по мореным озерам на {{ 'now'|date('Y-m-d') }}</h4>
+    <h4 class="title" style="padding: 3px 15px">Сводная информация по мореным озерам на {{ date }}</h4>
     <div class="panel">
         <table class="formation-record-table">
             <thead>
@@ -15,14 +15,17 @@
                 <th>Отвод воды через Сифоны, л/с)</th>
                 <th>Всего сброшено воды,(тыс.куб.м) за сутки</th>
                 <th>Всего сброшено воды,(тыс.куб.м) с начала работы</th>
-                <th>Понижение от первоначального уровня, (м).</th>
+                <th>Понижение от первоначального уровня, (м). {{ date }}</th>
+                {% if compare_with is defined and compare_with %}
+                    <th>Понижение от первоначального уровня, (м). {{ comparedRecord.date ?? '' }}</th>
+                {% endif %}
                 <th>t0 воды</th>
                 <th>t0 воздуха</th>
                 <th>Нулевая изотерма</th>
                 {#<th></th>#}
             </tr>
             </thead>
-            {% for item in lakesSummary %}
+            {% for key, item in lakesSummary %}
                 <tr>
                     <td>{{ item.id }}</td>
                     <td>{{ item.lake.name ~ ' ' ~ item.lake.altitude }}</td>
@@ -35,7 +38,10 @@
                     <td>{{ item.water_dropped_day }}</td>
                     <td>{{ item.water_dropped_total }}</td>
                     <td>{{ item.lowering_from_initial1 }}</td>
-                    <td>{{ item.lowering_from_initial2 }}</td>
+                    {% if compare_with is defined and compare_with %}
+                        <td>{{ comparedRecords.get()[key].lowering_from_initial1 ?? '' }}</td>
+                    {% endif %}
+                    {#<td>{{ item.lowering_from_initial2 }}</td>#}
                     <td>{{ item.temperature_water }}</td>
                     <td>{{ item.temperature_air }}</td>
                     <td>{{ item.zero_isotherm }}</td>
@@ -55,7 +61,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
+                {#<td></td>#}
             </tr>
             <tr>
                 <td colspan="3">{{ lakesSumRaw.sum('drainage_via_evacuation_channel') + lakesSumRaw.sum('drainage_via_pump') + lakesSumRaw.sum('drainage_via_siphon') }}</td>
@@ -67,18 +73,59 @@
                 <td></td>
             </tr>
             <tr>
-                <td>Сравнение с 10.09.18.</td>
+                <td>Сравнение с
+                    <form action="" method="get">
+                        <div class="column">
+                            <label for=""></label>
+                            <select onchange="this.form.submit()" name="compare_with" id="">
+                                <option value=""></option>
+                                {% for record in otherRecords %}
+                                    <option {{ compare_with is defined and compare_with == record.date ? 'selected' : '' }} value="{{ record.date }}">{{ record.date }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </td>
+                <td>
+                </td>
+                <td>
+                    {% if compare_with is defined and comparedRecord %}
+                        {{ comparedRecordsResult.initial_volume }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if compare_with is defined and compare_with %}
+                        {{ comparedRecordsResult.current_volume }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if compare_with is defined and compare_with %}
+                        {{ comparedRecordsResult.inflow_glacier }}
+                    {% endif %}
+                </td>
+                <td colspan="3">
+                    {% if compare_with is defined and compare_with %}
+                        {{ comparedRecordsResult.drainage_total }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if compare_with is defined and compare_with %}
+                        {{ comparedRecordsResult.water_dropped_day }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if compare_with is defined and compare_with %}
+                        {{ comparedRecordsResult.water_dropped_total }}
+                    {% endif %}
+                </td>
                 <td></td>
-                <td>1</td>
-                <td>2</td>
-                <td colspan="3">-</td>
-                <td>3</td>
-                <td>4</td>
                 <td></td>
                 <td></td>
-                <td>5</td>
-                <td></td>
-                <td></td>
+                {#<td></td>#}
+                <td>{% if compare_with is defined and compare_with %}
+                        {{ comparedRecordsResult.zero_isotherm }}
+                    {% endif %}
+                </td>
             </tr>
 
         </table>

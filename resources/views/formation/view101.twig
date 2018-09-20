@@ -5,6 +5,8 @@
             <div class="level-left">
                 <h4 class="title">Строевая записка от {{ report.report_date }}</h4>
             </div>
+
+
             <div class="level-right has-text-left">
                 {% if user.hasRight(20) %}
                     {#{% if not report.is_approved %}#}
@@ -19,6 +21,15 @@
                 <a style="margin: 10px;" target="_blank" href="/pdf/report101" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как PDF</a>
             </div>
         </div>
+        <div class="level">
+            <p class="">ДСПТ: </p>
+            <p class="">ЦППС: </p>
+            <p class="">ЕДДС: </p>
+            <p class="">ИПЛ : </p>
+            <p class=""></p>
+            <p class="">Водоканал: </p>
+        </div>
+
         <div class="tbl" style="overflow-x: scroll">
             <table id="main_table" class="detailed-table table is-small is-fullwidth is-narrow is-hoverable" style="font-size: .7rem">
                 <thead>

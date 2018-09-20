@@ -56,6 +56,11 @@ class AjaxController extends AuthorizedController
             ->limit(10)
             ->get();
 
+        foreach ($operational_cards as $key => $operational_card) {
+            $operational_card->is_card = true;
+            $operational_cards[$key] = $operational_card;
+        }
+
         $specialPlans = $specialPlans->merge($operational_cards);
 
         $home = trim(explode(',', $location)[1] ?? null);
