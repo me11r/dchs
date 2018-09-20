@@ -97,12 +97,12 @@
                     </div>
                 </div>
 
-                <div class="field">
-                    <label for="field_1">Понижение от первоначального уровня, (м).</label>
-                    <div class="control">
-                        <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][lowering_from_initial2]" id="lowering_from_initial2" value="{{ lake.oneSummary(date|default('')).lowering_from_initial2|default('') }}">
-                    </div>
-                </div>
+                {#<div class="field">#}
+                    {#<label for="field_1">Понижение от первоначального уровня, (м).</label>#}
+                    {#<div class="control">#}
+                        {#<input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][lowering_from_initial2]" id="lowering_from_initial2" value="{{ lake.oneSummary(date|default('')).lowering_from_initial2|default('') }}">#}
+                    {#</div>#}
+                {#</div>#}
 
                 <div class="field">
                     <label for="field_1">t0 воды</label>
