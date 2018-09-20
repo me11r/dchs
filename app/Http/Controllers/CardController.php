@@ -182,7 +182,15 @@ class CardController extends AuthorizedController
             ->get()
             ->count();
 
-        if(!$results_exists && isset($schedule) && $schedule->count()){
+        /**
+         * создаем рекомендации к выезду на основе расписания выездов ПЧ
+         */
+
+        if(isset($schedule) && $schedule->count()){
+            FireDepartmentResult::where('ticket101_id', $card->id)
+                ->where('dispatched', false)
+                ->delete();
+
             foreach ($schedule as $item) {
                 FireDepartmentResult::create([
                     'ticket101_id' => $card->id,
