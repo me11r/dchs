@@ -17,6 +17,7 @@ use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
 use App\Models\WallMaterial;
+use App\OperationalCard;
 use App\Ticket101;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -86,8 +87,10 @@ class CardController extends AuthorizedController
         }
 
         $dep_results = FireDepartmentResult::all();
+        $operational_cards = OperationalCard::all();
 
         $this->set('wall_materials', $wall_materials);
+        $this->set('operational_cards', $operational_cards);
         $this->set('ssv_out', $ssv_out);
         $this->set('dep_results', $dep_results);
         $this->set('gu_notify', $gu_notify);
