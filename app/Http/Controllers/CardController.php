@@ -151,13 +151,14 @@ class CardController extends AuthorizedController
     public function postAdd101(Request $request, $card_id = 0)
     {
         $data = $request->except('ph');
+        $r = $request->all();
 
         unset($data['comeback']);
         $comeback = $request->get('comeback', false);
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
 
-        if($request->operational_plan_id == 'NaN'){
+        if($request->operational_plan_id == 'NaN' || is_null($request->operational_plan_id )){
             $data['operational_plan_id'] = 0;
         }
 
@@ -172,15 +173,13 @@ class CardController extends AuthorizedController
         $this->saveOtherRecords($card, $otherRecords);
         $back = '/card/101';
 
-//        if(!$request->operational_plan_id || $request->operational_plan_id == 'NaN'){
-            $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
-                ->where('dict_fire_level_id', $data['fire_level_id'])
-                ->get();
-//        }
+        $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
+            ->where('dict_fire_level_id', $data['fire_level_id'])
+            ->get();
 
-        $results_exists = FireDepartmentResult::where('ticket101_id', $card->id)
-            ->get()
-            ->count();
+//        $results_exists = FireDepartmentResult::where('ticket101_id', $card->id)
+//            ->get()
+//            ->count();
 
         /**
          * создаем рекомендации к выезду на основе расписания выездов ПЧ
@@ -227,6 +226,10 @@ class CardController extends AuthorizedController
 
         if ($comeback) {
             $back = '/card/add101/' . $card->id.'#return='.$comeback;
+        }
+
+        if($request->ajax()){
+            return response()->json('ok', 200);
         }
 
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
