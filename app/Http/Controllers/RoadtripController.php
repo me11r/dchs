@@ -142,8 +142,6 @@ class RoadtripController extends AuthorizedController
 
     public function getPrint(Request $request, $id)
     {
-//        $image_path = $request->get('image_path');
-
         $this->noLayout();
         $html = view(
             'pdf.roadtrip-page',
