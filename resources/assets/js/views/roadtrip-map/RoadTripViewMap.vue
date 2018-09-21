@@ -9,7 +9,6 @@
                 <i class="fas fa-circle-notch fa-spin fa-6x"></i>
             </div>
         </div>
-
         <select
             class="select printing-invisible"
             id="distance"
@@ -47,6 +46,7 @@ export default {
             firstPoint: null,
             secondPoint: null,
             distance: 1000,
+            hydrantsGeoObjects: null,
             hydrants: [],
             emergencyCoordinates: [],
             width: 560,
@@ -100,9 +100,11 @@ export default {
                     });
                 }
 
+                const center = this.hydrantsGeoObjects ? this.getCenterOfGeoObjectsCollection(this.hydrantsGeoObjects) : this.map.getCenter();
+
                 const params = {
                     'l': 'map',
-                    'll': this.map.getCenter()[1] + ',' + this.map.getCenter()[0],
+                    'll': center[1] + ',' + center[0],
                     'pl': routeCoordinates.join(','),
                     'pt': firstPoint + ',pm2ntm' + '~' + lastPoint + ',pm2wtm' + (hydrants.length > 0 ? '~' + hydrants.join('~') : ''),
                     'z': this.map.getZoom(),
@@ -118,6 +120,17 @@ export default {
         }
     },
     methods: {
+        getCenterOfGeoObjectsCollection(geoObjects) {
+            let lat = 0;
+            let long = 0;
+            let length = 0;
+            geoObjects.each((geoObject) => {
+                length++;
+                lat+=geoObject.geometry.getCoordinates()[0];
+                long+=geoObject.geometry.getCoordinates()[1];
+            });
+            return [lat / length, long / length]
+        },
         getCoordinatesFromPoint(point) {
             return point ? [point[1], point[0]] : null;
         },
@@ -139,14 +152,17 @@ export default {
         },
         resetHydrants() {
             const self = this;
+            self.hydrantsGeoObjects = new ymaps.GeoObjectCollection();
             this.map.geoObjects.removeAll();
             if (this.hydrants) {
                 this.hydrants.map((item) => {
-                    return this.map.geoObjects.add(self.getPlaceMarkForHydrantItem(item));
+                    self.hydrantsGeoObjects.add(self.getPlaceMarkForHydrantItem(item));
+                    // return this.map.geoObjects.add(self.getPlaceMarkForHydrantItem(item));
                 });
             }
+            this.map.geoObjects.add(self.hydrantsGeoObjects);
             this.drawMainRoute();
-            this.map.setBounds(this.map.getBounds(), {checkZoomRange: true});
+            this.map.setBounds(self.hydrantsGeoObjects.getBounds(), {checkZoomRange: true});
         },
         setHydrants() {
             const self = this;
@@ -167,7 +183,7 @@ export default {
             const self = this;
             self.map = new self.ymaps.Map(self.$refs['road-trip-view-yandex-map'], {
                 center: [43.259743, 76.926573],
-                zoom: 12,
+                zoom: 15,
                 behaviors: ['drag', 'scrollZoom']
             });
             self.setMapCenter();
