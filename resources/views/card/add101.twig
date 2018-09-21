@@ -250,6 +250,23 @@
                         </p>
 
                         <div class="control">
+                            <label for="operational_card_id">Оперативная карточка</label>
+                            <div class="select"
+                                 data-component="simple-select"
+                                 data-special="specialPlan"
+                                 data-value="{{ ticket.operational_card_id }}"
+                                 data-name="operational_cards"
+                                 style="display: block">
+                                <select name="operational_card_id" id="operational_card_id" v-model="selectedId">
+                                    <option value="">-</option>
+                                    {% for object in operational_cards %}
+                                        <option value="{{ object.id }}">{{ object.oc_number }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control">
                             <label for="fire_level_id">Ранг пожара</label>
                             <div class="select"
                                  data-component="simple-select"

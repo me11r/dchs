@@ -113,6 +113,10 @@ export default function bindLocationInputApp() {
                 this.location = item.location;
                 globalBus.$emit('specialPlanFound', item);
                 this.showList = false;
+                if (item.is_card === true){
+                    document.getElementById('fire_level_id').value = 2;
+                    document.getElementById('operational_card_id').value = item.id;
+                }
             },
             onBlur() {
                 setTimeout(() => {

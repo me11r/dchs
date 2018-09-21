@@ -26,6 +26,11 @@ class OperationalCard extends Model
         return $this->belongsTo(FireLevel::class, 'fire_level_id');
     }
 
+    public function tickets101()
+    {
+        return $this->hasMany(Ticket101::class, 'operational_card_id');
+    }
+
     public function scopeLocation($q, $address)
     {
         return $q->where('location', 'like', "%$address%");
