@@ -107,7 +107,7 @@ export default {
                     'll': center[1] + ',' + center[0],
                     'pl': routeCoordinates.join(','),
                     'pt': firstPoint + ',pm2ntm' + '~' + lastPoint + ',pm2wtm' + (hydrants.length > 0 ? '~' + hydrants.join('~') : ''),
-                    'z': this.map.getZoom(),
+                    'z': 16,
                     'size': '650,450'
                 };
 
