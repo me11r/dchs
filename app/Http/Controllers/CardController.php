@@ -162,6 +162,10 @@ class CardController extends AuthorizedController
             $data['operational_plan_id'] = 0;
         }
 
+        if($request->fire_department_main_id == 'NaN' || is_null($request->fire_department_main_id )){
+            $data['fire_department_main_id'] = 0;
+        }
+
         $card = Ticket101::findOrNew($card_id);
         $canEditTicket = $card->canEditTicket();
         if(!$canEditTicket){
