@@ -90,6 +90,12 @@
                 <td>{{ trip.ticket.operational_plan.name|default('') }}</td>
             </tr>
         {% endif %}
+        {% if trip.ticket.operational_card_id %}
+            <tr>
+                <td class="has-text-right is-bold">№ оперативного плана</td>
+                <td>{{ trip.ticket.operational_card.oc_number|default('') }}</td>
+            </tr>
+        {% endif %}
         <tr>
             <td class="has-text-right is-bold">Конструктивные особенности</td>
             <td>{{ trip.ticket.building_description|default('') }}</td>
@@ -136,14 +142,8 @@
             <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
             <td>{{ trip.created_at|date('d.m.Y') }}</td>
         </tr>
-        <tr>
-            <td colspan="2">
-                <img style="height: 240px" src="{{ image_path }}">
-            </td>
-        </tr>
     </table>
-
-    <div id="road-trip-view-yandex-map-block"></div>
 </div>
+<img style="width: 1010px; transform: rotate(-90deg);transform-origin: 0 0; margin-top: 990px" src="{{ image_path }}">
 </body>
 </html>

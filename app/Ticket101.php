@@ -587,5 +587,10 @@ class Ticket101 extends Model
         return $this->belongsTo(WallMaterial::class, 'wall_material_id');
     }
 
+    public function operational_card()
+    {
+        return $this->belongsTo(OperationalCard::class, 'operational_card_id');
+    }
+
 
 }

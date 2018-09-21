@@ -18,7 +18,12 @@ class MorainicLakeReportController extends Controller
         $lakesSummary = $lakesSumRaw->get();
         $report = MorainicLakeReport::where('date', $changeFormat)->first();
         $note = $report->note ?? null;
-        return view("{$this->view}.show", compact('lakesSummary', 'date', 'note', 'lakesSumRaw'));
+
+        return view("{$this->view}.show", compact(
+            'lakesSummary',
+            'date',
+            'note',
+            'lakesSumRaw'));
     }
 
     public function update(Request $request, $date)

@@ -2,13 +2,15 @@
 {% block content %}
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
     <script>
-        window.roadTripViewData = {
-            fromString: 'Алматы {{ trip.ticket.location }}',
-            emergencyString: 'Алматы {{ trip.department.address }}',
-        };
-        ymaps.ready(function () {
-            window.ymaps = ymaps;
-            window.initRoadTripViewMap();
+        window.addEventListener('load', () => {
+            window.roadTripViewData = {
+                fromString: 'Алматы {{ trip.ticket.location }}',
+                emergencyString: 'Алматы {{ trip.department.address }}',
+            };
+            ymaps.ready(function () {
+                window.ymaps = ymaps;
+                window.initRoadTripViewMap();
+            });
         });
     </script>
     <div class="page-margin">
@@ -85,6 +87,12 @@
                 <tr>
                     <td class="has-text-right is-bold">№ оперативного плана</td>
                     <td>{{ trip.ticket.operational_plan.name|default('') }}</td>
+                </tr>
+            {% endif %}
+            {% if trip.ticket.operational_card_id %}
+                <tr>
+                    <td class="has-text-right is-bold">№ оперативного плана</td>
+                    <td>{{ trip.ticket.operational_card.oc_number|default('') }}</td>
                 </tr>
             {% endif %}
             <tr>
