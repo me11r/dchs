@@ -274,7 +274,7 @@
                                  data-value="{{ ticket.fire_level_id }}"
                                  data-name="fire_level_id"
                                  style="display: block">
-                                <select name="fire_level_id" id="fire_level_id" v-model="selectedId">
+                                <select name="fire_level_id" id="fire_level_id" required v-model="selectedId">
                                     <option value="">-</option>
                                     {% for object in fire_levels %}
                                         <option value="{{ object.id }}">{{ object.name }}</option>
@@ -290,11 +290,13 @@
                             <label for="fire_department_id">Микроучасток</label>
                             <input type="hidden"
                                    name="fire_department_id"
+                                   required
                                    id="fire_department_id"
                                    v-model="selectedId">
                             <buefy-common-select
                                     :options='{{ fire_departments | json_encode() | raw }}'
                                     :min-length="1"
+                                    required="required"
                                     v-model="selectedId">
                             </buefy-common-select>
                         </p>
@@ -623,7 +625,7 @@
                             <p>
                                 <label for="result_fire_level_id">Уточненный ранг пожара</label>
                             <div class="select">
-                                <select name="result_fire_level_id" id="result_fire_level_id">
+                                <select name="result_fire_level_id"  id="result_fire_level_id">
                                     <option value="">-</option>
                                     {% for fire_level in fire_levels %}
                                         <option value="{{ fire_level.id }}"

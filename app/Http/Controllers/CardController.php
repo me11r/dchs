@@ -162,6 +162,10 @@ class CardController extends AuthorizedController
             $data['operational_plan_id'] = 0;
         }
 
+        if($request->fire_level_id == 'NaN' || is_null($request->fire_level_id )){
+            $data['operational_plan_id'] = 1;
+        }
+
         if($request->fire_department_id == 'NaN' || is_null($request->fire_department_id )){
             $data['fire_department_id'] = 0;
         }
