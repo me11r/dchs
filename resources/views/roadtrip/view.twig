@@ -33,16 +33,16 @@
                     </td>
                 </tr>
             {% endif %}
-            {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
-                <tr class="printing-invisible">
-                    <td class="has-text-right is-bold">Выезд сил</td>
-                    <td>
-                        <form method="post" action="{{ url('/roadtrip/force-out/' ~ trip.id) }}">{{ csrf_field() }}
-                            <button type="submit" class="button is-info"><i class="far fa-bell"></i>&nbsp;Назначить</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endif %}
+            {#{% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}#}
+                {#<tr class="printing-invisible">#}
+                    {#<td class="has-text-right is-bold">Выезд сил</td>#}
+                    {#<td>#}
+                        {#<form method="post" action="{{ url('/roadtrip/force-out/' ~ trip.id) }}">{{ csrf_field() }}#}
+                            {#<button type="submit" class="button is-info"><i class="far fa-bell"></i>&nbsp;Назначить</button>#}
+                        {#</form>#}
+                    {#</td>#}
+                {#</tr>#}
+            {#{% endif %}#}
             <tr>
                 <td class="has-text-right is-bold">Место пожара (адрес)</td>
                 <td>{{ trip.ticket.location|default('-') }}</td>
@@ -53,7 +53,26 @@
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Состав высылаемых сил и средств</td>
-                <td>{{ trip.result.departments|default('-') }}</td>
+                <td>
+                    <div id="vue">
+                        {% for dep in trip.ticket.results %}
+                            {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
+                                {#<tr class="">#}
+                                    {#<td class="has-text-right is-bold"></td>#}
+                                    {#<td>#}
+                                        <roadtrip-dept-btn :trip="{{ trip }}" :dep="{{ dep }}"></roadtrip-dept-btn>
+                                    {#</td>#}
+                                {#</tr>#}
+                            {% else %}
+                                <form action="#" method="post">
+                                    {{ csrf_field() }}
+                                    <button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение: отделение -  {{ dep.departments }}</button>
+                                </form>
+                            {% endif %}
+
+                        {% endfor %}
+                    </div>
+                </td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Подразделения</td>

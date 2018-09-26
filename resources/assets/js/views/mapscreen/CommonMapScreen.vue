@@ -50,15 +50,17 @@ export default {
                         );
                         this.detectLocation(geoObject);
                         this.detectArea(geoObject);
+
+                        let dept_id = this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.fireDepartmentAreas, this.map);
+                        // window.localStorage.setItem('fire_department_id_found', dept_id);
+                        window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, dept_id);
+                        globalBus.$emit('is_common_house', dept_id);
+
+                        console.dir(dept_id);
                     }
                 });
 
-            let dept_id = this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.fireDepartmentAreas, this.map);
-            window.localStorage.setItem('fire_department_id_found', dept_id);
-            window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, dept_id);
-            globalBus.$emit('is_common_house', dept_id);
 
-            console.dir(dept_id);
 
         },
         houseFound(lat, long, name) {
@@ -67,8 +69,8 @@ export default {
             this.initFireDepartmentAreas();
             console.dir(this.fireDepartmentAreas)
             let dept_id = this.yandexMapsBus.fireDepartmentArea(lat, long, this.fireDepartmentAreas, this.map);
-            window.localStorage.setItem('fire_department_id_found', dept_id);
-            window.localStorage.setItem('YANDEX_FIRE_DEPT_FOUND', dept_id);
+            // window.localStorage.setItem('fire_department_id_found', dept_id);
+            window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, dept_id);
 
         },
         resetAllObjects() {

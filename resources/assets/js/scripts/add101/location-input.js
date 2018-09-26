@@ -12,6 +12,7 @@ export default function bindLocationInputApp() {
         el: element,
         data: {
             location: '',
+            fire_department_id: '',
             showList: false,
             items: [],
             yandexMapsBus: {},
@@ -37,8 +38,8 @@ export default function bindLocationInputApp() {
                     document.getElementById('fire_level_id').value = 1;
                     this.items = items;
 
-                    let dept_id = window.localStorage.getItem(YANDEX_FIRE_DEPT_FOUND);
-                    globalBus.$emit('is_common_house', dept_id);
+                    // let dept_id = window.localStorage.getItem(YANDEX_FIRE_DEPT_FOUND);
+                    // globalBus.$emit('is_common_house', dept_id);
                     // console.dir('dept_id');
                     console.dir(dept_id);
                 }
@@ -140,6 +141,14 @@ export default function bindLocationInputApp() {
                     this.searchLocationPlans();
                     this.notifyMap();
                 }
+            },
+            'fire_department_id'(newValue, oldValue){
+                globalBus.$emit('is_common_house', newValue);
+            }
+        },
+        computed: {
+            fire_department() {
+                document.getElementById('fire_level_id').value = this.fire_department_id;
             }
         },
         mounted() {
@@ -148,6 +157,8 @@ export default function bindLocationInputApp() {
                     this.location = event.newValue;
                 }
                 else if (event.key === YANDEX_FIRE_DEPT_FOUND) {
+                    this.fire_department_id = event.newValue;
+                    // this.fire_department();
                     globalBus.$emit('is_common_house', event.newValue);
                 }
             });

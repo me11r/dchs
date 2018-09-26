@@ -150,7 +150,8 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except('ph');
+        $data = $request->except(['ph', 'departments_to_ride']);
+        $repartments_to_ride = $request->departments_to_ride;
         $r = $request->all();
 
         unset($data['comeback']);
@@ -160,6 +161,14 @@ class CardController extends AuthorizedController
 
         if($request->operational_plan_id == 'NaN' || is_null($request->operational_plan_id )){
             $data['operational_plan_id'] = 0;
+        }
+
+        if($request->fire_level_id == 'NaN' || is_null($request->fire_level_id )){
+            $data['operational_plan_id'] = 1;
+        }
+
+        if($request->fire_department_id == 'NaN' || is_null($request->fire_department_id )){
+            $data['fire_department_id'] = 0;
         }
 
         $card = Ticket101::findOrNew($card_id);
@@ -191,12 +200,18 @@ class CardController extends AuthorizedController
                 ->delete();
 
             foreach ($schedule as $item) {
-                FireDepartmentResult::create([
-                    'ticket101_id' => $card->id,
-                    'fire_department_id' => $item->fire_department_id,
-                    'dispatched' => false,
-                    'departments' => $item->department,
-                ]);
+
+                $schedule_depts = explode(',', str_replace(['.', ' '], '', $item->department));
+
+                foreach ($schedule_depts as $schedule_dept) {
+                    FireDepartmentResult::create([
+                        'ticket101_id' => $card->id,
+                        'fire_department_id' => $item->fire_department_id,
+                        'dispatched' => false,
+                        'departments' => $schedule_dept,
+                    ]);
+                }
+
             }
         }
         else{
