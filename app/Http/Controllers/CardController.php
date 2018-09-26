@@ -150,7 +150,8 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except('ph');
+        $data = $request->except(['ph', 'departments_to_ride']);
+        $repartments_to_ride = $request->departments_to_ride;
         $r = $request->all();
 
         unset($data['comeback']);
@@ -199,12 +200,18 @@ class CardController extends AuthorizedController
                 ->delete();
 
             foreach ($schedule as $item) {
-                FireDepartmentResult::create([
-                    'ticket101_id' => $card->id,
-                    'fire_department_id' => $item->fire_department_id,
-                    'dispatched' => false,
-                    'departments' => $item->department,
-                ]);
+
+                $schedule_depts = explode(',', str_replace(['.', ' '], '', $item->department));
+
+                foreach ($schedule_depts as $schedule_dept) {
+                    FireDepartmentResult::create([
+                        'ticket101_id' => $card->id,
+                        'fire_department_id' => $item->fire_department_id,
+                        'dispatched' => false,
+                        'departments' => $schedule_dept,
+                    ]);
+                }
+
             }
         }
         else{
