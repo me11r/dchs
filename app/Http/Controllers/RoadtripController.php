@@ -39,10 +39,19 @@ class RoadtripController extends AuthorizedController
 
     public function getView($plan_id)
     {
-        $trip = RoadtripPlan::with(['ticket', 'department', 'result'])
+        $trip = RoadtripPlan::with(['ticket', 'department', 'results'])
             ->findOrFail($plan_id);
 
+        $departments = [];
+
+        if($trip->ticket->results){
+            foreach ($trip->ticket->results as $item) {
+                $departments[] = $item->departments;
+            }
+        }
+
         $this->set('trip', $trip);
+        $this->set('departments', $departments);
     }
 
     public function postPlan(Request $request, $plan_id)
@@ -142,6 +151,9 @@ class RoadtripController extends AuthorizedController
 
     public function getPrint(Request $request, $id)
     {
+        if(env('IS_LOCAL', false) == true){
+            return response()->json('ok', 200);
+        }
         $this->noLayout();
         $html = view(
             'pdf.roadtrip-page',
@@ -164,5 +176,25 @@ class RoadtripController extends AuthorizedController
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf;
         }, 'roadtrip-'.$id.'.pdf', ['Content-type' => 'application/pdf']);
+    }
+
+    public function postDispatch(Request $request)
+    {
+        $f = $request->all();
+        $result = FireDepartmentResult::find($request->dept_id);
+        $result->dispatch_id = $request->trip_id;
+        $result->dispatched = true;
+        $result->out_time = now()->format('H:i:s');
+        $result->save();
+        return response()->json(['ok'], 200);
+    }
+
+    public function postReturn(Request $request)
+    {
+        $f = $request->all();
+        $result = FireDepartmentResult::find($request->dept_id);
+        $result->ret_time = now()->format('H:i:s');
+        $result->save();
+        return response()->json(['ok'], 200);
     }
 }

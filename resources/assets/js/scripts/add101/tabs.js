@@ -9,12 +9,18 @@ export default class Tabs {
     setTab (i) {
         const form = document.getElementById('card-101-form');
         let valid = form.checkValidity();
+        let fire_department_id = document.getElementById('fire_department_id');
+
+
 
         if ((this.activeTab === 0) && (this.isNewForm === true) && (i !== 0)) {
             if (valid) {
                 form.action += ('?comeback=' + i);
                 return form.submit();
             } else {
+                if(fire_department_id.value === undefined || fire_department_id.value == false){
+                    return false;
+                }
                 form.querySelector('button[type=submit]').click();
             }
             return false;

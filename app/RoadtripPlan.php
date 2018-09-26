@@ -48,8 +48,8 @@ class RoadtripPlan extends Model
         return $this->belongsTo(FireDepartment::class);
     }
 
-    public function result()
+    public function results()
     {
-        return $this->hasOne(FireDepartmentResult::class, 'dispatch_id');
+        return $this->hasMany(FireDepartmentResult::class, 'dispatch_id');
     }
 }

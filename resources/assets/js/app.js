@@ -17,6 +17,7 @@ import RoadtripNotifier from './ui/RoadtripNotifier';
 import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
+import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 // import YandexMapsBus from './scripts/yandex-maps-bus';
 
 import Add101Functions from './scripts/add101/add101';
@@ -46,6 +47,7 @@ Vue.component('persons-101', Add101Persons);
 Vue.component('fire-object', FireObject);
 Vue.component('report101-staff', Report101Staff);
 Vue.component('report101-vehicles', Report101Vehicles);
+Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
 
 Vue.component('staff-101', Add101Staff);
 
