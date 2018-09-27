@@ -27,12 +27,51 @@
                 <tr class="printing-invisible">
                     <td class="has-text-right is-bold">Принять в работу</td>
                     <td>
-                        <form method="post" action="{{ url('/service-plans/accept/' ~ record.id) }}">
+                        <form method="post" action="{{ url('/service-plans/accept/' ~ record.id ~ '/' ~ record.department) }}">
                             {{ csrf_field() }}
+                            <label for="name_accepted">Фамилия принявшего сообщение</label>
+                            <input required id="name_accepted" name="name_accepted" type="text" class="input">
                             <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Принять</button>
                         </form>
                     </td>
                 </tr>
+            {% else %}
+                <tr class="printing-invisible">
+                    <td class="has-text-right is-bold">Принято в работу</td>
+                    <td>
+                        <p>{{ record.name_accepted }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Прибытие на место</td>
+                    <td>
+                        {% if not record.arrive_time %}
+                            <form method="post" action="{{ url('/service-plans/arrive/' ~ record.id ~ '/' ~ record.department) }}">
+                                {{ csrf_field() }}
+                                {#<input type="datetime-local" name="arrive_time">#}
+                                <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Отметить</button>
+                            </form>
+                        {% else %}
+                            <p>{{ record.arrive_time }}</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if record.arrive_time %}
+                    <tr>
+                        <td class="has-text-right is-bold">Время возвращения</td>
+                        <td>
+                            {% if not record.return_time %}
+                                <form method="post" action="{{ url('/service-plans/return/' ~ record.id ~ '/' ~ record.department) }}">
+                                    {{ csrf_field() }}
+                                    {#<input type="datetime-local" name="return_time">#}
+                                    <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Отметить</button>
+                                </form>
+                            {% else %}
+                                <p>{{ record.return_time }}</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
             {% endif %}
             {#{% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}#}
                 {#<tr class="printing-invisible">#}
@@ -52,31 +91,31 @@
                 <td class="has-text-right is-bold">Наименование объекта</td>
                 <td>{{ record.ticket.object_name|default('-') }}</td>
             </tr>
-            <tr>
-                <td class="has-text-right is-bold">Состав высылаемых сил и средств</td>
-                <td>
-                    {% if not record.is_accepted %}
-                        {% for i in record.results %}
-                            <p>{{ i.departments }}</p>
-                        {% endfor %}
-                    {% else %}
-                        <div id="vue">
-                            {% for dep in results %}
-                                {% if ((record.result is defined) or (record.result is null)) and record.result.out_time|default(null) is null and record.is_accepted %}
-                                    <roadtrip-dept-btn :trip="{{ record }}" :dep="{{ dep }}"></roadtrip-dept-btn>
+            {#<tr>#}
+                {#<td class="has-text-right is-bold">Состав высылаемых сил и средств</td>#}
+                {#<td>#}
+                    {#{% if not record.is_accepted %}#}
+                        {#{% for i in record.results %}#}
+                            {#<p>{{ i.departments }}</p>#}
+                        {#{% endfor %}#}
+                    {#{% else %}#}
+                        {#<div id="vue">#}
+                            {#{% for dep in results %}#}
+                                {#{% if ((record.result is defined) or (record.result is null)) and record.result.out_time|default(null) is null and record.is_accepted %}#}
+                                    {#<roadtrip-dept-btn :trip="{{ record }}" :dep="{{ dep }}"></roadtrip-dept-btn>#}
                                 {#{% else %}#}
                                     {#<form action="#" method="post">#}
                                         {#{{ csrf_field() }}#}
                                         {#<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение: отделение -  {{ dep.departments }}</button>#}
                                     {#</form>#}
-                                {% endif %}
+                                {#{% endif %}#}
 
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                            {#{% endfor %}#}
+                        {#</div>#}
+                    {#{% endif %}#}
 
-                </td>
-            </tr>
+                {#</td>#}
+            {#</tr>#}
             <tr>
                 <td class="has-text-right is-bold">Подразделения</td>
                 <td>{{ record.ticket['ph_' ~ record.department ~'_ot']|default('-') }}</td>

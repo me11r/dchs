@@ -10,13 +10,20 @@ export default function bindServicePlan() {
             },
             methods: {
                 sendOneCheckService(event, cardId, service) {
+                    // let date = new Date();
+                    // let dateFormatted = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                    // console.dir(dateFormatted);
+
                     axios.post('/service-plans/send', {
                         card_id: cardId,
-                        service: service,
+                        service: service
                     }).then((response) => {
-                        // resolve(i);
-                        // window.location.href = '/card/add101/' + window.ticket101add.ticketId;
-                    }).catch(() => {
+                        let data = response.data;
+                        let id = service + '_created_at';
+
+                        document.querySelector(`[id="${id}"]`).value = data.created_at;
+
+                        }).catch(() => {
                     });
                 }
             },
