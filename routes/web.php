@@ -140,6 +140,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'service-plans'], function (){
         Route::get('/', 'ServicePlanController@getList');
         Route::post('send', 'ServicePlanController@postSend');
+        Route::post('accept/{id}/{service}', 'ServicePlanController@postAccept')->where('id', '[0-9]+');
+        Route::post('arrive/{id}/{service}', 'ServicePlanController@postArrive')->where('id', '[0-9]+');
+        Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
         Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '112|102|103|104|electro|water|smk');
         Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '112|102|103|104|electro|water|smk');
     });
