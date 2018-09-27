@@ -582,6 +582,13 @@ class Ticket101 extends Model
         return false;
     }
 
+    public function getServicePlan($ticket, $service)
+    {
+        return Ticket101ServicePlan::where('card_id', $ticket)
+            ->where('department', $service)->first();
+    }
+
+
     public function wall_material()
     {
         return $this->belongsTo(WallMaterial::class, 'wall_material_id');
@@ -590,6 +597,11 @@ class Ticket101 extends Model
     public function operational_card()
     {
         return $this->belongsTo(OperationalCard::class, 'operational_card_id');
+    }
+
+    public function service_plans()
+    {
+        return $this->hasMany(Ticket101ServicePlan::class, 'card_id');
     }
 
 

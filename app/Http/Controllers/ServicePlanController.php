@@ -62,10 +62,51 @@ class ServicePlanController extends Controller
     public function postSend(Request $request)
     {
         $all = $request->all();
-        Ticket101ServicePlan::firstOrCreate([
+        $servicePlan = Ticket101ServicePlan::firstOrCreate([
             'department' => $request->service,
             'card_id' => $request->card_id,
         ]);
-        return response()->json(['ok']);
+        return response()->json($servicePlan);
+    }
+
+    public function postAccept(Request $request, $id, $service)
+    {
+        $plan = Ticket101ServicePlan::findOrFail($id);
+        if (!$plan->is_accepted) {
+            $plan->is_accepted = true;
+            $plan->name_accepted = $request->name_accepted;
+            $plan->save();
+        }
+        return redirect("/service-plans/{$service}/{$id}/show")->with('_message', [
+            'type' => 'success',
+            'text' => 'Путевой лист принят в работу!'
+        ]);
+    }
+
+    public function postArrive(Request $request, $id, $service)
+    {
+        $plan = Ticket101ServicePlan::findOrFail($id);
+        if (!$plan->arrive_time) {
+            $plan->arrive_time = now();
+            $plan->save();
+        }
+        return redirect("/service-plans/{$service}/{$id}/show")->with('_message', [
+            'type' => 'success',
+            'text' => 'Отмечено время прибытия!'
+        ]);
+    }
+
+    public function postReturn(Request $request, $id, $service)
+    {
+        $plan = Ticket101ServicePlan::findOrFail($id);
+        if (!$plan->return_time) {
+            $plan->return_time = now();
+            $plan->is_closed = true;
+            $plan->save();
+        }
+        return redirect("/service-plans/{$service}/{$id}/show")->with('_message', [
+            'type' => 'success',
+            'text' => 'Отмечено время возвращения!'
+        ]);
     }
 }
