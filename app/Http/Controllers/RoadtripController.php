@@ -44,13 +44,20 @@ class RoadtripController extends AuthorizedController
 
         $departments = [];
 
-        if($trip->ticket->results()->isDispatched()->get()){
+        $results = $trip->
+            ticket
+            ->results()
+            ->isDispatched()
+            ->where('fire_department_id', $trip->department_id)
+            ->get();
+
+        if($results->count()){
             foreach ($trip->ticket->results as $item) {
                 $departments[] = $item->departments;
             }
         }
 
-        $this->set('results', $trip->ticket->results()->isDispatched()->get());
+        $this->set('results', $results);
         $this->set('trip', $trip);
         $this->set('departments', $departments);
     }
@@ -116,6 +123,25 @@ class RoadtripController extends AuthorizedController
                 'type' => 'success',
                 'text' => 'В подразделение отправлен путевой лист'
             ]);
+    }
+
+    public function postSendAll($ticket_id)
+    {
+        $this->noLayout();
+        $ticket = Ticket101::findOrFail($ticket_id);
+
+        foreach ($ticket->results as $result) {
+            $plan = RoadtripPlan::firstOrCreate([
+                'card_id' => $ticket_id,
+                'department_id' => $result->fire_department_id
+            ]);
+
+            $result->dispatched = true;
+            $result->dispatch_id = $plan->id;
+            $result->save();
+        }
+
+        return response()->json('ok', 200);
     }
 
     public function postAccept(Request $request, $id)

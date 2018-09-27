@@ -528,6 +528,11 @@ class Ticket101 extends Model
         return $this->belongsToMany(FireDepartment::class, 'roadtrip_plan', 'card_id', 'department_id');
     }
 
+    public function road_trip_plans()
+    {
+        return $this->hasMany(RoadtripPlan::class, 'card_id');
+    }
+
     public function operational_plan()
     {
         return $this->hasOne(OperationalPlan::class, 'id', 'operational_plan_id');

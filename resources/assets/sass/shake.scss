@@ -1,0 +1,55 @@
+$shake-strength: 10px;
+
+// animation error
+.animated {
+  -webkit-animation-duration: .3s;
+  animation-duration: .3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+@-webkit-keyframes shake {
+  from,
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  40%,
+  80% {
+    -webkit-transform: translate3d(-1 * $shake-strength, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%,
+  60% {
+    -webkit-transform: translate3d($shake-strength, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+@keyframes shake {
+  from,
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  40%,
+  80% {
+    -webkit-transform: translate3d(-1 * $shake-strength, 0, 0);
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%,
+  60% {
+    -webkit-transform: translate3d($shake-strength, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+.shake {
+  -webkit-animation-name: shake;
+  animation-name: shake;
+}
+
