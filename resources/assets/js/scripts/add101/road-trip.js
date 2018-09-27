@@ -39,6 +39,7 @@ export default function bindRoadTrip() {
             sendOne(i, part) {
                 return new Promise((resolve) => {
                     if (part === '') {
+                        // part = document.querySelector('[id="ph_' + i + '_ot"]').value;
                         part = document.querySelector('[id="ph_' + i + '_ot"]').value;
                     }
 
@@ -57,6 +58,13 @@ export default function bindRoadTrip() {
                     }
                 });
             },
+            sendOneCheck(event, dept_id, dept_number) {
+                axios.get('/roadtrip/send/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number).then((response) => {
+                    // resolve(i);
+                    // window.location.href = '/card/add101/' + window.ticket101add.ticketId;
+                }).catch(() => {
+                });
+            }
         },
     });
 }

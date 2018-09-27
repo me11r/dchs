@@ -4,8 +4,8 @@
     <script>
         window.addEventListener('load', () => {
             window.roadTripViewData = {
-                fromString: 'Алматы {{ trip.ticket.location }}',
-                emergencyString: 'Алматы {{ trip.department.address }}',
+                fromString: 'Алматы {{ record.ticket.location }}',
+                emergencyString: 'Алматы {{ record.department }}',
             };
             ymaps.ready(function () {
                 window.ymaps = ymaps;
@@ -16,18 +16,19 @@
     <div class="page-margin">
         <div class="level">
             <div class="level-left">
-                <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
+                <h4 class="title">Путевой лист {{ record.id }} от {{ record.created_at|date('d.m.Y H:i') }} для {{ record.department }}</h4>
             </div>
             <div class="level-right printing-invisible">
                 <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
             </div>
         </div>
         <table class="table is-narrow printing-full-width">
-            {% if not trip.is_accepted %}
+            {% if not record.is_accepted %}
                 <tr class="printing-invisible">
                     <td class="has-text-right is-bold">Принять в работу</td>
                     <td>
-                        <form method="post" action="{{ url('/roadtrip/accept/' ~ trip.id) }}">{{ csrf_field() }}
+                        <form method="post" action="{{ url('/service-plans/accept/' ~ record.id) }}">
+                            {{ csrf_field() }}
                             <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Принять</button>
                         </form>
                     </td>
@@ -45,24 +46,24 @@
             {#{% endif %}#}
             <tr>
                 <td class="has-text-right is-bold">Место пожара (адрес)</td>
-                <td>{{ trip.ticket.location|default('-') }}</td>
+                <td>{{ record.ticket.location|default('-') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Наименование объекта</td>
-                <td>{{ trip.ticket.object_name|default('-') }}</td>
+                <td>{{ record.ticket.object_name|default('-') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Состав высылаемых сил и средств</td>
                 <td>
-                    {% if not trip.is_accepted %}
-                        {% for i in trip.results %}
+                    {% if not record.is_accepted %}
+                        {% for i in record.results %}
                             <p>{{ i.departments }}</p>
                         {% endfor %}
                     {% else %}
                         <div id="vue">
                             {% for dep in results %}
-                                {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
-                                    <roadtrip-dept-btn :trip="{{ trip }}" :dep="{{ dep }}"></roadtrip-dept-btn>
+                                {% if ((record.result is defined) or (record.result is null)) and record.result.out_time|default(null) is null and record.is_accepted %}
+                                    <roadtrip-dept-btn :trip="{{ record }}" :dep="{{ dep }}"></roadtrip-dept-btn>
                                 {#{% else %}#}
                                     {#<form action="#" method="post">#}
                                         {#{{ csrf_field() }}#}
@@ -78,75 +79,75 @@
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Подразделения</td>
-                <td>{{ trip.ticket['ph_' ~ trip.department_id ~'_ot']|default('-') }}</td>
+                <td>{{ record.ticket['ph_' ~ record.department ~'_ot']|default('-') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Пересечение улиц</td>
-                <td>{% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
+                <td>{% if record.ticket.crossroad_1_id %}({{ record.ticket.crossroad_1.name|default('-') }} &times; {{ record.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Ранг пожара
                 </td>
-                <td>{{ trip.ticket.fire_level.name|default('?') }}</td>
+                <td>{{ record.ticket.fire_level.name|default('?') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Объект горения</td>
-                <td>{{ trip.ticket.fire_object.name|default('?') }}</td>
+                <td>{{ record.ticket.fire_object.name|default('?') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">
                     Этажность
                 </td>
-                <td>{{ trip.ticket.storey_count|default('-') }}</td>
+                <td>{{ record.ticket.storey_count|default('-') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">На каком этаже горит
                 </td>
-                <td>{{ trip.ticket.floor|default('-') }}</td>
+                <td>{{ record.ticket.floor|default('-') }}</td>
             </tr>
-            {% if trip.ticket.operational_plan_id %}
+            {% if record.ticket.operational_plan_id %}
                 <tr>
                     <td class="has-text-right is-bold">№ оперативного плана</td>
-                    <td>{{ trip.ticket.operational_plan.name|default('') }}</td>
+                    <td>{{ record.ticket.operational_plan.name|default('') }}</td>
                 </tr>
             {% endif %}
-            {% if trip.ticket.operational_card_id %}
+            {% if record.ticket.operational_card_id %}
                 <tr>
                     <td class="has-text-right is-bold">№ оперативного плана</td>
-                    <td>{{ trip.ticket.operational_card.oc_number|default('') }}</td>
+                    <td>{{ record.ticket.operational_card.oc_number|default('') }}</td>
                 </tr>
             {% endif %}
             <tr>
                 <td class="has-text-right is-bold">Конструктивные особенности</td>
-                <td>{{ trip.ticket.building_description|default('') }}</td>
+                <td>{{ record.ticket.building_description|default('') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Материал стен</td>
-                <td>{{ trip.ticket.wall_material.name|default('') }}</td>
+                <td>{{ record.ticket.wall_material.name|default('') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Год постройки</td>
-                <td>{{ trip.ticket.year_of_development|default('') }}</td>
+                <td>{{ record.ticket.year_of_development|default('') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Площадь объекта</td>
-                <td>{{ trip.ticket.building_square|default('') }}</td>
+                <td>{{ record.ticket.building_square|default('') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Наличие угрозы людям</td>
-                <td>{% if trip.ticket.people_in_danger ==1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
+                <td>{% if record.ticket.people_in_danger ==1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">ФИО заявителя</td>
-                <td>{{ trip.ticket.caller_name|default('-') }}</td>
+                <td>{{ record.ticket.caller_name|default('-') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Телефон заявителя</td>
-                <td>{{ trip.ticket.caller_phone|default('-') }}</td>
+                <td>{{ record.ticket.caller_phone|default('-') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Время получения сообщения о ЧС</td>
-                <td>{{ trip.ticket.created_at|date('d.m.Y H:i') }}</td>
+                <td>{{ record.ticket.created_at|date('d.m.Y H:i') }}</td>
             </tr>
             {#<tr>#}
                 {#<td class="has-text-right is-bold">Время возвращение в ПЧ</td>#}
@@ -165,12 +166,12 @@
             {#</tr>#}
             <tr>
                 <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
-                <td>{{ trip.created_at|date('d.m.Y') }}</td>
+                <td>{{ record.created_at|date('d.m.Y') }}</td>
             </tr>
         </table>
 
         <div id="road-trip-view-yandex-map-block"></div>
-        <div id="autoprint" data-id="{{ trip.id }}"></div>
+        <div id="autoprint" data-id="{{ record.id }}"></div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

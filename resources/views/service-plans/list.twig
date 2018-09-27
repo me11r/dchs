@@ -1,0 +1,32 @@
+{% extends "layout/html" %}
+{% block content %}
+    <h4 class="title">Службы взаимодействия</h4>
+    <table class="table is-striped is-narrow is-fullwidth">
+        <thead>
+        <tr>
+            <th>Служба</th>
+            {#<th>Подразделение</th>#}
+            {#<th>Адрес возгорания</th>#}
+            {#<th>Дата и время</th>#}
+            {#<th>&nbsp;</th>#}
+        </tr>
+        </thead>
+        <tbody>
+        {% for slug, service in services %}
+            <tr>
+                <td><a href="/service-plans/{{ slug }}">{{ service }}</a></td>
+                {#<td>{{ trip.department.name|default('-') }}</td>#}
+                {#<td>{{ trip.ticket.location|default('-') }} {% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>#}
+                {#<td>{{ trip.created_at|date('d.m.Y H:i') }}</td>#}
+                {#<td class="has-text-right"><a href="{{ url('/roadtrip/view/' ~ trip.id) }}" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой#}
+                        {#лист</a></td>#}
+            </tr>
+        {% else %}
+            <tr>
+                <td class="has-text-centered"><h4 class="subtitle">Нет служб взаимодействия</h4></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {#{% include "_templates/pagination" with {'items': trips, 'per_page': per_page} %}#}
+{% endblock content %}

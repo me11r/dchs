@@ -41,7 +41,7 @@ export default function bindLocationInputApp() {
                     // let dept_id = window.localStorage.getItem(YANDEX_FIRE_DEPT_FOUND);
                     // globalBus.$emit('is_common_house', dept_id);
                     // console.dir('dept_id');
-                    console.dir(dept_id);
+                    // console.dir(dept_id);
                 }
                 this.showList = this.items.length > 0;
                 if (this.items.length === 1 && this.items[0].location === this.location) {
