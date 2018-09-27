@@ -83,6 +83,7 @@ class CardController extends AuthorizedController
         if($card_id != 0){
             foreach ($ssv_out as $key => $item) {
                 $ssv_out[$key]->res = $item->results()->where('ticket101_id', $card_id)->first();
+                $ssv_out[$key]->res_many = $item->results()->where('ticket101_id', $card_id)->get();
             }
         }
 
@@ -195,49 +196,54 @@ class CardController extends AuthorizedController
          */
 
         if(isset($schedule) && $schedule->count()){
-            FireDepartmentResult::where('ticket101_id', $card->id)
-                ->where('dispatched', false)
-                ->delete();
+//            FireDepartmentResult::where('ticket101_id', $card->id)
+//                ->where('dispatched', false)
+//                ->delete();
 
-            foreach ($schedule as $item) {
+            if(!FireDepartmentResult::where('ticket101_id', $card->id)->count()){
 
-                $schedule_depts = explode(',', str_replace(['.', ' '], '', $item->department));
+                foreach ($schedule as $item) {
 
-                foreach ($schedule_depts as $schedule_dept) {
-                    FireDepartmentResult::create([
-                        'ticket101_id' => $card->id,
-                        'fire_department_id' => $item->fire_department_id,
-                        'dispatched' => false,
-                        'departments' => $schedule_dept,
-                    ]);
-                }
+                    $schedule_depts = explode(',', str_replace(['.', ' '], '', $item->department));
 
-            }
-        }
-        else{
-            $results_req = $request->ph;
-            foreach ($results_req['ot'] as $control_id => $control) {
-                if($control){
-                    FireDepartmentResult::updateOrCreate(
-                        [
+                    foreach ($schedule_depts as $schedule_dept) {
+                        FireDepartmentResult::create([
                             'ticket101_id' => $card->id,
-                            'fire_department_id' => $control_id,
-                        ],
-                        [
-                            'ticket101_id' => $card->id,
-                            'fire_department_id' => $control_id,
-                            'departments' => $control,
+                            'fire_department_id' => $item->fire_department_id,
+                            'dispatched' => false,
+                            'departments' => $schedule_dept,
+                        ]);
+                    }
 
-                            'out_time' => $request->input("ph.out_time.$control_id"),
-                            'arrive_time' => $request->input("ph.arrive_time.$control_id"),
-                            'loc_time' => $request->input("ph.loc_time.$control_id"),
-                            'liqv_time' => $request->input("ph.liqv_time.$control_id"),
-                            'ret_time' => $request->input("ph.ret_time.$control_id"),
-                        ]
-                    );
                 }
             }
+
+
         }
+//        else{
+//            $results_req = $request->departments_to_ride;
+//            foreach ($results_req['ot'] ?? [] as $control_id => $control) {
+//                if($control){
+//                    FireDepartmentResult::updateOrCreate(
+//                        [
+//                            'ticket101_id' => $card->id,
+//                            'fire_department_id' => $control_id,
+//                        ],
+//                        [
+//                            'ticket101_id' => $card->id,
+//                            'fire_department_id' => $control_id,
+//                            'departments' => $control,
+//
+////                            'out_time' => $request->input("ph.out_time.$control_id"),
+////                            'arrive_time' => $request->input("ph.arrive_time.$control_id"),
+////                            'loc_time' => $request->input("ph.loc_time.$control_id"),
+////                            'liqv_time' => $request->input("ph.liqv_time.$control_id"),
+////                            'ret_time' => $request->input("ph.ret_time.$control_id"),
+//                        ]
+//                    );
+//                }
+//            }
+//        }
 
         if ($comeback) {
             $back = '/card/add101/' . $card->id.'#return='.$comeback;

@@ -38,6 +38,14 @@ class RoadtripPlan extends Model
     protected $table = 'roadtrip_plan';
     protected $guarded = ['id'];
 
+    protected $fillable = [
+        'department_id',
+        'card_id',
+        'return_time',
+        'is_closed',
+        'is_accepted',
+    ];
+
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'card_id');

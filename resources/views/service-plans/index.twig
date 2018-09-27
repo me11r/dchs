@@ -1,0 +1,33 @@
+{% extends "layout/html" %}
+{% block content %}
+    <h4 class="title">Активные путевые листы служб взаимодействия</h4>
+    <table class="table is-striped is-narrow is-fullwidth">
+        <thead>
+        <tr>
+            <th>Номер листа</th>
+            <th>Подразделение</th>
+            <th>Адрес возгорания</th>
+            <th>Дата и время</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for record in records %}
+            <tr>
+                <td>{{ record.id }}</td>
+                <td>{{ record.department|default('-') }}</td>
+                <td>{{ record.ticket.location|default('-') }} {% if record.ticket.crossroad_1_id %}({{ record.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>
+                <td>{{ record.created_at|date('d.m.Y H:i') }}</td>
+                <td class="has-text-right">
+                    <a href="/service-plans/{{ record.department }}/{{ record.id }}/show" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Просмотр</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td class="has-text-centered"><h4 class="subtitle">Нет открытых путевых листов</h4></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+{% endblock content %}

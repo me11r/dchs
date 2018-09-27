@@ -70,6 +70,11 @@ class FireDepartmentResult extends Model
         return $this->belongsTo(Ticket101::class, 'ticket101_id');
     }
 
+    public function scopeIsDispatched($q, $search = true)
+    {
+        return $q->where('dispatched', $search);
+    }
+
     public function department()
     {
         return $this->belongsTo(FireDepartment::class, 'fire_department_id');
@@ -78,5 +83,11 @@ class FireDepartmentResult extends Model
     public function road_trip_plan()
     {
         return $this->belongsTo(RoadtripPlan::class, 'dispatch_id');
+    }
+
+    public function getDepartment($dept, $departments)
+    {
+        return  $departments->where('departments', $dept)->first();
+//        return $dept_exists ? true : false;
     }
 }

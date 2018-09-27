@@ -163,6 +163,14 @@
                         Путевой лист
                     </a>
                 </div>
+                <div class="navbar-item">
+                    <a
+                        href="/service-plans/"
+                        class="button is-inline-block-widescreen is-block">
+                        <i class="fas fa-archway"></i>&nbsp;
+                        Путевые листы служб взаимодействия
+                    </a>
+                </div>
             </div>
             <div class="navbar-end">
                 <div

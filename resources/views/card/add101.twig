@@ -389,49 +389,59 @@
                                 <td>
                                     {#<input class="input" type="text" name="ph[ot][{{ ssv.id }}]" id="ph_{{ ssv.id }}_ot" value="{{ attribute(ssv.res,  'departments')|default('') }}"/>#}
                                     {% for i in range(1,8) %}
-                                        <label for="">
-                                            <input {% if ssv.res.fire_department_id is defined and ssv.res.departments == i and ssv.res.fire_department_id == ssv.id %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i }}
+                                        <label {% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} style="color: green" {% endif %} for="">
+                                            <input @change="sendOneCheck($event, {{ ssv.id }}, {{ i }})" {% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many).dispatched|default(0) %} {{ 'checked' ~ ' disabled' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i }}
                                         </label>
                                         <br>
-                                        {#{{ dump(ssv.res) }}#}
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    <input type="text" class="input"
-                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.out_time }} {% endif %}"
-                                           readonly>
+                                    {% for i in range(1,8) %}
+                                        <input style="height: 25px" type="text" class="input"
+                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).out_time|default('') }} {% endif %}"
+                                               readonly>
+                                    {% endfor %}
+
                                 </td>
                                 <td>
-                                    <input type="text" class="input"
-                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.arrive_time }} {% endif %}"
-                                           readonly>
+                                    {% for i in range(1,8) %}
+                                        <input style="height: 25px" type="text" class="input"
+                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).arrive_time|default('') }} {% endif %}"
+                                               readonly>
+                                    {% endfor %}
                                 </td>
                                 <td>
-                                    <input type="text" class="input"
-                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.loc_time }} {% endif %}"
-                                           readonly>
+                                    {% for i in range(1,8) %}
+                                        <input style="height: 25px" type="text" class="input"
+                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).loc_time|default('') }} {% endif %}"
+                                               readonly>
+                                    {% endfor %}
                                 </td>
                                 <td>
-                                    <input type="text" class="input"
-                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.liqv_time }} {% endif %}"
-                                           readonly>
+                                    {% for i in range(1,8) %}
+                                        <input style="height: 25px" type="text" class="input"
+                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).liqv_time|default('') }} {% endif %}"
+                                               readonly>
+                                    {% endfor %}
                                 </td>
                                 <td>
-                                    <input type="text" class="input"
-                                           value="{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %} {{ ssv.res.ret_time }} {% endif %}"
-                                           readonly>
+                                    {% for i in range(1,8) %}
+                                        <input style="height: 25px" type="text" class="input"
+                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).ret_time|default('') }} {% endif %}"
+                                               readonly>
+                                    {% endfor %}
                                 </td>
                                 <td>
-                                    {% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}
-                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
-                                            {% set depts = ssv.res.departments %}
-                                        {% endif %}
-                                        <a @click="sendOne({{ ssv.id }}, '')"
-                                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
-                                            подразделение</a>
-                                    {% else %}
-                                        <span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>
-                                    {% endif %}
+                                    {#{% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}#}
+                                        {#{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}#}
+                                            {#{% set depts = ssv.res.departments %}#}
+                                        {#{% endif %}#}
+                                        {#<a @click="sendOne({{ ssv.id }}, '')"#}
+                                           {#class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить#}
+                                            {#подразделение</a>#}
+                                    {#{% else %}#}
+                                        {#<span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>#}
+                                    {#{% endif %}#}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -494,6 +504,7 @@
                                 <th>Время сообщения</th>
                                 <th>Фамилия<br/>принявшего сообщение</th>
                                 <th>Время прибытия</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -545,6 +556,11 @@
                                                 </p>
                                             </div>
                                         </b-timepicker>
+                                    </td>
+                                    <td>
+                                        <label for="">
+                                            <input type="checkbox" data-component="service-plan" @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, {{ name }})" class="checkbox">
+                                        </label>
                                     </td>
                                 </tr>
                             {% endfor %}

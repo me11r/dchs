@@ -28,7 +28,7 @@
         data: function () {
             return {
                 dep_: this.dep,
-                is_dispatched_: this.dep.dispatched,
+                is_dispatched_: this.dep.out_time == null ? false : true,
                 is_returned_: this.dep.ret_time == null ? false : true,
                 roadtrip_id_: this.trip.ret_time,
             }
