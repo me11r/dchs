@@ -44,12 +44,13 @@ class RoadtripController extends AuthorizedController
 
         $departments = [];
 
-        if($trip->ticket->results){
+        if($trip->ticket->results()->isDispatched()->get()){
             foreach ($trip->ticket->results as $item) {
                 $departments[] = $item->departments;
             }
         }
 
+        $this->set('results', $trip->ticket->results()->isDispatched()->get());
         $this->set('trip', $trip);
         $this->set('departments', $departments);
     }
@@ -80,35 +81,33 @@ class RoadtripController extends AuthorizedController
         $ticket = Ticket101::findOrFail($ticket_id);
         $department = FireDepartment::findOrFail($dept_id);
 
-        $plan = new RoadtripPlan();
-        $cnt = $plan
-            ->where('card_id', $ticket_id)
-            ->where('department_id', $dept_id)
-            ->count();
+//        $plan = new RoadtripPlan();
+//        $cnt = $plan
+//            ->where('card_id', $ticket_id)
+//            ->where('department_id', $dept_id)
+////            ->where('departments', $departments)
+//            ->count();
 
-        if ($cnt > 0) {
-            return redirect(route('card101add', ['card_id' => $ticket_id]))
-                ->with('_message', [
-                    'type' => 'warning',
-                    'text' => 'В подразделение уже был раннее отправлен путевой лист на этот пожар'
-                ]);
-        }
+//        if ($cnt > 0) {
+//            return redirect(route('card101add', ['card_id' => $ticket_id]))
+//                ->with('_message', [
+//                    'type' => 'warning',
+//                    'text' => 'В подразделение уже был раннее отправлен путевой лист на этот пожар'
+//                ]);
+//        }
 
-        $plan = new RoadtripPlan();
-        $plan->fill([
+        $plan = RoadtripPlan::firstOrCreate([
             'card_id' => $ticket_id,
             'department_id' => $dept_id
-        ])->save();
+        ]);
 
-        FireDepartmentResult::updateOrCreate(
-            [
-                'fire_department_id' => $dept_id,
-                'ticket101_id' => $ticket_id,
-            ],
+        FireDepartmentResult::firstOrCreate(
             [
                 'dispatched' => true,
                 'dispatch_id' => $plan->id,
-                'departments' => \request('part'),
+                'departments' => $departments,
+                'ticket101_id' => $ticket_id,
+                'fire_department_id' => $dept_id,
             ]
         );
 

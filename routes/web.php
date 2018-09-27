@@ -137,6 +137,13 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('departments', '[0-9]+');
     });
 
+    Route::group(['prefix' => 'service-plans'], function (){
+        Route::get('/', 'ServicePlanController@getList');
+        Route::post('send', 'ServicePlanController@postSend');
+        Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '112|102|103|104|electro|water|smk');
+        Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '112|102|103|104|electro|water|smk');
+    });
+
     Route::get('/dictionaries', 'DictionaryController@getIndex');
     Route::get('/dictionaries/list/{dict_id}', 'DictionaryController@getList')->where('dict_id', '[0-9]+');
     Route::get('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@getEdit')

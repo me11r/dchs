@@ -5,6 +5,7 @@ import bindLocationInput from './location-input';
 import bindObjectNameInput from './object-name-input';
 import bindSelects from './selects';
 import bindRoadTrip from './road-trip';
+import bindServicePlan from './service-plan';
 import {globalBus} from '../global-bus';
 import Vue from 'vue';
 import OtherRecords from '../../components/ticket101/OtherRecords';
@@ -19,6 +20,7 @@ export default class Add101Functions {
         bindObjectNameInput();
         bindSelects();
         bindRoadTrip();
+        bindServicePlan();
         this.bindOtherRecordsBlock();
         this.bindOtherRecordsBlockResults();
         return this;
