@@ -2,6 +2,7 @@
 import '../sass/fonts.scss';
 import '../sass/auth.scss';
 import '../sass/app.scss';
+import '../sass/shake.scss';
 
 import Vue from 'vue';
 import Buefy from 'buefy';
