@@ -165,7 +165,7 @@ class CardController extends AuthorizedController
         }
 
         if($request->fire_level_id == 'NaN' || is_null($request->fire_level_id )){
-            $data['operational_plan_id'] = 1;
+            $data['fire_level_id'] = 1;
         }
 
         if($request->fire_department_id == 'NaN' || is_null($request->fire_department_id )){
@@ -177,6 +177,23 @@ class CardController extends AuthorizedController
         if(!$canEditTicket){
             return redirect('/card/add101/')->with('_message', ['type' => 'error', 'text' => 'Данные не могут быть сохранены. Архивная карточка']);
         }
+
+        /*если поменяли уровень пожара, новые рекомендации */
+        if($card->fire_level_id !== null){
+
+
+            /*todo:*/
+            /* повышаем ранг*/
+            if($card->fire_level_id < $request->fire_level_id){
+                $card->road_trip_plans()->where('is_accepted', false)->delete();
+            }
+            /* понижаем ранг*/
+            elseif($card->fire_level_id > $request->fire_level_id){
+                $card->road_trip_plans()->where('is_accepted', false)->delete();
+
+            }
+        }
+
         $card->fill($data);
         $card->save();
 
@@ -217,33 +234,7 @@ class CardController extends AuthorizedController
 
                 }
             }
-
-
         }
-//        else{
-//            $results_req = $request->departments_to_ride;
-//            foreach ($results_req['ot'] ?? [] as $control_id => $control) {
-//                if($control){
-//                    FireDepartmentResult::updateOrCreate(
-//                        [
-//                            'ticket101_id' => $card->id,
-//                            'fire_department_id' => $control_id,
-//                        ],
-//                        [
-//                            'ticket101_id' => $card->id,
-//                            'fire_department_id' => $control_id,
-//                            'departments' => $control,
-//
-////                            'out_time' => $request->input("ph.out_time.$control_id"),
-////                            'arrive_time' => $request->input("ph.arrive_time.$control_id"),
-////                            'loc_time' => $request->input("ph.loc_time.$control_id"),
-////                            'liqv_time' => $request->input("ph.liqv_time.$control_id"),
-////                            'ret_time' => $request->input("ph.ret_time.$control_id"),
-//                        ]
-//                    );
-//                }
-//            }
-//        }
 
         if ($comeback) {
             $back = '/card/add101/' . $card->id.'#return='.$comeback;

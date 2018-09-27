@@ -117,7 +117,7 @@ class FormationController extends AuthorizedController
         $formationReport = FormationReport::find($form_id);
         $canEditReport = $formationReport->canEditReport();
         if(!$canEditReport && Auth::id() != 1){
-            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+            return redirect('/formation/101')->with('_message', ['type' => 'danger', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
         }
 
         $model = (new FormationPersonsReport())
@@ -207,7 +207,7 @@ class FormationController extends AuthorizedController
         }
 
         if(!$canEditReport && Auth::id() != 1){
-            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+            return redirect('/formation/101')->with('_message', ['type' => 'danger', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
         }
 
         $model = FormationTechReport::updateOrCreate([

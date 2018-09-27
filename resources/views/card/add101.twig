@@ -374,9 +374,17 @@
                             <th>- локализации</th>
                             <th>- ликвидации</th>
                             <th>- возвращения</th>
-                            <th>- <a @click="sendAllTripPlans()"
-                                     class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил
-                                    и средств согласно рангу </a>
+                            <th>-
+                                {% if ticket.departments.count()|default(0) %}
+                                    <a disabled="disabled"
+                                       class="button is-danger is-outlined"><i class="fas fa-bus"></i>&nbsp;Силы
+                                        и средства согласно рангу были отправлены </a>
+                                {% else %}
+                                    <a @click="sendAllTripPlans()"
+                                       class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил
+                                        и средств согласно рангу </a>
+                                {% endif %}
+
                             </th>
                         </tr>
                         {% for index,ssv in ssv_out %}

@@ -24,7 +24,7 @@
 <body>
 <nav id="navbar" class="app-navbar"></nav>
 {% if _message is defined %}
-    <div id="notification" class="notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
+    <div id="notification" class="animated shake notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
 {% endif %}
 {% block content %}{% endblock content %}
 <div id="roadtrip_notifier"></div>
@@ -43,7 +43,7 @@
 {% block scripts %}{% endblock scripts %}
 <style>
     #notification {
-        transition: opacity ease-out 5s;
+        transition: opacity ease-out 10s;
     }
 </style>
 </body>
