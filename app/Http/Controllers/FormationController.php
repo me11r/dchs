@@ -89,6 +89,14 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
+        $belongsToDept = Auth::user()->fire_department_id;
+        if($belongsToDept){
+            $departments = FireDepartment::where('id', $belongsToDept)->get();
+        }
+        else{
+            $departments = FireDepartment::all();
+        }
+
         $fieldlist = [
             'ГДЗС',
         ];
@@ -104,7 +112,7 @@ class FormationController extends AuthorizedController
         }
         $this->set('model', $model);
 
-        $this->set('departments', FireDepartment::all())
+        $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
             ->set('dept_id', $dept_id);
@@ -113,6 +121,8 @@ class FormationController extends AuthorizedController
     public function postAdd101Persons(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
+
 
         $formationReport = FormationReport::find($form_id);
         /*$canEditReport = $formationReport->canEditReport();
@@ -175,6 +185,13 @@ class FormationController extends AuthorizedController
     public function getAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+        $belongsToDept = Auth::user()->fire_department_id;
+        if($belongsToDept){
+            $departments = FireDepartment::where('id', $belongsToDept)->get();
+        }
+        else{
+            $departments = FireDepartment::all();
+        }
 
         $model = (new FormationTechReport)->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
@@ -184,7 +201,7 @@ class FormationController extends AuthorizedController
 
         $staff = Staff::where('department_id', $dept_id)->get();
 
-        $this->set('departments', FireDepartment::all())
+        $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
             ->set('staff', $staff)
@@ -220,12 +237,17 @@ class FormationController extends AuthorizedController
                 ->delete();
             foreach ($request->tech as $type => $inputs) {
                 foreach ($inputs['vehicle_id'] as $input_key => $input) {
+                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
                     FormationTechItem::create([
                         'vehicle_id' => $input,
                         'formation_tech_report_id' => $model->id,
                         'department' => ($type != 'repair' && $type != 'reserve') ? $inputs['department'][$input_key] : null,
                         'status' => $type,
                         'reserve' => $inputs['reserve'][$input_key] ?? null,
+                        'comment' => $inputs['comment'][$input_key] ?? null,
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
                     ]);
                 }
 

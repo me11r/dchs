@@ -19,15 +19,15 @@
                 {% if compare_with is defined and compare_with %}
                     <th>Понижение от первоначального уровня, (м). {{ comparedRecord.date ?? '' }}</th>
                 {% endif %}
-                <th>t0 воды</th>
-                <th>t0 воздуха</th>
+                <th>t&deg; воды</th>
+                <th>t&deg; воздуха</th>
                 <th>Нулевая изотерма</th>
                 {#<th></th>#}
             </tr>
             </thead>
             {% for key, item in lakesSummary %}
                 <tr>
-                    <td>{{ item.id }}</td>
+                    <td>{{ loop.index }}</td>
                     <td>{{ item.lake.name ~ ' ' ~ item.lake.altitude }}</td>
                     <td>{{ item.initial_volume }}</td>
                     <td>{{ item.current_volume }}</td>
