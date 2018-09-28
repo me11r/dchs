@@ -44,8 +44,7 @@ class RoadtripController extends AuthorizedController
 
         $departments = [];
 
-        $results = $trip->
-            ticket
+        $results = $trip->ticket
             ->results()
             ->isDispatched()
             ->where('fire_department_id', $trip->department_id)
