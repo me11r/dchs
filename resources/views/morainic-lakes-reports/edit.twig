@@ -102,14 +102,14 @@
                 </div>
 
                 <div class="field">
-                    <label for="field_1">t0 воды</label>
+                    <label for="field_1">t&deg; воды</label>
                     <div class="control">
                         <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][temperature_water]" id="temperature_water" value="{{ model.temperature_water|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">t0 воздуха</label>
+                    <label for="field_1">t&deg; воздуха</label>
                     <div class="control">
                         <input type="number" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][temperature_air]" id="temperature_air" value="{{ model.temperature_air|default('') }}">
                     </div>
