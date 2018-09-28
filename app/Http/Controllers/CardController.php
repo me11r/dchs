@@ -78,7 +78,7 @@ class CardController extends AuthorizedController
             ' - П.16',
             ' - П. 17',
         ];
-        $ssv_out = FireDepartment::all();
+        $ssv_out = FireDepartment::recommend()->get();
         $wall_materials = WallMaterial::all();
         if($card_id != 0){
             foreach ($ssv_out as $key => $item) {
@@ -109,7 +109,7 @@ class CardController extends AuthorizedController
                 'text' => $item->name
             ];
         })->toArray());
-        $this->set('fire_departments', collect(FireDepartment::all())->map(function ($item){
+        $this->set('fire_departments', collect(FireDepartment::recommend(true)->get())->map(function ($item){
             return [
                 'id' => $item->id,
                 'text' => $item->name
