@@ -27,7 +27,7 @@
             </thead>
             {% for key, item in lakesSummary %}
                 <tr>
-                    <td>{{ item.id }}</td>
+                    <td>{{ loop.index }}</td>
                     <td>{{ item.lake.name ~ ' ' ~ item.lake.altitude }}</td>
                     <td>{{ item.initial_volume }}</td>
                     <td>{{ item.current_volume }}</td>
