@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 14.07.2018
- * Time: 14:47
- */
+
 
 class IncidentTypeSeeder extends \Illuminate\Database\Seeder
 {
@@ -50,7 +45,7 @@ class IncidentTypeSeeder extends \Illuminate\Database\Seeder
         ];
 
         foreach ($items as $item) {
-            \App\Models\IncidentType::firstOrCreate([
+            $type = \App\Models\IncidentType::firstOrCreate([
                 'name' => $item
             ]);
         }
