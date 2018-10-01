@@ -185,6 +185,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/staff', 'ReportController@postReport101Staff')->name('staff_post');
         Route::get('/vehicles', 'ReportController@getReport101Vehicles')->name('vehicles');
         Route::post('/vehicles', 'ReportController@postReport101Vehicles')->name('vehicles_post');
+
+        Route::get('/emergency', 'ReportController@getReport101Emergency')->name('emergency101_get');
+        Route::post('/emergency', 'ReportController@postReport101Emergency')->name('emergency101_post');
     });
 
 
