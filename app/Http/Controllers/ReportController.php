@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Dictionary\FireObject;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Staff;
@@ -11,6 +12,7 @@ use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Ticket101;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -304,6 +306,22 @@ class ReportController extends AuthorizedController
         $result['repair_count'] = $repair->count();
         $result['reserve_count'] = $reserve->count();
 
+
+        return response()->json($result);
+    }
+
+    public function getReport101Emergency()
+    {
+        $reasons = FireObject::orderBy('name')->get();
+        return view('reports.101.emergency', compact('reasons'));
+    }
+
+    public function postReport101Emergency(Request $request)
+    {
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+        $reason_id = $request->reason_id;
+        $result = Ticket101::getStat($date_begin, $date_end, $reason_id);
 
         return response()->json($result);
     }
