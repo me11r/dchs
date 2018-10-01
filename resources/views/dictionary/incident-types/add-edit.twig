@@ -1,0 +1,30 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="/dictionaries/incident-types/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="name">Название</label>
+                        <input required type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="category_id">Название</label>
+                        <select required name="category_id" id="category_id" class="select">
+                            {% for item in incident_categories %}
+                                <option {{ item.id == record.category_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries/incident-types/" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

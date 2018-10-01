@@ -11,5 +11,8 @@ class StagingDeploySeeder extends Seeder
         \App\FireDepartment::firstOrCreate([
             'title' => 'ОД',
         ]);
+
+        $this->call(IncidentTypeSeeder::class);
+        $this->call(IncidentTypeCategoriesSeeder::class);
     }
 }
