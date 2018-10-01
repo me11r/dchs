@@ -159,6 +159,11 @@
                             href="/reports/101/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Отчет по технике</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/101/emergency"
+                            class="dropdown-item is-small"><i class="fas fa-band-aid"></i>&nbsp;
+                            Отчет по карточке 101 за период</a>
                     </div>
                 </div>
                 <div class="navbar-item">

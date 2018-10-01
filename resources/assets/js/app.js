@@ -29,6 +29,7 @@ import Add101Persons from './scripts/add101persons/add101persons';
 import Add101Staff from './views/101staff/AddEdit101Staff';
 import Report101Staff from './views/101staff/Report101Staff';
 import Report101Vehicles from './views/101tech/Report101Vehicles';
+import Report101Emergency from './views/reports/emergency/ReportPeriod101';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -49,6 +50,7 @@ Vue.component('fire-object', FireObject);
 Vue.component('report101-staff', Report101Staff);
 Vue.component('report101-vehicles', Report101Vehicles);
 Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
+Vue.component('report101-emergency', Report101Emergency);
 
 Vue.component('staff-101', Add101Staff);
 

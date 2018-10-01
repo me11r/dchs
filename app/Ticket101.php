@@ -609,5 +609,26 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101ServicePlan::class, 'card_id');
     }
 
+    public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
+    {
+        $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);
+
+        if($reason_id){
+            $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                ->where('fire_object_id', $reason_id);
+        }
+
+        $result['rescued_count'] = $baseQuery->sum('rescued_count');
+        $result['evac_count'] = $baseQuery->sum('evac_count');
+        $result['co2_poisoned_count'] = $baseQuery->sum('co2_poisoned_count');
+        $result['ch4_poisoned_count'] = $baseQuery->sum('ch4_poisoned_count');
+        $result['gpt_burns_count'] = $baseQuery->sum('gpt_burns_count');
+        $result['people_death_count'] = $baseQuery->sum('people_death_count');
+        $result['children_death_count'] = $baseQuery->sum('children_death_count');
+        $result['hospitalized_count'] = $baseQuery->sum('hospitalized_count');
+
+        return $result;
+    }
+
 
 }
