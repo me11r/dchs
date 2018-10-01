@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary;
+use App\IncidentTypeCategory;
+use App\Models\IncidentType;
 use App\Right;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +26,60 @@ class DictionaryController extends AuthorizedController
             return true;
         });
         return $attrs;
+    }
+
+    public function getIndexByName(Request $request, $name)
+    {
+        $view = "dictionary.{$name}.index";
+        $data['create_path'] = "/dictionaries/{$name}/create";
+        $data['edit_path'] = "/dictionaries/{$name}/";
+        $data['per_page'] = $request->get('per_page', 20);
+
+        if($name == 'incident-types'){
+            $data['records'] = IncidentType::paginate($data['per_page']);
+            $data['title'] = "Типы инцидентов";
+        }
+        return view($view, $data);
+    }
+
+    public function getEditByName(Request $request, $name, $id)
+    {
+        $view = "dictionary.{$name}.add-edit";
+        $data['create_path'] = "/dictionaries/{$name}/create";
+        $data['edit_path'] = "/dictionaries/{$name}/";
+        $data['per_page'] = $request->get('per_page', 20);
+
+        if($name == 'incident-types'){
+            $data['record'] = IncidentType::findOrFail($id);
+            $data['title'] = "Типы инцидентов";
+            $data['incident_categories'] = IncidentTypeCategory::all();
+
+        }
+        return view($view, $data);
+    }
+
+    public function postEditCreateByName(Request $request, $name)
+    {
+        $data['create_path'] = "/dictionaries/{$name}/create";
+        $data['edit_path'] = "/dictionaries/{$name}/";
+        $data['per_page'] = $request->get('per_page', 20);
+
+        if($name == 'incident-types'){
+            $record  = IncidentType::findOrFail($request->id);
+
+            $record->name = $request->name;
+            $record->category_id = $request->category_id;
+            $record->save();
+
+            $data['record'] = $record;
+            $data['title'] = "Типы инцидентов";
+            $data['incident_categories'] = IncidentTypeCategory::all();
+
+        }
+        return back()->with('_message', [
+            'type' => 'success',
+            'text' => 'Запись в справочнике успешно обновлена'
+        ]);
     }
 
     public function __construct(Request $request)
