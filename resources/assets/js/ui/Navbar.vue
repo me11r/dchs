@@ -90,35 +90,37 @@
 
                     </div>
                 </div>
-                <div class="navbar-item has-dropdown is-hoverable is-small">
+                <div v-if="hasAnyRight(25,26,27,28,29,30)"
+                     class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
                         <a
+                            v-if="hasRight(25)"
                             href="/chats"
                             class="dropdown-item is-small"><i class="fas fa-address-book"></i>&nbsp;
                             Ручной ввод хронометража</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(26)"
                             href="/hydrant"
                             class="dropdown-item is-small"><i class="fas fa-truck"></i>&nbsp;
                             Расположение гидрантов</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(27)"
                             href="/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-car"></i>&nbsp;
                             Транспортные средства</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(28)"
                             href="/staff"
                             class="dropdown-item is-small"><i class="fas fa-child"></i>&nbsp;
                             Личный состав</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(29)"
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire"></i>&nbsp;
                             Пожарные части</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(30)"
                             href="/morainic-lakes"
                             class="dropdown-item is-small"><i class="fas fa-allergies"></i>&nbsp;
                             Моренные озера</a>
@@ -138,18 +140,22 @@
                             Суточный отчет
                         </a>
                         <a
+                            v-if="hasRight(21)"
                             href="/information"
                             class="dropdown-item is-small"><i class="fas fa-address-book"></i>&nbsp;
                             Информация</a>
                         <a
+                            v-if="hasRight(22)"
                             href="/emergency-situation"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Оперативная информация</a>
                         <a
+                            v-if="hasRight(23)"
                             href="/reports/101/staff"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Отчет по ЛС</a>
                         <a
+                            v-if="hasRight(24)"
                             href="/reports/101/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Отчет по технике</a>
