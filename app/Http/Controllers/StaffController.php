@@ -7,6 +7,7 @@ use App\Models\Staff;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StaffController extends Controller
 {
@@ -29,7 +30,12 @@ class StaffController extends Controller
     {
         $per_page = 20;
 
-        $items = $this->repository->orderBy('department_id')->paginate($per_page);
+        if(Auth::id() == 1){
+            $items = $this->repository->orderBy('department_id')->paginate($per_page);
+        }
+        else{
+            $items = Auth::user()->staff()->orderBy('department_id')->paginate($per_page);
+        }
 
         return view("$this->table.index", compact('items', 'per_page'));
     }
@@ -41,7 +47,13 @@ class StaffController extends Controller
      */
     public function create()
     {
-        $fire_departments = FireDepartment::all();
+        if(Auth::id() == 1){
+            $fire_departments = FireDepartment::all();
+        }
+        else{
+            $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
+        }
+
         $title = 'Создать запись';
         $statuses = (new Staff())->statuses();
 
@@ -79,7 +91,12 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-        $fire_departments = FireDepartment::all();
+        if(Auth::id() == 1){
+            $fire_departments = FireDepartment::all();
+        }
+        else{
+            $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
+        }
         $title = 'Редактировать запись';
         $record = $this->repository::find($id);
         $statuses = $record->statuses();
