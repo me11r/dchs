@@ -411,8 +411,13 @@ class FormationController extends AuthorizedController
         ];
 
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
-//        $departments = FireDepartment::whereNotIn('id', $excludedIds)->get();
-        $departments = FireDepartment::whereNotIn('title', ['ОД'])->get();
+
+        $departments = new FireDepartment();
+        $departments = $departments->whereNotIn('title', ['ОД']);
+        if (auth()->user()->fire_department_id){
+            $departments = $departments->where('id', '=', auth()->user()->fire_department_id);
+        }
+        $departments = $departments->get();
 
         $this->set('departments', $departments);
         $this->set('excluded_departments', FireDepartment::whereIn('id', $excludedIds)->get());
