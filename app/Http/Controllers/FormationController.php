@@ -47,12 +47,14 @@ class FormationController extends AuthorizedController
         $perpage = $request->get('per_page', 10);
         $today = date('Y-m-d');
         $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
+        $department_id = Auth::user()->id != 1 ? Auth::user()->fire_department_id : 1;
         if (!$has_today) {
             (new FormationReport)
                 ->fill(['report_date' => $today])
                 ->save();
         }
         $this
+            ->set('department_id', $department_id)
             ->set('today', $today)
             ->set('per_page', $perpage)
             ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
@@ -121,8 +123,6 @@ class FormationController extends AuthorizedController
     public function postAdd101Persons(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
-
-
 
         $formationReport = FormationReport::find($form_id);
         /*$canEditReport = $formationReport->canEditReport();
