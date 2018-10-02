@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card112\Card112;
 use App\Services\Importer\Importer\CommonImporterTrait;
+use App\Ticket101;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -23,8 +26,26 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getIndex()
+    public function getIndex(Request $request)
     {
+        $previousYearBegin = now()->subYear()->startOfYear();
+        $previousYearEnd = now()->subYear()->endOfYear();
+
+        $currentYearBegin = now()->startOfYear();
+        $currentYearEnd = now()->endOfYear();
+
+        $date_begin = $request->get('date_begin', $previousYearBegin);
+        $date_end = $request->get('date_end', now());
+        $sum = Ticket101::getStat($date_begin, $date_end);
+
+        $result['total101_previous'] = Ticket101::whereBetween('created_at', [$previousYearBegin, $previousYearEnd])->count();
+        $result['total112_previous'] = Card112::whereBetween('created_at', [$previousYearBegin, $previousYearEnd])->count();
+
+        $result['total101_current'] = Ticket101::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
+        $result['total112_current'] = Card112::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
+
+
+
     }
 
 }

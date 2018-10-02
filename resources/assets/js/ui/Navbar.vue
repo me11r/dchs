@@ -29,7 +29,7 @@
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(12,13,14,15,16,17)">
+                    v-if="hasAnyRight(12,13,14,15,16,17,18,19)">
                     <a
                         href="/formation"
                         class="navbar-link is-small">
@@ -78,7 +78,7 @@
                         <a
                             href="/formation-record/emergency_almaty"
                             class="dropdown-item is-small"
-                            v-if="hasRight(17)">
+                            v-if="hasRight(19)">
                             <i class="fas fa-truck"></i>&nbsp;Служба спасения г.Алматы
                         </a>
                         <a

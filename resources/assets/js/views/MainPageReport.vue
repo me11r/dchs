@@ -3,8 +3,16 @@
         <h4 class="title" style="padding: 3px 15px">Сведения
             о чрезвычайных ситуациях природного и техногенного характера произошедших
             на территории  ДЧС города Алматы
-            по форме ЧС-1 за  август 2018 года
+            по форме ЧС-1
         </h4>
+        <div class="panel">
+            <label for="month">Месяц</label>
+            <select class="select" name="month" id="month">
+                <option value="">август</option>
+            </select>
+        </div>
+
+        2018 года
         <div class="panel">
             <table class="formation-record-table">
                 <thead>
@@ -14,6 +22,9 @@
                     <th colspan="3">Пострадало всего, чел.</th>
                     <th colspan="3">из них:
                         погибло, чел</th>
+
+                </tr>
+                <tr>
                     <th>2017г.</th>
                     <th>2018г.</th>
                     <th>% (+,-)</th>
@@ -25,7 +36,20 @@
                     <th>% (+,-)</th>
                 </tr>
                 </thead>
-
+                <tbody>
+                    <tr>
+                        <td>ВСЕГО</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
