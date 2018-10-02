@@ -40,6 +40,9 @@ class FormationRecord
             case FormationOrganisation::ORT_SERT:
                 $result = $this->userHasRight(Right::CAN_ACCESS_FORMATION_REPORT_ORTSERT);
                 break;
+            case FormationOrganisation::EMERGENCY:
+                $result = $this->userHasRight(Right::CAN_ACCESS_FORMATION_EMERGENCY_ALMATY);
+                break;
             case FormationOrganisation::DCHS_ALMATY:
             default:
                 $result = $this->userHasRight(Right::CAN_ACCESS_FORMATION_DCHS_ALMATY);
