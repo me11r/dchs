@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Models\Staff;
+use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -108,6 +110,16 @@ class User extends Authenticatable
     public function department()
     {
         return $this->belongsTo(FireDepartment::class, 'fire_department_id', 'id');
+    }
+
+    public function staff()
+    {
+        return $this->hasMany(Staff::class, 'department_id', 'fire_department_id');
+    }
+
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'fire_department_id', 'fire_department_id');
     }
 
 }
