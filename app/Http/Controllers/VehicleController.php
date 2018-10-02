@@ -29,7 +29,7 @@ class VehicleController extends Controller
         $per_page = 20;
 
         if(Auth::id() == 1){
-            $items = $this->repository->orderBy('department_id')->paginate($per_page);
+            $items = $this->repository->orderBy('fire_department_id')->paginate($per_page);
         }
         else{
             $items = Auth::user()->vehicles()->orderBy('fire_department_id')->paginate($per_page);
