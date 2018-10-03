@@ -186,13 +186,13 @@
             <div class="navbar-end">
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(7,9)">
+                    v-if="hasAnyRight(7,8)">
                     <a
                         href="#"
                         class="navbar-link is-small"><i class="fas fa-cog"></i>&nbsp;Управление</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(9)"
+                            v-if="hasRight(8)"
                             href="/dictionaries"
                             class="dropdown-item"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
                         <a

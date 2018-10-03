@@ -1,0 +1,76 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="/dictionaries/{{ type }}/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="location">Адрес</label>
+                        <input required type="text" class="input" name="location" id="location" value="{{ attribute(record, 'location')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="year_of_development">Год постройки</label>
+                        <input type="text" class="input" name="year_of_development" id="year_of_development" value="{{ attribute(record, 'year_of_development')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="object_name">Название объекта</label>
+                        <input required type="text" class="input" name="object_name" id="object_name" value="{{ attribute(record, 'object_name')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <p class="control" for="fire_level_id">Ранг пожара</p>
+
+                        <div class="select">
+                            <select required name="fire_level_id" id="fire_level_id" class="control">
+                                {% for item in fire_levels %}
+                                    <option {{ item.id == record.fire_level_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <p class="control" for="city_area_id">Район</p>
+                        <div class="select">
+                            <select required name="city_area_id" id="city_area_id" class="control">
+                                {% for item in city_areas %}
+                                    <option {{ item.id == record.city_area_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <p class="control" for="fire_department_id">ПЧ</p>
+                        <div class="select">
+                            <select required name="fire_department_id" id="fire_department_id" class="control">
+                                {% for item in fire_departments %}
+                                    <option {{ item.id == record.fire_department_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="control" for="operational_plan_id">Оперплан</label>
+                        <br>
+                        <div class="select">
+                            <select required name="operational_plan_id" id="operational_plan_id" class="control">
+                                {% for item in operational_plans %}
+                                    <option {{ item.id == record.operational_plan_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries/{{ type }}/" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

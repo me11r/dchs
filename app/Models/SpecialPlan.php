@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Dictionary\CityArea;
+use App\Dictionary\FireLevel;
+use App\FireDepartment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,5 +37,33 @@ class SpecialPlan extends Model
 {
     public $table = 'special_plans';
 
-    public $fillable = ['fire_level_id', 'city_area_id', 'object_name', 'fire_department_id', 'operational_plan_id', 'location', 'year_of_development'];
+    public $fillable = [
+        'fire_level_id',
+        'city_area_id',
+        'object_name',
+        'fire_department_id',
+        'operational_plan_id',
+        'location',
+        'year_of_development',
+    ];
+
+    public function fire_level()
+    {
+        return $this->belongsTo(FireLevel::class, 'fire_level_id');
+    }
+
+    public function city_area()
+    {
+        return $this->belongsTo(CityArea::class, 'city_area_id');
+    }
+
+    public function fire_department()
+    {
+        return $this->belongsTo(FireDepartment::class, 'fire_department_id');
+    }
+
+    public function operational_plan()
+    {
+        return $this->belongsTo(OperationalPlan::class, 'operational_plan_id');
+    }
 }

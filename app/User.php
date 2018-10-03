@@ -2,11 +2,13 @@
 
 namespace App;
 
+use App\Exceptions\AccessDeniedException;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * App\User
@@ -100,6 +102,20 @@ class User extends Authenticatable
         /** @var array $rights */
         $rights = $this->rights->pluck('id')->toArray();
         return \count(array_intersect($rights, $rights_ids)) === count($rights);
+    }
+
+    public static function checkDepartment($dept)
+    {
+        $user = Auth::user();
+        if($user && $user->id == 1){
+            return true;
+        }
+
+        if (!isset($user) || ($user->fire_department_id != $dept)) {
+            throw new AccessDeniedException();
+        }
+
+        return true;
     }
 
     public function isBlocked(): bool
