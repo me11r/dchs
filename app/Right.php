@@ -33,7 +33,7 @@ class Right extends Model
 
     public const CAN_MANAGE_USERS = 7;
     public const CAN_SEE_TRIP_PLAN = 8;
-    public const CAN_EDIT_DICTIONARIES = 9;
+    public const CAN_EDIT_DICTIONARIES = 8;
     public const CAN_EDIT_HYDRANT_LOCATIONS = 10;
 
     public const CAN_SEE_DAILY_REPORT = 11;

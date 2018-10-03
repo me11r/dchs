@@ -17,16 +17,26 @@
                 <thead>
                 <tr>
                     <th>№</th>
-                    <th>Название</th>
-                    <th>Категория</th>
+                    <th>Ранг пожара</th>
+                    <th>Район города</th>
+                    <th>Название объекта</th>
+                    <th>ПЧ</th>
+                    <th>Номер оперплана</th>
+                    <th>Адрес</th>
+                    <th>Год постройки</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for record in records %}
                     <tr>
                         <td>{{ record.id }}</td>
-                        <td class="max-width: 20%">{{ record.name }}</td>
-                        <td class="max-width: 20%">{{ record.category.name|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.fire_level.name|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.city_area.name|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.object_name|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.fire_department.title|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.operational_plan.name|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.location|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.year_of_development|default('') }}</td>
                         <td>
                             <a href="{{ url(edit_path ~ record.id ~ '/' ~ 'edit') }}" class="button is-small is-primary is-outlined">
                                 <i class="fas fa-edit"></i>&nbsp;Изменить
