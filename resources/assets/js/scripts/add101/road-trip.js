@@ -69,12 +69,18 @@ export default function bindRoadTrip() {
                     }
                 });
             },
-            sendOneCheck(event, dept_id, dept_number) {
-                axios.get('/roadtrip/send/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number).then((response) => {
+            sendOneCheck(event, dept_id, dept_number, res_id) {
+                /*проставляем галочки в чекбосах*/
+                let object = document.getElementById(`dept_${res_id}`);
+                let is_checked = object.checked;
+                object.checked = !is_checked;
 
+                axios.get('/roadtrip/send/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number).then((response) => {
+                    alert(`Подразделение отправлено`);
                     event.target.disabled = true;
+                    event.target.classList.add('is-danger');
                 }).catch((e) => {
-                    console.dir(e)
+                    console.dir(e);
                 });
             },
 
