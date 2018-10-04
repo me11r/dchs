@@ -47,12 +47,14 @@ class RoadtripController extends AuthorizedController
         $results = $trip->ticket
             ->results()
             ->isDispatched()
+            ->with(['tech'])
             ->where('fire_department_id', $trip->department_id)
             ->get();
 
         if($results->count()){
             foreach ($trip->ticket->results as $item) {
-                $departments[] = $item->departments;
+//                dd($item->tech->department);
+                $departments[] = $item->tech->department;
             }
         }
 
@@ -81,37 +83,26 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
-    public function getSend($dept_id, $ticket_id, $departments = null)
+    public function getSend($dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
         $department = FireDepartment::findOrFail($dept_id);
-
-//        $plan = new RoadtripPlan();
-//        $cnt = $plan
-//            ->where('card_id', $ticket_id)
-//            ->where('department_id', $dept_id)
-////            ->where('departments', $departments)
-//            ->count();
-
-//        if ($cnt > 0) {
-//            return redirect(route('card101add', ['card_id' => $ticket_id]))
-//                ->with('_message', [
-//                    'type' => 'warning',
-//                    'text' => 'В подразделение уже был раннее отправлен путевой лист на этот пожар'
-//                ]);
-//        }
 
         $plan = RoadtripPlan::firstOrCreate([
             'card_id' => $ticket_id,
             'department_id' => $dept_id
         ]);
 
-        FireDepartmentResult::firstOrCreate(
+        FireDepartmentResult::updateOrCreate(
+            [
+                'tech_id' => $tech_id,
+                'ticket101_id' => $ticket_id,
+            ],
             [
                 'dispatched' => true,
                 'dispatch_id' => $plan->id,
-                'departments' => $departments,
+                'tech_id' => $tech_id,
                 'ticket101_id' => $ticket_id,
                 'fire_department_id' => $dept_id,
             ]
@@ -129,7 +120,7 @@ class RoadtripController extends AuthorizedController
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
 
-        foreach ($ticket->results as $result) {
+        foreach ($ticket->results()->recommended()->get() as $result) {
             $plan = RoadtripPlan::firstOrCreate([
                 'card_id' => $ticket_id,
                 'department_id' => $result->fire_department_id
@@ -219,6 +210,16 @@ class RoadtripController extends AuthorizedController
         $result = FireDepartmentResult::find($request->dept_id);
         $result->ret_time = now()->format('H:i:s');
         $result->save();
+        return response()->json(['ok'], 200);
+    }
+
+    public function postRecommend(Request $request)
+    {
+        $f = $request->all();
+        $result = FireDepartmentResult::find($request->id);
+        $result->recommended = $request->recommended;
+        $result->save();
+
         return response()->json(['ok'], 200);
     }
 }
