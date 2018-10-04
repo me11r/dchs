@@ -128,7 +128,7 @@
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(11)">
+                    v-if="hasAnyRight(11,21,22,23,24)">
                     <a class="navbar-link is-small"><i class="fas fa-receipt"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown">
                         <a
