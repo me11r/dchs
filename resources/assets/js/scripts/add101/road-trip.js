@@ -8,6 +8,11 @@ export default function bindRoadTrip() {
         data: {
             plans_sent: false,
         },
+        mounted(){
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+        },
         methods: {
             sendAllTripPlans() {
                 axios.get('/roadtrip/send-all/' + window.ticket101add.ticketId).then((response) => {
@@ -64,13 +69,31 @@ export default function bindRoadTrip() {
                     }
                 });
             },
-            sendOneCheck(event, dept_id, dept_number) {
+            sendOneCheck(event, dept_id, dept_number, res_id) {
+                /*проставляем галочки в чекбосах*/
+                let object = document.getElementById(`dept_${res_id}`);
+                let is_checked = object.checked;
+                object.checked = !is_checked;
+
                 axios.get('/roadtrip/send/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number).then((response) => {
-                    // resolve(i);
-                    // window.location.href = '/card/add101/' + window.ticket101add.ticketId;
-                }).catch(() => {
+                    alert(`Подразделение отправлено`);
+                    event.target.disabled = true;
+                    event.target.classList.add('is-danger');
+                }).catch((e) => {
+                    console.dir(e);
+                });
+            },
+
+            selectToSend(event, id) {
+                let recommended = event.target.checked;
+
+                axios.post('/roadtrip/recommend', {
+                    id: id, recommended: recommended
+                }).then((response) => {
+
                 });
             }
+
         },
     });
 }
