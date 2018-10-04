@@ -154,6 +154,11 @@ class FormationTechReport extends Model
         return $this->hasMany(FormationTechItem::class, 'formation_tech_report_id');
     }
 
+    public function items()
+    {
+        return $this->hasMany(FormationTechItem::class, 'formation_tech_report_id');
+    }
+
     public function head_guard()
     {
         return $this->belongsTo(Staff::class, 'head_guard_id');

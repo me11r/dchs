@@ -11,6 +11,8 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\FireDepartment;
+use App\FormationTechReport;
+use App\Http\Middleware\Rights\FormationRecord;
 use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
@@ -19,6 +21,7 @@ use App\Models\Trunk;
 use App\Models\WallMaterial;
 use App\OperationalCard;
 use App\Ticket101;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -116,7 +119,11 @@ class CardController extends AuthorizedController
             ];
         })->toArray());
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
-        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records'])->findOrNew($card_id);
+        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records', 'results'])->findOrNew($card_id);
+        $recommendedDispatched = $ticket->results()
+            ->isDispatched()
+            ->recommended()
+            ->count();
 
         $other_records_unique = $ticket->other_records()->groupBy('trunk_id')->get(['trunk_id', DB::raw('MAX(count) as count')]);
         if($other_records_unique->count()){
@@ -142,11 +149,74 @@ class CardController extends AuthorizedController
 
         $water_sources = WaterSupplySource::all();
 
+        $this->set('recommendedDispatched', $recommendedDispatched);
         $this->set('fire_dep_results_info', $fire_dep_results_info);
         $this->set('water_sources', $water_sources);
         $this->set('max_square', $max_square);
         $this->set('ticket', $ticket);
         $this->set('other_records_unique', $other_records_unique);
+    }
+
+    /**
+     * создаем рекомендации к выезду на основе расписания выездов ПЧ
+     */
+    private function recommend(Request $request, $card)
+    {
+        $results = [];
+        $formationTechItems = [];
+
+        $schedules = Schedule::where('fire_department_main_id', $card->fire_department_id)
+            ->where('dict_fire_level_id', $card->fire_level_id)
+            ->get();
+
+        $formationTech = FormationTechReport::whereDate('created_at', Carbon::today())->get();
+        foreach ($formationTech as $report) {
+            foreach ($report->items()->available()->get() as $tech) {
+                $formationTechItems[] = $tech;
+            }
+        }
+
+        if(count($formationTechItems)){
+            foreach ($formationTechItems as $tech_item) {
+
+                $exists = FireDepartmentResult::where('ticket101_id', $card->id)
+                    ->where('fire_department_id', $tech_item->formation_tech_report->dept_id)
+                    ->where('tech_id', $tech_item->id)
+                    ->first();
+
+                $available = FireDepartmentResult::where('tech_id', $tech_item->id)
+                    ->whereNotNull('out_time')
+                    ->whereNull('ret_time')
+                    ->first();
+
+                if(!$exists){
+                    $results[$tech_item->department] = FireDepartmentResult::create([
+                        'ticket101_id' => $card->id,
+                        'fire_department_id' => $tech_item->formation_tech_report->dept_id,
+                        'dispatched' => false,
+                        'tech_id' => $tech_item->id,
+                        'recommended' => false,
+                    ]);
+                }
+
+                /**/
+                foreach ($schedules as $schedule_item) {
+
+                    $schedule_depts = explode(',', str_replace(['.', ' '], ',', $schedule_item->department));
+
+                    foreach ($schedule_depts as $schedule_dept) {
+                        if(isset($results[$schedule_dept])){
+                            if($results[$schedule_dept]->fire_department_id == $schedule_item->fire_department_id){
+
+                                $results[$schedule_dept]->recommended = true;
+                                $results[$schedule_dept]->save();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     public function postAdd101(Request $request, $card_id = 0)
@@ -185,12 +255,13 @@ class CardController extends AuthorizedController
             /*todo:*/
             /* повышаем ранг*/
             if($card->fire_level_id < $request->fire_level_id){
+                $card->results()->whereNull('out_time')->delete();
                 $card->road_trip_plans()->where('is_accepted', false)->delete();
             }
             /* понижаем ранг*/
             elseif($card->fire_level_id > $request->fire_level_id){
+                $card->results()->whereNull('out_time')->delete();
                 $card->road_trip_plans()->where('is_accepted', false)->delete();
-
             }
         }
 
@@ -200,41 +271,7 @@ class CardController extends AuthorizedController
         $this->saveOtherRecords($card, $otherRecords);
         $back = '/card/101';
 
-        $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
-            ->where('dict_fire_level_id', $data['fire_level_id'])
-            ->get();
-
-//        $results_exists = FireDepartmentResult::where('ticket101_id', $card->id)
-//            ->get()
-//            ->count();
-
-        /**
-         * создаем рекомендации к выезду на основе расписания выездов ПЧ
-         */
-
-        if(isset($schedule) && $schedule->count()){
-//            FireDepartmentResult::where('ticket101_id', $card->id)
-//                ->where('dispatched', false)
-//                ->delete();
-
-            if(!FireDepartmentResult::where('ticket101_id', $card->id)->count()){
-
-                foreach ($schedule as $item) {
-
-                    $schedule_depts = explode(',', str_replace(['.', ' '], '', $item->department));
-
-                    foreach ($schedule_depts as $schedule_dept) {
-                        FireDepartmentResult::create([
-                            'ticket101_id' => $card->id,
-                            'fire_department_id' => $item->fire_department_id,
-                            'dispatched' => false,
-                            'departments' => $schedule_dept,
-                        ]);
-                    }
-
-                }
-            }
-        }
+        $this->recommend($request, $card);
 
         if ($comeback) {
             $back = '/card/add101/' . $card->id.'#return='.$comeback;

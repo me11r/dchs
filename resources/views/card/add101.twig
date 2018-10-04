@@ -365,91 +365,128 @@
                 </div>
                 <div id="tab-truck" class="is-hidden">
                     <h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>
+
                     <table class="table is-narrow is-hoverable is-striped is-fullwidth" data-component="road-trip">
                         <tr>
                             <th>Подразделение</th>
                             <th>Отделения</th>
+                            <th>Принято в работу</th>
                             <th>Время выезда</th>
-                            <th>- прибытия</th>
-                            <th>- локализации</th>
-                            <th>- ликвидации</th>
-                            <th>- возвращения</th>
-                            <th>-
-                                {% if ticket.departments.count()|default(0) %}
-                                    <a disabled="disabled"
-                                       class="button is-danger is-outlined"><i class="fas fa-bus"></i>&nbsp;Силы
-                                        и средства согласно рангу были отправлены </a>
-                                {% else %}
+                            <th>Время прибытия</th>
+                            <th>Время локализации</th>
+                            <th>Время ликвидации</th>
+                            <th>Время возвращения</th>
+                            <th>
+                                {#{% if recommendedDispatched|default(0) %}#}
+                                    {#<a disabled="disabled"#}
+                                       {#class="button is-danger is-outlined"><i class="fas fa-bus"></i>&nbsp;Силы и средства согласно рангу были отправлены </a>#}
+                                {#{% else %}#}
                                     <a @click="sendAllTripPlans()"
-                                       class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил
-                                        и средств согласно рангу </a>
-                                {% endif %}
+                                       class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил и средств согласно рангу </a>
+                                {#{% endif %}#}
 
                             </th>
                         </tr>
+                        {# ssv_out = FireDepartment#}
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right"
-                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
+                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended %}
                                             style="color: green"
                                         {% endif %} id="ph_{{ ssv.id }}_text">{{ ssv.name }}
                                 </td>
                                 <td>
-                                    {#<input class="input" type="text" name="ph[ot][{{ ssv.id }}]" id="ph_{{ ssv.id }}_ot" value="{{ attribute(ssv.res,  'departments')|default('') }}"/>#}
-                                    {% for i in range(1,8) %}
-                                        <label {% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} style="color: green" {% endif %} for="">
-                                            <input @change="sendOneCheck($event, {{ ssv.id }}, {{ i }})" {% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many).dispatched|default(0) %} {{ 'checked' ~ ' disabled' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i }}
-                                        </label>
-                                        <br>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <label for="">
+                                                {#<input @change="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i.tech.department }}#}
+                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i.tech.department }}
+                                            </label>
+                                            <br>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {% for i in range(1,8) %}
-                                        <input style="height: 25px" type="text" class="input"
-                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).out_time|default('') }} {% endif %}"
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
+                                               value="{% if i.dispatched and i.out_time %} {{ i.updated_at.format('d.m.Y')|default('') }} {% endif %}"
                                                readonly>
+                                        {% endif %}
                                     {% endfor %}
 
                                 </td>
                                 <td>
-                                    {% for i in range(1,8) %}
-                                        <input style="height: 25px" type="text" class="input"
-                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).arrive_time|default('') }} {% endif %}"
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
+                                               value="{% if i.dispatched and i.out_time %} {{ i.out_time|default('') }} {% endif %}"
                                                readonly>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {% for i in range(1,8) %}
-                                        <input style="height: 25px" type="text" class="input"
-                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).loc_time|default('') }} {% endif %}"
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
+                                               value="{% if i.dispatched and i.arrive_time %} {{ i.arrive_time|default('') }} {% endif %}"
                                                readonly>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {% for i in range(1,8) %}
-                                        <input style="height: 25px" type="text" class="input"
-                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).liqv_time|default('') }} {% endif %}"
-                                               readonly>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
+                                                   value="{% if i.dispatched and i.loc_time %} {{ i.loc_time|default('') }} {% endif %}"
+                                                   readonly>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {% for i in range(1,8) %}
-                                        <input style="height: 25px" type="text" class="input"
-                                               value="{% if ssv.res.fire_department_id is defined and ssv.res.getDepartment(i, ssv.res_many) %} {{ ssv.res.getDepartment(i, ssv.res_many).ret_time|default('') }} {% endif %}"
-                                               readonly>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
+                                                   value="{% if i.dispatched and i.liqv_time %} {{ i.liqv_time|default('') }} {% endif %}"
+                                                   readonly>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {#{% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}#}
-                                        {#{% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}#}
-                                            {#{% set depts = ssv.res.departments %}#}
-                                        {#{% endif %}#}
-                                        {#<a @click="sendOne({{ ssv.id }}, '')"#}
-                                           {#class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить#}
-                                            {#подразделение</a>#}
-                                    {#{% else %}#}
-                                        {#<span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>#}
-                                    {#{% endif %}#}
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
+                                                   value="{% if i.dispatched and i.ret_time %} {{ i.ret_time|default('') }} {% endif %}"
+                                                   readonly>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {#{% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}
+                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
+                                            {% set depts = ssv.res.departments %}
+                                        {% endif %}
+                                        <a @click="sendOne({{ ssv.id }}, '')"
+                                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
+                                            подразделение</a>
+                                    {% else %}
+                                        <span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>
+                                    {% endif %}#}
+
+
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            {% if i.dispatched %}
+                                                <a style="height: 25px;" disabled="disabled"
+                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Подразделение отправлено - {{ i.tech.department }}</a>
+                                            {% else %}
+                                                <a style="height: 25px;" @click="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }})"
+                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить подразделение - {{ i.tech.department }}</a>
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endfor %}
+
                                 </td>
                             </tr>
                         {% endfor %}
