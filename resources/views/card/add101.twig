@@ -400,7 +400,7 @@
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
                                             <label for="">
                                                 {#<input @change="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i.tech.department }}#}
-                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i.tech.department }}
+                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]" id="dept_{{ i.id }}" value="1" type="checkbox"> {{ i.tech.department }}
                                             </label>
                                             <br>
                                         {% endif %}
@@ -480,7 +480,7 @@
                                                 <a style="height: 25px;" disabled="disabled"
                                                    class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Подразделение отправлено - {{ i.tech.department }}</a>
                                             {% else %}
-                                                <a style="height: 25px;" @click="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }})"
+                                                <a style="height: 25px;" @click="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }}, {{ i.id }})"
                                                    class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить подразделение - {{ i.tech.department }}</a>
                                             {% endif %}
 
