@@ -72,4 +72,19 @@ class FormationTechItem extends Model
     {
         return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
     }
+
+    public function scopeAvailable($q, $department = null)
+    {
+        if($department){
+
+            $result = $q->where('status', 'action')
+                ->where('department', $department);
+        }
+        else{
+            $result = $q->where('status', 'action');
+        }
+
+        return $result;
+
+    }
 }

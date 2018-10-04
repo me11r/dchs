@@ -54,7 +54,8 @@ class FireDepartmentResult extends Model
         'ret_time',
         'dispatched',
         'dispatch_id',
-        'departments',
+        'tech_id',
+        'recommended',
     ];
 
     public function getOutTimeAttribute($value)
@@ -68,6 +69,11 @@ class FireDepartmentResult extends Model
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'ticket101_id');
+    }
+
+    public function tech()
+    {
+        return $this->belongsTo(FormationTechItem::class, 'tech_id');
     }
 
     public function scopeIsDispatched($q, $search = true)
@@ -88,6 +94,11 @@ class FireDepartmentResult extends Model
     public function getDepartment($dept, $departments)
     {
         return  $departments->where('departments', $dept)->first();
-//        return $dept_exists ? true : false;
     }
+
+    public function scopeRecommended($q, $search = true)
+    {
+        return $q->where('recommended', $search);
+    }
+
 }
