@@ -184,10 +184,15 @@ class CardController extends AuthorizedController
                     ->where('tech_id', $tech_item->id)
                     ->first();
 
-                $available = FireDepartmentResult::where('tech_id', $tech_item->id)
+                /*если подразделение еще не вернулось с прошлого происшествия*/
+                $notAvailable = FireDepartmentResult::where('tech_id', $tech_item->id)
                     ->whereNotNull('out_time')
                     ->whereNull('ret_time')
                     ->first();
+
+                if($notAvailable){
+                    continue;
+                }
 
                 if(!$exists){
                     $results[$tech_item->department] = FireDepartmentResult::create([
