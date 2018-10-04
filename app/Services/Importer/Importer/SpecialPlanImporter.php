@@ -7,7 +7,9 @@ use App\Dictionary\CityArea;
 use App\Dictionary\FireLevel;
 use App\FireDepartment;
 use App\Models\OperationalPlan;
+use App\Services\ChunkedImporter\ChunkedImporter;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SpecialPlanImporter implements ImporterInterface
 {
@@ -59,6 +61,7 @@ class SpecialPlanImporter implements ImporterInterface
     /**
      * @param $filePath
      * @return ImporterInterface
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
@@ -66,7 +69,12 @@ class SpecialPlanImporter implements ImporterInterface
     {
         $this->items = [];
         $this->incorrectItems = [];
-        $this->separateItems($this->parseItems($filePath));
+
+        ChunkedImporter::create($filePath, range('A', 'G'))
+            ->each(function (Worksheet $sheet) {
+                $this->separateItems($sheet->toArray());
+            });
+
         return $this;
     }
 
@@ -174,7 +182,7 @@ class SpecialPlanImporter implements ImporterInterface
         $id = array_get($this->fireLevels, $name, 0);
 
         if (!$id) {
-            $item = (new FireLevel)->where('name', 'like', $name)->first();
+            $item = (new FireLevel)->where('name', 'like', trim($name))->first();
             if ($item) {
                 $id = $item->id;
             }
