@@ -158,26 +158,36 @@ class FormationController extends AuthorizedController
         ];
         $model->fill($all)->save();
 
-        foreach ($request->staff as $rank => $items) {
-            if(!in_array($rank, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
-                $data['status'] = 'active';
-            }
-            else{
-                $data['status'] = 'inactive';
-            }
-            $data['rank'] = $rank;
+        if($request->staff){
 
+            FormationPersonsItem::where('report_id', $model->id)
+                ->delete();
 
-            foreach ($items as $item) {
-                $data['staff_id'] = $item;
-                $data['report_id'] = $model->id;
+            foreach ($request->staff as $type => $inputs) {
+                foreach ($inputs['staff_id'] as $input_key => $input) {
 
-                $staffItem = FormationPersonsItem::updateOrCreate([
-                    'staff_id' => $item
-                ], $data);
+                    if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                        $data['status'] = 'active';
+                    }
+                    else{
+                        $data['status'] = 'inactive';
+                    }
+
+                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                    FormationPersonsItem::create([
+                        'staff_id' => $input,
+                        'report_id' => $model->id,
+                        'comment' => $inputs['comment'][$input_key] ?? null,
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+                        'rank' => $type,
+                        'status' => $data['status'],
+                    ]);
+                }
             }
         }
-
 
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }

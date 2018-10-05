@@ -11,6 +11,9 @@ class FormationPersonsItem extends Model
         'report_id',
         'status',
         'rank',
+        'comment',
+        'date_from',
+        'date_to',
     ];
 
     public function staff()
