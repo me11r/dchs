@@ -23,7 +23,8 @@ export default {
                 this.$snackbar.open({
                     message: 'Новый путевой лист! (' + this.plans.length + ')',
                     indefinite: true,
-                    type: 'is-success',
+                    type: 'is-danger',
+                    position: 'is-top',
                     onAction: () => {
                         this.shown = false;
                         window.location.href = '/roadtrip/view/' + this.plans[0].id;
