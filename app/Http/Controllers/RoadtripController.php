@@ -173,7 +173,7 @@ class RoadtripController extends AuthorizedController
         $html = view(
             'pdf.roadtrip-page',
             [
-                'trip' => RoadtripPlan::with(['ticket', 'department', 'result'])->find($id),
+                'trip' => RoadtripPlan::with(['ticket', 'department', 'results'])->find($id),
                 'image_path' => $request->get('image_path')
             ])
             ->render();
