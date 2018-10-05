@@ -1,8 +1,16 @@
 {% extends "layout/html" %}
 
 {% block content %}
-    <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }}
-        ({{ item.date|date('Y-m-d') }})</h4>
+    <div class="level">
+        <div class="level-left">
+            <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }} ({{ item.date|date('Y-m-d') }})</h4>
+        </div>
+        <div class="level-right printing-invisible">
+            <a onclick="window.print();" class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
+        </div>
+    </div>
+
+
 
     <form action="{{ route('formation-record.total-update', item.id) }}" method="POST">
         {{ csrf_field() }}

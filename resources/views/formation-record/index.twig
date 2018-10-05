@@ -4,7 +4,7 @@
         <div class="level-left">
         <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;К строевым запискам</a>
         <h4 class="title"
-            style="padding: 3px 15px">Строевые записки {{ organisationName }}
+            style="padding: 3px 15px">Журнал строевых записок ДЧС г.Алматы
         </h4>
         </div>
     </div>
@@ -16,18 +16,18 @@
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
             <thead>
             <tr>
-                <th class="has-text-right" style="width: 110px">Дата и время</th>
+                <th class="has-text-right" style="width: 150px">Дата и время</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
             {% for item in items %}
                 <tr>
-                    <td class="has-text-right">{{ item.date|date('Y-m-d') }}</td>
+                    <td class="has-text-right">{{ item.date|date('d.m.Y') }}</td>
                     <td class="has-text-right">
                         <a href="{{ route('formation-record.total-edit', item.id) }}"
                            class="button is-small is-outlined is-primary">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
-                            Редактировать
+                            Открыть
                         </a>
                     </td>
                 </tr>

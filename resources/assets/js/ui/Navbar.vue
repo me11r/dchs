@@ -85,7 +85,7 @@
                             href="/formation-record"
                             class="dropdown-item is-small"
                             v-if="hasRight(18)">
-                            <i class="fas fa-truck"></i>&nbsp;ДЧС г.Алматы
+                            <i class="fas fa-truck"></i>&nbsp;Журнал строевых записок ДЧС г.Алматы
                         </a>
 
                     </div>
