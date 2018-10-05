@@ -49,3 +49,27 @@
 .print-button {
   box-shadow: rgba(100, 100, 150, .2) 0 2px 16px;
 }
+
+.snackbar.is-danger.is-top {
+  background-color: #ff0000;
+  color: #fff;
+  min-height: 100px;
+  min-width: 600px;
+}
+
+.snackbar.is-danger.is-top .button {
+  background-color: #fff;
+  color: #ff0000;
+  padding: 0 30px;
+  margin: 0 25px;
+}
+
+.snackbar.is-danger.is-top .text {
+  font-size: 30px;
+}
+
+.notices.is-top{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
