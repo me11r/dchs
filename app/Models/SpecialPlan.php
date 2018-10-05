@@ -7,6 +7,7 @@ use App\Dictionary\FireLevel;
 use App\FireDepartment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\SpecialPlan
@@ -35,6 +36,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SpecialPlan extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     public $table = 'special_plans';
 
     public $fillable = [

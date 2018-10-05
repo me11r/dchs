@@ -166,6 +166,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@postEdit')
         ->where('dict_id', '[0-9]+')
         ->where('row_id', '[0-9]+');
+    Route::delete('/dictionaries/delete/{dict_id}/{row_id}', 'DictionaryController@delete')
+        ->where('dict_id', '[0-9]+')
+        ->where('row_id', '[0-9]+')
+        ->name('dictionaries.row.delete');
+
+    Route::delete('/dictionaries/delete/{name}/{row_id}', 'DictionaryController@deleteByName')
+        ->where('name', 'incident-types|operational-plans|operational-cards')
+        ->where('row_id', '[0-9]+')
+        ->name('dictionaries.row.delete_by_name');
+
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
     Route::get('/pdf/report101', 'ReportController@getReport101')->name('report101');
