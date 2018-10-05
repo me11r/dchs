@@ -169,7 +169,10 @@ class CardController extends AuthorizedController
             ->where('dict_fire_level_id', $card->fire_level_id)
             ->get();
 
-        $formationTech = FormationTechReport::whereDate('created_at', Carbon::today())->get();
+        /* последняя заполненная строевка*/
+        $latestReportId = FormationTechReport::has('items')->max('form_id');
+        $formationTech = FormationTechReport::where('form_id', $latestReportId)->get();
+
         foreach ($formationTech as $report) {
             foreach ($report->items()->available()->get() as $tech) {
                 $formationTechItems[] = $tech;
@@ -184,10 +187,15 @@ class CardController extends AuthorizedController
                     ->where('tech_id', $tech_item->id)
                     ->first();
 
-                $available = FireDepartmentResult::where('tech_id', $tech_item->id)
+                /*если подразделение еще не вернулось с прошлого происшествия*/
+                $notAvailable = FireDepartmentResult::where('tech_id', $tech_item->id)
                     ->whereNotNull('out_time')
                     ->whereNull('ret_time')
                     ->first();
+
+                if($notAvailable){
+                    continue;
+                }
 
                 if(!$exists){
                     $results[$tech_item->department] = FireDepartmentResult::create([
