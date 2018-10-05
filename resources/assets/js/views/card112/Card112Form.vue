@@ -377,7 +377,7 @@
                                     id="additional_incident_type_id"
                                     name="additional_incident_type_id"
                                     v-model="model.additional_incident_type_id"
-                                    required>
+                                    >
                                     <option
                                         v-for="incidentType in incidentTypes"
                                         :key="incidentType.id"
