@@ -10,39 +10,55 @@
         </div>
 
         <div
-            class="field is-grouped"
+            class="panels"
             v-for="item in records_"
             :key="item.id">
 
-            <div class="control column is-four-fifths">
-                <label :for="getName('staff_id', item.id)">Ф.И.О.</label><br>
-                <div class="select">
-                    <select
-                            required
-                            title=""
-                            :name="getName('staff_id', item.id)"
-                            :id="getName('staff_id', item.id)"
-                            v-model="item.staff_id">
-                        <option
-                                v-for="s in staff"
-                                :key="'staff_' + s.id"
-                                :value="s.id">{{ s.name }}
-                        </option>
-                    </select>
+            <div class="field is-grouped">
+                <div class="control column is-four-fifths">
+                    <label :for="getName('staff_id', item.id)">Ф.И.О.</label><br>
+                    <div class="select">
+                        <select
+                                required
+                                title=""
+                                :name="getName('staff_id', item.id)"
+                                :id="getName('staff_id', item.id)"
+                                v-model="item.staff_id">
+                            <option
+                                    v-for="s in staff"
+                                    :key="'staff_' + s.id"
+                                    :value="s.id">{{ s.name }}
+                            </option>
+                        </select>
+                    </div>
+
                 </div>
 
+                <div class="control column">
+                    <label>Удалить</label>
+
+                    <button
+                        class="button is-small is-outlined is-danger square-button-36"
+                        @click.prevent="removeItem(item.id)"
+                        type="button"
+                        title="Удалить">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
             </div>
-
-            <div class="control column">
-                <label>Удалить</label>
-
-                <button
-                    class="button is-small is-outlined is-danger square-button-36"
-                    @click.prevent="removeItem(item.id)"
-                    type="button"
-                    title="Удалить">
-                    <i class="fa fa-trash"></i>
-                </button>
+            <div v-if="block_type_ === 'business_trip' || block_type_ === 'sick'" class="field is-grouped">
+                <div class="control column">
+                    <label :for="getName('comment', item.id)">Комментарий</label>
+                    <textarea class="textarea" v-model="item.comment" :name="getName('comment', item.id)" :id="getName('comment', item.id)" cols="10" rows="1"></textarea>
+                </div>
+                <div class="control column">
+                    <label :for="getName('date_from', item.id)">С</label><br>
+                    <input v-model="item.date_from" :name="getName('date_from', item.id)" :id="getName('date_from', item.id)" class="control" type="date">
+                </div>
+                <div class="control column">
+                    <label :for="getName('date_to', item.id)">По</label><br>
+                    <input v-model="item.date_to" :name="getName('date_to', item.id)" :id="getName('date_to', item.id)" class="control" type="date">
+                </div>
             </div>
         </div>
     </div>
@@ -54,7 +70,7 @@ import axios from 'axios';
 import Buefy from 'buefy';
 
 export default {
-    name: 'OtherRecords',
+    name: 'Add101Staff',
     props: {
         block_type: {
             type: String,
@@ -93,7 +109,7 @@ export default {
     },
     methods: {
         getName(control, id){
-            return 'staff' + `[${this.block_type_}]` + `[${id}]`;
+            return 'staff' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
@@ -127,7 +143,9 @@ export default {
                     comment: item.comment,
                     trunk_id: parseInt(item.trunk_id),
                     count: parseInt(item.count),
-                    square: parseFloat(item.square)
+                    square: parseFloat(item.square),
+                    date_begin: moment(item.date_begin),
+                    date_end: moment(item.date_end),
                 });
             });
         },
