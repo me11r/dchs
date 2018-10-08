@@ -3,11 +3,14 @@
         <div class="navbar-brand">
             <a
                 class="navbar-item navbar-logo"
-                href="/"><i class="fas fa-tty fa-fw fa-2x"></i></a>
+                href="/"><i class="fas fa-tty fa-fw fa-2x"></i>
+            </a>
             <a
                 role="button"
                 class="navbar-burger"
-                @click="toggleOpen"><span></span><span></span><span></span></a>
+                @click="toggleOpen">
+                <span></span><span></span><span></span>
+            </a>
         </div>
         <div
             class="navbar-menu"
@@ -199,6 +202,10 @@
                             v-if="hasRight(7)"
                             href="/admin/users"
                             class="dropdown-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
+                        <a
+                            v-if="hasRight(7)"
+                            href="/admin/roles"
+                            class="dropdown-item"><i class="fas fa-balance-scale"></i>&nbsp;Роли</a>
                         <a
                             href="/import"
                             class="dropdown-item"><i class="fas fa-arrow-down"></i>&nbsp;Импорт</a>

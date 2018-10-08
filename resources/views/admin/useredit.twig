@@ -27,6 +27,36 @@
                         {% endif %}
                     </div>
 
+                    <div class="field">
+                        <label for="role_id">Роль</label>
+                        <br>
+                        <div class="select">
+                            <select name="role_id" id="role_id">
+                                <option value=""></option>
+                                {% for role in roles %}
+                                    <option {% if user.role_id is defined and user.role_id == role.id %} selected {% endif %} value="{{ role.id }}">{{ role.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="field">
+                        <label for="role_id">Доступ в рамках ПЧ</label>
+                        <p>Оставить пустым для доступа ко всем справочникам</p>
+                        <div class="select">
+                            <select name="fire_department_id" id="fire_department_id">
+                                <option value=""></option>
+                                {% for dept in fire_departments %}
+                                    <option {% if user.fire_department_id is defined and user.fire_department_id == dept.id %} selected {% endif %} value="{{ dept.id }}">{{ dept.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                    <br>
+
                     {% if user.id == 0 %}
                         <div class="field">
                             <label for="password">Пароль</label>
@@ -45,9 +75,9 @@
 
 
                 </div>
-                <div class="col-md">
+                {#<div class="col-md">
                     <h5 class="subtitle">Разрешения и роли</h5>
-                    {#
+                    #}{#
                                     <div class="field">
                                         <label for="quick_rights" class="mr-sm-2">Роль</label>
                                         <select name="quick_rights" id="quick_rights" class="custom-select mb-2 mr-sm-2 mb-sm-0">
@@ -58,7 +88,7 @@
                                             <option value="4">?</option>
                                         </select>
                                     </div>
-                    #}
+                    #}{#
                     {% set group_id = 0 %}
                     {% for right in rights %}
                         {% if group_id != right.right_group_id %}
@@ -72,7 +102,7 @@
                             </label>
                         </div>
                     {% endfor %}
-                </div>
+                </div>#}
             </div>
             <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">

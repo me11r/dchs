@@ -26,6 +26,6 @@ class Group extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function rights() {
-        return $this->hasMany(\App\Right::class, 'group_id', 'id');
+        return $this->hasMany(\App\Right::class, 'right_group_id', 'id');
     }
 }
