@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 18.04.2017
- * Time: 10:17
- */
 
 namespace App\Http\Controllers;
 
@@ -53,7 +47,7 @@ class AuthorizedController extends Controller
     public function needAnyRight(array $rights)
     {
         $user = \Auth::user();
-        if (!isset($user) || (!$user->hasAnyRight($rights))) {
+        if (!isset($user) || (!$user->hasRight($rights))) {
             throw new AccessDeniedException();
         }
 

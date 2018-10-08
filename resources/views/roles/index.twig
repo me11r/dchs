@@ -1,0 +1,50 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="level" style="margin: 10px 20px">
+                <div class="level-left">
+                    <h4 class="title">{{ title }}</h4>
+                </div>
+                <div class="level-right has-text-right">
+                    <a href="{{ url(create_path) }}" class="button is-success"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                </div>
+            </div>
+            <table class="table is-striped is-narrow is-hoverable">
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for record in records %}
+                    <tr>
+                        <td>{{ record.id }}</td>
+                        <td class="max-width: 20%">{{ record.title|default('') }}</td>
+                        <td>
+                            <a href="{{ url(edit_path ~ record.id) }}" class="button is-small is-primary is-outlined">
+                                <i class="fas fa-edit"></i>&nbsp;Изменить
+                            </a>
+                            {% if record.name != 'admin' %}
+                                <form onsubmit="if(!confirm('Удалить роль?')) return false" action="{{ delete_path ~ record.id }}" method="POST">
+                                    {{ csrf_field() }}
+                                    <button type="submit" class="is-small is-primary is-outlined">
+                                        <i class="fas fa-eraser"></i>
+                                        Удалить
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td><h5 class="">Нет записей</h5></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+        </div>
+    </div>
+{% endblock content %}
