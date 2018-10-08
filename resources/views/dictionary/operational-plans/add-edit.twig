@@ -50,17 +50,23 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="field">
                         <label class="control" for="operational_plan_id">Оперплан</label>
                         <br>
                         <div class="select">
                             <select required name="operational_plan_id" id="operational_plan_id" class="control">
                                 {% for item in operational_plans %}
-                                    <option {{ item.id == record.operational_plan_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                                    <option {% if record.operational_plan_id is defined and record.operational_plan_id == item.id %} selected {% endif %} value="{{ item.id }}">{{ item.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
 
+                    </div>
+
+                    <div class="field">
+                        <label for="object_name">Оперплан (если нет в списке)</label>
+                        <input required type="text" class="input" name="operational_plan" id="operational_plan" value=""/>
                     </div>
 
 
