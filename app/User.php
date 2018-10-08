@@ -57,10 +57,8 @@ class User extends Authenticatable
         'email',
         'password',
         'last_login',
-        'office_id',
-        'phone_mobile',
-        'phone_landline',
-        'phone_extended'
+        'fire_department_id',
+        'role_id',
     ];
 
     /**
@@ -83,11 +81,39 @@ class User extends Authenticatable
         return $this->belongsToMany(\App\Right::class, 'user_rights');
     }
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function scopeIsAdmin($q)
+    {
+        return $q->isRole('admin');
+    }
+
+    public function scopeIsRole($q, $role)
+    {
+        $user = Auth::user();
+        if($user && $user->role){
+            if($user->role->name === $role){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function hasRight($right_id)
     {
         /** @var array $rights */
-        $rights = $this->rights->pluck('id')->toArray();
-        return in_array($right_id, $rights, false);
+//        $rights = $this->rights->pluck('id')->toArray();
+//        return in_array($right_id, $rights, false);
+
+        if(!$this->role){
+            return false;
+        }
+
+        return $this->role->hasRight($right_id);
     }
 
     public function hasAnyRight($rights_ids)
@@ -107,7 +133,8 @@ class User extends Authenticatable
     public static function checkDepartment($dept)
     {
         $user = Auth::user();
-        if($user && $user->id == 1){
+
+        if(($user && $user->id == 1) || ($user && !$user->fire_department_id)){
             return true;
         }
 
@@ -137,5 +164,52 @@ class User extends Authenticatable
     {
         return $this->hasMany(Vehicle::class, 'fire_department_id', 'fire_department_id');
     }
+
+    public function currentRole()
+    {
+        try{
+            return Auth::user()->role->name;
+        }
+        catch (\Exception $e){
+            return null;
+        }
+    }
+
+    /*public function canRole($role = null)
+    {
+        $roles = [];
+
+        if($this->currentRole() == 'admin'){
+            $roles = [
+                'admin',
+                'user',
+                'fss-admin',
+                'logs',
+            ];
+        }
+        elseif($this->currentRole() == 'user'){
+            $roles = [
+                'user',
+            ];
+        }
+        elseif($this->currentRole() == 'fss-admin'){
+            $roles = [
+                'user',
+                'fss-admin',
+                'logs',
+            ];
+        }
+        elseif($this->currentRole() == 'logs'){
+            $roles = [
+                'logs',
+            ];
+        }
+
+        if($role){
+            return in_array($role, $roles);
+        }
+
+        return $roles;
+    }*/
 
 }

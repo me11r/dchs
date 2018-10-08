@@ -27,6 +27,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('users/passwd/{user_id}', 'AdminController@getPassword')->where(['user_id' => '[0-9]+'])->name('admin-users-password');
         Route::post('users/passwd/{user_id}', 'AdminController@postPassword')->where(['user_id' => '[0-9]+'])->name('post-admin-users-password');
 
+        Route::group(['prefix' => 'roles', 'as' => 'roles.'], function (){
+            Route::get('/', 'RoleController@index')->name('index');
+            Route::get('create', 'RoleController@create')->name('create');
+            Route::get('edit/{id}', 'RoleController@edit')->name('edit');
+            Route::post('add-edit', 'RoleController@store')->name('add-edit');
+            Route::post('delete/{id}', 'RoleController@delete')->name('delete');
+        });
+
     });
 
     Route::get('/card/101', 'CardController@get101')->name('card101');
