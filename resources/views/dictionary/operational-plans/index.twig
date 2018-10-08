@@ -18,9 +18,9 @@
                 <tr>
                     <th>№</th>
                     <th>Ранг пожара</th>
-                    <th>Район города</th>
+                    <th><a href="?sort=city_area_id">Район города</a></th>
                     <th>Название объекта</th>
-                    <th>ПЧ</th>
+                    <th><a href="?sort=fire_department_id">ПЧ</a></th>
                     <th>Номер оперплана</th>
                     <th>Адрес</th>
                     <th>Год постройки</th>
@@ -29,7 +29,7 @@
                 <tbody>
                 {% for record in records %}
                     <tr>
-                        <td>{{ record.id }}</td>
+                        <td>{{ record.operational_plan.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.fire_level.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.city_area.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.object_name|default('') }}</td>
