@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\ServiceType
@@ -17,6 +18,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ServiceType extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     public $table = 'service_types';
 
     public $timestamps = false;

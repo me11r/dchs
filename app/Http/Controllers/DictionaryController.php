@@ -49,17 +49,22 @@ class DictionaryController extends AuthorizedController
         $data['create_path'] = "/dictionaries/{$name}/create";
         $data['edit_path'] = "/dictionaries/{$name}/";
         $data['per_page'] = $request->get('per_page', 20);
+        $data['type'] = $name;
+
+        $sort = $request->sort ? $request->sort : 'id';
 
         if($name == 'incident-types'){
             $data['records'] = IncidentType::paginate($data['per_page']);
             $data['title'] = "Типы инцидентов";
         }
         elseif($name == 'operational-plans'){
-            if(Auth::id() == 1){
-                $data['records'] = SpecialPlan::paginate($data['per_page']);
+            if(!Auth::user()->department){
+
+                $data['records'] = SpecialPlan::orderBy($sort)->paginate($data['per_page']);
             }
             else{
                 $data['records'] = SpecialPlan::where('fire_department_id', Auth::user()->fire_department_id)
+                    ->orderBy($sort)
                     ->paginate($data['per_page']);
             }
             $data['title'] = "Оперативные планы";
@@ -148,6 +153,14 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'operational-plans'){
             $record  = SpecialPlan::find($request->id);
 
+            $f = $request->all();
+
+            if($request->operational_plan !== null){
+                $operational_plan = OperationalPlan::firstOrCreate(['name' => $request->operational_plan]);
+            }
+
+            $operational_plan_id = isset($operational_plan) ? $operational_plan->id : $request->operational_plan_id;
+
             if(!$record){
                 $record = new SpecialPlan();
             }
@@ -156,7 +169,7 @@ class DictionaryController extends AuthorizedController
             $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;
             $record->fire_department_id = $request->fire_department_id;
-            $record->operational_plan_id = $request->operational_plan_id;
+            $record->operational_plan_id = $operational_plan_id;
             $record->location = $request->location;
             $record->year_of_development = $request->year_of_development;
 
@@ -236,6 +249,46 @@ class DictionaryController extends AuthorizedController
         return redirect('/dictionaries/list/' . $dict_id)->with('_message', [
             'type' => 'success',
             'text' => 'Запись в справочнике успешно сохранена'
+        ]);
+    }
+
+    public function delete(Request $request, $dict_id, $row_id) {
+        $returnUrl = $request->get('return_url', '/dictionaries/list/' . $dict_id);
+
+        $dictionary = (new \App\Dictionary)->find($dict_id);
+        $this->set('dictinfo', $dictionary);
+        $dict = new $dictionary->model;
+
+        $record = $dict->findOrFail($row_id);
+        $record->delete();
+
+        return redirect($returnUrl)->with('_message', [
+            'type' => 'success',
+            'text' => 'Запись успешно закрыта/удалена'
+        ]);
+    }
+
+    public function deleteByName($name, $row_id) {
+        switch ($name)
+        {
+            case 'incident-types':
+                $dict = IncidentType::class;
+                break;
+            case 'operational-plans':
+                $dict = SpecialPlan::class;
+                break;
+            case 'operational-cards':
+                $dict = OperationalCard::class;
+        }
+
+        $dict = new $dict;
+
+        $record = $dict->findOrFail($row_id);
+        $record->delete();
+
+        return redirect()->back()->with('_message', [
+            'type' => 'success',
+            'text' => 'Запись успешно закрыта/удалена'
         ]);
     }
 }
