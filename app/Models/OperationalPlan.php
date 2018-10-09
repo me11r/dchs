@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\OperationalPlan
@@ -20,6 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OperationalPlan extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     public $table = 'dict_operational_plan';
 
     public $fillable = ['name'];

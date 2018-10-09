@@ -3,6 +3,7 @@ namespace App\Dictionary;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Dictionary\FireObject
@@ -19,6 +20,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class FireObject extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     protected $table = 'dict_fire_object';
     protected $guarded = ['id'];
     protected $fillable = ['name'];

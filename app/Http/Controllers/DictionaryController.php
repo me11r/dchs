@@ -49,6 +49,7 @@ class DictionaryController extends AuthorizedController
         $data['create_path'] = "/dictionaries/{$name}/create";
         $data['edit_path'] = "/dictionaries/{$name}/";
         $data['per_page'] = $request->get('per_page', 20);
+        $data['type'] = $name;
 
         $sort = $request->sort ? $request->sort : 'id';
 
@@ -248,6 +249,46 @@ class DictionaryController extends AuthorizedController
         return redirect('/dictionaries/list/' . $dict_id)->with('_message', [
             'type' => 'success',
             'text' => 'Запись в справочнике успешно сохранена'
+        ]);
+    }
+
+    public function delete(Request $request, $dict_id, $row_id) {
+        $returnUrl = $request->get('return_url', '/dictionaries/list/' . $dict_id);
+
+        $dictionary = (new \App\Dictionary)->find($dict_id);
+        $this->set('dictinfo', $dictionary);
+        $dict = new $dictionary->model;
+
+        $record = $dict->findOrFail($row_id);
+        $record->delete();
+
+        return redirect($returnUrl)->with('_message', [
+            'type' => 'success',
+            'text' => 'Запись успешно закрыта/удалена'
+        ]);
+    }
+
+    public function deleteByName($name, $row_id) {
+        switch ($name)
+        {
+            case 'incident-types':
+                $dict = IncidentType::class;
+                break;
+            case 'operational-plans':
+                $dict = SpecialPlan::class;
+                break;
+            case 'operational-cards':
+                $dict = OperationalCard::class;
+        }
+
+        $dict = new $dict;
+
+        $record = $dict->findOrFail($row_id);
+        $record->delete();
+
+        return redirect()->back()->with('_message', [
+            'type' => 'success',
+            'text' => 'Запись успешно закрыта/удалена'
         ]);
     }
 }
