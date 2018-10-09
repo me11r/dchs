@@ -15,7 +15,11 @@ class ServicePlanController extends Controller
         '104' => 'Служба газа 104',
         'electro' => 'Э\\сеть (277-98-42)',
         'water' => 'Водоканал (274-66-66)',
-        'smk' => 'ЦМК (254-63-53)'
+        'smk' => 'ЦМК (254-63-53)',
+        'gu_kaz' => 'ГУ Казселезащита',
+        'roso' => 'РОСО',
+        'kaz_aviaserice' => 'AO Казавиаспас',
+        'ao_ort' => 'АО "Өртсөндіруші"',
     ];
     public function getList(Request $request)
     {
