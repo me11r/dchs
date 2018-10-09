@@ -377,7 +377,7 @@
                                     id="additional_incident_type_id"
                                     name="additional_incident_type_id"
                                     v-model="model.additional_incident_type_id"
-                                    >
+                                >
                                     <option
                                         v-for="incidentType in incidentTypes"
                                         :key="incidentType.id"
@@ -448,6 +448,48 @@
                                     class="input"
                                     name="hospitalized"
                                     id="hospitalized">
+                            </div>
+                        </div>
+                        <div class="field is-grouped">
+                            <!--ТРАВМИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
+                            <div class="group_25">
+                                <label for="injured_hard">Травмированных людей/детей</label>
+                                <input
+                                    type="number"
+                                    v-model="model.injured_hard"
+                                    class="input"
+                                    name="injured_hard"
+                                    id="injured_hard">
+                            </div>
+                            <!--ОТРАВЛЕННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
+                            <div class="group_25">
+                                <label for="poisoned">Отравление людей/детей</label>
+                                <input
+                                    type="number"
+                                    v-model="model.poisoned"
+                                    class="input"
+                                    name="poisoned"
+                                    id="poisoned">
+                            </div>
+                            <!--СПАСЕНО ЛЮДЕЙ/ДЕТЕЙ-->
+                            <div class="group_25">
+                                <label for="saved">Спасено людей/детей</label>
+                                <input
+                                    type="number"
+                                    v-model="model.saved"
+                                    class="input"
+                                    name="saved"
+                                    id="saved">
+                            </div>
+                            <!--СПАСЕНО ЖИВОТНЫХ-->
+                            <div class="group_25">
+                                <label for="saved_animals">Спасено животных</label>
+                                <input
+                                    type="number"
+                                    v-model="model.saved_animals"
+                                    class="input"
+                                    name="saved_animals"
+                                    id="saved_animals">
                             </div>
                         </div>
                     </div>
@@ -581,7 +623,7 @@ export default {
             serviceTypes: [],
             cityAreas: [],
             model: {
-                location:'',
+                location: '',
                 city_area_id: ''
             },
             currentTabIndex: 0,
@@ -695,7 +737,7 @@ export default {
 
             window.addEventListener('storage', (event) => {
                 if (event.key === AREA_ID_FOUND) {
-                    this.model.city_area_id  = parseInt(event.newValue);
+                    this.model.city_area_id = parseInt(event.newValue);
                 }
             });
         });
