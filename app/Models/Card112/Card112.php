@@ -92,7 +92,11 @@ class Card112 extends Model
         'hospitalized',
         'additional_comment',
         'city_area_id',
-        'location'
+        'location',
+        'injured_hard',
+        'poisoned',
+        'saved',
+        'saved_animals'
     ];
 
     /**

@@ -47,6 +47,10 @@ class Card112Resource extends JsonResource
             'additional_comment' => (string) $this->additional_comment,
             'city_area_id' => (int) $this->city_area_id,
             'city_area' => $this->resource->relationLoaded('cityArea') ? (new CityAreaResource($this->cityArea)) : null,
+            'injured_hard' => (int) $this->injured_hard,
+            'poisoned' => (int) $this->poisoned,
+            'saved' => (int) $this->saved,
+            'saved_animals' => (int) $this->saved_animals,
         ];
     }
 }
