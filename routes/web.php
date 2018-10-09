@@ -153,8 +153,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('accept/{id}/{service}', 'ServicePlanController@postAccept')->where('id', '[0-9]+');
         Route::post('arrive/{id}/{service}', 'ServicePlanController@postArrive')->where('id', '[0-9]+');
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
-        Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '112|102|103|104|electro|water|smk');
-        Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '112|102|103|104|electro|water|smk');
+        Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '112|102|103|104|electro|water|smk|gu_kaz|roso|kaz_aviaserice|ao_ort');
+        Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '112|102|103|104|electro|water|smk|gu_kaz|roso|kaz_aviaserice|ao_ort');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
