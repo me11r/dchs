@@ -14,5 +14,7 @@ class StagingDeploySeeder extends Seeder
 
         $this->call(IncidentTypeSeeder::class);
         $this->call(IncidentTypeCategoriesSeeder::class);
+        $this->call(AircraftTypeSeeder::class);
+        $this->call(AircraftSeeder::class);
     }
 }

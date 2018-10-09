@@ -558,24 +558,6 @@
                                     <td>{{ title }}</td>
                                     <td data-component="timepicker1"
                                         data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
-                                        {#<b-timepicker @focus="closeAll()" class="is-rounded" type="text"#}
-                                                      {#name="call_{{ name }}_time" id="call_{{ name }}_time"#}
-                                                      {#:value="value" icon="clock" icon-pack="far">#}
-                                            {#<div class="field is-grouped" style="justify-content: space-between">#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-primary is-small"#}
-                                                       {#@click="()=> {value = new Date(); close();}">#}
-                                                        {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
-                                                        {#<span>Сейчас</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-outlined is-small" @click="close()">#}
-                                                        {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                            {#</div>#}
-                                        {#</b-timepicker>#}
                                         <input type="text" id="{{ name }}_created_at" value="{{ ticket.getServicePlan(ticket.id, name).created_at|default(false) }}" readonly class="input">
                                     </td>
                                     <td>
@@ -586,24 +568,6 @@
                                     </td>
                                     <td data-component="timepicker1"
                                         data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
-                                        {#<b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"#}
-                                                      {#name="arrival_{{ name }}" id="arrival_{{ name }}"#}
-                                                      {#:value="value">#}
-                                            {#<div class="field is-grouped" style="justify-content: space-between">#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-primary is-small"#}
-                                                       {#@click="()=> {value = new Date(); close();}">#}
-                                                        {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
-                                                        {#<span>Сейчас</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-outlined is-small" @click="close()">#}
-                                                        {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                            {#</div>#}
-                                        {#</b-timepicker>#}
                                         <input type="text" value="{{ ticket.getServicePlan(ticket.id, name).arrive_time|default(false) }}" readonly class="input">
                                     </td>
                                     <td>
