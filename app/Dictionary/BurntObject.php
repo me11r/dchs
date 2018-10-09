@@ -4,6 +4,7 @@ namespace App\Dictionary;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Dictionary\BurntObject
@@ -21,6 +22,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BurntObject extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     protected $table = 'dict_burn_object';
     protected $guarded = ['id'];
     protected $fillable = ['name'];

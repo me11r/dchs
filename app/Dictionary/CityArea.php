@@ -14,6 +14,7 @@ use App\Models\CityMicroArea;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Dictionary\CityArea
@@ -32,6 +33,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CityArea extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     protected $table = 'dict_city_area';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
