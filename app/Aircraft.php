@@ -33,6 +33,6 @@ class Aircraft extends Model
 
     public function aircraft_type()
     {
-        return $this->belongsTo(AirCraftType::class, 'aircraft_type_id');
+        return $this->belongsTo(AircraftType::class, 'aircraft_type_id');
     }
 }

@@ -20,7 +20,7 @@ class AircraftSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            \App\Aircraft::create($item);
+            \App\Aircraft::firstOrcreate($item);
         }
     }
 }
