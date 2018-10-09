@@ -126,10 +126,10 @@ export default {
             let length = 0;
             geoObjects.each((geoObject) => {
                 length++;
-                lat+=geoObject.geometry.getCoordinates()[0];
-                long+=geoObject.geometry.getCoordinates()[1];
+                lat += geoObject.geometry.getCoordinates()[0];
+                long += geoObject.geometry.getCoordinates()[1];
             });
-            return [lat / length, long / length]
+            return [lat / length, long / length];
         },
         getCoordinatesFromPoint(point) {
             return point ? [point[1], point[0]] : null;
@@ -152,17 +152,23 @@ export default {
         },
         resetHydrants() {
             const self = this;
-            self.hydrantsGeoObjects = new ymaps.GeoObjectCollection();
-            this.map.geoObjects.removeAll();
-            if (this.hydrants) {
-                this.hydrants.map((item) => {
-                    self.hydrantsGeoObjects.add(self.getPlaceMarkForHydrantItem(item));
-                    // return this.map.geoObjects.add(self.getPlaceMarkForHydrantItem(item));
-                });
+
+            self.map.geoObjects.removeAll();
+            self.hydrantsGeoObjects = null;
+
+            if (this.hydrants && this.hydrants.length > 0) {
+                self.hydrantsGeoObjects = new ymaps.GeoObjectCollection();
+                if (this.hydrants) {
+                    this.hydrants.map((item) => {
+                        self.hydrantsGeoObjects.add(self.getPlaceMarkForHydrantItem(item));
+                        // return this.map.geoObjects.add(self.getPlaceMarkForHydrantItem(item));
+                    });
+                }
+                this.map.geoObjects.add(self.hydrantsGeoObjects);
+                this.map.setBounds(self.hydrantsGeoObjects.getBounds(), {checkZoomRange: true});
             }
-            this.map.geoObjects.add(self.hydrantsGeoObjects);
+
             this.drawMainRoute();
-            this.map.setBounds(self.hydrantsGeoObjects.getBounds(), {checkZoomRange: true});
         },
         setHydrants() {
             const self = this;
@@ -239,7 +245,7 @@ export default {
                 .catch(() => {
                     this.loader = false;
                     alert('При обработке документа для печати произошла ошибка');
-                })
+                });
         },
         send: function (data) {
             this.printed = true;

@@ -51,16 +51,20 @@ class DictionaryController extends AuthorizedController
         $data['per_page'] = $request->get('per_page', 20);
         $data['type'] = $name;
 
+        $sort = $request->sort ? $request->sort : 'id';
+
         if($name == 'incident-types'){
             $data['records'] = IncidentType::paginate($data['per_page']);
             $data['title'] = "Типы инцидентов";
         }
         elseif($name == 'operational-plans'){
-            if(Auth::id() == 1){
-                $data['records'] = SpecialPlan::paginate($data['per_page']);
+            if(!Auth::user()->department){
+
+                $data['records'] = SpecialPlan::orderBy($sort)->paginate($data['per_page']);
             }
             else{
                 $data['records'] = SpecialPlan::where('fire_department_id', Auth::user()->fire_department_id)
+                    ->orderBy($sort)
                     ->paginate($data['per_page']);
             }
             $data['title'] = "Оперативные планы";
@@ -149,6 +153,14 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'operational-plans'){
             $record  = SpecialPlan::find($request->id);
 
+            $f = $request->all();
+
+            if($request->operational_plan !== null){
+                $operational_plan = OperationalPlan::firstOrCreate(['name' => $request->operational_plan]);
+            }
+
+            $operational_plan_id = isset($operational_plan) ? $operational_plan->id : $request->operational_plan_id;
+
             if(!$record){
                 $record = new SpecialPlan();
             }
@@ -157,7 +169,7 @@ class DictionaryController extends AuthorizedController
             $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;
             $record->fire_department_id = $request->fire_department_id;
-            $record->operational_plan_id = $request->operational_plan_id;
+            $record->operational_plan_id = $operational_plan_id;
             $record->location = $request->location;
             $record->year_of_development = $request->year_of_development;
 
