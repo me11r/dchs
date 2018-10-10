@@ -3,11 +3,14 @@
         <div class="navbar-brand">
             <a
                 class="navbar-item navbar-logo"
-                href="/"><i class="fas fa-tty fa-fw fa-2x"></i></a>
+                href="/"><i class="fas fa-tty fa-fw fa-2x"></i>
+            </a>
             <a
                 role="button"
                 class="navbar-burger"
-                @click="toggleOpen"><span></span><span></span><span></span></a>
+                @click="toggleOpen">
+                <span></span><span></span><span></span>
+            </a>
         </div>
         <div
             class="navbar-menu"
@@ -29,7 +32,7 @@
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(12,13,14,15,16,17)">
+                    v-if="hasAnyRight(12,13,14,15,16,17,18,19)">
                     <a
                         href="/formation"
                         class="navbar-link is-small">
@@ -76,41 +79,59 @@
                             <i class="fas fa-truck"></i>&nbsp;АО "Өртсөндіруші"
                         </a>
                         <a
+                            href="/formation-record/emergency_almaty"
+                            class="dropdown-item is-small"
+                            v-if="hasRight(19)">
+                            <i class="fas fa-truck"></i>&nbsp;Служба спасения г.Алматы
+                        </a>
+                        <a
                             href="/formation-record"
                             class="dropdown-item is-small"
                             v-if="hasRight(18)">
-                            <i class="fas fa-truck"></i>&nbsp;ДЧС г.Алматы
+                            <i class="fas fa-truck"></i>&nbsp;Журнал строевых записок ДЧС г.Алматы
                         </a>
 
                     </div>
                 </div>
-                <div class="navbar-item has-dropdown is-hoverable is-small">
+                <div v-if="hasAnyRight(25,26,27,28,29,30)"
+                     class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
                         <a
+                            v-if="hasRight(25)"
                             href="/chats"
                             class="dropdown-item is-small"><i class="fas fa-address-book"></i>&nbsp;
                             Ручной ввод хронометража</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(26)"
                             href="/hydrant"
                             class="dropdown-item is-small"><i class="fas fa-truck"></i>&nbsp;
                             Расположение гидрантов</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(27)"
                             href="/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-car"></i>&nbsp;
                             Транспортные средства</a>
                         <a
-                            v-if="hasRight(10)"
+                            v-if="hasRight(28)"
+                            href="/staff"
+                            class="dropdown-item is-small"><i class="fas fa-child"></i>&nbsp;
+                            Личный состав</a>
+                        <a
+                            v-if="hasRight(29)"
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire"></i>&nbsp;
                             Пожарные части</a>
+                        <a
+                            v-if="hasRight(30)"
+                            href="/morainic-lakes"
+                            class="dropdown-item is-small"><i class="fas fa-allergies"></i>&nbsp;
+                            Моренные озера</a>
                     </div>
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(11)">
+                    v-if="hasAnyRight(11,21,22,23,24)">
                     <a class="navbar-link is-small"><i class="fas fa-receipt"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown">
                         <a
@@ -122,43 +143,72 @@
                             Суточный отчет
                         </a>
                         <a
+                            v-if="hasRight(21)"
                             href="/information"
                             class="dropdown-item is-small"><i class="fas fa-address-book"></i>&nbsp;
                             Информация</a>
                         <a
+                            v-if="hasRight(22)"
                             href="/emergency-situation"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
                             Оперативная информация</a>
+                        <a
+                            v-if="hasRight(23)"
+                            href="/reports/101/staff"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                            Отчет по ЛС</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/101/vehicles"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock"></i>&nbsp;
+                            Отчет по технике</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/101/emergency"
+                            class="dropdown-item is-small"><i class="fas fa-band-aid"></i>&nbsp;
+                            Отчет по карточке 101 за период</a>
                     </div>
                 </div>
                 <div class="navbar-item">
                     <a
                         href="/roadtrip/"
-                        class="button is-inline-block-widescreen is-block is-small">
+                        class="button is-inline-block-widescreen is-block">
                         <i class="fas fa-truck"></i>&nbsp;
                         Путевой лист
+                    </a>
+                </div>
+                <div class="navbar-item">
+                    <a
+                        href="/service-plans/"
+                        class="button is-inline-block-widescreen is-block">
+                        <i class="fas fa-archway"></i>&nbsp;
+                        Путевые листы служб взаимодействия
                     </a>
                 </div>
             </div>
             <div class="navbar-end">
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(7,9)">
+                    v-if="hasAnyRight(7,8)">
                     <a
                         href="#"
                         class="navbar-link is-small"><i class="fas fa-cog"></i>&nbsp;Управление</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(9)"
+                            v-if="hasRight(8)"
                             href="/dictionaries"
-                            class="navbar-item"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
+                            class="dropdown-item"><i class="far fa-list-alt"></i>&nbsp;Справочники</a>
                         <a
                             v-if="hasRight(7)"
                             href="/admin/users"
-                            class="navbar-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
+                            class="dropdown-item"><i class="fas fa-user"></i>&nbsp;Пользователи</a>
+                        <a
+                            v-if="hasRight(7)"
+                            href="/admin/roles"
+                            class="dropdown-item"><i class="fas fa-balance-scale"></i>&nbsp;Роли</a>
                         <a
                             href="/import"
-                            class="navbar-item"><i class="fas fa-arrow-down"></i>&nbsp;Импорт</a>
+                            class="dropdown-item"><i class="fas fa-arrow-down"></i>&nbsp;Импорт</a>
                     </div>
                 </div>
                 <div class="navbar-item">
@@ -170,7 +220,7 @@
                             name="_token"
                             :value="csrf"><a
                                 @click="logout"
-                                class="is-inline-block-widescreen is-block button is-primary is-outlined is-small">
+                                class="is-inline-block-widescreen is-block button is-primary is-outlined">
                                 <i class="fas fa-door-open"></i>&nbsp;Выход
                             </a>
                     </form>
@@ -257,7 +307,8 @@ export default {
         }
 
         .navbar-link {
-            font-size: .9rem;
+            /*font-size: .9rem;*/
+            font-size: 1.2rem;
         }
 
         .navbar-dropdown {

@@ -11,6 +11,8 @@ use App\Ticket101;
 use App\User;
 use Auth;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 
 class RoadtripController extends AuthorizedController
@@ -37,10 +39,28 @@ class RoadtripController extends AuthorizedController
 
     public function getView($plan_id)
     {
-        $trip = RoadtripPlan::with(['ticket', 'department', 'result'])
+        $trip = RoadtripPlan::with(['ticket', 'department', 'results'])
             ->findOrFail($plan_id);
 
+        $departments = [];
+
+        $results = $trip->ticket
+            ->results()
+            ->isDispatched()
+            ->with(['tech'])
+            ->where('fire_department_id', $trip->department_id)
+            ->get();
+
+        if($results->count()){
+            foreach ($trip->ticket->results as $item) {
+//                dd($item->tech->department);
+                $departments[] = $item->tech->department;
+            }
+        }
+
+        $this->set('results', $results);
         $this->set('trip', $trip);
+        $this->set('departments', $departments);
     }
 
     public function postPlan(Request $request, $plan_id)
@@ -56,62 +76,62 @@ class RoadtripController extends AuthorizedController
         $plan->result->save();
 
 
-        return redirect(route('roadtrip.plan.view', ['plan_id' => $plan_id]))
+        return back()
             ->with('_message', [
-                'type' => 'sucess',
-                'message' => 'Путевой лист закрыт'
+                'type' => 'success',
+                'text' => 'Путевой лист закрыт'
             ]);
     }
 
-    public function getSend($dept_id, $ticket_id, $departments = null)
+    public function getSend($dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
         $department = FireDepartment::findOrFail($dept_id);
 
-        $plan = new RoadtripPlan();
-        $cnt = $plan
-            ->where('card_id', $ticket_id)
-            ->where('department_id', $dept_id)
-            ->count();
-
-        if ($cnt > 0) {
-            return redirect(route('card101add', ['card_id' => $ticket_id]))
-                ->with('_message', [
-                    'type' => 'warning',
-                    'text' => 'В подразделение уже был раннее отправлен путевой лист на этот пожар'
-                ]);
-        }
-
-        $plan = new RoadtripPlan();
-        $plan->fill([
+        $plan = RoadtripPlan::firstOrCreate([
             'card_id' => $ticket_id,
             'department_id' => $dept_id
-        ])->save();
+        ]);
 
         FireDepartmentResult::updateOrCreate(
             [
-                'fire_department_id' => $dept_id,
+                'tech_id' => $tech_id,
                 'ticket101_id' => $ticket_id,
             ],
             [
                 'dispatched' => true,
                 'dispatch_id' => $plan->id,
-                'departments' => \request('part'),
+                'tech_id' => $tech_id,
+                'ticket101_id' => $ticket_id,
+                'fire_department_id' => $dept_id,
             ]
         );
-
-
-//        $ticket->{'ph_' . $dept_id . '_dispatched'} = true;
-//        $ticket->{'ph_' . $dept_id . '_dispatch_id'} = $plan->id;
-//        $ticket->{'ph_' . $dept_id . '_ot'} = \request('part');
-//        $ticket->save();
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
             ->with('_message', [
                 'type' => 'success',
                 'text' => 'В подразделение отправлен путевой лист'
             ]);
+    }
+
+    public function postSendAll($ticket_id)
+    {
+        $this->noLayout();
+        $ticket = Ticket101::findOrFail($ticket_id);
+
+        foreach ($ticket->results()->recommended()->get() as $result) {
+            $plan = RoadtripPlan::firstOrCreate([
+                'card_id' => $ticket_id,
+                'department_id' => $result->fire_department_id
+            ]);
+
+            $result->dispatched = true;
+            $result->dispatch_id = $plan->id;
+            $result->save();
+        }
+
+        return response()->json('ok', 200);
     }
 
     public function postAccept(Request $request, $id)
@@ -133,14 +153,73 @@ class RoadtripController extends AuthorizedController
         FireDepartmentResult::where('fire_department_id', $plan->department_id)
             ->where('ticket101_id', $plan->card_id)
             ->update(
-            [
-                'out_time' => now()->toTimeString(),
-            ]
-        );
+                [
+                    'out_time' => now()->toTimeString(),
+                ]
+            );
 
         return redirect('/roadtrip/view/' . $id)->with('_message', [
             'type' => 'success',
             'text' => 'Выезд сил одобрен'
         ]);
+    }
+
+    public function getPrint(Request $request, $id)
+    {
+        if(env('IS_LOCAL', false) == true){
+            return response()->json('ok', 200);
+        }
+        $this->noLayout();
+        $html = view(
+            'pdf.roadtrip-page',
+            [
+                'trip' => RoadtripPlan::with(['ticket', 'department', 'results'])->find($id),
+                'image_path' => $request->get('image_path')
+            ])
+            ->render();
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+        $options = new Options();
+        $options->setIsRemoteEnabled(true);
+
+        $dompdf = new Dompdf();
+        $dompdf->setOptions($options);
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->render();
+
+        $pdf = $dompdf->output(['isRemoteEnabled' => true]);
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf;
+        }, 'roadtrip-'.$id.'.pdf', ['Content-type' => 'application/pdf']);
+    }
+
+    public function postDispatch(Request $request)
+    {
+        $f = $request->all();
+        $result = FireDepartmentResult::find($request->dept_id);
+        $result->dispatch_id = $request->trip_id;
+        $result->dispatched = true;
+        $result->out_time = now()->format('H:i:s');
+        $result->save();
+        return response()->json(['ok'], 200);
+    }
+
+    public function postReturn(Request $request)
+    {
+        $f = $request->all();
+        $result = FireDepartmentResult::find($request->dept_id);
+        $result->ret_time = now()->format('H:i:s');
+        $result->save();
+        return response()->json(['ok'], 200);
+    }
+
+    public function postRecommend(Request $request)
+    {
+        $f = $request->all();
+        $result = FireDepartmentResult::find($request->id);
+        $result->recommended = $request->recommended;
+        $result->save();
+
+        return response()->json(['ok'], 200);
     }
 }

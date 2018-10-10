@@ -10,6 +10,7 @@ namespace App;
 
 
 use App\Models\FormationTechItem;
+use App\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -106,43 +107,41 @@ class FormationTechReport extends Model
     protected $fillable = [
         'form_id',
         'dept_id',
-        'field_0',
-        'field_1',
-        'field_3_0',
-        'field_3_1',
-        'field_4_1_0',
-        'field_4_1_1',
-        'field_4_2_0',
-        'field_4_2_1',
-        'field_4_3_0',
-        'field_4_3_1',
-        'field_5_1_0',
-        'field_5_1_1',
-        'field_5_1_2',
-        'field_5_1_3',
-        'field_5_0',
-        'field_5_1',
-        'field_5_2',
-        'field_5_3',
-        'field_5_4',
-        'field_5_5',
-        'field_5_6',
-        'field_5_7',
-        'field_5_8',
-        'field_5_9',
-        'field_5_10',
-        'field_5_11',
-        'field_5_12',
-        'field_2',
-        'field_7_1_0',
-        'field_7_1_1',
-        'field_7_0',
-        'field_8_0',
-        'field_8_1',
-        'field_9_0',
-        'field_9_1',
-        'field_3',
-        'field_4',
+        'device',
+        'motor_water_pump',
+        'motor_mud_pump',
+        'firehose_125',
+        'firehose_75',
+        'firehose_77',
+        'firehose_51',
+        'barrel_stationary',
+        'barrel_portable',
+        'pgs_600',
+        'purga',
+        'radio_station_portable',
+        'flashlight',
+        'searchlight',
+        'tok',
+        'l1',
+        'knapsack_devices',
+        'shovel',
+        'flapper',
+        'life_rope',
+        'foamer',
+        'foamer_in_stock',
+        'damaged_hydrant_street',
+        'damaged_hydrant_object',
+        'damaged_pv',
+        'active_gasoline',
+        'active_diesel',
+        'reserved_gasoline',
+        'reserved_diesel',
+        'generator',
+
+        'exhauster',
+        'girs',
+        'iup',
+        'head_guard_id',
     ];
 
     public function scopeTodayRecords($q)
@@ -153,5 +152,15 @@ class FormationTechReport extends Model
     public function formation_tech_items()
     {
         return $this->hasMany(FormationTechItem::class, 'formation_tech_report_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(FormationTechItem::class, 'formation_tech_report_id');
+    }
+
+    public function head_guard()
+    {
+        return $this->belongsTo(Staff::class, 'head_guard_id');
     }
 }

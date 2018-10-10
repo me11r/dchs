@@ -1,18 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 18.04.2017
- * Time: 10:16
- */
 
 namespace App\Http\Controllers;
 
 
 use App\Exceptions\AccessDeniedException;
+use App\FireDepartment;
 use App\Office;
 use App\Right;
 use App\Rights\Group;
+use App\Role;
 use App\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -56,12 +52,17 @@ class AdminController extends AuthorizedController
         $this->needRight(Right::CAN_MANAGE_USERS);
 
         $rights = Right::with('group')->orderBy('right_group_id')->get();
+        $roles = Role::all();
+        $fire_departments = FireDepartment::all();
         $user = User::findOrNew($user_id);
         if (($user_id !== null) and (!$user->exists)) // not new, but don't exists
         {
             throw new AccessDeniedException();
         }
-        $this->set('rights', $rights)->set('user', $user);
+        $this->set('rights', $rights)
+            ->set('roles', $roles)
+            ->set('fire_departments', $fire_departments)
+            ->set('user', $user);
     }
 
     /**
@@ -100,10 +101,9 @@ class AdminController extends AuthorizedController
         if ($request->input('password') !== null) {
             $user->password = bcrypt($request->input('password'));
         }
-        //dd($request->input('role'));
         $user->save();
 
-        $user->rights()->sync(array_values($request->input('role', [])));
+//        $user->rights()->sync(array_values($request->input('role', [])));
 
         return redirect('admin/users')->with('_message', ['type' => 'success', 'text' => 'Пользователь успешно сохранен в системе']);
     }

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 11.07.2018
- * Time: 19:38
- */
 
 namespace App\Http\Controllers;
 
@@ -18,12 +12,20 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
+use App\Models\FormationPersonsItem;
+use App\Models\FormationRecord;
 use App\Models\FormationTechItem;
+use App\Models\Staff;
 use App\Models\Vehicle;
+use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Spipu\Html2Pdf\Html2Pdf;
 
 class FormationController extends AuthorizedController
 {
@@ -45,12 +47,14 @@ class FormationController extends AuthorizedController
         $perpage = $request->get('per_page', 10);
         $today = date('Y-m-d');
         $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
+        $department_id = Auth::user()->id != 1 ? Auth::user()->fire_department_id : 1;
         if (!$has_today) {
             (new FormationReport)
                 ->fill(['report_date' => $today])
                 ->save();
         }
         $this
+            ->set('department_id', $department_id)
             ->set('today', $today)
             ->set('per_page', $perpage)
             ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
@@ -87,27 +91,22 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
+        $belongsToDept = Auth::user()->fire_department_id;
+        if($belongsToDept){
+            $departments = FireDepartment::where('id', $belongsToDept)->get();
+        }
+        else{
+            $departments = FireDepartment::all();
+        }
+
         $fieldlist = [
-            'В карауле по списку л/с',
-            'На лицо личного состава' => [
-                'Всего',
-                'Нач. караулов',
-                'Ком. отделений',
-                'Водители',
-                'Ряд. состав',
-                'Диспетчеров',
-            ],
-            'Отсутствуют' => [
-                'Отпуск',
-                'Учебный',
-                'Декрет',
-                'Больные',
-                'Командировка',
-                'Другие причины',
-            ],
             'ГДЗС',
         ];
         $this->set('fieldlist', $fieldlist);
+
+        $staff = Staff::where('department_id', $dept_id)->get();
+
+        $this->set('staff', $staff);
 
         $model = (new FormationPersonsReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
@@ -115,7 +114,7 @@ class FormationController extends AuthorizedController
         }
         $this->set('model', $model);
 
-        $this->set('departments', FireDepartment::all())
+        $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
             ->set('dept_id', $dept_id);
@@ -126,95 +125,97 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $formationReport = FormationReport::find($form_id);
-        $canEditReport = $formationReport->canEditReport();
-        if(!$canEditReport){
-            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
-        }
+        /*$canEditReport = $formationReport->canEditReport();
+        if(!$canEditReport && Auth::id() != 1){
+            return redirect('/formation/101')->with('_message', ['type' => 'danger', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+        }*/
 
-        $model = (new FormationPersonsReport())->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
+        $model = (new FormationPersonsReport())
+            ->where('form_id', $form_id)
+            ->where('dept_id', $dept_id)
+            ->first();
+
         if ($model === null) {
             $model = new FormationPersonsReport();
         }
-        $model->fill($request->all())->save();
+        $all = [
+            'total' => $request->total,
+            'form_id' => $form_id,
+            'dept_id' => $dept_id,
+            'active' => $request->total_active,
+            'head_guards' => count($request->input('staff.head_guards', [])),
+            'commander_squads' => count($request->input('staff.commander_squads', [])),
+            'drivers' => count($request->input('staff.drivers', [])),
+            'privates' => count($request->input('staff.privates', [])),
+            'dispatchers' => count($request->input('staff.dispatchers', [])),
+            'vacation' => count($request->input('staff.vacation', [])),
+            'study' => count($request->input('staff.study', [])),
+            'maternity' => count($request->input('staff.maternity', [])),
+            'sick' => count($request->input('staff.sick', [])),
+            'business_trip' => count($request->input('staff.business_trip', [])),
+            'other' => count($request->input('staff.other', [])),
+            'gas_smoke_protection_service' => $request->gas_smoke_protection_service,
+        ];
+        $model->fill($all)->save();
+
+        if($request->staff){
+
+            FormationPersonsItem::where('report_id', $model->id)
+                ->delete();
+
+            foreach ($request->staff as $type => $inputs) {
+                foreach ($inputs['staff_id'] as $input_key => $input) {
+
+                    if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                        $data['status'] = 'active';
+                    }
+                    else{
+                        $data['status'] = 'inactive';
+                    }
+
+                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                    FormationPersonsItem::create([
+                        'staff_id' => $input,
+                        'report_id' => $model->id,
+                        'comment' => $inputs['comment'][$input_key] ?? null,
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+                        'rank' => $type,
+                        'status' => $data['status'],
+                    ]);
+                }
+            }
+        }
+
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
     public function getAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+        $belongsToDept = Auth::user()->fire_department_id;
+        if($belongsToDept){
+            $departments = FireDepartment::where('id', $belongsToDept)->get();
+        }
+        else{
+            $departments = FireDepartment::all();
+        }
 
-        $fieldlist = [
-            null,
-            'Аппараты',
-            'Мотопомпы' => [
-                'Водяная',
-                'Грязевая',
-            ],
-            null => [
-                null => [
-                    null,
-                    null
-                ],
-                null => [
-                    null,
-                    null
-                ],
-                null => [
-                    null,
-                    null
-                ],
-            ],
-            'Имеется на автомобилях в боевом расчете' => [
-                'Рукавов' => [
-                    '125 мм',
-                    '75 мм',
-                    '77 мм',
-                    '51 мм',
-                ],
-                'Лафетн. Ств. стац',
-                'Лафетн. Ств. переносной',
-                'ГПС-600',
-                'Пурга',
-                'Переносная радиосатнция',
-                'Электрофонари',
-                'Прожектора',
-                'ТОК/Л-1',
-                'Ранцевые аппараты',
-                'Лопаты',
-                'Хлопушки',
-                'Спасательные  веревки',
-                'Пенообразователя',
-            ],
-            'Пенообразователя на складе',
-            'количество неисправных водоисточников' => [
-                'Пожарные гидранты' => [
-                    'Уличный',
-                    'Объектовый',
-                ],
-                'ПВ',
-            ],
-            'В боевом расчете' => [
-                'Бензин',
-                'Дизель'
-            ],
-            'В резерве' => [
-                'Бензин',
-                'Дизель'
-            ],
-            'генератор/дымосос/гирсы,ИУП',
-            'Ф.И.О Начальника караула или лица его подменяющего'
-        ];
-        $this->set('fieldlist', $fieldlist);
         $model = (new FormationTechReport)->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
         if ($model === null) {
             $model = new FormationTechReport();
         }
         $this->set('model', $model);
 
-        $this->set('departments', FireDepartment::all())
+        $staff = Staff::where('department_id', $dept_id)->get();
+
+        $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
-            ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->get())
+            ->set('staff', $staff)
+            ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->where('fire_department_id',$dept_id)->get())
             ->set('dept_id', $dept_id);
 
     }
@@ -224,26 +225,39 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $all = $request->all();
+        $except = $request->except('tech');
         $formationReport = FormationReport::find($form_id);
         $canEditReport = $formationReport->canEditReport();
-        if(!$canEditReport){
-            return redirect('/formation/101')->with('_message', ['type' => 'error', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+
+        if($formationReport->is_approved){
+            $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
         }
+
+        /*if(!$canEditReport && Auth::id() != 1){
+            return redirect('/formation/101')->with('_message', ['type' => 'danger', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
+        }*/
+
         $model = FormationTechReport::updateOrCreate([
                 'form_id' => $form_id,
                 'dept_id' => $dept_id,
-            ], $all);
+            ], $except);
+
         if($request->tech){
             FormationTechItem::where('formation_tech_report_id', $model->id)
                 ->delete();
             foreach ($request->tech as $type => $inputs) {
                 foreach ($inputs['vehicle_id'] as $input_key => $input) {
+                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
                     FormationTechItem::create([
                         'vehicle_id' => $input,
                         'formation_tech_report_id' => $model->id,
                         'department' => ($type != 'repair' && $type != 'reserve') ? $inputs['department'][$input_key] : null,
                         'status' => $type,
                         'reserve' => $inputs['reserve'][$input_key] ?? null,
+                        'comment' => $inputs['comment'][$input_key] ?? null,
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
                     ]);
                 }
 
@@ -255,6 +269,14 @@ class FormationController extends AuthorizedController
     public function getView101(Request $request, $form_id, FormationService $formationService)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+
+        $tech_items_count = [
+            'tech_action' => 0,
+            'tech_reserve' => 0,
+            'tech_repair' => 0,
+        ];
+
+        $dept13_people = [];
 
         $people_fieldlist = [
             'В карауле по списку л/с',
@@ -278,7 +300,7 @@ class FormationController extends AuthorizedController
         ];
 
         $tech_fieldlist = [
-            null,
+//            null,
             'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
@@ -312,7 +334,8 @@ class FormationController extends AuthorizedController
                 'Переносная радиосатнция',
                 'Электрофонари',
                 'Прожектора',
-                'ТОК/Л-1',
+                'ТОК',
+                'Л-1',
                 'Ранцевые аппараты',
                 'Лопаты',
                 'Хлопушки',
@@ -335,85 +358,184 @@ class FormationController extends AuthorizedController
                 'Бензин',
                 'Дизель'
             ],
-            'генератор/дымосос/гирсы,ИУП',
+            'генератор',
+            'дымосос',
+            'гирсы',
+            'ИУП',
             'Ф.И.О Начальника караула или лица его подменяющего'
         ];
         $people_fields = [
-            'field_0',
-            'field_2_0',
-            'field_2_1',
-            'field_2_2',
-            'field_2_3',
-            'field_2_4',
-            'field_2_5',
-            'field_3_0',
-            'field_3_1',
-            'field_3_2',
-            'field_3_3',
-            'field_3_4',
-            'field_3_5',
-            'field_1'
+            'total',
+            'active',
+            'head_guards',
+            'commander_squads',
+            'drivers',
+            'privates',
+            'dispatchers',
+            'vacation',
+            'study',
+            'maternity',
+            'sick',
+            'business_trip',
+            'other',
+            'gas_smoke_protection_service'
         ];
         $tech_fields = [
-            'field_0',
-            'field_1',
-            'field_3_0',
-            'field_3_1',
-            'field_4_1_0',
-            'field_4_1_1',
-            'field_4_2_0',
-            'field_4_2_1',
-            'field_4_3_0',
-            'field_4_3_1',
-            'field_5_1_0',
-            'field_5_1_1',
-            'field_5_1_2',
-            'field_5_1_3',
-            'field_5_0',
-            'field_5_1',
-            'field_5_2',
-            'field_5_3',
-            'field_5_4',
-            'field_5_5',
-            'field_5_6',
-            'field_5_7',
-            'field_5_8',
-            'field_5_9',
-            'field_5_10',
-            'field_5_11',
-            'field_5_12',
-            'field_2',
-            'field_7_1_0',
-            'field_7_1_1',
-            'field_7_0',
-            'field_8_0',
-            'field_8_1',
-            'field_9_0',
-            'field_9_1',
-            'field_3',
-            'field_4',
+//            null,
+            null,
+            'motor_water_pump',
+            'motor_mud_pump',
+        ];
+        $tech_fields2 = [
+            'firehose_125',
+            'firehose_75',
+            'firehose_77',
+            'firehose_51',
+            'barrel_stationary',
+            'barrel_portable',
+            'pgs_600',
+            'purga',
+            'radio_station_portable',
+            'flashlight',
+            'searchlight',
+            'tok',
+            'l1',
+            'knapsack_devices',
+            'shovel',
+            'flapper',
+            'life_rope',
+            'foamer',
+            'foamer_in_stock',
+            'damaged_hydrant_street',
+            'damaged_hydrant_object',
+            'damaged_pv',
+            'active_gasoline',
+            'active_diesel',
+            'reserved_gasoline',
+            'reserved_diesel',
+            'generator',
+            'exhauster',
+            'girs',
+            'iup',
+//            'head_guard_id',
         ];
 
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
-        $departments = FireDepartment::whereNotIn('id', $excludedIds)->get();
+
+        $departments = new FireDepartment();
+        $departments = $departments->whereNotIn('title', ['ОД']);
+        if (auth()->user()->fire_department_id){
+            $departments = $departments->where('id', '=', auth()->user()->fire_department_id);
+        }
+        $departments = $departments->get();
+
         $this->set('departments', $departments);
         $this->set('excluded_departments', FireDepartment::whereIn('id', $excludedIds)->get());
 
         $this->set('report', (new FormationReport)->find($form_id));
         $tech = (new FormationTechReport)->with('formation_tech_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
-        $people = (new FormationPersonsReport)->where('form_id', $form_id)->get()->keyBy('dept_id');
+        $people = (new FormationPersonsReport)->with('formation_person_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
+
+        // лс ПЧ-13
+        if(isset($people[13])){
+            foreach ($people[13]->formation_person_items as $item) {
+                if($item->status == 'active'){
+                    $dept13_people[$item->rank][] = $item->staff;
+                }
+            }
+        }
+
+        foreach ($departments as $key => $dep) {
+            if(isset($tech[$dep->id]) && $tech[$dep->id]->formation_tech_items->count()){
+                $departments[$key]->tech_action = $tech[$dep->id]->formation_tech_items()->status('action')->with('vehicle')->get();
+                $departments[$key]->tech_reserve = $tech[$dep->id]->formation_tech_items()->status('reserve')->with('vehicle')->get();
+                $departments[$key]->tech_repair = $tech[$dep->id]->formation_tech_items()->status('repair')->with('vehicle')->get();
+            }
+            else{
+                $departments[$key]->tech_action = [];
+                $departments[$key]->tech_reserve = [];
+                $departments[$key]->tech_repair = [];
+            }
+        }
+
+        $ttl_count = [];
+        $tech_fields_temp = $tech_fields2;
+        $tech_fields_temp[] = 'head_guard_id';
+
+        foreach ($departments as $dep) {
+            $tech_items_count['tech_action'] += count($dep->tech_action);
+            $tech_items_count['tech_reserve'] += count($dep->tech_reserve);
+            $tech_items_count['tech_repair'] += count($dep->tech_repair);
+
+
+            if(isset($tech[$dep->id])){
+                foreach ($tech_fields_temp as $item) {
+                    if($item != null){
+                        if(!isset($ttl_count[$item])){
+                            $ttl_count[$item] = 0;
+                        }
+
+                        if($item != 'head_guard_id'){
+                            $ttl_count[$item] += (float)$tech[$dep->id]->$item ?? 0;
+
+                        }
+                        else{
+                            $ttl_count[$item]++;
+                        }
+                    }
+                }
+            }
+        }
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+        $user = Auth::user();
 
-//        $tech_items = FormationTechReport::with('formation_tech_items')->where('form_id', $form_id)->get();
+        $dataToReport = [
+            'people' => $people,
+            'tech' => $tech,
+            'people_fields' => $people_fields,
+            'tech_fields' => $tech_fields,
+            'tech_fields2' => $tech_fields2,
+            'people_fl' => $people_fieldlist,
+            'tech_fl' => $tech_fieldlist,
+            'tech_items_count' => $tech_items_count,
+            'ttl_count' => $ttl_count,
+            'sumArray' => $sumArray,
+            'departments' => $departments,
+            'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
+            'report' => FormationReport::find($form_id),
+        ];
+
+        Cache::put('report101_data', $dataToReport, 3600);
+
+//        $html = view('pdf/formation-report', $dataToReport);
+
+//        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+//        $date = date('d-m-Y');
+//        $file_name = "Суточный отчет - $date.pdf";
+
+//        $dompdf = new Dompdf();
+//        $dompdf->loadHTML($html, 'UTF-8');
+//        $dompdf->setPaper('A4', 'landscape');
+//        $dompdf->render();
+//        $dompdf->stream($file_name);
+
+//        $html2pdf = new Html2Pdf('L');
+//        $html2pdf->writeHTML($html);
+//        $html2pdf->output('fff.pdf');
 
 
         $this->set('people', $people)
             ->set('tech', $tech)
+            ->set('dept13_people', $dept13_people)
+            ->set('user', $user)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)
+            ->set('tech_fields2', $tech_fields2)
             ->set('people_fl', $people_fieldlist)
             ->set('tech_fl', $tech_fieldlist)
+            ->set('tech_items_count', $tech_items_count)
+            ->set('ttl_count', $ttl_count)
             ->set('sumArray', $sumArray);
     }
 
@@ -423,11 +545,27 @@ class FormationController extends AuthorizedController
         $formation_person_reports = FormationPersonsReport::todayRecords()->count();
         $formation_medical_reports = FormationMedicalReport::todayRecords()->count();
         $formation_mudflow_reports = FormationMudflowReport::todayRecords()->count();
+        $formation_savers_reports = FormationSaversReport::todayRecords()->count();
+
+        $medical_filled = FormationRecord::todayRecord('medical')->filled()->count();
+        $mudflow_filled = FormationRecord::todayRecord('mudflow')->filled()->count();
+        $savers_filled = FormationRecord::todayRecord('roso')->filled()->count();
+        $air_filled = FormationRecord::todayRecord('air_rescue')->filled()->count();
+        $ort_sert_filled = FormationRecord::todayRecord('ort_sert')->filled()->count();
+        $emergency_filled = FormationRecord::todayRecord('emergency_almaty')->filled()->count();
 
         $this->set('formation_tech_reports', $formation_tech_reports);
         $this->set('formation_person_reports', $formation_person_reports);
         $this->set('formation_medical_reports', $formation_medical_reports);
         $this->set('formation_mudflow_reports', $formation_mudflow_reports);
+        $this->set('formation_savers_reports', $formation_savers_reports);
+
+        $this->set('medical_filled', $medical_filled);
+        $this->set('mudflow_filled', $mudflow_filled);
+        $this->set('savers_filled', $savers_filled);
+        $this->set('air_filled', $air_filled);
+        $this->set('ort_sert_filled', $ort_sert_filled);
+        $this->set('emergency_filled', $emergency_filled);
     }
 
     public function getMudflow(Request $request)
@@ -633,6 +771,28 @@ class FormationController extends AuthorizedController
         return redirect('/formation/savers/resources/' . $parent_id)->with('_message', [
             'type' => 'success',
             'text' => "Успешно сохранено",
+        ]);
+    }
+
+    public function postApproveReport101($id)
+    {
+        $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
+
+        $report = FormationReport::find($id);
+
+        if($report->is_approved ?? Auth::id() == 1){
+            $report->is_approved = false;
+            $text = "Утверждение отменено";
+        }
+        else{
+            $report->is_approved = true;
+            $text = "Успешно утверждено";
+        }
+        $report->save();
+
+        return back()->with('_message', [
+            'type' => 'success',
+            'text' => $text,
         ]);
     }
 

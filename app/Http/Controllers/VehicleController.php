@@ -6,6 +6,7 @@ use App\FireDepartment;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
@@ -25,7 +26,14 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        $items = $this->repository->all();
+        $per_page = 20;
+
+        if(Auth::id() == 1){
+            $items = $this->repository->orderBy('fire_department_id')->paginate($per_page);
+        }
+        else{
+            $items = Auth::user()->vehicles()->orderBy('fire_department_id')->paginate($per_page);
+        }
 
         return view('vehicle.index', compact('items'));
     }
@@ -37,7 +45,13 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        $fire_departments = FireDepartment::all();
+        if(Auth::id() == 1){
+            $fire_departments = FireDepartment::all();
+        }
+        else{
+            $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
+        }
+
         $vehicle_types = VehicleType::all();
         $title = 'Создать запись';
         return view('vehicle.edit', compact('items', 'fire_departments', 'vehicle_types','title'));
@@ -74,7 +88,12 @@ class VehicleController extends Controller
      */
     public function edit($id)
     {
-        $fire_departments = FireDepartment::all();
+        if(Auth::id() == 1){
+            $fire_departments = FireDepartment::all();
+        }
+        else{
+            $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
+        }
         $vehicle_types = VehicleType::all();
         $title = 'Редактировать запись';
         $record = Vehicle::find($id);

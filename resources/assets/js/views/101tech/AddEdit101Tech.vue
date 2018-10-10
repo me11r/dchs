@@ -10,29 +10,30 @@
         </div>
 
         <div
-            class="field is-grouped"
+            class="panels"
             v-for="item in records_"
             :key="item.id">
 
-            <div class="control column is-four-fifths">
-                <label :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
-                <div class="select">
-                    <select
-                            required
-                            title=""
-                            :name="getName('vehicle_id', item.id)"
-                            :id="getName('vehicle_id', item.id)"
-                            v-model="item.vehicle_id">
-                        <option
-                                v-for="vehicle in vehicles"
-                                :key="'vehicle_' + vehicle.id"
-                                :value="vehicle.id">{{ vehicle.name }}
-                        </option>
-                    </select>
-                </div>
+            <div class="field is-grouped">
+                <div class="control column is-four-fifths">
+                    <label :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
+                    <div class="select">
+                        <select
+                                required
+                                title=""
+                                :name="getName('vehicle_id', item.id)"
+                                :id="getName('vehicle_id', item.id)"
+                                v-model="item.vehicle_id">
+                            <option
+                                    v-for="vehicle in vehicles"
+                                    :key="'vehicle_' + vehicle.id"
+                                    :value="vehicle.id">{{ vehicle.name }} {{ vehicle.number }}
+                            </option>
+                        </select>
+                    </div>
 
-            </div>
-            <div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
+                </div>
+                <div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
                 <label :for="getName('department', item.id)">Отделение</label>
                 <input
                     required
@@ -46,7 +47,7 @@
                     :name="getName('department', item.id)">
             </div>
 
-            <div v-if="block_type === 'reserve'" class="control column">
+                <div v-if="block_type === 'reserve'" class="control column">
                 <label :for="getName('reserve', item.id)">Резерв</label><br>
                 <div class="select">
                     <select
@@ -62,19 +63,45 @@
                         </option>
                     </select>
                 </div>
-
             </div>
 
-            <div class="control column">
-                <label>Удалить</label>
+                <div class="control column">
+                    <label>Удалить</label>
 
-                <button
-                    class="button is-small is-outlined is-danger square-button-36"
-                    @click.prevent="removeItem(item.id)"
-                    type="button"
-                    title="Удалить">
-                    <i class="fa fa-trash"></i>
-                </button>
+                    <button
+                        class="button is-small is-outlined is-danger square-button-36"
+                        @click.prevent="removeItem(item.id)"
+                        type="button"
+                        title="Удалить">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="block_type === 'repair'" class="field is-grouped">
+                <div class="control column">
+                    <label :for="getName('comment', item.id)">Комментарий</label>
+                    <textarea class="textarea" v-model="item.comment" :name="getName('comment', item.id)" :id="getName('comment', item.id)" cols="10" rows="1"></textarea>
+                </div>
+                <div class="control column">
+                    <label :for="getName('date_from', item.id)">С</label><br>
+                    <input v-model="item.date_from" :name="getName('date_from', item.id)" :id="getName('date_from', item.id)" class="control" type="date">
+                </div>
+                <div class="control column">
+                    <label :for="getName('date_to', item.id)">По</label><br>
+                    <input v-model="item.date_to" :name="getName('date_to', item.id)" :id="getName('date_to', item.id)" class="control" type="date">
+                    <!--todo: при использовании bulma datepicker - ошибка при отображении даты -->
+                    <!--<b-datepicker-->
+                            <!--:name="getName('date_to', item.id)"-->
+                            <!--v-model="item.date_to"-->
+                            <!--:first-day-of-week="1"-->
+                            <!--:month-names="month_names"-->
+                            <!--:day-names="day_names"-->
+                            <!--placeholder=""-->
+                            <!--icon="calendar-today"-->
+                            <!--:readonly="false">-->
+                    <!--</b-datepicker>-->
+                </div>
             </div>
         </div>
     </div>
@@ -97,6 +124,10 @@ export default {
             type: String,
             default: ''
         },
+        fire_dep_id: {
+            type: String,
+            default: ''
+        },
         vehicles: {
             type: Array,
             default: () => []
@@ -112,16 +143,23 @@ export default {
             trunks: [],
             block_type_: this.block_type,
             vehicles_: this.vehicles,
-            report_id_: this.report_id
+            fire_dep_id_: this.fire_dep_id,
+            report_id_: this.report_id,
+            month_names: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+            day_names: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+
         };
     },
     components: {
-        'b-icon': Buefy['Icon']
+        'b-icon': Buefy['Icon'],
+        'b-datepicker': Buefy['Datepicker'],
     },
     methods: {
         getName(control, id){
             return 'tech' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
+        defaultDateFormatter: (date) => { moment(date).format("DD/MM/YYYY")},
+        defaultDateFormatter2: (date) => { return dt.toLocaleDateString('ru-RU'); },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
         },
@@ -146,11 +184,8 @@ export default {
         prepareRecords(records) {
             records.map((item) => {
                 this.addItem({
-                    id: parseInt(item.id),
-                    comment: item.comment,
-                    trunk_id: parseInt(item.trunk_id),
-                    count: parseInt(item.count),
-                    square: parseFloat(item.square)
+                    date_begin: moment(item.date_begin),
+                    date_end: moment(item.date_end),
                 });
             });
         },
@@ -162,20 +197,28 @@ export default {
             }
         },
 
-        getTech() {
+        getStaff() {
             let self = this;
             axios.get('/api/101/get-tech', {
                 params: {
                     status: self.block_type_,
-                    id: self.report_id_
+                    id: self.report_id_,
+                    fire_dep_id: self.fire_dep_id_
                 }
             }).then((resp) => {
+                // for (let item in resp.data) {
+                //     resp.data[item].date_begin = resp.data[item].date_begin ? new Date(resp.data[item].date_begin) : null;
+                //     resp.data[item].date_end = resp.data[item].date_end ? new Date(resp.data[item].date_end) : null;
+                // }
+
                 self.records_ = resp.data;
+
+                console.dir(self.records_);
             });
         }
     },
     beforeMount() {
-        this.getTech();
+        this.getStaff();
         // this.prepareRecords(window.ticket101add.records);
         // this.vehicles = window.vehicles.records;
         // this.vehicles = this.test;

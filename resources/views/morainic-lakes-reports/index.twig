@@ -1,0 +1,56 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <h4 style="" class="title">Сводная информация по мореным озерам</h4>
+            <div class="level-right has-text-right">
+                <a href="{{ route('morainic-lakes-summaries.create') }}" class="button is-success"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+            </div>
+            <table class="table is-narrow is-hoverable is-selectable">
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.date }}</td>
+                        <td><a class="button is-outlined is-small" href="{{ route('morainic-lakes-summaries.edit', {'id':item.id}) }}">
+                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a></td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>{{  "now"|date("d/m/Y") }}</td>
+                        <td><a class="button is-outlined is-small" href="/morainic-lake-reports/{{  "now"|date("d-m-Y") }}">
+                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a></td>
+                    </tr>
+                {% endfor %}
+                {#{% for item in items %}#}
+                    {#<tr>#}
+                        {#<td><i class="fas fa-list-ol"></i>&nbsp;{{ item.name }}</td>#}
+                        {#<td>{{ item.altitude }}</td>#}
+                        {#<td>#}
+                            {#<a class="button is-outlined is-small" href="{{ route('morainic-lakes-summaries.edit', {'id':item.id}) }}">#}
+                                {#<i class="fas fa-edit"></i>&nbsp;Редактировать</a>#}
+
+                            {#<form method="post" action="{{ route('morainic-lakes-summaries.destroy', {'id':item.id}) }}">#}
+                                {#{{ csrf_field() }}#}
+                                {#{{  method_field('DELETE') }}#}
+                                {#<button onclick="return confirm('Удалить запись?');" class="button is-outlined is-small">#}
+                                    {#<i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>#}
+                            {#</form>#}
+                        {#</td>#}
+                    {#</tr>#}
+                {#{% else %}#}
+                    {#<tr><h3 class="is-danger">Нет данных в таблице</h3></tr>#}
+                {#{% endfor %}#}
+                </tbody>
+
+            </table>
+            {#{% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}#}
+
+        </div>
+    </div>
+{% endblock content %}

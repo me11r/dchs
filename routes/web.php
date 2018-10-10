@@ -5,6 +5,7 @@ Route::post('login', 'Auth\LoginController@postIndex')->name('post-login');
 Route::get('auth/password-reset', 'Auth\ResetPasswordController@getResetPassword')->name('password.request');
 
 Route::group(['middleware' => 'auth'], function () {
+
     Route::group(['prefix' => 'ajax'], function () {
         Route::get('street/{area_id?}', 'AjaxController@findStreet')->where('area_id', '[0-9]+');
         Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
@@ -25,6 +26,14 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('users/passwd/{user_id}', 'AdminController@getPassword')->where(['user_id' => '[0-9]+'])->name('admin-users-password');
         Route::post('users/passwd/{user_id}', 'AdminController@postPassword')->where(['user_id' => '[0-9]+'])->name('post-admin-users-password');
+
+        Route::group(['prefix' => 'roles', 'as' => 'roles.'], function (){
+            Route::get('/', 'RoleController@index')->name('index');
+            Route::get('create', 'RoleController@create')->name('create');
+            Route::get('edit/{id}', 'RoleController@edit')->name('edit');
+            Route::post('add-edit', 'RoleController@store')->name('add-edit');
+            Route::post('delete/{id}', 'RoleController@delete')->name('delete');
+        });
 
     });
 
@@ -49,6 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('101', 'FormationController@get101');
         Route::get('addToday', 'FormationController@getAddToday');
         Route::post('addToday', 'FormationController@postAddToday');
+        Route::post('approve101/{id}', 'FormationController@postApproveReport101');
         Route::get('add101persons/{form_id}/{dept_id?}', 'FormationController@getAdd101Persons')
             ->where('form_id', '[0-9]+')
             ->where('dept_id', '[0-9]+')
@@ -122,15 +132,41 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
             ->name('roadtrip.plan.view')
             ->where('plan_id', '[0-9]+');
+        Route::get('/print/{id}', 'RoadtripController@getPrint')
+            ->where('id', '[0-9]+')
+            ->name('roadtrip.plan.print');
+        Route::post('dispatch', 'RoadtripController@postDispatch');
+        Route::post('return', 'RoadtripController@postReturn');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
         Route::get('/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@getSend')
             ->where('dept_id', '[0-9]+')
             ->where('ticket_id', '[0-9]+')
             ->where('departments', '[0-9]+');
+        Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
+        Route::post('recommend', 'RoadtripController@postRecommend');
+    });
+
+    Route::group(['prefix' => 'service-plans'], function (){
+        Route::get('/', 'ServicePlanController@getList');
+        Route::post('send', 'ServicePlanController@postSend');
+        Route::post('accept/{id}/{service}', 'ServicePlanController@postAccept')->where('id', '[0-9]+');
+        Route::post('arrive/{id}/{service}', 'ServicePlanController@postArrive')->where('id', '[0-9]+');
+        Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
+        Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '112|102|103|104|electro|water|smk');
+        Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '112|102|103|104|electro|water|smk');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
+
+    Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName')->where('dict_id', 'incident-types|operational-plans|operational-cards');
+    Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName')->where('dict_id', 'incident-types|operational-plans|operational-cards');
+    Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')
+        ->where('name', 'incident-types|operational-plans|operational-cards')
+        ->where('dict_id', '[0-9]+');
+    Route::post('/dictionaries/{name}/create-edit', 'DictionaryController@postEditCreateByName')
+        ->where('name', 'incident-types|operational-plans|operational-cards');
+
     Route::get('/dictionaries/list/{dict_id}', 'DictionaryController@getList')->where('dict_id', '[0-9]+');
     Route::get('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@getEdit')
         ->where('dict_id', '[0-9]+')
@@ -138,8 +174,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@postEdit')
         ->where('dict_id', '[0-9]+')
         ->where('row_id', '[0-9]+');
+    Route::delete('/dictionaries/delete/{dict_id}/{row_id}', 'DictionaryController@delete')
+        ->where('dict_id', '[0-9]+')
+        ->where('row_id', '[0-9]+')
+        ->name('dictionaries.row.delete');
+
+    Route::delete('/dictionaries/delete/{name}/{row_id}', 'DictionaryController@deleteByName')
+        ->where('name', 'incident-types|operational-plans|operational-cards')
+        ->where('row_id', '[0-9]+')
+        ->name('dictionaries.row.delete_by_name');
+
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
+    Route::get('/pdf/report101', 'ReportController@getReport101')->name('report101');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
@@ -148,7 +195,22 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/weather', 'WeatherController');
     Route::resource('/quakes', 'QuakeController');
     Route::resource('/vehicles', 'VehicleController');
+    Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
+    Route::resource('/morainic-lakes', 'MorainicLakeController');
+    Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
+    Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
+    Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
+
+    Route::group(['prefix' => 'reports/101', 'as' => 'reports.'], function () {
+        Route::get('/staff', 'ReportController@getReport101Staff')->name('staff');
+        Route::post('/staff', 'ReportController@postReport101Staff')->name('staff_post');
+        Route::get('/vehicles', 'ReportController@getReport101Vehicles')->name('vehicles');
+        Route::post('/vehicles', 'ReportController@postReport101Vehicles')->name('vehicles_post');
+
+        Route::get('/emergency', 'ReportController@getReport101Emergency')->name('emergency101_get');
+        Route::post('/emergency', 'ReportController@postReport101Emergency')->name('emergency101_post');
+    });
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

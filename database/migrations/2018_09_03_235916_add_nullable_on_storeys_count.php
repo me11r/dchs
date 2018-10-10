@@ -25,6 +25,8 @@ class AddNullableOnStoreysCount extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('buildings', function (Blueprint $table){
+            $table->integer('number_of_storeys')->nullable(false)->default(1)->change();
+        });
     }
 }

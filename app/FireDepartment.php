@@ -45,7 +45,12 @@ class FireDepartment extends Model
     use SoftDeletes;
     protected $table = 'fire_departments';
     protected $guarded = ['id'];
-    protected $fillable = ['title', 'address'];
+    protected $fillable = [
+        'title',
+        'address',
+        'recommend',
+        'city_area_id',
+    ];
 
     public function getNameAttribute()
     {
@@ -75,5 +80,10 @@ class FireDepartment extends Model
     public function results()
     {
         return $this->hasMany(FireDepartmentResult::class, 'fire_department_id');
+    }
+
+    public function scopeRecommend($q, $search = true)
+    {
+        return $q->where('recommend', $search);
     }
 }

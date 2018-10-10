@@ -78,15 +78,15 @@ class Building extends Model
             return $q->whereHas('street', function ($query) use($location){
                 $query->where('name', 'like', "%$location%");
             })->orWhereHas('city_micro_area', function ($query) use($location){
-                $query->where('name', 'like', "%$location%");
+                $query->where('name', '=', "$location");
             });
         }
         else{
-            return $q->where('building_number', 'like', "$home%")
+            return $q->where('building_number', '=', "$home")
                 ->whereHas('street', function ($query) use($location){
                 $query->where('name', 'like', "%$location%");
             })->orWhereHas('city_micro_area', function ($query) use($location){
-                $query->where('name', 'like', "%$location%");
+                $query->where('name', '=', "$location");
             });
         }
     }

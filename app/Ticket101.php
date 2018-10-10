@@ -15,6 +15,7 @@ use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\Models\WallMaterial;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -527,6 +528,11 @@ class Ticket101 extends Model
         return $this->belongsToMany(FireDepartment::class, 'roadtrip_plan', 'card_id', 'department_id');
     }
 
+    public function road_trip_plans()
+    {
+        return $this->hasMany(RoadtripPlan::class, 'card_id');
+    }
+
     public function operational_plan()
     {
         return $this->hasOne(OperationalPlan::class, 'id', 'operational_plan_id');
@@ -534,7 +540,7 @@ class Ticket101 extends Model
 
     public function fire_department()
     {
-        return $this->hasOne(OperationalPlan::class, 'id', 'operational_plan_id');
+        return $this->belongsTo(FireDepartment::class,'fire_department_id');
     }
 
     /**
@@ -579,6 +585,49 @@ class Ticket101 extends Model
         }
 
         return false;
+    }
+
+    public function getServicePlan($ticket, $service)
+    {
+        return Ticket101ServicePlan::where('card_id', $ticket)
+            ->where('department', $service)->first();
+    }
+
+
+    public function wall_material()
+    {
+        return $this->belongsTo(WallMaterial::class, 'wall_material_id');
+    }
+
+    public function operational_card()
+    {
+        return $this->belongsTo(OperationalCard::class, 'operational_card_id');
+    }
+
+    public function service_plans()
+    {
+        return $this->hasMany(Ticket101ServicePlan::class, 'card_id');
+    }
+
+    public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
+    {
+        $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);
+
+        if($reason_id){
+            $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                ->where('fire_object_id', $reason_id);
+        }
+
+        $result['rescued_count'] = $baseQuery->sum('rescued_count');
+        $result['evac_count'] = $baseQuery->sum('evac_count');
+        $result['co2_poisoned_count'] = $baseQuery->sum('co2_poisoned_count');
+        $result['ch4_poisoned_count'] = $baseQuery->sum('ch4_poisoned_count');
+        $result['gpt_burns_count'] = $baseQuery->sum('gpt_burns_count');
+        $result['people_death_count'] = $baseQuery->sum('people_death_count');
+        $result['children_death_count'] = $baseQuery->sum('children_death_count');
+        $result['hospitalized_count'] = $baseQuery->sum('hospitalized_count');
+
+        return $result;
     }
 
 

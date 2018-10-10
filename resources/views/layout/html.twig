@@ -15,6 +15,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="stylesheet" href="{{ asset('custom.css') }}">
     <link rel="stylesheet" href="{{ mix('assets/app.css') }}">
     <script>
         window.csrf_token = '{{ csrf_token() }}';
@@ -23,9 +24,10 @@
 <body>
 <nav id="navbar" class="app-navbar"></nav>
 {% if _message is defined %}
-    <div id="notification" class="notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
+    <div id="notification" class="animated shake notification is-{{ _message.type|default('info') }}">{{ _message.text|default('Unknown error') }}</div>
 {% endif %}
 {% block content %}{% endblock content %}
+<div id="roadtrip_notifier"></div>
 <script src="{{ mix('assets/app.js') }}"></script>
 <script>
     window.addEventListener('load', () => {
@@ -41,9 +43,8 @@
 {% block scripts %}{% endblock scripts %}
 <style>
     #notification {
-        transition: opacity ease-out 5s;
+        transition: opacity ease-out 10s;
     }
 </style>
-<div id="roadtrip-notifier"></div>
 </body>
 </html>

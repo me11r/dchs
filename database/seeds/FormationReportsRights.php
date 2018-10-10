@@ -11,7 +11,7 @@ class FormationReportsRights extends Seeder
      */
     public function run()
     {
-        App\Rights\Group::insert([
+        /*App\Rights\Group::insert([
             ['id' => 5, 'title' => 'Строевые записки'],
         ]);
 
@@ -23,6 +23,9 @@ class FormationReportsRights extends Seeder
             ['id' => 16, 'title' => 'АО"Казавиаспас"', 'right_group_id' => 5],
             ['id' => 17, 'title' => 'АО "Өртсөндіруші"', 'right_group_id' => 5],
             ['id' => 18, 'title' => 'ДЧС г.Алматы', 'right_group_id' => 5],
-        ]);
+            ['id' => 19, 'title' => 'Служба спасения г.Алматы', 'right_group_id' => 5],
+
+            ['id' => 20, 'title' => 'Может одобрять суточный отчет', 'right_group_id' => 5],
+        ]);*/
     }
 }

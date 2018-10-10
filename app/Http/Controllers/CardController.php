@@ -11,12 +11,17 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\FireDepartment;
+use App\FormationTechReport;
+use App\Http\Middleware\Rights\FormationRecord;
 use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
+use App\Models\WallMaterial;
+use App\OperationalCard;
 use App\Ticket101;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -76,20 +81,25 @@ class CardController extends AuthorizedController
             ' - П.16',
             ' - П. 17',
         ];
-        $ssv_out = FireDepartment::all();
+        $ssv_out = FireDepartment::recommend()->get();
+        $wall_materials = WallMaterial::all();
         if($card_id != 0){
             foreach ($ssv_out as $key => $item) {
                 $ssv_out[$key]->res = $item->results()->where('ticket101_id', $card_id)->first();
+                $ssv_out[$key]->res_many = $item->results()->where('ticket101_id', $card_id)->get();
             }
         }
 
         $dep_results = FireDepartmentResult::all();
+        $operational_cards = OperationalCard::all();
 
+        $this->set('wall_materials', $wall_materials);
+        $this->set('operational_cards', $operational_cards);
         $this->set('ssv_out', $ssv_out);
         $this->set('dep_results', $dep_results);
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
-        $this->set('city_area', CityArea::all());
+        $this->set('city_area', CityArea::with(['fire_departments'])->get());
         $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
         $this->set('burn_object', BurntObject::all());
@@ -102,14 +112,18 @@ class CardController extends AuthorizedController
                 'text' => $item->name
             ];
         })->toArray());
-        $this->set('fire_departments', collect(FireDepartment::all())->map(function ($item){
+        $this->set('fire_departments', collect(FireDepartment::recommend(true)->get())->map(function ($item){
             return [
                 'id' => $item->id,
                 'text' => $item->name
             ];
         })->toArray());
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
-        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records'])->findOrNew($card_id);
+        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records', 'results'])->findOrNew($card_id);
+        $recommendedDispatched = $ticket->results()
+            ->isDispatched()
+            ->recommended()
+            ->count();
 
         $other_records_unique = $ticket->other_records()->groupBy('trunk_id')->get(['trunk_id', DB::raw('MAX(count) as count')]);
         if($other_records_unique->count()){
@@ -135,6 +149,7 @@ class CardController extends AuthorizedController
 
         $water_sources = WaterSupplySource::all();
 
+        $this->set('recommendedDispatched', $recommendedDispatched);
         $this->set('fire_dep_results_info', $fire_dep_results_info);
         $this->set('water_sources', $water_sources);
         $this->set('max_square', $max_square);
@@ -142,71 +157,136 @@ class CardController extends AuthorizedController
         $this->set('other_records_unique', $other_records_unique);
     }
 
+    /**
+     * создаем рекомендации к выезду на основе расписания выездов ПЧ
+     */
+    private function recommend(Request $request, $card)
+    {
+        $results = [];
+        $formationTechItems = [];
+
+        $schedules = Schedule::where('fire_department_main_id', $card->fire_department_id)
+            ->where('dict_fire_level_id', $card->fire_level_id)
+            ->get();
+
+        /* последняя заполненная строевка*/
+        $latestReportId = FormationTechReport::has('items')->max('form_id');
+        $formationTech = FormationTechReport::where('form_id', $latestReportId)->get();
+
+        foreach ($formationTech as $report) {
+            foreach ($report->items()->available()->get() as $tech) {
+                $formationTechItems[] = $tech;
+            }
+        }
+
+        if(count($formationTechItems)){
+            foreach ($formationTechItems as $tech_item) {
+
+                $exists = FireDepartmentResult::where('ticket101_id', $card->id)
+                    ->where('fire_department_id', $tech_item->formation_tech_report->dept_id)
+                    ->where('tech_id', $tech_item->id)
+                    ->first();
+
+                /*если подразделение еще не вернулось с прошлого происшествия*/
+                $notAvailable = FireDepartmentResult::where('tech_id', $tech_item->id)
+                    ->whereNotNull('out_time')
+                    ->whereNull('ret_time')
+                    ->first();
+
+                if($notAvailable){
+                    continue;
+                }
+
+                if(!$exists){
+                    $results[$tech_item->department] = FireDepartmentResult::create([
+                        'ticket101_id' => $card->id,
+                        'fire_department_id' => $tech_item->formation_tech_report->dept_id,
+                        'dispatched' => false,
+                        'tech_id' => $tech_item->id,
+                        'recommended' => false,
+                    ]);
+                }
+
+                /**/
+                foreach ($schedules as $schedule_item) {
+
+                    $schedule_depts = explode(',', str_replace(['.', ' '], ',', $schedule_item->department));
+
+                    foreach ($schedule_depts as $schedule_dept) {
+                        if(isset($results[$schedule_dept])){
+                            if($results[$schedule_dept]->fire_department_id == $schedule_item->fire_department_id){
+
+                                $results[$schedule_dept]->recommended = true;
+                                $results[$schedule_dept]->save();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except('ph');
+        $data = $request->except(['ph', 'departments_to_ride']);
+        $repartments_to_ride = $request->departments_to_ride;
+        $r = $request->all();
 
         unset($data['comeback']);
         $comeback = $request->get('comeback', false);
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
 
+        if($request->operational_plan_id == 'NaN' || is_null($request->operational_plan_id )){
+            $data['operational_plan_id'] = 0;
+        }
+
+        if($request->fire_level_id == 'NaN' || is_null($request->fire_level_id )){
+            $data['fire_level_id'] = 1;
+        }
+
+        if($request->fire_department_id == 'NaN' || is_null($request->fire_department_id )){
+            $data['fire_department_id'] = 0;
+        }
+
         $card = Ticket101::findOrNew($card_id);
         $canEditTicket = $card->canEditTicket();
         if(!$canEditTicket){
             return redirect('/card/add101/')->with('_message', ['type' => 'error', 'text' => 'Данные не могут быть сохранены. Архивная карточка']);
         }
+
+        /*если поменяли уровень пожара, новые рекомендации */
+        if($card->fire_level_id !== null){
+
+
+            /*todo:*/
+            /* повышаем ранг*/
+            if($card->fire_level_id < $request->fire_level_id){
+                $card->results()->whereNull('out_time')->delete();
+                $card->road_trip_plans()->where('is_accepted', false)->delete();
+            }
+            /* понижаем ранг*/
+            elseif($card->fire_level_id > $request->fire_level_id){
+                $card->results()->whereNull('out_time')->delete();
+                $card->road_trip_plans()->where('is_accepted', false)->delete();
+            }
+        }
+
         $card->fill($data);
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
         $back = '/card/101';
 
-        $schedule = Schedule::where('fire_department_main_id', $card->fire_department_id)
-            ->where('dict_fire_level_id', $data['fire_level_id'])
-            ->get();
-
-        $results_exists = FireDepartmentResult::where('ticket101_id', $card->id)
-            ->get()
-            ->count();
-
-        if(!$results_exists && $schedule->count()){
-            foreach ($schedule as $item) {
-                FireDepartmentResult::create([
-                    'ticket101_id' => $card->id,
-                    'fire_department_id' => $item->fire_department_id,
-                    'dispatched' => false,
-                    'departments' => $item->department,
-                ]);
-            }
-        }
-        else{
-            $results_req = $request->ph;
-            foreach ($results_req['ot'] as $control_id => $control) {
-                if($control){
-                    FireDepartmentResult::updateOrCreate(
-                        [
-                            'ticket101_id' => $card->id,
-                            'fire_department_id' => $control_id,
-                        ],
-                        [
-                            'ticket101_id' => $card->id,
-                            'fire_department_id' => $control_id,
-                            'departments' => $control,
-
-                            'out_time' => $request->input("ph.out_time.$control_id"),
-                            'arrive_time' => $request->input("ph.arrive_time.$control_id"),
-                            'loc_time' => $request->input("ph.loc_time.$control_id"),
-                            'liqv_time' => $request->input("ph.liqv_time.$control_id"),
-                            'ret_time' => $request->input("ph.ret_time.$control_id"),
-                        ]
-                    );
-                }
-            }
-        }
+        $this->recommend($request, $card);
 
         if ($comeback) {
             $back = '/card/add101/' . $card->id.'#return='.$comeback;
+        }
+
+        if($request->ajax()){
+            return response()->json('ok', 200);
         }
 
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);

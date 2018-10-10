@@ -9,6 +9,7 @@
 namespace App;
 
 
+use App\Models\FormationPersonsItem;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -58,8 +59,32 @@ class FormationPersonsReport extends Model
     protected $table = 'formation_persons_report';
     protected $guarded = ['id'];
 
+    protected $fillable = [
+        'total',
+        'form_id',
+        'dept_id',
+        'active',
+        'head_guards',
+        'commander_squads',
+        'drivers',
+        'privates',
+        'dispatchers',
+        'vacation',
+        'study',
+        'maternity',
+        'sick',
+        'business_trip',
+        'other',
+        'gas_smoke_protection_service',
+    ];
+
     public function scopeTodayRecords($q)
     {
         return $q->whereDate('created_at', date('Y-m-d'));
+    }
+
+    public function formation_person_items()
+    {
+        return $this->hasMany(FormationPersonsItem::class, 'report_id');
     }
 }

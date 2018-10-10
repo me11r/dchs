@@ -6,7 +6,13 @@ class StagingDeploySeeder extends Seeder
 {
     public function run()
     {
-        $this->call(BurntObjectsSeeder::class);
         //$this->call(ChunkedBuildingsSeeder::class);
+
+        \App\FireDepartment::firstOrCreate([
+            'title' => 'ОД',
+        ]);
+
+        $this->call(IncidentTypeSeeder::class);
+        $this->call(IncidentTypeCategoriesSeeder::class);
     }
 }

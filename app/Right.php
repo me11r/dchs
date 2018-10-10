@@ -33,7 +33,7 @@ class Right extends Model
 
     public const CAN_MANAGE_USERS = 7;
     public const CAN_SEE_TRIP_PLAN = 8;
-    public const CAN_EDIT_DICTIONARIES = 9;
+    public const CAN_EDIT_DICTIONARIES = 8;
     public const CAN_EDIT_HYDRANT_LOCATIONS = 10;
 
     public const CAN_SEE_DAILY_REPORT = 11;
@@ -45,6 +45,20 @@ class Right extends Model
     public const CAN_ACCESS_FORMATION_REPORT_AIR_RESCUE = 16;
     public const CAN_ACCESS_FORMATION_REPORT_ORTSERT = 17;
     public const CAN_ACCESS_FORMATION_DCHS_ALMATY = 18;
+    public const CAN_ACCESS_FORMATION_EMERGENCY_ALMATY = 19;
+
+    public const CAN_APPROVE_FORMATION_REPORT_101 = 20;
+
+    public const CAN_ACCESS_INFO = 21;
+    public const CAN_ACCESS_OPER_INFO = 22;
+    public const CAN_ACCESS_PERORT_PERSONS = 23;
+    public const CAN_ACCESS_PERORT_TECH = 24;
+    public const CAN_ACCESS_MANUAL_INPUT_CHRONO = 25;
+    public const CAN_ACCESS_HYDRANT = 26;
+    public const CAN_ACCESS_TECH = 27;
+    public const CAN_ACCESS_PERSONS = 28;
+    public const CAN_ACCESS_FIRE_DEPTS = 29;
+    public const CAN_ACCESS_FIRE_LAKES = 30;
 
     protected $table = 'rights';
     protected $fillable = ['title', 'right_group_id'];

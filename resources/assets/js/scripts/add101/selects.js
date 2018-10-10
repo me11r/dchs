@@ -32,6 +32,13 @@ export default function bindSelects() {
                             this.selectedId = parseInt(value);
                         });
                     }
+                },
+                watch: {
+                    'selectedId'() {
+                        if (element.dataset.name === 'fire_level_id') {
+                            console.dir(this.selectedId);
+                        }
+                    }
                 }
             });
         });

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary\Street;
+use App\FireDepartment;
 use App\Models\Building;
 use App\Models\SpecialPlan;
+use App\OperationalCard;
 use App\RoadtripPlan;
 use Auth;
 use Illuminate\Http\Request;
@@ -32,7 +34,12 @@ class AjaxController extends AuthorizedController
             ->limit(30);
 
         $streets = $streets->get();
-        return response()->json($streets, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        $fireDept = FireDepartment::where('city_area_id', $area_id)->first();
+        $result = [
+            'streets' => $streets,
+            'fireDept' => $fireDept,
+        ];
+        return response()->json($result, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function findSpecialPlan(Request $request)
@@ -44,12 +51,25 @@ class AjaxController extends AuthorizedController
             ->limit(10)
             ->get();
 
+        $operational_cards = OperationalCard::location($location)
+            ->orWhere('object_name', 'like', "%$location%")
+            ->limit(10)
+            ->get();
+
+        foreach ($operational_cards as $key => $operational_card) {
+            $operational_card->is_card = true;
+            $operational_cards[$key] = $operational_card;
+        }
+
+        $specialPlans = $specialPlans->merge($operational_cards);
+
         $home = trim(explode(',', $location)[1] ?? null);
         if($home){
             $location = str_replace([',', ' ', $home], '', $location);
         }
 
         $result['special_plans'] = $specialPlans;
+        $result['schedule'] = $specialPlans;
         $result['building'] = Building::address($location, $home)
             ->with(['city_area', 'street', 'city_micro_area', 'object_type', 'wall_material'])
             ->first();
@@ -60,7 +80,8 @@ class AjaxController extends AuthorizedController
     public function getRightIds(Request $request)
     {
         $user = Auth::user();
-        return response()->json($user->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+//        return response()->json($user->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        return response()->json($user->role->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function getRoadtripPlans(Request $request)

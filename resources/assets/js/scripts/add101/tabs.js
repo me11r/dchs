@@ -1,20 +1,42 @@
 export default class Tabs {
+    // export axios from 'axios';
+
     constructor () {
         this.activeTab = 0;
         this.isNewForm = (document.getElementById('card-101-form-id').getAttribute('data-id') === '0');
     }
 
     setTab (i) {
+        const form = document.getElementById('card-101-form');
+        let valid = form.checkValidity();
+        let fire_department_id = document.getElementById('fire_department_id');
+
+
+
         if ((this.activeTab === 0) && (this.isNewForm === true) && (i !== 0)) {
-            const form = document.getElementById('card-101-form');
-            let valid = form.checkValidity();
             if (valid) {
                 form.action += ('?comeback=' + i);
                 return form.submit();
             } else {
+                if(fire_department_id.value === undefined || fire_department_id.value == false){
+                    return false;
+                }
                 form.querySelector('button[type=submit]').click();
             }
             return false;
+        } else {
+            if (valid) {
+                // var form = document.getElementById('card-101-form');
+                var data = new FormData(form);
+                let axios = require('axios');
+                let id = document.getElementById('card-101-form-id').dataset.id;
+                // console.dir(id)
+                axios.post('/card/add101/' + id, data).catch((resp) => {
+                    console.dir(resp.response.data.message);
+                });
+            } else {
+                form.querySelector('button[type=submit]').click();
+            }
         }
 
         let tabs = document.querySelectorAll('#cardadd101 .tabs li');

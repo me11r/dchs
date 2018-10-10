@@ -33,6 +33,8 @@ class HydrantResource extends JsonResource
             'lat' => (float)$this->lat,
             'long' => (float)$this->long,
             'outputDescription' => $description,
+            'correction_date' => $this->correction_date,
+            'operator_name' => $this->operator_name,
             'active' => (int)$this->active
         ];
     }

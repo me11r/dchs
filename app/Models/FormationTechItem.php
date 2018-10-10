@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\FormationTechReport;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -35,6 +36,9 @@ class FormationTechItem extends Model
         'department',
         'status',
         'reserve',
+        'comment',
+        'date_from',
+        'date_to',
     ];
 
     public function scopeStatus($q, $status)
@@ -50,5 +54,37 @@ class FormationTechItem extends Model
     public function formation_tech_report()
     {
         return $this->belongsTo(FormationTechReport::class, 'formation_tech_report_id');
+    }
+
+    public function scopeGetStat($q, $vehicle_id, $date_begin, $date_end, $status = 'action')
+    {
+        return $q->where('vehicle_id', $vehicle_id)
+            ->where('status', $status)
+            ->whereBetween('updated_at',[$date_begin, $date_end]);
+    }
+
+    public function getDateFromAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
+    }
+
+    public function getDateToAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
+    }
+
+    public function scopeAvailable($q, $department = null)
+    {
+        if($department){
+
+            $result = $q->where('status', 'action')
+                ->where('department', $department);
+        }
+        else{
+            $result = $q->where('status', 'action');
+        }
+
+        return $result;
+
     }
 }

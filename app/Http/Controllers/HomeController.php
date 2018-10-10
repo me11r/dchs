@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Dictionary\BurntObject;
-use App\Dictionary\CityArea;
-use App\Dictionary\Street;
-use App\Models\WallMaterial;
+use App\Models\Card112\Card112;
 use App\Services\Importer\Importer\CommonImporterTrait;
-use Carbon\Carbon;
+use App\Ticket101;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -31,20 +26,26 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getIndex()
+    public function getIndex(Request $request)
     {
-        $time = Carbon::now();
-        $some_date = Carbon::create($time->year, $time->month, $time->day - 1)->isYesterday();
-        $morning_begin = Carbon::create($time->year, $time->month, $time->day, 8, 0, 0); //set time to 08:00
-        $morning_end = Carbon::create($time->year, $time->month, $time->day, 9, 0, 0); //set time to 09:00
-        $evening_begin = Carbon::create($time->year, $time->month, $time->day, 18, 0, 0); //set time to 18:00
-        $evening_end = Carbon::create($time->year, $time->month, $time->day, 19, 0, 0); //set time to 19:00
-        $is_beetween = $time->between($evening_begin, $evening_end, true);
+        $previousYearBegin = now()->subYear()->startOfYear();
+        $previousYearEnd = now()->subYear()->endOfYear();
 
-        if($time->between($morning_begin, $morning_end, true)) {
-            //true
-        } else {
-            //false
-        }
+        $currentYearBegin = now()->startOfYear();
+        $currentYearEnd = now()->endOfYear();
+
+        $date_begin = $request->get('date_begin', $previousYearBegin);
+        $date_end = $request->get('date_end', now());
+        $sum = Ticket101::getStat($date_begin, $date_end);
+
+        $result['total101_previous'] = Ticket101::whereBetween('created_at', [$previousYearBegin, $previousYearEnd])->count();
+        $result['total112_previous'] = Card112::whereBetween('created_at', [$previousYearBegin, $previousYearEnd])->count();
+
+        $result['total101_current'] = Ticket101::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
+        $result['total112_current'] = Card112::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
+
+
+
     }
+
 }

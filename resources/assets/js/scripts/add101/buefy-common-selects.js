@@ -23,6 +23,18 @@ export default function bindBuefyCommonSelects() {
                     this.selectedId = parseInt(element.dataset.value);
                     this.name = element.dataset.name;
                     globalBus.$on('specialPlanFound', this.onSpecialPlanFound);
+
+                    if (element.dataset.name === 'fire_department_id') {
+                        // globalBus.$on('city_area_selected', (value) => {
+                        //     let resp = value.fire_departments[0];
+                        //     this.selectedId = resp.id;
+                        //     this.name = resp.title;
+                        // });
+
+                        globalBus.$on('is_common_house', (value) => {
+                            this.selectedId = parseInt(value);
+                        });
+                    }
                 }
             });
         });

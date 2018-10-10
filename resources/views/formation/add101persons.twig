@@ -6,7 +6,8 @@
                 <h4 class="title">Личный состав от {{ report.report_date }}</h4>
             </div>
             <div class="level-right">
-                <a href="{{ url('/formation/add101tech/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i class="fas fa-truck-moving"></i>&nbsp;Данные техники</a>
+                <a href="{{ url('/formation/add101tech/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i
+                            class="fas fa-truck-moving"></i>&nbsp;Данные техники</a>
             </div>
         </div>
         <div class="field">
@@ -18,7 +19,9 @@
                         id="dept_id_selector"
                         v-model="departmentId">
                     {% for department in departments %}
-                        <option value="{{ department.id }}" {% if department.id == dept_id %}selected{% endif %}>&nbsp;{{ department.title }}&nbsp;</option>
+                        <option value="{{ department.id }}" {% if department.id == dept_id %}selected{% endif %}>
+                            &nbsp;{{ department.title }}&nbsp;
+                        </option>
                     {% endfor %}
                 </select>
             </div>
@@ -28,14 +31,223 @@
             {{ csrf_field() }}
             <input type="hidden" name="dept_id" value="{{ dept_id }}"/>
             <input type="hidden" name="form_id" value="{{ form_id }}"/>
-            {% include "formation/field.twig" with {fields: fieldlist, prefix: '', model: model} %}
+            {#{% include "formation/field.twig" with {fields: fieldlist, prefix: '', model: model} %}#}
 
-            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+            <div class="field"><label for="field_0">В карауле по списку л/с</label>
+                <div class="control">
+                    <input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="total"
+                           id="field_0" value="" class="input add101persons-input">
+                </div>
+            </div>
+            <fieldset>
+                <legend>На лицо личного состава</legend>
+                {% if dept_id == 13%}
+                    <div class="field">
+                        <label for="field_2_1">1 пост: Резиденция Президента РК</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="post1_president_residence"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_2">2 пост: Архив Президента РК</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="post2_president_archive"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_3">3 пост: Государственный архив РК</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="post3_state_archive"></staff-101>
+
+                    </div>
+                    <div class="field"><label for="field_2_4">4 пост: Национальный Банк РК</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="post4_national_bank"></staff-101>
+
+                    </div>
+
+                {% elseif(dept_id == 22) %}
+                    <div class="field">
+                        <label for="field_2_1">ДСПТ</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="dspt"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">ЦППС</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="cpps"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">ЕДДС</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="edds"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">ИПЛ</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="ipl"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Страший мастер связи</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="senior_communication_master"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Водоканал</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="water_supply"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">ЦРБ</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="crb"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">База ГДЗС</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="gdzs_base"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Врач</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="doctor"></staff-101>
+                    </div>
+
+                    <h4 class="title">Оперативные дежурные автомашины</h4>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-1</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar1"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-2</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar2"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-3</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar3"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-4</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar4"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-5</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar5"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-7</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar7"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-8</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar8"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Тулпар-10</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="tulpar8"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">КШМ</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="kshm"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">ИПЛ "Жалын"</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="ipl_zhalyn"></staff-101>
+                    </div>
+
+                {% else %}
+
+                    <div class="field">
+                        <label for="field_2_1">Нач. караулов</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="head_guards"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_2">Ком. отделений</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="commander_squads"></staff-101>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_3">Водители</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="drivers"></staff-101>
+
+                    </div>
+                    <div class="field"><label for="field_2_4">Ряд. состав</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="privates"></staff-101>
+
+                    </div>
+                    <div class="field"><label for="field_2_5">Диспетчеров</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="dispatchers"></staff-101>
+                    </div>
+
+                {% endif %}
+
+            </fieldset>
+            <fieldset>
+                <legend>Отсутствуют</legend>
+                <div class="field">
+                    <label for="field_2_1">Отпуск</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="vacation"></staff-101>
+                </div>
+                <div class="field">
+                    <label for="field_2_2">Учебный</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="study"></staff-101>
+                </div>
+                <div class="field">
+                    <label for="field_2_3">Декрет</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="maternity"></staff-101>
+
+                </div>
+                <div class="field"><label for="field_2_4">Больные</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="sick"></staff-101>
+
+                </div>
+                <div class="field"><label for="field_2_5">Командировка</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="business_trip"></staff-101>
+                </div>
+                <div class="field"><label for="field_2_5">Другие причины</label>
+                    <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="other"></staff-101>
+                </div>
+            </fieldset>
+            <div class="field"><label for="field_1">ГДЗС</label>
+                <div class="control">
+                    <input min=0 oninput="validity.valid||(value='');" type="number" step="1" data-value="" name="gas_smoke_protection_service" id="gas_smoke_protection_service" value="{{ model.gas_smoke_protection_service ?? 0 }}"
+                                            class="input add101persons-input">
+                </div>
+            </div>
+            <div class="field">
+                <label for="field_2_0">Всего</label>
+                <div class="control">
+                    <input v-model="totalActive" type="number" readonly="readonly" step="1" data-value=""
+                           name="total_active" id="field_2_0" value=""
+                           class="input add101persons-input">
+                </div>
+            </div>
+            <div class="panel"
+                 style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
                     <p class="level-left">
                     </p>
                     <p class="level-right">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                        </button>
                     </p>
                 </div>
             </div>

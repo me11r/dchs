@@ -25,7 +25,7 @@
                             id="specification"
                             class="textarea"
                             cols="30"
-                            rows="3"
+                            rows="2"
                             required
                             v-model="model.specification"></textarea>
                     </div>
@@ -64,6 +64,26 @@
                             v-model="model['long']">
                     </div>
                     <div class="field">
+                        <label for="long">Ф.И.О.</label>
+                        <input
+                            type="text"
+                            class="input"
+                            name="operator_name"
+                            id="operator_name"
+                            v-model="model['operator_name']">
+                    </div>
+                    <div class="field">
+                        <label for="long">Дата редактирования</label>
+                        <input
+                            type="date"
+                            class="date"
+                            name="date"
+                            id="date"
+                            v-model="model['correction_date']">
+                    </div>
+                    <!--<b-datepicker placeholder="" :readonly="true" :config="{ dateFormat: 'D-M-Y H:i', static: true }"></b-datepicker>-->
+
+                    <div class="field">
                         <label for="active">Активен/исправен</label>
                         <input
                             type="checkbox"
@@ -95,6 +115,7 @@
 
 <script>
 import {BuefyCommonSelect} from '../../components';
+import Buefy from 'buefy';
 
 export default {
     name: 'PopupForm',
@@ -111,7 +132,8 @@ export default {
         };
     },
     components: {
-        BuefyCommonSelect
+        BuefyCommonSelect,
+        'b-datepicker': Buefy['Datepicker']
     },
     computed: {
         fireDepartmentsOptions() {
@@ -135,6 +157,8 @@ export default {
     },
     beforeMount() {
         this.model = this.item;
+        // if(this.model.updated_)
+        console.dir(this.item)
         if (window.hydrantListData) {
             this.fireDepartments = window.hydrantListData.fireDepartments;
         }
@@ -158,7 +182,7 @@ export default {
 
     .popup-window {
         width: 300px;
-        height: 665px;
+        height: 850px;
         text-align: left;
         padding: 15px;
         position: absolute;

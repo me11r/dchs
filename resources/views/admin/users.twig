@@ -28,13 +28,14 @@
                 </div>
             </form>
         </div>
-        <td class="column">
+        {#<td class="column">#}
             <table class="table is-fullwidth is-striped is-narrow is-hoverable">
                 {% for user in users %}
                     <tr class="{{ user.isBlocked()?'is-warning' }}">
                         <td class="is-expanded">
                             <i class="fas {{ user.isBlocked()?'fa-lock':'fa-user' }}"></i>&nbsp;{{ user.name }}&nbsp;({{ user.email }})
                         </td>
+                        <td>{{ user.role.title|default('') }}</td>
                         <td class="has-text-right">
                             <a href="{{ url('admin/users/edit/' ~ user.id) }}" class="button is-outlined is-primary"><i
                                         class="fa fa-edit"></i><span

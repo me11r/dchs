@@ -2,9 +2,13 @@
 
 namespace App;
 
+use App\Exceptions\AccessDeniedException;
+use App\Models\Staff;
+use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * App\User
@@ -53,10 +57,8 @@ class User extends Authenticatable
         'email',
         'password',
         'last_login',
-        'office_id',
-        'phone_mobile',
-        'phone_landline',
-        'phone_extended'
+        'fire_department_id',
+        'role_id',
     ];
 
     /**
@@ -79,11 +81,39 @@ class User extends Authenticatable
         return $this->belongsToMany(\App\Right::class, 'user_rights');
     }
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function scopeIsAdmin($q)
+    {
+        return $q->isRole('admin');
+    }
+
+    public function scopeIsRole($q, $role)
+    {
+        $user = Auth::user();
+        if($user && $user->role){
+            if($user->role->name === $role){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function hasRight($right_id)
     {
         /** @var array $rights */
-        $rights = $this->rights->pluck('id')->toArray();
-        return in_array($right_id, $rights, false);
+//        $rights = $this->rights->pluck('id')->toArray();
+//        return in_array($right_id, $rights, false);
+
+        if(!$this->role){
+            return false;
+        }
+
+        return $this->role->hasRight($right_id);
     }
 
     public function hasAnyRight($rights_ids)
@@ -100,6 +130,22 @@ class User extends Authenticatable
         return \count(array_intersect($rights, $rights_ids)) === count($rights);
     }
 
+    public static function checkDepartment($dept)
+    {
+        $user = Auth::user();
+
+        if(($user && $user->id == 1) || ($user && !$user->fire_department_id)){
+            return true;
+        }
+
+        if (!isset($user) || ($user->fire_department_id != $dept)) {
+//            throw new AccessDeniedException();
+            false;
+        }
+
+        return true;
+    }
+
     public function isBlocked(): bool
     {
         return $this->hasRight(1) !== true;
@@ -109,5 +155,62 @@ class User extends Authenticatable
     {
         return $this->belongsTo(FireDepartment::class, 'fire_department_id', 'id');
     }
+
+    public function staff()
+    {
+        return $this->hasMany(Staff::class, 'department_id', 'fire_department_id');
+    }
+
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'fire_department_id', 'fire_department_id');
+    }
+
+    public function currentRole()
+    {
+        try{
+            return Auth::user()->role->name;
+        }
+        catch (\Exception $e){
+            return null;
+        }
+    }
+
+    /*public function canRole($role = null)
+    {
+        $roles = [];
+
+        if($this->currentRole() == 'admin'){
+            $roles = [
+                'admin',
+                'user',
+                'fss-admin',
+                'logs',
+            ];
+        }
+        elseif($this->currentRole() == 'user'){
+            $roles = [
+                'user',
+            ];
+        }
+        elseif($this->currentRole() == 'fss-admin'){
+            $roles = [
+                'user',
+                'fss-admin',
+                'logs',
+            ];
+        }
+        elseif($this->currentRole() == 'logs'){
+            $roles = [
+                'logs',
+            ];
+        }
+
+        if($role){
+            return in_array($role, $roles);
+        }
+
+        return $roles;
+    }*/
 
 }

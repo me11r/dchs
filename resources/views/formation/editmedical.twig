@@ -12,11 +12,11 @@
                     </div>
                     <div class="field">
                         <label for="staffed">Штатное количество</label>
-                        <input type="number" class="input" id="staffed" name="staffed" value="{{ report.staffed|default(0) }}"/>
+                        <input min=0 oninput="validity.valid||(value='');" type="number" class="input" id="staffed" name="staffed" value="{{ report.staffed|default(0) }}"/>
                     </div>
                     <div class="field">
                         <label for="on_duty">На оперативном дежурстве</label>
-                        <input type="number" class="input" id="on_duty" name="on_duty" value="{{ report.on_duty|default(0) }}"/>
+                        <input min=0 oninput="validity.valid||(value='');" type="number" class="input" id="on_duty" name="on_duty" value="{{ report.on_duty|default(0) }}"/>
                     </div>
                     <div class="field">
                         <label for="formation">Наименование формирования</label>
@@ -24,11 +24,11 @@
                     </div>
                     <div class="field">
                         <label for="people">Количество л/с</label>
-                        <input type="number" class="input" id="people" name="people" value="{{ report.people|default(0) }}"/>
+                        <input min=0 oninput="validity.valid||(value='');" type="number" class="input" id="people" name="people" value="{{ report.people|default(0) }}"/>
                     </div>
                     <div class="field">
                         <label for="tech">Количество техники</label>
-                        <input type="number" class="input" id="tech" name="tech" value="{{ report.tech|default(0) }}"/>
+                        <input min=0 oninput="validity.valid||(value='');" type="number" class="input" id="tech" name="tech" value="{{ report.tech|default(0) }}"/>
                     </div>
                 </div>
                 <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">

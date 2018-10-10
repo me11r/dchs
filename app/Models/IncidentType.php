@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\IncidentTypeCategory;
+use App\Ticket101;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\IncidentType
@@ -15,9 +18,25 @@ use Illuminate\Database\Eloquent\Model;
  */
 class IncidentType extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     public $table = 'incident_types';
 
     public $timestamps = false;
 
-    public $fillable = ['name'];
+    public $fillable = [
+        'name',
+        'category_id'
+    ];
+
+    public function cards101()
+    {
+        return $this->hasMany(Ticket101::class, 'pre_information_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(IncidentTypeCategory::class, 'category_id');
+    }
 }

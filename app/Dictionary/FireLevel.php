@@ -6,6 +6,7 @@ namespace App\Dictionary;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Dictionary\FireLevel
@@ -23,6 +24,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class FireLevel extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     protected $table = 'dict_fire_level';
     protected $guarded = ['id'];
     protected $fillable = ['name'];

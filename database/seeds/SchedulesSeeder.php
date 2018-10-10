@@ -21,11 +21,15 @@ class SchedulesSeeder extends Seeder
 
     public function getData()
     {
-        $raw_data = $this->parseItems(database_path('seeds/sources/schedules.xlsx'));
+        $raw_data = $this->parseItems(database_path('seeds/sources/schedules1.xlsx'));
 
         $raw_data_less = [];
 
-        \App\Models\Schedule::where('id', '>', 0)->delete();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('schedules')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+//        \App\Models\Schedule::where('id', '>', 0)->delete();
 
         foreach ($raw_data as $raw_datum) {
 
