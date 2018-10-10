@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Aircraft;
+use App\AircraftType;
 use App\Dictionary;
 use App\FireDepartment;
 use App\IncidentTypeCategory;
@@ -70,7 +72,7 @@ class DictionaryController extends AuthorizedController
             $data['title'] = "Оперативные планы";
         }
         elseif($name == 'operational-cards'){
-            if(Auth::id() == 1){
+            if(!Auth::user()->department){
                 $data['records'] = OperationalCard::paginate($data['per_page']);
             }
             else{
@@ -78,6 +80,18 @@ class DictionaryController extends AuthorizedController
                     ->paginate($data['per_page']);
             }
             $data['title'] = "Оперативные карточки";
+        }
+        elseif($name == 'aircraft-types'){
+            $data['records'] = AircraftType::paginate($data['per_page']);
+            $data['title'] = "Типы воздушных судов";
+        }
+        elseif($name == 'aircraft-types'){
+            $data['records'] = AircraftType::paginate($data['per_page']);
+            $data['title'] = "Типы воздушных судов";
+        }
+        elseif($name == 'aircrafts'){
+            $data['records'] = Aircraft::paginate($data['per_page']);
+            $data['title'] = "Воздушные суда";
         }
 
 
@@ -125,6 +139,20 @@ class DictionaryController extends AuthorizedController
             $data['operational_plans'] = OperationalPlan::all();
 
         }
+        elseif($name == 'aircraft-types'){
+            $data['record'] = AircraftType::find($id);
+            $data['title'] = "Тип воздушного судна";
+
+        }
+        elseif($name == 'aircrafts'){
+            $data['record'] = Aircraft::find($id);
+            $data['aircraft_types'] = AircraftType::all();
+            $data['types'] = [
+                'airplane' => 'Самолет',
+                'helicopter' => 'Вертолет',
+            ];
+            $data['title'] = "Воздушное судно";
+        }
         return view($view, $data);
     }
 
@@ -153,8 +181,6 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'operational-plans'){
             $record  = SpecialPlan::find($request->id);
 
-            $f = $request->all();
-
             if($request->operational_plan !== null){
                 $operational_plan = OperationalPlan::firstOrCreate(['name' => $request->operational_plan]);
             }
@@ -182,11 +208,7 @@ class DictionaryController extends AuthorizedController
 
         }
         elseif($name == 'operational-cards'){
-            $record  = OperationalCard::findOrFail($request->id);
-
-            if(!$record){
-                $record = new OperationalCard();
-            }
+            $record  = OperationalCard::firstOrNew(['id' => $request->id]);
 
             $record->fire_level_id = $request->fire_level_id;
 //            $record->city_area_id = $request->city_area_id;
@@ -201,7 +223,22 @@ class DictionaryController extends AuthorizedController
             $data['title'] = "Оперативные карты";
 
         }
+        elseif($name == 'aircraft-types'){
+            $record  = AircraftType::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->save();
 
+        }
+        elseif($name == 'aircrafts'){
+            $record  = Aircraft::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->number = $request->number;
+            $record->type = $request->type;
+            $record->aircraft_type_id = $request->aircraft_type_id;
+
+            $record->save();
+
+        }
 
         return back()->with('_message', [
             'type' => 'success',
