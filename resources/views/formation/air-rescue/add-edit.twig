@@ -1,0 +1,158 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="add-101-persons-form">
+        <div class="level" style="margin-top: 20px">
+            <div class="level-left">
+                <h4 class="title">Личный состав и техника АО "Казавиаспас" от {{ 'now'|date('d.m.Y') }}</h4>
+            </div>
+        </div>
+        <input type="hidden" :value="fieldsComputed">
+        <form action="/formation/air-rescue/edit-create" method="post">
+            {{ csrf_field() }}
+
+            <input type="hidden" name="id" value="{{ model.id ?? '' }}">
+
+            <div class="field"><label for="field_0">В карауле по списку л/с</label>
+                <div class="control">
+                    <input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="total"
+                           id="field_0" value="" class="input add101persons-input">
+                </div>
+            </div>
+            <fieldset>
+                <legend>На лицо личного состава</legend>
+                <div class="field">
+                    <label for="field_2_1">ЛС</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="action"></staff-air-rescue>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>Отсутствуют</legend>
+                <div class="field">
+                    <label for="field_2_1">Отпуск</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="vacation"></staff-air-rescue>
+                </div>
+                <div class="field">
+                    <label for="field_2_2">Учебный</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="study"></staff-air-rescue>
+                </div>
+                <div class="field">
+                    <label for="field_2_3">Декрет</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="maternity"></staff-air-rescue>
+
+                </div>
+                <div class="field"><label for="field_2_4">Больные</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="sick"></staff-air-rescue>
+
+                </div>
+                <div class="field"><label for="field_2_5">Командировка</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="business_trip"></staff-air-rescue>
+                </div>
+                <div class="field"><label for="field_2_5">Другие причины</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
+                               block_type="other"></staff-air-rescue>
+                </div>
+            </fieldset>
+            <div class="field">
+                <label for="field_2_0">Всего</label>
+                <div class="control">
+                    <input v-model="totalActive" type="number" readonly="readonly" step="1" data-value=""
+                           name="total_active" id="field_2_0" value=""
+                           class="input add101persons-input">
+                </div>
+            </div>
+
+            <fieldset class="">
+                <legend>Воздушные суда</legend>
+                <fieldset class="">
+                    <legend>В боевом расчете</legend>
+                    <tech-air-rescue report_id="{{ model.id ?? '' }}" block_type="action" :vehicles="{{ tech }}"></tech-air-rescue>
+                </fieldset>
+                <fieldset class="">
+                    <legend>В резерве</legend>
+                    <tech-air-rescue report_id="{{ model.id  ?? ''}}" block_type="reserve" :vehicles="{{ tech }}"></tech-air-rescue>
+                </fieldset>
+                <fieldset class="">
+                    <legend>На ремонте</legend>
+                    <tech-air-rescue report_id="{{ model.id ?? '' }}" block_type="repair" :vehicles="{{ tech }}"></tech-air-rescue>
+                </fieldset>
+
+            </fieldset>
+
+            <fieldset class="">
+                <legend>Авиатопливо</legend>
+                <fieldset class="">
+                    <legend>В боевом расчете</legend>
+                    <div class="field"><label for="field_1"></label>
+                        <div class="control">
+                            <input min=0 oninput="validity.valid||(value='');" type="number" step="1" data-value="" name="jet_fuel_action" id="jet_fuel_action" value="{{ model.jet_fuel_action ?? 0 }}"
+                                   class="input add101persons-input">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="">
+                    <legend>В резерве</legend>
+                    <input min=0 oninput="validity.valid||(value='');" type="number" step="1" data-value="" name="jet_fuel_reserve" id="jet_fuel_reserve" value="{{ model.jet_fuel_reserve ?? 0 }}"
+                           class="input add101persons-input">
+                </fieldset>
+
+            </fieldset>
+
+            <div class="field">
+                <label for="field_3">Радиостанции</label>
+                <div class="control">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="radio_stations" id="radio_stations" value="{{ model.radio_stations }}">
+                </div>
+            </div>
+            <div class="field">
+                <label for="field_3">Средства индивидуальной защиты органов дыхания</label>
+                <div class="control">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_respiratory_protection" id="personal_respiratory_protection" value="{{ model.personal_respiratory_protection }}">
+                </div>
+            </div>
+            <div class="field">
+                <label for="field_3">Средства индивидуальной защиты (Костюмы л1 и др)</label>
+                <div class="control">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_protection" id="personal_protection" value="{{ model.personal_protection }}">
+                </div>
+            </div>
+            <div class="field">
+                <label for="field_3">Другие спасательные средства</label>
+                <div class="control">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="other_protection" id="other_protection" value="{{ model.other_protection }}">
+                </div>
+            </div>
+
+
+            <div class="field">
+                <label for="field_4">Ф.И.О Начальника караула или лица его подменяющего</label>
+                <div class="control">
+                    <select class="select" name="head_id" id="head_id">
+                        {% for person in staff %}
+                            <option {{ person.id == model.head_id ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>
+                        {% endfor %}
+                    </select>
+                    {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
+                </div>
+            </div>
+
+            <div class="panel"
+                 style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

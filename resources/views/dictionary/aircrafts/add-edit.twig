@@ -1,0 +1,46 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="/dictionaries/{{ type }}/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="name">Наименование</label>
+                        <input required type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+
+                    <div class="field">
+                        <label for="name">Номер</label>
+                        <input required type="text" class="input" name="number" id="number" value="{{ attribute(record, 'number')|default('') }}"/>
+                    </div>
+
+                    <div class="field">
+                        <label for="type">Тип</label>
+                        <select required name="type" id="type" class="select">
+                            {% for key, item in types %}
+                                <option {{ key == record.type|default(0) ? 'selected' : '' }} value="{{ key }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="category_id">Класс</label>
+                        <select required name="aircraft_type_id" id="aircraft_type_id" class="select">
+                            {% for item in aircraft_types %}
+                                <option {{ item.id == record.aircraft_type_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries/{{ type }}/" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
