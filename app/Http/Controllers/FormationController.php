@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Aircraft;
+use App\AirRescueReport;
+use App\AirRescueReportPersonsItem;
+use App\AirRescueReportTechItem;
 use App\FireDepartment;
 use App\Formation\Migrations;
 use App\Formation\Operations;
@@ -58,6 +62,105 @@ class FormationController extends AuthorizedController
             ->set('today', $today)
             ->set('per_page', $perpage)
             ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
+    }
+
+    public function getAirRescue(Request $request)
+    {
+        $data['per_page'] = $request->get('per_page', 10);
+        $data['reports'] = AirRescueReport::paginate($data['per_page']);
+        $data['today'] = now();
+
+        return view('formation.air-rescue.index', $data);
+    }
+
+    public function getAirRescueCreate()
+    {
+        $data['staff'] = Staff::all();
+        $data['tech'] = Aircraft::with(['aircraft_type'])->get();
+
+        return view('formation.air-rescue.add-edit', $data);
+    }
+
+    public function getAirRescueEdit(Request $request, $id)
+    {
+        $data['staff'] = Staff::all();
+        $data['tech'] = Aircraft::with(['aircraft_type'])->get();
+        $data['model'] = Aircraft::find($id);
+
+        return view('formation.air-rescue.add-edit', $data);
+    }
+
+    public function getAirRescueEditCreate(Request $request)
+    {
+        $id = $request->id;
+
+        $report = AirRescueReport::firstOrNew(['id' => $id]);
+        $report->head = $request->head_id ?? 1;
+        $report->jet_fuel_action = $request->jet_fuel_action;
+        $report->jet_fuel_reserved = $request->jet_fuel_reserved;
+        $report->radio_stations = $request->radio_stations;
+        $report->personal_respiratory_protection = $request->personal_respiratory_protection;
+        $report->personal_protection = $request->personal_protection;
+        $report->other_protection = $request->other_protection;
+
+        $report->save();
+
+        $f = $request->all();
+
+        if($request->staff){
+
+            AirRescueReportPersonsItem::where('report_id', $report->id)
+                ->delete();
+
+            foreach ($request->staff as $type => $inputs) {
+                foreach ($inputs['staff_id'] as $input_key => $input) {
+
+                    /*if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                        $data['status'] = 'active';
+                    }
+                    else{
+                        $data['status'] = 'inactive';
+                    }*/
+
+                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                    AirRescueReportPersonsItem::create([
+                        'staff_id' => $input,
+                        'report_id' => $report->id,
+                        'comment' => $inputs['comment'][$input_key] ?? null,
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+//                        'rank' => $type,
+                        'status' => $type,
+                    ]);
+                }
+            }
+        }
+
+        if($request->tech){
+            AirRescueReportTechItem::where('report_id', $report->id)
+                ->delete();
+            foreach ($request->tech as $type => $inputs) {
+                foreach ($inputs['vehicle_id'] as $input_key => $input) {
+                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+                    AirRescueReportTechItem::create([
+                        'aircraft_id' => $input,
+                        'report_id' => $report->id,
+                        'department' => ($type != 'repair' && $type != 'reserve') ? $inputs['department'][$input_key] : null,
+                        'status' => $type,
+                        'reserve' => $inputs['reserve'][$input_key] ?? null,
+                        'comment' => $inputs['comment'][$input_key] ?? null,
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+                    ]);
+                }
+
+            }
+        }
+
+        return redirect('/formation/air-rescue')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
     public function getAddToday()
@@ -138,22 +241,23 @@ class FormationController extends AuthorizedController
         if ($model === null) {
             $model = new FormationPersonsReport();
         }
+
         $all = [
             'total' => $request->total,
             'form_id' => $form_id,
             'dept_id' => $dept_id,
             'active' => $request->total_active,
-            'head_guards' => count($request->input('staff.head_guards', [])),
-            'commander_squads' => count($request->input('staff.commander_squads', [])),
-            'drivers' => count($request->input('staff.drivers', [])),
-            'privates' => count($request->input('staff.privates', [])),
-            'dispatchers' => count($request->input('staff.dispatchers', [])),
-            'vacation' => count($request->input('staff.vacation', [])),
-            'study' => count($request->input('staff.study', [])),
-            'maternity' => count($request->input('staff.maternity', [])),
-            'sick' => count($request->input('staff.sick', [])),
-            'business_trip' => count($request->input('staff.business_trip', [])),
-            'other' => count($request->input('staff.other', [])),
+            'head_guards' => count($request->input('staff.head_guards.staff_id', [])),
+            'commander_squads' => count($request->input('staff.commander_squads.staff_id', [])),
+            'drivers' => count($request->input('staff.drivers.staff_id', [])),
+            'privates' => count($request->input('staff.privates.staff_id', [])),
+            'dispatchers' => count($request->input('staff.dispatchers.staff_id', [])),
+            'vacation' => count($request->input('staff.vacation.staff_id', [])),
+            'study' => count($request->input('staff.study.staff_id', [])),
+            'maternity' => count($request->input('staff.maternity.staff_id', [])),
+            'sick' => count($request->input('staff.sick.staff_id', [])),
+            'business_trip' => count($request->input('staff.business_trip.staff_id', [])),
+            'other' => count($request->input('staff.other.staff_id', [])),
             'gas_smoke_protection_service' => $request->gas_smoke_protection_service,
         ];
         $model->fill($all)->save();
@@ -459,7 +563,7 @@ class FormationController extends AuthorizedController
         }
 
         $ttl_count = [];
-        $tech_fields_temp = $tech_fields2;
+//        $tech_fields_temp = $tech_fields2;
         $tech_fields_temp[] = 'head_guard_id';
 
         foreach ($departments as $dep) {
@@ -477,7 +581,6 @@ class FormationController extends AuthorizedController
 
                         if($item != 'head_guard_id'){
                             $ttl_count[$item] += (float)$tech[$dep->id]->$item ?? 0;
-
                         }
                         else{
                             $ttl_count[$item]++;
