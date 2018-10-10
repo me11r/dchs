@@ -160,7 +160,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\RepositoryServiceProvider::class
+        App\Providers\RepositoryServiceProvider::class,
+        LaravelFCM\FCMServiceProvider::class
     ],
 
     /*
@@ -210,7 +211,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Twig' => TwigBridge\Facade\Twig::class
+        'Twig' => TwigBridge\Facade\Twig::class,
+        'FCM'      => LaravelFCM\Facades\FCM::class,
+        'FCMGroup' => LaravelFCM\Facades\FCMGroup::class
     ],
 
 ];
