@@ -103,6 +103,23 @@ class User extends Authenticatable
         return false;
     }
 
+    public function scopeAnyRole($q, $role)
+    {
+        $user = Auth::user();
+        if($user && $user->role){
+            if(is_array($role)){
+                $query = $user->role()->whereIn('name', $role)->exists();
+            }
+            else{
+                $query = $user->role()->where('name', $role)->exists();
+            }
+
+            return $query;
+        }
+
+        return false;
+    }
+
     public function hasRight($right_id)
     {
         /** @var array $rights */
