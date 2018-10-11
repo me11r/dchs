@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Http\Requests\Fcm\RegisterRequest;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +23,7 @@ class FcmService
     /**
      * @param RegisterRequest $request
      * @return bool
-     * @throws ValidationException
+     * @throws AuthorizationException
      */
     public function register(RegisterRequest $request)
     {
@@ -34,7 +35,12 @@ class FcmService
         return true;
     }
 
-    public function sendToMany(array $tokens,string $title,string $body){
+    /**
+     * @param array $tokens
+     * @param string $title
+     * @param string $body
+     */
+    public function sendToMany(array $tokens, string $title, string $body){
         $optionBuilder = new OptionsBuilder();
 
         $notificationBuilder = new PayloadNotificationBuilder($title);
@@ -66,22 +72,13 @@ class FcmService
 
     /**
      * @param Request $request
-     * @return $this|\Illuminate\Contracts\Auth\Authenticatable|\Illuminate\Database\Eloquent\Model|null
-     * @throws ValidationException
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @throws AuthorizationException
      */
     private function getUser(Request $request)
     {
         if (!$this->attemptLogin($request)) {
-            $validator = $this->validateUser($request);
-            if (!$validator->fails()) {
-                $user = User::create([
-                    'name' => $request->get('email'),
-                    'email' => $request->get('email'),
-                    'password' => bcrypt($request->get('password'))
-                ]);
-            } else {
-                throw new ValidationException($validator);
-            }
+            throw new AuthorizationException();
         } else {
             $user = auth()->user();
         }

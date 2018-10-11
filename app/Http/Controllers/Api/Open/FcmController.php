@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Open;
 
 use App\Http\Requests\Fcm\RegisterRequest;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Routing\Controller;
 use App\Services\FcmService;
 use Illuminate\Validation\ValidationException;
@@ -23,10 +24,10 @@ class FcmController extends Controller
 
         try {
             $result = $this->fcmService->register($request);
-        } catch (ValidationException $e) {
+        } catch (AuthorizationException $e) {
             return response()
-                ->json(['success' => $result, 'message' => $e->getMessage()])
-                ->setStatusCode(422);
+                ->json(['success' => $result, 'message' => 'Incorrect email or password'])
+                ->setStatusCode(401);
         }
 
         return response()->json(['success' => $result, 'message' => '']);
