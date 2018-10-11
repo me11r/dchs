@@ -56,22 +56,6 @@ class FcmService
 
     /**
      * @param Request $request
-     * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
-     */
-    private function validateUser(Request $request)
-    {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'email' => 'unique:users',
-            ]
-        );
-
-        return $validator;
-    }
-
-    /**
-     * @param Request $request
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      * @throws AuthorizationException
      */
