@@ -69,7 +69,19 @@ class DictionaryController extends AuthorizedController
                     ->orderBy($sort)
                     ->paginate($data['per_page']);
             }
+
+            if($request->filter_department){
+                $data['records'] = SpecialPlan::orderBy($sort)
+                    ->where('fire_department_id', $request->filter_department)
+//                    ->paginate($data['per_page'])
+                    ->get();
+            }
+
+
+            $data['user'] = Auth::user();
+            $data['fire_departments'] = FireDepartment::all();
             $data['title'] = "Оперативные планы";
+            $data['filter_department'] = $request->filter_department;
         }
         elseif($name == 'operational-cards'){
             if(!Auth::user()->department){
