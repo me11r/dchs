@@ -79,10 +79,8 @@ class FcmService
     {
         if (!$this->attemptLogin($request)) {
             throw new AuthorizationException();
-        } else {
-            $user = auth()->user();
         }
 
-        return $user;
+        return auth()->user();
     }
 }
