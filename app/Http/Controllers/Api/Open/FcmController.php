@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\Open;
 
 use App\Http\Requests\Fcm\RegisterRequest;
+use App\Jobs\SendFcmMessages;
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Services\FcmService;
 use Illuminate\Validation\ValidationException;
@@ -33,11 +35,12 @@ class FcmController extends Controller
         return response()->json(['success' => $result, 'message' => '']);
     }
 
-    public function sendTest(\Request $request){
-        $this->fcmService->sendToMany(
-            $tokens = User::whereNotNull('device_token')->pluck('device_token')->toArray(),
-            'Тест голова',
-            'Тест тело'
-        );
+    public function sendTest(Request $request)
+    {
+        dispatch(new SendFcmMessages(
+            User::whereNotNull('device_token')->pluck('device_token')->toArray(),
+            'title',
+            'body'
+        ));
     }
 }
