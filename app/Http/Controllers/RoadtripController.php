@@ -42,6 +42,11 @@ class RoadtripController extends AuthorizedController
         $trip = RoadtripPlan::with(['ticket', 'department', 'results'])
             ->findOrFail($plan_id);
 
+        if(!$trip->is_accepted){
+            $trip->is_accepted = true;
+            $trip->save();
+        }
+
         $departments = [];
 
         $results = $trip->ticket
@@ -51,9 +56,9 @@ class RoadtripController extends AuthorizedController
             ->where('fire_department_id', $trip->department_id)
             ->get();
 
+
         if($results->count()){
             foreach ($trip->ticket->results as $item) {
-//                dd($item->tech->department);
                 $departments[] = $item->tech->department;
             }
         }

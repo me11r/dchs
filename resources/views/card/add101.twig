@@ -475,26 +475,41 @@
 
                                             {#todo WTF почему не работает таймпикер#}
 
-                                            <div data-component="timepicker"
-                                                 data-value="{{ '00:00' }}">
-                                                <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
-                                                              style="max-width: 6rem;" name="liqv_time1" :value="value">
-                                                    <div class="field is-grouped" style="justify-content: space-between">
-                                                        <p class="control">
-                                                            <a class="button is-primary is-small"
-                                                               @click="()=> {value = new Date(); close();}">
-                                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                                <span>Сейчас</span>
-                                                            </a>
-                                                        </p>
-                                                        <p class="control">
-                                                            <a class="button is-outlined is-small" @click="close()">
-                                                                <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                                            </a>
-                                                        </p>
-                                                    </div>
-                                                </b-timepicker>
+
+                                            <div class="field">
+                                                {#<div data-component="timepicker"#}
+                                                     {#data-value="{{ attribute(ticket, 'liqv_time')|default('') }}">#}
+                                                    {#<b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"#}
+                                                                  {#style="max-width: 6rem;" name="liqv_time{{ random() }}" :value="value">#}
+                                                        {#<div class="field is-grouped" style="justify-content: space-between">#}
+                                                            {#<p class="control">#}
+                                                                {#<a class="button is-primary is-small"#}
+                                                                   {#@click="()=> {value = new Date(); close();}">#}
+                                                                    {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
+                                                                    {#<span>Сейчас</span>#}
+                                                                {#</a>#}
+                                                            {#</p>#}
+                                                            {#<p class="control">#}
+                                                                {#<a class="button is-outlined is-small" @click="close()">#}
+                                                                    {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
+                                                                {#</a>#}
+                                                            {#</p>#}
+                                                        {#</div>#}
+                                                    {#</b-timepicker>#}
+                                                {#</div>#}
+                                                <t-picker inputdate="{{ attribute(ticket, 'loc_time')|default('')|raw }}"></t-picker>
                                             </div>
+
+
+                                            {#<b-field>#}
+                                                {#<b-timepicker#}
+                                                        {#value="{value = new Date()}"#}
+                                                        {#v-model="value"#}
+                                                        {#placeholder=""#}
+                                                        {#icon="clock"#}
+                                                        {#editable>#}
+                                                {#</b-timepicker>#}
+                                            {#</b-field>#}
 
                                             {#<input type="datetime-local">#}
 
