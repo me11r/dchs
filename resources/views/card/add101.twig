@@ -366,6 +366,51 @@
                 <div id="tab-truck" class="is-hidden">
                     <h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>
 
+                    <div class="field">
+                        <div data-component="timepicker"
+                             data-value="{{ attribute(ticket, 'loc_time')|default('') }}">
+                            <label for="loc_time">Время локализации</label>
+                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
+                                          style="max-width: 6rem;" name="loc_time" :value="value">
+                                <div class="field is-grouped" style="justify-content: space-between">
+                                    <p class="control">
+                                        <a class="button is-primary is-small"
+                                           @click="()=> {value = new Date(); close();}">
+                                            <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a class="button is-outlined is-small" @click="close()">
+                                            <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
+                        </div>
+                        <div data-component="timepicker"
+                             data-value="{{ attribute(ticket, 'liqv_time')|default('') }}">
+                            <label for="liqv_time">Время ликвидации</label>
+                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
+                                          style="max-width: 6rem;" name="liqv_time" :value="value">
+                                <div class="field is-grouped" style="justify-content: space-between">
+                                    <p class="control">
+                                        <a class="button is-primary is-small"
+                                           @click="()=> {value = new Date(); close();}">
+                                            <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a class="button is-outlined is-small" @click="close()">
+                                            <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
+                        </div>
+                    </div>
+
                     <table class="table is-narrow is-hoverable is-striped is-fullwidth" data-component="road-trip">
                         <tr>
                             <th>Подразделение</th>
@@ -373,8 +418,8 @@
                             <th>Принято в работу</th>
                             <th>Время выезда</th>
                             <th>Время прибытия</th>
-                            <th>Время локализации</th>
-                            <th>Время ликвидации</th>
+                            {#<th>Время локализации</th>#}
+                            {#<th>Время ликвидации</th>#}
                             <th>Время возвращения</th>
                             <th>
                                 {#{% if recommendedDispatched|default(0) %}#}
@@ -387,7 +432,6 @@
 
                             </th>
                         </tr>
-                        {# ssv_out = FireDepartment#}
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right"
@@ -428,13 +472,54 @@
                                 <td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
-                                               value="{% if i.dispatched and i.arrive_time %} {{ i.arrive_time|default('') }} {% endif %}"
-                                               readonly>
+
+                                            {#todo WTF почему не работает таймпикер#}
+
+
+                                            <div class="field">
+                                                {#<div data-component="timepicker"#}
+                                                     {#data-value="{{ attribute(ticket, 'liqv_time')|default('') }}">#}
+                                                    {#<b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"#}
+                                                                  {#style="max-width: 6rem;" name="liqv_time{{ random() }}" :value="value">#}
+                                                        {#<div class="field is-grouped" style="justify-content: space-between">#}
+                                                            {#<p class="control">#}
+                                                                {#<a class="button is-primary is-small"#}
+                                                                   {#@click="()=> {value = new Date(); close();}">#}
+                                                                    {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
+                                                                    {#<span>Сейчас</span>#}
+                                                                {#</a>#}
+                                                            {#</p>#}
+                                                            {#<p class="control">#}
+                                                                {#<a class="button is-outlined is-small" @click="close()">#}
+                                                                    {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
+                                                                {#</a>#}
+                                                            {#</p>#}
+                                                        {#</div>#}
+                                                    {#</b-timepicker>#}
+                                                {#</div>#}
+                                                <t-picker inputdate="{{ attribute(ticket, 'loc_time')|default('')|raw }}"></t-picker>
+                                            </div>
+
+
+                                            {#<b-field>#}
+                                                {#<b-timepicker#}
+                                                        {#value="{value = new Date()}"#}
+                                                        {#v-model="value"#}
+                                                        {#placeholder=""#}
+                                                        {#icon="clock"#}
+                                                        {#editable>#}
+                                                {#</b-timepicker>#}
+                                            {#</b-field>#}
+
+                                            {#<input type="datetime-local">#}
+
+                                            {#<input style="height: 25px; font-size: 12px;" type="text" class="input"#}
+                                               {#value="{% if i.dispatched and i.arrive_time %} {{ i.arrive_time|default('') }} {% endif %}"#}
+                                               {#readonly>#}
                                         {% endif %}
                                     {% endfor %}
                                 </td>
-                                <td>
+                                {#<td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
                                             <input style="height: 25px; font-size: 12px;" type="text" class="input"
@@ -451,7 +536,7 @@
                                                    readonly>
                                         {% endif %}
                                     {% endfor %}
-                                </td>
+                                </td>#}
                                 <td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
@@ -462,17 +547,6 @@
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {#{% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}
-                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
-                                            {% set depts = ssv.res.departments %}
-                                        {% endif %}
-                                        <a @click="sendOne({{ ssv.id }}, '')"
-                                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
-                                            подразделение</a>
-                                    {% else %}
-                                        <span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>
-                                    {% endif %}#}
-
 
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}

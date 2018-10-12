@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\AccessDeniedException;
+use App\Models\ServiceType;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -59,6 +60,7 @@ class User extends Authenticatable
         'last_login',
         'fire_department_id',
         'role_id',
+        'service_type_id',
     ];
 
     /**
@@ -191,6 +193,11 @@ class User extends Authenticatable
         catch (\Exception $e){
             return null;
         }
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
     }
 
     /*public function canRole($role = null)

@@ -23,6 +23,7 @@ import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
+import TPicker from './components/Timepicker';
 import FireObject from './views/FireObject';
 
 import Add101Persons from './scripts/add101persons/add101persons';
@@ -60,6 +61,7 @@ Vue.component('staff-101', Add101Staff);
 
 Vue.component('staff-air-rescue', AirRescueStaff);
 Vue.component('tech-air-rescue', AirRescueTech);
+Vue.component('t-picker', TPicker);
 
 Vue.config.productionTip = false;
 

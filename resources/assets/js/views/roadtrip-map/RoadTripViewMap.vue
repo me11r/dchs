@@ -250,7 +250,8 @@ export default {
         send: function (data) {
             this.printed = true;
             this.loader = false;
-            axios.post('http://localhost:13800/print/', data).then(response => {
+            let count = window.copiesToPrint;
+            axios.post('http://localhost:13800/print/?pages=' + count, data).then(response => {
                 console.log('Repsonse', response);
             }).catch(() => {
                 alert('При отправке документа на печать произошла ошибка');

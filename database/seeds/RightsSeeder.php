@@ -11,22 +11,22 @@ class RightsSeeder extends Seeder
      */
     public function run()
     {
-        \App\Rights\Group::truncate();
+        $groups = [
 
-        \App\Rights\Group::insert([
-            ['title' => 'Доступ в систему'],
-            ['title' => 'Доступ к заявкам'],
-            ['title' => 'Администрирование'],
-            ['title' => 'Общие права'],
-            ['title' => 'Строевые записки'],
-            ['title' => 'Отчеты'],
-            ['title' => 'Ввод данных'],
+            ['title' => 'Доступ в систему'],    //1
+            ['title' => 'Доступ к заявкам'],    //2
+            ['title' => 'Администрирование'],   //3
+            ['title' => 'Общие права'],         //4
+            ['title' => 'Строевые записки'],    //5
+            ['title' => 'Отчеты'],              //6
+            ['title' => 'Ввод данных'],         //7
+        ];
 
+        foreach ($groups as $group) {
+            \App\Rights\Group::firstOrCreate($group);
+        }
 
-        ]);
-
-        \App\Right::truncate();
-        \App\Right::insert([
+        $rights = [
             ['right_group_id' => 1, 'title' => 'Разрешить входить в систему'],
 
             ['right_group_id' => 2, 'title' => 'Просмотр заявок'],
@@ -65,7 +65,11 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Пожарные части'],
             ['right_group_id' => 7, 'title' => 'Моренные озера'],
 
+            ['title' => 'Строевые: только чтение', 'right_group_id' => 5],
+        ];
 
-        ]);
+        foreach ($rights as $item) {
+            \App\Right::firstOrCreate($item);
+        }
     }
 }
