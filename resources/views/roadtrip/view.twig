@@ -3,6 +3,7 @@
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
     <script>
         window.addEventListener('load', () => {
+            window.copiesToPrint = {{ results|length }},
             window.roadTripViewData = {
                 fromString: 'Алматы {{ trip.ticket.location }}',
                 emergencyString: 'Алматы {{ trip.department.address }}',
