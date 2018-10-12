@@ -24,6 +24,7 @@ use App\Models\Vehicle;
 use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
+use App\User;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
@@ -51,7 +52,14 @@ class FormationController extends AuthorizedController
         $perpage = $request->get('per_page', 10);
         $today = date('Y-m-d');
         $has_today = ((new FormationReport)->where('report_date', $today)->count() > 0);
-        $department_id = Auth::user()->id != 1 ? Auth::user()->fire_department_id : 1;
+        $department_id = Auth::user()->fire_department_id;
+
+        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION);
+        if($read_only || Auth::user()->isRole('admin')){
+            $department_id = FireDepartment::select('*')->first()->id;
+        }
+
+
         if (!$has_today) {
             (new FormationReport)
                 ->fill(['report_date' => $today])
@@ -61,6 +69,7 @@ class FormationController extends AuthorizedController
             ->set('department_id', $department_id)
             ->set('today', $today)
             ->set('per_page', $perpage)
+            ->set('read_only', $read_only)
             ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
     }
 
@@ -194,7 +203,10 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
+        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION);
+
         $belongsToDept = Auth::user()->fire_department_id;
+
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         }
@@ -217,9 +229,27 @@ class FormationController extends AuthorizedController
         }
         $this->set('model', $model);
 
+        if($read_only){
+            $staff_table['head_guards'] = $model->formation_person_items()->where('rank', 'head_guards')->get();
+            $staff_table['commander_squads'] = $model->formation_person_items()->where('rank', 'commander_squads')->get();
+            $staff_table['drivers'] = $model->formation_person_items()->where('rank', 'drivers')->get();
+            $staff_table['privates'] = $model->formation_person_items()->where('rank', 'privates')->get();
+            $staff_table['dispatchers'] = $model->formation_person_items()->where('rank', 'dispatchers')->get();
+            $staff_table['vacation'] = $model->formation_person_items()->where('rank', 'vacation')->get();
+            $staff_table['study'] = $model->formation_person_items()->where('rank', 'study')->get();
+            $staff_table['maternity'] = $model->formation_person_items()->where('rank', 'maternity')->get();
+            $staff_table['sick'] = $model->formation_person_items()->where('rank', 'sick')->get();
+            $staff_table['business_trip'] = $model->formation_person_items()->where('rank', 'business_trip')->get();
+            $staff_table['other'] = $model->formation_person_items()->where('rank', 'other')->get();
+            $staff_table['total_active'] = $model->formation_person_items()->where('status', 'active')->count();
+            $staff_table['total_inactive'] = $model->formation_person_items()->where('status', '!=','active')->count();
+        }
+
         $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('staff_table', $staff_table ?? null)
+            ->set('read_only', $read_only)
             ->set('dept_id', $dept_id);
     }
 
@@ -299,6 +329,8 @@ class FormationController extends AuthorizedController
     public function getAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
+        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION);
+
         $belongsToDept = Auth::user()->fire_department_id;
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
@@ -313,11 +345,19 @@ class FormationController extends AuthorizedController
         }
         $this->set('model', $model);
 
+        if($read_only){
+            $tech_table['action'] = $model->formation_tech_items()->where('status', 'action')->get();
+            $tech_table['reserve'] = $model->formation_tech_items()->where('status', 'reserve')->get();
+            $tech_table['repair'] = $model->formation_tech_items()->where('status', 'repair')->get();
+        }
+
         $staff = Staff::where('department_id', $dept_id)->get();
 
         $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('read_only', $read_only)
+            ->set('tech_table', $tech_table ?? null)
             ->set('staff', $staff)
             ->set('vehicles', Vehicle::with(['vehicleType', 'fireDepartment'])->where('fire_department_id',$dept_id)->get())
             ->set('dept_id', $dept_id);

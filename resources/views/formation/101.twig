@@ -21,8 +21,8 @@
                 <td>{{ report.report_date }}</td>
                 <td class="has-text-right">{{ report.is_approved ? 'Утверждена' : 'Не утверждена' }}</td>
                 <td class="has-text-right">
-                    <a href="{{ url('formation/add101persons/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-user"></i>&nbsp;Указать личный состав</a>
-                    <a href="{{ url('formation/add101tech/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp; Указать технику</a>
+                    <a href="{{ url('formation/add101persons/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-user"></i>&nbsp;{{ read_only ? 'Смотреть' : 'Указать' }} личный состав</a>
+                    <a href="{{ url('formation/add101tech/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp; {{ read_only ? 'Смотреть' : 'Указать' }} технику</a>
                     <a href="{{ url('/formation/view101/' ~ report.id) }}" class="button is-primary"><i class="fas fa-receipt"></i>&nbsp; Смотреть строевую записку</a>
                 </td>
             </tr>
