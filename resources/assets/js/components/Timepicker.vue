@@ -1,5 +1,5 @@
 <template>
-    <b-timepicker v-model="computedDate"></b-timepicker>
+    <b-timepicker :name="name_" v-model="computedDate"></b-timepicker>
 </template>
 
 <script>
@@ -9,12 +9,17 @@
         data() {
             return {
                 time: this.inputdate,
+                name_: this.name,
                 // time: new Date(),
                 c_date: this.computedDate
             }
         },
         props: {
             inputdate: {
+                type: String,
+                default: '00:00'
+            },
+            name: {
                 type: String,
                 default: '00:00'
             }

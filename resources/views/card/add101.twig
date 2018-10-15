@@ -473,9 +473,6 @@
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
 
-                                            {#todo WTF почему не работает таймпикер#}
-
-
                                             <div class="field">
                                                 {#<div data-component="timepicker"#}
                                                      {#data-value="{{ attribute(ticket, 'liqv_time')|default('') }}">#}
@@ -497,7 +494,8 @@
                                                         {#</div>#}
                                                     {#</b-timepicker>#}
                                                 {#</div>#}
-                                                <t-picker inputdate="{{ attribute(ticket, 'loc_time')|default('')|raw }}"></t-picker>
+                                                {#<t-picker inputdate="{{ attribute(ticket, 'loc_time')|default('')|raw }}"></t-picker>#}
+                                                <t-picker name="time_arrive[{{ i.id }}]" inputdate="{{ i.arrive_time }}"></t-picker>
                                             </div>
 
 
