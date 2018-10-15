@@ -216,7 +216,7 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except(['ph', 'departments_to_ride']);
+        $data = $request->except(['ph', 'departments_to_ride', 'time_arrive']);
         $repartments_to_ride = $request->departments_to_ride;
         $r = $request->all();
 
@@ -268,6 +268,8 @@ class CardController extends AuthorizedController
 
         $this->recommend($request, $card);
 
+        $this->saveArriveTimes($request);
+
         if ($comeback) {
             $back = '/card/add101/' . $card->id.'#return='.$comeback;
         }
@@ -279,10 +281,22 @@ class CardController extends AuthorizedController
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
     }
 
-    private function saveOtherRecords(Ticket101 $ticket101, array $otherRecords) {
+    private function saveOtherRecords(Ticket101 $ticket101, array $otherRecords)
+    {
         $ticket101->other_records()->delete();
         $ticket101->other_records()->saveMany(array_map(function ($item){
             return new Ticket101OtherRecord($item);
         }, $otherRecords));
+    }
+
+    private function saveArriveTimes(Request $request)
+    {
+        if($request->time_arrive){
+            foreach ($request->time_arrive as $id => $item) {
+                $dept_to_ride = FireDepartmentResult::find($id);
+                $dept_to_ride->arrive_time = $item;
+                $dept_to_ride->save();
+            }
+        }
     }
 }
