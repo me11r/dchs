@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Card112\Card112;
+use App\Services\DbHelper;
+use App\Services\FileHelper;
 use App\Services\Importer\Importer\CommonImporterTrait;
 use App\Ticket101;
 use Illuminate\Http\Request;
@@ -44,10 +46,6 @@ class HomeController extends Controller
 
         $result['total101_current'] = Ticket101::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
         $result['total112_current'] = Card112::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
-
-        $table = DB::select('DESCRIBE users');
-
-
 
     }
 
