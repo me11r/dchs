@@ -82,6 +82,23 @@ class FormationController extends AuthorizedController
         return view('formation.air-rescue.index', $data);
     }
 
+    public function getAirRescueView(Request $request, $id)
+    {
+        $data['report'] = AirRescueReport::find($id);
+        $data['total_persons_count'] = $data['report']->persons()->get();
+        $data['total_persons_active_count'] = $data['report']->persons()->status('action')->get();
+        $data['total_persons_active_count'] = $data['report']->persons()->status('action')->get();
+
+        $data['tech_active'] = $data['report']->tech()->status('action')->get();
+        $data['tech_reserve'] = $data['report']->tech()->status('reserve')->get();
+        $data['tech_repair'] = $data['report']->tech()->status('repair')->get();
+        $data['tech_helicopters_active'] = $data['report']->tech()
+            ->status('action')
+            ->get();
+
+        return view('formation.air-rescue.show', $data);
+    }
+
     public function getAirRescueCreate()
     {
         $data['staff'] = Staff::all();
@@ -150,22 +167,26 @@ class FormationController extends AuthorizedController
         if($request->tech){
             AirRescueReportTechItem::where('report_id', $report->id)
                 ->delete();
+            $f = $request->all();
             foreach ($request->tech as $type => $inputs) {
-                foreach ($inputs['vehicle_id'] as $input_key => $input) {
-                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
-                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
-                    AirRescueReportTechItem::create([
-                        'aircraft_id' => $input,
-                        'report_id' => $report->id,
-                        'department' => ($type != 'repair' && $type != 'reserve') ? $inputs['department'][$input_key] : null,
-                        'status' => $type,
-                        'reserve' => $inputs['reserve'][$input_key] ?? null,
-                        'comment' => $inputs['comment'][$input_key] ?? null,
-                        'date_from' => $date_from,
-                        'date_to' => $date_to,
-                    ]);
+                foreach ($inputs as $input_key => $input) {
+                    foreach ($input as $id) {
+                        $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                        $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+                        if($id){
+                            AirRescueReportTechItem::create([
+                                'aircraft_id' => $id,
+                                'report_id' => $report->id,
+                                'department' => 1,
+                                'status' => $type,
+                                'reserve' => $inputs['reserve'][$input_key] ?? null,
+                                'comment' => $inputs['comment'][$input_key] ?? null,
+                                'date_from' => $date_from,
+                                'date_to' => $date_to,
+                            ]);
+                        }
+                    }
                 }
-
             }
         }
 

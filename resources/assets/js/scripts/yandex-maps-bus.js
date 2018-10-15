@@ -59,6 +59,7 @@ export default class YandexMapsBus {
                 else{
                     firstGeoObject = result['geoObjects'].get(0);
                 }
+
                 if (firstGeoObject !== undefined) {
                     const metaData = firstGeoObject.properties.get('metaDataProperty')['GeocoderMetaData'];
                     if (metaData['Address'] && metaData['Address']['Components']) {
