@@ -107,25 +107,25 @@
             <div class="field">
                 <label for="field_3">Радиостанции</label>
                 <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="radio_stations" id="radio_stations" value="{{ model.radio_stations }}">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="radio_stations" id="radio_stations" value="{{ model.radio_stations ?? 0 }}">
                 </div>
             </div>
             <div class="field">
                 <label for="field_3">Средства индивидуальной защиты органов дыхания</label>
                 <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_respiratory_protection" id="personal_respiratory_protection" value="{{ model.personal_respiratory_protection }}">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_respiratory_protection" id="personal_respiratory_protection" value="{{ model.personal_respiratory_protection ?? 0 }}">
                 </div>
             </div>
             <div class="field">
                 <label for="field_3">Средства индивидуальной защиты (Костюмы л1 и др)</label>
                 <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_protection" id="personal_protection" value="{{ model.personal_protection }}">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_protection" id="personal_protection" value="{{ model.personal_protection ?? 0 }}">
                 </div>
             </div>
             <div class="field">
                 <label for="field_3">Другие спасательные средства</label>
                 <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="other_protection" id="other_protection" value="{{ model.other_protection }}">
+                    <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="other_protection" id="other_protection" value="{{ model.other_protection ?? 0 }}">
                 </div>
             </div>
 
@@ -135,7 +135,7 @@
                 <div class="control">
                     <select class="select" name="head_id" id="head_id">
                         {% for person in staff %}
-                            <option {{ person.id == model.head_id ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>
+                            <option {{ person.id == (model.head_id ?? 0) ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>
                         {% endfor %}
                     </select>
                     {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
