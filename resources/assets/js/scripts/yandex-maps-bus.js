@@ -48,10 +48,19 @@ export default class YandexMapsBus {
 
     detectArea(lat, long) {
         const self = this;
-        this.ymaps['geocode'](lat + ',' + long, {results: 1, kind: 'district'})
+        this.ymaps['geocode'](lat + ',' + long, {results: 10, kind: 'district'})
             .then((result) => {
-                const firstGeoObject = result['geoObjects'].get(0);
-                if (firstGeoObject) {
+
+                let firstGeoObject = null;
+
+                if(result.geoObjects.get(1) !== undefined){
+                    firstGeoObject = result['geoObjects'].get(1);
+                }
+                else{
+                    firstGeoObject = result['geoObjects'].get(0);
+                }
+                if (firstGeoObject !== undefined) {
+                    console.dir('район найден');
                     const metaData = firstGeoObject.properties.get('metaDataProperty')['GeocoderMetaData'];
                     if (metaData['Address'] && metaData['Address']['Components']) {
                         metaData['Address']['Components'].map((item) => {
