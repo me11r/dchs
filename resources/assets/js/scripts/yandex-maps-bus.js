@@ -60,7 +60,6 @@ export default class YandexMapsBus {
                     firstGeoObject = result['geoObjects'].get(0);
                 }
                 if (firstGeoObject !== undefined) {
-                    console.dir('район найден');
                     const metaData = firstGeoObject.properties.get('metaDataProperty')['GeocoderMetaData'];
                     if (metaData['Address'] && metaData['Address']['Components']) {
                         metaData['Address']['Components'].map((item) => {
