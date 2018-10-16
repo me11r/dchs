@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
     <div id="vue">
-        <main-report></main-report>
+        <main-report :current_year="{{ current_year }}" :previous_year="{{ previous_year }}" :card112_results="{{ results112 }}" :card101_results="{{ results }}"></main-report>
     </div>
 {% endblock content %}

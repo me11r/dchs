@@ -61,6 +61,14 @@ class Right extends Model
     public const CAN_ACCESS_FIRE_LAKES = 30;
     public const CAN_READ_ONLY_FORMATION = 31;
 
+    public const CAN_RECEIVE_SERVICE_PLAN = 32;
+
+    public const CAN_VIEW_112_CARD = 33;
+    public const CAN_ASSIGN_112_CARD = 34;
+    public const CAN_CREATE_112_CARD = 35;
+    public const CAN_EDIT_112_CARD = 36;
+    public const CAN_DELETE_112_CARD = 37;
+
     protected $table = 'rights';
     protected $fillable = ['title', 'right_group_id'];
 
