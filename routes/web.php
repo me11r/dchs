@@ -11,6 +11,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
+        Route::get('service-plans', 'AjaxController@getServicePlans');
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -80,6 +81,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('form_id', '[0-9]+')
             ->where('dept_id', '[0-9]+');
         Route::get('view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
+        Route::get('air-rescue/{form_id}', 'FormationController@getAirRescueView')->where('form_id', '[0-9]+');
 
         Route::get('mudflow', 'FormationController@getMudflow');
         Route::get('editmudflow/{id}', 'FormationController@getEditMudflow')->where('id', '[0-9]+');

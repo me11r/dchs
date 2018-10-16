@@ -66,6 +66,15 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Моренные озера'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5],
+
+            ['right_group_id' => 4, 'title' => 'Получение путевых листов служб взаимодействия'],
+
+            ['right_group_id' => 2, 'title' => 'Просмотр заявок 112'],
+            ['right_group_id' => 2, 'title' => 'Назначение заявок 112'],
+            ['right_group_id' => 2, 'title' => 'Создание заявок 112'],
+            ['right_group_id' => 2, 'title' => 'Редактирование заявок 112'],
+            ['right_group_id' => 2, 'title' => 'Удаление заявок 112'],
+
         ];
 
         foreach ($rights as $item) {

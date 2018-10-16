@@ -1,0 +1,123 @@
+{% extends "layout/html" %}
+
+{% block content %}
+    <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки АО "Казавиаспас"</h4>
+
+    {#<form action="{{ route('formation-record.update', item.id) }}" method="POST">#}
+        <input type="hidden" name="_method" value="PATCH">
+        {{ csrf_field() }}
+        <div class="big-table-container">
+            <table class="formation-record-table">
+                <thead>
+                <tr>
+                    <th rowspan="3">Наименование подразеления</th>
+                    <th rowspan="3">Руководящий состав</th>
+                    <th colspan="3">Личный состав</th>
+                    <th colspan="6">Воздушные суда</th>
+                    <th colspan="2">Авиатопливо</th>
+                    <th rowspan="3">Радиостанции</th>
+                    <th rowspan="3">Средства индивидуальной защиты органов дыхания</th>
+                    <th rowspan="3">Средства индивидуальной защиты(Костюмы л1 и пр.)</th>
+                    <th rowspan="3">Другие спасательные средства</th>
+                </tr>
+                <tr>
+                    {#Личный состав#}
+                    <th rowspan="2">По штату</th>
+                    <th rowspan="2">В наличии</th>
+                    <th rowspan="2">На оперативном дежурстве</th>
+                    {#Техника#}
+                    <th colspan="3">Вертолеты</th>
+                    <th colspan="3">Самолеты</th>
+                    {#ГСМ#}
+                    <th rowspan="2">В боевом расчете</th>
+                    <th rowspan="2">В резерве</th>
+                </tr>
+                <tr>
+                    {# Техника #}
+                    <th>На дежурстве(в боевом рассчете)</th>
+                    <th>В резерве</th>
+                    <th>На ремонте</th>
+                    <th>На дежурстве(в боевом рассчете)</th>
+                    <th>В резерве</th>
+                    <th>На ремонте</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>АО "Казавиаспас"</td>
+                    <td>{{ 1 }}</td>
+                    <td>{{ total_persons_count.count() }}</td>
+                    <td>{{ total_persons_active_count.count() }}</td>
+                    <td>{{ total_persons_active_count.count() }}</td>
+                    <td>
+                        {% for item in tech_active  %}
+                            {% if item.aircraft.type == 'helicopter' %}
+                                {{ item.aircraft.name }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in tech_reserve %}
+                            {% if item.aircraft.type == 'helicopter' %}
+                                {{ item.aircraft.name }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in tech_repair %}
+                            {% if item.aircraft.type == 'helicopter' %}
+                                {{ item.aircraft.name }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in tech_active  %}
+                            {% if item.aircraft.type == 'airplane' %}
+                                {{ item.aircraft.name }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in tech_reserve %}
+                            {% if item.aircraft.type == 'airplane' %}
+                                {{ item.aircraft.name }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in tech_repair %}
+                            {% if item.aircraft.type == 'airplane' %}
+                                {{ item.aircraft.name }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ report.jet_fuel_action }}</td>
+                    <td>{{ report.jet_fuel_reserve }}</td>
+                    <td>{{ report.radio_stations }}</td>
+                    <td>{{ report.personal_respiratory_protection }}</td>
+                    <td>{{ report.personal_protection }}</td>
+                    <td>{{ report.other_protection }}</td>
+                </tr>
+                {#{% include 'formation-record/tr-form' with {item: item} %}#}
+                </tbody>
+            </table>
+
+            <div class="panel bottom_panel">
+                <div class="level" style="float:right; margin: 20px">
+                    <p class="level-right">
+                        <a href="/formation/air-rescue"
+                           style="margin-right: 10px"
+                           class="button is-primary">Назад</a>
+                        {#<button#}
+                                {#type="submit"#}
+                                {#class="button is-success">#}
+                            {#<i class="fas fa-check"></i>Сохранить#}
+                        {#</button>#}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {#</form>#}
+
+
+{% endblock content %}

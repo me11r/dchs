@@ -15,4 +15,14 @@ class AirRescueReport extends Model
         'personal_protection',
         'other_protection',
     ];
+
+    public function persons()
+    {
+        return $this->hasMany(AirRescueReportPersonsItem::class, 'report_id');
+    }
+
+    public function tech()
+    {
+        return $this->hasMany(AirRescueReportTechItem::class, 'report_id');
+    }
 }

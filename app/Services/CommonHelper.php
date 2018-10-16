@@ -10,6 +10,16 @@ class CommonHelper
         return round(memory_get_usage() / 1024 / 1024, 2) . ' Mb';
     }
 
+    public function percent_difference($number1, $number2)
+    {
+        try {
+            return (($number2 - $number1) / $number1) * 100;
+        }
+        catch (\Exception $e){
+            return 0;
+        }
+    }
+
     public function execution_time($begin = null, $need_milliseconds = false)
     {
         if($begin == null){

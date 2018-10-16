@@ -2,6 +2,7 @@
 namespace App\Dictionary;
 
 
+use App\Ticket101;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,5 +27,10 @@ class TripResult extends Model
     protected $table = 'dict_trip_result';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public function cards101()
+    {
+        return $this->hasMany(Ticket101::class, 'trip_result_id');
+    }
 
 }

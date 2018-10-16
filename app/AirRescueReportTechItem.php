@@ -20,4 +20,9 @@ class AirRescueReportTechItem extends Model
     {
         return $q->where('status', $search);
     }
+
+    public function aircraft()
+    {
+        return $this->belongsTo(Aircraft::class);
+    }
 }

@@ -8,7 +8,9 @@ use App\FireDepartment;
 use App\Models\Building;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
+use App\Right;
 use App\RoadtripPlan;
+use App\Ticket101ServicePlan;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -95,6 +97,23 @@ class AjaxController extends AuthorizedController
         $trips = $trips
             ->where('is_closed', false)
             ->where('department_id', $dept->id)
+            ->where('is_accepted', false)
+            ->get();
+        return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getServicePlans(Request $request)
+    {
+        $service = (Auth::user())->service_type;
+        $canRecieve = Auth::user()->hasRight(Right::CAN_VIEW_112_CARD);
+        if ($service === null || !$canRecieve) {
+            return response()->json([], 200);
+        }
+
+        $trips = Ticket101ServicePlan::with(['ticket', 'results']);
+        $trips = $trips
+            ->where('is_closed', false)
+//            ->where('department', $service->name)
             ->where('is_accepted', false)
             ->get();
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
