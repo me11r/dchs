@@ -33,7 +33,7 @@
                     </div>
 
                 </div>
-                <div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
+                <!--<div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
                 <label :for="getName('department', item.id)">Отделение</label>
                 <input
                     required
@@ -45,13 +45,12 @@
                     v-model="item.department"
                     @change="departmentCheck($event)"
                     :name="getName('department', item.id)">
-            </div>
+                </div>-->
 
                 <div v-if="block_type === 'reserve'" class="control column">
                 <label :for="getName('reserve', item.id)">Резерв</label><br>
                 <div class="select">
                     <select
-                            required
                             title=""
                             :name="getName('reserve', item.id)"
                             :id="getName('reserve', item.id)"

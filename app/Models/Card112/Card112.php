@@ -170,4 +170,36 @@ class Card112 extends Model
     {
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
     }
+
+    public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
+    {
+        $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);
+
+        if($reason_id){
+            $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                ->where('additional_incident_type_id', $reason_id);
+        }
+
+        $result['total'] = $baseQuery->count();
+        $types = [
+            'injured',
+            'dead',
+            'evacuated',
+            'hospitalized',
+            'injured_hard',
+            'poisoned',
+            'saved',
+            'saved_animals'
+        ];
+        foreach ($types as $type) {
+            $result[$type] = $baseQuery->sum($type);
+        }
+
+        $result['hurt'] = $baseQuery->sum('injured')
+            + $baseQuery->sum('hospitalized')
+            + $baseQuery->sum('injured_hard')
+            + $baseQuery->sum('poisoned');
+
+        return $result;
+    }
 }

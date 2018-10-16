@@ -11,6 +11,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
+        Route::get('service-plans', 'AjaxController@getServicePlans');
     });
 
     Route::group(['prefix' => 'admin'], function () {

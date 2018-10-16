@@ -15,6 +15,7 @@ import {MudflowProtectionForm} from './views/mudflowProtection';
 import {HydrantMapList} from './views/hydrant-map';
 import {CommonMapScreen} from './views/mapscreen';
 import RoadtripNotifier from './ui/RoadtripNotifier';
+import ServicePlanNotifier from './ui/ServicePlanNotifier';
 import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
@@ -150,6 +151,13 @@ if (document.getElementById('roadtrip_notifier')) {
     new Vue({
         el: '#roadtrip_notifier',
         render: h => h(RoadtripNotifier)
+    });
+}
+
+if (document.getElementById('service_plans_notifier')) {
+    new Vue({
+        el: '#service_plans_notifier',
+        render: h => h(ServicePlanNotifier)
     });
 }
 
