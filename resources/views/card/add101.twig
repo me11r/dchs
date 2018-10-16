@@ -542,22 +542,25 @@
                     </div>
                     <h5 class="subtitle">Службы</h5>
                     <div>
-                        <table class="table is-expanded is-striped is-narrow is-fullwidth">
-                            <thead>
-                            <tr>
-                                <th>Службы</th>
-                                <th>Время сообщения</th>
-                                <th>Фамилия<br/>принявшего сообщение</th>
-                                <th>Время прибытия</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for name,title in service_notify %}
-                                <tr>
-                                    <td>{{ title }}</td>
-                                    <td data-component="timepicker1"
-                                        data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
+                    {% if ticket is defined and ticket.id %}
+                        {% include 'card/elements/notification-services.twig' %}
+                    {% endif %}
+                        {#<table class="table is-expanded is-striped is-narrow is-fullwidth">#}
+                            {#<thead>#}
+                            {#<tr>#}
+                                {#<th>Службы</th>#}
+                                {#<th>Время сообщения</th>#}
+                                {#<th>Фамилия<br/>принявшего сообщение</th>#}
+                                {#<th>Время прибытия</th>#}
+                                {#<th></th>#}
+                            {#</tr>#}
+                            {#</thead>#}
+                            {#<tbody>#}
+                            {#{% for name,title in service_notify %}#}
+                                {#<tr>#}
+                                    {#<td>{{ title }}</td>#}
+                                    {#<td data-component="timepicker1"#}
+                                        {#data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">#}
                                         {#<b-timepicker @focus="closeAll()" class="is-rounded" type="text"#}
                                                       {#name="call_{{ name }}_time" id="call_{{ name }}_time"#}
                                                       {#:value="value" icon="clock" icon-pack="far">#}
@@ -576,16 +579,16 @@
                                                 {#</p>#}
                                             {#</div>#}
                                         {#</b-timepicker>#}
-                                        <input type="text" id="{{ name }}_created_at" value="{{ ticket.getServicePlan(ticket.id, name).created_at|default(false) }}" readonly class="input">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="input" name="name_{{ name }}_recv"
-                                               id="name_{{ name }}_recv"
+                                        {#<input type="text" id="{{ name }}_created_at" value="{{ ticket.getServicePlan(ticket.id, name).created_at|default(false) }}" readonly class="input">#}
+                                    {#</td>#}
+                                    {#<td>#}
+                                        {#<input type="text" class="input" name="name_{{ name }}_recv"#}
+                                               {#id="name_{{ name }}_recv"#}
                                                {#value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/>#}
-                                               value="{{ ticket.getServicePlan(ticket.id, name).name_accepted|default(false) }}"/>
-                                    </td>
-                                    <td data-component="timepicker1"
-                                        data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
+                                               {#value="{{ ticket.getServicePlan(ticket.id, name).name_accepted|default(false) }}"/>#}
+                                    {#</td>#}
+                                    {#<td data-component="timepicker1"#}
+                                        {#data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">#}
                                         {#<b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"#}
                                                       {#name="arrival_{{ name }}" id="arrival_{{ name }}"#}
                                                       {#:value="value">#}
@@ -604,17 +607,17 @@
                                                 {#</p>#}
                                             {#</div>#}
                                         {#</b-timepicker>#}
-                                        <input type="text" value="{{ ticket.getServicePlan(ticket.id, name).arrive_time|default(false) }}" readonly class="input">
-                                    </td>
-                                    <td>
-                                        <label for="">
-                                            <input type="checkbox" {{ ticket.getServicePlan(ticket.id, name)|default(false) ? 'disabled checked' : '' }} data-component="service-plan" @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ name }}')" class="checkbox">
-                                        </label>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                        {#<input type="text" value="{{ ticket.getServicePlan(ticket.id, name).arrive_time|default(false) }}" readonly class="input">#}
+                                    {#</td>#}
+                                    {#<td>#}
+                                        {#<label for="">#}
+                                            {#<input type="checkbox" {{ ticket.getServicePlan(ticket.id, name)|default(false) ? 'disabled checked' : '' }} data-component="service-plan" @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ name }}')" class="checkbox">#}
+                                        {#</label>#}
+                                    {#</td>#}
+                                {#</tr>#}
+                            {#{% endfor %}#}
+                            {#</tbody>#}
+                        {#</table>#}
                     </div>
                 </div>
                 <div id="tab_other" class="is-hidden">

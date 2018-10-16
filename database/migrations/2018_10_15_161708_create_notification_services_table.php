@@ -34,6 +34,8 @@ class CreateNotificationServicesTable extends Migration
                 'model' => \App\Models\NotificationService::class
             ])
             ->save();
+
+        (new NotificationServicesSeeder())->run();
     }
 
     /**

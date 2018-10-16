@@ -22,7 +22,7 @@ class CreateTicket101NotificationsTable extends Migration
                 ->on('notification_services')
                 ->onDelete('cascade');
 
-            $table->unsignedInteger('ticket101_id')->change();
+            $table->unsignedInteger('ticket101_id');
             $table->foreign('ticket101_id')
                 ->references('id')
                 ->on('ticket101')

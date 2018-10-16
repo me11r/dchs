@@ -2,8 +2,16 @@
 
 namespace App\Models\Ticket101;
 
+use App\Models\NotificationService;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Ticket101\Ticket101Notification
+ *
+ * @property int $id
+ *
+ * @mixin \Eloquent
+ */
 class Ticket101Notification extends Model
 {
     public $table = 'ticket101_notifications';
@@ -20,4 +28,9 @@ class Ticket101Notification extends Model
     public $guarded = [
         'id'
     ];
+
+    public function service()
+    {
+        return $this->hasOne(NotificationService::class, 'id', 'notification_service_id');
+    }
 }

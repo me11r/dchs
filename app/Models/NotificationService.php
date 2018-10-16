@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class NotificationService
+ *
+ * @property int $id
+ *
+ * @package App\Models
+ */
 class NotificationService extends Model
 {
     public $table = 'notification_services';

@@ -9,9 +9,9 @@
     </tr>
     </thead>
     <tbody>
-    {% for service in notification_services %}
+    {% for notification in ticket.notification_services %}
         <tr>
-            <td>{{ service.name }}</td>
+            <td>{{ notification.service.name }}</td>
             <td data-component="timepicker1"
                 data-value="">
                 <input type="text"
