@@ -8,13 +8,10 @@ use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
-use LaravelFCM\Facades\FCM;
+use \FCM;
 use LaravelFCM\Message\OptionsBuilder;
-use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
+use LaravelFCM\Response\DownstreamResponse;
 
 class FcmService
 {
@@ -25,7 +22,7 @@ class FcmService
      * @return bool
      * @throws AuthorizationException
      */
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): bool
     {
         /** @var User $user */
         $user = $this->getUser($request);
@@ -35,12 +32,15 @@ class FcmService
         return true;
     }
 
+
     /**
      * @param array $tokens
      * @param string $title
      * @param string $body
+     * @return DownstreamResponse
      */
-    public function sendToMany(array $tokens, string $title, string $body){
+    public function sendToMany(array $tokens, string $title, string $body): DownstreamResponse
+    {
         $optionBuilder = new OptionsBuilder();
 
         $notificationBuilder = new PayloadNotificationBuilder($title);
@@ -49,20 +49,36 @@ class FcmService
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
 
+        /** @var DownstreamResponse $downstreamResponse */
         $downstreamResponse = FCM::sendTo($tokens, $option, $notification);
+        $this->modifyTokens($downstreamResponse->tokensToModify());
 
-        dd($downstreamResponse);
+        return $downstreamResponse;
+    }
+
+    /**
+     * @param array $tokensToModify
+     */
+    private function modifyTokens(array $tokensToModify): void
+    {
+        foreach ($tokensToModify as $oldToken => $newToken) {
+            $user = (new User)->where('device_token', '=', $oldToken)->first();
+            if ($user) {
+                $user->device_token = $newToken;
+                $user->save();
+            }
+        }
     }
 
     /**
      * @param Request $request
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return User
      * @throws AuthorizationException
      */
-    private function getUser(Request $request)
+    private function getUser(Request $request): User
     {
         if (!$this->attemptLogin($request)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException('Incorrect email or password');
         }
 
         return auth()->user();

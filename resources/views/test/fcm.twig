@@ -1,0 +1,29 @@
+<form method="get" action="{{ route('test.fcm') }}">
+    {{ csrf_field() }}
+
+    <label for="title">Title</label>
+    <input required
+           type="text"
+           name="title"
+           id="title"
+           value="{{ request.title | default('') }}">
+    <br>
+
+    <label for="body">Body</label>
+    <input required
+           type="text"
+           name="body"
+           id="body"
+           value="{{ request.body | default('') }}">
+    <br>
+
+    <label for="token">Token</label>
+    <input required
+           type="text"
+           name="token"
+           id="token"
+           value="{{ request.token | default('') }}">
+    <br>
+
+    <button type="submit">Send</button>
+</form>
