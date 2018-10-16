@@ -118,7 +118,7 @@ class DictionaryController extends AuthorizedController
         $data['per_page'] = $request->get('per_page', 20);
         $data['type'] = $name;
 
-        if(Auth::id() == 1){
+        if(Auth::user()->anyRole(['admin','dispatcher_od', 'Диспетчер 101'])){
             $fireDepts = FireDepartment::all();
         }
         else{
