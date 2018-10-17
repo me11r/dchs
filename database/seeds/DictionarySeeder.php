@@ -62,11 +62,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'model' => \App\Dictionary\WaterSupplySource::class
             ],
         ];
+        Schema::disableForeignKeyConstraints();
         (new App\Dictionary)->truncate();
         foreach ($dicts as $dict) {
             (new App\Dictionary())->fill($dict)->save();
         }
-        Schema::disableForeignKeyConstraints();
         $this->call(WaterSupplySeeder::class);
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
