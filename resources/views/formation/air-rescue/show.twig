@@ -45,10 +45,14 @@
                 <tbody>
                 <tr>
                     <td>АО "Казавиаспас"</td>
-                    <td>{{ 1 }}</td>
-                    <td>{{ total_persons_count.count() }}</td>
+                    <td>
+                        {% for item in total_persons_head_count %}
+                            {{ item.staff.name }} <br>
+                        {% endfor %}
+                    </td>
                     <td>{{ total_persons_active_count.count() }}</td>
-                    <td>{{ total_persons_active_count.count() }}</td>
+                    <td>{{ total_persons_available_count.count() }}</td>
+                    <td>{{ total_persons_oper_count.count() }}</td>
                     <td>
                         {% for item in tech_active  %}
                             {% if item.aircraft.type == 'helicopter' %}

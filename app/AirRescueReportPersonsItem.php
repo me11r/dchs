@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 
 class AirRescueReportPersonsItem extends Model
@@ -18,5 +19,10 @@ class AirRescueReportPersonsItem extends Model
     public function scopeStatus($q, $search)
     {
         return $q->where('status', $search);
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(Staff::class, 'staff_id');
     }
 }
