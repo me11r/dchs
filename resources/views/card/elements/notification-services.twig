@@ -17,19 +17,21 @@
                 <input type="text"
                        readonly
                        value="{{ notification.message_time }}"
-                       name="notification_services[{{ notification.id }}][[message_time]"
+                       id="{{ notification.id }}_message_time"
+                       name="notification_services[{{ notification.id }}][message_time]"
                        class="input">
             </td>
             <td>
                 <input type="text"
                        class="input"
                        value="{{ notification.name }}"
-                       name="notification_services[{{ notification.id }}][[name]"/>
+                       id="{{ notification.id }}_name"
+                       name="notification_services[{{ notification.id }}][name]"/>
             </td>
             <td data-component="timepicker1"
                 data-value="">
                 <input type="text"
-                       name="notification_services[{{ notification.id }}][[arrive_time]"
+                       name="notification_services[{{ notification.id }}][arrive_time]"
                        value="{{ notification.arrive_time }}"
                        readonly
                        class="input">
@@ -38,9 +40,10 @@
                 <label for="">
                     <input type="checkbox"
                            data-component="service-plan"
-                           name="notification_services[{{ notification.id }}][[checked]"
+                           name="notification_services[{{ notification.id }}][checked]"
                            {% if notification.checked %} checked {% endif %}
                            value="1"
+                           @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ notification.service.code }}', {{ notification.id }})"
                            class="checkbox">
                 </label>
             </td>

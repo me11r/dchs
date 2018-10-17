@@ -160,6 +160,11 @@ class CardController extends AuthorizedController
 
         $water_sources = WaterSupplySource::all();
 
+//        if (!\count($ticket->notifications) && $ticket->id){
+//            $this->createNotificationServices($ticket);
+//            $ticket->notifications()->get();
+//        }
+
         $this->set('recommendedDispatched', $recommendedDispatched);
         $this->set('fire_dep_results_info', $fire_dep_results_info);
         $this->set('water_sources', $water_sources);
@@ -284,11 +289,19 @@ class CardController extends AuthorizedController
             }
         }
 
+        unset($data['notification_services']);
+
         $card->fill($data);
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
-        $this->createNotificationServices($card);
+
+        if ($card_id) {
+            $this->updateNotificationServices($request->get('notification_services', []));
+        } else {
+            $this->createNotificationServices($card);
+        }
+
         $back = '/card/101';
 
         $this->recommend($request, $card);
@@ -320,7 +333,14 @@ class CardController extends AuthorizedController
                 (new Ticket101Notification())->fill([
                     'notification_service_id' => $service->id,
                     'ticket101_id' => $ticket101->id
-                ]);
+                ])->save();
             });
+    }
+
+    private function updateNotificationServices(array $notificationServices)
+    {
+        foreach ($notificationServices as $id => $data) {
+            (new Ticket101Notification())->find($id)->update($data);
+        }
     }
 }

@@ -19,5 +19,9 @@ Route::group(
             Route::post('fcm/register', 'FcmController@register');
             Route::get('fcm/send_test', 'FcmController@sendTest');
         });
+
+        Route::group(['prefix' => 'notification'], function (){
+            Route::post('ticket101send', 'NotificationController@ticket101Send');
+        });
     }
 );

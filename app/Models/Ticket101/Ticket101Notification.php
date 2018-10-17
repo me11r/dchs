@@ -3,12 +3,14 @@
 namespace App\Models\Ticket101;
 
 use App\Models\NotificationService;
+use App\Ticket101;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Ticket101\Ticket101Notification
  *
  * @property int $id
+ * @property int ticket101_id
  *
  * @mixin \Eloquent
  */
@@ -32,5 +34,10 @@ class Ticket101Notification extends Model
     public function service()
     {
         return $this->hasOne(NotificationService::class, 'id', 'notification_service_id');
+    }
+
+    public function ticket101()
+    {
+        return $this->hasOne(Ticket101::class, 'id', 'ticket101_id');
     }
 }
