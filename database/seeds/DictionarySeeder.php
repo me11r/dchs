@@ -52,16 +52,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'model' => \App\Models\ServiceType::class
             ],
             [
-                'title' => 'Типы инцидентов',
-                'table' => 'incident_types',
-                'model' => \App\Models\IncidentType::class
-            ],
-            [
-                'title' => 'Оперативные планы',
-                'table' => 'dict_operational_plan',
-                'model' => \App\Models\OperationalPlan::class
-            ],
-            [
                 'title' => 'Стволы',
                 'table' => 'dict_trunk',
                 'model' => \App\Models\Trunk::class

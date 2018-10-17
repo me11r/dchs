@@ -45,8 +45,18 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
         $card112 = $this->find($id);
 
         foreach ($serviceReactions as $serviceReaction){
-            $serviceReactionModel = $card112->serviceReactions()->find(array_get($serviceReaction, 'id'));
-            $serviceReactionModel->update($serviceReaction);
+            $fill = [
+                'card112_id' => $card112->id,
+                'service_type_id' => $serviceReaction['service_type_id'],
+                'message_time' => $serviceReaction['message_time'],
+                'name' => $serviceReaction['name'],
+                'departure_time' => $serviceReaction['departure_time'],
+                'arrival_time' => $serviceReaction['arrival_time']
+            ];
+            Card112ServiceReaction::updateOrCreate([
+                'service_type_id' => $serviceReaction['service_type_id'],
+                'card112_id' => $card112->id,
+            ], $fill);
         }
 
         $card112->chronology()->delete();
