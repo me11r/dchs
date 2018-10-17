@@ -163,4 +163,9 @@ class FormationTechReport extends Model
     {
         return $this->belongsTo(Staff::class, 'head_guard_id');
     }
+
+    public function report()
+    {
+        return $this->belongsTo(FormationReport::class, 'form_id');
+    }
 }

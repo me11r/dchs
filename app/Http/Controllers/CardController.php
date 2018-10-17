@@ -11,6 +11,7 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\FireDepartment;
+use App\FormationReport;
 use App\FormationTechReport;
 use App\Http\Middleware\Rights\FormationRecord;
 use App\Models\FireDepartmentResult;
@@ -157,8 +158,9 @@ class CardController extends AuthorizedController
             ->get();
 
         /* последняя заполненная строевка*/
-        $latestReportId = FormationTechReport::has('items')->max('form_id');
-        $formationTech = FormationTechReport::where('form_id', $latestReportId)->get();
+        $report_id = FormationReport::approved()->max('id');
+        $formationTech = FormationTechReport::where('form_id', $report_id)
+            ->has('items')->get();
 
         foreach ($formationTech as $report) {
             foreach ($report->items()->available()->get() as $tech) {
