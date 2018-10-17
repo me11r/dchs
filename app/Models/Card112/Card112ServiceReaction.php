@@ -2,6 +2,7 @@
 
 namespace App\Models\Card112;
 
+use App\Models\ServiceType;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -39,4 +40,14 @@ class Card112ServiceReaction extends Model
         'departure_time',
         'arrival_time'
     ];
+
+    public function card112()
+    {
+        return $this->belongsTo(Card112::class, 'card112_id');
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
+    }
 }
