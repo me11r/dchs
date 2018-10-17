@@ -76,6 +76,7 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         foreach ($dicts as $dict) {
             (new App\Dictionary())->fill($dict)->save();
         }
+        Schema::disableForeignKeyConstraints();
         $this->call(WaterSupplySeeder::class);
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
@@ -89,5 +90,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(OperationalPlanSeeder::class);
         $this->call(RiverSeeder::class);
         $this->call(TrunkSeeder::class);
+        Schema::enableForeignKeyConstraints();
     }
 }
