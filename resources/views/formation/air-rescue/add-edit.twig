@@ -12,14 +12,22 @@
 
             <input type="hidden" name="id" value="{{ model.id ?? '' }}">
 
-            <div class="field"><label for="field_0">В карауле по списку л/с</label>
-                <div class="control">
-                    <input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="total"
-                           id="field_0" value="" class="input add101persons-input">
-                </div>
-            </div>
+            {#<div class="field"><label for="field_0">Руководящий состав</label>#}
+                {#<div class="control">#}
+                    {#<input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="total"#}
+                           {#id="field_0" value="" class="input add101persons-input">#}
+                {#</div>#}
+            {#</div>#}
             <fieldset>
-                <legend>На лицо личного состава</legend>
+                <legend>Руководящий состав</legend>
+                <div class="field">
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                      block_type="head"></staff-air-rescue>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>По штату</legend>
                 <div class="field">
                     <label for="field_2_1">ЛС</label>
                     <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
@@ -28,6 +36,24 @@
 
             </fieldset>
             <fieldset>
+                <legend>В наличии</legend>
+                <div class="field">
+                    <label for="field_2_1">ЛС</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="available"></staff-air-rescue>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>На оперативном дежурстве</legend>
+                <div class="field">
+                    <label for="field_2_1">ЛС</label>
+                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                               block_type="oper"></staff-air-rescue>
+                </div>
+
+            </fieldset>
+            {#<fieldset>
                 <legend>Отсутствуют</legend>
                 <div class="field">
                     <label for="field_2_1">Отпуск</label>
@@ -66,7 +92,7 @@
                            name="total_active" id="field_2_0" value=""
                            class="input add101persons-input">
                 </div>
-            </div>
+            </div>#}
 
             <fieldset class="">
                 <legend>Воздушные суда</legend>
@@ -126,19 +152,6 @@
                 <label for="field_3">Другие спасательные средства</label>
                 <div class="control">
                     <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="other_protection" id="other_protection" value="{{ model.other_protection ?? 0 }}">
-                </div>
-            </div>
-
-
-            <div class="field">
-                <label for="field_4">Ф.И.О Начальника караула или лица его подменяющего</label>
-                <div class="control">
-                    <select class="select" name="head_id" id="head_id">
-                        {% for person in staff %}
-                            <option {{ person.id == (model.head_id ?? 0) ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>
-                        {% endfor %}
-                    </select>
-                    {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
                 </div>
             </div>
 

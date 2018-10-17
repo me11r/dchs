@@ -47,22 +47,22 @@
                     :name="getName('department', item.id)">
                 </div>-->
 
-                <div v-if="block_type === 'reserve'" class="control column">
-                <label :for="getName('reserve', item.id)">Резерв</label><br>
-                <div class="select">
-                    <select
-                            title=""
-                            :name="getName('reserve', item.id)"
-                            :id="getName('reserve', item.id)"
-                            v-model="item.reserve">
-                        <option
-                                v-for="x in 5"
-                                :key="'vehicle_reserve' + x"
-                                :value="x">Резерв{{ x }}
-                        </option>
-                    </select>
-                </div>
-            </div>
+                <!--<div v-if="block_type === 'reserve'" class="control column">
+                    <label :for="getName('reserve', item.id)">Резерв</label><br>
+                    <div class="select">
+                        <select
+                                title=""
+                                :name="getName('reserve', item.id)"
+                                :id="getName('reserve', item.id)"
+                                v-model="item.reserve">
+                            <option
+                                    v-for="x in 5"
+                                    :key="'vehicle_reserve' + x"
+                                    :value="x">Резерв{{ x }}
+                            </option>
+                        </select>
+                    </div>
+                </div>-->
 
                 <div class="control column">
                     <label>Удалить</label>

@@ -19,13 +19,14 @@
                     <label :for="getName('staff_id', item.id)">Ф.И.О.</label><br>
                     <div class="select">
                         <select
+                                @change="selectStaff"
                                 required
                                 title=""
                                 :name="getName('staff_id', item.id)"
                                 :id="getName('staff_id', item.id)"
                                 v-model="item.staff_id">
                             <option
-                                    v-for="s in staff"
+                                    v-for="s in staff_"
                                     :key="'staff_' + s.id"
                                     :value="s.id">{{ s.name }}
                             </option>
@@ -68,6 +69,7 @@
 import moment from 'moment';
 import axios from 'axios';
 import Buefy from 'buefy';
+import _ from 'lodash';
 
 export default {
     name: 'Add101Staff',
@@ -111,12 +113,17 @@ export default {
         getName(control, id){
             return 'staff' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
+        selectStaff($event){
+            console.dir($event.target.value);
+        },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
             this.$parent.$emit('totalChange', 1);
             if (this.isActive_ === true) {
                 this.$parent.$emit('activeChange', 1);
             }
+            // this.staff_ = _.filter(this.staff_, {id: 123});
+            // console.dir(_.filter(this.staff_, {id: 123}))
         },
         addItem(item) {
             this.records_.push(item);
