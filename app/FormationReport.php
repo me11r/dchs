@@ -48,4 +48,14 @@ class FormationReport extends Model
 
         return $is_between ?? false;
     }
+
+    public function tech_reports()
+    {
+        return $this->hasMany(FormationTechReport::class, 'form_id');
+    }
+
+    public function scopeApproved($q, $search = true)
+    {
+        return $q->where('is_approved', $search);
+    }
 }
