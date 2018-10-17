@@ -121,7 +121,17 @@ class CardController extends AuthorizedController
             ];
         })->toArray());
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
-        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records', 'results'])->findOrNew($card_id);
+        $ticket = Ticket101::with(
+            [
+                'crossroad_1',
+                'crossroad_2',
+                'other_records',
+                'results',
+                'notifications',
+                'notifications.service'
+            ])
+            ->findOrNew($card_id);
+
         $recommendedDispatched = $ticket->results()
             ->isDispatched()
             ->recommended()

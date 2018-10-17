@@ -542,8 +542,8 @@
                     </div>
                     <h5 class="subtitle">Службы</h5>
                     <div>
-                    {% if ticket is defined and ticket.id %}
-                        {% include 'card/elements/notification-services.twig' %}
+                    {% if ticket and ticket.id %}
+                        {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
                     {% endif %}
                         {#<table class="table is-expanded is-striped is-narrow is-fullwidth">#}
                             {#<thead>#}

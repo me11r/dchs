@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use \FCM;
 use LaravelFCM\Message\OptionsBuilder;
+use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use LaravelFCM\Response\DownstreamResponse;
 
@@ -43,14 +44,28 @@ class FcmService
     {
         $optionBuilder = new OptionsBuilder();
 
-        $notificationBuilder = new PayloadNotificationBuilder($title);
-        $notificationBuilder->setBody($body);
+        $notificationBuilder = (new PayloadNotificationBuilder($title))
+            ->setBody($body)
+            ->setTitle($title);
+
+        $dataBuilder = new PayloadDataBuilder();
+        $dataBuilder->addData([
+            'title' => $title,
+            'body' => $body,
+        ]);
 
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
+        $data = $dataBuilder->build();
 
         /** @var DownstreamResponse $downstreamResponse */
-        $downstreamResponse = FCM::sendTo($tokens, $option, $notification);
+        $downstreamResponse = FCM::sendTo(
+            $tokens,
+            $option,
+            $notification,
+            $data
+        );
+
         $this->modifyTokens($downstreamResponse->tokensToModify());
 
         return $downstreamResponse;

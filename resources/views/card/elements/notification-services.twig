@@ -9,26 +9,28 @@
     </tr>
     </thead>
     <tbody>
-    {% for notification in ticket.notification_services %}
+    {% for notification in ticket.notifications %}
         <tr>
             <td>{{ notification.service.name }}</td>
             <td data-component="timepicker1"
                 data-value="">
                 <input type="text"
                        readonly
-                       name="notification_services[{{ service.id }}][[message_time]"
+                       value="{{ notification.message_time }}"
+                       name="notification_services[{{ notification.id }}][[message_time]"
                        class="input">
             </td>
             <td>
                 <input type="text"
                        class="input"
-                       name="notification_services[{{ service.id }}][[name]"/>
+                       value="{{ notification.name }}"
+                       name="notification_services[{{ notification.id }}][[name]"/>
             </td>
             <td data-component="timepicker1"
                 data-value="">
                 <input type="text"
-                       name="notification_services[{{ service.id }}][[arrive_time]"
-                       value=""
+                       name="notification_services[{{ notification.id }}][[arrive_time]"
+                       value="{{ notification.arrive_time }}"
                        readonly
                        class="input">
             </td>
@@ -36,8 +38,9 @@
                 <label for="">
                     <input type="checkbox"
                            data-component="service-plan"
-                           name="notification_services[{{ service.id }}][[checked]"
-                           @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ name }}')"
+                           name="notification_services[{{ notification.id }}][[checked]"
+                           {% if notification.checked %} checked {% endif %}
+                           value="1"
                            class="checkbox">
                 </label>
             </td>
