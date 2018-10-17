@@ -86,13 +86,16 @@ class FormationController extends AuthorizedController
     {
         $data['report'] = AirRescueReport::find($id);
         $data['total_persons_count'] = $data['report']->persons()->get();
+        $data['total_persons_head_count'] = $data['report']->persons()->status('head')->get();
         $data['total_persons_active_count'] = $data['report']->persons()->status('action')->get();
-        $data['total_persons_active_count'] = $data['report']->persons()->status('action')->get();
+        $data['total_persons_available_count'] = $data['report']->persons()->status('available')->get();
+        $data['total_persons_oper_count'] = $data['report']->persons()->status('oper')->get();
 
         $data['tech_active'] = $data['report']->tech()->status('action')->get();
         $data['tech_reserve'] = $data['report']->tech()->status('reserve')->get();
         $data['tech_repair'] = $data['report']->tech()->status('repair')->get();
-        $data['tech_helicopters_active'] = $data['report']->tech()
+        $data['tech_helicopters_active'] = $data['report']
+            ->tech()
             ->status('action')
             ->get();
 
@@ -121,7 +124,6 @@ class FormationController extends AuthorizedController
         $id = $request->id;
 
         $report = AirRescueReport::firstOrNew(['id' => $id]);
-        $report->head = $request->head_id ?? 1;
         $report->jet_fuel_action = $request->jet_fuel_action;
         $report->jet_fuel_reserved = $request->jet_fuel_reserved;
         $report->radio_stations = $request->radio_stations;
@@ -141,13 +143,6 @@ class FormationController extends AuthorizedController
             foreach ($request->staff as $type => $inputs) {
                 foreach ($inputs['staff_id'] as $input_key => $input) {
 
-                    /*if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
-                        $data['status'] = 'active';
-                    }
-                    else{
-                        $data['status'] = 'inactive';
-                    }*/
-
                     $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
                     $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
 
@@ -157,7 +152,6 @@ class FormationController extends AuthorizedController
                         'comment' => $inputs['comment'][$input_key] ?? null,
                         'date_from' => $date_from,
                         'date_to' => $date_to,
-//                        'rank' => $type,
                         'status' => $type,
                     ]);
                 }
