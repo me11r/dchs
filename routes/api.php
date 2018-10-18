@@ -23,5 +23,10 @@ Route::group(
         Route::group(['prefix' => 'notification'], function (){
             Route::post('ticket101send', 'NotificationController@ticket101Send');
         });
+
+        Route::group(['prefix' => 'air-rescue'], function (){
+            Route::get('get-staff' ,'AircraftController@getStaff');
+            Route::get('get-tech' ,'AircraftController@getTech');
+        });
     }
 );

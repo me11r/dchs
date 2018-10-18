@@ -20,7 +20,18 @@
                     <th>Ранг пожара</th>
                     <th><a href="?sort=city_area_id">Район города</a></th>
                     <th>Название объекта</th>
-                    <th><a href="?sort=fire_department_id">ПЧ</a></th>
+                    <th>
+                        <a href="?sort=fire_department_id">ПЧ</a>
+                        {% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101']) %}
+                            <form>
+                                <select name="filter_department" class="select control" onchange="this.form.submit()">
+                                    {% for f in fire_departments %}
+                                        <option {% if filter_department is defined and filter_department == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        {% endif %}
+                    </th>
                     <th>Номер оперплана</th>
                     <th>Адрес</th>
                     <th>Год постройки</th>
@@ -62,7 +73,9 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+            {% if filter_department is not defined %}
+                {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

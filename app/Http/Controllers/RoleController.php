@@ -56,7 +56,8 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $data = $request->except('right');
-        $record = Role::firstOrCreate(['id' => $request->id], $data);
+        $record = Role::updateOrCreate(['id' => $request->id], $data);
+
         $rights = $request->right;
 
         if($rights){

@@ -625,9 +625,10 @@ class Ticket101 extends Model
 
         if($reason_id){
             $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
-                ->where('fire_object_id', $reason_id);
+                ->where('trip_result_id', $reason_id);
         }
 
+        $result['total'] = $baseQuery->count();
         $result['rescued_count'] = $baseQuery->sum('rescued_count');
         $result['evac_count'] = $baseQuery->sum('evac_count');
         $result['co2_poisoned_count'] = $baseQuery->sum('co2_poisoned_count');
@@ -636,6 +637,11 @@ class Ticket101 extends Model
         $result['people_death_count'] = $baseQuery->sum('people_death_count');
         $result['children_death_count'] = $baseQuery->sum('children_death_count');
         $result['hospitalized_count'] = $baseQuery->sum('hospitalized_count');
+
+        $result['hurt'] = $baseQuery->sum('co2_poisoned_count')
+            + $baseQuery->sum('ch4_poisoned_count')
+            + $baseQuery->sum('gpt_burns_count')
+            + $baseQuery->sum('hospitalized_count');
 
         return $result;
     }

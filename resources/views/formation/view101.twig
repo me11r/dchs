@@ -74,8 +74,8 @@
 
                 </tr>
                 </thead>
-                {% for dept in departments %}
-                    <tr>
+                {% for dept in departments if dept.id != 13 %}
+                    <tr {% if dept.tech_action|length == 0 %} style="background-color: #ff3317" {% endif %}>
                         <td>{{ dept.title }}</td>
 
                         {% for ppl in people_fields %}

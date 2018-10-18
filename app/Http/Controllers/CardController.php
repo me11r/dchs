@@ -11,6 +11,7 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\FireDepartment;
+use App\FormationReport;
 use App\FormationTechReport;
 use App\Http\Middleware\Rights\FormationRecord;
 use App\Models\FireDepartmentResult;
@@ -55,6 +56,7 @@ class CardController extends AuthorizedController
             'b01' => 'ДЧС "Байкал-01"',
             'b04' => 'ДЧС "Байкал-04"',
         ];
+
         $service_notify = [
             '112' => '112',
             '102' => 'ДВД 102',
@@ -62,27 +64,13 @@ class CardController extends AuthorizedController
             '104' => 'Служба газа 104',
             'electro' => 'Э\\сеть (277-98-42)',
             'water' => 'Водоканал (274-66-66)',
-            'smk' => 'ЦМК (254-63-53)'
+            'smk' => 'ЦМК (254-63-53)',
+            'gu_kaz' => 'ГУ Казселезащита',
+            'roso' => 'РОСО',
+            'kaz_aviaserice' => 'AO Казавиаспас',
+            'ao_ort' => 'АО "Өртсөндіруші"',
         ];
-        $ssv_out = [
-            1 => 'ӨСБ - ПЧ-1',
-            ' - ПЧ-2',
-            ' - ПЧ-3',
-            ' - ПЧ-4',
-            ' - ПЧ-5',
-            ' - ПЧ-6',
-            'МӨСБ - СПЧ-7',
-            ' - СПЧ-8',
-            ' - СПЧ-9',
-            ' - ПЧ-10',
-            ' - СПЧ-11',
-            'ӨСБ - ПЧ-12',
-            'МЖ - СО',
-            'МӨСБ - СПЧ-14',
-            'МӨСБ - СПЧ-15',
-            ' - П.16',
-            ' - П. 17',
-        ];
+
         $ssv_out = FireDepartment::recommend()->get();
         $wall_materials = WallMaterial::all();
         if ($card_id != 0) {
@@ -186,8 +174,9 @@ class CardController extends AuthorizedController
             ->get();
 
         /* последняя заполненная строевка*/
-        $latestReportId = FormationTechReport::has('items')->max('form_id');
-        $formationTech = FormationTechReport::where('form_id', $latestReportId)->get();
+        $report_id = FormationReport::approved()->max('id');
+        $formationTech = FormationTechReport::where('form_id', $report_id)
+            ->has('items')->get();
 
         foreach ($formationTech as $report) {
             foreach ($report->items()->available()->get() as $tech) {
@@ -245,7 +234,7 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except(['ph', 'departments_to_ride']);
+        $data = $request->except(['ph', 'departments_to_ride', 'time_arrive']);
         $repartments_to_ride = $request->departments_to_ride;
         $r = $request->all();
 
@@ -306,6 +295,8 @@ class CardController extends AuthorizedController
 
         $this->recommend($request, $card);
 
+        $this->saveArriveTimes($request);
+
         if ($comeback) {
             $back = '/card/add101/' . $card->id . '#return=' . $comeback;
         }
@@ -341,6 +332,17 @@ class CardController extends AuthorizedController
     {
         foreach ($notificationServices as $id => $data) {
             (new Ticket101Notification())->find($id)->update($data);
+        }
+    }
+
+    private function saveArriveTimes(Request $request)
+    {
+        if($request->time_arrive){
+            foreach ($request->time_arrive as $id => $item) {
+                $dept_to_ride = FireDepartmentResult::find($id);
+                $dept_to_ride->arrive_time = $item;
+                $dept_to_ride->save();
+            }
         }
     }
 }

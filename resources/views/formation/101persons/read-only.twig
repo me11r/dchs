@@ -1,0 +1,92 @@
+<div class="field">
+    <h3>На лицо личного состава: {{ staff_table.total_active }}</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <td>Нач. Караулов</td>
+            <td>Ком. отделений</td>
+            <td>Водители</td>
+            <td>Ряд. состав</td>
+            <td>Диспетчеров</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                {% for item in staff_table.head_guards %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.commander_squads %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.drivers %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.privates %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.dispatchers %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="field">
+    <h3>Отсутствуют: {{ staff_table.total_inactive }}</h3>
+    <table class="table is-primary">
+        <thead>
+        <tr>
+            <td>Отпуск</td>
+            <td>Учебный</td>
+            <td>Декрет</td>
+            <td>Больные</td>
+            <td>Командировка</td>
+            <td>Другие причины</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                {% for item in staff_table.vacation %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.study %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.maternity %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.sick %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.business_trip %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for item in staff_table.other %}
+                    {{ item.staff.name }} <br>
+                {% endfor %}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

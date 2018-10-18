@@ -66,7 +66,7 @@
                             <i class="fas fa-truck"></i>&nbsp;ГУ «Центр медицины катастроф»
                         </a>
                         <a
-                            href="/formation-record/air_rescue"
+                            href="/formation/air-rescue"
                             class="dropdown-item is-small"
                             v-if="hasRight(16)"
                         >

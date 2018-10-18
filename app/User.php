@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\AccessDeniedException;
+use App\Models\ServiceType;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -60,7 +61,8 @@ class User extends Authenticatable
         'last_login',
         'fire_department_id',
         'role_id',
-        'device_token'
+        'device_token',
+        'service_type_id'
     ];
 
     /**
@@ -100,6 +102,23 @@ class User extends Authenticatable
             if($user->role->name === $role){
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    public function scopeAnyRole($q, $role)
+    {
+        $user = Auth::user();
+        if($user && $user->role){
+            if(is_array($role)){
+                $query = $user->role()->whereIn('name', $role)->exists();
+            }
+            else{
+                $query = $user->role()->where('name', $role)->exists();
+            }
+
+            return $query;
         }
 
         return false;
@@ -176,6 +195,11 @@ class User extends Authenticatable
         catch (\Exception $e){
             return null;
         }
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
     }
 
     /*public function canRole($role = null)

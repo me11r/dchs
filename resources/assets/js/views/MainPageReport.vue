@@ -5,14 +5,14 @@
             на территории  ДЧС города Алматы
             по форме ЧС-1
         </h4>
-        <div class="panel">
+        <!--<div class="panel">
             <label for="month">Месяц</label>
             <select class="select" name="month" id="month">
                 <option value="">август</option>
             </select>
         </div>
 
-        2018 года
+        2018 года-->
         <div class="panel">
             <table class="formation-record-table">
                 <thead>
@@ -25,33 +25,46 @@
 
                 </tr>
                 <tr>
-                    <th>2017г.</th>
-                    <th>2018г.</th>
+                    <th>{{ previous_year }}г.</th>
+                    <th>{{ current_year }}г.</th>
                     <th>% (+,-)</th>
-                    <th>2017г.</th>
-                    <th>2018г.</th>
+                    <th>{{ previous_year }}г.</th>
+                    <th>{{ current_year }}г.</th>
                     <th>% (+,-)</th>
-                    <th>2017г.</th>
-                    <th>2018г.</th>
+                    <th>{{ previous_year }}г.</th>
+                    <th>{{ current_year }}г.</th>
                     <th>% (+,-)</th>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>ВСЕГО</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
+                    <tr v-for="item in card101_results">
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.emergency_count_previous }}</td>
+                        <td>{{ item.emergency_count_current }}</td>
+                        <td>{{ item.emergency_different }}</td>
+                        <td>{{ item.hurt_previous }}</td>
+                        <td>{{ item.hurt_current }}</td>
+                        <td>{{ item.hurt_different }}</td>
+                        <td>{{ item.died_previous }}</td>
+                        <td>{{ item.died_current }}</td>
+                        <td>{{ item.died_different }}</td>
+                    </tr>
+                    <tr v-for="item in card112_results">
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.emergency_count_previous }}</td>
+                        <td>{{ item.emergency_count_current }}</td>
+                        <td>{{ item.emergency_different }}</td>
+                        <td>{{ item.hurt_previous }}</td>
+                        <td>{{ item.hurt_current }}</td>
+                        <td>{{ item.hurt_different }}</td>
+                        <td>{{ item.died_previous }}</td>
+                        <td>{{ item.died_current }}</td>
+                        <td>{{ item.died_different }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <br>
     </div>
 </template>
 
@@ -68,9 +81,21 @@
                 type: String,
                 default: '',
             },
-            reasons: {
-                type: Object,
-                default: {}
+            card101_results: {
+                type: Array,
+                default: () => {}
+            },
+            current_year: {
+                type: Number,
+                default: 2018,
+            },
+            previous_year: {
+                type: Number,
+                default: 2017,
+            },
+            card112_results: {
+                type: Array,
+                default: () => {}
             }
         },
         data: function () {
@@ -80,44 +105,29 @@
                 date_end_: this.date_end,
                 report_summary: {},
                 reason_id: null,
-                reasons_: this.reasons,
             }
         },
         methods: {
-            selectReason(event) {
 
-                this.reason_id = event.target.value;
-
-                window.history.pushState('page2', 'Title', '/reports/101/emergency?reason=' + this.reason_id);
-
-                // console.dir(this.reason_id);
-
-                this.post_data();
-            },
-            print() {
-                window.print();
-            },
-            post_data() {
+            get_data() {
                 let self = this;
-                axios.post('/reports/101/emergency', {
-                    date_begin: self.date_begin_,
-                    date_end: self.date_end_,
-                    reason_id: self.reason_id,
-                }).then((resp) => {
-                    self.report_summary = resp.data;
-                    console.dir(self.report_summary);
+                axios.get('/').then((resp) => {
+                    self.results = resp.data.results;
+                    self.card112_results = resp.data.card112_results;
+                    console.dir(resp);
                 });
             },
 
-            selectPeriod() {
-                this.post_data();
-            }
         },
 
         created () {
             const token = document.head.querySelector('meta[name="csrf-token"]');
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+
+            setInterval(() => {
+                this.get_data();
+            }, 5000);
         }
     }
 </script>

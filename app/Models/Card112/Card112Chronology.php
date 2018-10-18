@@ -34,4 +34,9 @@ class Card112Chronology extends Model
     public $guarded = [
         'id'
     ];
+
+    public function card112()
+    {
+        return $this->belongsTo(Card112::class, 'card112_id');
+    }
 }

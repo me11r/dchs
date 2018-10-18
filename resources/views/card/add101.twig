@@ -366,6 +366,51 @@
                 <div id="tab-truck" class="is-hidden">
                     <h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>
 
+                    <div class="field">
+                        <div data-component="timepicker"
+                             data-value="{{ attribute(ticket, 'loc_time')|default('') }}">
+                            <label for="loc_time">Время локализации</label>
+                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
+                                          style="max-width: 6rem;" name="loc_time" :value="value">
+                                <div class="field is-grouped" style="justify-content: space-between">
+                                    <p class="control">
+                                        <a class="button is-primary is-small"
+                                           @click="()=> {value = new Date(); close();}">
+                                            <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a class="button is-outlined is-small" @click="close()">
+                                            <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
+                        </div>
+                        <div data-component="timepicker"
+                             data-value="{{ attribute(ticket, 'liqv_time')|default('') }}">
+                            <label for="liqv_time">Время ликвидации</label>
+                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
+                                          style="max-width: 6rem;" name="liqv_time" :value="value">
+                                <div class="field is-grouped" style="justify-content: space-between">
+                                    <p class="control">
+                                        <a class="button is-primary is-small"
+                                           @click="()=> {value = new Date(); close();}">
+                                            <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a class="button is-outlined is-small" @click="close()">
+                                            <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
+                        </div>
+                    </div>
+
                     <table class="table is-narrow is-hoverable is-striped is-fullwidth" data-component="road-trip">
                         <tr>
                             <th>Подразделение</th>
@@ -373,8 +418,8 @@
                             <th>Принято в работу</th>
                             <th>Время выезда</th>
                             <th>Время прибытия</th>
-                            <th>Время локализации</th>
-                            <th>Время ликвидации</th>
+                            {#<th>Время локализации</th>#}
+                            {#<th>Время ликвидации</th>#}
                             <th>Время возвращения</th>
                             <th>
                                 {#{% if recommendedDispatched|default(0) %}#}
@@ -387,7 +432,6 @@
 
                             </th>
                         </tr>
-                        {# ssv_out = FireDepartment#}
                         {% for index,ssv in ssv_out %}
                             <tr>
                                 <td class="has-text-right"
@@ -428,13 +472,52 @@
                                 <td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
-                                               value="{% if i.dispatched and i.arrive_time %} {{ i.arrive_time|default('') }} {% endif %}"
-                                               readonly>
+
+                                            <div class="field">
+                                                {#<div data-component="timepicker"#}
+                                                     {#data-value="{{ attribute(ticket, 'liqv_time')|default('') }}">#}
+                                                    {#<b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"#}
+                                                                  {#style="max-width: 6rem;" name="liqv_time{{ random() }}" :value="value">#}
+                                                        {#<div class="field is-grouped" style="justify-content: space-between">#}
+                                                            {#<p class="control">#}
+                                                                {#<a class="button is-primary is-small"#}
+                                                                   {#@click="()=> {value = new Date(); close();}">#}
+                                                                    {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
+                                                                    {#<span>Сейчас</span>#}
+                                                                {#</a>#}
+                                                            {#</p>#}
+                                                            {#<p class="control">#}
+                                                                {#<a class="button is-outlined is-small" @click="close()">#}
+                                                                    {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
+                                                                {#</a>#}
+                                                            {#</p>#}
+                                                        {#</div>#}
+                                                    {#</b-timepicker>#}
+                                                {#</div>#}
+                                                {#<t-picker inputdate="{{ attribute(ticket, 'loc_time')|default('')|raw }}"></t-picker>#}
+                                                <t-picker name="time_arrive[{{ i.id }}]" inputdate="{{ i.arrive_time }}"></t-picker>
+                                            </div>
+
+
+                                            {#<b-field>#}
+                                                {#<b-timepicker#}
+                                                        {#value="{value = new Date()}"#}
+                                                        {#v-model="value"#}
+                                                        {#placeholder=""#}
+                                                        {#icon="clock"#}
+                                                        {#editable>#}
+                                                {#</b-timepicker>#}
+                                            {#</b-field>#}
+
+                                            {#<input type="datetime-local">#}
+
+                                            {#<input style="height: 25px; font-size: 12px;" type="text" class="input"#}
+                                               {#value="{% if i.dispatched and i.arrive_time %} {{ i.arrive_time|default('') }} {% endif %}"#}
+                                               {#readonly>#}
                                         {% endif %}
                                     {% endfor %}
                                 </td>
-                                <td>
+                                {#<td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
                                             <input style="height: 25px; font-size: 12px;" type="text" class="input"
@@ -451,7 +534,7 @@
                                                    readonly>
                                         {% endif %}
                                     {% endfor %}
-                                </td>
+                                </td>#}
                                 <td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
@@ -462,17 +545,6 @@
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    {#{% if ssv.res.fire_department_id is not defined or ssv.res.dispatched == 0 %}
-                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id %}
-                                            {% set depts = ssv.res.departments %}
-                                        {% endif %}
-                                        <a @click="sendOne({{ ssv.id }}, '')"
-                                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить
-                                            подразделение</a>
-                                    {% else %}
-                                        <span class="button is-disabled is-outlined"><i class="fas fa-bus"></i>&nbsp; Подраздение отправлено</span>
-                                    {% endif %}#}
-
 
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
@@ -542,82 +614,43 @@
                     </div>
                     <h5 class="subtitle">Службы</h5>
                     <div>
-                    {% if ticket and ticket.id %}
-                        {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
-                    {% endif %}
-                        {#<table class="table is-expanded is-striped is-narrow is-fullwidth">#}
-                            {#<thead>#}
-                            {#<tr>#}
-                                {#<th>Службы</th>#}
-                                {#<th>Время сообщения</th>#}
-                                {#<th>Фамилия<br/>принявшего сообщение</th>#}
-                                {#<th>Время прибытия</th>#}
-                                {#<th></th>#}
-                            {#</tr>#}
-                            {#</thead>#}
-                            {#<tbody>#}
-                            {#{% for name,title in service_notify %}#}
-                                {#<tr>#}
-                                    {#<td>{{ title }}</td>#}
-                                    {#<td data-component="timepicker1"#}
-                                        {#data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">#}
-                                        {#<b-timepicker @focus="closeAll()" class="is-rounded" type="text"#}
-                                                      {#name="call_{{ name }}_time" id="call_{{ name }}_time"#}
-                                                      {#:value="value" icon="clock" icon-pack="far">#}
-                                            {#<div class="field is-grouped" style="justify-content: space-between">#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-primary is-small"#}
-                                                       {#@click="()=> {value = new Date(); close();}">#}
-                                                        {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
-                                                        {#<span>Сейчас</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-outlined is-small" @click="close()">#}
-                                                        {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                            {#</div>#}
-                                        {#</b-timepicker>#}
-                                        {#<input type="text" id="{{ name }}_created_at" value="{{ ticket.getServicePlan(ticket.id, name).created_at|default(false) }}" readonly class="input">#}
-                                    {#</td>#}
-                                    {#<td>#}
-                                        {#<input type="text" class="input" name="name_{{ name }}_recv"#}
-                                               {#id="name_{{ name }}_recv"#}
+                        <table class="table is-expanded is-striped is-narrow is-fullwidth">
+                            <thead>
+                            <tr>
+                                <th>Службы</th>
+                                <th>Время сообщения</th>
+                                <th>Фамилия<br/>принявшего сообщение</th>
+                                <th>Время прибытия</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for name,title in service_notify %}
+                                <tr>
+                                    <td>{{ title }}</td>
+                                    <td data-component="timepicker1"
+                                        data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">
+                                        <input type="text" id="{{ name }}_created_at" value="{{ ticket.getServicePlan(ticket.id, name).created_at|default(false) }}" readonly class="input">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="input" name="name_{{ name }}_recv"
+                                               id="name_{{ name }}_recv"
                                                {#value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/>#}
-                                               {#value="{{ ticket.getServicePlan(ticket.id, name).name_accepted|default(false) }}"/>#}
-                                    {#</td>#}
-                                    {#<td data-component="timepicker1"#}
-                                        {#data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">#}
-                                        {#<b-timepicker @focus="closeAll()" icon="clock" icon-pack="far" type="text"#}
-                                                      {#name="arrival_{{ name }}" id="arrival_{{ name }}"#}
-                                                      {#:value="value">#}
-                                            {#<div class="field is-grouped" style="justify-content: space-between">#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-primary is-small"#}
-                                                       {#@click="()=> {value = new Date(); close();}">#}
-                                                        {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
-                                                        {#<span>Сейчас</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                                {#<p class="control">#}
-                                                    {#<a class="button is-outlined is-small" @click="close()">#}
-                                                        {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
-                                                    {#</a>#}
-                                                {#</p>#}
-                                            {#</div>#}
-                                        {#</b-timepicker>#}
-                                        {#<input type="text" value="{{ ticket.getServicePlan(ticket.id, name).arrive_time|default(false) }}" readonly class="input">#}
-                                    {#</td>#}
-                                    {#<td>#}
-                                        {#<label for="">#}
-                                            {#<input type="checkbox" {{ ticket.getServicePlan(ticket.id, name)|default(false) ? 'disabled checked' : '' }} data-component="service-plan" @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ name }}')" class="checkbox">#}
-                                        {#</label>#}
-                                    {#</td>#}
-                                {#</tr>#}
-                            {#{% endfor %}#}
-                            {#</tbody>#}
-                        {#</table>#}
+                                               value="{{ ticket.getServicePlan(ticket.id, name).name_accepted|default(false) }}"/>
+                                    </td>
+                                    <td data-component="timepicker1"
+                                        data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">
+                                        <input type="text" value="{{ ticket.getServicePlan(ticket.id, name).arrive_time|default(false) }}" readonly class="input">
+                                    </td>
+                                    <td>
+                                        <label for="">
+                                            <input type="checkbox" {{ ticket.getServicePlan(ticket.id, name)|default(false) ? 'disabled checked' : '' }} data-component="service-plan" @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ name }}')" class="checkbox">
+                                        </label>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div id="tab_other" class="is-hidden">

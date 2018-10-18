@@ -20,264 +20,270 @@
                 </select>
             </div>
         </div>
-        <form action="" method="post">
-            {{ csrf_field() }}
-            <input type="hidden" name="dept_id" value="{{ dept_id }}"/>
-            <input type="hidden" name="form_id" value="{{ form_id }}"/>
 
-            {% include "formation/tech.twig" with {model: model} %}
 
-            {#{% include "formation/field.twig" with {fields: fieldlist, prefix: ''} %}#}
+        {% if read_only %}
+            {% include 'formation/101tech/read-only' %}
+        {% else %}
+            <form action="" method="post">
+                {{ csrf_field() }}
+                <input type="hidden" name="dept_id" value="{{ dept_id }}"/>
+                <input type="hidden" name="form_id" value="{{ form_id }}"/>
 
-            <div class="field">
-                <label for="field_1">Аппараты</label>
-                <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" class="input add101persons-input" name="device" id="device" value="{{ model.device }}">
-                </div>
-            </div>
+                {% include "formation/tech.twig" with {model: model} %}
 
-            <fieldset class="">
-                <legend>Мотопомпы</legend>
+                {#{% include "formation/field.twig" with {fields: fieldlist, prefix: ''} %}#}
+
                 <div class="field">
-                    <label for="field_3_0">Водяная</label>
+                    <label for="field_1">Аппараты</label>
                     <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="motor_water_pump" id="motor_water_pump" value="{{ model.motor_water_pump }}">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" class="input add101persons-input" name="device" id="device" value="{{ model.device }}">
                     </div>
                 </div>
-                <div class="field">
-                    <label for="field_3_1">Грязевая</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="motor_mud_pump" id="motor_mud_pump" value="{{ model.motor_mud_pump }}">
-                    </div>
-                </div>
-            </fieldset>
 
-            <fieldset class="">
-                <legend>Имеется на автомобилях в боевом расчете</legend>
                 <fieldset class="">
-                    <legend>Рукавов</legend>
+                    <legend>Мотопомпы</legend>
                     <div class="field">
-                        <label for="field_5_1_0">125 мм</label>
+                        <label for="field_3_0">Водяная</label>
                         <div class="control">
-                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_125" id="firehose_125" value="{{ model.firehose_125 }}">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="motor_water_pump" id="motor_water_pump" value="{{ model.motor_water_pump }}">
                         </div>
                     </div>
                     <div class="field">
-                        <label for="field_5_1_1">75 мм</label>
+                        <label for="field_3_1">Грязевая</label>
                         <div class="control">
-                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_75" id="firehose_75" value="{{ model.firehose_75 }}">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label for="firehose_77">77 мм</label>
-                        <div class="control">
-                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_77" id="firehose_77" value="{{ model.firehose_77 }}">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label for="firehose_51">51 мм</label>
-                        <div class="control">
-                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_51" id="firehose_51" value="{{ model.firehose_51 }}">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="motor_mud_pump" id="motor_mud_pump" value="{{ model.motor_mud_pump }}">
                         </div>
                     </div>
                 </fieldset>
-                <div class="field">
-                    <label for="field_5_0">Лафетн. Ств. стац</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="barrel_stationary" id="field_5_0" value="{{ model.barrel_stationary }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_1">Лафетн. Ств. переносной</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="barrel_portable" id="field_5_1" value="{{ model.barrel_portable }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_2">ГПС-600</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="pgs_600" id="field_5_2" value="{{ model.pgs_600 }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_3">Пурга</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="purga" id="field_5_3" value="{{ model.purga }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_4">Переносная радиосатнция</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="radio_station_portable" id="field_5_4" value="{{ model.radio_station_portable }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_5">Электрофонари</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="flashlight" id="field_5_5" value="{{ model.flashlight }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_6">Прожектора</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="searchlight" id="field_5_6" value="{{ model.searchlight }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_7">ТОК</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="tok" id="field_5_7" value="{{ model.tok }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_7">Л-1</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="l1" id="field_5_7" value="{{ model.l1 }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_8">Ранцевые аппараты</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="knapsack_devices" id="field_5_8" value="{{ model.knapsack_devices }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_9">Лопаты</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="shovel" id="field_5_9" value="{{ model.shovel }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_10">Хлопушки</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '10')" step="1" data-value="" class="input add101persons-input" name="flapper" id="field_5_10" value="{{ model.flapper }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_11">Спасательные  веревки</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '11')" step="1" data-value="" class="input add101persons-input" name="life_rope" id="field_5_11" value="{{ model.life_rope }}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="field_5_12">Пенообразователя</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '12')" step="1" data-value="" class="input add101persons-input" name="foamer" id="field_5_12" value="{{ model.foamer }}">
-                    </div>
-                </div>
-            </fieldset>
 
-            <div class="field">
-                <label for="field_2">Пенообразователя на складе</label>
-                <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '2')" step="1" data-value="" class="input add101persons-input" name="foamer_in_stock" id="field_2" value="{{ model.foamer_in_stock }}">
-                </div>
-            </div>
-
-            <fieldset class="">
-                <legend>количество неисправных водоисточников</legend>
                 <fieldset class="">
-                    <legend>Пожарные гидранты</legend>
+                    <legend>Имеется на автомобилях в боевом расчете</legend>
+                    <fieldset class="">
+                        <legend>Рукавов</legend>
+                        <div class="field">
+                            <label for="field_5_1_0">125 мм</label>
+                            <div class="control">
+                                <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_125" id="firehose_125" value="{{ model.firehose_125 }}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="field_5_1_1">75 мм</label>
+                            <div class="control">
+                                <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_75" id="firehose_75" value="{{ model.firehose_75 }}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="firehose_77">77 мм</label>
+                            <div class="control">
+                                <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_77" id="firehose_77" value="{{ model.firehose_77 }}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="firehose_51">51 мм</label>
+                            <div class="control">
+                                <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="firehose_51" id="firehose_51" value="{{ model.firehose_51 }}">
+                            </div>
+                        </div>
+                    </fieldset>
                     <div class="field">
-                        <label for="field_7_1_0">Уличный</label>
+                        <label for="field_5_0">Лафетн. Ств. стац</label>
                         <div class="control">
-                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_7_1', '0')" step="1" data-value="" class="input add101persons-input" name="damaged_hydrant_street" id="field_7_1_0" value="{{ model.damaged_hydrant_street }}">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="barrel_stationary" id="field_5_0" value="{{ model.barrel_stationary }}">
                         </div>
                     </div>
                     <div class="field">
-                        <label for="field_7_1_1">Объектовый</label>
+                        <label for="field_5_1">Лафетн. Ств. переносной</label>
                         <div class="control">
-                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_7_1', '1')" step="1" data-value="" class="input add101persons-input" name="damaged_hydrant_object" id="field_7_1_1" value="{{ model.damaged_hydrant_object }}">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="barrel_portable" id="field_5_1" value="{{ model.barrel_portable }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_2">ГПС-600</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="pgs_600" id="field_5_2" value="{{ model.pgs_600 }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_3">Пурга</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="purga" id="field_5_3" value="{{ model.purga }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_4">Переносная радиосатнция</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="radio_station_portable" id="field_5_4" value="{{ model.radio_station_portable }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_5">Электрофонари</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="flashlight" id="field_5_5" value="{{ model.flashlight }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_6">Прожектора</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="searchlight" id="field_5_6" value="{{ model.searchlight }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_7">ТОК</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="tok" id="field_5_7" value="{{ model.tok }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_7">Л-1</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="l1" id="field_5_7" value="{{ model.l1 }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_8">Ранцевые аппараты</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="knapsack_devices" id="field_5_8" value="{{ model.knapsack_devices }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_9">Лопаты</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="shovel" id="field_5_9" value="{{ model.shovel }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_10">Хлопушки</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '10')" step="1" data-value="" class="input add101persons-input" name="flapper" id="field_5_10" value="{{ model.flapper }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_11">Спасательные  веревки</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '11')" step="1" data-value="" class="input add101persons-input" name="life_rope" id="field_5_11" value="{{ model.life_rope }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_5_12">Пенообразователя</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '12')" step="1" data-value="" class="input add101persons-input" name="foamer" id="field_5_12" value="{{ model.foamer }}">
                         </div>
                     </div>
                 </fieldset>
+
                 <div class="field">
-                    <label for="field_7_0">ПВ</label>
+                    <label for="field_2">Пенообразователя на складе</label>
                     <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_7', '0')" step="1" data-value="" class="input add101persons-input" name="damaged_pv" id="field_7_0" value="{{ model.damaged_pv }}">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '2')" step="1" data-value="" class="input add101persons-input" name="foamer_in_stock" id="field_2" value="{{ model.foamer_in_stock }}">
                     </div>
                 </div>
-            </fieldset>
 
-            <fieldset class="">
-                <legend>В боевом расчете</legend>
+                <fieldset class="">
+                    <legend>количество неисправных водоисточников</legend>
+                    <fieldset class="">
+                        <legend>Пожарные гидранты</legend>
+                        <div class="field">
+                            <label for="field_7_1_0">Уличный</label>
+                            <div class="control">
+                                <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_7_1', '0')" step="1" data-value="" class="input add101persons-input" name="damaged_hydrant_street" id="field_7_1_0" value="{{ model.damaged_hydrant_street }}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="field_7_1_1">Объектовый</label>
+                            <div class="control">
+                                <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_7_1', '1')" step="1" data-value="" class="input add101persons-input" name="damaged_hydrant_object" id="field_7_1_1" value="{{ model.damaged_hydrant_object }}">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="field">
+                        <label for="field_7_0">ПВ</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_7', '0')" step="1" data-value="" class="input add101persons-input" name="damaged_pv" id="field_7_0" value="{{ model.damaged_pv }}">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="">
+                    <legend>В боевом расчете</legend>
+                    <div class="field">
+                        <label for="field_8_0">Бензин</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_8', '0')" step="1" data-value="" class="input add101persons-input" name="active_gasoline" id="field_8_0" value="{{ model.active_gasoline }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_8_1">Дизель</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_8', '1')" step="1" data-value="" class="input add101persons-input" name="active_diesel" id="field_8_1" value="{{ model.active_diesel }}">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="">
+                    <legend>В резерве</legend>
+                    <div class="field">
+                        <label for="field_9_0">Бензин</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_9', '0')" step="1" data-value="" class="input add101persons-input" name="reserved_gasoline" id="field_9_0" value="{{ model.reserved_gasoline }}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="field_9_1">Дизель</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_9', '1')" step="1" data-value="" class="input add101persons-input" name="reserved_diesel" id="field_9_1" value="{{ model.reserved_diesel }}">
+                        </div>
+                    </div>
+                </fieldset>
+
                 <div class="field">
-                    <label for="field_8_0">Бензин</label>
+                    <label for="field_3">Генератор</label>
                     <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_8', '0')" step="1" data-value="" class="input add101persons-input" name="active_gasoline" id="field_8_0" value="{{ model.active_gasoline }}">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="generator" id="field_3" value="{{ model.generator }}">
                     </div>
                 </div>
                 <div class="field">
-                    <label for="field_8_1">Дизель</label>
+                    <label for="field_3">Дымосос</label>
                     <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_8', '1')" step="1" data-value="" class="input add101persons-input" name="active_diesel" id="field_8_1" value="{{ model.active_diesel }}">
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="">
-                <legend>В резерве</legend>
-                <div class="field">
-                    <label for="field_9_0">Бензин</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_9', '0')" step="1" data-value="" class="input add101persons-input" name="reserved_gasoline" id="field_9_0" value="{{ model.reserved_gasoline }}">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="exhauster" id="field_3" value="{{ model.exhauster }}">
                     </div>
                 </div>
                 <div class="field">
-                    <label for="field_9_1">Дизель</label>
+                    <label for="field_3">Гирсы</label>
                     <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_9', '1')" step="1" data-value="" class="input add101persons-input" name="reserved_diesel" id="field_9_1" value="{{ model.reserved_diesel }}">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="girs" id="field_3" value="{{ model.girs }}">
                     </div>
                 </div>
-            </fieldset>
+                <div class="field">
+                    <label for="field_3">ИУП</label>
+                    <div class="control">
+                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="iup" id="field_3" value="{{ model.iup }}">
+                    </div>
+                </div>
 
-            <div class="field">
-                <label for="field_3">Генератор</label>
-                <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="generator" id="field_3" value="{{ model.generator }}">
+                <div class="field">
+                    <label for="field_4">Ф.И.О Начальника караула или лица его подменяющего</label>
+                    <div class="control">
+                        <select class="select" name="head_guard_id" id="head_guard_id">
+                            {% for person in staff %}
+                                <option {{ person.id == model.head_guard_id ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>
+                            {% endfor %}
+                        </select>
+                        {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <label for="field_3">Дымосос</label>
-                <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="exhauster" id="field_3" value="{{ model.exhauster }}">
-                </div>
-            </div>
-            <div class="field">
-                <label for="field_3">Гирсы</label>
-                <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="girs" id="field_3" value="{{ model.girs }}">
-                </div>
-            </div>
-            <div class="field">
-                <label for="field_3">ИУП</label>
-                <div class="control">
-                    <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '3')" step="1" data-value="" class="input add101persons-input" name="iup" id="field_3" value="{{ model.iup }}">
-                </div>
-            </div>
 
-            <div class="field">
-                <label for="field_4">Ф.И.О Начальника караула или лица его подменяющего</label>
-                <div class="control">
-                    <select class="select" name="head_guard_id" id="head_guard_id">
-                        {% for person in staff %}
-                            <option {{ person.id == model.head_guard_id ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>
-                        {% endfor %}
-                    </select>
-                    {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
+                <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                    <div class="level">
+                        <p class="level-left">
+                        </p>
+                        <p class="level-right">
+                            <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                        </p>
+                    </div>
                 </div>
-            </div>
-
-            <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
-                <div class="level">
-                    <p class="level-left">
-                    </p>
-                    <p class="level-right">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
-                    </p>
-                </div>
-            </div>
-        </form>
+            </form>
+        {% endif %}
 
     </div>
 

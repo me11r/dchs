@@ -13,6 +13,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
+        Route::get('service-plans', 'AjaxController@getServicePlans');
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -58,6 +59,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'formation'], function () {
         Route::get('/', 'FormationController@getServicesList');
         Route::get('101', 'FormationController@get101');
+        Route::group(['prefix' => 'air-rescue'], function (){
+            Route::get('/', 'FormationController@getAirRescue');
+            Route::get('/create', 'FormationController@getAirRescueCreate');
+            Route::get('/{id}/edit', 'FormationController@getAirRescueEdit');
+            Route::post('/edit-create', 'FormationController@getAirRescueEditCreate');
+        });
         Route::get('addToday', 'FormationController@getAddToday');
         Route::post('addToday', 'FormationController@postAddToday');
         Route::post('approve101/{id}', 'FormationController@postApproveReport101');
@@ -76,6 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('form_id', '[0-9]+')
             ->where('dept_id', '[0-9]+');
         Route::get('view101/{form_id}', 'FormationController@getView101')->where('form_id', '[0-9]+');
+        Route::get('air-rescue/{form_id}', 'FormationController@getAirRescueView')->where('form_id', '[0-9]+');
 
         Route::get('mudflow', 'FormationController@getMudflow');
         Route::get('editmudflow/{id}', 'FormationController@getEditMudflow')->where('id', '[0-9]+');
@@ -155,19 +163,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('accept/{id}/{service}', 'ServicePlanController@postAccept')->where('id', '[0-9]+');
         Route::post('arrive/{id}/{service}', 'ServicePlanController@postArrive')->where('id', '[0-9]+');
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
-        Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '112|102|103|104|electro|water|smk');
-        Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '112|102|103|104|electro|water|smk');
+        Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '112|102|103|104|electro|water|smk|gu_kaz|roso|kaz_aviaserice|ao_ort');
+        Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '112|102|103|104|electro|water|smk|gu_kaz|roso|kaz_aviaserice|ao_ort');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
 
-    Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName')->where('dict_id', 'incident-types|operational-plans|operational-cards');
-    Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName')->where('dict_id', 'incident-types|operational-plans|operational-cards');
+    Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName')->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts');
+    Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName')->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts');
     Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')
-        ->where('name', 'incident-types|operational-plans|operational-cards')
+        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts')
         ->where('dict_id', '[0-9]+');
     Route::post('/dictionaries/{name}/create-edit', 'DictionaryController@postEditCreateByName')
-        ->where('name', 'incident-types|operational-plans|operational-cards');
+        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts');
 
     Route::get('/dictionaries/list/{dict_id}', 'DictionaryController@getList')->where('dict_id', '[0-9]+');
     Route::get('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@getEdit')
