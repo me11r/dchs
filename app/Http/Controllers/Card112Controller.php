@@ -27,17 +27,56 @@ class Card112Controller extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $items = $this
-            ->repository
-            ->with([
-                'street',
-                'street.area'
-            ])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+
+        $sort = $request->get('sort', 'created_at');
+        $id = $request->input('filter.id', '');
+        $city_area = $request->input('filter.city_area', '');
+
+
+        $city_areas = Card112::groupBy('city_area_id')
+            ->get(['city_area_id'])
+            ->pluck('city_area_id')
+            ->toArray();
+
+        $city_areas = CityArea::whereIn('id', $city_areas)->get();
+
+        if($id){
+            $items = $this
+                ->repository
+                ->with([
+                    'street',
+                    'street.area'
+                ])
+                ->orderBy($sort, 'desc')
+                ->where('id',$id)
+                ->paginate($perPage);
+        }
+        elseif($city_area){
+
+            $items = $this
+                ->repository
+                ->with([
+                    'street',
+                    'street.area'
+                ])
+                ->orderBy($sort, 'desc')
+                ->paginate($perPage);
+        }
+        else{
+            $items = $this
+                ->repository
+                ->with([
+                    'street',
+                    'street.area'
+                ])
+                ->orderBy($sort, 'desc')
+                ->paginate($perPage);
+        }
+
 
         return View::make('card112.index')
             ->with('items', $items)
+            ->with('city_areas', $city_areas)
             ->with('per_page', $perPage)
             ->render();
     }

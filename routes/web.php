@@ -167,13 +167,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
 
-    Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName')->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts');
-    Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName')->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts');
+    Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName')
+        ->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
+    Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName')
+        ->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
     Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')
-        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts')
+        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments')
         ->where('dict_id', '[0-9]+');
     Route::post('/dictionaries/{name}/create-edit', 'DictionaryController@postEditCreateByName')
-        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts');
+        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
 
     Route::get('/dictionaries/list/{dict_id}', 'DictionaryController@getList')->where('dict_id', '[0-9]+');
     Route::get('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@getEdit')
