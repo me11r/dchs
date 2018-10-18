@@ -2,7 +2,7 @@
     <div class="container">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
-                <h4 class="title">Отчет по карточке 101 за период</h4>
+                <h4 class="title">Отчет по карточке 112 за период</h4>
                 <div class="level">
                     <div class="level-right has-text-right">
                         <button class="button is-primary" @click.prevent="print()">Печать</button>
@@ -11,7 +11,7 @@
                 <br>
                 <form>
                     <div class="field">
-                        <label for="reason">Предварительная информация</label>
+                        <label for="reason">Происшествие</label>
                         <select @change="selectReason" class="select" name="" id="reason">
                             <option value=""></option>
                             <option
@@ -33,26 +33,26 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <td>Спасено людей</td>
-                            <td>Эвакуировано людей</td>
-                            <td>Получили отравление угарным газом</td>
-                            <td>Получили отравление природным газом</td>
-                            <td>Получили ожоги</td>
-                            <td>Гибель людей</td>
-                            <td>Гибель детей</td>
-                            <td>Госпитализировано</td>
+                            <td>Пострадавших людей/детей</td>
+                            <td>Погибших людей/детей</td>
+                            <td>Эвакуированных людей/детей</td>
+                            <td>Госпитализированных людей/детей</td>
+                            <td>Травмированных людей/детей</td>
+                            <td>Отравление людей/детей</td>
+                            <td>Спасено людей/детей</td>
+                            <td>Спасено животных</td>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td>{{ report_summary.rescued_count }}</td>
-                            <td>{{ report_summary.evac_count }}</td>
-                            <td>{{ report_summary.co2_poisoned_count }}</td>
-                            <td>{{ report_summary.ch4_poisoned_count }}</td>
-                            <td>{{ report_summary.gpt_burns_count }}</td>
-                            <td>{{ report_summary.people_death_count }}</td>
-                            <td>{{ report_summary.children_death_count }}</td>
-                            <td>{{ report_summary.hospitalized_count }}</td>
+                            <td>{{ report_summary.injured }}</td>
+                            <td>{{ report_summary.dead }}</td>
+                            <td>{{ report_summary.evacuated }}</td>
+                            <td>{{ report_summary.hospitalized }}</td>
+                            <td>{{ report_summary.injured_hard }}</td>
+                            <td>{{ report_summary.poisoned }}</td>
+                            <td>{{ report_summary.saved }}</td>
+                            <td>{{ report_summary.saved_animals }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -98,7 +98,7 @@
 
                 this.reason_id = event.target.value;
 
-                window.history.pushState('page2', 'Title', '/reports/101/emergency?reason=' + this.reason_id);
+                window.history.pushState('page2', 'Title', '/reports/112/emergency?reason=' + this.reason_id);
 
                 // console.dir(this.reason_id);
 
@@ -109,7 +109,7 @@
             },
             post_data() {
                 let self = this;
-                axios.post('/reports/101/emergency', {
+                axios.post('/reports/112/emergency', {
                     date_begin: self.date_begin_,
                     date_end: self.date_end_,
                     reason_id: self.reason_id,
