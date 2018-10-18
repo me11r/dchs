@@ -67,6 +67,7 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'model' => \App\Models\NotificationService::class
             ],
         ];
+        Schema::disableForeignKeyConstraints();
         (new App\Dictionary)->truncate();
         foreach ($dicts as $dict) {
             (new App\Dictionary())->fill($dict)->save();
@@ -85,5 +86,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(RiverSeeder::class);
         $this->call(TrunkSeeder::class);
         $this->call(NotificationServicesSeeder::class);
+        Schema::enableForeignKeyConstraints();
     }
 }
