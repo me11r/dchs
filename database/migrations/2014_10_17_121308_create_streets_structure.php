@@ -13,11 +13,13 @@ class CreateStreetsStructure extends Migration
      */
     public function up()
     {
-        \Schema::create('streets', function (Blueprint $table){
-            $table->increments('id');
-            $table->integer('city_area_id')->nullable()->index();
-            $table->string('name', 70)->nullable();
-        });
+        if (!\Schema::hasTable('streets')) {
+            \Schema::create('streets', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('city_area_id')->nullable()->index();
+                $table->string('name', 70)->nullable();
+            });
+        }
     }
 
     /**
