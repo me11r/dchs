@@ -32,13 +32,13 @@ class DropTicket101Columns extends Migration
             }
         });
 
-        Schema::table('ticket101', function (Blueprint $table) use ($codeIds) {
-            foreach ($codeIds as $code => $id){
-                $table->dropColumn('name_' . $code . '_recv');
-                $table->dropColumn('call_' . $code . '_time');
-                $table->dropColumn('arrival_' . $code);
-            }
-        });
+//        Schema::table('ticket101', function (Blueprint $table) use ($codeIds) {
+//            foreach ($codeIds as $code => $id){
+//                $table->dropColumn('name_' . $code . '_recv');
+//                $table->dropColumn('call_' . $code . '_time');
+//                $table->dropColumn('arrival_' . $code);
+//            }
+//        });
     }
 
     /**
