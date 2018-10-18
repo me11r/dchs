@@ -8,13 +8,32 @@
                     {{ csrf_field() }}
                     <input type="hidden" id="{{ record.id|default() }}"/>
                     {% for field in fields %}
-                    <div class="field">
-                        <label for="{{ field }}">{{ field }}</label>
-                        <input type="text" class="input" name="{{ field }}" id="{{ field }}" value="{{ attribute(record, field)|default('') }}"/>
-                    </div>
+                        <div class="field">
+                            <p>
+                                <label for="{{ field }}">{{ field }}</label>
+                            </p>
+
+                            {% if field is same as ('head_user_id') %}
+                                <div class="select">
+                                    <select name="{{ field }}" id="{{ field }}">
+                                        {% for user in users %}
+                                            <option {% if record[field] is same as(user.id) %} selected {% endif %}
+                                                    value="{{ user.id }}">
+                                                {{ user.name }} ({{ user.email }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% else %}
+                                <input type="text" class="input" name="{{ field }}" id="{{ field }}"
+                                       value="{{ attribute(record, field)|default('') }}"/>
+                            {% endif %}
+
+                        </div>
                     {% endfor %}
                     <div class="buttons has-text-right is-grouped is-right" style="">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        </button>
                         <a href="{{ url('/dictionaries/list/' ~ dictinfo.id) }}" class="button is-light">Отменить</a>
                     </div>
                 </form>

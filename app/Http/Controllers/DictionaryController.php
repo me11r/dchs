@@ -9,6 +9,7 @@ use App\Dictionary;
 use App\FireDepartment;
 use App\IncidentTypeCategory;
 use App\Models\IncidentType;
+use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
@@ -258,7 +259,11 @@ class DictionaryController extends AuthorizedController
         ]);
     }
 
-
+    private function setAdditionalData($dict){
+        if ($dict instanceof NotificationService){
+            $this->set('users', User::all());
+        }
+    }
 
     public function getIndex()
     {
@@ -284,6 +289,8 @@ class DictionaryController extends AuthorizedController
         $this->set('record', $dict->findOrNew($row_id));
         $fields = $this->getEditableFields($dict);
         $this->set('fields', $fields);
+
+        $this->setAdditionalData($dict);
 
     }
 
