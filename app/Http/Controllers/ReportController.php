@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 
 use App\Dictionary\FireObject;
+use App\Models\Card112\Card112;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
+use App\Models\IncidentType;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use App\Reports\Report;
@@ -322,6 +324,22 @@ class ReportController extends AuthorizedController
         $date_end = $request->date_end;
         $reason_id = $request->reason_id;
         $result = Ticket101::getStat($date_begin, $date_end, $reason_id);
+
+        return response()->json($result);
+    }
+
+    public function getReport112Emergency()
+    {
+        $reasons = IncidentType::orderBy('name')->get();
+        return view('reports.112.emergency', compact('reasons'));
+    }
+
+    public function postReport112Emergency(Request $request)
+    {
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+        $reason_id = $request->reason_id;
+        $result = Card112::getStat($date_begin, $date_end, $reason_id);
 
         return response()->json($result);
     }

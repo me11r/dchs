@@ -224,6 +224,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/emergency', 'ReportController@postReport101Emergency')->name('emergency101_post');
     });
 
+    Route::group(['prefix' => 'reports/112', 'as' => 'reports112.'], function () {
+        Route::get('/staff', 'ReportController@getReport112Staff')->name('staff');
+        Route::post('/staff', 'ReportController@postReport112Staff')->name('staff_post');
+        Route::get('/vehicles', 'ReportController@getReport112Vehicles')->name('vehicles');
+        Route::post('/vehicles', 'ReportController@postReport112Vehicles')->name('vehicles_post');
+
+        Route::get('/emergency', 'ReportController@getReport112Emergency')->name('emergency112_get');
+        Route::post('/emergency', 'ReportController@postReport112Emergency')->name('emergency112_post');
+    });
+
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });
