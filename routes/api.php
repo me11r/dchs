@@ -1,5 +1,7 @@
 <?php
 
+use \Illuminate\Support\Facades\Route;
+
 Route::group(
     [
         // @TODO middleware doesn't work
@@ -13,6 +15,14 @@ Route::group(
         Route::get('101/get-staff', 'FormationStaffController@index');
         Route::apiResource('hydrant', 'HydrantController');
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
+        Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
+            Route::post('fcm/register', 'FcmController@register');
+            Route::get('fcm/send_test', 'FcmController@sendTest');
+        });
+
+        Route::group(['prefix' => 'notification'], function (){
+            Route::post('ticket101send', 'NotificationController@ticket101Send');
+        });
 
         Route::group(['prefix' => 'air-rescue'], function (){
             Route::get('get-staff' ,'AircraftController@getStaff');

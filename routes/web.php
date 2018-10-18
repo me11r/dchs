@@ -1,4 +1,6 @@
 <?php
+Route::get('/test/fcm', 'TestController@fcm')->name('test.fcm');
+
 Route::post('logout', 'Auth\LoginController@postLogout')->name('logout');
 Route::get('login', 'Auth\LoginController@getIndex')->name('login');
 Route::post('login', 'Auth\LoginController@postIndex')->name('post-login');
