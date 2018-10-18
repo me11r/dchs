@@ -167,6 +167,11 @@
                             href="/reports/101/emergency"
                             class="dropdown-item is-small"><i class="fas fa-band-aid"></i>&nbsp;
                             Отчет по карточке 101 за период</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/112/emergency"
+                            class="dropdown-item is-small"><i class="fas fa-bolt"></i>&nbsp;
+                            Отчет по карточке 112 за период</a>
                     </div>
                 </div>
                 <div class="navbar-item">
