@@ -22,9 +22,38 @@
             <thead>
             <tr>
                 <th>№ КУИ</th>
-                <th>Адрес</th>
-                <th>Район</th>
-                <th class="has-text-right">Дата и время</th>
+                <th>
+                    <a href="?sort=location">Адрес</a>
+                    {#{% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101']) %}#}
+                    <form>
+                        <select name="filter[id]" class="select control" onchange="this.form.submit()">
+                            {% for f in items %}
+                                <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.location }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    {#{% endif %}#}
+                </th>
+                <th>
+                    <a href="?sort=city_area_id">Район</a>
+                    <form>
+                        <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
+                            {% for f in city_areas %}
+                                <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </th>
+                <th class="has-text-right">
+                    <a href="?sort=created_at">Дата и время</a>
+                    <form>
+                        <select name="filter[id]" class="select control" onchange="this.form.submit()">
+                            {% for f in items %}
+                                <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.created_at|date('H:i d.m.Y') }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
