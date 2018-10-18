@@ -39,10 +39,45 @@ class CardController extends AuthorizedController
     public function get101(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        $this->set('tickets', $tickets)->set('per_page', $perPage);
+
+        $f = $request->all();
+
+        $sort = $request->get('sort', 'created_at');
+        $id = $request->input('filter.id', '');
+        $city_area = $request->input('filter.city_area', '');
+
+
+        $city_areas = Ticket101::groupBy('city_area_id')
+            ->get(['city_area_id'])
+            ->pluck('city_area_id')
+            ->toArray();
+
+        $city_areas = CityArea::whereIn('id', $city_areas)->get();
+
+        if($id){
+            $tickets = Ticket101::with(['city_area'])
+                ->orderBy($sort,'desc')
+                ->where('id',$id)
+                ->paginate($perPage);
+        }
+        elseif($city_area){
+
+            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                ->where('city_area_id', $city_area)
+                ->orderBy($sort,'desc')
+                ->paginate($perPage);
+        }
+        else{
+            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                ->orderBy($sort,'desc')
+                ->paginate($perPage);
+        }
+
+        $this->set('tickets', $tickets)
+            ->set('city_areas', $city_areas)
+            ->set('id', $id)
+            ->set('city_area', $city_area)
+            ->set('per_page', $perPage);
     }
 
     public function getAdd101(Request $request, $card_id = 0)

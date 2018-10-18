@@ -1,21 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 14.07.2018
- * Time: 13:42
- */
 
 class DictionarySeeder extends \Illuminate\Database\Seeder
 {
     public function run()
     {
         $dicts = [
-            [
-                'title' => 'Пожарные части',
-                'table' => 'fire_deptartments',
-                'model' => \App\FireDepartment::class,
-            ],
             [
                 'title' => 'Объект возгорания',
                 'table' => 'dict_fire_object',

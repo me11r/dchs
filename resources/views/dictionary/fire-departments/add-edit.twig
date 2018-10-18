@@ -1,0 +1,48 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="/dictionaries/{{ type }}/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="object_name">Название</label>
+                        <input required type="text" class="input" name="title" id="title" value="{{ attribute(record, 'title')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="location">Адрес</label>
+                        <input required type="text" class="input" name="address" id="address" value="{{ attribute(record, 'address')|default('') }}"/>
+                    </div>
+
+                    <div class="field">
+                        <p class="control" for="fire_level_id">Использовать в рекомендациях</p>
+
+                        <div class="select">
+                            <select required name="recommend" id="recommend" class="control">
+                                    <option {{ 1 == record.recommend|default(0) ? 'selected' : '' }} value="1">Да</option>
+                                    <option {{ 0 == record.recommend|default(0) ? 'selected' : '' }} value="0">Нет</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <p class="control" for="city_area_id">Район</p>
+                        <div class="select">
+                            <select required name="city_area_id" id="city_area_id" class="control">
+                                {% for item in city_areas %}
+                                    <option {{ item.id == record.city_area_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries/{{ type }}/" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
