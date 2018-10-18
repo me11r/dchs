@@ -13,7 +13,9 @@ use App\Dictionary\Street;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
+use App\Models\NotificationService;
 use App\Models\OperationalPlan;
+use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\WallMaterial;
 use Carbon\Carbon;
@@ -549,6 +551,14 @@ class Ticket101 extends Model
     public function other_records()
     {
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Ticket101Notification::class, 'ticket101_id', 'id');
     }
 
     public function results()

@@ -98,6 +98,7 @@ class ChunkedBuildingsSeeder extends Seeder
      */
     public function run(): void
     {
+        ini_set('memory_limit', '512M');
         $this->cleanTables();
         $this->prepareCaches();
         $reader = $this->getReader();
@@ -246,9 +247,6 @@ class ChunkedBuildingsSeeder extends Seeder
         $cityAreaId = $this->addCityArea($meta['city_area_id']);
         $microAreaId = $this->addMicroArea($meta['city_micro_area_id'], ['city_area_id' => $cityAreaId]);
         $streetId = $this->addStreet($meta['street_id'], ['city_area_id' => $cityAreaId, 'city_micro_area_id' => $microAreaId]);
-        $meta['city_area_id'] = $cityAreaId;
-        $meta['city_micro_area_id'] = $microAreaId;
-        $meta['street_id'] = $streetId;
         $meta['object_type_id'] = $this->addFireObject($meta['object_type_id']);
         $meta['wall_material_id'] = $this->addWallMaterial($meta['wall_material_id']);
 
@@ -259,6 +257,10 @@ class ChunkedBuildingsSeeder extends Seeder
             $meta['number_of_storeys'],
             $meta['square_total']
         ]);
+
+        $meta['city_area_id'] = $cityAreaId;
+        $meta['city_micro_area_id'] = $microAreaId;
+        $meta['street_id'] = $streetId;
 
         return $this->buildings->getItemId($meta['name'], $meta);
     }

@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Auth;
  * @property string $name
  * @property string $email
  * @property string $password
+ * @property string $device_token
  * @property string|null $remember_token
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -60,7 +61,8 @@ class User extends Authenticatable
         'last_login',
         'fire_department_id',
         'role_id',
-        'service_type_id',
+        'device_token',
+        'service_type_id'
     ];
 
     /**

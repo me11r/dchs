@@ -1,0 +1,36 @@
+{% extends "layout/html" %}
+{% block content %}
+    <section class="container">
+        <form method="get" action="{{ route('test.fcm') }}" class="form">
+            {{ csrf_field() }}
+
+            <label for="title">Title</label>
+            <input required
+                   type="text"
+                   name="title"
+                   id="title"
+                   class="input"
+                   value="{{ request.title | default('') }}">
+            <br>
+
+            <label for="body">Body</label>
+            <textarea required
+                      name="body"
+                      class="textarea"
+                      id="body">{{ request.body | default('') }}</textarea>
+            <br>
+            <label for="token">Token</label>
+            <input required
+                   class="input"
+                   type="text"
+                   name="token"
+                   id="token"
+                   value="{{ request.token | default('') }}">
+            <br>
+            <br>
+            <button type="submit" class="button is-primary" style="min-width: 6rem"><i
+                        class="fa fa-meh-rolling-eyes"></i>&nbsp;Send
+            </button>
+        </form>
+    </section>
+{% endblock content %}
