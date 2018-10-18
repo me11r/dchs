@@ -25,6 +25,10 @@ class NotificationServicesSeeder extends Seeder
             ['id' => 5, 'name' => 'Э\\сеть (277-98-42)', 'code' => 'electro', 'head_user_id' => $userId],
             ['id' => 6, 'name' => 'Водоканал (274-66-66)', 'code' => 'water', 'head_user_id' => $userId],
             ['id' => 7, 'name' => 'ЦМК (254-63-53)', 'code' => 'smk', 'head_user_id' => $userId],
+            ['id' => 8, 'name' => 'ГУ Казселезащита', 'code' => 'gu_kaz', 'head_user_id' => $userId],
+            ['id' => 9, 'name' => 'РОСО', 'code' => 'roso', 'head_user_id' => $userId],
+            ['id' => 10, 'name' => 'AO Казавиаспас', 'code' => 'kaz_aviaserice', 'head_user_id' => $userId],
+            ['id' => 11, 'name' => 'АО "Өртсөндіруші"', 'code' => 'ao_ort', 'head_user_id' => $userId],
         ]);
     }
 }
