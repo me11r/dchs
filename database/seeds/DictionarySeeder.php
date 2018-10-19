@@ -50,11 +50,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'water_supply_sources',
                 'model' => \App\Dictionary\WaterSupplySource::class
             ],
-            [
-                'title' => 'Уведомляемые службы',
-                'table' => 'notification_services',
-                'model' => \App\Models\NotificationService::class
-            ],
         ];
         Schema::disableForeignKeyConstraints();
         (new App\Dictionary)->truncate();
@@ -74,7 +69,6 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(OperationalPlanSeeder::class);
         $this->call(RiverSeeder::class);
         $this->call(TrunkSeeder::class);
-        $this->call(NotificationServicesSeeder::class);
         Schema::enableForeignKeyConstraints();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServiceType;
 use App\Ticket101ServicePlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,23 +24,8 @@ class ServicePlanController extends Controller
     ];
     public function getList(Request $request)
     {
-//        $perpage = $request->get('per_page', 10);
-//        /** @var User $user */
-//        $user = Auth::user();
-//        $trips = Ticket101ServicePlan::with(['ticket'])
-//            ->where('is_closed', false);
-//
-//        if ($user->fire_department_id) {
-//            $trips = $trips->where('department_id', $user->fire_department_id);
-//        }
-//
-//        $trips = $trips
-//            ->orderBy('created_at', 'desc')
-//            ->paginate($perpage);
-//
-//        $this->set('user', $user->load('department'));
-//        $this->set('trips', $trips)->set('per_page', $perpage);
-        $services = $this->services;
+        $services = ServiceType::all();
+//        $services = $this->services;
 
         return view('service-plans.list', compact('services'));
     }
@@ -67,7 +53,7 @@ class ServicePlanController extends Controller
     {
         $all = $request->all();
         $servicePlan = Ticket101ServicePlan::firstOrCreate([
-            'department' => $request->service,
+            'service_type_id' => $request->service,
             'card_id' => $request->card_id,
         ]);
         return response()->json($servicePlan);

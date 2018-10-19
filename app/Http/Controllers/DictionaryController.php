@@ -11,6 +11,7 @@ use App\IncidentTypeCategory;
 use App\Models\IncidentType;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
+use App\Models\ServiceType;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
 use App\Right;
@@ -295,7 +296,7 @@ class DictionaryController extends AuthorizedController
     }
 
     private function setAdditionalData($dict){
-        if ($dict instanceof NotificationService){
+        if ($dict instanceof ServiceType){
             $this->set('users', User::all());
         }
     }
