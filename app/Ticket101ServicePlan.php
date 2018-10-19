@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket101ServicePlan extends Model
 {
     protected $fillable = [
-        'department',
+        'service_type_id',
         'card_id',
         'return_time',
         'is_closed',
@@ -24,7 +24,7 @@ class Ticket101ServicePlan extends Model
 
     public function scopeDepartment($q, $search)
     {
-        return $q->where('department', $search);
+        return $q->where('service_type_id', $search);
     }
 
     public function results()

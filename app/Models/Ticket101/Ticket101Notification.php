@@ -3,6 +3,7 @@
 namespace App\Models\Ticket101;
 
 use App\Models\NotificationService;
+use App\Models\ServiceType;
 use App\Ticket101;
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,11 +34,11 @@ class Ticket101Notification extends Model
 
     public function service()
     {
-        return $this->hasOne(NotificationService::class, 'id', 'notification_service_id');
+        return $this->belongsTo(ServiceType::class,'notification_service_id');
     }
 
     public function ticket101()
     {
-        return $this->hasOne(Ticket101::class, 'id', 'ticket101_id');
+        return $this->belongsTo(Ticket101::class, 'ticket101_id');
     }
 }
