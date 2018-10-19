@@ -320,7 +320,6 @@ class CardController extends AuthorizedController
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
-        $f = $request->input('notification_services', []);
 
         if ($card_id) {
             $this->updateNotificationServices($request->input('notification_services', []));

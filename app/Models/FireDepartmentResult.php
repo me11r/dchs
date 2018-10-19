@@ -47,6 +47,7 @@ class FireDepartmentResult extends Model
     protected $fillable = [
         'ticket101_id',
         'fire_department_id',
+        'accept_time',
         'out_time',
         'arrive_time',
         'loc_time',

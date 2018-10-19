@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\Ticket101;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -43,5 +44,19 @@ class CardController extends Controller
         }
 
         return response()->json($resp);
+    }
+
+    public function checkRoadtrip(Request $request)
+    {
+        $id = $request->id;
+        $ticket = Ticket101::find($id);
+
+        if(!$ticket){
+            return response()->json([], 200);
+        }
+
+        $data['recommendations'] = $ticket->results;
+
+        return response()->json($data);
     }
 }

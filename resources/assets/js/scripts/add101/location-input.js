@@ -81,7 +81,8 @@ export default function bindLocationInputApp() {
                 if (this.location.length > 0) {
                     this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.location);
                 }
-            }
+            },
+
         },
         watch: {
             location(newValue, oldValue) {
@@ -112,6 +113,7 @@ export default function bindLocationInputApp() {
             });
             this.location = element.dataset.value;
             this.yandexMapsBus = new YandexMapsBus();
+            // this.checkRoadtrips();
         }
     });
 }
