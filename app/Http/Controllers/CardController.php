@@ -18,6 +18,7 @@ use App\Models\FireDepartmentResult;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
+use App\Models\ServiceType;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
@@ -106,6 +107,8 @@ class CardController extends AuthorizedController
             'ao_ort' => 'АО "Өртсөндіруші"',
         ];
 
+        $service_notify = ServiceType::all();
+
         $ssv_out = FireDepartment::recommend()->get();
         $wall_materials = WallMaterial::all();
         if ($card_id != 0) {
@@ -172,8 +175,7 @@ class CardController extends AuthorizedController
             $other_records_unique = [];
         }
 
-        $max_square = Ticket101OtherRecord::
-        where('ticket101_id', $ticket->id)
+        $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
             ->max('square');
 
         $fire_dep_results_info = '';
@@ -247,7 +249,6 @@ class CardController extends AuthorizedController
                     ]);
                 }
 
-                /**/
                 foreach ($schedules as $schedule_item) {
 
                     $schedule_depts = explode(',', str_replace(['.', ' '], ',', $schedule_item->department));
@@ -319,9 +320,10 @@ class CardController extends AuthorizedController
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
+        $f = $request->input('notification_services', []);
 
         if ($card_id) {
-            $this->updateNotificationServices($request->get('notification_services', []));
+            $this->updateNotificationServices($request->input('notification_services', []));
         } else {
             $this->createNotificationServices($card);
         }
@@ -353,20 +355,21 @@ class CardController extends AuthorizedController
 
     private function createNotificationServices(Ticket101 $ticket101): void
     {
-        (new NotificationService())
-            ->get()
-            ->each(function (NotificationService $service) use ($ticket101) {
-                (new Ticket101Notification())->fill([
-                    'notification_service_id' => $service->id,
-                    'ticket101_id' => $ticket101->id
-                ])->save();
-            });
+        foreach (ServiceType::all() as $service) {
+            Ticket101Notification::create([
+                'notification_service_id' => $service->id,
+                'ticket101_id' => $ticket101->id,
+            ]);
+        }
     }
 
     private function updateNotificationServices(array $notificationServices)
     {
         foreach ($notificationServices as $id => $data) {
-            (new Ticket101Notification())->find($id)->update($data);
+            $record = Ticket101Notification::find($id);
+            $record->name = $data['name'] ?? null;
+            $record->save();
+//            (new Ticket101Notification())->find($id)->update($data);
         }
     }
 

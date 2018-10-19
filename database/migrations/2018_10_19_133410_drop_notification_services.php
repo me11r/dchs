@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateNotificationServicesTable extends Migration
+class DropNotificationServices extends Migration
 {
     /**
      * Run the migrations.
@@ -12,6 +12,18 @@ class CreateNotificationServicesTable extends Migration
      * @return void
      */
     public function up()
+    {
+        Schema::table('notification_services', function (Blueprint $table) {
+            Schema::dropIfExists('notification_services');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
     {
         Schema::create('notification_services', function (Blueprint $table) {
             $table->increments('id');
@@ -26,19 +38,5 @@ class CreateNotificationServicesTable extends Migration
 
             $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('notification_services');
-        (new App\Dictionary())
-            ->where('table', '=', 'notification_services')
-            ->first()
-            ->delete();
     }
 }

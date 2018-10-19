@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -25,5 +26,10 @@ class ServiceType extends Model
 
     public $timestamps = false;
 
-    public $fillable = ['name'];
+    public $fillable = ['name', 'head_user_id'];
+
+    public function headUser()
+    {
+        return $this->belongsTo(User::class, 'head_user_id');
+    }
 }
