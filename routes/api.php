@@ -28,5 +28,9 @@ Route::group(
             Route::get('get-staff' ,'AircraftController@getStaff');
             Route::get('get-tech' ,'AircraftController@getTech');
         });
+
+        Route::group(['prefix' => 'card101'], function (){
+            Route::post('check-roadtrip' ,'CardController@checkRoadtrip');
+        });
     }
 );

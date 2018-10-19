@@ -45,6 +45,8 @@ class RoadtripController extends AuthorizedController
         if(!$trip->is_accepted){
             $trip->is_accepted = true;
             $trip->save();
+
+            $trip->results()->update(['accept_time' => now()]);
         }
 
         $departments = [];
@@ -200,9 +202,7 @@ class RoadtripController extends AuthorizedController
 
     public function postDispatch(Request $request)
     {
-        $f = $request->all();
         $result = FireDepartmentResult::find($request->dept_id);
-        $result->dispatch_id = $request->trip_id;
         $result->dispatched = true;
         $result->out_time = now()->format('H:i:s');
         $result->save();
