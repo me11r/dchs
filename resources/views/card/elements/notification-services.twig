@@ -5,7 +5,8 @@
         <th>Время сообщения</th>
         <th>Фамилия<br/>принявшего сообщение</th>
         <th>Время прибытия</th>
-        <th></th>
+        <th>Путевой лист отправлен</th>
+        <th>Уведомление отправлено</th>
     </tr>
     </thead>
     <tbody>
@@ -37,13 +38,21 @@
                        class="input">
             </td>
             <td>
+                {% for item in ticket.service_plans %}
+                    {% if item.service_type_id == notification.notification_service_id%}
+                        {{ item.created_at.format('d.m.Y H:i') }}
+                    {% endif %}
+                {% endfor %}
+
+            </td>
+            <td>
                 <label for="">
                     <input type="checkbox"
                            data-component="service-plan"
                            name="notification_services[{{ notification.id }}][checked]"
                            {% if notification.checked %} checked {% endif %}
                            value="1"
-                           @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ notification.service.code }}', {{ notification.id }})"
+                           @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ notification.service.id }}', {{ notification.id }})"
                            class="checkbox">
                 </label>
             </td>
