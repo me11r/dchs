@@ -13,7 +13,7 @@ export default function bindServicePlan() {
                         axios
                             .post('/service-plans/send', {
                                 card_id: cardId,
-                                service: service
+                                service_id: service
                             })
                             .then((response) => {
                             })
