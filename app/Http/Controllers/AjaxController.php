@@ -118,4 +118,9 @@ class AjaxController extends AuthorizedController
             ->get();
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
+
+    public function postRoadtripNotificationToken(Request $request)
+    {
+        $user = Auth::user();
+    }
 }

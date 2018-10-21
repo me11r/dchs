@@ -27,6 +27,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereVehicleId($value)
  * @mixin \Eloquent
+ * @property string|null $reserve
+ * @property string|null $date_to
+ * @property string|null $date_from
+ * @property string|null $comment
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem available($department = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem getStat($vehicle_id, $date_begin, $date_end, $status = 'action')
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereDateFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereDateTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereReserve($value)
  */
 class FormationTechItem extends Model
 {

@@ -176,3 +176,4 @@ if (document.getElementById('vue')) {
 }
 
 require('./scripts/emergency-situation/edit-form');
+require('./scripts/Notifications');

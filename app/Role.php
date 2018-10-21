@@ -5,6 +5,24 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * App\Role
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $title
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Right[] $rights
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Role name($search)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Role whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Role whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Role whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Role whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Role extends Model
 {
     protected $fillable = [

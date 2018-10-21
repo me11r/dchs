@@ -17,9 +17,12 @@
 
     <link rel="stylesheet" href="{{ asset('custom.css') }}">
     <link rel="stylesheet" href="{{ mix('assets/app.css') }}">
+    <link rel="manifest" href="{{ asset('/manifest.json') }}">
     <script>
-        window.csrf_token = '{{ csrf_token() }}';
+      window.csrf_token = '{{ csrf_token() }}';
     </script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-messaging.js"></script>
 </head>
 <body>
 <nav id="navbar" class="app-navbar"></nav>
@@ -31,15 +34,15 @@
 <div id="service_plans_notifier"></div>
 <script src="{{ mix('assets/app.js') }}"></script>
 <script>
-    window.addEventListener('load', () => {
-        const notify = document.getElementById('notification');
-        if (notify) {
-            notify.addEventListener('transitionend', () => {
-                notify.style.display = 'none';
-            });
-            notify.style.opacity = 0;
-        }
-    });
+  window.addEventListener('load', () => {
+    const notify = document.getElementById('notification');
+    if (notify) {
+      notify.addEventListener('transitionend', () => {
+        notify.style.display = 'none';
+      });
+      notify.style.opacity = 0;
+    }
+  });
 </script>
 {% block scripts %}{% endblock scripts %}
 <style>

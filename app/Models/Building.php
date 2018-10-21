@@ -19,6 +19,40 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building name($title)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building number($number)
  * @mixin \Eloquent
+ * @property int $id
+ * @property float|null $long
+ * @property float|null $lat
+ * @property string|null $name
+ * @property int $city_area_id
+ * @property string|null $building_number
+ * @property int|null $street_id
+ * @property int|null $city_micro_area_id
+ * @property int|null $object_type_id
+ * @property string|null $year_of_development
+ * @property int|null $number_of_storeys
+ * @property float|null $square
+ * @property float|null $square_total
+ * @property int|null $wall_material_id
+ * @property string|null $features
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereBuildingNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCityAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCityMicroAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereFeatures($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereLat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereLong($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereNumberOfStoreys($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereObjectTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereSquare($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereSquareTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreetId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereWallMaterialId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereYearOfDevelopment($value)
  */
 class Building extends Model
 {
