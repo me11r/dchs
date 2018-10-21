@@ -10,6 +10,7 @@ use App\Models\SpecialPlan;
 use App\OperationalCard;
 use App\Right;
 use App\RoadtripPlan;
+use App\RoadtripSubscription;
 use App\Ticket101ServicePlan;
 use Auth;
 use Illuminate\Http\Request;
@@ -123,5 +124,8 @@ class AjaxController extends AuthorizedController
     {
         $this->noLayout();
         $user = Auth::user();
+        $subscription = RoadtripSubscription::updateOrCreate(['user_id' => $user->id, 'token' => $request->get('token')]);
+        $subscription->save();
+        return response()->json($subscription);
     }
 }

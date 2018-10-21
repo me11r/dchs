@@ -11,18 +11,36 @@ var config = {
 firebase.initializeApp(config);
 const messaging = firebase.messaging();
 
-messaging.usePublicVapidKey('BKd3vbaxjXg-KkgyT8VFiSBBMW1cEEZQ8NYPKZJFE3hqbMGXvSmvthQk9kgnQ-SUXX8J_rGO5IybhAYrz2nJkMY');
+function saveTokenOnServer(token) {
+  const localToken = window.localStorage.getItem('firebase-token');
+  if (localToken !== null) {
+    return axios.post('/ajax/roadrip-notify-token', {token: token}).then(() => {
+      console.log('Saved token');
+      window.localStorage.setItem('firebase-token', token);
+    }).catch(() => {
+      alert('Произошла ошибка сохранения токена уведомлений');
+    });
+  }
+  return new Promise((resolve) => { return resolve(true); });
+}
+
+messaging.usePublicVapidKey(
+    'BKd3vbaxjXg-KkgyT8VFiSBBMW1cEEZQ8NYPKZJFE3hqbMGXvSmvthQk9kgnQ-SUXX8J_rGO5IybhAYrz2nJkMY');
 document.addEventListener('DOMContentLoaded', (e) => {
   if (window.Notification !== undefined) {
     Notification.requestPermission().then(() => {
-        messaging.getToken().then((token) => {
-          console.log('Token: '+ token);
-          axios.post('/ajax/roadrip-notify-token', {token: token});
+      messaging.getToken().then((token) => {
+        saveTokenOnServer(token).then(() => {
+          console.log('Saved token');
+        }).catch(() => {
+          alert('Произошла ошибка сохранения токена уведомлений');
         });
+      });
     }, () => {
       window.alert('Вы отказались от получения уведомлений!');
     });
   } else {
-    window.alert('Ваш браузер не поддерживает уведомления. Уведомление о путевых листах отключено');
+    window.alert(
+        'Ваш браузер не поддерживает уведомления. Уведомление о путевых листах отключено');
   }
 });
