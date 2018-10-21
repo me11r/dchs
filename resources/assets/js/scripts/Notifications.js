@@ -1,3 +1,4 @@
+import axios from 'axios';
 // Initialize Firebase
 var config = {
   apiKey: 'AIzaSyC8LXZezgLrPL3Az2bmUhQNjRYGf0GoNpc',
@@ -15,7 +16,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
   if (window.Notification !== undefined) {
     Notification.requestPermission().then(() => {
         messaging.getToken().then((token) => {
-
+          console.log('Token: '+ token);
+          axios.post('/ajax/roadrip-notify-token', {token: token});
         });
     }, () => {
       window.alert('Вы отказались от получения уведомлений!');

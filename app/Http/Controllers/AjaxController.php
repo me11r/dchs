@@ -121,6 +121,7 @@ class AjaxController extends AuthorizedController
 
     public function postRoadtripNotificationToken(Request $request)
     {
+        $this->noLayout();
         $user = Auth::user();
     }
 }
