@@ -53,7 +53,7 @@ class ServicePlanController extends Controller
     {
         $all = $request->all();
         $servicePlan = Ticket101ServicePlan::firstOrCreate([
-            'service_type_id' => $request->service,
+            'service_type_id' => $request->service_id,
             'card_id' => $request->card_id,
         ]);
         return response()->json($servicePlan);

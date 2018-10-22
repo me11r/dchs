@@ -69,6 +69,8 @@ class Right extends Model
     public const CAN_EDIT_112_CARD = 36;
     public const CAN_DELETE_112_CARD = 37;
 
+    public const CAN_SEE_ALL_EMERGENCY_SITUATIONS = 38;
+
     protected $table = 'rights';
     protected $fillable = ['title', 'right_group_id'];
 

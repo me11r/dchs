@@ -27,7 +27,7 @@
                 <tr class="printing-invisible">
                     <td class="has-text-right is-bold">Принять в работу</td>
                     <td>
-                        <form method="post" action="{{ url('/service-plans/accept/' ~ record.id ~ '/' ~ record.department) }}">
+                        <form method="post" action="{{ url('/service-plans/accept/' ~ record.id ~ '/' ~ record.service_type.id) }}">
                             {{ csrf_field() }}
                             <label for="name_accepted">Фамилия принявшего сообщение</label>
                             <input required id="name_accepted" name="name_accepted" type="text" class="input">

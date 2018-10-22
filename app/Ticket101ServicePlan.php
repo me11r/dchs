@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\FireDepartmentResult;
+use App\Models\ServiceType;
 use Illuminate\Database\Eloquent\Model;
 
 class Ticket101ServicePlan extends Model
@@ -25,6 +26,11 @@ class Ticket101ServicePlan extends Model
     public function scopeDepartment($q, $search)
     {
         return $q->where('service_type_id', $search);
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
     }
 
     public function results()

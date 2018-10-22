@@ -62,8 +62,36 @@
                 </tbody>
             </table>
 
+
             <div class="panel bottom_panel">
-                <div class="level" style="float:right; margin: 20px">
+                <div class="level" style="">
+                    <div class="level-left">
+                        <div class="column">
+                            <h6 class="title" style="padding: 3px 15px">Дежурная смена УЕДДС ДЧС г.Алматы КЧС МВД РК</h6>
+                            <br>
+                            <table class="formation-record-table">
+                                <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>ФИО</th>
+                                    <th>Должность</th>
+                                    <th>Направление</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in dutyShiftItems %}
+                                        <tr>
+                                            <td>{{ i.shift.name }}</td>
+                                            <td>{{ i.staff.name }}</td>
+                                            <td>{{ i.rankHumanFormat}}</td>
+                                            <td>{{ i.direction }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                     <p class="level-right">
                         <a href="{{ route('formation-record.index') }}"
                            style="margin-right: 10px"
