@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\FireDepartment;
 use App\Models\FireDepartmentResult;
 use App\RoadtripPlan;
+use App\RoadtripSubscription;
 use App\Ticket101;
 use App\User;
 use Auth;
@@ -114,6 +115,8 @@ class RoadtripController extends AuthorizedController
                 'fire_department_id' => $dept_id,
             ]
         );
+
+        RoadtripSubscription::notifyDepartment($dept_id, $plan->id);
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
             ->with('_message', [
