@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\FormationPersonsItem;
-use App\Models\FormationTechItem;
+use App\OperDutyShiftStaffItem;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class FormationStaffController extends Controller
+class FormationController extends Controller
 {
-    public function delete()
-    {
-
-    }
-
     public function staff_page(Request $request)
     {
         $data = $request->all();
-        $resp = FormationPersonsItem::rank($request->rank)
-            ->where('report_id', $request->id)
+        $resp = OperDutyShiftStaffItem::rank($request->rank)
+            ->where('shift_id', $request->shift_id)
+            ->date($request->date)
             ->get();
         return response()->json($resp);
     }

@@ -31,9 +31,9 @@ class FireDeptSeeder extends Seeder
 //            'ПЧ-17',
 //            'ПЧ-8'
         ];
-        (new App\FireDepartment)->truncate();
+        #(new App\FireDepartment)->truncate();
         foreach ($departments as $department) {
-            (new \App\FireDepartment())->fill(['title' => $department])->save();
+            (new \App\FireDepartment())->firstOrCreate(['title' => $department]);
         }
     }
 }
