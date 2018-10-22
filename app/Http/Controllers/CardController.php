@@ -93,20 +93,6 @@ class CardController extends AuthorizedController
             'b04' => 'ДЧС "Байкал-04"',
         ];
 
-        $service_notify = [
-            '112' => '112',
-            '102' => 'ДВД 102',
-            '103' => 'БСМП 103',
-            '104' => 'Служба газа 104',
-            'electro' => 'Э\\сеть (277-98-42)',
-            'water' => 'Водоканал (274-66-66)',
-            'smk' => 'ЦМК (254-63-53)',
-            'gu_kaz' => 'ГУ Казселезащита',
-            'roso' => 'РОСО',
-            'kaz_aviaserice' => 'AO Казавиаспас',
-            'ao_ort' => 'АО "Өртсөндіруші"',
-        ];
-
         $service_notify = ServiceType::all();
 
         $ssv_out = FireDepartment::recommend()->get();
@@ -213,10 +199,17 @@ class CardController extends AuthorizedController
         /* последняя заполненная строевка*/
         $report_id = FormationReport::approved()->max('id');
         $formationTech = FormationTechReport::where('form_id', $report_id)
-            ->has('items')->get();
+            ->has('items')
+            ->get();
 
         foreach ($formationTech as $report) {
-            foreach ($report->items()->available()->get() as $tech) {
+
+            $activeTech = $report
+                ->items()
+                ->whereIn('status', ['reserve', 'action'])
+                ->get();
+
+            foreach ($activeTech as $tech) {
                 $formationTechItems[] = $tech;
             }
         }
@@ -239,6 +232,7 @@ class CardController extends AuthorizedController
                     continue;
                 }
 
+                /*полуфабрикат для рекомендаций*/
                 if (!$exists) {
                     $results[$tech_item->department] = FireDepartmentResult::create([
                         'ticket101_id' => $card->id,
@@ -249,6 +243,7 @@ class CardController extends AuthorizedController
                     ]);
                 }
 
+                /*рекомендации для каждого отделения, каждой пч (если указано в расписании и доступно)*/
                 foreach ($schedules as $schedule_item) {
 
                     $schedule_depts = explode(',', str_replace(['.', ' '], ',', $schedule_item->department));

@@ -10,7 +10,7 @@ class CityAreaSeeder extends \Illuminate\Database\Seeder
 {
     public function run()
     {
-        (new App\Dictionary\CityArea)->truncate();
+        #(new App\Dictionary\CityArea)->truncate();
         $regions = [
             'Алатауский',
             'Алмалинский',
@@ -23,9 +23,9 @@ class CityAreaSeeder extends \Illuminate\Database\Seeder
         ];
 
         foreach ($regions as $region) {
-            (new App\Dictionary\CityArea)->fill([
+            (new App\Dictionary\CityArea)->firstOrCreate([
                 'name' => $region,
-            ])->save();
+            ]);
         }
     }
 }

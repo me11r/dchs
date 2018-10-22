@@ -37,6 +37,9 @@ import MainPageReport from './views/MainPageReport';
 import AirRescueStaff from './views/AirRescueStaff/AddEditStaff';
 import AirRescueTech from './views/AirRescueTech/AddEditTech';
 
+import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
+import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
+
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
@@ -61,6 +64,9 @@ Vue.component('report112-emergency', Report112Emergency);
 Vue.component('main-report', MainPageReport);
 
 Vue.component('staff-101', Add101Staff);
+
+Vue.component('staff-formation-record112', FormationRecord112Staff);
+Vue.component('staff-formation-page-selector', FormationRecord112StaffPageSelector);
 
 Vue.component('staff-air-rescue', AirRescueStaff);
 Vue.component('tech-air-rescue', AirRescueTech);

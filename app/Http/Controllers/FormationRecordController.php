@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\FormationOrganisation;
 use App\Models\FormationRecord;
+use App\Models\Staff;
+use App\OperDutyShift;
+use App\OperDutyShiftStaffItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -51,11 +54,14 @@ class FormationRecordController extends Controller
     public function totalEdit($id)
     {
         $item = (new FormationRecord())->findOrFail($id);
+        $date = $item->date;
+        $dutyShiftItems = OperDutyShiftStaffItem::date($date)->with(['staff', 'shift'])->get();
         $items = (new FormationRecord())->where('date', '=', $item->date)
             ->where('organisation', '!=', FormationOrganisation::DCHS_ALMATY)
             ->get();
         return View::make('formation-record.total-edit')
             ->with('item', $item)
+            ->with('dutyShiftItems', $dutyShiftItems)
             ->with('items', $items);
     }
 
@@ -89,5 +95,39 @@ class FormationRecordController extends Controller
                 ->save();
         }
         return $todayModel;
+    }
+
+    public function staffCreateEdit(Request $request, $date, $operShift_id = 1)
+    {
+        $busyStaff = OperDutyShiftStaffItem::date($date)
+            ->where('shift_id', '<>', $operShift_id)
+            ->pluck('staff_id')
+            ->toArray();
+
+        $data['staff'] = Staff::whereNotIn('id', $busyStaff)->get();
+        $data['ods'] = OperDutyShift::all();
+        $data['shift_id'] = $operShift_id;
+        $data['date'] = $date;
+
+        if($request->isMethod('post')){
+            $all = $request->all();
+
+            OperDutyShiftStaffItem::date($date)
+                ->where('shift_id', $operShift_id)
+                ->delete();
+
+            foreach ($request->input('staff', []) as $rank => $staff_arr) {
+                foreach ($staff_arr['staff_id'] as $id) {
+                    OperDutyShiftStaffItem::create([
+                        'shift_id' => $operShift_id,
+                        'staff_id' => $id,
+                        'rank' => $rank,
+                        'date' => $date,
+                    ]);
+                }
+            }
+        }
+
+        return \view('formation-record.staff.create-edit', $data);
     }
 }
