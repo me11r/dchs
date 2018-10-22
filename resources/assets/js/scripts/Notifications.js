@@ -6,26 +6,40 @@ var config = {
     databaseURL: 'https://emergency-notifier-18e77.firebaseio.com',
     projectId: 'emergency-notifier-18e77',
     storageBucket: 'emergency-notifier-18e77.appspot.com',
-    messagingSenderId: '1034182934094'
+    messagingSenderId: '1034182934094',
 };
+/** @var firebase {Firebase} */
 firebase.initializeApp(config);
 const messaging = firebase.messaging();
 
-function saveTokenOnServer(token) {
+messaging.usePublicVapidKey(
+    'BKd3vbaxjXg-KkgyT8VFiSBBMW1cEEZQ8NYPKZJFE3hqbMGXvSmvthQk9kgnQ-SUXX8J_rGO5IybhAYrz2nJkMY');
+
+function saveTokenOnServer (token) {
     const localToken = window.localStorage.getItem('firebase-token');
     if (localToken === null) {
-        return axios.post('/ajax/roadrip-notify-token', {token: token}).then(() => {
-            console.log('Saved token' + token);
-            window.localStorage.setItem('firebase-token', token);
-        }).catch(() => {
-            alert('Произошла ошибка сохранения токена уведомлений');
-        });
+        return axios.post('/ajax/roadrip-notify-token', {token: token})
+            .then(() => {
+                console.log('Saved token' + token);
+                window.localStorage.setItem('firebase-token', token);
+                subscribe();
+            })
+            .catch(() => {
+                alert('Произошла ошибка сохранения токена уведомлений');
+            });
+    } else {
+        subscribe();
     }
     return new Promise((resolve) => { return resolve(true); });
 }
 
-messaging.usePublicVapidKey(
-    'BKd3vbaxjXg-KkgyT8VFiSBBMW1cEEZQ8NYPKZJFE3hqbMGXvSmvthQk9kgnQ-SUXX8J_rGO5IybhAYrz2nJkMY');
+function subscribe () {
+    messaging.onMessage((payload) => {
+        console.log('Got notification', payload);
+        new Notification(payload.notification.title, payload.notification);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', (e) => {
     if (window.Notification !== undefined) {
         Notification.requestPermission().then(() => {
