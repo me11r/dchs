@@ -17,6 +17,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
 
     // Copy data object to get parameters in the click handler
     payload.data.data = JSON.parse(JSON.stringify(payload.data));
+    payload.data.requireInteraction = true;
 
     return self.registration.showNotification(payload.data.title, payload.data);
 });
