@@ -33,22 +33,23 @@ class RoadtripSubscription extends Model
 
     public static function forDepartment(int $deparment_id)
     {
-        $users = User::whereFireDepartmentId($deparment_id)->get(['id']);
-        return (new static())->where('user_id', 'in', $users)->get();
+        $users = User::whereFireDepartmentId($deparment_id)
+            ->get(['id'])
+            ->pluck('id')
+            ->toArray();
+        $model = (new static())->whereIn('user_id', $users)->get(['token'])->pluck('token')->toArray();
+        return $model;
     }
 
-    public static function notifyDepartment(int $department_id, int $tripId) {
+    public static function notifyDepartment(int $department_id, int $tripId)
+    {
         $tokens = self::forDepartment($department_id);
-        $notify = [];
-        /** @var self $subscription */
-        foreach ($tokens as $subscription) {
-            $token = $subscription->token;
-            $notify[] = $token;
-        }
-        dispatch(new SendFcmMessages($notify,
-            'Путевой лист',
-            'Получен новый путевой лист!',
-            url('/roadtrip/view/' . $tripId)
-        ));
+        if (!empty($tokens)) {
+            dispatch(new SendFcmMessages($tokens,
+                'Путевой лист',
+                'Получен новый путевой лист!',
+                url('/roadtrip/view/' . $tripId)
+            ));
+        };
     }
 }
