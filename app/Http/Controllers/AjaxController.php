@@ -124,7 +124,7 @@ class AjaxController extends AuthorizedController
     {
         $this->noLayout();
         $user = Auth::user();
-        $subscription = RoadtripSubscription::updateOrCreate(['user_id' => $user->id, 'token' => $request->get('token')]);
+        $subscription = RoadtripSubscription::updateOrCreate(['token' => $request->get('token')], ['user_id' => $user->id]);
         $subscription->save();
         return response()->json($subscription);
     }
