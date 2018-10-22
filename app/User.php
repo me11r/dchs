@@ -44,6 +44,18 @@ use Illuminate\Support\Facades\Auth;
  * @property int|null $fire_department_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereFireDepartmentId($value)
  * @property-read \App\FireDepartment $department
+ * @property int|null $service_type_id
+ * @property int|null $role_id
+ * @property-read \App\Role|null $role
+ * @property-read \App\Models\ServiceType|null $service_type
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff[] $staff
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Vehicle[] $vehicles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User anyRole($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User isAdmin()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User isRole($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeviceToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRoleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereServiceTypeId($value)
  */
 class User extends Authenticatable
 {

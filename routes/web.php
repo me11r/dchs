@@ -14,6 +14,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
         Route::get('service-plans', 'AjaxController@getServicePlans');
+        Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
     });
 
     Route::group(['prefix' => 'admin'], function () {

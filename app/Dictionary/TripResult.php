@@ -18,6 +18,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\TripResult whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\TripResult whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Ticket101[] $cards101
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\TripResult onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\TripResult whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\TripResult withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\TripResult withoutTrashed()
  */
 class TripResult extends Model
 {

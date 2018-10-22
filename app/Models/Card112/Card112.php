@@ -63,6 +63,15 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property string $location
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereLocation($value)
+ * @property int $injured_hard
+ * @property int $poisoned
+ * @property int $saved
+ * @property int $saved_animals
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 getStat($date_begin, $date_end, $reason_id = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereInjuredHard($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 wherePoisoned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereSaved($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereSavedAnimals($value)
  */
 class Card112 extends Model
 {
@@ -96,7 +105,12 @@ class Card112 extends Model
         'injured_hard',
         'poisoned',
         'saved',
-        'saved_animals'
+        'saved_animals',
+        'incident_place',
+        'additional_incident_place',
+        'reason',
+        'chronology_start_time',
+        'chronology_end_time'
     ];
 
     /**

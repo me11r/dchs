@@ -33,6 +33,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @mixin \Eloquent | Builder
  * @property string|null $year_of_development
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereYearOfDevelopment($value)
+ * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \App\Dictionary\CityArea $city_area
+ * @property-read \App\FireDepartment $fire_department
+ * @property-read \App\Dictionary\FireLevel $fire_level
+ * @property-read \App\Models\OperationalPlan $operational_plan
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecialPlan onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecialPlan withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecialPlan withoutTrashed()
  */
 class SpecialPlan extends Model
 {

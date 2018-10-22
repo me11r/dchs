@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112Chronology whereTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112Chronology whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Card112\Card112 $card112
  */
 class Card112Chronology extends Model
 {

@@ -11,6 +11,7 @@ class AddAdminSeeder extends Seeder
      */
     public function run()
     {
+        \Schema::disableForeignKeyConstraints();
         \App\User::truncate();
         $user = \App\User::create([
             'name' => 'Администратор',
@@ -21,5 +22,6 @@ class AddAdminSeeder extends Seeder
         $rights = \App\Right::all(['id']);
         $rights = $rights->pluck('id');
         $user->rights()->sync($rights);
+        \Schema::enableForeignKeyConstraints();
     }
 }

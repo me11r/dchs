@@ -44,7 +44,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Formation\Resources[] $resources
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationSaversReport whereReportDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationMudflowReport todayRecords()
-
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationSaversReport whereFilled()
  */
 class FormationSaversReport extends Model
 {
