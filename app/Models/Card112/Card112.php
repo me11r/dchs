@@ -105,7 +105,12 @@ class Card112 extends Model
         'injured_hard',
         'poisoned',
         'saved',
-        'saved_animals'
+        'saved_animals',
+        'incident_place',
+        'additional_incident_place',
+        'reason',
+        'chronology_start_time',
+        'chronology_end_time'
     ];
 
     /**
