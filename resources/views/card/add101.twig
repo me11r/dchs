@@ -420,15 +420,9 @@
                             <th>Время прибытия</th>
                             <th>Время возвращения</th>
                             <th>
-                                {#{% if recommendedDispatched|default(0) %}#}
-                                    {#<a disabled="disabled"#}
-                                       {#class="button is-danger is-outlined"><i class="fas fa-bus"></i>&nbsp;Силы и средства согласно рангу были отправлены </a>#}
-                                {#{% else %}#}
-                                    <a @click="sendAllTripPlans()"
-                                       class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил и средств согласно рангу
-                                    </a>
-                                {#{% endif %}#}
-
+                                <a @click="sendAllTripPlans()"
+                                   class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил и средств согласно рангу
+                                </a>
                             </th>
                         </tr>
                         {% for index,ssv in ssv_out %}
@@ -440,10 +434,18 @@
                                 </td>
                                 <td>
                                     {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'action' %}
                                             <label for="">
-                                                {#<input @change="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i }}]" value="1" type="checkbox"> {{ i.tech.department }}#}
                                                 <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]" id="dept_{{ i.id }}" value="1" type="checkbox"> {{ i.tech.department }}
+                                            </label>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'reserve' %}
+                                            <label for="">
+                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]" id="dept_{{ i.id }}" value="1" type="checkbox"> {{ i.tech.reserve }}
+                                                <span class="small">Резерв</span>
                                             </label>
                                             <br>
                                         {% endif %}
@@ -549,10 +551,10 @@
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
                                             {% if i.dispatched %}
                                                 <a style="height: 25px;" disabled="disabled"
-                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Подразделение отправлено - {{ i.tech.department }}</a>
+                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Подразделение отправлено - {{ i.tech.department ?? i.tech.reserve }}</a>
                                             {% else %}
                                                 <a style="height: 25px;" @click="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }}, {{ i.id }})"
-                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить подразделение - {{ i.tech.department }}</a>
+                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить подразделение - {{ i.tech.department ?? i.tech.reserve }}</a>
                                             {% endif %}
 
                                         {% endif %}

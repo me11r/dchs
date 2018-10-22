@@ -12,7 +12,7 @@ class FireObjectSeeder extends Seeder
 {
     public function run()
     {
-        (new App\Dictionary\FireObject)->truncate();
+        #(new App\Dictionary\FireObject)->truncate();
         $list = [
             'Короткое замыкание',
             'Мусор',
@@ -47,7 +47,7 @@ class FireObjectSeeder extends Seeder
             'Вспышки и разряды стат.электричества',
         ];
         foreach ($list as $item) {
-            (new \App\Dictionary\FireObject)->fill(['name' => $item])->save();
+            (new \App\Dictionary\FireObject)->firstOrCreate(['name' => $item]);
         }
     }
 }

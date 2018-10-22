@@ -50,13 +50,18 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'water_supply_sources',
                 'model' => \App\Dictionary\WaterSupplySource::class
             ],
+            [
+                'title' => 'ОДС',
+                'table' => 'oper_duty_shifts',
+                'model' => \App\OperDutyShift::class
+            ],
         ];
-        Schema::disableForeignKeyConstraints();
-        (new App\Dictionary)->truncate();
+        #Schema::disableForeignKeyConstraints();
+        #(new App\Dictionary)->truncate();
         foreach ($dicts as $dict) {
-            (new App\Dictionary())->fill($dict)->save();
+            (new App\Dictionary())->firstOrCreate($dict);
         }
-        $this->call(WaterSupplySeeder::class);
+        /*$this->call(WaterSupplySeeder::class);
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
         $this->call(FireDeptSeeder::class);
@@ -68,7 +73,7 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(IncidentTypeSeeder::class);
         $this->call(OperationalPlanSeeder::class);
         $this->call(RiverSeeder::class);
-        $this->call(TrunkSeeder::class);
-        Schema::enableForeignKeyConstraints();
+        $this->call(TrunkSeeder::class);*/
+        //Schema::enableForeignKeyConstraints();
     }
 }

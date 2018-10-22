@@ -25,6 +25,6 @@ class FormationOrganisation
 
     public static function getNameByType(string $type): string
     {
-        return self::$namesMapping[$type];
+        return self::$namesMapping[$type] ?? '';
     }
 }

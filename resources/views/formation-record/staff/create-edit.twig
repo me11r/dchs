@@ -1,0 +1,53 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="vue" data-department_value="{{ dept_id ?? '' }}">
+        <div class="level" style="margin-top: 20px">
+            <div class="level-left">
+                <h4 class="title">Личный состав от {{ report.report_date ?? '' }}</h4>
+            </div>
+        </div>
+        <staff-formation-page-selector :shift-id="{{ shift_id }}" :ods="{{ ods }}"></staff-formation-page-selector>
+
+            <input type="hidden" :value="fieldsComputed">
+            <form action="" method="post">
+                {{ csrf_field() }}
+                <input type="hidden" name="shift_id" value="{{ shift_id }}"/>
+                {#<input type="hidden" name="form_id" value="{{ form_id }}"/>#}
+                {#{% include "formation/field.twig" with {fields: fieldlist, prefix: '', model: model} %}#}
+                <fieldset>
+                    <legend>На лицо личного состава</legend>
+
+                    <div class="field">
+                        <label for="field_2_1">Оперативный дежурный</label>
+                        <staff-formation-record112 :shift-id="{{ shift_id }}" date-input="{{ date }}" :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="duty_officer"></staff-formation-record112>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Помощник оперативного дежурного</label>
+                        <staff-formation-record112 :shift-id="{{ shift_id }}" date-input="{{ date }}" :active="true" :staff="{{ staff }}"
+                                   block_type="duty_officer_assistant"></staff-formation-record112>
+                    </div>
+
+                </fieldset>
+
+                <div class="field">
+                    <label for="field_2_0">Направление</label>
+                    <div class="control">
+                        <textarea class="textarea" name="" id="" cols="1" rows="1"></textarea>
+                    </div>
+                </div>
+                <div class="panel"
+                     style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                    <div class="level">
+                        <p class="level-left">
+                        </p>
+                        <p class="level-right">
+                            <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+
+    </div>
+{% endblock content %}

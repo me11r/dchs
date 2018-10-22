@@ -87,4 +87,19 @@ class FormationTechItem extends Model
         return $result;
 
     }
+
+    public function scopeReserved($q, $department = null)
+    {
+        if($department){
+
+            $result = $q->where('status', 'reserve')
+                ->where('department', $department);
+        }
+        else{
+            $result = $q->where('status', 'reserve');
+        }
+
+        return $result;
+
+    }
 }
