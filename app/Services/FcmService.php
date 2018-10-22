@@ -38,16 +38,19 @@ class FcmService
      * @param array $tokens
      * @param string $title
      * @param string $body
+     * @param null|string $action
      * @return DownstreamResponse
      */
-    public function sendToMany(array $tokens, string $title, string $body): DownstreamResponse
+    public function sendToMany(array $tokens, string $title, string $body, ?string $action = null): DownstreamResponse
     {
         $optionBuilder = new OptionsBuilder();
 
         $notificationBuilder = (new PayloadNotificationBuilder($title))
             ->setBody($body)
             ->setTitle($title);
-
+        if ($action !== null) {
+            $notificationBuilder->setClickAction($action);
+        }
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData([
             'title' => $title,

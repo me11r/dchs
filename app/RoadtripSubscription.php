@@ -2,8 +2,25 @@
 
 namespace App;
 
+use App\Jobs\SendFcmMessages;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\RoadtripSubscription
+ *
+ * @property int $id
+ * @property string $token
+ * @property int $user_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\RoadtripSubscription whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\RoadtripSubscription whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\RoadtripSubscription whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\RoadtripSubscription whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\RoadtripSubscription whereUserId($value)
+ * @mixin \Eloquent
+ */
 class RoadtripSubscription extends Model
 {
     protected $table = 'roadtrip_subscriptions';
@@ -18,5 +35,20 @@ class RoadtripSubscription extends Model
     {
         $users = User::whereFireDepartmentId($deparment_id)->get(['id']);
         return (new static())->where('user_id', 'in', $users)->get();
+    }
+
+    public static function notifyDepartment(int $department_id, int $tripId) {
+        $tokens = self::forDepartment($department_id);
+        $notify = [];
+        /** @var self $subscription */
+        foreach ($tokens as $subscription) {
+            $token = $subscription->token;
+            $notify[] = $token;
+        }
+        dispatch(new SendFcmMessages($notify,
+            'Путевой лист',
+            'Получен новый путевой лист!',
+            url('/roadtrip/view/' . $tripId)
+        ));
     }
 }
