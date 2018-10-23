@@ -93,8 +93,9 @@
 
                     </div>
                 </div>
-                <div v-if="hasAnyRight(25,26,27,28,29,30)"
-                     class="navbar-item has-dropdown is-hoverable is-small">
+                <div
+                    v-if="hasAnyRight(25,26,27,28,29,30)"
+                    class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
                         <a
@@ -172,6 +173,11 @@
                             href="/reports/112/emergency"
                             class="dropdown-item is-small"><i class="fas fa-bolt"></i>&nbsp;
                             Отчет по карточке 112 за период</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/112/branches"
+                            class="dropdown-item is-small"><i class="fas fa-tree"></i>
+                            &nbsp; Подтопления / Падение веток и деревьев</a>
                     </div>
                 </div>
                 <div class="navbar-item">

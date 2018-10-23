@@ -33,6 +33,7 @@ import Report101Staff from './views/101staff/Report101Staff';
 import Report101Vehicles from './views/101tech/Report101Vehicles';
 import Report101Emergency from './views/reports/emergency/ReportPeriod101';
 import Report112Emergency from './views/reports/emergency/ReportPeriod112';
+import ReportPeriod112Branches from './views/reports/emergency/ReportPeriod112Branches';
 import MainPageReport from './views/MainPageReport';
 import AirRescueStaff from './views/AirRescueStaff/AddEditStaff';
 import AirRescueTech from './views/AirRescueTech/AddEditTech';
@@ -61,6 +62,7 @@ Vue.component('report101-vehicles', Report101Vehicles);
 Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
 Vue.component('report101-emergency', Report101Emergency);
 Vue.component('report112-emergency', Report112Emergency);
+Vue.component('report112-branches', ReportPeriod112Branches);
 Vue.component('main-report', MainPageReport);
 
 Vue.component('staff-101', Add101Staff);

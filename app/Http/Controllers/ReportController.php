@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Dictionary\FireObject;
 use App\Models\Card112\Card112;
 use App\Models\FormationPersonsItem;
@@ -15,9 +14,14 @@ use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Ticket101;
+use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpWord\PhpWord;
 use Spipu\Html2Pdf\Html2Pdf;
 
@@ -58,7 +62,7 @@ class ReportController extends AuthorizedController
 
     public function getReport101()
     {
-        if($data = Cache::get('report101_data')){
+        if ($data = Cache::get('report101_data')) {
             $html = view('pdf/formation-report', $data);
             $html_test = view('pdf/formation-report-test', $data);
 
@@ -67,7 +71,6 @@ class ReportController extends AuthorizedController
             $cellRowSpan = ['vMerge' => 'restart'];
             $cellRowContinue = ['vMerge' => 'continue'];
             $cellColSpan = ['gridSpan' => 2];
-
 
             $phpWord = new \PhpOffice\PhpWord\PhpWord();
             $section = $phpWord->addSection(['orientation' => 'landscape',]);
@@ -133,7 +136,6 @@ class ReportController extends AuthorizedController
             $table->addCell(700, $cellRowContinue);
             $table->addCell(700, $cellRowContinue);
 
-
             $table->addCell(500, $cellRowSpan)->addText('Тип осн. пожарного а/м');
             $table->addCell(500, $cellRowSpan)->addText('Марка');
             $table->addCell(500, $cellRowSpan)->addText('Тип осн. а/м');
@@ -143,22 +145,20 @@ class ReportController extends AuthorizedController
 
             $table->addRow(-0.5, array('exactHeight' => -5));
 
-            foreach (range(1,23) as $item) {
+            foreach (range(1, 23) as $item) {
                 $table->addCell(null, $cellRowContinue);
             }
 
             $table->addRow(-0.5, array('exactHeight' => -5));
 
-
-            foreach (range(1,23) as $item) {
+            foreach (range(1, 23) as $item) {
                 $table->addCell(700)->addText(str_random(8));
             }
 
             $table->addRow(-0.5, array('exactHeight' => -5));
             dd($data);
 
-
-            foreach ($data['departments'] as $dept){
+            foreach ($data['departments'] as $dept) {
 
                 $table->addCell(700)->addText($dept->title);
 
@@ -182,7 +182,6 @@ class ReportController extends AuthorizedController
                 }
 
                 $table->addCell(700)->addText($tech_action_name ?? '-');
-
 
                 foreach ($dept->tech_action as $action) {
                     $tech_action_base .= $action->vehicle->base ?? '-';
@@ -222,7 +221,7 @@ class ReportController extends AuthorizedController
 
             $table->addCell(700)->addText('Итого');
 
-            foreach (range(1,22) as $item) {
+            foreach (range(1, 22) as $item) {
                 $table->addCell(700)->addText(str_random(8));
             }
 //            foreach ($data['people_fields'] as $ppl){
@@ -244,10 +243,6 @@ class ReportController extends AuthorizedController
 //            $table->addCell(700)->addText($data['tech_reserve']['tech_reserve'] ?? 0);
 //            $table->addCell(700)->addText($data['tech_reserve']['tech_repair'] ?? 0);
 //            $table->addCell(700)->addText($data['tech_reserve']['tech_repair'] ?? 0);
-
-
-
-
 
 //            \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html_test, false, false);
             $phpWord->save(public_path('123.docx'));
@@ -283,7 +278,6 @@ class ReportController extends AuthorizedController
         $result['business_trip_count'] = $inactive->where('rank', 'business_trip')->count();
         $result['other_count'] = $inactive->where('rank', 'other')->count();
 
-
         return response()->json($result);
     }
 
@@ -307,7 +301,6 @@ class ReportController extends AuthorizedController
         $result['active_count'] = $active->count();
         $result['repair_count'] = $repair->count();
         $result['reserve_count'] = $reserve->count();
-
 
         return response()->json($result);
     }
@@ -342,5 +335,82 @@ class ReportController extends AuthorizedController
         $result = Card112::getStat($date_begin, $date_end, $reason_id);
 
         return response()->json($result);
+    }
+
+    public function getReport112Branches()
+    {
+        $incidentTypes = (new IncidentType)
+            ->whereIn('name', ['Подтопления', 'Падение веток и деревьев'])
+            ->orderBy('name')
+            ->get();
+
+        return view('reports.112.branches', compact('incidentTypes'));
+    }
+
+    public function getReport112BranchesExport(Request $request)
+    {
+        $fileName = 'Отчет:'
+            . Carbon::parse($request->get('date_start'))->format('Y-m-d')
+            . '_'
+            . Carbon::parse($request->get('date_end'))->format('Y-m-d')
+            . '.xls';
+
+        $cards = (new Card112())
+            ->where('incident_type_id', '=', $request->get('incident_type_id'))
+            ->with(['cityArea'])
+            ->get();
+
+        $preparedToExport = [];
+        foreach ($cards as $card) {
+            if (!isset($preparedToExport[$card->cityArea->name])) {
+                $preparedToExport[$card->cityArea->name] = [];
+            }
+
+            $preparedToExport[$card->cityArea->name][] = [
+                '№' => $card->id,
+                'Адрес' => $card->location,
+                'Место происшествия' => $card->incident_place,
+                'Причина' => $card->reason,
+                'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
+                'Принятые меры' => $card->measures,
+                'Количество задействованных сил и средств' => $card->resources,
+                'Начало и завершение работ' =>
+                    'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
+                    ' / ' .
+                    'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+            ];
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $writer = new Xls($spreadsheet);
+
+        $index = 0;
+
+        foreach ($preparedToExport as $key => $data) {
+            if ($spreadsheet->getSheet($index)) {
+                $spreadsheet->createSheet($index);
+            }
+
+            $spreadsheet->setActiveSheetIndex($index);
+            $activeSheet = $spreadsheet->getActiveSheet();
+
+            $activeSheet->setTitle($key);
+            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A1');
+            $activeSheet->fromArray($data, null, 'A2');
+
+            foreach (range('A', 'W') as $columnID) {
+                $activeSheet->getColumnDimension($columnID)->setAutoSize(true);
+            }
+
+            $index++;
+        }
+
+        $spreadsheet->setActiveSheetIndex(0);
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }
