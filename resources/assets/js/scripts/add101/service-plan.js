@@ -13,7 +13,8 @@ export default function bindServicePlan() {
                         axios
                             .post('/service-plans/send', {
                                 card_id: cardId,
-                                service_id: service
+                                service_id: service,
+                                cardType: 101
                             })
                             .then((response) => {
                             })
@@ -21,7 +22,10 @@ export default function bindServicePlan() {
                             });
 
                         axios
-                            .post('/api/notification/ticket101send', {notification_id: notificationId})
+                            .post('/api/notification/ticket101send', {
+                                notification_id: notificationId,
+                                cardType: 101,
+                            })
                             .then((response) => {
                                 let data = response.data;
                                 if (data['success']) {

@@ -24,6 +24,11 @@
                 <tr>
                     <td class="has-text-right">{{ item.date|date('d.m.Y') }}</td>
                     <td class="has-text-right">
+                        <a href="/formation-record/district-managers/{{ item.date|date('Y-m-d') }}"
+                           class="button is-small is-outlined is-primary">
+                            <i class="fas fa-pencil-alt"></i>&nbsp;
+                            Редактировать ответственных по районам
+                        </a>
                         <a href="/formation-record/staff/{{ item.date|date('Y-m-d') }}/1"
                            class="button is-small is-outlined is-primary">
                             <i class="fas fa-pencil-alt"></i>&nbsp;

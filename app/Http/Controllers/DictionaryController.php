@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Aircraft;
 use App\AircraftType;
 use App\Dictionary;
+use App\DistrictManager;
 use App\FireDepartment;
 use App\IncidentTypeCategory;
 use App\Models\IncidentType;
@@ -109,6 +110,10 @@ class DictionaryController extends AuthorizedController
             $data['records'] = Aircraft::paginate($data['per_page']);
             $data['title'] = "Воздушные суда";
         }
+        elseif($name == 'district-managers'){
+            $data['records'] = DistrictManager::paginate($data['per_page']);
+            $data['title'] = "Ответственные по районам";
+        }
         elseif($name == 'fire-departments'){
             $data['records'] = FireDepartment::orderBy($sort)
                 ->paginate($data['per_page']);
@@ -193,6 +198,10 @@ class DictionaryController extends AuthorizedController
             $data['record'] = FireDepartment::find($id);
             $data['city_areas'] = Dictionary\CityArea::all();
             $data['title'] = "Пожарная часть";
+        }
+        elseif($name == 'district-managers'){
+            $data['record'] = DistrictManager::find($id);
+            $data['title'] = "Ответственный по району";
         }
         return view($view, $data);
     }
@@ -288,11 +297,39 @@ class DictionaryController extends AuthorizedController
 
             $record->save();
         }
+        elseif($name == 'district-managers'){
+            $record  = DistrictManager::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->rank = $request->rank;
+            $record->nickname = $request->nickname;
+            $record->position = $request->position;
 
-        return back()->with('_message', [
+            $record->save();
+
+            if($request->phone_id){
+                $record->phones()->delete();
+                foreach ($request->phone_id as $phone) {
+                    if($phone){
+                        $record->phones()->create([
+                            'phone' => $phone
+                        ]);
+                    }
+                }
+            }
+        }
+
+        if($request->id){
+            return back()->with('_message', [
+                'type' => 'success',
+                'text' => 'Запись в справочнике успешно обновлена'
+            ]);
+        }
+
+        return redirect('/dictionaries')->with('_message', [
             'type' => 'success',
-            'text' => 'Запись в справочнике успешно обновлена'
+            'text' => 'Запись в справочнике успешно сохранена'
         ]);
+
     }
 
     private function setAdditionalData($dict){
