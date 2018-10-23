@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Dictionary\CityArea;
+use App\DistrictManager;
 use App\Enums\FormationOrganisation;
+use App\FormationDistrictManager;
+use App\FormationDistrictManagerItem;
 use App\Models\FormationRecord;
 use App\Models\Staff;
 use App\OperDutyShift;
@@ -54,13 +58,27 @@ class FormationRecordController extends Controller
     public function totalEdit($id)
     {
         $item = (new FormationRecord())->findOrFail($id);
+        $formationDistrictManager = FormationDistrictManager::date($item->date)->first();
         $date = $item->date;
+        $cityAreas = CityArea::all();
+
+        if($formationDistrictManager){
+            foreach ($cityAreas as $key => $area) {
+                foreach ($formationDistrictManager->items as $ppl) {
+                    $cityAreas[$key] = $area;
+                }
+            }
+        }
+
+
         $dutyShiftItems = OperDutyShiftStaffItem::date($date)->with(['staff', 'shift'])->get();
         $items = (new FormationRecord())->where('date', '=', $item->date)
             ->where('organisation', '!=', FormationOrganisation::DCHS_ALMATY)
             ->get();
         return View::make('formation-record.total-edit')
             ->with('item', $item)
+            ->with('cityAreas', $cityAreas)
+            ->with('formationDistrictManager', $formationDistrictManager)
             ->with('dutyShiftItems', $dutyShiftItems)
             ->with('items', $items);
     }
@@ -129,5 +147,39 @@ class FormationRecordController extends Controller
         }
 
         return \view('formation-record.staff.create-edit', $data);
+    }
+
+    public function districtManagersCreateEdit(Request $request, $date)
+    {
+        $data['report'] = FormationDistrictManager::whereDate('date', $date)->first();
+        $data['staff'] = DistrictManager::all();
+        $data['districts'] = CityArea::all();
+        $data['date'] = $date;
+
+        if($request->isMethod('post')){
+            $all = $request->all();
+
+            $report = FormationDistrictManager::firstOrCreate([
+                'date' => $request->date
+            ]);
+
+
+            $report->items()->delete();
+
+//            FormationDistrictManagerItem::date($date)
+//                ->where('shift_id', $operShift_id)
+//                ->delete();
+
+            foreach ($request->input('manager_id', []) as $city_area_id => $staff_arr) {
+                foreach ($staff_arr as $id) {
+                    $report->items()->create([
+                        'manager_id' => $id,
+                        'city_area_id' => $city_area_id,
+                    ]);
+                }
+            }
+        }
+
+        return \view('formation-record.district-managers.create-edit', $data);
     }
 }

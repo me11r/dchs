@@ -84,13 +84,18 @@
                             v-if="hasRight(19)">
                             <i class="fas fa-truck"></i>&nbsp;Служба спасения г.Алматы
                         </a>
+                        <!--<a
+                                href="/formation-record/district-managers"
+                                class="dropdown-item is-small"
+                                v-if="hasRight(18)">
+                            <i class="fas fa-truck"></i>&nbsp;Ответственные по районным отделам г.Алматы
+                        </a>-->
                         <a
                             href="/formation-record"
                             class="dropdown-item is-small"
                             v-if="hasRight(18)">
                             <i class="fas fa-truck"></i>&nbsp;Журнал строевых записок ДЧС г.Алматы
                         </a>
-
                     </div>
                 </div>
                 <div
