@@ -216,134 +216,55 @@
                     </div>
                     <div :style="{'display': currentTabIndex === 1 ? 'block': 'none'}">
                         <h5 class="subtitle">Службы:</h5>
-                        <table class="table is-expanded is-striped is-fullwidth">
+
+                        <table class="table is-expanded is-striped is-narrow is-fullwidth">
                             <thead>
                                 <tr>
-                                    <th>Название</th>
+                                    <th>Службы</th>
                                     <th>Время сообщения</th>
-                                    <th>Фамилия<br>принявшего сообщение</th>
-                                    <th>Время выезда</th>
+                                    <th>Фамилия<br/>принявшего сообщение</th>
                                     <th>Время прибытия</th>
+                                    <th>Путевой лист отправлен</th>
+                                    <th>Уведомление отправлено</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
-                                    v-for="serviceReaction in model.service_reactions"
-                                    :key="serviceReaction.service_type_id">
+                                <tr v-for="service in serviceTypes">
+                                    <td>{{ service.name }}</td>
                                     <td>
-                                        {{ getServiceTypeNameById(serviceReaction.service_type_id) }}
-                                        <input
-                                            type="hidden"
-                                            v-model="serviceReaction.service_type_id"
-                                            :name="'service_reactions['+serviceReaction.service_type_id+'][service_type_id]'">
-                                        <input
-                                            type="hidden"
-                                            v-model="serviceReaction.id"
-                                            :name="'service_reactions['+serviceReaction.service_type_id+'][id]'">
+                                        <input type="text"
+                                               readonly
+                                               v-model="service.message_time"
+                                               :id="service.id + + '_message_time'"
+                                               class="input">
                                     </td>
                                     <td>
-                                        <b-timepicker
-                                            class="small-time-picker"
-                                            icon="clock"
-                                            icon-pack="far"
-                                            :ref="'service_reactions_message_time_picker_' + serviceReaction.service_type_id"
-                                            type="text"
-                                            v-model="serviceReaction.message_time"
-                                            :name="'service_reactions['+serviceReaction.service_type_id+'][message_time]'">
-                                            <div
-                                                class="field is-grouped"
-                                                style="justify-content: space-between">
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-primary is-small"
-                                                        @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'message_time')">
-                                                        <b-icon
-                                                            pack="far"
-                                                            icon="clock"/>
-                                                        <span>Сейчас</span>
-                                                    </a>
-                                                </p>
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('service_reactions_message_time_picker_' + serviceReaction.service_type_id)">
-                                                        <i class="fas fa-check"></i><span>Принять</span>
-                                                    </a>
-                                                </p>
-                                            </div>
-                                        </b-timepicker>
+                                        <input type="text"
+                                               class="input"
+                                               :id="service.id + + '_name'"
+                                               v-model="service.name_accepted">
                                     </td>
                                     <td>
-                                        <input
-                                            title="Фамилия принявшего сообщение"
-                                            type="text"
-                                            class="input"
-                                            v-model="serviceReaction.name"
-                                            :name="'service_reactions['+serviceReaction.service_type_id+'][name]'">
+                                        <input type="text"
+                                               v-model="service.arrive_time"
+                                               readonly
+                                               class="input">
                                     </td>
                                     <td>
-                                        <b-timepicker
-                                            class="small-time-picker"
-                                            icon="clock"
-                                            icon-pack="far"
-                                            :ref="'service_reactions_departure_time_picker_' + serviceReaction.service_type_id"
-                                            type="text"
-                                            v-model="serviceReaction.departure_time"
-                                            :name="'service_reactions['+serviceReaction.service_type_id+'][departure_time]'">
-                                            <div
-                                                class="field is-grouped"
-                                                style="justify-content: space-between">
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-primary is-small"
-                                                        @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'departure_time')">
-                                                        <b-icon
-                                                            pack="far"
-                                                            icon="clock"/>
-                                                        <span>Сейчас</span>
-                                                    </a>
-                                                </p>
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('service_reactions_departure_time_picker_' + serviceReaction.service_type_id)">
-                                                        <i class="fas fa-check"></i><span>Принять</span>
-                                                    </a>
-                                                </p>
-                                            </div>
-                                        </b-timepicker>
+
+                                        <input type="text"
+                                            v-model="services[service.id].sent_at"
+                                        >
+
                                     </td>
                                     <td>
-                                        <b-timepicker
-                                            class="small-time-picker"
-                                            icon="clock"
-                                            icon-pack="far"
-                                            :ref="'service_reactions_arrival_time_picker_' + serviceReaction.service_type_id"
-                                            type="text"
-                                            v-model="serviceReaction.arrival_time"
-                                            :name="'service_reactions['+serviceReaction.service_type_id+'][arrival_time]'">
-                                            <div
-                                                class="field is-grouped"
-                                                style="justify-content: space-between">
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-primary is-small"
-                                                        @click="setCurrentTimeForServiceType(serviceReaction.service_type_id, 'arrival_time')">
-                                                        <b-icon
-                                                            pack="far"
-                                                            icon="clock"/>
-                                                        <span>Сейчас</span>
-                                                    </a>
-                                                </p>
-                                                <p class="control">
-                                                    <a
-                                                        class="button is-outlined is-small"
-                                                        @click="closeTimePickerByRefName('service_reactions_arrival_time_picker_' + serviceReaction.service_type_id)">
-                                                        <i class="fas fa-check"></i><span>Принять</span>
-                                                    </a>
-                                                </p>
-                                            </div>
-                                        </b-timepicker>
+                                        <label for="">
+                                            <input type="checkbox"
+                                                    @change="sendOneCheckService($event, model.id, service.id)"
+                                                   value="1"
+
+                                                   class="checkbox">
+                                        </label>
                                     </td>
                                 </tr>
                             </tbody>
@@ -604,6 +525,7 @@
 <script>
 
 import moment from 'moment';
+import axios from 'axios';
 import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 import {Card112Utils} from './card112utils';
@@ -632,7 +554,9 @@ export default {
             formRoute: '',
             card112Utils: Card112Utils,
             yandexMapsBus: {},
-            currentCity: 'Алматы'
+            currentCity: 'Алматы',
+            servicePlans: [],
+            services: []
         };
     },
     components: {
@@ -662,6 +586,49 @@ export default {
                     'text': item.name
                 };
             });
+        },
+        sendOneCheckService(event, cardId, service) {
+            if (event.target.checked) {
+                axios
+                    .post('/service-plans/send', {
+                        card_id: cardId,
+                        service_id: service,
+                        cardType: 112
+                    })
+                    .then((response) => {
+                        // console.dir(response)
+                        this.services[service].sent_at = response.data.created_at;
+                        // console.dir(this.services[service].sent_at)
+                    })
+                    .catch(() => {
+                    });
+
+                axios
+                    .post('/api/notification/ticket112send', {
+                        notification_id: service,
+                        cardType: 101,
+                    })
+                    .then((response) => {
+                        let data = response.data;
+                        if (data['success']) {
+                            document.querySelector(`[id="${service + '_message_time'}"]`).value = data['time'];
+                            document.querySelector(`[id="${service + '_name'}"]`).value = data['name'];
+                        } else {
+                            this.$snackbar.open({
+                                message: data['message'],
+                                type: 'is-danger',
+                                duration: 3000
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        this.$snackbar.open({
+                            message: 'Произошла ошибка во время отправки уведомления для "' + service + '"',
+                            type: 'is-danger',
+                            duration: 3000
+                        });
+                    });
+            }
         },
         setTab(tabIndex) {
             this.currentTabIndex = tabIndex;
@@ -726,7 +693,22 @@ export default {
             this.formRoute = window.card112FormData.formRoute;
             this.model = window.card112FormData.model;
             this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
+            this.servicePlans = window.card112FormData.servicePlans;
         }
+
+        console.dir(this.servicePlans)
+
+        this.servicePlans.forEach((plan) => {
+            this.serviceTypes.forEach((item) => {
+                if (plan.service_type_id === item.id) {
+                    this.services[item.id] = {sent_at: plan.created_at};
+                } else {
+                    this.services[item.id] = {sent_at: ''};
+                }
+                // console.dir(this.services);
+            });
+        })
+
     },
     mounted() {
         this.yandexMapsBus = new YandexMapsBus();
@@ -744,6 +726,7 @@ export default {
         globalBus.$on(AREA_ID_FOUND, (value) => {
             this.model.city_area_id = value;
         });
+
     }
 };
 </script>

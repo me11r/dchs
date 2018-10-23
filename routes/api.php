@@ -23,6 +23,7 @@ Route::group(
 
         Route::group(['prefix' => 'notification'], function (){
             Route::post('ticket101send', 'NotificationController@ticket101Send');
+            Route::post('ticket112send', 'NotificationController@ticket112Send');
         });
 
         Route::group(['prefix' => 'air-rescue'], function (){

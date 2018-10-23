@@ -9,6 +9,7 @@ use App\Models\Card112\Card112;
 use App\Models\IncidentType;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
+use App\Ticket101ServicePlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -105,11 +106,13 @@ class Card112Controller extends Controller
 
     public function edit($id)
     {
+        $ticket101_service_plans = Ticket101ServicePlan::where('card112_id', $id)->get();
         return View::make('card112.edit')
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect(ServiceType::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('service_plans', $ticket101_service_plans)
             ->with('model', new Card112Resource($this->repository->where('id', '=', $id)->with(['serviceReactions', 'chronology'])->first()))
             ->render();
     }
