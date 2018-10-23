@@ -10,6 +10,7 @@ use App\Models\SpecialPlan;
 use App\OperationalCard;
 use App\Right;
 use App\RoadtripPlan;
+use App\RoadtripSubscription;
 use App\Ticket101ServicePlan;
 use Auth;
 use Illuminate\Http\Request;
@@ -117,5 +118,14 @@ class AjaxController extends AuthorizedController
             ->where('is_accepted', false)
             ->get();
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function postRoadtripNotificationToken(Request $request)
+    {
+        $this->noLayout();
+        $user = Auth::user();
+        $subscription = RoadtripSubscription::updateOrCreate(['token' => $request->get('token')], ['user_id' => $user->id]);
+        $subscription->save();
+        return response()->json($subscription);
     }
 }

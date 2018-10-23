@@ -18,6 +18,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OperationalPlan whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OperationalPlan whereUpdatedAt($value)
  * @mixin \Eloquent | Builder
+ * @property \Carbon\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\OperationalPlan onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OperationalPlan whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\OperationalPlan withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\OperationalPlan withoutTrashed()
  */
 class OperationalPlan extends Model
 {

@@ -21,6 +21,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationReport whereReportDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationReport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $is_approved
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\FormationTechReport[] $tech_reports
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationReport approved($search = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationReport canEditReport()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationReport whereIsApproved($value)
  */
 class FormationReport extends Model
 {

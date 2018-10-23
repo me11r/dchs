@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112ServiceReaction whereServiceTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112ServiceReaction whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Card112\Card112 $card112
+ * @property-read \App\Models\ServiceType $service_type
  */
 class Card112ServiceReaction extends Model
 {

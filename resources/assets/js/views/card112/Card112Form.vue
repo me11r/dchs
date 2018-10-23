@@ -29,12 +29,12 @@
                     <li :class="{'is-active': currentTabIndex === 2}">
                         <a
                             @click="setTab(2)">
-                        <i class="fas fa-truck-moving"></i>&nbsp;Информация с места проишествия</a>
+                        <i class="fas fa-info-circle"></i>&nbsp;Хронология событий</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 3}">
                         <a
                             @click="setTab(3)">
-                        <i class="fas fa-info-circle"></i>&nbsp;Хронология событий</a>
+                        <i class="fas fa-truck-moving"></i>&nbsp;Итоги выезда</a>
                     </li>
                 </ul>
             </div>
@@ -124,25 +124,42 @@
                                     v-model="model.crossroad_2_id">
                             </div>
                         </div>
-                        <!--ТИП ПРОИСШЕСТВИЯ-->
-                        <div class="field">
-                            <p class="control">
-                                <label for="incident_type_id">Происшествие</label>
-                            </p>
-                            <div class="select">
-                                <select
-                                    id="incident_type_id"
-                                    name="incident_type_id"
-                                    v-model="model.incident_type_id"
-                                    required>
-                                    <option
-                                        v-for="incidentType in incidentTypes"
-                                        :key="incidentType.id"
-                                        :value="incidentType.id">{{ incidentType.name }}
-                                    </option>
-                                </select>
+                        <div class="field is-grouped">
+                            <!--ТИП ПРОИСШЕСТВИЯ-->
+                            <div
+                                class="control"
+                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="incident_type_id">Происшествие</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="incident_type_id"
+                                        name="incident_type_id"
+                                        v-model="model.incident_type_id"
+                                        required>
+                                        <option
+                                            v-for="incidentType in incidentTypes"
+                                            :key="incidentType.id"
+                                            :value="incidentType.id">{{ incidentType.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--МЕСТО ПРОИСШЕСТВИЯ-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="incident_place">Место происшествия</label>
+                                </p>
+                                <input
+                                    type="text"
+                                    class="input"
+                                    name="incident_place"
+                                    id="incident_place"
+                                    v-model="model.incident_place">
                             </div>
                         </div>
+
                         <!--ОПИСАНИЕ ПРОИСШЕСТВИЯ-->
                         <div class="field">
                             <label for="description">Описание происшествия</label>
@@ -270,7 +287,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div :style="{'display': currentTabIndex === 2? 'block': 'none'}">
+                    <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
                         <h5 class="subtitle">Информация с места происшествия:</h5>
                         <!--УТОЧНЕННЫЙ АДРЕС-->
                         <div class="field">
@@ -288,25 +305,53 @@
                                     v-model="model.additional_street_id">
                             </div>
                         </div>
-                        <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
-                        <div class="field">
-                            <p class="control">
-                                <label for="additional_incident_type_id">Происшествие</label>
-                            </p>
-                            <div class="select">
-                                <select
-                                    id="additional_incident_type_id"
-                                    name="additional_incident_type_id"
-                                    v-model="model.additional_incident_type_id"
-                                >
-                                    <option
-                                        v-for="incidentType in incidentTypes"
-                                        :key="incidentType.id"
-                                        :value="incidentType.id">{{ incidentType.name }}
-                                    </option>
-                                </select>
+                        <div class="field is-grouped">
+                            <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
+                            <div
+                                class="control"
+                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="additional_incident_type_id">Происшествие</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="additional_incident_type_id"
+                                        name="additional_incident_type_id"
+                                        v-model="model.additional_incident_type_id">
+                                        <option
+                                            v-for="incidentType in incidentTypes"
+                                            :key="incidentType.id"
+                                            :value="incidentType.id">{{ incidentType.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--МЕСТО ПРОИСШЕСТВИЯ-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="additional_incident_place">Место происшествия</label>
+                                </p>
+                                <input
+                                    type="text"
+                                    class="input"
+                                    name="additional_incident_place"
+                                    id="additional_incident_place"
+                                    v-model="model.additional_incident_place">
                             </div>
                         </div>
+
+                        <!--ПРИЧИНА-->
+                        <div class="field">
+                            <label for="reason">Причина</label>
+                            <textarea
+                                name="reason"
+                                id="reason"
+                                class="textarea"
+                                cols="30"
+                                rows="3"
+                                v-model="model.reason"></textarea>
+                        </div>
+
                         <!--ПРИНЯТЫЕ МЕРЫ-->
                         <div class="field">
                             <label for="measures">Принятые меры</label>
@@ -414,8 +459,44 @@
                             </div>
                         </div>
                     </div>
-                    <div :style="{'display': currentTabIndex === 3 ? 'block': 'none'}">
+                    <div :style="{'display': currentTabIndex === 2 ? 'block': 'none'}">
                         <h5 class="subtitle">Хронология событий:</h5>
+                        <div
+                            class="control is-narrow"
+                            style="margin: 0 0 25px 0;">
+                            <label :for="'chronology_start_time'">Время начала работ</label>
+                            <b-timepicker
+                                class="small-time-picker"
+                                icon="clock"
+                                icon-pack="far"
+                                :ref="'chronology_start_time'"
+                                type="text"
+                                :name="'chronology_start_time'"
+                                :value="model['chronology_start_time']"
+                                v-model="model['chronology_start_time']">
+                                <div
+                                    class="field is-grouped"
+                                    style="justify-content: space-between">
+                                    <p class="control">
+                                        <a
+                                            class="button is-primary is-small"
+                                            @click="() => {model['chronology_start_time'] = new Date(); closeTimePickerByRefName('chronology_start_time'); }">
+                                            <b-icon
+                                                pack="far"
+                                                icon="clock"/>
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a
+                                            class="button is-outlined is-small"
+                                            @click="closeTimePickerByRefName('chronology_start_time')">
+                                            <i class="fas fa-check"></i><span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
+                        </div>
                         <div class="add_button">
                             <button
                                 class="button is-small is-outlined is-success"
@@ -493,6 +574,42 @@
                                 cols="30"
                                 rows="3"
                                 v-model="model.additional_comment"></textarea>
+                        </div>
+
+                        <div
+                            class="control is-narrow">
+                            <label :for="'chronology_end_time'">Время Завершения работ</label>
+                            <b-timepicker
+                                class="small-time-picker"
+                                icon="clock"
+                                icon-pack="far"
+                                :ref="'chronology_end_time'"
+                                type="text"
+                                :name="'chronology_end_time'"
+                                :value="model['chronology_end_time']"
+                                v-model="model['chronology_end_time']">
+                                <div
+                                    class="field is-grouped"
+                                    style="justify-content: space-between">
+                                    <p class="control">
+                                        <a
+                                            class="button is-primary is-small"
+                                            @click="() => {model['chronology_end_time'] = new Date(); closeTimePickerByRefName('chronology_end_time'); }">
+                                            <b-icon
+                                                pack="far"
+                                                icon="clock"/>
+                                            <span>Сейчас</span>
+                                        </a>
+                                    </p>
+                                    <p class="control">
+                                        <a
+                                            class="button is-outlined is-small"
+                                            @click="closeTimePickerByRefName('chronology_end_time')">
+                                            <i class="fas fa-check"></i><span>Принять</span>
+                                        </a>
+                                    </p>
+                                </div>
+                            </b-timepicker>
                         </div>
                     </div>
                 </div>

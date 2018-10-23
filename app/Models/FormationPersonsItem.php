@@ -4,6 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\FormationPersonsItem
+ *
+ * @property int $id
+ * @property int $staff_id
+ * @property int $report_id
+ * @property string|null $status
+ * @property string|null $rank
+ * @property string|null $date_to
+ * @property string|null $date_from
+ * @property string|null $comment
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Models\Staff $staff
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem getStat($staff_id, $date_begin, $date_end, $status = 'active')
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem rank($rank)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereDateFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereDateTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereRank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereReportId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereStaffId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationPersonsItem whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class FormationPersonsItem extends Model
 {
     protected $fillable = [
