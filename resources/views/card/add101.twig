@@ -202,24 +202,6 @@
                         </div>
                     </div>
 
-
-                    {#<div class="field">#}
-                    {#<p class="control">#}
-                    {#<label for="fire_object_id">Что горит</label>#}
-                    {#</p>#}
-                    {#<div class="select" style="width:50%; padding-right: 6px;">#}
-                    {#<select name="fire_object_id"#}
-                    {#id="fire_object_id"#}
-                    {#style="width: 100%">#}
-                    {#<option value="">-</option>#}
-                    {#{% for object in fire_object %}#}
-                    {#<option value="{{ object.id }}"#}
-                    {#{% if object.id == ticket.fire_object_id %}selected{% endif %}>{{ object.name }}</option>#}
-                    {#{% endfor %}#}
-                    {#</select>#}
-                    {#</div>#}
-                    {#</div>#}
-
                     <div class="field is-grouped">
                         <p class="control"
                            data-component="object-name-input"
@@ -617,45 +599,6 @@
                     {% if ticket and ticket.id %}
                         {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
                     {% endif %}
-                    {#<div>#}
-                        {#<table class="table is-expanded is-striped is-narrow is-fullwidth">#}
-                            {#<thead>#}
-                            {#<tr>#}
-                                {#<th>Службы</th>#}
-                                {#<th>Время сообщения</th>#}
-                                {#<th>Фамилия<br/>принявшего сообщение</th>#}
-                                {#<th>Время прибытия</th>#}
-                                {#<th></th>#}
-                            {#</tr>#}
-                            {#</thead>#}
-                            {#<tbody>#}
-                            {#{% for name,title in service_notify %}#}
-                                {#<tr>#}
-                                    {#<td>{{ title }}</td>#}
-                                    {#<td data-component="timepicker1"#}
-                                        {#data-value="{{ attribute(ticket, 'call_' ~  name  ~ '_time')|default('') }}">#}
-                                        {#<input type="text" id="{{ name }}_created_at" value="{{ ticket.getServicePlan(ticket.id, name).created_at|default(false) }}" readonly class="input">#}
-                                    {#</td>#}
-                                    {#<td>#}
-                                        {#<input type="text" class="input" name="name_{{ name }}_recv"#}
-                                               {#id="name_{{ name }}_recv"#}
-                                               {#value="{{ attribute(ticket, 'name_' ~  name  ~ '_recv')|default('') }}"/>#}
-                                               {#value="{{ ticket.getServicePlan(ticket.id, name).name_accepted|default(false) }}"/>#}
-                                    {#</td>#}
-                                    {#<td data-component="timepicker1"#}
-                                        {#data-value="{{ attribute(ticket, 'arrival_' ~  name )|default('') }}">#}
-                                        {#<input type="text" value="{{ ticket.getServicePlan(ticket.id, name).arrive_time|default(false) }}" readonly class="input">#}
-                                    {#</td>#}
-                                    {#<td>#}
-                                        {#<label for="">#}
-                                            {#<input type="checkbox" {{ ticket.getServicePlan(ticket.id, name)|default(false) ? 'disabled checked' : '' }} data-component="service-plan" @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ name }}')" class="checkbox">#}
-                                        {#</label>#}
-                                    {#</td>#}
-                                {#</tr>#}
-                            {#{% endfor %}#}
-                            {#</tbody>#}
-                        {#</table>#}
-                    {#</div>#}
                 </div>
                 <div id="tab_other" class="is-hidden">
                     <h5 class="subtitle">Обстановка с места пожара:</h5>

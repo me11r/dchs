@@ -52,10 +52,19 @@ class ServicePlanController extends Controller
     public function postSend(Request $request)
     {
         $all = $request->all();
-        $servicePlan = Ticket101ServicePlan::firstOrCreate([
-            'service_type_id' => $request->service_id,
-            'card_id' => $request->card_id,
-        ]);
+        if($request->cardType == 101){
+            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+                'service_type_id' => $request->service_id,
+                'card_id' => $request->card_id,
+            ]);
+        }
+        else{
+            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+                'service_type_id' => $request->service_id,
+                'card112_id' => $request->card_id,
+            ]);
+        }
+
         return response()->json($servicePlan);
     }
 
