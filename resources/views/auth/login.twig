@@ -29,7 +29,7 @@
                             {% endif %}
                         </div>
                         <div class="field">
-                            <label for="password" class="col-form-label">Пароль</label>
+                            <label for="password" class="label">Пароль</label>
                             <input id="password" type="password" class="input {{ errors.has('password') ? 'is-danger' : '' }}" name="password" required>
                             {% if errors.has('password') %}
                                 <span class="help is-danger">
@@ -38,15 +38,15 @@
                             {% endif %}
                         </div>
                         <div class="field">
-                        <label for="remember" class="checkbox">
+                        <label for="remember" class="checkbox label">
                             <input id="remember" class="checkbox" type="checkbox" name="remember" {{ old('remember') ? 'checking' : '' }}>
                                 Запомнить вход
                             </label>
                         </div>
                         <p></p>
                         <div class="field">
-                            <button type="submit" class="button is-primary is-outlined" style="width: 10rem">
-                                <i class="fa fa-sign-in"></i> Вход
+                            <button type="submit" class="button is-primary is-fullwidth">
+                                <i class="fas fa-sign-in"></i> Вход
                             </button>
                         </div>
                     </form>

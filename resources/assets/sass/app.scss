@@ -4,6 +4,16 @@
 @import "common";
 @import "printing";
 
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.page-body {
+  background-color: $white-bis;
+}
+
 .page-margin {
   margin: 1rem 2rem 0;
 }
@@ -68,8 +78,10 @@
   font-size: 30px;
 }
 
-.notices.is-top{
+.notices.is-top {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+
+@import "auth";

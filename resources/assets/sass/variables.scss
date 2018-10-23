@@ -1,14 +1,22 @@
 @import "../../../node_modules/bulma/sass/utilities/initial-variables";
 @import "../../../node_modules/bulma/sass/utilities/functions";
 
-$primary: hsl(219, 46%, 50%);
+$primary: #2A394F;
 $primary-invert: findColorInvert($primary);
-$green: hsl(115, 72%, 35%);
-
+$green: #03B977;
+$blueish: rgba(65, 171, 182, 0.1);
+$cyan: #15A4FA;
+$body-background-color: $primary;
 @import "../../../node_modules/bulma/sass/utilities/derived-variables";
 
 $pagination-current-background-color: $primary-invert;
 $pagination-current-color: $primary;
+$input-background-color: $blueish;
+$input-border-color: $grey-light;
+$label-color: $cyan;
+$navbar-background-color: $primary;
+$navbar-item-color: $primary-invert;
+$navbar-item-active-background-color: $cyan;
 
 
 $family-primary: "PT Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
