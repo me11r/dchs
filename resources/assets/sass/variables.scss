@@ -6,7 +6,12 @@ $primary-invert: findColorInvert($primary);
 $green: #03B977;
 $blueish: rgba(65, 171, 182, 0.1);
 $cyan: #15A4FA;
+
 $body-background-color: $primary;
+$body-size: 1.1rem;
+$body-line-height: 1.4;
+
+$custom-colors: ("basic":(#00c1c5, $white-bis));
 @import "../../../node_modules/bulma/sass/utilities/derived-variables";
 
 $pagination-current-background-color: $primary-invert;
@@ -17,6 +22,10 @@ $label-color: $cyan;
 $navbar-background-color: $primary;
 $navbar-item-color: $primary-invert;
 $navbar-item-active-background-color: $cyan;
+$table-striped-row-even-background-color: $blueish;
+$table-cell-border: $grey-light;
+$table-row-hover-background-color: darken($blueish, 10%);
+$table-striped-row-even-hover-background-color: darken($blueish, 10%);
 
 
 $family-primary: "PT Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
