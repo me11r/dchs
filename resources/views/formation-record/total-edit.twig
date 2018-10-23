@@ -92,6 +92,49 @@
                         </div>
 
                     </div>
+                    <div class="level-left">
+                        <div class="column">
+                            <h6 class="title" style="padding: 3px 15px">Ответственные по районным отделам ЧС г.Алматы</h6>
+                            <br>
+                            <table class="formation-record-table">
+                                <thead>
+                                <tr>
+                                    <th>Районный отдел ЧС</th>
+                                    <th>Должность, звание, позывной</th>
+                                    <th>Ф.И.О., телефон</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if formationDistrictManager is defined %}
+                                    {% for area in cityAreas %}
+                                        <tr>
+                                            <td>{{ area.name }}</td>
+
+                                            {% for item in formationDistrictManager.items %}
+                                                {% if item.city_area_id == area.id %}
+                                                    <td>
+                                                        {{ item.manager.position }}<br>
+                                                        {{ item.manager.rank }}<br>
+                                                        {{ item.manager.nickname }}<br>
+                                                    </td>
+                                                    <td>
+                                                        {{ item.manager.name }}<br>
+                                                        {% for phone in item.manager.phones %}
+                                                            {{ phone.phone }}<br>
+                                                        {% endfor %}
+                                                    </td>
+                                                {% else %}
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                     <p class="level-right">
                         <a href="{{ route('formation-record.index') }}"
                            style="margin-right: 10px"

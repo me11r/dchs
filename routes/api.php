@@ -14,6 +14,8 @@ Route::group(
         Route::get('101/get-tech', 'FormationTechController@index');
         Route::get('101/get-staff', 'FormationStaffController@index');
         Route::get('112-formation/get-staff', 'FormationController@staff_page');
+        Route::get('district-managers/get-staff', 'FormationController@staff_page_district_managers');
+
         Route::apiResource('hydrant', 'HydrantController');
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
