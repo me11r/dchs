@@ -86,10 +86,45 @@ html, body {
 
 @import "auth";
 
-.button.is-basic {
+.button.is-basic, .button.is-info {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   border-radius: 1px;
   &.is-main {
     text-transform: uppercase;
+  }
+}
+
+table.table.is-striped thead th {
+  text-transform: uppercase;
+  text-align: center;
+  border-bottom: 1px solid $primary;
+}
+
+.tabs.buttab {
+  border: none;
+  ul {
+    border: none;
+    padding-bottom: 4px;
+    border-radius: 0;
+    li {
+      border-radius: 0;
+      a {
+        border-radius: 0;
+        color: $primary;
+        text-transform: uppercase;
+        padding: .25rem 1rem;
+        border: none;
+        margin: 0;
+        &:hover {
+          color: $cyan;
+        }
+      }
+      &.is-active a {
+        border-radius: 0;
+        color: $cyan !important;
+        border: 1px solid $cyan !important;
+        box-shadow: 2px 2px 2px rgba(77,77,77,.3);
+      }
+    }
   }
 }

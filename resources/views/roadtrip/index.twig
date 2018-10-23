@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="section container">
     <h4 class="title">Активные путевые листы {{ _user.department.name|default('') }}</h4>
     <table class="table is-striped is-narrow is-fullwidth">
         <thead>
@@ -29,4 +30,5 @@
         </tbody>
     </table>
     {% include "_templates/pagination" with {'items': trips, 'per_page': per_page} %}
+    </div>
 {% endblock content %}
