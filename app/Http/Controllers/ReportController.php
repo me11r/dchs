@@ -156,7 +156,7 @@ class ReportController extends AuthorizedController
             }
 
             $table->addRow(-0.5, array('exactHeight' => -5));
-            dd($data);
+//            dd($data);
 
             foreach ($data['departments'] as $dept) {
 
