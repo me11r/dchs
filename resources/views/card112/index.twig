@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="section container">
     <div class="">
         <h4 class="title"
             style="padding: 3px 15px">Карточка 112
@@ -10,7 +11,7 @@
         </div>
         <div class="column is-narrow">
             <div style="border-bottom: 1px solid #dbdbdb">
-                <a href="{{ route('card112.create') }}" class="button is-success is-outlined"
+                <a href="{{ route('card112.create') }}" class="button is-basic is-main"
                    style="margin: 2px 10px 2px">
                     <i class="fas fa-plus"></i>&nbsp;Новая карточка
                 </a>
@@ -90,5 +91,6 @@
             {% endfor %}
         </table>
         {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+    </div>
     </div>
 {% endblock content %}
