@@ -1,6 +1,6 @@
 <template>
     <section
-        class="container"
+        class="container section"
         v-if="formDataExists">
         <h4
             class="title"

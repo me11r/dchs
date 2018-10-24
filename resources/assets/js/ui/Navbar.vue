@@ -246,14 +246,22 @@
 
 <script>
 import axios from 'axios';
-
+function getLocalRights() {
+    let rights = window.localStorage.getItem('preloaded_rights');
+    if (rights !== undefined) {
+        rights = JSON.parse(rights);
+    } else {
+        rights = [];
+    }
+    return rights;
+}
 export default {
     name: 'Navbar',
     data: function () {
         return {
             opened: false,
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            rights: []
+            rights: getLocalRights()
         };
     },
     computed: {
@@ -287,6 +295,7 @@ export default {
     mounted: function () {
         axios.get('/ajax/rights/list').then((response) => {
             this.rights = response.data;
+            window.localStorage.setItem('preloaded_rights', JSON.stringify(this.rights));
         });
     }
 
