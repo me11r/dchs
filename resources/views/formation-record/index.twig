@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="container section">
     <div class="level">
         <div class="level-left">
         <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;К строевым запискам</a>
@@ -48,5 +49,6 @@
             {% endfor %}
         </table>
         {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+    </div>
     </div>
 {% endblock content %}

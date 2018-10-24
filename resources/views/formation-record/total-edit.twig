@@ -1,6 +1,7 @@
 {% extends "layout/html" %}
 
 {% block content %}
+    <div class="section container">
     <div class="level">
         <div class="level-left">
             <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }} ({{ item.date|date('Y-m-d') }})</h4>
@@ -149,6 +150,7 @@
             </div>
         </div>
     </form>
+    </div>
 
     <script>
         function calculateSum() {
