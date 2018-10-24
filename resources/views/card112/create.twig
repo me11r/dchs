@@ -9,6 +9,7 @@
             incidentTypes: {{ incidentTypes | json_encode() | raw }},
             serviceTypes: {{ serviceTypes | json_encode() | raw }},
             model: {{ model | json_encode() | raw }},
+            servicePlans: {{ service_plans | json_encode() | raw }},
             method: 'POST',
             formRoute: '{{ route('card112.store') }}'
         };

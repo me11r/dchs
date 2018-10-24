@@ -3,7 +3,7 @@
     <div class="container" id="vue" data-department_value="{{ dept_id ?? '' }}">
         <div class="level" style="margin-top: 20px">
             <div class="level-left">
-                <h4 class="title">Личный состав от {{ report.report_date ?? '' }}</h4>
+                <h4 class="title">Личный состав от {{ report.report_date ?? 'now'|date('d-m-Y') }}</h4>
             </div>
         </div>
         <staff-formation-page-selector :shift-id="{{ shift_id }}" :ods="{{ ods }}"></staff-formation-page-selector>
