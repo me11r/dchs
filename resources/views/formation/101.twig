@@ -1,14 +1,19 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="container section">
     <div class="level">
         <div class="level-left">
-            <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;К строевым запискам</a>
+            <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;<span class="is-hidden-touch">К строевым запискам</span></a>
             <h4 class="title" style="padding: 3px 15px">Строевая записка СП и АСР</h4>
         </div>
-        <div class="level-right has-text-right"><a href="#" class="button is-success is-outlined"  style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Отчет по ЛС</a></div>
-        <div class="level-right has-text-right"><a href="#" class="button is-success is-outlined"  style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Отчет по технике</a></div>
+        <div class="level-right has-text-right">
+            <div class="field is-grouped">
+            <a href="#" class="button is-main is-info"  style="margin: 2px 10px 2px"><i class="fas fa-receipt"></i>&nbsp;Отчет по ЛС</a>
+            <a href="#" class="button is-main is-info"  style="margin: 2px 10px 2px"><i class="fas fa-receipt"></i>&nbsp;Отчет по технике</a>
+            </div>
+        </div>
     </div>
-    <table class="table is-fullwidth is-narrow is-hoverable">
+    <table class="table is-fullwidth is-narrow is-hoverable is-striped">
         <thead>
         <tr>
             <th>Дата</th>
@@ -17,16 +22,17 @@
         </tr>
         </thead>
         {% for report in reports %}
-            <tr class="{% if report.report_date == today %}is-primary{% else %}{% endif %}">
+            <tr class="{% if report.report_date == today %}is-primary{% elseif report.is_approved %}is-warning{% endif %}">
                 <td>{{ report.report_date }}</td>
                 <td class="has-text-right">{{ report.is_approved ? 'Утверждена' : 'Не утверждена' }}</td>
                 <td class="has-text-right">
-                    <a href="{{ url('formation/add101persons/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-user"></i>&nbsp;{{ read_only ? 'Смотреть' : 'Указать' }} личный состав</a>
-                    <a href="{{ url('formation/add101tech/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp; {{ read_only ? 'Смотреть' : 'Указать' }} технику</a>
-                    <a href="{{ url('/formation/view101/' ~ report.id) }}" class="button is-primary"><i class="fas fa-receipt"></i>&nbsp; Смотреть строевую записку</a>
+                    <a href="{{ url('formation/add101persons/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-small"><i class="fas fa-user"></i>&nbsp;{{ read_only ? 'Смотреть' : 'Указать' }} личный состав</a>
+                    <a href="{{ url('formation/add101tech/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-small"><i class="fas fa-truck"></i>&nbsp; {{ read_only ? 'Смотреть' : 'Указать' }} технику</a>
+                    <a href="{{ url('/formation/view101/' ~ report.id) }}" class="button is-basic is-small"><i class="fas fa-receipt"></i>&nbsp; Смотреть строевую записку</a>
                 </td>
             </tr>
         {% endfor %}
     </table>
     {% include "_templates/pagination" with {'items': reports, 'per_page': per_page} %}
+    </div>
 {% endblock content %}
