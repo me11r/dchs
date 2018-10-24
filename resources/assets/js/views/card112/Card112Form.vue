@@ -48,7 +48,7 @@
                                 <a
                                     :href="'/card/mapscreen'"
                                     target="_blank"
-                                    class="button is-small is-light">
+                                    class="button is-small is-basic">
                                     <i class="far fa-map"></i>&nbsp;Открыть карту
                                 </a>
                             </label>
