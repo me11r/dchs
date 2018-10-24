@@ -2,7 +2,7 @@
     <div class="field">
         <div class="add_button">
             <button
-                class="button is-small is-outlined is-success"
+                class="button is-small is-basic"
                 type="button"
                 @click.prevent="addEmptyItem()">
                 <i class="fa fa-plus"></i>&nbsp;Добавить
@@ -19,15 +19,15 @@
                     <label :for="getName('aircraft_id', item.id)">Тип основного пожарного а/М</label><br>
                     <div class="select">
                         <select
-                                required
-                                title=""
-                                :name="getName('aircraft_id', item.id)"
-                                :id="getName('aircraft_id', item.id)"
-                                v-model="item.aircraft_id">
+                            required
+                            title=""
+                            :name="getName('aircraft_id', item.id)"
+                            :id="getName('aircraft_id', item.id)"
+                            v-model="item.aircraft_id">
                             <option
-                                    v-for="vehicle in vehicles"
-                                    :key="'vehicle_' + vehicle.id"
-                                    :value="vehicle.id">{{ vehicle.name }} {{ vehicle.number }}
+                                v-for="vehicle in vehicles"
+                                :key="'vehicle_' + vehicle.id"
+                                :value="vehicle.id">{{ vehicle.name }} {{ vehicle.number }}
                             </option>
                         </select>
                     </div>
@@ -77,18 +77,36 @@
                 </div>
             </div>
 
-            <div v-if="block_type === 'repair'" class="field is-grouped">
+            <div
+                v-if="block_type === 'repair'"
+                class="field is-grouped">
                 <div class="control column">
                     <label :for="getName('comment', item.id)">Комментарий</label>
-                    <textarea class="textarea" v-model="item.comment" :name="getName('comment', item.id)" :id="getName('comment', item.id)" cols="10" rows="1"></textarea>
+                    <textarea
+                        class="textarea"
+                        v-model="item.comment"
+                        :name="getName('comment', item.id)"
+                        :id="getName('comment', item.id)"
+                        cols="10"
+                        rows="1"></textarea>
                 </div>
                 <div class="control column">
                     <label :for="getName('date_from', item.id)">С</label><br>
-                    <input v-model="item.date_from" :name="getName('date_from', item.id)" :id="getName('date_from', item.id)" class="control" type="date">
+                    <input
+                        v-model="item.date_from"
+                        :name="getName('date_from', item.id)"
+                        :id="getName('date_from', item.id)"
+                        class="control"
+                        type="date">
                 </div>
                 <div class="control column">
                     <label :for="getName('date_to', item.id)">По</label><br>
-                    <input v-model="item.date_to" :name="getName('date_to', item.id)" :id="getName('date_to', item.id)" class="control" type="date">
+                    <input
+                        v-model="item.date_to"
+                        :name="getName('date_to', item.id)"
+                        :id="getName('date_to', item.id)"
+                        class="control"
+                        type="date">
                 </div>
             </div>
         </div>
@@ -119,7 +137,7 @@ export default {
         records: {
             type: Array,
             default: () => []
-        },
+        }
     },
     data() {
         return {
@@ -128,20 +146,20 @@ export default {
             block_type_: this.block_type,
             vehicles_: this.vehicles,
             report_id_: this.report_id,
-            month_names: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-            day_names: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+            month_names: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+            day_names: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 
         };
     },
     components: {
         'b-icon': Buefy['Icon'],
-        'b-datepicker': Buefy['Datepicker'],
+        'b-datepicker': Buefy['Datepicker']
     },
     methods: {
-        getName(control, id){
+        getName(control, id) {
             return 'tech' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
-        defaultDateFormatter: (date) => { moment(date).format("DD/MM/YYYY")},
+        defaultDateFormatter: (date) => { moment(date).format('DD/MM/YYYY'); },
         defaultDateFormatter2: (date) => { return dt.toLocaleDateString('ru-RU'); },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
@@ -168,7 +186,7 @@ export default {
             records.map((item) => {
                 this.addItem({
                     date_begin: moment(item.date_begin),
-                    date_end: moment(item.date_end),
+                    date_end: moment(item.date_end)
                 });
             });
         },
@@ -185,7 +203,7 @@ export default {
             axios.get('/api/air-rescue/get-tech', {
                 params: {
                     status: self.block_type_,
-                    id: self.report_id_,
+                    id: self.report_id_
                 }
             }).then((resp) => {
                 // for (let item in resp.data) {
