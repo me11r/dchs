@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container section">
+    <div class="container">
         <form action="" method="post">
             {{ csrf_field() }}
             <div class="modal is-active" role="document">
@@ -8,7 +8,7 @@
                     <div class="form-modal-header has-background-danger has-text-white">
                         <h5 class="subtitle">Подмена пользователя</h5>
                     </div>
-                    <div class="form-modal-body">
+                    <div class="form-modal-body page-body">
                         <div class="media">
                         <i class="fa fa-4x fa-user-secret d-flex mr-3"></i>
                         <p class="media-body">Уверены, что хотите войти под видом пользователя {{ user.name }}?</p>
