@@ -815,16 +815,19 @@ export default {
 
         console.dir(this.servicePlans)
 
-        this.servicePlans.forEach((plan) => {
-            this.serviceTypes.forEach((item) => {
-                if (plan.service_type_id === item.id) {
-                    this.services[item.id] = {sent_at: plan.created_at};
-                } else {
-                    this.services[item.id] = {sent_at: ''};
-                }
-                // console.dir(this.services);
-            });
-        })
+        if (this.servicePlans !== undefined) {
+            this.servicePlans.forEach((plan) => {
+                this.serviceTypes.forEach((item) => {
+                    if (plan.service_type_id === item.id) {
+                        this.services[item.id] = {sent_at: plan.created_at || moment().format('d-m-Y')};
+                    } else {
+                        this.services[item.id] = {sent_at: ''};
+                    }
+                    // console.dir(this.services);
+                });
+            })
+        }
+
 
     },
     mounted() {
