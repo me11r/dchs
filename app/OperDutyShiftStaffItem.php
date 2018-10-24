@@ -21,7 +21,7 @@ class OperDutyShiftStaffItem extends Model
 
     public function staff()
     {
-        return $this->belongsTo(Staff::class, 'staff_id');
+        return $this->belongsTo(OperDutyShiftStaff::class, 'staff_id');
     }
 
     public function shift()

@@ -55,6 +55,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'oper_duty_shifts',
                 'model' => \App\OperDutyShift::class
             ],
+            [
+                'title' => 'ЛС ОДС',
+                'table' => 'oper_duty_shift_staffs',
+                'model' => \App\OperDutyShiftStaff::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();
