@@ -17,13 +17,6 @@
             <div class="field is-grouped">
                 <div class="control column is-four-fifths">
                     <label :for="getName('manager_id')">Ф.И.О.</label><br>
-                    <!--<input required
-                           type="text"
-                           class="input"
-                           :name="getName('manager_id')"
-                           :id="getName('manager_id')"
-                           v-model="item.phone"
-                    />-->
 
                     <div class="select">
                         <select
@@ -31,7 +24,7 @@
                                 title=""
                                 :name="getName('manager_id')"
                                 :id="getName('manager_id')"
-                                v-model="item.id">
+                                v-model="item.manager_id">
                             <option
                                     v-for="s in staff_"
                                     :key="'staff_' + s.id"
@@ -120,6 +113,8 @@
                     }
                 }).then((resp) => {
                     self.records_ = resp.data;
+                    console.dir(resp.data)
+                    console.dir(this.staff_)
                     self.$parent.$emit('totalSet', resp.data.length);
 
                     if (self.isActive_ === true) {
