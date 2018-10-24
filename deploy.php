@@ -53,8 +53,8 @@ task('deploy:public_uploads', function () {
 });
 
 desc('Migrate selected seeder for staging');
-task('deploy:db:seed', function () {
-    $output = run('{{bin/php}} {{release_path}}/artisan db:seed --force');
+task('deploy:db:seed', function (){
+    $output = run('{{bin/php}} {{release_path}}/artisan db:seed --force --class=StagingDeploySeeder');
     writeln('<info>' . $output . '</info>');
 });
 

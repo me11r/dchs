@@ -16,7 +16,7 @@
                 type="hidden"
                 name="_token"
                 :value="csrf">
-            <div class="tabs is-boxed">
+            <div class="tabs buttab is-boxed">
                 <ul>
                     <li :class="{'is-active': currentTabIndex === 0}">
                         <a @click="setTab(0)"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
@@ -629,13 +629,13 @@
                         <button
                             id="nexttab"
                             type="button"
-                            class="button is-info is-main"><i class="fas fa-arrow-right"></i>Следующий раздел
+                            class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;Следующий раздел
                         </button>
                     </p>
                     <p class="level-right">
                         <button
                             type="submit"
-                            class="button is-basic is-main"><i class="fas fa-check"></i>Сохранить
+                            class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
                     </p>
                 </div>
