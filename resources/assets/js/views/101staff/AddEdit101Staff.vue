@@ -2,7 +2,7 @@
     <div class="field">
         <div class="add_button">
             <button
-                class="button is-small is-outlined is-success"
+                class="button is-small is-main is-basic"
                 type="button"
                 @click.prevent="addEmptyItem()">
                 <i class="fa fa-plus"></i>&nbsp;Добавить
@@ -39,7 +39,7 @@
                     <label>Удалить</label>
 
                     <button
-                        class="button is-small is-outlined is-danger square-button-36"
+                        class="button is-small is-danger square-button-36"
                         @click.prevent="removeItem(item.id)"
                         type="button"
                         title="Удалить">
