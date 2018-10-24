@@ -222,7 +222,7 @@
                                     </p>
                                     <p class="control">
                                         <a
-                                            class="button is-outlined is-small"
+                                            class="button is-basic is-small"
                                             @click="$refs['call_time_picker'].close()">
                                             <i class="fas fa-check"></i><span>Принять</span>
                                         </a>
@@ -239,7 +239,7 @@
                                 <tr>
                                     <th>Службы</th>
                                     <th>Время сообщения</th>
-                                    <th>Фамилия<br/>принявшего сообщение</th>
+                                    <th>Фамилия<br>принявшего сообщение</th>
                                     <th>Время прибытия</th>
                                     <th>Путевой лист отправлен</th>
                                     <th>Уведомление отправлено</th>
@@ -249,38 +249,43 @@
                                 <tr v-for="service in serviceTypes">
                                     <td>{{ service.name }}</td>
                                     <td>
-                                        <input type="text"
-                                               readonly
-                                               v-model="service.message_time"
-                                               :id="service.id + + '_message_time'"
-                                               class="input">
+                                        <input
+                                            type="text"
+                                            readonly
+                                            v-model="service.message_time"
+                                            :id="service.id + + '_message_time'"
+                                            class="input">
                                     </td>
                                     <td>
-                                        <input type="text"
-                                               class="input"
-                                               :id="service.id + + '_name'"
-                                               v-model="service.name_accepted">
+                                        <input
+                                            type="text"
+                                            class="input"
+                                            :id="service.id + + '_name'"
+                                            v-model="service.name_accepted">
                                     </td>
                                     <td>
-                                        <input type="text"
-                                               v-model="service.arrive_time"
-                                               readonly
-                                               class="input">
+                                        <input
+                                            type="text"
+                                            v-model="service.arrive_time"
+                                            readonly
+                                            class="input">
                                     </td>
                                     <td>
 
-                                        <input type="text"
+                                        <input
+                                            type="text"
                                             v-model="services[service.id].sent_at"
                                         >
 
                                     </td>
                                     <td>
                                         <label for="">
-                                            <input type="checkbox"
-                                                    @change="sendOneCheckService($event, model.id, service.id)"
-                                                   value="1"
+                                            <input
+                                                type="checkbox"
+                                                @change="sendOneCheckService($event, model.id, service.id)"
+                                                value="1"
 
-                                                   class="checkbox">
+                                                class="checkbox">
                                         </label>
                                     </td>
                                 </tr>
@@ -624,13 +629,13 @@
                         <button
                             id="nexttab"
                             type="button"
-                            class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>Следующий раздел
+                            class="button is-info is-main"><i class="fas fa-arrow-right"></i>Следующий раздел
                         </button>
                     </p>
                     <p class="level-right">
                         <button
                             type="submit"
-                            class="button is-success"><i class="fas fa-check"></i>Сохранить
+                            class="button is-basic is-main"><i class="fas fa-check"></i>Сохранить
                         </button>
                     </p>
                 </div>
@@ -723,7 +728,7 @@ export default {
                 axios
                     .post('/api/notification/ticket112send', {
                         notification_id: service,
-                        cardType: 101,
+                        cardType: 101
                     })
                     .then((response) => {
                         let data = response.data;
@@ -813,7 +818,7 @@ export default {
             this.servicePlans = window.card112FormData.servicePlans;
         }
 
-        console.dir(this.servicePlans)
+        console.dir(this.servicePlans);
 
         if (this.servicePlans !== undefined) {
             this.servicePlans.forEach((plan) => {
@@ -825,10 +830,8 @@ export default {
                     }
                     // console.dir(this.services);
                 });
-            })
+            });
         }
-
-
     },
     mounted() {
         this.yandexMapsBus = new YandexMapsBus();
@@ -846,7 +849,6 @@ export default {
         globalBus.$on(AREA_ID_FOUND, (value) => {
             this.model.city_area_id = value;
         });
-
     }
 };
 </script>
