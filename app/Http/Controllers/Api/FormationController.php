@@ -14,6 +14,7 @@ class FormationController extends Controller
         $data = $request->all();
         $resp = OperDutyShiftStaffItem::rank($request->rank)
             ->where('shift_id', $request->shift_id)
+            ->with(['staff'])
             ->date($request->date)
             ->get();
         return response()->json($resp);
@@ -24,6 +25,7 @@ class FormationController extends Controller
         $data = $request->all();
         $resp = FormationDistrictManagerItem::where('report_id',$request->report_id)
             ->where('city_area_id', $request->city_area_id)
+            ->with(['manager'])
             ->get();
         return response()->json($resp);
     }
