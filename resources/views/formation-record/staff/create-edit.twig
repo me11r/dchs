@@ -8,7 +8,6 @@
         </div>
         <staff-formation-page-selector :shift-id="{{ shift_id }}" :ods="{{ ods }}"></staff-formation-page-selector>
 
-            <input type="hidden" :value="fieldsComputed">
             <form action="" method="post">
                 {{ csrf_field() }}
                 <input type="hidden" name="shift_id" value="{{ shift_id }}"/>

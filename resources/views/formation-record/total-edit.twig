@@ -105,7 +105,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% if formationDistrictManager is defined %}
+                                {% if formationDistrictManager is defined and formationDistrictManager %}
                                     {% for area in cityAreas %}
                                         <tr>
                                             <td>{{ area.name }}</td>
