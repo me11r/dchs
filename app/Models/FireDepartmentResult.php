@@ -41,12 +41,22 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereTicket101Id($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $recommended
+ * @property int|null $tech_id
+ * @property string|null $accept_time
+ * @property-read \App\Models\FormationTechItem|null $tech
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult isDispatched($search = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult recommended($search = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereAcceptTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereRecommended($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereTechId($value)
  */
 class FireDepartmentResult extends Model
 {
     protected $fillable = [
         'ticket101_id',
         'fire_department_id',
+        'accept_time',
         'out_time',
         'arrive_time',
         'loc_time',

@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div id="vue">
+    <div id="vue" class="section container">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
@@ -13,7 +13,6 @@
                             :fire_departments="{{ fire_departments }}"
                             :fire_levels="{{ fire_levels }}"
                     >
-
                     </schedule>
                     <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                         <div class="level">

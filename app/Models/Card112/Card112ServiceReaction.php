@@ -2,6 +2,7 @@
 
 namespace App\Models\Card112;
 
+use App\Models\ServiceType;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112ServiceReaction whereServiceTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112ServiceReaction whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Card112\Card112 $card112
+ * @property-read \App\Models\ServiceType $service_type
  */
 class Card112ServiceReaction extends Model
 {
@@ -39,4 +42,14 @@ class Card112ServiceReaction extends Model
         'departure_time',
         'arrival_time'
     ];
+
+    public function card112()
+    {
+        return $this->belongsTo(Card112::class, 'card112_id');
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
+    }
 }

@@ -1,9 +1,9 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
+    <div class="container section">
         <div class="panel">
             <h4 style="" class="title">Справочники</h4>
-            <table class="table is-narrow is-hoverable is-selectable">
+            <table class="table is-narrow is-striped is-hoverable is-selectable">
                 <thead>
                 <tr>
                     <th>Справочник</th>
@@ -14,28 +14,50 @@
                     <tr>
                         <td><i class="fas fa-list-ol">
                             </i>&nbsp;{{ dict.title }}</td>
-                        <td><a class="button is-outlined is-small" href="{{ url('dictionaries/list/' ~ dict.id) }}">
+                        <td><a class="button is-basic is-small" href="{{ url('dictionaries/list/' ~ dict.id) }}">
                                 <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
                     </tr>
-                {% else %}
-                    <li><h3 class="is-danger">Нет справочников</h3></li>
                 {% endfor %}
                 <tr>
                     <td><i class="fas fa-list-ol">
-                        </i>&nbsp; Типы инцидентов</td>
-                    <td><a class="button is-outlined is-small" href="/dictionaries/incident-types">
+                        </i>&nbsp; Пожарные части</td>
+                    <td><a class="button is-basic is-small" href="/dictionaries/fire-departments">
                             <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
                 </tr>
                 <tr>
                     <td><i class="fas fa-list-ol">
-                        </i>&nbsp; Спец планы</td>
-                    <td><a class="button is-outlined is-small" href="/dictionaries/operational-plans">
+                        </i>&nbsp; Типы инцидентов</td>
+                    <td><a class="button is-basic is-small" href="/dictionaries/incident-types">
+                            <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-list-ol">
+                        </i>&nbsp; Опер планы</td>
+                    <td><a class="button  is-basic is-small" href="/dictionaries/operational-plans">
                             <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
                 </tr>
                 <tr>
                     <td><i class="fas fa-list-ol">
                         </i>&nbsp; Опер карточки</td>
-                    <td><a class="button is-outlined is-small" href="/dictionaries/operational-cards">
+                    <td><a class="button  is-basic is-small" href="/dictionaries/operational-cards">
+                            <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-list-ol">
+                        </i>&nbsp; Типы воздушных судов</td>
+                    <td><a class="button  is-basic is-small" href="/dictionaries/aircraft-types">
+                            <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-list-ol">
+                        </i>&nbsp; Воздушные суда</td>
+                    <td><a class="button is-basic is-small" href="/dictionaries/aircrafts">
+                            <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-list-ol">
+                        </i>&nbsp; Ответственные по районам</td>
+                    <td><a class="button is-outlined is-small" href="/dictionaries/district-managers">
                             <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
                 </tr>
             </table>

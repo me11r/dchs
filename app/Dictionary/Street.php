@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\Street whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\Street whereName($value)
  * @mixin \Eloquent
+ * @property int|null $city_micro_area_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\Street whereCityMicroAreaId($value)
  */
 class Street extends Model
 {

@@ -21,4 +21,12 @@ class FormationTechController extends Controller
             ->get();
         return response()->json($resp);
     }
+
+    public function rememberTech(Request $request)
+    {
+        $card_id = $request->card_id;
+        $tech_id = $request->tech_id;
+
+
+    }
 }

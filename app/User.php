@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\AccessDeniedException;
+use App\Models\ServiceType;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -43,6 +44,18 @@ use Illuminate\Support\Facades\Auth;
  * @property int|null $fire_department_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereFireDepartmentId($value)
  * @property-read \App\FireDepartment $department
+ * @property int|null $service_type_id
+ * @property int|null $role_id
+ * @property-read \App\Role|null $role
+ * @property-read \App\Models\ServiceType|null $service_type
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Staff[] $staff
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Vehicle[] $vehicles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User anyRole($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User isAdmin()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User isRole($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeviceToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRoleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereServiceTypeId($value)
  */
 class User extends Authenticatable
 {
@@ -60,7 +73,8 @@ class User extends Authenticatable
         'last_login',
         'fire_department_id',
         'role_id',
-        'device_token'
+        'device_token',
+        'service_type_id'
     ];
 
     /**
@@ -100,6 +114,23 @@ class User extends Authenticatable
             if($user->role->name === $role){
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    public function scopeAnyRole($q, $role)
+    {
+        $user = Auth::user();
+        if($user && $user->role){
+            if(is_array($role)){
+                $query = $user->role()->whereIn('name', $role)->exists();
+            }
+            else{
+                $query = $user->role()->where('name', $role)->exists();
+            }
+
+            return $query;
         }
 
         return false;
@@ -176,6 +207,11 @@ class User extends Authenticatable
         catch (\Exception $e){
             return null;
         }
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
     }
 
     /*public function canRole($role = null)

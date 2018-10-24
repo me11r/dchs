@@ -11,6 +11,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Dictionary\CityArea $city_area
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CityMicroArea name($title)
  * @mixin \Eloquent
+ * @property int $id
+ * @property string $name
+ * @property int|null $city_area_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CityMicroArea whereCityAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CityMicroArea whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CityMicroArea whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CityMicroArea whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CityMicroArea whereUpdatedAt($value)
  */
 class CityMicroArea extends Model
 {

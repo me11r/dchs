@@ -6,27 +6,49 @@ export default function bindServicePlan() {
     autoc.forEach((element) => {
         return new Vue({
             el: element,
-            data: {
-            },
+            data: {},
             methods: {
-                sendOneCheckService(event, cardId, service) {
-                    // let date = new Date();
-                    // let dateFormatted = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-                    // console.dir(dateFormatted);
+                sendOneCheckService(event, cardId, service, notificationId) {
+                    if (event.target.checked) {
+                        axios
+                            .post('/service-plans/send', {
+                                card_id: cardId,
+                                service_id: service,
+                                cardType: 101
+                            })
+                            .then((response) => {
+                            })
+                            .catch(() => {
+                            });
 
-                    axios.post('/service-plans/send', {
-                        card_id: cardId,
-                        service: service
-                    }).then((response) => {
-                        let data = response.data;
-                        let id = service + '_created_at';
-
-                        document.querySelector(`[id="${id}"]`).value = data.created_at;
-
-                        }).catch(() => {
-                    });
+                        axios
+                            .post('/api/notification/ticket101send', {
+                                notification_id: notificationId,
+                                cardType: 101,
+                            })
+                            .then((response) => {
+                                let data = response.data;
+                                if (data['success']) {
+                                    document.querySelector(`[id="${notificationId + '_message_time'}"]`).value = data['time'];
+                                    document.querySelector(`[id="${notificationId + '_name'}"]`).value = data['name'];
+                                } else {
+                                    this.$snackbar.open({
+                                        message: data['message'],
+                                        type: 'is-danger',
+                                        duration: 3000
+                                    });
+                                }
+                            })
+                            .catch(() => {
+                                this.$snackbar.open({
+                                    message: 'Произошла ошибка во время отправки уведомления для "' + service + '"',
+                                    type: 'is-danger',
+                                    duration: 3000
+                                });
+                            });
+                    }
                 }
-            },
+            }
         });
     });
 }

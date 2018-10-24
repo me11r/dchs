@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\AccessDeniedException;
 use App\FireDepartment;
+use App\Models\ServiceType;
 use App\Office;
 use App\Right;
 use App\Rights\Group;
@@ -54,6 +55,7 @@ class AdminController extends AuthorizedController
         $rights = Right::with('group')->orderBy('right_group_id')->get();
         $roles = Role::all();
         $fire_departments = FireDepartment::all();
+        $service_types = ServiceType::all();
         $user = User::findOrNew($user_id);
         if (($user_id !== null) and (!$user->exists)) // not new, but don't exists
         {
@@ -61,6 +63,7 @@ class AdminController extends AuthorizedController
         }
         $this->set('rights', $rights)
             ->set('roles', $roles)
+            ->set('service_types', $service_types)
             ->set('fire_departments', $fire_departments)
             ->set('user', $user);
     }

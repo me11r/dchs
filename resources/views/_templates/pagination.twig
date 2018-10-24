@@ -4,11 +4,11 @@
         <div class="column">
             {{ items.appends({'per_page': per_page}).links() | raw }}
         </div>
-        <div class="column is-one-quarter">
+        <div class="column is-one-third">
             <form method="get" id="pagination_change_form">
                 <div class="field is-horizontal">
                     <div class="field-label">
-                        <label class="label" for="per_page">Записей на страницу&nbsp;</label>
+                        <label class="label" for="per_page"><i class="fas fa-file-alt fa-fw fa-2x"></i></label>
                     </div>
                     <div class="field-1">
                         <div class="field is-narrow">

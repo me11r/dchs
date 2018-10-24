@@ -17,14 +17,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ mix('assets/app.css') }}">
 </head>
-<body>
-<div class="navbar auth-navbar">
-    <div class="navbar-brand">
-        <a href="{{ url('/') }}" class="navbar-item">
-            <i class="fas fa-tty"></i>
-        </a>
-    </div>
-</div>
+<body class="minimal">
 {% block content %}{% endblock content %}
 </body>
 </html>

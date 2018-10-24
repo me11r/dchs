@@ -53,6 +53,35 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereUpdatedAt($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport todayRecords()
+ * @property string|null $total
+ * @property string|null $active
+ * @property string|null $head_guards
+ * @property string|null $commander_squads
+ * @property string|null $drivers
+ * @property string|null $privates
+ * @property string|null $dispatchers
+ * @property string|null $vacation
+ * @property string|null $study
+ * @property string|null $maternity
+ * @property string|null $sick
+ * @property string|null $business_trip
+ * @property string|null $other
+ * @property string|null $gas_smoke_protection_service
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FormationPersonsItem[] $formation_person_items
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereBusinessTrip($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereCommanderSquads($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereDispatchers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereDrivers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereGasSmokeProtectionService($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereHeadGuards($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereMaternity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereOther($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport wherePrivates($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereSick($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereStudy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereVacation($value)
  */
 class FormationPersonsReport extends Model
 {

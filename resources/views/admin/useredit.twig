@@ -1,6 +1,6 @@
 {% extends 'layout/html' %}
 {% block content %}
-    <div class="container">
+    <div class="container section">
         <form action="{{ url('admin/users/edit/' ~ user.id|default('')) }}" method="post" id="add_user_form">
             {{ csrf_field() }}
             <h4 class="title">Редактирование пользователя</h4>
@@ -50,6 +50,22 @@
                                 <option value=""></option>
                                 {% for dept in fire_departments %}
                                     <option {% if user.fire_department_id is defined and user.fire_department_id == dept.id %} selected {% endif %} value="{{ dept.id }}">{{ dept.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <div class="field">
+
+                        <label for="role_id">Доступ в рамках службы взаимодействия</label>
+                        <p>Оставить пустым для доступа ко всем справочникам</p>
+                        <div class="select">
+                            <select name="service_type_id" id="service_type_id">
+                                <option value=""></option>
+                                {% for dept in service_types %}
+                                    <option {% if user.service_type_id is defined and user.service_type_id == dept.id %} selected {% endif %} value="{{ dept.id }}">{{ dept.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>

@@ -1,16 +1,12 @@
 {% extends "layout/html" %}
 {% block content %}
     <style>
-        .emergency-situation-view {
-            margin: 20px 0 0 20px;
-        }
-
         .emergency-situation-view p {
             margin: 5px 0 0 0;
         }
     </style>
 
-    <div class="emergency-situation-view">
+    <div class="emergency-situation-view section container">
         <p style="text-align: center; margin-bottom: 20px"><b>Экстренная информация по чрезвычайной ситуации</b></p>
         <p><b>Вид чрезвычайной ситуации (согласно классификатора ЧС):</b>&nbsp;{{ item.incident_type }}</p>
         <p><b>Дата происшествия:</b>&nbsp;{{ item.date }}</p>

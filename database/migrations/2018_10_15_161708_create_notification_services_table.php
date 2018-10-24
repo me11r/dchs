@@ -26,14 +26,6 @@ class CreateNotificationServicesTable extends Migration
 
             $table->timestamps();
         });
-
-        (new App\Dictionary())
-            ->fill([
-                'title' => 'Уведомляемые службы',
-                'table' => 'notification_services',
-                'model' => \App\Models\NotificationService::class
-            ])
-            ->save();
     }
 
     /**

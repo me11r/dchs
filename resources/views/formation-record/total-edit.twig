@@ -1,6 +1,7 @@
 {% extends "layout/html" %}
 
 {% block content %}
+    <div class="section container">
     <div class="level">
         <div class="level-left">
             <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }} ({{ item.date|date('Y-m-d') }})</h4>
@@ -62,8 +63,79 @@
                 </tbody>
             </table>
 
+
             <div class="panel bottom_panel">
-                <div class="level" style="float:right; margin: 20px">
+                <div class="level" style="">
+                    <div class="level-left">
+                        <div class="column">
+                            <h6 class="title" style="padding: 3px 15px">Дежурная смена УЕДДС ДЧС г.Алматы КЧС МВД РК</h6>
+                            <br>
+                            <table class="formation-record-table">
+                                <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>ФИО</th>
+                                    <th>Должность</th>
+                                    <th>Направление</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in dutyShiftItems %}
+                                        <tr>
+                                            <td>{{ i.shift.name }}</td>
+                                            <td>{{ i.staff.name }}</td>
+                                            <td>{{ i.rankHumanFormat}}</td>
+                                            <td>{{ i.direction }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="level-left">
+                        <div class="column">
+                            <h6 class="title" style="padding: 3px 15px">Ответственные по районным отделам ЧС г.Алматы</h6>
+                            <br>
+                            <table class="formation-record-table">
+                                <thead>
+                                <tr>
+                                    <th>Районный отдел ЧС</th>
+                                    <th>Должность, звание, позывной</th>
+                                    <th>Ф.И.О., телефон</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% if formationDistrictManager is defined and formationDistrictManager %}
+                                    {% for area in cityAreas %}
+                                        <tr>
+                                            <td>{{ area.name }}</td>
+
+                                            {% for item in formationDistrictManager.items %}
+                                                {% if item.city_area_id == area.id %}
+                                                    <td>
+                                                        {{ item.manager.position }}<br>
+                                                        {{ item.manager.rank }}<br>
+                                                        {{ item.manager.nickname }}<br>
+                                                    </td>
+                                                    <td>
+                                                        {{ item.manager.name }}<br>
+                                                        {% for phone in item.manager.phones %}
+                                                            {{ phone.phone }}<br>
+                                                        {% endfor %}
+                                                    </td>
+                                                {% else %}
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                     <p class="level-right">
                         <a href="{{ route('formation-record.index') }}"
                            style="margin-right: 10px"
@@ -78,6 +150,7 @@
             </div>
         </div>
     </form>
+    </div>
 
     <script>
         function calculateSum() {

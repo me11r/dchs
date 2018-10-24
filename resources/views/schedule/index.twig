@@ -1,17 +1,17 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
+    <div class="container section">
         <div class="panel">
-            <h4 style="" class="title">Пожарные части (расписание выездов подразделений)</h4>
-            <h5>
-                <a href="/dictionaries/edit/1" class="button is-success"><i class="fas fa-plus"></i>&nbsp;Создать ПЧ</a>
-            </h5>
-            <table class="table is-narrow is-hoverable is-selectable">
+            <div class="level">
+                <div class="level-left"><h4 style="" class="title">Пожарные части (расписание выездов подразделений)</h4></div>
+                <div class="level-right"><a href="/dictionaries/edit/1" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать ПЧ</a></div>
+            </div>
+            <table class="table is-striped is-narrow is-hoverable is-selectable">
                 <thead>
                 <tr>
                     <th>Название</th>
                     <th>Район</th>
-                    <th></th>
+                    <th>&nbsp;</th>
                 </tr>
                 </thead>
                 {% for item in items %}
@@ -20,10 +20,10 @@
                             </i>&nbsp;{{ item.title }}</td>
                         <td>{{ item.city_area.name ?? null }}</td>
                         <td>
-                            <a class="button is-outlined is-small" href="{{ route('schedules.edit', item.id) }}">
+                            <a class="button is-basic is-small" href="{{ route('schedules.edit', item.id) }}">
                                 <i class="fas fa-edit"></i>&nbsp;
                                 Редактировать расписание</a>
-                            <a class="button is-outlined is-small" href="/dictionaries/edit/1/{{ item.id }}">
+                            <a class="button is-info is-small" href="/dictionaries/edit/1/{{ item.id }}">
                                 <i class="fas fa-adjust"></i>&nbsp;
                                 Редактировать ПЧ</a>
                         </td>

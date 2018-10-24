@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="section container">
     <h3 class="title">Строевые записки</h3>
     <table class="table is-narrow is-expanded is-hoverable is-striped">
         <thead>
@@ -83,7 +84,7 @@
             <tr>
                 <td>5</td>
                 <td>АО "Казавиаспас"</td>
-                <td><a href="{{ url('formation-record/air_rescue') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
+                <td><a href="{{ url('formation/air-rescue') }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp;Открыть</a></td>
                 <td>
                     <label>
                         {% if air_filled > 0 %}
@@ -130,4 +131,5 @@
 
         </tbody>
     </table>
+    </div>
 {% endblock content %}

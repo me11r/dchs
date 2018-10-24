@@ -1,12 +1,11 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="section container-fluid">
     <div class="panel">
         <div class="level" style="padding: 10px">
             <div class="level-left">
                 <h4 class="title">Строевая записка от {{ report.report_date }}</h4>
             </div>
-
-
             <div class="level-right has-text-left">
                 {% if user.hasRight(20) %}
                     {#{% if not report.is_approved %}#}
@@ -74,8 +73,8 @@
 
                 </tr>
                 </thead>
-                {% for dept in departments %}
-                    <tr>
+                {% for dept in departments if dept.id != 13 %}
+                    <tr {% if dept.tech_action|length == 0 %} style="background-color: #ff3317" {% endif %}>
                         <td>{{ dept.title }}</td>
 
                         {% for ppl in people_fields %}
@@ -223,6 +222,7 @@
             <p><span class="has-text-weight-bold">3 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Государственный архив РК - {% for key, p in dept13_people.post3_state_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
             <p><span class="has-text-weight-bold">4 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Национальный Банк РК - {% for key, p in dept13_people.post4_national_bank|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
+    </div>
     </div>
     {#<script#}
             {#src="https://code.jquery.com/jquery-3.3.1.min.js"#}

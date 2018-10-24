@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="section container">
     <h4 class="title">Активные путевые листы {{ _user.department.name|default('') }}</h4>
     <table class="table is-striped is-narrow is-fullwidth">
         <thead>
@@ -16,7 +17,7 @@
             <tr>
                 <td>{{ trip.id }}</td>
                 <td>{{ trip.department.name|default('-') }}</td>
-                <td>{{ trip.ticket.location|default('-') }} {% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>
+                <td>{{ trip.ticket.location|default('-') }} {% if trip.ticket.crossroad_1_id is defined %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>
                 <td>{{ trip.created_at|date('d.m.Y H:i') }}</td>
                 <td class="has-text-right"><a href="{{ url('/roadtrip/view/' ~ trip.id) }}" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой
                         лист</a></td>
@@ -29,4 +30,5 @@
         </tbody>
     </table>
     {% include "_templates/pagination" with {'items': trips, 'per_page': per_page} %}
+    </div>
 {% endblock content %}

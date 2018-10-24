@@ -21,6 +21,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel whereUpdatedAt($value)
  * @mixin \Eloquent | Builder
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel name($title)
+ * @property \Carbon\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireLevel onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireLevel whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireLevel withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireLevel withoutTrashed()
  */
 class FireLevel extends Model
 {

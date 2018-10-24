@@ -99,6 +99,78 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereUpdatedAt($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport todayRecords()
+ * @property string|null $device
+ * @property string|null $motor_water_pump
+ * @property string|null $motor_mud_pump
+ * @property string|null $firehose_125
+ * @property string|null $firehose_75
+ * @property string|null $firehose_77
+ * @property string|null $firehose_51
+ * @property string|null $barrel_stationary
+ * @property string|null $barrel_portable
+ * @property string|null $pgs_600
+ * @property string|null $purga
+ * @property string|null $radio_station_portable
+ * @property string|null $flashlight
+ * @property string|null $searchlight
+ * @property string|null $l1
+ * @property string|null $tok
+ * @property string|null $knapsack_devices
+ * @property string|null $shovel
+ * @property string|null $flapper
+ * @property string|null $life_rope
+ * @property string|null $foamer
+ * @property string|null $foamer_in_stock
+ * @property string|null $damaged_hydrant_street
+ * @property string|null $damaged_hydrant_object
+ * @property string|null $damaged_pv
+ * @property string|null $active_gasoline
+ * @property string|null $active_diesel
+ * @property string|null $reserved_gasoline
+ * @property string|null $reserved_diesel
+ * @property string|null $generator
+ * @property int|null $head_guard_id
+ * @property string|null $iup
+ * @property string|null $girs
+ * @property string|null $exhauster
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FormationTechItem[] $formation_tech_items
+ * @property-read \App\Models\Staff|null $head_guard
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FormationTechItem[] $items
+ * @property-read \App\FormationReport $report
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereActiveDiesel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereActiveGasoline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereBarrelPortable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereBarrelStationary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereDamagedHydrantObject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereDamagedHydrantStreet($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereDamagedPv($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereDevice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereExhauster($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFirehose125($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFirehose51($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFirehose75($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFirehose77($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFlapper($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFlashlight($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFoamer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereFoamerInStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereGenerator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereGirs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereHeadGuardId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereIup($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereKnapsackDevices($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereL1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereLifeRope($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereMotorMudPump($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereMotorWaterPump($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport wherePgs600($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport wherePurga($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereRadioStationPortable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereReservedDiesel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereReservedGasoline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereSearchlight($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereShovel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereTok($value)
  */
 class FormationTechReport extends Model
 {
@@ -162,5 +234,10 @@ class FormationTechReport extends Model
     public function head_guard()
     {
         return $this->belongsTo(Staff::class, 'head_guard_id');
+    }
+
+    public function report()
+    {
+        return $this->belongsTo(FormationReport::class, 'form_id');
     }
 }

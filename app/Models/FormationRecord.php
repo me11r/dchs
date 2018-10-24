@@ -55,6 +55,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereOrganisation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord filled()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord todayRecord($organisation)
  */
 class FormationRecord extends Model
 {

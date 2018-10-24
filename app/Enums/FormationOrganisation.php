@@ -12,6 +12,7 @@ class FormationOrganisation
     public const ORT_SERT = 'ort_sert';
     public const DCHS_ALMATY = 'dchs_almaty';
     public const EMERGENCY = 'emergency_almaty';
+    public const DISTRICT_MANAGERS = 'district-managers';
 
     public static $namesMapping = [
         self::ROSO => 'ГУ «РОСО КЧС МВД РК»',
@@ -21,10 +22,11 @@ class FormationOrganisation
         self::ORT_SERT => 'АО "Өртсөндіруші"',
         self::DCHS_ALMATY => 'ДЧС г.Алматы',
         self::EMERGENCY => 'Служба спасения г.Алматы',
+        self::DISTRICT_MANAGERS => 'Ответственные по районным отделам г.Алматы',
     ];
 
     public static function getNameByType(string $type): string
     {
-        return self::$namesMapping[$type];
+        return self::$namesMapping[$type] ?? '';
     }
 }

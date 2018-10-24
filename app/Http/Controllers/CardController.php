@@ -11,11 +11,15 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\FireDepartment;
+use App\FormationReport;
 use App\FormationTechReport;
 use App\Http\Middleware\Rights\FormationRecord;
 use App\Models\FireDepartmentResult;
+use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
+use App\Models\ServiceType;
+use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
 use App\Models\WallMaterial;
@@ -36,10 +40,45 @@ class CardController extends AuthorizedController
     public function get101(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-            ->orderBy('created_at','desc')
-            ->paginate($perPage);
-        $this->set('tickets', $tickets)->set('per_page', $perPage);
+
+        $f = $request->all();
+
+        $sort = $request->get('sort', 'created_at');
+        $id = $request->input('filter.id', '');
+        $city_area = $request->input('filter.city_area', '');
+
+
+        $city_areas = Ticket101::groupBy('city_area_id')
+            ->get(['city_area_id'])
+            ->pluck('city_area_id')
+            ->toArray();
+
+        $city_areas = CityArea::whereIn('id', $city_areas)->get();
+
+        if($id){
+            $tickets = Ticket101::with(['city_area'])
+                ->orderBy($sort,'desc')
+                ->where('id',$id)
+                ->paginate($perPage);
+        }
+        elseif($city_area){
+
+            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                ->where('city_area_id', $city_area)
+                ->orderBy($sort,'desc')
+                ->paginate($perPage);
+        }
+        else{
+            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                ->orderBy($sort,'desc')
+                ->paginate($perPage);
+        }
+
+        $this->set('tickets', $tickets)
+            ->set('city_areas', $city_areas)
+            ->set('id', $id)
+            ->set('city_area', $city_area)
+            ->set('per_page', $perPage);
     }
 
     public function getAdd101(Request $request, $card_id = 0)
@@ -53,37 +92,12 @@ class CardController extends AuthorizedController
             'b01' => 'ДЧС "Байкал-01"',
             'b04' => 'ДЧС "Байкал-04"',
         ];
-        $service_notify = [
-            '112' => '112',
-            '102' => 'ДВД 102',
-            '103' => 'БСМП 103',
-            '104' => 'Служба газа 104',
-            'electro' => 'Э\\сеть (277-98-42)',
-            'water' => 'Водоканал (274-66-66)',
-            'smk' => 'ЦМК (254-63-53)'
-        ];
-        $ssv_out = [
-            1 => 'ӨСБ - ПЧ-1',
-            ' - ПЧ-2',
-            ' - ПЧ-3',
-            ' - ПЧ-4',
-            ' - ПЧ-5',
-            ' - ПЧ-6',
-            'МӨСБ - СПЧ-7',
-            ' - СПЧ-8',
-            ' - СПЧ-9',
-            ' - ПЧ-10',
-            ' - СПЧ-11',
-            'ӨСБ - ПЧ-12',
-            'МЖ - СО',
-            'МӨСБ - СПЧ-14',
-            'МӨСБ - СПЧ-15',
-            ' - П.16',
-            ' - П. 17',
-        ];
+
+        $service_notify = ServiceType::all();
+
         $ssv_out = FireDepartment::recommend()->get();
         $wall_materials = WallMaterial::all();
-        if($card_id != 0){
+        if ($card_id != 0) {
             foreach ($ssv_out as $key => $item) {
                 $ssv_out[$key]->res = $item->results()->where('ticket101_id', $card_id)->first();
                 $ssv_out[$key]->res_many = $item->results()->where('ticket101_id', $card_id)->get();
@@ -106,40 +120,48 @@ class CardController extends AuthorizedController
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
         $this->set('fire_object_options', FireObject::all());
-        $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item){
+        $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
             return [
                 'id' => $item->id,
                 'text' => $item->name
             ];
         })->toArray());
-        $this->set('fire_departments', collect(FireDepartment::recommend(true)->get())->map(function ($item){
+        $this->set('fire_departments', collect(FireDepartment::recommend(true)->get())->map(function ($item) {
             return [
                 'id' => $item->id,
                 'text' => $item->name
             ];
         })->toArray());
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
-        $ticket = Ticket101::with(['crossroad_1', 'crossroad_2', 'other_records', 'results'])->findOrNew($card_id);
+        $ticket = Ticket101::with(
+            [
+                'crossroad_1',
+                'crossroad_2',
+                'other_records',
+                'results',
+                'notifications',
+                'notifications.service'
+            ])
+            ->findOrNew($card_id);
+
         $recommendedDispatched = $ticket->results()
             ->isDispatched()
             ->recommended()
             ->count();
 
         $other_records_unique = $ticket->other_records()->groupBy('trunk_id')->get(['trunk_id', DB::raw('MAX(count) as count')]);
-        if($other_records_unique->count()){
+        if ($other_records_unique->count()) {
             $trunk_ids = $other_records_unique->pluck('trunk_id')->toArray();
             $unique_count = $other_records_unique->pluck('count')->toArray();
             $other_records_unique = Ticket101OtherRecord::whereIn('trunk_id', $trunk_ids)
                 ->where('ticket101_id', $ticket->id)
                 ->whereIn('count', $unique_count)
                 ->get();
-        }
-        else{
+        } else {
             $other_records_unique = [];
         }
 
-        $max_square = Ticket101OtherRecord::
-            where('ticket101_id', $ticket->id)
+        $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
             ->max('square');
 
         $fire_dep_results_info = '';
@@ -148,6 +170,11 @@ class CardController extends AuthorizedController
         }
 
         $water_sources = WaterSupplySource::all();
+
+//        if (!\count($ticket->notifications) && $ticket->id){
+//            $this->createNotificationServices($ticket);
+//            $ticket->notifications()->get();
+//        }
 
         $this->set('recommendedDispatched', $recommendedDispatched);
         $this->set('fire_dep_results_info', $fire_dep_results_info);
@@ -170,16 +197,24 @@ class CardController extends AuthorizedController
             ->get();
 
         /* последняя заполненная строевка*/
-        $latestReportId = FormationTechReport::has('items')->max('form_id');
-        $formationTech = FormationTechReport::where('form_id', $latestReportId)->get();
+        $report_id = FormationReport::approved()->max('id');
+        $formationTech = FormationTechReport::where('form_id', $report_id)
+            ->has('items')
+            ->get();
 
         foreach ($formationTech as $report) {
-            foreach ($report->items()->available()->get() as $tech) {
+
+            $activeTech = $report
+                ->items()
+                ->whereIn('status', ['reserve', 'action'])
+                ->get();
+
+            foreach ($activeTech as $tech) {
                 $formationTechItems[] = $tech;
             }
         }
 
-        if(count($formationTechItems)){
+        if (count($formationTechItems)) {
             foreach ($formationTechItems as $tech_item) {
 
                 $exists = FireDepartmentResult::where('ticket101_id', $card->id)
@@ -193,11 +228,12 @@ class CardController extends AuthorizedController
                     ->whereNull('ret_time')
                     ->first();
 
-                if($notAvailable){
+                if ($notAvailable) {
                     continue;
                 }
 
-                if(!$exists){
+                /*полуфабрикат для рекомендаций*/
+                if (!$exists) {
                     $results[$tech_item->department] = FireDepartmentResult::create([
                         'ticket101_id' => $card->id,
                         'fire_department_id' => $tech_item->formation_tech_report->dept_id,
@@ -207,14 +243,14 @@ class CardController extends AuthorizedController
                     ]);
                 }
 
-                /**/
+                /*рекомендации для каждого отделения, каждой пч (если указано в расписании и доступно)*/
                 foreach ($schedules as $schedule_item) {
 
                     $schedule_depts = explode(',', str_replace(['.', ' '], ',', $schedule_item->department));
 
                     foreach ($schedule_depts as $schedule_dept) {
-                        if(isset($results[$schedule_dept])){
-                            if($results[$schedule_dept]->fire_department_id == $schedule_item->fire_department_id){
+                        if (isset($results[$schedule_dept])) {
+                            if ($results[$schedule_dept]->fire_department_id == $schedule_item->fire_department_id) {
 
                                 $results[$schedule_dept]->recommended = true;
                                 $results[$schedule_dept]->save();
@@ -229,7 +265,7 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except(['ph', 'departments_to_ride']);
+        $data = $request->except(['ph', 'departments_to_ride', 'time_arrive']);
         $repartments_to_ride = $request->departments_to_ride;
         $r = $request->all();
 
@@ -238,64 +274,107 @@ class CardController extends AuthorizedController
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
 
-        if($request->operational_plan_id == 'NaN' || is_null($request->operational_plan_id )){
+        if ($request->operational_plan_id == 'NaN' || is_null($request->operational_plan_id)) {
             $data['operational_plan_id'] = 0;
         }
 
-        if($request->fire_level_id == 'NaN' || is_null($request->fire_level_id )){
+        if ($request->fire_level_id == 'NaN' || is_null($request->fire_level_id)) {
             $data['fire_level_id'] = 1;
         }
 
-        if($request->fire_department_id == 'NaN' || is_null($request->fire_department_id )){
+        if ($request->fire_department_id == 'NaN' || is_null($request->fire_department_id)) {
             $data['fire_department_id'] = 0;
         }
 
+        /** @var Ticket101 $card */
         $card = Ticket101::findOrNew($card_id);
         $canEditTicket = $card->canEditTicket();
-        if(!$canEditTicket){
+        if (!$canEditTicket) {
             return redirect('/card/add101/')->with('_message', ['type' => 'error', 'text' => 'Данные не могут быть сохранены. Архивная карточка']);
         }
 
         /*если поменяли уровень пожара, новые рекомендации */
-        if($card->fire_level_id !== null){
+        if ($card->fire_level_id !== null) {
 
 
             /*todo:*/
             /* повышаем ранг*/
-            if($card->fire_level_id < $request->fire_level_id){
+            if ($card->fire_level_id < $request->fire_level_id) {
                 $card->results()->whereNull('out_time')->delete();
                 $card->road_trip_plans()->where('is_accepted', false)->delete();
-            }
-            /* понижаем ранг*/
-            elseif($card->fire_level_id > $request->fire_level_id){
+            } /* понижаем ранг*/
+            elseif ($card->fire_level_id > $request->fire_level_id) {
                 $card->results()->whereNull('out_time')->delete();
                 $card->road_trip_plans()->where('is_accepted', false)->delete();
             }
         }
+
+        unset($data['notification_services']);
 
         $card->fill($data);
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
+
+        if ($card_id) {
+            $this->updateNotificationServices($request->input('notification_services', []));
+        } else {
+            $this->createNotificationServices($card);
+        }
+
         $back = '/card/101';
 
         $this->recommend($request, $card);
 
+        $this->saveArriveTimes($request);
+
         if ($comeback) {
-            $back = '/card/add101/' . $card->id.'#return='.$comeback;
+            $back = '/card/add101/' . $card->id . '#return=' . $comeback;
         }
 
-        if($request->ajax()){
+        if ($request->ajax()) {
             return response()->json('ok', 200);
         }
 
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
     }
 
-    private function saveOtherRecords(Ticket101 $ticket101, array $otherRecords) {
+    private function saveOtherRecords(Ticket101 $ticket101, array $otherRecords)
+    {
         $ticket101->other_records()->delete();
-        $ticket101->other_records()->saveMany(array_map(function ($item){
+        $ticket101->other_records()->saveMany(array_map(function ($item) {
             return new Ticket101OtherRecord($item);
         }, $otherRecords));
+    }
+
+    private function createNotificationServices(Ticket101 $ticket101): void
+    {
+        foreach (ServiceType::all() as $service) {
+            Ticket101Notification::create([
+                'notification_service_id' => $service->id,
+                'ticket101_id' => $ticket101->id,
+            ]);
+        }
+    }
+
+    private function updateNotificationServices(array $notificationServices)
+    {
+        foreach ($notificationServices as $id => $data) {
+            $record = Ticket101Notification::find($id);
+            $record->name = $data['name'] ?? null;
+            $record->save();
+//            (new Ticket101Notification())->find($id)->update($data);
+        }
+    }
+
+    private function saveArriveTimes(Request $request)
+    {
+        if($request->time_arrive){
+            foreach ($request->time_arrive as $id => $item) {
+                $dept_to_ride = FireDepartmentResult::find($id);
+                $dept_to_ride->arrive_time = $item;
+                $dept_to_ride->save();
+            }
+        }
     }
 }

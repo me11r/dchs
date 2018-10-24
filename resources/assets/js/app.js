@@ -15,6 +15,7 @@ import {MudflowProtectionForm} from './views/mudflowProtection';
 import {HydrantMapList} from './views/hydrant-map';
 import {CommonMapScreen} from './views/mapscreen';
 import RoadtripNotifier from './ui/RoadtripNotifier';
+import ServicePlanNotifier from './ui/ServicePlanNotifier';
 import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
@@ -23,6 +24,7 @@ import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
+import TPicker from './components/Timepicker';
 import FireObject from './views/FireObject';
 
 import Add101Persons from './scripts/add101persons/add101persons';
@@ -30,7 +32,15 @@ import Add101Staff from './views/101staff/AddEdit101Staff';
 import Report101Staff from './views/101staff/Report101Staff';
 import Report101Vehicles from './views/101tech/Report101Vehicles';
 import Report101Emergency from './views/reports/emergency/ReportPeriod101';
+import Report112Emergency from './views/reports/emergency/ReportPeriod112';
 import MainPageReport from './views/MainPageReport';
+import AirRescueStaff from './views/AirRescueStaff/AddEditStaff';
+import AirRescueTech from './views/AirRescueTech/AddEditTech';
+import PhoneItem from './views/dictionary/Phone';
+import DistrictManagers from './components/DistrictManagers';
+
+import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
+import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -52,9 +62,19 @@ Vue.component('report101-staff', Report101Staff);
 Vue.component('report101-vehicles', Report101Vehicles);
 Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
 Vue.component('report101-emergency', Report101Emergency);
+Vue.component('report112-emergency', Report112Emergency);
 Vue.component('main-report', MainPageReport);
 
 Vue.component('staff-101', Add101Staff);
+
+Vue.component('staff-formation-record112', FormationRecord112Staff);
+Vue.component('staff-formation-page-selector', FormationRecord112StaffPageSelector);
+
+Vue.component('staff-air-rescue', AirRescueStaff);
+Vue.component('tech-air-rescue', AirRescueTech);
+Vue.component('t-picker', TPicker);
+Vue.component('v-phone', PhoneItem);
+Vue.component('district-managers', DistrictManagers);
 
 Vue.config.productionTip = false;
 
@@ -146,6 +166,13 @@ if (document.getElementById('roadtrip_notifier')) {
     });
 }
 
+if (document.getElementById('service_plans_notifier')) {
+    new Vue({
+        el: '#service_plans_notifier',
+        render: h => h(ServicePlanNotifier)
+    });
+}
+
 if (document.getElementById('fire-object-div')) {
     new Vue({
         el: '#fire-object-div'
@@ -159,3 +186,4 @@ if (document.getElementById('vue')) {
 }
 
 require('./scripts/emergency-situation/edit-form');
+require('./scripts/Notifications');
