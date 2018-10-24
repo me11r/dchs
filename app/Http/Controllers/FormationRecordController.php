@@ -10,6 +10,7 @@ use App\FormationDistrictManagerItem;
 use App\Models\FormationRecord;
 use App\Models\Staff;
 use App\OperDutyShift;
+use App\OperDutyShiftStaff;
 use App\OperDutyShiftStaffItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -122,7 +123,7 @@ class FormationRecordController extends Controller
             ->pluck('staff_id')
             ->toArray();
 
-        $data['staff'] = Staff::whereNotIn('id', $busyStaff)->get();
+        $data['staff'] = OperDutyShiftStaff::whereNotIn('id', $busyStaff)->get();
         $data['ods'] = OperDutyShift::all();
         $data['shift_id'] = $operShift_id;
         $data['date'] = $date;
@@ -163,12 +164,7 @@ class FormationRecordController extends Controller
                 'date' => $request->date
             ]);
 
-
             $report->items()->delete();
-
-//            FormationDistrictManagerItem::date($date)
-//                ->where('shift_id', $operShift_id)
-//                ->delete();
 
             foreach ($request->input('manager_id', []) as $city_area_id => $staff_arr) {
                 foreach ($staff_arr as $id) {
