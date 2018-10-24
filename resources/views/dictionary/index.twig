@@ -17,8 +17,6 @@
                         <td><a class="button is-basic is-small" href="{{ url('dictionaries/list/' ~ dict.id) }}">
                                 <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
                     </tr>
-                {% else %}
-                    <li><h3 class="is-danger">Нет справочников</h3></li>
                 {% endfor %}
                 <tr>
                     <td><i class="fas fa-list-ol">
@@ -52,8 +50,14 @@
                 </tr>
                 <tr>
                     <td><i class="fas fa-list-ol">
-                        </i>&nbsp; Воздушные судна</td>
+                        </i>&nbsp; Воздушные суда</td>
                     <td><a class="button is-basic is-small" href="/dictionaries/aircrafts">
+                            <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
+                </tr>
+                <tr>
+                    <td><i class="fas fa-list-ol">
+                        </i>&nbsp; Ответственные по районам</td>
+                    <td><a class="button is-outlined is-small" href="/dictionaries/district-managers">
                             <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
                 </tr>
             </table>
