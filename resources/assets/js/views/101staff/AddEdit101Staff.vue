@@ -209,7 +209,7 @@ export default {
                     self.$parent.$emit('totalActiveSet', resp.data.length);
                 }
 
-                _.each(this.records_, (value) => {
+                _.each(self.records_, (value) => {
                     self.$parent.$emit('addSelectedPersons', value.staff_id);
                 });
 

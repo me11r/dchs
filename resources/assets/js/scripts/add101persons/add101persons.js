@@ -24,7 +24,8 @@ export default class Add101Persons {
                 },
                 total: 0,
                 totalActive: 0,
-                selectedPersons: []
+                selectedPersons: [],
+                selectedTech: []
             },
             computed: {
                 fieldsComputed() {
@@ -64,9 +65,6 @@ export default class Add101Persons {
                 isReadonly(prefix, index) {
                     const fieldName = 'field' + prefix + '_' + index;
                     return fieldName === 'field_0' || fieldName === 'field_2_0';
-                },
-                addSelected() {
-
                 }
             },
             beforeMount() {
@@ -105,6 +103,19 @@ export default class Add101Persons {
 
                 this.$on('removeSelectedPersons', function (person) {
                     this.selectedPersons = _.reject(this.selectedPersons, function(staffId){ return staffId === person.oldValue; });
+                });
+
+                this.$on('addSelectedTech', function (tech) {
+                    this.selectedTech.push(tech);
+                });
+
+                this.$on('changeSelectedTech', function (tech) {
+                    this.selectedTech = _.reject(this.selectedTech, function(techId){ return techId === tech.oldValue; });
+                    this.selectedTech.push(tech.newValue);
+                });
+
+                this.$on('removeSelectedTech', function (tech) {
+                    this.selectedTech = _.reject(this.selectedTech, function(techId){ return techId === tech.oldValue; });
                 });
             }
         });
