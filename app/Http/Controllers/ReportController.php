@@ -60,6 +60,11 @@ class ReportController extends AuthorizedController
         $dompdf->stream($file_name);
     }
 
+    public function getOperational()
+    {
+
+    }
+
     public function getReport101()
     {
         if ($data = Cache::get('report101_data')) {

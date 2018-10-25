@@ -1,7 +1,7 @@
 {% extends "layout/html" %}
 
 {% block content %}
-    <div class="section container">
+    <div class="section container-fluid">
     <div class="level">
         <div class="level-left">
             <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }} ({{ item.date|date('Y-m-d') }})</h4>
@@ -65,7 +65,7 @@
 
 
             <div class="panel bottom_panel">
-                <div class="level" style="">
+                <div class="" style="">
                     <div class="level-left">
                         <div class="column">
                             <h6 class="title" style="padding: 3px 15px">Дежурная смена УЕДДС ДЧС г.Алматы КЧС МВД РК</h6>
@@ -136,19 +136,27 @@
                         </div>
 
                     </div>
-                    <p class="level-right">
-                        <a href="{{ route('formation-record.index') }}"
-                           style="margin-right: 10px"
-                           class="button is-primary">Назад</a>
-                        <button
-                                type="submit"
-                                class="button is-success">
-                            <i class="fas fa-check"></i>Сохранить
-                        </button>
-                    </p>
                 </div>
             </div>
         </div>
+        <div class="container panel modal-card-foot">
+        <div class="level">
+            <div class="level-left">&nbsp;</div>
+        <div class="level-right">
+            <div class="field is-grouped">
+            <a href="{{ route('formation-record.index') }}"
+               style="margin-right: 10px"
+               class="button is-primary">Назад</a>
+            <button
+                    type="submit"
+                    class="button is-success">
+                <i class="fas fa-check"></i>Сохранить
+            </button>
+            </div>
+        </div>
+        </div>
+        </div>
+
     </form>
     </div>
 
