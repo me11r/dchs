@@ -183,21 +183,23 @@
                             Отчет по карточке 112 за период</a>
                     </div>
                 </div>
-                <div class="navbar-item">
-                    <a
-                        href="/roadtrip/"
-                        class="button is-inline-block-widescreen is-block">
-                        <i class="fas fa-truck fa-fw"></i>&nbsp;
-                        Путевой лист
-                    </a>
-                </div>
-                <div class="navbar-item">
-                    <a
-                        href="/service-plans/"
-                        class="button is-inline-block-widescreen is-block">
-                        <i class="fas fa-archway fa-fw"></i>&nbsp;
-                        Путевые листы служб взаимодействия
-                    </a>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a class="navbar-link is-small"><i class="fas fa-fw fa-road"></i>&nbsp;Путевые листы</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            href="/roadtrip/"
+                            class="dropdown-item">
+                            <i class="fas fa-truck fa-fw"></i>&nbsp;
+                            Путевые листы ДЧС
+                        </a>
+                        <a
+                            href="/service-plans/"
+                            class="dropdown-item">
+                            <i class="fas fa-archway fa-fw"></i>&nbsp;
+                            Путевые листы служб взаимодействия
+                        </a>
+
+                    </div>
                 </div>
             </div>
             <div class="navbar-end">

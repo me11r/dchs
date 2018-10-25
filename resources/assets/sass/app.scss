@@ -25,9 +25,10 @@ html, body {
 }
 
 .form-modal-border {
-  border: 1px solid $grey-light;
+  background-color: $white-bis;
+  border: 1px solid $grey-darker;
   border-radius: 4px;
-  box-shadow: 0 2px 1px fade_out($grey-light, .7);
+  box-shadow: 0 2px 1px fade_out($grey-darker, .7);
 }
 
 .form-modal-header {

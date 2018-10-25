@@ -16,7 +16,7 @@
                 type="hidden"
                 name="_token"
                 :value="csrf">
-            <div class="tabs is-boxed">
+            <div class="tabs buttab is-boxed">
                 <ul>
                     <li :class="{'is-active': currentTabIndex === 0}">
                         <a @click="setTab(0)"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
@@ -222,7 +222,7 @@
                                     </p>
                                     <p class="control">
                                         <a
-                                            class="button is-outlined is-small"
+                                            class="button is-basic is-small"
                                             @click="$refs['call_time_picker'].close()">
                                             <i class="fas fa-check"></i><span>Принять</span>
                                         </a>
@@ -239,7 +239,7 @@
                                 <tr>
                                     <th>Службы</th>
                                     <th>Время сообщения</th>
-                                    <th>Фамилия<br/>принявшего сообщение</th>
+                                    <th>Фамилия<br>принявшего сообщение</th>
                                     <th>Время прибытия</th>
                                     <th>Путевой лист отправлен</th>
                                     <th>Уведомление отправлено</th>
@@ -624,13 +624,13 @@
                         <button
                             id="nexttab"
                             type="button"
-                            class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>Следующий раздел
+                            class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;Следующий раздел
                         </button>
                     </p>
                     <p class="level-right">
                         <button
                             type="submit"
-                            class="button is-success"><i class="fas fa-check"></i>Сохранить
+                            class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
                     </p>
                 </div>
@@ -723,7 +723,7 @@ export default {
                 axios
                     .post('/api/notification/ticket112send', {
                         notification_id: service,
-                        cardType: 101,
+                        cardType: 101
                     })
                     .then((response) => {
                         let data = response.data;
@@ -813,7 +813,7 @@ export default {
             this.servicePlans = window.card112FormData.servicePlans;
         }
 
-        console.dir(this.servicePlans)
+        console.dir(this.servicePlans);
 
         if (this.servicePlans !== undefined) {
             this.servicePlans.forEach((plan) => {
@@ -832,10 +832,8 @@ export default {
                         };
                     }
                 });
-            })
+            });
         }
-
-
     },
     mounted() {
         this.yandexMapsBus = new YandexMapsBus();
@@ -853,7 +851,6 @@ export default {
         globalBus.$on(AREA_ID_FOUND, (value) => {
             this.model.city_area_id = value;
         });
-
     }
 };
 </script>
