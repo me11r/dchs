@@ -24,6 +24,7 @@ export default class Add101Persons {
                 },
                 total: 0,
                 totalActive: 0,
+                selectedPersons: []
             },
             computed: {
                 fieldsComputed() {
@@ -63,6 +64,9 @@ export default class Add101Persons {
                 isReadonly(prefix, index) {
                     const fieldName = 'field' + prefix + '_' + index;
                     return fieldName === 'field_0' || fieldName === 'field_2_0';
+                },
+                addSelected() {
+
                 }
             },
             beforeMount() {
@@ -90,6 +94,18 @@ export default class Add101Persons {
                     this.totalActive += count;
                 });
 
+                this.$on('addSelectedPersons', function (person) {
+                    this.selectedPersons.push(person);
+                });
+
+                this.$on('changeSelectedPersons', function (person) {
+                    this.selectedPersons = _.reject(this.selectedPersons, function(staffId){ return staffId === person.oldValue; });
+                    this.selectedPersons.push(person.newValue);
+                });
+
+                this.$on('removeSelectedPersons', function (person) {
+                    this.selectedPersons = _.reject(this.selectedPersons, function(staffId){ return staffId === person.oldValue; });
+                });
             }
         });
     }

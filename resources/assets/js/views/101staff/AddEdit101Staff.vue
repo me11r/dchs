@@ -26,7 +26,7 @@
                                 :id="getName('staff_id', item.id)"
                                 v-model="item.staff_id">
                             <option
-                                    v-for="s in staff_"
+                                    v-for="s in getStaffFilter(item.staff_id)"
                                     :key="'staff_' + s.id"
                                     :value="s.id">{{ s.name }}
                             </option>
@@ -113,6 +113,12 @@ export default {
         getName(control, id){
             return 'staff' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
+        getStaffFilter(selectedId) {
+            let scope = this;
+            return this.staff_.filter(function (item) {
+                return scope.$parent.selectedPersons.indexOf(item.id) === -1 || item.id === selectedId;
+            });
+        },
         selectStaff($event){
             console.dir($event.target.value);
         },
@@ -140,7 +146,8 @@ export default {
                 department: '',
                 name: '',
                 count: 0,
-                square: 0
+                square: 0,
+                staff_id: 0
             };
         },
         prepareRecords(records) {
@@ -184,6 +191,34 @@ export default {
                     self.$parent.$emit('totalActiveSet', resp.data.length);
                 }
 
+                _.each(this.records_, (value) => {
+                    self.$parent.$emit('addSelectedPersons', value.staff_id);
+                });
+
+            });
+        }
+    },
+    computed:{
+        clonedItems(){
+            return JSON.parse(JSON.stringify(this.records_));
+        }
+    },
+    watch: {
+        clonedItems(newValue, oldValue){
+            _.each(newValue, (value, key) => {
+                if(oldValue[key]) {
+                    this.$parent.$emit('changeSelectedPersons', {
+                        oldValue: oldValue[key].staff_id,
+                        newValue: value.staff_id
+                    });
+                }
+            });
+            _.each(oldValue, (value, key) => {
+                if(!newValue[key]) {
+                    this.$parent.$emit('removeSelectedPersons', {
+                        oldValue: value.staff_id
+                    });
+                }
             });
         }
     },
