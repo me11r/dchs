@@ -249,43 +249,38 @@
                                 <tr v-for="service in serviceTypes">
                                     <td>{{ service.name }}</td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            readonly
-                                            v-model="service.message_time"
-                                            :id="service.id + + '_message_time'"
-                                            class="input">
+                                        <input type="text"
+                                               readonly
+                                               v-model="services[service.id].created_at"
+                                               class="input">
                                     </td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            class="input"
-                                            :id="service.id + + '_name'"
-                                            v-model="service.name_accepted">
+                                        <input type="text"
+                                               class="input"
+                                               :id="service.id + + '_name'"
+                                               v-model="services[service.id].name_accepted">
                                     </td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            v-model="service.arrive_time"
-                                            readonly
-                                            class="input">
+                                        <input type="text"
+                                               v-model="services[service.id].created_at"
+                                               readonly
+                                               class="input">
                                     </td>
                                     <td>
 
-                                        <input
-                                            type="text"
+                                        <input type="text"
+                                               class="input"
                                             v-model="services[service.id].sent_at"
                                         >
 
                                     </td>
                                     <td>
                                         <label for="">
-                                            <input
-                                                type="checkbox"
-                                                @change="sendOneCheckService($event, model.id, service.id)"
-                                                value="1"
+                                            <input type="checkbox"
+                                                    @change="sendOneCheckService($event, model.id, service.id)"
+                                                   value="1"
 
-                                                class="checkbox">
+                                                   class="checkbox">
                                         </label>
                                     </td>
                                 </tr>
@@ -824,11 +819,18 @@ export default {
             this.servicePlans.forEach((plan) => {
                 this.serviceTypes.forEach((item) => {
                     if (plan.service_type_id === item.id) {
-                        this.services[item.id] = {sent_at: plan.created_at || moment().format('d-m-Y')};
+                        this.services[item.id] = {
+                            sent_at: plan.created_at || moment().format('d-m-Y'),
+                            created_at: plan.created_at || moment().format('d-m-Y'),
+                            name_accepted: plan.name_accepted || ''
+                        };
                     } else {
-                        this.services[item.id] = {sent_at: ''};
+                        this.services[item.id] = {
+                            sent_at: '',
+                            created_at: '',
+                            name_accepted: ''
+                        };
                     }
-                    // console.dir(this.services);
                 });
             });
         }

@@ -12,6 +12,7 @@ export default {
             checking: false,
             alarming: false,
             shown: false,
+            service_id: 0,
             plans: []
         };
     },
@@ -27,7 +28,7 @@ export default {
                     position: 'is-top',
                     onAction: () => {
                         this.shown = false;
-                        window.location.href = '/service-plans/112/1/show' + this.plans[0].id;
+                        window.location.href = `/service-plans/${this.service_id}/${this.plans[0].id}/show`;
                     }
                 });
                 const notify = window.Notification;
@@ -54,7 +55,8 @@ export default {
         check: function () {
             this.checking = true;
             axios.get('/ajax/service-plans').then(response => {
-                this.plans = response.data;
+                this.plans = response.data.plans;
+                this.service_id = response.data.service_id;
                 if (this.plans.length > 0) {
                     this.notify();
                     this.alertSound(true);

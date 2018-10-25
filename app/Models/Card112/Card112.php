@@ -5,6 +5,7 @@ namespace App\Models\Card112;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\Models\IncidentType;
+use App\Ticket101ServicePlan;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -175,6 +176,11 @@ class Card112 extends Model
     public function chronology()
     {
         return $this->hasMany(Card112Chronology::class, 'card112_id', 'id');
+    }
+
+    public function service_plans()
+    {
+        return $this->hasMany(Ticket101ServicePlan::class, 'card112_id');
     }
 
     /**
