@@ -181,6 +181,11 @@
                             href="/reports/112/emergency"
                             class="dropdown-item is-small"><i class="fas fa-bolt fa-fw"></i>&nbsp;
                             Отчет по карточке 112 за период</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/112/branches"
+                            class="dropdown-item is-small"><i class="fas fa-tree"></i>
+                            &nbsp; Подтопления / Падение веток и деревьев</a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">
