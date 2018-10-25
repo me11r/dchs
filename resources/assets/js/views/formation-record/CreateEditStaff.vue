@@ -26,7 +26,7 @@
                             :id="getName('staff_id', item.id)"
                             v-model="item.staff_id">
                             <option
-                                v-for="s in staff_"
+                                v-for="s in getStaffFilter(item.staff_id)"
                                 :key="'staff_' + s.id"
                                 :value="s.id">{{ s.name }}
                             </option>
@@ -104,6 +104,12 @@ export default {
         'b-icon': Buefy['Icon']
     },
     methods: {
+        getStaffFilter(selectedId) {
+            let scope = this;
+            return this.staff_.filter(function (item) {
+                return scope.$parent.selectedPersons.indexOf(item.id) === -1 || item.id === selectedId;
+            });
+        },
         getName(control, id) {
             return 'staff' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
@@ -177,6 +183,34 @@ export default {
 
                 if (self.isActive_ === true) {
                     self.$parent.$emit('totalActiveSet', resp.data.length);
+                }
+
+                _.each(self.records_, (value) => {
+                    self.$parent.$emit('addSelectedPersons', value.staff_id);
+                });
+            });
+        }
+    },
+    computed:{
+        clonedItems(){
+            return JSON.parse(JSON.stringify(this.records_));
+        }
+    },
+    watch: {
+        clonedItems(newValue, oldValue){
+            _.each(newValue, (value, key) => {
+                if(oldValue[key]) {
+                    this.$parent.$emit('changeSelectedPersons', {
+                        oldValue: oldValue[key].staff_id,
+                        newValue: value.staff_id
+                    });
+                }
+            });
+            _.each(oldValue, (value, key) => {
+                if(!newValue[key]) {
+                    this.$parent.$emit('removeSelectedPersons', {
+                        oldValue: value.staff_id
+                    });
                 }
             });
         }

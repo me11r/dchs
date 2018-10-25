@@ -108,16 +108,16 @@ class AjaxController extends AuthorizedController
         $service = (Auth::user())->service_type;
         $canRecieve = Auth::user()->hasRight(Right::CAN_VIEW_112_CARD);
         if ($service === null || !$canRecieve) {
-            return response()->json([], 200);
+            return response()->json(['plans' => [], 'service_id' => 0], 200);
         }
 
         $trips = Ticket101ServicePlan::with(['ticket', 'results']);
         $trips = $trips
             ->where('is_closed', false)
-//            ->where('department', $service->name)
+            ->where('service_type_id', $service->id)
             ->where('is_accepted', false)
             ->get();
-        return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        return response()->json(['plans' => $trips, 'service_id' => $service->id], 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function postRoadtripNotificationToken(Request $request)

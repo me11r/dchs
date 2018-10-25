@@ -28,11 +28,13 @@ import TPicker from './components/Timepicker';
 import FireObject from './views/FireObject';
 
 import Add101Persons from './scripts/add101persons/add101persons';
+import Add101Tech from './scripts/add101tech/add101tech';
 import Add101Staff from './views/101staff/AddEdit101Staff';
 import Report101Staff from './views/101staff/Report101Staff';
 import Report101Vehicles from './views/101tech/Report101Vehicles';
 import Report101Emergency from './views/reports/emergency/ReportPeriod101';
 import Report112Emergency from './views/reports/emergency/ReportPeriod112';
+import ReportPeriod112Branches from './views/reports/emergency/ReportPeriod112Branches';
 import MainPageReport from './views/MainPageReport';
 import AirRescueStaff from './views/AirRescueStaff/AddEditStaff';
 import AirRescueTech from './views/AirRescueTech/AddEditTech';
@@ -63,6 +65,7 @@ Vue.component('report101-vehicles', Report101Vehicles);
 Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
 Vue.component('report101-emergency', Report101Emergency);
 Vue.component('report112-emergency', Report112Emergency);
+Vue.component('report112-branches', ReportPeriod112Branches);
 Vue.component('main-report', MainPageReport);
 
 Vue.component('staff-101', Add101Staff);
@@ -152,6 +155,11 @@ if (add101personsFormElement) {
     (new Add101Persons()).createApp(add101personsFormElement);
 }
 
+const add101techFormElement = document.getElementById('add-101-tech-form');
+if (add101techFormElement) {
+    (new Add101Tech()).createApp(add101techFormElement);
+}
+
 if (document.getElementById('mudflowProtection-form-block')) {
     new Vue({
         el: '#mudflowProtection-form-block',
@@ -184,6 +192,7 @@ if (document.getElementById('vue')) {
         el: '#vue'
     });
 }
+
 
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');

@@ -25,7 +25,7 @@
                             :id="getName('aircraft_id', item.id)"
                             v-model="item.aircraft_id">
                             <option
-                                v-for="vehicle in vehicles"
+                                v-for="vehicle in getTechFilter(item.aircraft_id)"
                                 :key="'vehicle_' + vehicle.id"
                                 :value="vehicle.id">{{ vehicle.name }} {{ vehicle.number }}
                             </option>
@@ -156,6 +156,12 @@ export default {
         'b-datepicker': Buefy['Datepicker']
     },
     methods: {
+        getTechFilter(selectedId) {
+            let scope = this;
+            return this.vehicles.filter(function (item) {
+                return scope.$parent.selectedTech.indexOf(item.id) === -1 || item.id === selectedId;
+            });
+        },
         getName(control, id) {
             return 'tech' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
@@ -213,7 +219,35 @@ export default {
 
                 self.records_ = resp.data;
 
+                _.each(self.records_, (value) => {
+                    self.$parent.$emit('addSelectedTech', value.aircraft_id);
+                });
+
                 console.dir(self.records_);
+            });
+        }
+    },
+    computed:{
+        clonedItems(){
+            return JSON.parse(JSON.stringify(this.records_));
+        }
+    },
+    watch: {
+        clonedItems(newValue, oldValue){
+            _.each(newValue, (value, key) => {
+                if(oldValue[key]) {
+                    this.$parent.$emit('changeSelectedTech', {
+                        oldValue: oldValue[key].aircraft_id,
+                        newValue: value.aircraft_id
+                    });
+                }
+            });
+            _.each(oldValue, (value, key) => {
+                if(!newValue[key]) {
+                    this.$parent.$emit('removeSelectedTech', {
+                        oldValue: value.aircraft_id
+                    });
+                }
             });
         }
     },
