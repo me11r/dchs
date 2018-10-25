@@ -9,23 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class ServicePlanController extends Controller
 {
-    private $services = [
-        '112' => '112',
-        '102' => 'ДВД 102',
-        '103' => 'БСМП 103',
-        '104' => 'Служба газа 104',
-        'electro' => 'Э\\сеть (277-98-42)',
-        'water' => 'Водоканал (274-66-66)',
-        'smk' => 'ЦМК (254-63-53)',
-        'gu_kaz' => 'ГУ Казселезащита',
-        'roso' => 'РОСО',
-        'kaz_aviaserice' => 'AO Казавиаспас',
-        'ao_ort' => 'АО "Өртсөндіруші"',
-    ];
     public function getList(Request $request)
     {
         $services = ServiceType::all();
-//        $services = $this->services;
+        $userService = \auth()->user()->service_type_id;
+
+        if($userService){
+            $services = ServiceType::where('id', $userService)->get();
+        }
 
         return view('service-plans.list', compact('services'));
     }
@@ -44,6 +35,12 @@ class ServicePlanController extends Controller
     {
 
         $record = Ticket101ServicePlan::findOrFail($id);
+
+        if(!$record->is_accepted){
+            $record->is_accepted = true;
+            $record->name_accepted = Auth::user()->name;
+            $record->save();
+        }
 
 
         return view('service-plans.view', compact('record'));
