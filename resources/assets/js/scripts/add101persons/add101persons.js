@@ -24,6 +24,8 @@ export default class Add101Persons {
                 },
                 total: 0,
                 totalActive: 0,
+                selectedPersons: [],
+                selectedTech: []
             },
             computed: {
                 fieldsComputed() {
@@ -90,6 +92,31 @@ export default class Add101Persons {
                     this.totalActive += count;
                 });
 
+                this.$on('addSelectedPersons', function (person) {
+                    this.selectedPersons.push(person);
+                });
+
+                this.$on('changeSelectedPersons', function (person) {
+                    this.selectedPersons = _.reject(this.selectedPersons, function(staffId){ return staffId === person.oldValue; });
+                    this.selectedPersons.push(person.newValue);
+                });
+
+                this.$on('removeSelectedPersons', function (person) {
+                    this.selectedPersons = _.reject(this.selectedPersons, function(staffId){ return staffId === person.oldValue; });
+                });
+
+                this.$on('addSelectedTech', function (tech) {
+                    this.selectedTech.push(tech);
+                });
+
+                this.$on('changeSelectedTech', function (tech) {
+                    this.selectedTech = _.reject(this.selectedTech, function(techId){ return techId === tech.oldValue; });
+                    this.selectedTech.push(tech.newValue);
+                });
+
+                this.$on('removeSelectedTech', function (tech) {
+                    this.selectedTech = _.reject(this.selectedTech, function(techId){ return techId === tech.oldValue; });
+                });
             }
         });
     }
