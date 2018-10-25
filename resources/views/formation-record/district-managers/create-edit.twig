@@ -1,0 +1,43 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section" id="vue" data-department_value="{{ dept_id ?? '' }}">
+        <div class="level" style="margin-top: 20px">
+            <div class="level-left">
+                <h4 class="title">Личный состав от {{ report.report_date ?? 'now'|date('d-m-Y') }}</h4>
+            </div>
+        </div>
+
+        <form action="" method="post">
+            {{ csrf_field() }}
+            <input type="hidden" name="date" value="{{ date }}"/>
+            {#<input type="hidden" name="form_id" value="{{ form_id }}"/>#}
+            {#{% include "formation/field.twig" with {fields: fieldlist, prefix: '', model: model} %}#}
+            <fieldset>
+                <legend>На лицо личного состава</legend>
+
+                {% for district in districts %}
+                    <div class="field">
+                        <label for="field_2_1">{{ district.name }} район</label>
+                        <district-managers :staff="{{ staff }}" :block_type="{{ district.id }}" :model_id="{{ report.id ?? 0 }}"></district-managers>
+                        {#<staff-formation-record112 :shift-id="{{ shift_id }}" date-input="{{ date }}" :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                   block_type="duty_officer"></staff-formation-record112>#}
+                    </div>
+                {% endfor %}
+
+            </fieldset>
+
+            <div class="panel"
+                 style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </form>
+
+    </div>
+{% endblock content %}

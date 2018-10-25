@@ -39,6 +39,9 @@ use Illuminate\Database\Query\Builder;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FireDepartmentResult[] $results
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Schedule[] $schedules
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment title($title)
+ * @property int|null $recommend
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment recommend($search = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\FireDepartment whereRecommend($value)
  */
 class FireDepartment extends Model
 {

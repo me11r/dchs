@@ -13,6 +13,9 @@ Route::group(
         Route::get('hydrant/hydrants_for_point_by_radius', 'HydrantController@getHydrantsForPointByRadius');
         Route::get('101/get-tech', 'FormationTechController@index');
         Route::get('101/get-staff', 'FormationStaffController@index');
+        Route::get('112-formation/get-staff', 'FormationController@staff_page');
+        Route::get('district-managers/get-staff', 'FormationController@staff_page_district_managers');
+
         Route::apiResource('hydrant', 'HydrantController');
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
@@ -22,11 +25,16 @@ Route::group(
 
         Route::group(['prefix' => 'notification'], function (){
             Route::post('ticket101send', 'NotificationController@ticket101Send');
+            Route::post('ticket112send', 'NotificationController@ticket112Send');
         });
 
         Route::group(['prefix' => 'air-rescue'], function (){
             Route::get('get-staff' ,'AircraftController@getStaff');
             Route::get('get-tech' ,'AircraftController@getTech');
+        });
+
+        Route::group(['prefix' => 'card101'], function (){
+            Route::post('check-roadtrip' ,'CardController@checkRoadtrip');
         });
     }
 );

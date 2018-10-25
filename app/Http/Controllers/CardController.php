@@ -18,6 +18,7 @@ use App\Models\FireDepartmentResult;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
+use App\Models\ServiceType;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
@@ -39,10 +40,45 @@ class CardController extends AuthorizedController
     public function get101(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
-        $this->set('tickets', $tickets)->set('per_page', $perPage);
+
+        $f = $request->all();
+
+        $sort = $request->get('sort', 'created_at');
+        $id = $request->input('filter.id', '');
+        $city_area = $request->input('filter.city_area', '');
+
+
+        $city_areas = Ticket101::groupBy('city_area_id')
+            ->get(['city_area_id'])
+            ->pluck('city_area_id')
+            ->toArray();
+
+        $city_areas = CityArea::whereIn('id', $city_areas)->get();
+
+        if($id){
+            $tickets = Ticket101::with(['city_area'])
+                ->orderBy($sort,'desc')
+                ->where('id',$id)
+                ->paginate($perPage);
+        }
+        elseif($city_area){
+
+            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                ->where('city_area_id', $city_area)
+                ->orderBy($sort,'desc')
+                ->paginate($perPage);
+        }
+        else{
+            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                ->orderBy($sort,'desc')
+                ->paginate($perPage);
+        }
+
+        $this->set('tickets', $tickets)
+            ->set('city_areas', $city_areas)
+            ->set('id', $id)
+            ->set('city_area', $city_area)
+            ->set('per_page', $perPage);
     }
 
     public function getAdd101(Request $request, $card_id = 0)
@@ -57,19 +93,7 @@ class CardController extends AuthorizedController
             'b04' => 'ДЧС "Байкал-04"',
         ];
 
-        $service_notify = [
-            '112' => '112',
-            '102' => 'ДВД 102',
-            '103' => 'БСМП 103',
-            '104' => 'Служба газа 104',
-            'electro' => 'Э\\сеть (277-98-42)',
-            'water' => 'Водоканал (274-66-66)',
-            'smk' => 'ЦМК (254-63-53)',
-            'gu_kaz' => 'ГУ Казселезащита',
-            'roso' => 'РОСО',
-            'kaz_aviaserice' => 'AO Казавиаспас',
-            'ao_ort' => 'АО "Өртсөндіруші"',
-        ];
+        $service_notify = ServiceType::all();
 
         $ssv_out = FireDepartment::recommend()->get();
         $wall_materials = WallMaterial::all();
@@ -137,8 +161,7 @@ class CardController extends AuthorizedController
             $other_records_unique = [];
         }
 
-        $max_square = Ticket101OtherRecord::
-        where('ticket101_id', $ticket->id)
+        $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
             ->max('square');
 
         $fire_dep_results_info = '';
@@ -176,10 +199,17 @@ class CardController extends AuthorizedController
         /* последняя заполненная строевка*/
         $report_id = FormationReport::approved()->max('id');
         $formationTech = FormationTechReport::where('form_id', $report_id)
-            ->has('items')->get();
+            ->has('items')
+            ->get();
 
         foreach ($formationTech as $report) {
-            foreach ($report->items()->available()->get() as $tech) {
+
+            $activeTech = $report
+                ->items()
+                ->whereIn('status', ['reserve', 'action'])
+                ->get();
+
+            foreach ($activeTech as $tech) {
                 $formationTechItems[] = $tech;
             }
         }
@@ -202,6 +232,7 @@ class CardController extends AuthorizedController
                     continue;
                 }
 
+                /*полуфабрикат для рекомендаций*/
                 if (!$exists) {
                     $results[$tech_item->department] = FireDepartmentResult::create([
                         'ticket101_id' => $card->id,
@@ -212,7 +243,7 @@ class CardController extends AuthorizedController
                     ]);
                 }
 
-                /**/
+                /*рекомендации для каждого отделения, каждой пч (если указано в расписании и доступно)*/
                 foreach ($schedules as $schedule_item) {
 
                     $schedule_depts = explode(',', str_replace(['.', ' '], ',', $schedule_item->department));
@@ -286,7 +317,7 @@ class CardController extends AuthorizedController
         $this->saveOtherRecords($card, $otherRecords);
 
         if ($card_id) {
-            $this->updateNotificationServices($request->get('notification_services', []));
+            $this->updateNotificationServices($request->input('notification_services', []));
         } else {
             $this->createNotificationServices($card);
         }
@@ -318,20 +349,21 @@ class CardController extends AuthorizedController
 
     private function createNotificationServices(Ticket101 $ticket101): void
     {
-        (new NotificationService())
-            ->get()
-            ->each(function (NotificationService $service) use ($ticket101) {
-                (new Ticket101Notification())->fill([
-                    'notification_service_id' => $service->id,
-                    'ticket101_id' => $ticket101->id
-                ])->save();
-            });
+        foreach (ServiceType::all() as $service) {
+            Ticket101Notification::create([
+                'notification_service_id' => $service->id,
+                'ticket101_id' => $ticket101->id,
+            ]);
+        }
     }
 
     private function updateNotificationServices(array $notificationServices)
     {
         foreach ($notificationServices as $id => $data) {
-            (new Ticket101Notification())->find($id)->update($data);
+            $record = Ticket101Notification::find($id);
+            $record->name = $data['name'] ?? null;
+            $record->save();
+//            (new Ticket101Notification())->find($id)->update($data);
         }
     }
 

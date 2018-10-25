@@ -30,6 +30,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $active
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereNumber($value)
+ * @property string|null $operator_name
+ * @property string|null $correction_date
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereCorrectionDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Hydrant whereOperatorName($value)
  */
 class Hydrant extends Model
 {

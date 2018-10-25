@@ -1,21 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gorbunov
- * Date: 14.07.2018
- * Time: 13:42
- */
 
 class DictionarySeeder extends \Illuminate\Database\Seeder
 {
     public function run()
     {
         $dicts = [
-            [
-                'title' => 'Пожарные части',
-                'table' => 'fire_deptartments',
-                'model' => \App\FireDepartment::class,
-            ],
             [
                 'title' => 'Объект возгорания',
                 'table' => 'dict_fire_object',
@@ -62,17 +51,22 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'model' => \App\Dictionary\WaterSupplySource::class
             ],
             [
-                'title' => 'Уведомляемые службы',
-                'table' => 'notification_services',
-                'model' => \App\Models\NotificationService::class
+                'title' => 'ОДС',
+                'table' => 'oper_duty_shifts',
+                'model' => \App\OperDutyShift::class
+            ],
+            [
+                'title' => 'ЛС ОДС',
+                'table' => 'oper_duty_shift_staffs',
+                'model' => \App\OperDutyShiftStaff::class
             ],
         ];
-        Schema::disableForeignKeyConstraints();
-        (new App\Dictionary)->truncate();
+        #Schema::disableForeignKeyConstraints();
+        #(new App\Dictionary)->truncate();
         foreach ($dicts as $dict) {
-            (new App\Dictionary())->fill($dict)->save();
+            (new App\Dictionary())->firstOrCreate($dict);
         }
-        $this->call(WaterSupplySeeder::class);
+        /*$this->call(WaterSupplySeeder::class);
         $this->call(FireObjectSeeder::class);
         $this->call(CityAreaSeeder::class);
         $this->call(FireDeptSeeder::class);
@@ -84,8 +78,7 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
         $this->call(IncidentTypeSeeder::class);
         $this->call(OperationalPlanSeeder::class);
         $this->call(RiverSeeder::class);
-        $this->call(TrunkSeeder::class);
-        $this->call(NotificationServicesSeeder::class);
-        Schema::enableForeignKeyConstraints();
+        $this->call(TrunkSeeder::class);*/
+        //Schema::enableForeignKeyConstraints();
     }
 }

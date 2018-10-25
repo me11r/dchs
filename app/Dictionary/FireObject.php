@@ -17,6 +17,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireObject whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireObject whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property \Carbon\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireObject onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\FireObject whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireObject withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireObject withoutTrashed()
  */
 class FireObject extends Model
 {

@@ -1,28 +1,27 @@
 <template>
     <div class="field">
 
-
         <div
             class="field is-grouped"
             v-for="item in records_"
             :key="item.id">
             <!--<input-->
-                <!--type="hidden"-->
-                <!--v-model="item.id"-->
-                <!--:name="getName('vehicle_id', item.id)">-->
+            <!--type="hidden"-->
+            <!--v-model="item.id"-->
+            <!--:name="getName('vehicle_id', item.id)">-->
             <div class="control column is-two-thirds">
                 <label :for="getName('fire_department_id', item.id)">ПЧ</label>
                 <div class="select">
                     <select
-                            required
-                            title=""
-                            :name="getName('fire_department_id', item.id)"
-                            :id="getName('fire_department_id', item.id)"
-                            v-model="item.fire_department_id">
+                        required
+                        title=""
+                        :name="getName('fire_department_id', item.id)"
+                        :id="getName('fire_department_id', item.id)"
+                        v-model="item.fire_department_id">
                         <option
-                                v-for="fire_department in fire_departments_"
-                                :key="'fire_department_' + fire_department.id"
-                                :value="fire_department.id">{{ fire_department.title }}
+                            v-for="fire_department in fire_departments_"
+                            :key="'fire_department_' + fire_department.id"
+                            :value="fire_department.id">{{ fire_department.title }}
                         </option>
                     </select>
                 </div>
@@ -32,15 +31,15 @@
                 <label :for="getName('dict_fire_level_id', item.id)">Ранг пожара</label><br>
                 <div class="select">
                     <select
-                            required
-                            title=""
-                            :name="getName('dict_fire_level_id', item.id)"
-                            :id="getName('dict_fire_level_id', item.id)"
-                            v-model="item.dict_fire_level_id">
+                        required
+                        title=""
+                        :name="getName('dict_fire_level_id', item.id)"
+                        :id="getName('dict_fire_level_id', item.id)"
+                        v-model="item.dict_fire_level_id">
                         <option
-                                v-for="fire_level in fire_levels_"
-                                :key="'fire_level_' + fire_level.id"
-                                :value="fire_level.id">{{ fire_level.name }}
+                            v-for="fire_level in fire_levels_"
+                            :key="'fire_level_' + fire_level.id"
+                            :value="fire_level.id">{{ fire_level.name }}
                         </option>
                     </select>
                 </div>
@@ -58,23 +57,23 @@
             </div>
 
             <div class="control column">
-                <label>Удалить</label>
-
+                <label for="">&nbsp;</label>
                 <button
-                    class="button is-small is-outlined is-danger square-button-36"
+                    class="button is-small is-outlined is-danger"
                     @click.prevent="removeItem(item.id)"
                     type="button"
                     title="Удалить">
                     <i class="fa fa-trash"></i>
+                    &nbsp;Удалить
                 </button>
             </div>
 
         </div>
         <div class="add_button">
             <button
-                    class="button is-small is-outlined is-success"
-                    type="button"
-                    @click.prevent="addEmptyItem()">
+                class="button is-basic is-main"
+                type="button"
+                @click.prevent="addEmptyItem()">
                 <i class="fa fa-plus"></i>&nbsp;Добавить
             </button>
         </div>
@@ -113,7 +112,7 @@ export default {
         fire_levels: {
             type: Array,
             default: () => []
-        },
+        }
     },
     data() {
         return {
@@ -130,7 +129,7 @@ export default {
         'b-icon': Buefy['Icon']
     },
     methods: {
-        getName(control, id){
+        getName(control, id) {
             return `${control}[${id}]`;
         },
         addEmptyItem() {
@@ -151,7 +150,7 @@ export default {
                 department: '',
                 fire_department_id: '',
                 dict_fire_level_id: '',
-                name: '',
+                name: ''
             };
         },
         removeItem(id) {
@@ -160,7 +159,7 @@ export default {
                     return item.id !== id;
                 });
             }
-        },
+        }
 
         // getStaff() {
         //     let self = this;

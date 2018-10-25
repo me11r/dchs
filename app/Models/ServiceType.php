@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -15,6 +16,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereName($value)
  * @mixin \Eloquent
+ * @property int|null $head_user_id
+ * @property \Carbon\Carbon|null $deleted_at
+ * @property-read \App\User|null $headUser
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ServiceType onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereHeadUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ServiceType withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ServiceType withoutTrashed()
  */
 class ServiceType extends Model
 {
@@ -25,5 +36,10 @@ class ServiceType extends Model
 
     public $timestamps = false;
 
-    public $fillable = ['name'];
+    public $fillable = ['name', 'head_user_id'];
+
+    public function headUser()
+    {
+        return $this->belongsTo(User::class, 'head_user_id');
+    }
 }

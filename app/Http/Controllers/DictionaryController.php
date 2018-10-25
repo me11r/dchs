@@ -6,11 +6,13 @@ namespace App\Http\Controllers;
 use App\Aircraft;
 use App\AircraftType;
 use App\Dictionary;
+use App\DistrictManager;
 use App\FireDepartment;
 use App\IncidentTypeCategory;
 use App\Models\IncidentType;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
+use App\Models\ServiceType;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
 use App\Right;
@@ -53,6 +55,10 @@ class DictionaryController extends AuthorizedController
         $data['edit_path'] = "/dictionaries/{$name}/";
         $data['per_page'] = $request->get('per_page', 20);
         $data['type'] = $name;
+        $data['fire_departments'] = FireDepartment::all();
+        $data['city_areas'] = Dictionary\CityArea::all();
+
+        $data['user'] = Auth::user();
 
         $sort = $request->sort ? $request->sort : 'id';
 
@@ -79,8 +85,6 @@ class DictionaryController extends AuthorizedController
             }
 
 
-            $data['user'] = Auth::user();
-            $data['fire_departments'] = FireDepartment::all();
             $data['title'] = "Оперативные планы";
             $data['filter_department'] = $request->filter_department;
         }
@@ -105,6 +109,30 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'aircrafts'){
             $data['records'] = Aircraft::paginate($data['per_page']);
             $data['title'] = "Воздушные суда";
+        }
+        elseif($name == 'district-managers'){
+            $data['records'] = DistrictManager::paginate($data['per_page']);
+            $data['title'] = "Ответственные по районам";
+        }
+        elseif($name == 'fire-departments'){
+            $data['records'] = FireDepartment::orderBy($sort)
+                ->paginate($data['per_page']);
+
+            if($request->city_area_id){
+                $data['records'] = FireDepartment::orderBy($sort)
+                ->where('city_area_id', $request->city_area_id)
+                    ->paginate($data['per_page']);
+                $data['city_area'] = $request->city_area_id;
+            }
+
+            if($request->filter_department){
+                $data['records'] = FireDepartment::orderBy($sort)
+                    ->where('id', $request->filter_department)
+                    ->paginate($data['per_page']);
+                $data['filter_department'] = $request->filter_department;
+            }
+
+            $data['title'] = "Пожарные части";
         }
 
 
@@ -165,6 +193,15 @@ class DictionaryController extends AuthorizedController
                 'helicopter' => 'Вертолет',
             ];
             $data['title'] = "Воздушное судно";
+        }
+        elseif($name == 'fire-departments'){
+            $data['record'] = FireDepartment::find($id);
+            $data['city_areas'] = Dictionary\CityArea::all();
+            $data['title'] = "Пожарная часть";
+        }
+        elseif($name == 'district-managers'){
+            $data['record'] = DistrictManager::find($id);
+            $data['title'] = "Ответственный по району";
         }
         return view($view, $data);
     }
@@ -250,17 +287,53 @@ class DictionaryController extends AuthorizedController
             $record->aircraft_type_id = $request->aircraft_type_id;
 
             $record->save();
+        }
+        elseif($name == 'fire-departments'){
+            $record  = FireDepartment::firstOrNew(['id' => $request->id]);
+            $record->title = $request->title;
+            $record->city_area_id = $request->city_area_id;
+            $record->recommend = $request->recommend;
+            $record->address = $request->address;
 
+            $record->save();
+        }
+        elseif($name == 'district-managers'){
+            $record  = DistrictManager::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->rank = $request->rank;
+            $record->nickname = $request->nickname;
+            $record->position = $request->position;
+
+            $record->save();
+
+            if($request->phone_id){
+                $record->phones()->delete();
+                foreach ($request->phone_id as $phone) {
+                    if($phone){
+                        $record->phones()->create([
+                            'phone' => $phone
+                        ]);
+                    }
+                }
+            }
         }
 
-        return back()->with('_message', [
+        if($request->id){
+            return back()->with('_message', [
+                'type' => 'success',
+                'text' => 'Запись в справочнике успешно обновлена'
+            ]);
+        }
+
+        return redirect('/dictionaries')->with('_message', [
             'type' => 'success',
-            'text' => 'Запись в справочнике успешно обновлена'
+            'text' => 'Запись в справочнике успешно сохранена'
         ]);
+
     }
 
     private function setAdditionalData($dict){
-        if ($dict instanceof NotificationService){
+        if ($dict instanceof ServiceType){
             $this->set('users', User::all());
         }
     }

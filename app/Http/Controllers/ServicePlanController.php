@@ -2,44 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServiceType;
 use App\Ticket101ServicePlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ServicePlanController extends Controller
 {
-    private $services = [
-        '112' => '112',
-        '102' => 'ДВД 102',
-        '103' => 'БСМП 103',
-        '104' => 'Служба газа 104',
-        'electro' => 'Э\\сеть (277-98-42)',
-        'water' => 'Водоканал (274-66-66)',
-        'smk' => 'ЦМК (254-63-53)',
-        'gu_kaz' => 'ГУ Казселезащита',
-        'roso' => 'РОСО',
-        'kaz_aviaserice' => 'AO Казавиаспас',
-        'ao_ort' => 'АО "Өртсөндіруші"',
-    ];
     public function getList(Request $request)
     {
-//        $perpage = $request->get('per_page', 10);
-//        /** @var User $user */
-//        $user = Auth::user();
-//        $trips = Ticket101ServicePlan::with(['ticket'])
-//            ->where('is_closed', false);
-//
-//        if ($user->fire_department_id) {
-//            $trips = $trips->where('department_id', $user->fire_department_id);
-//        }
-//
-//        $trips = $trips
-//            ->orderBy('created_at', 'desc')
-//            ->paginate($perpage);
-//
-//        $this->set('user', $user->load('department'));
-//        $this->set('trips', $trips)->set('per_page', $perpage);
-        $services = $this->services;
+        $services = ServiceType::all();
+        $userService = \auth()->user()->service_type_id;
+
+        if($userService){
+            $services = ServiceType::where('id', $userService)->get();
+        }
 
         return view('service-plans.list', compact('services'));
     }
@@ -59,6 +36,12 @@ class ServicePlanController extends Controller
 
         $record = Ticket101ServicePlan::findOrFail($id);
 
+        if(!$record->is_accepted){
+            $record->is_accepted = true;
+            $record->name_accepted = Auth::user()->name;
+            $record->save();
+        }
+
 
         return view('service-plans.view', compact('record'));
     }
@@ -66,10 +49,19 @@ class ServicePlanController extends Controller
     public function postSend(Request $request)
     {
         $all = $request->all();
-        $servicePlan = Ticket101ServicePlan::firstOrCreate([
-            'department' => $request->service,
-            'card_id' => $request->card_id,
-        ]);
+        if($request->cardType == 101){
+            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+                'service_type_id' => $request->service_id,
+                'card_id' => $request->card_id,
+            ]);
+        }
+        else{
+            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+                'service_type_id' => $request->service_id,
+                'card112_id' => $request->card_id,
+            ]);
+        }
+
         return response()->json($servicePlan);
     }
 

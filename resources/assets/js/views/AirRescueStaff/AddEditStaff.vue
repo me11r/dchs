@@ -2,7 +2,7 @@
     <div class="field">
         <div class="add_button">
             <button
-                class="button is-small is-outlined is-success"
+                class="button is-small is-basic"
                 type="button"
                 @click.prevent="addEmptyItem()">
                 <i class="fa fa-plus"></i>&nbsp;Добавить
@@ -19,15 +19,15 @@
                     <label :for="getName('staff_id', item.id)">Ф.И.О.</label><br>
                     <div class="select">
                         <select
-                                required
-                                title=""
-                                :name="getName('staff_id', item.id)"
-                                :id="getName('staff_id', item.id)"
-                                v-model="item.staff_id">
+                            required
+                            title=""
+                            :name="getName('staff_id', item.id)"
+                            :id="getName('staff_id', item.id)"
+                            v-model="item.staff_id">
                             <option
-                                    v-for="s in staff"
-                                    :key="'staff_' + s.id"
-                                    :value="s.id">{{ s.name }}
+                                v-for="s in staff"
+                                :key="'staff_' + s.id"
+                                :value="s.id">{{ s.name }}
                             </option>
                         </select>
                     </div>
@@ -46,18 +46,36 @@
                     </button>
                 </div>
             </div>
-            <div v-if="block_type_ === 'business_trip' || block_type_ === 'sick'" class="field is-grouped">
+            <div
+                v-if="block_type_ === 'business_trip' || block_type_ === 'sick'"
+                class="field is-grouped">
                 <div class="control column">
                     <label :for="getName('comment', item.id)">Комментарий</label>
-                    <textarea class="textarea" v-model="item.comment" :name="getName('comment', item.id)" :id="getName('comment', item.id)" cols="10" rows="1"></textarea>
+                    <textarea
+                        class="textarea"
+                        v-model="item.comment"
+                        :name="getName('comment', item.id)"
+                        :id="getName('comment', item.id)"
+                        cols="10"
+                        rows="1"></textarea>
                 </div>
                 <div class="control column">
                     <label :for="getName('date_from', item.id)">С</label><br>
-                    <input v-model="item.date_from" :name="getName('date_from', item.id)" :id="getName('date_from', item.id)" class="control" type="date">
+                    <input
+                        v-model="item.date_from"
+                        :name="getName('date_from', item.id)"
+                        :id="getName('date_from', item.id)"
+                        class="control"
+                        type="date">
                 </div>
                 <div class="control column">
                     <label :for="getName('date_to', item.id)">По</label><br>
-                    <input v-model="item.date_to" :name="getName('date_to', item.id)" :id="getName('date_to', item.id)" class="control" type="date">
+                    <input
+                        v-model="item.date_to"
+                        :name="getName('date_to', item.id)"
+                        :id="getName('date_to', item.id)"
+                        class="control"
+                        type="date">
                 </div>
             </div>
         </div>
@@ -91,7 +109,7 @@ export default {
         records: {
             type: Array,
             default: () => []
-        },
+        }
     },
     data() {
         return {
@@ -101,14 +119,14 @@ export default {
             staff_: this.staff,
             model_id_: this.modelId,
             total: 0,
-            isActive_: this.active,
+            isActive_: this.active
         };
     },
     components: {
         'b-icon': Buefy['Icon']
     },
     methods: {
-        getName(control, id){
+        getName(control, id) {
             return 'staff' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
         addEmptyItem() {
@@ -145,7 +163,7 @@ export default {
                     count: parseInt(item.count),
                     square: parseFloat(item.square),
                     date_begin: moment(item.date_begin),
-                    date_end: moment(item.date_end),
+                    date_end: moment(item.date_end)
                 });
             });
         },
@@ -176,7 +194,6 @@ export default {
                 if (self.isActive_ === true) {
                     self.$parent.$emit('totalActiveSet', resp.data.length);
                 }
-
             });
         }
     },

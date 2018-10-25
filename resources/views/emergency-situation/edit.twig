@@ -36,12 +36,13 @@
         }
     </style>
 
-    <div class="container">
+    <div class="container section">
         <div class="panel"
              id="emergency-situation-form">
             <div class="box"
                  style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
+                <h5 class="title">{{ item.user.service_type.name|default('') }}</h5>
                 <form action="{{ item.id ? route('emergency-situation.update', {'id':item.id}) : route('emergency-situation.store') }}"
                       method="post">
                     {% if item.id %}
@@ -57,6 +58,7 @@
                         <input type="hidden" name="date" :value="dateToSave">
                         <b-datepicker
                                 v-model="date"
+                                first-day-of-week="1"
                                 icon-pack="far"
                                 style="width: 100%"
                                 icon="calendar"

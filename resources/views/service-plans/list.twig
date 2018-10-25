@@ -1,7 +1,8 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="container section">
     <h4 class="title">Службы взаимодействия</h4>
-    <table class="table is-striped is-narrow is-fullwidth">
+    <table class="table is-striped is-narrow is-fullwidth is-hoverable">
         <thead>
         <tr>
             <th>Служба</th>
@@ -14,12 +15,7 @@
         <tbody>
         {% for slug, service in services %}
             <tr>
-                <td><a href="/service-plans/{{ slug }}">{{ service }}</a></td>
-                {#<td>{{ trip.department.name|default('-') }}</td>#}
-                {#<td>{{ trip.ticket.location|default('-') }} {% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>#}
-                {#<td>{{ trip.created_at|date('d.m.Y H:i') }}</td>#}
-                {#<td class="has-text-right"><a href="{{ url('/roadtrip/view/' ~ trip.id) }}" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой#}
-                        {#лист</a></td>#}
+                <td><a class="is-link is-block has-text-link" style="text-decoration: underline" href="/service-plans/{{ service.id }}">{{ service.name }}</a></td>
             </tr>
         {% else %}
             <tr>
@@ -29,4 +25,5 @@
         </tbody>
     </table>
     {#{% include "_templates/pagination" with {'items': trips, 'per_page': per_page} %}#}
+    </div>
 {% endblock content %}

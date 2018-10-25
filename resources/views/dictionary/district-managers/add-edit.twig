@@ -1,0 +1,49 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="vue">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="/dictionaries/district-managers/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="name">Ф.И.О.</label>
+                        <input required type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Звание</label>
+                        <input required type="text" class="input" name="rank" id="rank" value="{{ attribute(record, 'rank')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Позывной</label>
+                        <input required type="text" class="input" name="nickname" id="nickname" value="{{ attribute(record, 'nickname')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Должность</label>
+                        <input required type="text" class="input" name="position" id="position" value="{{ attribute(record, 'position')|default('') }}"/>
+                    </div>
+
+                    {% if record.phones is defined %}
+                        <v-phone :records="{{ record.phones }}"></v-phone>
+                    {% else %}
+                        <v-phone></v-phone>
+                    {% endif %}
+
+                    {#<div class="field">
+                        <label for="category_id">Название</label>
+                        <select required name="category_id" id="category_id" class="select">
+                            {% for item in incident_categories %}
+                                <option {{ item.id == record.category_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>#}
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries/district-managers/" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

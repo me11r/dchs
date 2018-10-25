@@ -16,7 +16,7 @@
     <div class="page-margin">
         <div class="level">
             <div class="level-left">
-                <h4 class="title">Путевой лист {{ record.id }} от {{ record.created_at|date('d.m.Y H:i') }} для {{ record.department }}</h4>
+                <h4 class="title">Путевой лист {{ record.id }} от {{ record.created_at|date('d.m.Y H:i') }} для {{ record.service_type.name ?? '' }}</h4>
             </div>
             <div class="level-right printing-invisible">
                 <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
@@ -27,7 +27,7 @@
                 <tr class="printing-invisible">
                     <td class="has-text-right is-bold">Принять в работу</td>
                     <td>
-                        <form method="post" action="{{ url('/service-plans/accept/' ~ record.id ~ '/' ~ record.department) }}">
+                        <form method="post" action="{{ url('/service-plans/accept/' ~ record.id ~ '/' ~ record.service_type.id) }}">
                             {{ csrf_field() }}
                             <label for="name_accepted">Фамилия принявшего сообщение</label>
                             <input required id="name_accepted" name="name_accepted" type="text" class="input">
@@ -46,7 +46,7 @@
                     <td class="has-text-right is-bold">Прибытие на место</td>
                     <td>
                         {% if not record.arrive_time %}
-                            <form method="post" action="{{ url('/service-plans/arrive/' ~ record.id ~ '/' ~ record.department) }}">
+                            <form method="post" action="{{ url('/service-plans/arrive/' ~ record.id ~ '/' ~ record.service_type_id) }}">
                                 {{ csrf_field() }}
                                 {#<input type="datetime-local" name="arrive_time">#}
                                 <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Отметить</button>
@@ -61,7 +61,7 @@
                         <td class="has-text-right is-bold">Время возвращения</td>
                         <td>
                             {% if not record.return_time %}
-                                <form method="post" action="{{ url('/service-plans/return/' ~ record.id ~ '/' ~ record.department) }}">
+                                <form method="post" action="{{ url('/service-plans/return/' ~ record.id ~ '/' ~ record.service_type_id) }}">
                                     {{ csrf_field() }}
                                     {#<input type="datetime-local" name="return_time">#}
                                     <button type="submit" class="button is-warning"><i class="far fa-bell"></i>&nbsp;Отметить</button>
@@ -84,8 +84,15 @@
                 {#</tr>#}
             {#{% endif %}#}
             <tr>
-                <td class="has-text-right is-bold">Место пожара (адрес)</td>
-                <td>{{ record.ticket.location|default('-') }}</td>
+                <td class="has-text-right is-bold">Место ЧС (адрес)</td>
+
+                <td>
+                    {% if record.ticket %}
+                        {{  record.ticket.location|default('-') }}
+                    {% else %}
+                        {{  record.ticket112.location|default('-') }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Наименование объекта</td>

@@ -6,7 +6,9 @@ use App\Dictionary\CityArea;
 use App\Http\Resources\EmergencySituationResource;
 use App\Models\EmergencySituation;
 use App\Repositories\Contracts\EmergencySituationRepositoryInterface;
+use App\Right;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
 class EmergencySituationController extends Controller
@@ -33,7 +35,17 @@ class EmergencySituationController extends Controller
      */
     public function index()
     {
-        $items = $this->repository->orderBy('id', 'DESC')->get();
+        if(Auth::user()->hasRight([Right::CAN_SEE_ALL_EMERGENCY_SITUATIONS]) || Auth::user()->isAdmin()){
+            $items = $this->repository->with(['user', 'user.service_type'])->orderBy('id', 'DESC')->get();
+        }
+        else{
+            $items = $this->repository->with(['user', 'user.service_type'])
+                ->whereHas('user.service_type', function ($q){
+                    $q->where('id', Auth::user()->service_type_id);
+                })
+                ->orderBy('id', 'DESC')
+                ->get();
+        }
 
         return View::make('emergency-situation.index')
             ->with('items', $items)
@@ -84,7 +96,7 @@ class EmergencySituationController extends Controller
     {
         return View::make('emergency-situation.edit')
             ->with('cityAreas', collect((new CityArea)->orderBy('name')->get(['id', 'name']))->toArray())
-            ->with('item', $this->repository->find($id))
+            ->with('item', $this->repository->with(['user', 'user.service_type'])->find($id))
             ->with('title', 'Изменение оперативной информации')
             ->render();
     }

@@ -1,6 +1,6 @@
 {% extends 'layout/html' %}
 {% block content %}
-    <div class="container">
+    <div class="container section">
         <form action="{{ url('admin/users/edit/' ~ user.id|default('')) }}" method="post" id="add_user_form">
             {{ csrf_field() }}
             <h4 class="title">Редактирование пользователя</h4>

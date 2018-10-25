@@ -14,7 +14,7 @@ class FormationStaffController extends Controller
 
     }
 
-    public function index(Request $request)
+    public function staff_page(Request $request)
     {
         $data = $request->all();
         $resp = FormationPersonsItem::rank($request->rank)
