@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card112\Card112;
 use App\Models\ServiceType;
 use App\Ticket101ServicePlan;
 use Illuminate\Http\Request;
@@ -64,6 +65,21 @@ class ServicePlanController extends Controller
 
         return response()->json($servicePlan);
     }
+
+    public function postCheck(Request $request)
+    {
+        $id = $request->card_id;
+        $ticket = Card112::find($id);
+
+        if(!$ticket){
+            return response()->json(['servicePlans' => []], 200);
+        }
+
+        $data['servicePlans'] = $ticket->service_plans;
+
+        return response()->json($data);
+    }
+
 
     public function postAccept(Request $request, $id, $service)
     {

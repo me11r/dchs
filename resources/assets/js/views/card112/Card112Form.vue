@@ -252,17 +252,19 @@
                                         <input type="text"
                                                readonly
                                                v-model="services[service.id].created_at"
+                                               :id="service.id + '_created_at'"
                                                class="input">
                                     </td>
                                     <td>
                                         <input type="text"
                                                class="input"
-                                               :id="service.id + + '_name'"
+                                               :id="service.id + '_name'"
                                                v-model="services[service.id].name_accepted">
                                     </td>
                                     <td>
                                         <input type="text"
-                                               v-model="services[service.id].created_at"
+                                               v-model="services[service.id].arrive_time"
+                                               :id="service.id + '_arrived_at'"
                                                readonly
                                                class="input">
                                     </td>
@@ -271,6 +273,8 @@
                                         <input type="text"
                                                class="input"
                                             v-model="services[service.id].sent_at"
+                                               :id="service.id + '_sent_at'"
+
                                         >
 
                                     </td>
@@ -704,6 +708,49 @@ export default {
                 };
             });
         },
+        checkServices() {
+            let self = this;
+            if (window.card112FormData) {
+                setInterval(function() {
+                    axios
+                        .post('/service-plans/check', {
+                            card_id: window.card112FormData.model.id,
+                            cardType: 112
+                        })
+                        .then((response) => {
+                            let servicePlans = response.data.servicePlans;
+
+                            if (servicePlans !== undefined) {
+                                servicePlans.forEach((plan) => {
+                                    self.serviceTypes.forEach((serviceType) => {
+                                        if (plan.service_type_id === serviceType.id) {
+                                            self.services[serviceType.id] = {
+                                                sent_at: plan.created_at || moment().format('d-m-Y'),
+                                                created_at: plan.created_at || moment().format('d-m-Y'),
+                                                name_accepted: plan.name_accepted || '',
+                                                arrive_time: plan.arrive_time || ''
+                                            };
+                                            let name = document.getElementById(serviceType.id + '_name');
+                                            let created_at = document.getElementById(serviceType.id + '_created_at');
+                                            let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
+                                            let sent_at = document.getElementById(serviceType.id + '_sent_at');
+                                            name.value = plan.name_accepted || '';
+                                            created_at.value = plan.created_at || '';
+                                            arrived_at.value = plan.arrive_time || '';
+                                            sent_at.value = plan.created_at || '';
+                                            console.dir(plan);
+                                        }
+                                    });
+                                });
+                            }
+
+                        })
+                        .catch(() => {
+                        });
+                }, 10000);
+
+            }
+        },
         sendOneCheckService(event, cardId, service) {
             if (event.target.checked) {
                 axios
@@ -815,6 +862,16 @@ export default {
 
         console.dir(this.servicePlans);
 
+        this.serviceTypes.forEach((item) => {
+
+            this.services[item.id] = {
+                sent_at: '',
+                created_at: '',
+                name_accepted: '',
+                arrive_time: ''
+            };
+        });
+
         if (this.servicePlans !== undefined) {
             this.servicePlans.forEach((plan) => {
                 this.serviceTypes.forEach((item) => {
@@ -822,13 +879,8 @@ export default {
                         this.services[item.id] = {
                             sent_at: plan.created_at || moment().format('d-m-Y'),
                             created_at: plan.created_at || moment().format('d-m-Y'),
-                            name_accepted: plan.name_accepted || ''
-                        };
-                    } else {
-                        this.services[item.id] = {
-                            sent_at: '',
-                            created_at: '',
-                            name_accepted: ''
+                            name_accepted: plan.name_accepted || '',
+                            arrive_time: plan.arrive_time || ''
                         };
                     }
                 });
@@ -837,6 +889,7 @@ export default {
     },
     mounted() {
         this.yandexMapsBus = new YandexMapsBus();
+        this.checkServices();
         window.addEventListener('storage', (event) => {
             if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
                 this.model.location = event.newValue;
