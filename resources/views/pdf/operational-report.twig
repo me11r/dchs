@@ -72,10 +72,9 @@
     </div>
     <div>
         11. Отработано всего  выездов  Службой Спасения г. Алматы – {{ card112_roadtrips|length }}, из них:
-        {% for item in card112_roadtrips %}
-            <p>- {{ item.service_type.name }}</p>
+        {% for item in card112_roadtrips if item.service_type.name is defined %}
+            <p>- {{ item.service_type.name|default('') }}</p>
         {% endfor %}
-        {#- Аварийно – спасательный отряд – 8, с угрозой для жизни людей – 1, без угрозы для жизни людей – 7.#}
     </div>
     <div>
         12. Данные по СРУ: всего – 591: С-40 (моторные) – 244, СРУ-347:  из них  в нерабочем – 2:
