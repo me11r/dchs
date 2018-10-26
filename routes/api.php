@@ -12,7 +12,7 @@ Route::group(
     function () {
         Route::get('hydrant/hydrants_for_point_by_radius', 'HydrantController@getHydrantsForPointByRadius');
         Route::get('101/get-tech', 'FormationTechController@index');
-        Route::get('101/get-staff', 'FormationStaffController@index');
+        Route::get('101/get-staff', 'FormationStaffController@staff_page');
         Route::get('112-formation/get-staff', 'FormationController@staff_page');
         Route::get('district-managers/get-staff', 'FormationController@staff_page_district_managers');
 
