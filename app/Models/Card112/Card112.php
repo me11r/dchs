@@ -222,4 +222,6 @@ class Card112 extends Model
 
         return $result;
     }
+
+    #public function
 }

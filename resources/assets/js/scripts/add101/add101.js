@@ -52,7 +52,7 @@ export default class Add101Functions {
 
     checkRoadtrips() {
         let ticket_id = window.ticket101add.ticketId;
-        if(ticket_id !== 0) {
+        if (ticket_id !== 0) {
             var timerId = setInterval(function() {
                 axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
                     if (response.data.recommendations !== undefined) {

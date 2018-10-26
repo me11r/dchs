@@ -152,6 +152,14 @@
                             Суточный отчет
                         </a>
                         <a
+                            v-if="hasRight(11)"
+                            href="/pdf/operational-report"
+                            target="_blank"
+                            class="dropdown-item is-small">
+                            <i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Оперативная информация
+                        </a>
+                        <a
                             v-if="hasRight(21)"
                             href="/information"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
