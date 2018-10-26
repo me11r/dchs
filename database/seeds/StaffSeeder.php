@@ -13,9 +13,9 @@ class StaffSeeder extends Seeder
      */
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        /*\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('staff')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');*/
 
         $raw_data = $this->parseItems(database_path('seeds/sources/staff.xlsx'));
         unset($raw_data[0]);
@@ -28,7 +28,7 @@ class StaffSeeder extends Seeder
                     'rank' => trim($raw_datum[3]),
                 ];
 
-                $fireDep = \App\FireDepartment::title($datum['department_id'])->firstOrFail();
+                $fireDep = \App\FireDepartment::title($datum['department_id'])->first();
                 if($fireDep){
                     $datum['department_id'] = $fireDep->id;
                     $staff = \App\Models\Staff::firstOrCreate($datum);

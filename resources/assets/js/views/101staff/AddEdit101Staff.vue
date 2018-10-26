@@ -131,7 +131,7 @@ export default {
         getName(control, id) {
             return 'staff' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
-        getStaffFilter(selectedId) {
+        getStaffFilter(selectedId) { //запрет на выбор одного и того же человека на разные позиции
             let scope = this;
             return this.staff_.filter(function (item) {
                 return scope.$parent.selectedPersons.indexOf(item.id) === -1 || item.id === selectedId;

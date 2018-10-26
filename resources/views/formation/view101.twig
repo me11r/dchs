@@ -21,12 +21,12 @@
             </div>
         </div>
         <div class="level">
-            <p class="">ДСПТ: </p>
-            <p class="">ЦППС: </p>
-            <p class="">ЕДДС: </p>
-            <p class="">ИПЛ : </p>
+            <p class="">ДСПТ: {% for key, p in dept_od_people.dspt|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p class="">ЦППС: {% for key, p in dept_od_people.cpps|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p class="">ЕДДС: {% for key, p in dept_od_people.edds|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p class="">ИПЛ : {% for key, p in dept_od_people.ipl|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
             <p class=""></p>
-            <p class="">Водоканал: </p>
+            <p class="">Водоканал: {% for key, p in dept_od_people.water_supply|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
 
         <div class="tbl" style="overflow-x: scroll">
@@ -216,107 +216,34 @@
             </table>
         </div>
         <div class="column">
+            <p><span class="has-text-weight-bold">ЦРБ: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.crb|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">База ГДЗС: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.gdzs_base|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Врач: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.doctor|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+        </div>
+        <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Посты ПЧ-13:</h3>
             <p><span class="has-text-weight-bold">1 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Резиденция Президента РК - {% for key, p in dept13_people.post1_president_residence|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
             <p><span class="has-text-weight-bold">2 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Архив Президента РК - {% for key, p in dept13_people.post2_president_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
             <p><span class="has-text-weight-bold">3 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Государственный архив РК - {% for key, p in dept13_people.post3_state_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
             <p><span class="has-text-weight-bold">4 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Национальный Банк РК - {% for key, p in dept13_people.post4_national_bank|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
+        <div class="column">
+            {#<h3 class="title" style="text-decoration: underline !important;">ОД:</h3>#}
+            <h3 class="title" style="text-decoration: underline !important;">Оперативные дежурные автомашины:</h3>
+            <p><span class="has-text-weight-bold">Тулпар-1: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar1|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Тулпар-2: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar2|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Тулпар-3: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar3|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Тулпар-4: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar4|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Тулпар-5: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar5|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Тулпар-7: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar7|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Тулпар-8: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar8|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Тулпар-10: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar10|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">КШМ: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.kshm|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">ИПЛ «Жалын»: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.ipl_zhalyn|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+        </div>
     </div>
     </div>
-    {#<script#}
-            {#src="https://code.jquery.com/jquery-3.3.1.min.js"#}
-            {#crossorigin="anonymous"></script>#}
-    {#<script src="/kayalshri-tableExport/tableExport.js"></script>#}
-    {#<script src="/kayalshri-tableExport/jquery.base64.js"></script>#}
-    {#<script type="text/javascript" src="/kayalshri-tableExport/jspdf/libs/sprintf.js"></script>#}
-    {#<script type="text/javascript" src="/kayalshri-tableExport/jspdf/jspdf.js"></script>#}
-    {#<script type="text/javascript" src="/kayalshri-tableExport/jspdf/libs/base64.js"></script>#}
-    {#<script>#}
-        {#demoFromHTML();#}
-        {#function demoFromHTML() {#}
-            {#// var string = doc.output('datauristring');#}
-            {#// var iframe = "<iframe width='100%' height='100%' src='" + string + "'></iframe>"#}
-            {#// var x = window.open();#}
-            {#// x.document.open();#}
-            {#// x.document.write(iframe);#}
-            {#// x.document.close();#}
 
-            {#$('#main_table').tableExport({type:'pdf',escape:'false', htmlContent:'false'});#}
-        {#}#}
-    {#</script>#}
-    {#<style type="text/css">#}
-        {#.tg  {border-collapse:collapse;border-spacing:0;}#}
-        {#.tg td{/*padding:10px 5px;*/border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}#}
-        {#.tg th{font-size:14px;font-weight:normal;/*padding:10px;*/border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}#}
-        {#.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}#}
-        {#.rotate {/*transform: rotate(-90deg*/); /*padding: 12px !important;*/}#}
-    {#</style>#}
-    {#<table class="tg">#}
-        {#<tr>#}
-            {#<th class="tg-0pky">ПЧ</th>#}
-            {#<th class="tg-0pky">В карауле</th>#}
-            {#<th class="tg-0pky" colspan="6">ЛС на лицо<br></th>#}
-            {#<th class="tg-0pky" colspan="6">Отсутствуют</th>#}
-            {#<th class="tg-0pky" rowspan="3">ГДЗС</th>#}
-            {#<th class="tg-0pky" rowspan="3">Аппараты</th>#}
-            {#<th class="tg-0pky" rowspan="3">Мотопомны#}
-                {#<br>Грязевая/водяная</th>#}
-            {#<th class="tg-0pky" colspan="6">Пожарная техника</th>#}
-        {#</tr>#}
-        {#<tr>#}
-            {#<td class="tg-0pky" rowspan="2"></td>#}
-            {#<td class="tg-0pky" rowspan="2"></td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">всего<br></td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">нач.кар</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">ком.отд<br></td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">шоферы</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">ряд состав</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">диспетчеров</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">Отпуск<br></td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">Учебный</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">Декрет</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">Больные</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">Командировка</td>#}
-            {#<td class="tg-0pky rotate" rowspan="2">Др причины</td>#}
-            {#<td class="tg-0pky" colspan="2">В боевом расчете</td>#}
-            {#<td class="tg-0pky" colspan="2">В резерве</td>#}
-            {#<td class="tg-0pky" colspan="2">На ремонте</td>#}
-        {#</tr>#}
-        {#<tr>#}
-            {#<td style="height: 30px" class="tg-0pky rotate">Тип осн. пожарного а/м<br></td>#}
-            {#<td class="tg-0pky rotate">Марка</td>#}
-            {#<td class="tg-0pky rotate">Тип осн. а/м</td>#}
-            {#<td class="tg-0pky rotate">Марка</td>#}
-            {#<td class="tg-0pky rotate">Тип осн. а/м<br></td>#}
-            {#<td class="tg-0pky rotate">Марка</td>#}
-        {#</tr>#}
-        {#<tr>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-            {#<td class="tg-0pky"></td>#}
-        {#</tr>#}
-    {#</table>#}
     <style>
         th.rotate {
             /* Something you can count on */
