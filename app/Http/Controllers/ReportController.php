@@ -14,6 +14,7 @@ use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Ticket101;
+use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
@@ -48,6 +49,48 @@ class ReportController extends AuthorizedController
         $html = view('pdf/daily-report',
             (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport()
         )->render();
+
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $date = date('d-m-Y');
+        $file_name = "Суточный отчет - $date.pdf";
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHTML($html, 'UTF-8');
+        $dompdf->render();
+
+        $dompdf->stream($file_name);
+    }
+
+    public function getOperational()
+    {
+        $data['yesterday'] = now()->subHours(24);
+        $data['today'] = now();
+        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
+            ->whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today'])
+            ->whereNotNull('card112_id');
+
+        $data['emergencies'] = $card112_day->count();
+        $data['card112_count'] = Card112::all()->count();
+        $data['card112_count_finished'] = Card112::all()->count();
+        $data['card101_count'] = Ticket101::all()->count();
+        $data['emergencies_human_in_danger'] = Card112::all();
+        $data['emergencies_human_not_in_danger'] = Card112::all();
+        $data['fires_count'] = $card101_day->count();
+        $data['dead_count'] = $card112_day->sum('dead');
+        $data['evacuated_count'] = $card112_day->sum('evacuated');
+        $data['poisoned_by_gas_count'] = $card112_day->sum('poisoned');
+        $data['hurt_count'] = $card112_day->sum('injured_hard');
+        $data['saved_count'] = $card112_day->sum('saved');
+        $data['card112_roadtrips'] = $card112_roadtrips->get();
+        $data['mudflow_emergency_count'] = 0;
+
+        $html = view('pdf/operational-report', $data)->render();
 
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
