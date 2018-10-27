@@ -43,7 +43,12 @@ class AirRescueReportTechItem extends Model
         'comment',
     ];
 
-    public function scopeStatus($q, $search)
+    public function report()
+    {
+        return $this->belongsTo(AirRescueReport::class, 'report_id');
+    }
+
+    public function scopeStatus($q, $search = 'action')
     {
         return $q->where('status', $search);
     }
