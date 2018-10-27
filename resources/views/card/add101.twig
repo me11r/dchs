@@ -46,6 +46,14 @@
             </div>
             <div class="panels">
                 <div id="tab_call" class="is-hidden">
+                    <div class="column">
+                        <h6 class="subtitle">Режим</h6>
+                        <select name="is_real" id="is_real" class="select control">
+                            <option {{ ticket.is_real ? 'selected' : '' }} value="1">Боевой</option>
+                            <option {{ ticket.is_real ? 'selected' : '' }} value="0">Учебный</option>
+                        </select>
+                    </div>
+                    <br>
                     <h5 class="subtitle">Сведения поступившие со звонком:</h5>
 
                     <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
