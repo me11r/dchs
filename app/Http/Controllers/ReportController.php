@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AirRescueReport;
 use App\Dictionary\FireObject;
 use App\Models\Card112\Card112;
 use App\Models\FormationPersonsItem;
@@ -65,6 +66,7 @@ class ReportController extends AuthorizedController
     {
         $data['yesterday'] = now()->subHours(24);
         $data['today'] = now();
+
         $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
             ->whereDate('created_at', '<=', $data['today']);
         $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
@@ -75,10 +77,14 @@ class ReportController extends AuthorizedController
             ->whereDate('created_at', '<=', $data['today'])
             ->whereNotNull('card112_id');
 
+        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
         $data['emergencies'] = $card112_day->count();
-        $data['card112_count'] = Card112::all()->count();
-        $data['card112_count_finished'] = Card112::all()->count();
-        $data['card101_count'] = Ticket101::all()->count();
+        $data['cards112'] = $card112_day->get();
+        $data['card112_count'] = $card112_day->count();
+        $data['card112_count_finished'] = $card112_day->count();
+        $data['card101_count'] = $card101_day->count();
         $data['emergencies_human_in_danger'] = Card112::all();
         $data['emergencies_human_not_in_danger'] = Card112::all();
         $data['fires_count'] = $card101_day->count();
@@ -88,10 +94,20 @@ class ReportController extends AuthorizedController
         $data['hurt_count'] = $card112_day->sum('injured_hard');
         $data['saved_count'] = $card112_day->sum('saved');
         $data['card112_roadtrips'] = $card112_roadtrips->get();
-        $data['mudflow_emergency_count'] = 0;
+        $data['mudflow_emergency_count'] = $card112_day->filterByServiceType('ГУ Казселезащита')->count();
+        $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
+        $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
+        $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
+            $q->status('action');
+        })->first();*/
+
+        $data['air_rescue_report_tech'] = $air_rescue_report->first() ? $air_rescue_report->first()->tech()->status('action')->get() : [];
 
         $html = view('pdf/operational-report', $data)->render();
 
+        #test
+        return $html;
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
         $file_name = "Суточный отчет - $date.pdf";

@@ -27,6 +27,40 @@ class DictionaryController extends AuthorizedController
         'id', 'created_at', 'updated_at', 'deleted_at'
     ];
 
+    private $dictionaries = [];
+    private $user = null;
+
+    private $additional_dicts = [
+        [
+            'title' => 'Пожарные части',
+            'href' => '/dictionaries/fire-departments',
+        ],
+        [
+            'title' => 'Типы инцидентов',
+            'href' => '/dictionaries/incident-types',
+        ],
+        [
+            'title' => 'Опер планы',
+            'href' => '/dictionaries/operational-plans',
+        ],
+        [
+            'title' => 'Опер карточки',
+            'href' => '/dictionaries/operational-cards',
+        ],
+        [
+            'title' => 'Типы воздушных судов',
+            'href' => '/dictionaries/aircraft-types',
+        ],
+        [
+            'title' => 'Воздушные суда',
+            'href' => '/dictionaries/aircrafts',
+        ],
+        [
+            'title' => 'Ответственные по районам',
+            'href' => '/dictionaries/district-managers',
+        ],
+    ];
+
     public function __construct(Request $request)
     {
         parent::__construct();
@@ -35,6 +69,16 @@ class DictionaryController extends AuthorizedController
     public function before()
     {
         $this->needRight(Right::CAN_EDIT_DICTIONARIES);
+        $user = \auth()->user();
+        $this->user = $user;
+        foreach (Dictionary::all() as $dict) {
+            if(!$user->isAdmin() && !$user->hasRight($dict->title)){
+                continue;
+            }
+            else{
+                $this->dictionaries[] = $dict;
+            }
+        }
     }
 
     protected function getEditableFields(Model $model) {
@@ -340,16 +384,34 @@ class DictionaryController extends AuthorizedController
 
     public function getIndex()
     {
-        $dicts = Dictionary::all();
-        $this->set('dictionaries', $dicts);
+        $dicts = $this->dictionaries;
+
+        $user = $this->user;
+
+        $additional_dicts = [];
+
+        foreach ($this->additional_dicts as $dict) {
+            if(!$user->isAdmin() && !$user->hasRight($dict['title'])){
+                continue;
+            }
+            else{
+                $additional_dicts[] = $dict;
+            }
+        }
+
+        $this->set('dictionaries', $dicts)
+            ->set('additional_dicts', $additional_dicts)
+        ;
     }
 
     public function getList($dict_id)
     {
         $dictionary = (new \App\Dictionary)->find($dict_id);
         $this->set('dictinfo', $dictionary);
+
         $dict = new $dictionary->model;
         $this->set('dictionary', $dict->get());
+
         $fields = $this->getEditableFields($dict);
         $this->set('fields', $fields);
     }

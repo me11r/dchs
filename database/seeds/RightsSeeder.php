@@ -20,6 +20,7 @@ class RightsSeeder extends Seeder
             ['title' => 'Строевые записки'],    //5
             ['title' => 'Отчеты'],              //6
             ['title' => 'Ввод данных'],         //7
+            ['title' => 'Справочники'],         //8
         ];
 
         foreach ($groups as $group) {
@@ -76,11 +77,25 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 2, 'title' => 'Удаление заявок 112'],
 
             ['right_group_id' => 6, 'title' => 'Просмотр оперативной информации (все службы)'],
-
         ];
+
+        #$rights[] = ['right_group_id' => 8, 'title' => 'Доступ ко всем справочникам'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'Пожарные части'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'Типы инцидентов'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'Опер планы'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'Опер карточки'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'Типы воздушных судов'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'Воздушные суда'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'Ответственные по районам'];
+
+        foreach (\App\Dictionary::all() as $dict) {
+            $rights[] = ['right_group_id' => 8, 'title' => $dict->title];
+        }
 
         foreach ($rights as $item) {
             \App\Right::firstOrCreate($item);
         }
+
+
     }
 }
