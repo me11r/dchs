@@ -157,7 +157,7 @@
                             target="_blank"
                             class="dropdown-item is-small">
                             <i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Оперативная информация
+                            Суточный отчет 112
                         </a>
                         <a
                             v-if="hasRight(21)"

@@ -107,7 +107,7 @@ class ReportController extends AuthorizedController
         $html = view('pdf/operational-report', $data)->render();
 
         #test
-        return $html;
+//        return $html;
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
         $file_name = "Суточный отчет - $date.pdf";
