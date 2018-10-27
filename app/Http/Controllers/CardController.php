@@ -223,8 +223,12 @@ class CardController extends AuthorizedController
                     ->first();
 
                 /*если подразделение еще не вернулось с прошлого происшествия*/
+                /*и прошлое происшествие не является учебным*/
                 $notAvailable = FireDepartmentResult::where('tech_id', $tech_item->id)
                     ->whereNotNull('out_time')
+                    ->whereHas('ticket', function ($q){
+                        $q->real();
+                    })
                     ->whereNull('ret_time')
                     ->first();
 
