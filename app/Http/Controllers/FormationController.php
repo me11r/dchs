@@ -114,7 +114,7 @@ class FormationController extends AuthorizedController
     {
         $data['staff'] = Staff::all();
         $data['tech'] = Aircraft::with(['aircraft_type'])->get();
-        $data['model'] = Aircraft::find($id);
+        $data['model'] = AirRescueReport::find($id);
 
         return view('formation.air-rescue.add-edit', $data);
     }

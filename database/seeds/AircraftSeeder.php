@@ -11,6 +11,7 @@ class AircraftSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(AircraftTypeSeeder::class);
         $items = [
             ['name' => 'КА-32', 'aircraft_type_id' => 1],
             ['name' => 'МИ-8','aircraft_type_id' => 1],
