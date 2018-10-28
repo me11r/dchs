@@ -655,7 +655,7 @@ class FormationController extends AuthorizedController
             }
         }
 
-        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech);
         $user = Auth::user();
 
         $dataToReport = [

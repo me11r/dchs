@@ -203,7 +203,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
     Route::get('/pdf/operational-report', 'ReportController@getOperational')->name('operational-report');
-    Route::get('/pdf/report101', 'ReportController@getReport101')->name('report101');
+    Route::get('/pdf/report101/{type}', 'ReportController@getReport101')->name('report101');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
