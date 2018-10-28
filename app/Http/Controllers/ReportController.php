@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dictionary\FireObject;
+use App\FormationReport;
 use App\Models\Card112\Card112;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
@@ -13,6 +14,8 @@ use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\Ticket101ExcelExport;
+use App\Services\ReportExport\Ticket101WordExport;
 use App\Ticket101;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -60,198 +63,50 @@ class ReportController extends AuthorizedController
         $dompdf->stream($file_name);
     }
 
-    public function getReport101()
+    public function getReport101($type)
     {
         if ($data = Cache::get('report101_data')) {
-            $html = view('pdf/formation-report', $data);
-            $html_test = view('pdf/formation-report-test', $data);
+            /** @var FormationReport $formationReport */
+            $formationReport = $data['report'];
 
-            $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+            switch ($type) {
+                case 'xls':
+                    $ticket101Export = new Ticket101ExcelExport(
+                        $formationReport,
+                        $data['departments'],
+                        $data['people'],
+                        $data['tech'],
+                        $data['sumArray']['people']
+                    );
 
-            $cellRowSpan = ['vMerge' => 'restart'];
-            $cellRowContinue = ['vMerge' => 'continue'];
-            $cellColSpan = ['gridSpan' => 2];
+                    $writer = $ticket101Export->getXlsWriter();
+                    header('Content-Type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachment;filename="' . Carbon::parse($formationReport->created_at)->format('d-m-Y') . ' отчет.xls' . '"');
+                    $writer->save('php://output');
+                    break;
+                case 'pdf':
+                case 'docx':
+                    $ticket101Export = new Ticket101WordExport(
+                        $formationReport,
+                        $data['departments'],
+                        $data['people'],
+                        $data['tech'],
+                        $data['sumArray']['people']
+                    );
 
-            $phpWord = new \PhpOffice\PhpWord\PhpWord();
-            $section = $phpWord->addSection(['orientation' => 'landscape',]);
-            $section->getStyle()->setBreakType('continuous');
-//            $header = $section->addHeader();
-            $table = $section->addTable();
+                    // @todo PDF не работает корректно (но вроде оно и не нужно)
+                    $writer = $ticket101Export->getWriter($type === 'pdf' ? 'PDF' : 'Word2007');
+                    $fileName = Carbon::parse($formationReport->created_at)->format('d-m-Y') . " отчет.$type";
+                    $writer->save(public_path($fileName));
 
-            $table->addRow(-0.5, array('exactHeight' => -5));
-
-            $table->addCell(700, $cellRowSpan)->addText('ПЧ');
-            $table->addCell(700, $cellRowSpan)->addText('В карауле по списку л/с');
-
-            $table->addCell(700, ['gridSpan' => 6])->addText('На лицо личного состава');
-            $table->addCell(700, ['gridSpan' => 6])->addText('Отсутствуют');
-            $table->addCell(700, $cellRowSpan)->addText('ГДЗС');
-            $table->addCell(700, $cellRowSpan)->addText('Аппараты');
-            $table->addCell(700, $cellRowSpan)->addText('Мотопомпы');
-            $table->addCell(700, ['gridSpan' => 6])->addText('Пожарная техника');
-
-            $table->addRow();
-
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-
-            $table->addCell(700, $cellRowSpan)->addText('всего');
-            $table->addCell(700, $cellRowSpan)->addText('нач.кар');
-            $table->addCell(700, $cellRowSpan)->addText('ком.отд');
-            $table->addCell(700, $cellRowSpan)->addText('Шоферы');
-            $table->addCell(700, $cellRowSpan)->addText('Ряд.состав');
-            $table->addCell(700, $cellRowSpan)->addText('Ряд.Диспетчеров');
-            $table->addCell(700, $cellRowSpan)->addText('Отпуск');
-            $table->addCell(700, $cellRowSpan)->addText('Учебный');
-            $table->addCell(700, $cellRowSpan)->addText('Декрет');
-            $table->addCell(700, $cellRowSpan)->addText('Больные');
-            $table->addCell(700, $cellRowSpan)->addText('Командировка');
-            $table->addCell(700, $cellRowSpan)->addText('Др.причины');
-
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-
-            $table->addCell(700, ['gridSpan' => 2])->addText('В боевом расчёте');
-            $table->addCell(700, ['gridSpan' => 2])->addText('В резерве');
-            $table->addCell(700, ['gridSpan' => 2])->addText('На ремонте');
-
-            $table->addRow();
-
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-
-            $table->addCell(500, $cellRowSpan)->addText('Тип осн. пожарного а/м');
-            $table->addCell(500, $cellRowSpan)->addText('Марка');
-            $table->addCell(500, $cellRowSpan)->addText('Тип осн. а/м');
-            $table->addCell(500, $cellRowSpan)->addText('Марка');
-            $table->addCell(500, $cellRowSpan)->addText('Тип осн. а/м');
-            $table->addCell(500, $cellRowSpan)->addText('Марка');
-
-            $table->addRow(-0.5, array('exactHeight' => -5));
-
-            foreach (range(1, 23) as $item) {
-                $table->addCell(null, $cellRowContinue);
+                    return response()->download(public_path($fileName));
+                    break;
             }
 
-            $table->addRow(-0.5, array('exactHeight' => -5));
-
-            foreach (range(1, 23) as $item) {
-                $table->addCell(700)->addText(str_random(8));
-            }
-
-            $table->addRow(-0.5, array('exactHeight' => -5));
-//            dd($data);
-
-            foreach ($data['departments'] as $dept) {
-
-                $table->addCell(700)->addText($dept->title);
-
-                foreach ($data['people_fields'] as $ppl) {
-                    $table->addCell(700)->addText($data['people'][$dept->id][$ppl] ?? '-');
-                }
-
-                foreach ($data['tech_fields'] as $tch) {
-                    $table->addCell(700)->addText($data['tech'][$dept->id][$tch] ?? '-');
-                }
-
-                $tech_action_name = '';
-                $tech_action_base = '';
-                $tech_reserve_name = '';
-                $tech_reserve_base = '';
-                $tech_repair_name = '';
-                $tech_repair_base = '';
-
-                foreach ($dept->tech_action as $action) {
-                    $tech_action_name .= $action->vehicle->name ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_action_name ?? '-');
-
-                foreach ($dept->tech_action as $action) {
-                    $tech_action_base .= $action->vehicle->base ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_action_base ?? '-');
-
-                foreach ($dept->tech_reserve as $tech_reserve) {
-                    $tech_reserve_name .= $tech_reserve->vehicle->name ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_reserve_name ?? '-');
-
-                foreach ($dept->tech_reserve as $tech_reserve) {
-                    $tech_reserve_base .= $tech_reserve->vehicle->base ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_reserve_base ?? '-');
-
-                foreach ($dept->tech_repair as $tech_repair) {
-                    $tech_repair_name .= $tech_repair->vehicle->name ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_repair_name ?? '-');
-
-                foreach ($dept->tech_repair as $tech_repair) {
-                    $tech_repair_base .= $tech_repair->vehicle->bas ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_repair_base ?? '-');
-
-                $table->addRow();
-
-            }
-
-//            $table->addRow();
-
-            $table->addCell(700)->addText('Итого');
-
-            foreach (range(1, 22) as $item) {
-                $table->addCell(700)->addText(str_random(8));
-            }
-//            foreach ($data['people_fields'] as $ppl){
-//                $table->addCell(700)->addText($data['sumArray']['people'][$ppl] ?? 0);
-//            }
-//
-//            foreach ($data['tech_fields'] as $tch){
-//                if($tch == 'field_4'){
-//                    $table->addCell(700)->addText('-');
-//                }
-//                else{
-//                    $table->addCell(700)->addText($data['sumArray']['tech'][$tch] ?? 0);
-//                }
-//            }
-//
-//            $table->addCell(700)->addText($data['tech_items_count']['tech_action'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_items_count']['tech_action'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_action'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_reserve'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_repair'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_repair'] ?? 0);
-
-//            \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html_test, false, false);
-            $phpWord->save(public_path('123.docx'));
-            return response()->download('123.docx');
-
-//            $html2pdf = new Html2Pdf('L');
-//            $html2pdf->writeHTML($html);
-//            $html2pdf->output('report101.pdf');
+            return dd('Некорректный тип');
         }
+
+        return dd('Кеш не заполнен');
     }
 
     public function getReport101Staff()
