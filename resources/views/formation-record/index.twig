@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="container section">
     <div class="level">
         <div class="level-left">
         <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;К строевым запискам</a>
@@ -25,17 +26,17 @@
                     <td class="has-text-right">{{ item.date|date('d.m.Y') }}</td>
                     <td class="has-text-right">
                         <a href="/formation-record/district-managers/{{ item.date|date('Y-m-d') }}"
-                           class="button is-small is-outlined is-primary">
+                           class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             Редактировать ответственных по районам
                         </a>
                         <a href="/formation-record/staff/{{ item.date|date('Y-m-d') }}/1"
-                           class="button is-small is-outlined is-primary">
+                           class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             Редактировать личный состав
                         </a>
                         <a href="{{ route('formation-record.total-edit', item.id) }}"
-                           class="button is-small is-outlined is-primary">
+                           class="button is-small is-info">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             Открыть
                         </a>
@@ -48,5 +49,6 @@
             {% endfor %}
         </table>
         {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+    </div>
     </div>
 {% endblock content %}

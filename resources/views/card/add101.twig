@@ -11,12 +11,12 @@
 
     {% include "layout/yandex-maps-bus.twig" with {areas: city_area} %}
 
-    <section class="container" id="cardadd101">
-        <div class=""><h4 class="title" style="padding: 3px 15px">Добавление: Карточка 101</h4></div>
+    <section class="container section" id="cardadd101">
+        <h4 class="title">Добавление: Карточка 101</h4>
         <form action="" method="post" id="card-101-form">
             {{ csrf_field() }}
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
-            <div class="tabs is-boxed" id="">
+            <div class="tabs buttab is-boxed" id="">
                 <ul>
                     <li>
                         <a onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
@@ -46,12 +46,20 @@
             </div>
             <div class="panels">
                 <div id="tab_call" class="is-hidden">
+                    <div class="column">
+                        <h6 class="subtitle">Режим</h6>
+                        <select name="is_real" id="is_real" class="select control">
+                            <option {{ ticket.is_real ? 'selected' : '' }} value="1">Боевой</option>
+                            <option {{ ticket.is_real ? 'selected' : '' }} value="0">Учебный</option>
+                        </select>
+                    </div>
+                    <br>
                     <h5 class="subtitle">Сведения поступившие со звонком:</h5>
 
                     <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
                         <label for="location">Место пожара (Адрес) <a href="{{ url('/card/mapscreen') }}"
                                                                       target="_blank"
-                                                                      class="button is-light"><i
+                                                                      class="button is-basic is-main"><i
                                         class="far fa-map"></i>&nbsp;Открыть карту</a></label>
                         <input name="location"
                                id="location"
@@ -168,8 +176,10 @@
                     </div>
                     <br>
                     <div class="field is-grouped">
-                        <div class="control">
-                            <label for="wall_material_id">Материал стен</label>
+                        <div class="field">
+                            <label class="field-label" for="wall_material_id">Материал стен</label>
+                            <div class="control">
+                            <div class="select">
                             {#<input#}
                                     {#id="wall_material_id"#}
                                     {#class="input">#}
@@ -180,6 +190,8 @@
                                     <option {{ ticket.wall_material_id == wall_material.id ? 'selected' : '' }} value="{{ wall_material.id }}">{{ wall_material.name }}</option>
                                 {% endfor %}
                             </select>
+                            </div>
+                            </div>
                         </div>
                         <div class="control">
                             <label for="year_of_development">Год постройки</label>
@@ -393,7 +405,7 @@
                         </div>
                     </div>
 
-                    <table class="table is-narrow is-hoverable is-striped is-fullwidth" data-component="road-trip">
+                    <table class="table is-narrow is-hoverable is-fullwidth" data-component="road-trip">
                         <tr>
                             <th>Подразделение</th>
                             <th>Отделения</th>
@@ -861,12 +873,12 @@
                  style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
                     <p class="level-left">
-                        <button id="nexttab" class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>&nbsp;
+                        <button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
                             Следующий раздел
                         </button>
                     </p>
                     <p class="level-right">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Закрыть
+                        <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Закрыть
                         </button>
                     </p>
                 </div>

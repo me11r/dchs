@@ -1,12 +1,12 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
-        <div class="level" style="margin-top: 20px">
+    <div class="container section">
+        <div class="level">
             <div class="level-left">
         <h4 class="title">Техника строевой записки от {{ report.report_date }}</h4>
             </div>
             <div class="level-right">
-                <a href="{{ url('/formation/add101persons/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i class="fas fa-user"></i>&nbsp;Данные личного состава</a>
+                <a href="{{ url('/formation/add101persons/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-basic is-main"><i class="fas fa-user"></i>&nbsp;Данные личного состава</a>
             </div>
         </div>
         <div class="field">

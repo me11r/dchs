@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>
+<html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>
+<html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="ru"> <!--<![endif]-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <style>
+        * {
+            font-family: DejaVu Sans;
+        }
+    </style>
+</head>
+<body>
+
+<div style="width:100%;font-size: 12px">
+    <div style="width: 200px; float: right;padding-bottom: 50px;padding-right: 20px">
+        И. о. начальника ДЧС г. Алматы КЧС МВД РК полковнику Алибекову Е. А.
+    </div>
+    <div style="clear: both"></div>
+
+    <div style="margin: 0 auto;width: 40%;">
+        &nbsp;&nbsp;&nbsp;ОПЕРАТИВНАЯ ИНФОРМАЦИЯ
+    </div>
+    <div style="margin: 0 auto;width: 40%;">
+        Управления  единой дежурно-диспетчерской службы ДЧС г. Алматы об основных чрезвычайных происшествиях, произошедших в период
+    </div>
+
+    <div style="margin: 0 auto;width: 50%;padding-bottom: 30px;">
+        с {{ yesterday.hour }} час. {{ yesterday.minute }} мин. {{ yesterday.year }}г. до {{ today.hour }} час. {{ today.minute }} мин. {{ today.year }}г.
+    </div>
+
+    <div>
+        Городская подсистема государственной системы гражданской защиты   функционирует в режиме повседневной деятельности:
+    </div>
+    <div>ЧС – {{ emergencies|length }}, пожары – {{ fires_count }}, погиб – {{ dead_count }}, спасено – {{ saved_count }}, эвакуировано – {{ evacuated_count }},  отравление природным/ угарным  газом – {{ poisoned_by_gas_count }},  пострадавший – {{ hurt_count }}.</div>
+    <div>1. Системы связи и оповещения: в исправном состоянии и в рабочем режиме.</div>
+    <div>2. Мониторинг окружающей среды и происшествий природного характера:</div>
+    <div style="padding-left: 20px">- ГУ « СОМЭ КН МОН РК»:</div>
+    <div style="padding-left: 20px">
+        - РГП «Казгидромет»: прогноз погоды на 16 октября - облачно, временами осадки. Ветер 3-8 м/с. Температура ночью 1-3, днем 4-6 тепла
+    </div>
+    <div style="padding-left: 20px">- АГЭУ ГУ «Казселезащита: {{ mudflow_emergency_count|default('не зарегистрировано') }}</div>
+    <div>3. Системы жизнеобеспечения города: не зарегистрировано</div>
+    <div>4. Подтопления: {{ flooding_count }}</div>
+    <div>5. ЦМК: {{ cmk_count }} выездов.</div>
+    <div>6. РОСО: {{ roso_count }} выездов.</div>
+    <div>7. По основной  деятельности «112»:
+        {% for card in cards112 %}
+            <div style="margin: 0 auto;width: 40%;">
+                {{ card.reason }}
+            </div>
+            <div style="margin: 0 auto;width: 40%;">
+                {{ card.measures }}
+            </div>
+            <div style="margin: 0 auto;width: 40%;">
+                {{ card.resources }}
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+    <div>
+        8. ГУ «СП и АСР»: всего выездов – {{ fires_count }}, из них: пожары - {{ fires_count }}, сухостой - 0,  мусор – 0, КЗ – 0, бдительность населения – 0, отравление природным/ угарным газом – 0, погибло – 0, спасен – 0, эвакуировано – 0, пострадавший – 0.
+    </div>
+    <div>
+        9. ЕДДС: Всего поступивших  звонков на «112» - {{ card112_count }}, «101» - {{ card101_count }} {#, «109» - 384.#}
+    </div>
+    <div>
+        10. Казавиаспас: в аэропорту Боролдай в режиме дежурства:
+
+        {% for air_unit in air_rescue_report_tech|default([]) %}
+            <div style="padding-left: 40px">- {{ air_unit.aircraft.name }}</div>
+        {% endfor %}
+
+    </div>
+    <div>
+        11. Отработано всего  выездов  Службой Спасения г. Алматы – {{ card112_roadtrips|length }}, из них:
+        {% for item in card112_roadtrips if item.service_type.name is defined %}
+            <p>- {{ item.service_type.name|default('') }}</p>
+        {% endfor %}
+    </div>
+    <div>
+        12. Данные по СРУ: всего – 591: С-40 (моторные) – 244, СРУ-347:  из них  в нерабочем – 2:
+    </div>
+    <div style="padding-left: 40px">1. Наурызбайский район, санаторий Алатау (демонтировано);</div>
+    <div style="padding-left: 40px">2. Алмалинский  район, ОШ-91, ул. Докучаева, 31 «А» (демонтировано);</div>
+    <div>
+        13. Мониторинг интернет пространства – негативная информация не зарегистрирована.
+    </div>
+
+    <div style="padding-top: 50px;">
+        <div style="float: left;width: 55%">
+            ОД ДЧС г. Алматы старшина  г/з
+        </div>
+        <div style="float: right;width: 25%">
+            Сейсенов Ж.О.
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+</div>
+
+</body>
+</html>

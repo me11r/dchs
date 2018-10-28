@@ -374,6 +374,11 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101ServicePlan::class, 'card_id');
     }
 
+    public function scopeReal($q, $search = true)
+    {
+        return $q->where('is_real', $search);
+    }
+
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
     {
         $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);

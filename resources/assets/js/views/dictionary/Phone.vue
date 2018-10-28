@@ -2,7 +2,7 @@
     <div class="field">
         <div class="add_button">
             <button
-                    class="button is-small is-outlined is-success"
+                    class="button is-small is-basic"
                     type="button"
                     @click.prevent="addEmptyItem()">
                 <i class="fa fa-plus"></i>&nbsp;Добавить телефон

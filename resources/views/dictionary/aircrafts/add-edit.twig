@@ -1,8 +1,8 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
+    <div class="container section">
         <div class="panel">
-            <div class="box" style="margin-top: 20px">
+            <div class="box">
                 <h4 class="title">{{ title }}</h4>
                 <form action="/dictionaries/{{ type }}/create-edit" method="post">
                     {{ csrf_field() }}

@@ -138,10 +138,6 @@ class User extends Authenticatable
 
     public function hasRight($right_id)
     {
-        /** @var array $rights */
-//        $rights = $this->rights->pluck('id')->toArray();
-//        return in_array($right_id, $rights, false);
-
         if(!$this->role){
             return false;
         }

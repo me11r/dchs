@@ -1,12 +1,12 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container" id="add-101-persons-form" data-department_value="{{ dept_id }}">
+    <div class="container section" id="add-101-persons-form" data-department_value="{{ dept_id }}">
         <div class="level" style="margin-top: 20px">
             <div class="level-left">
                 <h4 class="title">Личный состав от {{ report.report_date }}</h4>
             </div>
             <div class="level-right">
-                <a href="{{ url('/formation/add101tech/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-"><i
+                <a href="{{ url('/formation/add101tech/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-basic is-main"><i
                             class="fas fa-truck-moving"></i>&nbsp;Данные техники</a>
             </div>
         </div>
@@ -68,7 +68,7 @@
 
                         </div>
 
-                    {% elseif(dept_id == 22) %}
+                    {% elseif(dept_id == 19) %}
                         <div class="field">
                             <label for="field_2_1">ДСПТ</label>
                             <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
@@ -154,7 +154,7 @@
                         <div class="field">
                             <label for="field_2_1">Тулпар-10</label>
                             <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
-                                       block_type="tulpar8"></staff-101>
+                                       block_type="tulpar10"></staff-101>
                         </div>
                         <div class="field">
                             <label for="field_2_1">КШМ</label>

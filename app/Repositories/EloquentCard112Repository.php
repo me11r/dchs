@@ -5,7 +5,9 @@ namespace App\Repositories;
 use App\Models\Card112\Card112;
 use App\Models\Card112\Card112Chronology;
 use App\Models\Card112\Card112ServiceReaction;
+use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
+use App\Ticket101ServicePlan;
 use Illuminate\Support\Facades\Validator;
 
 class EloquentCard112Repository extends Repository implements Card112RepositoryInterface
@@ -19,6 +21,7 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
     {
         $serviceReactions = $this->filterServiceReactions(array_get($data, 'service_reactions', []));
         $chronology = $this->filterChronology(array_get($data, 'chronology', []));
+        $services = ServiceType::all()->pluck('id')->toArray();
 
         /** @var $card112 Card112 */
         $card112 = $this->create($data);
@@ -26,6 +29,13 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
         $card112->serviceReactions()->saveMany(array_map(function ($item){
             return new Card112ServiceReaction($item);
         }, $serviceReactions));
+
+        /*службы взаимодействия - создание шаблонов путевых листов*/
+        foreach ($services as $service) {
+            Ticket101ServicePlan::create([
+                'card112_id' => $card112->id
+            ]);
+        }
 
         $card112->chronology()->saveMany(array_map(function ($item){
             return new Card112Chronology($item);

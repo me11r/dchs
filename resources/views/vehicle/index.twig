@@ -1,19 +1,23 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
+    <div class="container section">
         <div class="panel">
-            <h4 style="" class="title">Автотехника</h4>
-            <div class="level-right has-text-right">
-                <a href="{{ route('vehicles.create') }}" class="button is-success"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+            <div class="level">
+                <div class="level-left">
+                    <h4 style="" class="title">Автотехника</h4>
+                </div>
+                <div class="level-right has-text-right">
+                    <a href="{{ route('vehicles.create') }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                </div>
             </div>
-            <table class="table is-narrow is-hoverable is-selectable">
+            <table class="table is-narrow is-striped is-hoverable is-selectable">
                 <thead>
                 <tr>
                     <th>Модель</th>
                     <th>Номер</th>
                     <th>ПЧ</th>
                     <th>Тип</th>
-                    <th></th>
+                    <th>&nbsp;</th>
                 </tr>
                 </thead>
                 {% for item in items %}
@@ -23,15 +27,17 @@
                         <td>{{ item.fireDepartment.name ?? '' }}</td>
                         <td>{{ item.vehicleType.name }}</td>
                         <td>
-                            <a class="button is-outlined is-small" href="{{ route('vehicles.edit', {'id':item.id}) }}">
+                            <div class="field is-grouped">
+                            <a class="button is-basic is-small" href="{{ route('vehicles.edit', {'id':item.id}) }}">
                                 <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
 
                             <form method="post" action="{{ route('vehicles.destroy', {'id':item.id}) }}">
                                 {{ csrf_field() }}
                                 {{  method_field('DELETE') }}
-                                <button onclick="return confirm('Удалить запись?');" class="button is-outlined is-small">
-                                    <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
+                                <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
+                                    <i class="fas fa-trash"></i>&nbsp;Удалить</button>
                             </form>
+                            </div>
                         </td>
                     </tr>
                 {% else %}

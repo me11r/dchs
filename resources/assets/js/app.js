@@ -28,6 +28,7 @@ import TPicker from './components/Timepicker';
 import FireObject from './views/FireObject';
 
 import Add101Persons from './scripts/add101persons/add101persons';
+import Add101Tech from './scripts/add101tech/add101tech';
 import Add101Staff from './views/101staff/AddEdit101Staff';
 import Report101Staff from './views/101staff/Report101Staff';
 import Report101Vehicles from './views/101tech/Report101Vehicles';
@@ -154,6 +155,11 @@ if (add101personsFormElement) {
     (new Add101Persons()).createApp(add101personsFormElement);
 }
 
+const add101techFormElement = document.getElementById('add-101-tech-form');
+if (add101techFormElement) {
+    (new Add101Tech()).createApp(add101techFormElement);
+}
+
 if (document.getElementById('mudflowProtection-form-block')) {
     new Vue({
         el: '#mudflowProtection-form-block',
@@ -186,6 +192,7 @@ if (document.getElementById('vue')) {
         el: '#vue'
     });
 }
+
 
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');

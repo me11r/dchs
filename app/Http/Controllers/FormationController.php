@@ -114,7 +114,7 @@ class FormationController extends AuthorizedController
     {
         $data['staff'] = Staff::all();
         $data['tech'] = Aircraft::with(['aircraft_type'])->get();
-        $data['model'] = Aircraft::find($id);
+        $data['model'] = AirRescueReport::find($id);
 
         return view('formation.air-rescue.add-edit', $data);
     }
@@ -436,6 +436,7 @@ class FormationController extends AuthorizedController
         ];
 
         $dept13_people = [];
+        $dept_od_people = [];
 
         $people_fieldlist = [
             'В карауле по списку л/с',
@@ -604,6 +605,15 @@ class FormationController extends AuthorizedController
             }
         }
 
+        // лс ОД
+        if(isset($people[19])){
+            foreach ($people[19]->formation_person_items as $item) {
+                if($item->status == 'active'){
+                    $dept_od_people[$item->rank][] = $item->staff;
+                }
+            }
+        }
+
         foreach ($departments as $key => $dep) {
             if(isset($tech[$dep->id]) && $tech[$dep->id]->formation_tech_items->count()){
                 $departments[$key]->tech_action = $tech[$dep->id]->formation_tech_items()->status('action')->with('vehicle')->get();
@@ -686,6 +696,7 @@ class FormationController extends AuthorizedController
         $this->set('people', $people)
             ->set('tech', $tech)
             ->set('dept13_people', $dept13_people)
+            ->set('dept_od_people', $dept_od_people)
             ->set('user', $user)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)

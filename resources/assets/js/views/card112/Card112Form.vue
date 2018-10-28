@@ -1,6 +1,6 @@
 <template>
     <section
-        class="container"
+        class="container section"
         v-if="formDataExists">
         <h4
             class="title"
@@ -16,7 +16,7 @@
                 type="hidden"
                 name="_token"
                 :value="csrf">
-            <div class="tabs is-boxed">
+            <div class="tabs buttab is-boxed">
                 <ul>
                     <li :class="{'is-active': currentTabIndex === 0}">
                         <a @click="setTab(0)"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
@@ -48,7 +48,7 @@
                                 <a
                                     :href="'/card/mapscreen'"
                                     target="_blank"
-                                    class="button is-small is-light">
+                                    class="button is-small is-basic">
                                     <i class="far fa-map"></i>&nbsp;Открыть карту
                                 </a>
                             </label>
@@ -222,7 +222,7 @@
                                     </p>
                                     <p class="control">
                                         <a
-                                            class="button is-outlined is-small"
+                                            class="button is-basic is-small"
                                             @click="$refs['call_time_picker'].close()">
                                             <i class="fas fa-check"></i><span>Принять</span>
                                         </a>
@@ -239,7 +239,7 @@
                                 <tr>
                                     <th>Службы</th>
                                     <th>Время сообщения</th>
-                                    <th>Фамилия<br/>принявшего сообщение</th>
+                                    <th>Фамилия<br>принявшего сообщение</th>
                                     <th>Время прибытия</th>
                                     <th>Путевой лист отправлен</th>
                                     <th>Уведомление отправлено</th>
@@ -251,26 +251,30 @@
                                     <td>
                                         <input type="text"
                                                readonly
-                                               v-model="service.message_time"
-                                               :id="service.id + + '_message_time'"
+                                               v-model="services[service.id].created_at"
+                                               :id="service.id + '_created_at'"
                                                class="input">
                                     </td>
                                     <td>
                                         <input type="text"
                                                class="input"
-                                               :id="service.id + + '_name'"
-                                               v-model="service.name_accepted">
+                                               :id="service.id + '_name'"
+                                               v-model="services[service.id].name_accepted">
                                     </td>
                                     <td>
                                         <input type="text"
-                                               v-model="service.arrive_time"
+                                               v-model="services[service.id].arrive_time"
+                                               :id="service.id + '_arrived_at'"
                                                readonly
                                                class="input">
                                     </td>
                                     <td>
 
                                         <input type="text"
+                                               class="input"
                                             v-model="services[service.id].sent_at"
+                                               :id="service.id + '_sent_at'"
+
                                         >
 
                                     </td>
@@ -624,13 +628,13 @@
                         <button
                             id="nexttab"
                             type="button"
-                            class="button is-primary is-outlined"><i class="fas fa-arrow-right"></i>Следующий раздел
+                            class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;Следующий раздел
                         </button>
                     </p>
                     <p class="level-right">
                         <button
                             type="submit"
-                            class="button is-success"><i class="fas fa-check"></i>Сохранить
+                            class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
                     </p>
                 </div>
@@ -704,6 +708,49 @@ export default {
                 };
             });
         },
+        checkServices() {
+            let self = this;
+            if (window.card112FormData) {
+                setInterval(function() {
+                    axios
+                        .post('/service-plans/check', {
+                            card_id: window.card112FormData.model.id,
+                            cardType: 112
+                        })
+                        .then((response) => {
+                            let servicePlans = response.data.servicePlans;
+
+                            if (servicePlans !== undefined) {
+                                servicePlans.forEach((plan) => {
+                                    self.serviceTypes.forEach((serviceType) => {
+                                        if (plan.service_type_id === serviceType.id) {
+                                            self.services[serviceType.id] = {
+                                                sent_at: plan.created_at || moment().format('d-m-Y'),
+                                                created_at: plan.created_at || moment().format('d-m-Y'),
+                                                name_accepted: plan.name_accepted || '',
+                                                arrive_time: plan.arrive_time || ''
+                                            };
+                                            let name = document.getElementById(serviceType.id + '_name');
+                                            let created_at = document.getElementById(serviceType.id + '_created_at');
+                                            let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
+                                            let sent_at = document.getElementById(serviceType.id + '_sent_at');
+                                            name.value = plan.name_accepted || '';
+                                            created_at.value = plan.created_at || '';
+                                            arrived_at.value = plan.arrive_time || '';
+                                            sent_at.value = plan.created_at || '';
+                                            console.dir(plan);
+                                        }
+                                    });
+                                });
+                            }
+
+                        })
+                        .catch(() => {
+                        });
+                }, 10000);
+
+            }
+        },
         sendOneCheckService(event, cardId, service) {
             if (event.target.checked) {
                 axios
@@ -723,7 +770,7 @@ export default {
                 axios
                     .post('/api/notification/ticket112send', {
                         notification_id: service,
-                        cardType: 101,
+                        cardType: 101
                     })
                     .then((response) => {
                         let data = response.data;
@@ -813,25 +860,36 @@ export default {
             this.servicePlans = window.card112FormData.servicePlans;
         }
 
-        console.dir(this.servicePlans)
+        console.dir(this.servicePlans);
+
+        this.serviceTypes.forEach((item) => {
+
+            this.services[item.id] = {
+                sent_at: '',
+                created_at: '',
+                name_accepted: '',
+                arrive_time: ''
+            };
+        });
 
         if (this.servicePlans !== undefined) {
             this.servicePlans.forEach((plan) => {
                 this.serviceTypes.forEach((item) => {
                     if (plan.service_type_id === item.id) {
-                        this.services[item.id] = {sent_at: plan.created_at || moment().format('d-m-Y')};
-                    } else {
-                        this.services[item.id] = {sent_at: ''};
+                        this.services[item.id] = {
+                            sent_at: plan.created_at || moment().format('d-m-Y'),
+                            created_at: plan.created_at || moment().format('d-m-Y'),
+                            name_accepted: plan.name_accepted || '',
+                            arrive_time: plan.arrive_time || ''
+                        };
                     }
-                    // console.dir(this.services);
                 });
-            })
+            });
         }
-
-
     },
     mounted() {
         this.yandexMapsBus = new YandexMapsBus();
+        this.checkServices();
         window.addEventListener('storage', (event) => {
             if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
                 this.model.location = event.newValue;
@@ -846,7 +904,6 @@ export default {
         globalBus.$on(AREA_ID_FOUND, (value) => {
             this.model.city_area_id = value;
         });
-
     }
 };
 </script>

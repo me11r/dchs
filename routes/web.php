@@ -163,6 +163,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'service-plans'], function (){
         Route::get('/', 'ServicePlanController@getList');
         Route::post('send', 'ServicePlanController@postSend');
+        Route::post('check', 'ServicePlanController@postCheck');
         Route::post('accept/{id}/{service}', 'ServicePlanController@postAccept')->where('id', '[0-9]+');
         Route::post('arrive/{id}/{service}', 'ServicePlanController@postArrive')->where('id', '[0-9]+');
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
@@ -201,6 +202,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
+    Route::get('/pdf/operational-report', 'ReportController@getOperational')->name('operational-report');
     Route::get('/pdf/report101/{type}', 'ReportController@getReport101')->name('report101');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');

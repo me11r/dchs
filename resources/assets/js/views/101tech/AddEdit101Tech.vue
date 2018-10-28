@@ -2,7 +2,7 @@
     <div class="field">
         <div class="add_button">
             <button
-                class="button is-small is-outlined is-success"
+                class="button is-small is-basic"
                 type="button"
                 @click.prevent="addEmptyItem()">
                 <i class="fa fa-plus"></i>&nbsp;Добавить
@@ -19,51 +19,55 @@
                     <label :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
                     <div class="select">
                         <select
-                                required
-                                title=""
-                                :name="getName('vehicle_id', item.id)"
-                                :id="getName('vehicle_id', item.id)"
-                                v-model="item.vehicle_id">
+                            required
+                            title=""
+                            :name="getName('vehicle_id', item.id)"
+                            :id="getName('vehicle_id', item.id)"
+                            v-model="item.vehicle_id">
                             <option
-                                    v-for="vehicle in vehicles"
-                                    :key="'vehicle_' + vehicle.id"
-                                    :value="vehicle.id">{{ vehicle.name }} {{ vehicle.number }}
+                                v-for="vehicle in getTechFilter(item.vehicle_id)"
+                                :key="'vehicle_' + vehicle.id"
+                                :value="vehicle.id">{{ vehicle.name }} {{ vehicle.number }}
                             </option>
                         </select>
                     </div>
 
                 </div>
-                <div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
-                <label :for="getName('department', item.id)">Отделение</label>
-                <input
-                    required
-                    placeholder="Отделение"
-                    type="number"
-                    class="input"
-                    max="82"
-                    min="1"
-                    v-model="item.department"
-                    @change="departmentCheck($event)"
-                    :name="getName('department', item.id)">
-            </div>
+                <div
+                    v-if="block_type !== 'repair' && block_type !== 'reserve'"
+                    class="control column">
+                    <label :for="getName('department', item.id)">Отделение</label>
+                    <input
+                        required
+                        placeholder="Отделение"
+                        type="number"
+                        class="input"
+                        max="82"
+                        min="1"
+                        v-model="item.department"
+                        @change="departmentCheck($event)"
+                        :name="getName('department', item.id)">
+                </div>
 
-                <div v-if="block_type === 'reserve'" class="control column">
-                <label :for="getName('reserve', item.id)">Резерв</label><br>
-                <div class="select">
-                    <select
+                <div
+                    v-if="block_type === 'reserve'"
+                    class="control column">
+                    <label :for="getName('reserve', item.id)">Резерв</label><br>
+                    <div class="select">
+                        <select
                             required
                             title=""
                             :name="getName('reserve', item.id)"
                             :id="getName('reserve', item.id)"
                             v-model="item.reserve">
-                        <option
+                            <option
                                 v-for="x in 5"
                                 :key="'vehicle_reserve' + x"
                                 :value="x">Резерв{{ x }}
-                        </option>
-                    </select>
+                            </option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
                 <div class="control column">
                     <label>Удалить</label>
@@ -78,29 +82,47 @@
                 </div>
             </div>
 
-            <div v-if="block_type === 'repair'" class="field is-grouped">
+            <div
+                v-if="block_type === 'repair'"
+                class="field is-grouped">
                 <div class="control column">
                     <label :for="getName('comment', item.id)">Комментарий</label>
-                    <textarea class="textarea" v-model="item.comment" :name="getName('comment', item.id)" :id="getName('comment', item.id)" cols="10" rows="1"></textarea>
+                    <textarea
+                        class="textarea"
+                        v-model="item.comment"
+                        :name="getName('comment', item.id)"
+                        :id="getName('comment', item.id)"
+                        cols="10"
+                        rows="1"></textarea>
                 </div>
                 <div class="control column">
                     <label :for="getName('date_from', item.id)">С</label><br>
-                    <input v-model="item.date_from" :name="getName('date_from', item.id)" :id="getName('date_from', item.id)" class="control" type="date">
+                    <input
+                        v-model="item.date_from"
+                        :name="getName('date_from', item.id)"
+                        :id="getName('date_from', item.id)"
+                        class="control"
+                        type="date">
                 </div>
                 <div class="control column">
                     <label :for="getName('date_to', item.id)">По</label><br>
-                    <input v-model="item.date_to" :name="getName('date_to', item.id)" :id="getName('date_to', item.id)" class="control" type="date">
-                    <!--todo: при использовании bulma datepicker - ошибка при отображении даты -->
-                    <!--<b-datepicker-->
-                            <!--:name="getName('date_to', item.id)"-->
-                            <!--v-model="item.date_to"-->
-                            <!--:first-day-of-week="1"-->
-                            <!--:month-names="month_names"-->
-                            <!--:day-names="day_names"-->
-                            <!--placeholder=""-->
-                            <!--icon="calendar-today"-->
-                            <!--:readonly="false">-->
-                    <!--</b-datepicker>-->
+                    <input
+                        v-model="item.date_to"
+                        :name="getName('date_to', item.id)"
+                        :id="getName('date_to', item.id)"
+                        class="control"
+                        type="date">
+                        <!--todo: при использовании bulma datepicker - ошибка при отображении даты -->
+                        <!--<b-datepicker-->
+                        <!--:name="getName('date_to', item.id)"-->
+                        <!--v-model="item.date_to"-->
+                        <!--:first-day-of-week="1"-->
+                        <!--:month-names="month_names"-->
+                        <!--:day-names="day_names"-->
+                        <!--placeholder=""-->
+                        <!--icon="calendar-today"-->
+                        <!--:readonly="false">-->
+                        <!--</b-datepicker>-->
                 </div>
             </div>
         </div>
@@ -135,7 +157,7 @@ export default {
         records: {
             type: Array,
             default: () => []
-        },
+        }
     },
     data() {
         return {
@@ -145,20 +167,26 @@ export default {
             vehicles_: this.vehicles,
             fire_dep_id_: this.fire_dep_id,
             report_id_: this.report_id,
-            month_names: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-            day_names: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+            month_names: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+            day_names: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 
         };
     },
     components: {
         'b-icon': Buefy['Icon'],
-        'b-datepicker': Buefy['Datepicker'],
+        'b-datepicker': Buefy['Datepicker']
     },
     methods: {
-        getName(control, id){
+        getTechFilter(selectedId) {
+            let scope = this;
+            return this.vehicles.filter(function (item) {
+                return scope.$parent.selectedTech.indexOf(item.id) === -1 || item.id === selectedId;
+            });
+        },
+        getName(control, id) {
             return 'tech' + `[${this.block_type_}]` + `[${control}][${id}]`;
         },
-        defaultDateFormatter: (date) => { moment(date).format("DD/MM/YYYY")},
+        defaultDateFormatter: (date) => { moment(date).format('DD/MM/YYYY'); },
         defaultDateFormatter2: (date) => { return dt.toLocaleDateString('ru-RU'); },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
@@ -185,7 +213,7 @@ export default {
             records.map((item) => {
                 this.addItem({
                     date_begin: moment(item.date_begin),
-                    date_end: moment(item.date_end),
+                    date_end: moment(item.date_end)
                 });
             });
         },
@@ -213,7 +241,35 @@ export default {
 
                 self.records_ = resp.data;
 
+                _.each(self.records_, (value) => {
+                    self.$parent.$emit('addSelectedTech', value.vehicle_id);
+                });
+
                 console.dir(self.records_);
+            });
+        }
+    },
+    computed:{
+        clonedItems(){
+            return JSON.parse(JSON.stringify(this.records_));
+        }
+    },
+    watch: {
+        clonedItems(newValue, oldValue){
+            _.each(newValue, (value, key) => {
+                if(oldValue[key]) {
+                    this.$parent.$emit('changeSelectedTech', {
+                        oldValue: oldValue[key].vehicle_id,
+                        newValue: value.vehicle_id
+                    });
+                }
+            });
+            _.each(oldValue, (value, key) => {
+                if(!newValue[key]) {
+                    this.$parent.$emit('removeSelectedTech', {
+                        oldValue: value.vehicle_id
+                    });
+                }
             });
         }
     },

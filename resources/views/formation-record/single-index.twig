@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="section container">
     <div class="level">
         <div class="level-left">
         <a href="{{ url('formation') }}" class="button is-light"><i class="fas fa-arrow-left"></i>&nbsp;К строевым запискам</a>
@@ -25,7 +26,7 @@
                     <td class="has-text-right">{{ item.date|date('Y-m-d') }}</td>
                     <td class="has-text-right">
                         <a href="{{ route('formation-record.edit', item.id) }}"
-                           class="button is-small is-outlined is-primary">
+                           class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             Редактировать
                         </a>
@@ -38,5 +39,6 @@
             {% endfor %}
         </table>
         {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+    </div>
     </div>
 {% endblock content %}

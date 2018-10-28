@@ -25,7 +25,6 @@ abstract class Controller extends BaseController
 
     public function before()
     {
-
     }
 
     public function after()
@@ -98,6 +97,7 @@ abstract class Controller extends BaseController
             $user->load('rights');
         }
         $this->set('_user', $user);
+
         if (null === $response && null !== $this->layout) {
             $this->setupLayout();
             $response = $this->layout;

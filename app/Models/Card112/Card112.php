@@ -5,6 +5,7 @@ namespace App\Models\Card112;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\Models\IncidentType;
+use App\Ticket101ServicePlan;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -177,6 +178,11 @@ class Card112 extends Model
         return $this->hasMany(Card112Chronology::class, 'card112_id', 'id');
     }
 
+    public function service_plans()
+    {
+        return $this->hasMany(Ticket101ServicePlan::class, 'card112_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -215,5 +221,19 @@ class Card112 extends Model
             + $baseQuery->sum('poisoned');
 
         return $result;
+    }
+
+    public function scopeFilterByServiceType($q, $filter)
+    {
+        return $q->whereHas('service_plans.service_type', function ($service_type) use ($filter){
+            $service_type->where('name', $filter);
+        });
+    }
+
+    public function scopeFilterByIncidentType($q, $filter)
+    {
+        return $q->whereHas('incident', function ($service_type) use ($filter){
+            $service_type->where('name', $filter);
+        });
     }
 }

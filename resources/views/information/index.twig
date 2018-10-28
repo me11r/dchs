@@ -1,5 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
+    <div class="section container">
     <div class="">
         <h4 class="title"
             style="padding: 3px 15px">Информация
@@ -33,24 +34,25 @@
                         <a href="/mudflowProtection">ГУ Казселезащита</a>
                     </td>
                     <td class="has-text-right">
-                        <a class="button is-primary" href="/morainic-lakes">Моренные озера</a>
-                        <a class="button is-primary" href="/morainic-lakes-summaries">Гидрометеорологические данные</a>
+                        <a class="button is-info is-small" href="/morainic-lakes">Моренные озера</a>
+                        <a class="button is-info is-small" href="/morainic-lakes-summaries">Гидрометеорологические данные</a>
                     </td>
                 </tr>
                 <tr>
                     <td class="has-text-right">2</td>
                     <td>
-                        <a href="/weather">РГП Казгидромет</a>
+                        <a class="is-link is-block" href="/weather">РГП Казгидромет</a>
                     </td>
                     <td class="has-text-right"></td>
                 </tr>
                 <tr>
                     <td class="has-text-right">3</td>
                     <td>
-                        <a href="/quakes">ТОО СОМЭ</a>
+                        <a class="is-link is-block" href="/quakes">ТОО СОМЭ</a>
                     </td>
                     <td class="has-text-right"></td>
                 </tr>
         </table>
+    </div>
     </div>
 {% endblock content %}

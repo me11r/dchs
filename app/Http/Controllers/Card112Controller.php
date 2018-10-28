@@ -102,7 +102,7 @@ class Card112Controller extends Controller
 
     public function store(Request $request)
     {
-        $this->repository->createFilledWithRelations($request->all());
+        $data = $this->repository->createFilledWithRelations($request->all());
         return redirect(route('card112.index'));
     }
 
@@ -115,11 +115,6 @@ class Card112Controller extends Controller
     {
         $ticket101_service_plans = Ticket101ServicePlan::where('card112_id', $id)->get();
         $serviceTypes = ServiceType::orderBy('name')->get(['id', 'name']);
-        if(!$ticket101_service_plans->count()){
-            foreach ($serviceTypes as $item) {
-                $ticket101_service_plans[] = new Ticket101ServicePlan();
-            }
-        }
 
         return View::make('card112.edit')
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
