@@ -28,6 +28,7 @@
                 <th>Координаты эпицентра</th>
                 <th>Глубина</th>
                 <th>Сведения об ощутимости</th>
+                <th> &nbsp;</th>
             </tr>
             </thead>
             {% for item in items %}
@@ -42,6 +43,25 @@
                     <td>{{ item.coordinates }}</td>
                     <td>{{ item.deep }}</td>
                     <td>{{ item.information }}</td>
+                    <td><div class="field is-grouped">
+                            <a href="{{ route('quakes.edit', item.id) }}"
+                               class="button is-small is-basic">
+                                <i class="fas fa-pencil-alt"></i>&nbsp;
+                                Редактировать
+                            </a>
+
+                            <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                                  method="POST"
+                                  action="{{ route('quakes.destroy', item.id) }}">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button title="Удалить"
+                                        class="button is-small is-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
