@@ -14,11 +14,14 @@
                                 @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
                     </div>
                     <div class="level-left">
-                        <form action="/reports/101/forces-resources/" method="post">
-                            <button
-                                    class="button is-primary"
-                                    type="submit" ><i class="fas fa-print"></i>&nbsp;Сохранить в XLSX</button>
-                        </form>
+                        <a
+                            href="/xls/report101/forces"
+                            target="_blank"
+                            download
+                            class="button is-primary"
+                            type="submit">
+                            <i class="fas fa-print"></i>&nbsp;Сохранить в XLSX
+                        </a>
                     </div>
                 </div>
                 <br>
