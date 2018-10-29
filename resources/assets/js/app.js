@@ -20,6 +20,7 @@ import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
+import ReportForces from './views/reports/emergency/ReportForces';
 // import YandexMapsBus from './scripts/yandex-maps-bus';
 
 import Add101Functions from './scripts/add101/add101';
@@ -64,6 +65,7 @@ Vue.component('report101-staff', Report101Staff);
 Vue.component('report101-vehicles', Report101Vehicles);
 Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
 Vue.component('report101-emergency', Report101Emergency);
+Vue.component('report-forces', ReportForces);
 Vue.component('report112-emergency', Report112Emergency);
 Vue.component('report112-branches', ReportPeriod112Branches);
 Vue.component('main-report', MainPageReport);

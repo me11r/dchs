@@ -1,0 +1,136 @@
+<template>
+    <div class="container">
+        <div class="panel">
+            <div
+                    class="box"
+                    style="margin-top: 20px">
+                <div class="level">
+                    <div class="level-left">
+                        <h4 class="title">Учет сил и средств</h4>
+                    </div>
+                    <div class="level-right has-text-right">
+                        <button
+                                class="button is-primary"
+                                @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
+
+                    </div>
+                </div>
+                <br>
+                <form>
+                    <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small formation-record-table">
+                        <thead>
+                        <tr>
+                            <td>ПЧ</td>
+                            <td>Отделение</td>
+                            <td>Кол-во выездов за сегодня</td>
+                            <td>Статус</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="dept in reports_">
+                            <td>{{ dept.department.title }}</td>
+                            <td>
+                                <p v-for="department in dept.items">{{ department.department || department.reserve + ' резерв' }}</p>
+                            </td>
+                            <td>
+                                <p v-for="department in dept.items">{{ department.departures_count }}</p>
+                            </td>
+                            <td>
+                                <div v-for="department in dept.items">
+                                    <table v-if="department.status" class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+                                        <thead>
+                                        <tr>
+                                            <td>Адрес</td>
+                                            <td>Ранг пожара</td>
+                                            <td>Время выезда</td>
+                                            <td>Время прибытия</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <span class="ymaps-geolink" data-type="biz">
+                                                    Алматы, {{ department.address }}
+                                                </span>
+                                            </td>
+                                            <td>{{ department.fire_rank }}</td>
+                                            <td>{{ department.out_time }}</td>
+                                            <td>{{ department.arrive_time }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <p v-else>в ПЧ</p>
+                                </div>
+
+                                <!--<p v-for="department in dept.items">{{ status(department) || 'в пч' }}</p>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<script>
+    import axios from 'axios';
+    export default {
+        name: "RoportForces",
+        props: {
+            reports: {
+                type: Array,
+                default: () => {},
+            }
+        },
+        data: function () {
+            return {
+                reports_: this.reports
+            }
+        },
+        methods: {
+            print() {
+                window.print();
+            },
+            isNull(data, property) {
+                console.dir(data)
+
+                try{
+
+                    if(data[property] === undefined || data[property] === null) {
+
+                        return null;
+                    }
+
+                    return data[property];
+                }
+                catch(e){
+                    return null;
+                }
+            },
+            status(data) {
+                if(data === null) {
+                    return null;
+                }
+
+                try{
+                    console.dir(data)
+
+                    return data.address + ', ранг пожара: ' +
+                        this.isNull(data.status, 'fire_level').name + ', время выезда: ' + data.out_time + ', время прибытия: ' + data.arrive_time;
+
+                }catch (e) {
+                    return null;
+                }
+
+
+            }
+        }
+
+    }
+</script>
+
+<style scoped>
+
+</style>

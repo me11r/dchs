@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\AirRescueReport;
 use App\Dictionary\FireObject;
+use App\FormationReport;
+use App\FormationTechReport;
 use App\Models\Card112\Card112;
+use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\IncidentType;
@@ -471,5 +474,78 @@ class ReportController extends AuthorizedController
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    public function getForces(Request $request)
+    {
+        $today = Carbon::today();
+
+        $data = [];
+
+        $report_id = FormationReport::approved()->max('id');
+        $data['reports'] = FormationTechReport::where('form_id', $report_id)
+            ->has('items')
+            ->with(['items', 'department'])
+            ->get();
+
+        foreach ($data['reports'] as $report_key => $report) {
+            foreach ($report->items as $item_key => $tech_item) {
+                $report->items[$item_key]['departures_count'] = FireDepartmentResult::
+//                    where('fire_department_id', $report->dept_id)->
+                    whereDate('created_at', $today)->
+                    where('tech_id', $tech_item->id)->
+                    whereNotNull('out_time')->
+                    count()
+                ;
+                $report->items[$item_key]['status'] = Ticket101::whereHas('results', function ($q) use ($today, $tech_item){
+                    $q->whereDate('created_at', $today)->
+                        where('tech_id', $tech_item->id)->
+                        whereNotNull('out_time');
+                })
+                    ->with(['results', 'fire_level'])
+                    ->first();
+
+                $report->items[$item_key]['address'] = $report->items[$item_key]['status']->location ?? null;
+                $report->items[$item_key]['fire_rank'] = $report->items[$item_key]['status']->fire_level->name ?? null;
+                $report->items[$item_key]['out_time'] = $report->items[$item_key]['status']->fire_level->name ?? null;
+
+                if($report->items[$item_key]['status']){
+                    $roadtripItem = $report->items[$item_key]['status']->results()->where('tech_id', $tech_item->id)->first();
+                    if($roadtripItem){
+                        $report->items[$item_key]['out_time'] = $roadtripItem->out_time;
+                        $report->items[$item_key]['arrive_time'] = $roadtripItem->arrive_time;
+                    }
+                }
+                else{
+                    $report->items[$item_key]['out_time'] = null;
+                    $report->items[$item_key]['arrive_time'] = null;
+                }
+
+
+                /*if($report->items[$item_key]['status']){
+
+                }
+                else{
+
+                }*/
+
+                    /*FireDepartmentResult::
+//                    where('fire_department_id', $report->dept_id)->
+                    whereDate('created_at', $today)->
+                    where('tech_id', $tech_item->id)->
+                    with(['ticket'])->
+                    whereNotNull('out_time')->
+                    first()->ticket ?? null;
+                ;*/
+            }
+        }
+
+        if($request->ajax()){
+            return response()->json($data);
+        }
+
+
+        return view('reports.101.forces', $data);
+
     }
 }
