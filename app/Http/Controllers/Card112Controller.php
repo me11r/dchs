@@ -28,6 +28,7 @@ class Card112Controller extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
+        $search = trim($request->search);
 
         $sort = $request->get('sort', 'created_at');
         $id = $request->input('filter.id', '');
@@ -63,6 +64,28 @@ class Card112Controller extends Controller
                 ->orderBy($sort, 'desc')
                 ->paginate($perPage);
         }
+        elseif($search){
+            if(is_numeric($search)){
+                $items = $this
+                    ->repository
+                    ->with(['street', 'street.area'])
+                    ->where('id', $search)
+                    ->orderBy($sort,'desc')
+                    ->paginate($perPage);
+            }
+            else{
+                $items = $this
+                    ->repository
+                    ->with(['street', 'street.area'])
+                    ->where('location', "like", "$search%")
+                    ->orWhereHas('cityArea', function ($q) use ($search){
+                        $q->where('name', "like", "$search%");
+                    })
+                    ->orderBy($sort,'desc')
+                    ->paginate($perPage);
+            }
+
+        }
         else{
             $items = $this
                 ->repository
@@ -77,6 +100,7 @@ class Card112Controller extends Controller
 
         return View::make('card112.index')
             ->with('items', $items)
+            ->with('search', $search)
             ->with('city_areas', $city_areas)
             ->with('per_page', $perPage)
             ->render();

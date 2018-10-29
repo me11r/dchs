@@ -6,6 +6,20 @@
                 <div class="level-left">
                     <h4 class="title">{{ dictinfo.title }}</h4>
                 </div>
+                <div>
+                    <form action="" method="get">
+                        <div class="field   has-addons">
+                            <div class="control is-expanded">
+                                <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
+                            </div>
+                            <div class="control">
+                            </div>
+                            <div class="control">
+                                <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="level-right has-text-right">
                     <a href="{{ url('/dictionaries/edit/' ~ dictinfo.id ~ '/') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
                 </div>
