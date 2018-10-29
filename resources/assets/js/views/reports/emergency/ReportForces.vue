@@ -84,7 +84,7 @@
 <script>
     import axios from 'axios';
     export default {
-        name: "RoportForces",
+        name: "ReportForces",
         props: {
             reports: {
                 type: Array,
