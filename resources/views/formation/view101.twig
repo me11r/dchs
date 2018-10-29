@@ -8,16 +8,11 @@
             </div>
             <div class="level-right has-text-left">
                 {% if user.hasRight(20) %}
-                    {#{% if not report.is_approved %}#}
-                        <form method="post" action="/formation/approve101/{{ report.id }}">
-                            {{ csrf_field() }}
-                            <button type="submit" class="button {{ report.is_approved ? 'is-disabled' : 'is-primary' }}"><i class="fas fa-adjust"></i>&nbsp; {{ report.is_approved ? 'Отменить утверждение' : 'Утвердить' }}</button>
-                        </form>
-                    {#{% else %}#}
-                        {#<a class="button is-disabled" href="#">Утверждено</a>#}
-                    {#{% endif %}#}
+                    <form method="post" action="/formation/approve101/{{ report.id }}">
+                        {{ csrf_field() }}
+                        <button type="submit" class="button {{ report.is_approved ? 'is-disabled' : 'is-primary' }}"><i class="fas fa-adjust"></i>&nbsp; {{ report.is_approved ? 'Отменить утверждение' : 'Утвердить' }}</button>
+                    </form>
                 {% endif %}
-                {#<a style="margin: 10px;" target="_blank" href="/pdf/report101/pdf" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как PDF</a>#}
                 <a style="margin: 5px 5px 5px 10px;" target="_blank" href="/pdf/report101/docx" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как DOCX</a>
                 <a style="margin: 5px;" target="_blank" href="/pdf/report101/xls" class="button is-primary"><i class="fas fa-save"></i>&nbsp; Сохранить как XLS</a>
             </div>

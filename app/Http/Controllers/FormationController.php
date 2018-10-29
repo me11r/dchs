@@ -648,8 +648,38 @@ class FormationController extends AuthorizedController
         }
 
         $ttl_count = [];
-//        $tech_fields_temp = $tech_fields2;
+        $tech_fields_temp[] = 'firehose_125';
+        $tech_fields_temp[] = 'firehose_75';
+        $tech_fields_temp[] = 'firehose_77';
+        $tech_fields_temp[] = 'firehose_51';
+        $tech_fields_temp[] = 'barrel_stationary';
+        $tech_fields_temp[] = 'barrel_portable';
+        $tech_fields_temp[] = 'pgs_600';
+        $tech_fields_temp[] = 'purga';
+        $tech_fields_temp[] = 'radio_station_portable';
+        $tech_fields_temp[] = 'flashlight';
+        $tech_fields_temp[] = 'searchlight';
+        $tech_fields_temp[] = 'tok';
+        $tech_fields_temp[] = 'l1';
+        $tech_fields_temp[] = 'knapsack_devices';
+        $tech_fields_temp[] = 'shovel';
+        $tech_fields_temp[] = 'flapper';
+        $tech_fields_temp[] = 'life_rope';
+        $tech_fields_temp[] = 'foamer';
+        $tech_fields_temp[] = 'foamer_in_stock';
+        $tech_fields_temp[] = 'damaged_hydrant_street';
+        $tech_fields_temp[] = 'damaged_hydrant_object';
+        $tech_fields_temp[] = 'damaged_pv';
+        $tech_fields_temp[] = 'active_gasoline';
+        $tech_fields_temp[] = 'active_diesel';
+        $tech_fields_temp[] = 'reserved_gasoline';
+        $tech_fields_temp[] = 'reserved_diesel';
+        $tech_fields_temp[] = 'generator';
+        $tech_fields_temp[] = 'exhauster';
+        $tech_fields_temp[] = 'girs';
+        $tech_fields_temp[] = 'iup';
         $tech_fields_temp[] = 'head_guard_id';
+
 
         foreach ($departments as $dep) {
             $tech_items_count['tech_action'] += count($dep->tech_action);
