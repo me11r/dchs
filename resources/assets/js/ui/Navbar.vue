@@ -194,6 +194,11 @@
                             href="/reports/112/branches"
                             class="dropdown-item is-small"><i class="fas fa-tree"></i>
                             &nbsp; Подтопления / Падение веток и деревьев</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/101/forces-resources/"
+                            class="dropdown-item is-small"><i class="fas fa-air-freshener"></i>
+                            &nbsp; Учет сил и средств</a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">
