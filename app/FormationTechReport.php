@@ -240,4 +240,9 @@ class FormationTechReport extends Model
     {
         return $this->belongsTo(FormationReport::class, 'form_id');
     }
+
+    public function department()
+    {
+        return $this->belongsTo(FireDepartment::class, 'dept_id');
+    }
 }

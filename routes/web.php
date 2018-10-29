@@ -225,6 +225,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/vehicles', 'ReportController@getReport101Vehicles')->name('vehicles');
         Route::post('/vehicles', 'ReportController@postReport101Vehicles')->name('vehicles_post');
 
+        Route::get('/forces-resources', 'ReportController@getForces')->name('forces');
+
         Route::get('/emergency', 'ReportController@getReport101Emergency')->name('emergency101_get');
         Route::post('/emergency', 'ReportController@postReport101Emergency')->name('emergency101_post');
     });
