@@ -17,6 +17,7 @@ use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
 use App\Ticket101;
@@ -396,6 +397,8 @@ class ReportController extends AuthorizedController
             }
         }
 
+        Cache::put('report_forces_data', $data, 3600);
+
         if($request->ajax()){
             return response()->json($data);
         }
@@ -403,5 +406,22 @@ class ReportController extends AuthorizedController
 
         return view('reports.101.forces', $data);
 
+    }
+
+    public function exportForcesXls()
+    {
+        if ($data = Cache::get('report_forces_data')){
+            $exportService = new ReportForcesExcelExport($data['reports']);
+            $writer = $exportService->getXlsWriter();
+            $fileName = 'Учет сил и средств (' . date('d.m.Y H-i') . ').xls';
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="' . $fileName . '"');
+            header('Cache-Control: max-age=0');
+
+            $writer->save('php://output');
+        }
+
+        dd('Кеш не заполнен');
     }
 }
