@@ -106,7 +106,7 @@ class AjaxController extends AuthorizedController
     public function getServicePlans(Request $request)
     {
         $service = (Auth::user())->service_type;
-        $canRecieve = Auth::user()->hasRight(Right::CAN_VIEW_112_CARD);
+        $canRecieve = Auth::user()->hasRight(Right::CAN_RECEIVE_SERVICE_PLAN);
         if ($service === null || !$canRecieve) {
             return response()->json(['plans' => [], 'service_id' => 0], 200);
         }
