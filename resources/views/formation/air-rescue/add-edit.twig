@@ -53,49 +53,9 @@
                 </div>
 
             </fieldset>
-            {#<fieldset>
-                <legend>Отсутствуют</legend>
-                <div class="field">
-                    <label for="field_2_1">Отпуск</label>
-                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
-                               block_type="vacation"></staff-air-rescue>
-                </div>
-                <div class="field">
-                    <label for="field_2_2">Учебный</label>
-                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
-                               block_type="study"></staff-air-rescue>
-                </div>
-                <div class="field">
-                    <label for="field_2_3">Декрет</label>
-                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
-                               block_type="maternity"></staff-air-rescue>
-
-                </div>
-                <div class="field"><label for="field_2_4">Больные</label>
-                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
-                               block_type="sick"></staff-air-rescue>
-
-                </div>
-                <div class="field"><label for="field_2_5">Командировка</label>
-                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
-                               block_type="business_trip"></staff-air-rescue>
-                </div>
-                <div class="field"><label for="field_2_5">Другие причины</label>
-                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
-                               block_type="other"></staff-air-rescue>
-                </div>
-            </fieldset>
-            <div class="field">
-                <label for="field_2_0">Всего</label>
-                <div class="control">
-                    <input v-model="totalActive" type="number" readonly="readonly" step="1" data-value=""
-                           name="total_active" id="field_2_0" value=""
-                           class="input add101persons-input">
-                </div>
-            </div>#}
 
             <fieldset class="">
-                <legend>Воздушные суда</legend>
+                <legend>Воздушные судна</legend>
                 <fieldset class="">
                     <legend>В боевом расчете</legend>
                     <tech-air-rescue report_id="{{ model.id ?? '' }}" block_type="action" :vehicles="{{ tech }}"></tech-air-rescue>
@@ -142,12 +102,12 @@
                     <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_respiratory_protection" id="personal_respiratory_protection" value="{{ model.personal_respiratory_protection ?? 0 }}">
                 </div>
             </div>
-            <div class="field">
+            {#<div class="field">
                 <label for="field_3">Средства индивидуальной защиты (Костюмы л1 и др)</label>
                 <div class="control">
                     <input type="number" min=0 oninput="validity.valid||(value='');" step="1" data-value="" class="input add101persons-input" name="personal_protection" id="personal_protection" value="{{ model.personal_protection ?? 0 }}">
                 </div>
-            </div>
+            </div>#}
             <div class="field">
                 <label for="field_3">Другие спасательные средства</label>
                 <div class="control">

@@ -41,6 +41,13 @@ class AirRescueReportTechItem extends Model
         'date_from',
         'date_to',
         'comment',
+        'simplex',
+        'vsu3',
+        'vsu5',
+        'vsu10',
+        'winch',
+        'sur',
+        'external_suspension',
     ];
 
     public function report()

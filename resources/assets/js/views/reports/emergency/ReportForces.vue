@@ -12,7 +12,13 @@
                         <button
                                 class="button is-primary"
                                 @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
-
+                    </div>
+                    <div class="level-left">
+                        <form action="/reports/101/forces-resources/" method="post">
+                            <button
+                                    class="button is-primary"
+                                    type="submit" ><i class="fas fa-print"></i>&nbsp;Сохранить в XLSX</button>
+                        </form>
                     </div>
                 </div>
                 <br>
@@ -100,6 +106,14 @@
             print() {
                 window.print();
             },
+            sync() {
+                setInterval(() => {
+                    axios.get('/reports/101/forces-resources').then((response) => {
+                        this.reports_ = response.data.reports;
+                        console.dir(response.data.reports);
+                    });
+                }, 10000);
+            },
             isNull(data, property) {
                 console.dir(data)
 
@@ -133,6 +147,9 @@
 
 
             }
+        },
+        mounted() {
+            this.sync();
         }
 
     }

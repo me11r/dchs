@@ -16,7 +16,7 @@
 
             <div class="field is-grouped">
                 <div class="control column is-four-fifths">
-                    <label :for="getName('aircraft_id', item.id)">Тип основного пожарного а/М</label><br>
+                    <label :for="getName('aircraft_id', item.id)">Тип воздушного судна</label><br>
                     <div class="select">
                         <select
                             required
@@ -31,38 +31,38 @@
                             </option>
                         </select>
                     </div>
+                    <div class="field">
+                        <div class="control">
+                            <div class="field">
+                                <input type="hidden" value="0" :name="getName('simplex', item.id)">
+                                <b-checkbox v-model="item.simplex" :native-value="1" :true-value="1" :false-value="0" :name="getName('simplex', item.id)">Simplex</b-checkbox>
+
+                                <input type="hidden" value="0" :name="getName('vsu3', item.id)">
+                                <b-checkbox v-model="item.vsu3" :native-value="1" :true-value="1" :false-value="0" :name="getName('vsu3', item.id)">ВСУ 3</b-checkbox>
+
+                                <input type="hidden" value="0" :name="getName('vsu5', item.id)">
+                                <b-checkbox v-model="item.vsu5" :native-value="1" :true-value="1" :false-value="0" :name="getName('vsu5', item.id)">ВСУ 5</b-checkbox>
+
+                                <input type="hidden" value="0" :name="getName('vsu10', item.id)">
+                                <b-checkbox v-model="item.vsu10" :native-value="1" :true-value="1" :false-value="0" :name="getName('vsu10', item.id)">ВСУ 10</b-checkbox>
+                            </div>
+                        </div>
+                        <div class="control">
+                            <div class="field">
+                                <input type="hidden" value="0" :name="getName('winch', item.id)">
+                                <b-checkbox v-model="item.winch" :native-value="1" :true-value="1" :false-value="0" :name="getName('winch', item.id)">Лебедка</b-checkbox>
+
+                                <input type="hidden" value="0" :name="getName('sur', item.id)">
+                                <b-checkbox v-model="item.sur" :native-value="1" :true-value="1" :false-value="0" :name="getName('sur', item.id)">СУР</b-checkbox>
+
+                                <input type="hidden" value="0" :name="getName('external_suspension', item.id)">
+                                <b-checkbox v-model="item.external_suspension" :native-value="1" :true-value="1" :false-value="0" :name="getName('external_suspension', item.id)">Внешняя подвеска (до 5т)</b-checkbox>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
-                <!--<div v-if="block_type !== 'repair' && block_type !== 'reserve'" class="control column">
-                <label :for="getName('department', item.id)">Отделение</label>
-                <input
-                    required
-                    placeholder="Отделение"
-                    type="number"
-                    class="input"
-                    max="82"
-                    min="1"
-                    v-model="item.department"
-                    @change="departmentCheck($event)"
-                    :name="getName('department', item.id)">
-                </div>-->
 
-                <!--<div v-if="block_type === 'reserve'" class="control column">
-                    <label :for="getName('reserve', item.id)">Резерв</label><br>
-                    <div class="select">
-                        <select
-                                title=""
-                                :name="getName('reserve', item.id)"
-                                :id="getName('reserve', item.id)"
-                                v-model="item.reserve">
-                            <option
-                                    v-for="x in 5"
-                                    :key="'vehicle_reserve' + x"
-                                    :value="x">Резерв{{ x }}
-                            </option>
-                        </select>
-                    </div>
-                </div>-->
 
                 <div class="control column">
                     <label>Удалить</label>
@@ -81,7 +81,7 @@
                 v-if="block_type === 'repair'"
                 class="field is-grouped">
                 <div class="control column">
-                    <label :for="getName('comment', item.id)">Комментарий</label>
+                    <label :for="getName('comment', item.id)">Причина</label>
                     <textarea
                         class="textarea"
                         v-model="item.comment"

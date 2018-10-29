@@ -164,9 +164,22 @@ class FormationController extends AuthorizedController
             $f = $request->all();
             foreach ($request->tech as $type => $inputs) {
                 foreach ($inputs as $input_key => $input) {
-                    foreach ($input as $id) {
+                    if($input_key != 'aircraft_id'){
+                        continue;
+                    }
+
+                    foreach ($input as $input_index => $id) {
                         $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
                         $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                        $simplex = $inputs['simplex'][$input_index] ?? 0;
+                        $vsu3 = $inputs['vsu3'][$input_index] ?? 0;
+                        $vsu5 = $inputs['vsu5'][$input_index] ?? 0;
+                        $vsu10 = $inputs['vsu10'][$input_index] ?? 0;
+                        $winch = $inputs['winch'][$input_index] ?? 0;
+                        $sur = $inputs['sur'][$input_index] ?? 0;
+                        $external_suspension = $inputs['external_suspension'][$input_index] ?? 0;
+
                         if($id){
                             AirRescueReportTechItem::create([
                                 'aircraft_id' => $id,
@@ -177,6 +190,13 @@ class FormationController extends AuthorizedController
                                 'comment' => $inputs['comment'][$input_key] ?? null,
                                 'date_from' => $date_from,
                                 'date_to' => $date_to,
+                                'simplex' => $simplex,
+                                'vsu3' => $vsu3,
+                                'vsu5' => $vsu5,
+                                'vsu10' => $vsu10,
+                                'winch' => $winch,
+                                'sur' => $sur,
+                                'external_suspension' => $external_suspension,
                             ]);
                         }
                     }
