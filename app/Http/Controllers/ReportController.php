@@ -339,6 +339,7 @@ class ReportController extends AuthorizedController
         $report_id = FormationReport::approved()->max('id');
         $data['reports'] = FormationTechReport::where('form_id', $report_id)
             ->has('items')
+            ->orderBy('dept_id')
             ->with(['items', 'department'])
             ->get();
 
@@ -354,6 +355,7 @@ class ReportController extends AuthorizedController
                 $report->items[$item_key]['status'] = Ticket101::whereHas('results', function ($q) use ($today, $tech_item){
                     $q->whereDate('created_at', $today)->
                         where('tech_id', $tech_item->id)->
+                        whereNull('ret_time')->
                         whereNotNull('out_time');
                 })
                     ->with(['results', 'fire_level'])
