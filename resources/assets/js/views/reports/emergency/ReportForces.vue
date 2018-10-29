@@ -21,8 +21,6 @@
                         <thead>
                         <tr>
                             <td>ПЧ</td>
-                            <td>Отделение</td>
-                            <td>Кол-во выездов за сегодня</td>
                             <td>Статус</td>
                         </tr>
                         </thead>
@@ -30,39 +28,48 @@
                         <tr v-for="dept in reports_">
                             <td>{{ dept.department.title }}</td>
                             <td>
-                                <p v-for="department in dept.items">{{ department.department || department.reserve + ' резерв' }}</p>
-                            </td>
-                            <td>
-                                <p v-for="department in dept.items">{{ department.departures_count }}</p>
-                            </td>
-                            <td>
-                                <div v-for="department in dept.items">
-                                    <table v-if="department.status" class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+                                <div >
+                                    <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small is-bordered">
                                         <thead>
                                         <tr>
-                                            <td>Адрес</td>
-                                            <td>Ранг пожара</td>
-                                            <td>Время выезда</td>
-                                            <td>Время прибытия</td>
+                                            <td>Отделение</td>
+                                            <td>Кол-во выездов за сегодня</td>
+                                            <td>Статус</td>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
+                                        <tr v-for="department in dept.items">
+                                            <td>{{ department.department || department.reserve + ' резерв' }}</td>
+                                            <td>{{ department.departures_count }}</td>
                                             <td>
+                                                <table v-if="department.status" class="table is-narrow is-hoverable is-fullwidth is-striped is-small is-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <td>Адрес</td>
+                                                        <td>Ранг пожара</td>
+                                                        <td>Время выезда</td>
+                                                        <td>Время прибытия</td>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
                                                 <span class="ymaps-geolink" data-type="biz">
                                                     Алматы, {{ department.address }}
                                                 </span>
+                                                        </td>
+                                                        <td>{{ department.fire_rank }}</td>
+                                                        <td>{{ department.out_time }}</td>
+                                                        <td>{{ department.arrive_time }}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <p v-else>в ПЧ</p>
                                             </td>
-                                            <td>{{ department.fire_rank }}</td>
-                                            <td>{{ department.out_time }}</td>
-                                            <td>{{ department.arrive_time }}</td>
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <p v-else>в ПЧ</p>
                                 </div>
-
-                                <!--<p v-for="department in dept.items">{{ status(department) || 'в пч' }}</p>-->
                             </td>
                         </tr>
                         </tbody>
