@@ -404,16 +404,29 @@ class DictionaryController extends AuthorizedController
         ;
     }
 
-    public function getList($dict_id)
+    public function getList(Request $request, $dict_id)
     {
         $dictionary = (new \App\Dictionary)->find($dict_id);
         $this->set('dictinfo', $dictionary);
 
+        $search = trim($request->search);
+
         $dict = new $dictionary->model;
-        $this->set('dictionary', $dict->get());
 
         $fields = $this->getEditableFields($dict);
+
+        if(in_array('title', $fields) && $search){
+            $this->set('dictionary', $dict->where('title', 'like', "%$search%")->get());
+        }
+        elseif(in_array('name', $fields) && $search){
+            $this->set('dictionary', $dict->where('name', 'like', "%$search%")->get());
+        }
+        else{
+            $this->set('dictionary', $dict->get());
+        }
+
         $this->set('fields', $fields);
+        $this->set('search', $search);
     }
 
     public function getEdit($dict_id, $row_id = 0)

@@ -43,10 +43,11 @@ class CardController extends AuthorizedController
 
         $f = $request->all();
 
+        $search = trim($request->search);
+
         $sort = $request->get('sort', 'created_at');
         $id = $request->input('filter.id', '');
         $city_area = $request->input('filter.city_area', '');
-
 
         $city_areas = Ticket101::groupBy('city_area_id')
             ->get(['city_area_id'])
@@ -68,6 +69,24 @@ class CardController extends AuthorizedController
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
+        elseif($search){
+            if(is_numeric($search)){
+                $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                    ->where('id', $search)
+                    ->orderBy($sort,'desc')
+                    ->paginate($perPage);
+            }
+            else{
+                $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                    ->where('location', "like", "$search%")
+                    ->orWhereHas('city_area', function ($q) use ($search){
+                        $q->where('name', "like", "$search%");
+                    })
+                    ->orderBy($sort,'desc')
+                    ->paginate($perPage);
+            }
+
+        }
         else{
             $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
                 ->orderBy($sort,'desc')
@@ -77,6 +96,7 @@ class CardController extends AuthorizedController
         $this->set('tickets', $tickets)
             ->set('city_areas', $city_areas)
             ->set('id', $id)
+            ->set('search', $search)
             ->set('city_area', $city_area)
             ->set('per_page', $perPage);
     }
