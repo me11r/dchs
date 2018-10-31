@@ -78,7 +78,7 @@ class CardController extends AuthorizedController
             }
             else{
                 try{
-                    $date = Carbon::parse($search);
+                    $date = Carbon::parse(str_replace(['/', '.'],'-',$search));
                 }
                 catch (\Exception $e){
                     $date = null;
