@@ -10,6 +10,7 @@ use App\Models\IncidentType;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
 use App\Ticket101ServicePlan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -74,10 +75,18 @@ class Card112Controller extends Controller
                     ->paginate($perPage);
             }
             else{
+                try{
+                    $date = Carbon::parse(str_replace(['/', '.'],'-',$search));
+                }
+                catch (\Exception $e){
+                    $date = null;
+                }
+
                 $items = $this
                     ->repository
                     ->with(['street', 'street.area'])
                     ->where('location', "like", "$search%")
+                    ->orWhereDate('created_at', $date)
                     ->orWhereHas('cityArea', function ($q) use ($search){
                         $q->where('name', "like", "$search%");
                     })
@@ -114,26 +123,12 @@ class Card112Controller extends Controller
             $ticket101_service_plans[] = new Ticket101ServicePlan();
         }
 
-        $services = ServiceType::all()->pluck('id')->toArray();
-
-        /*$model = new Card112();
-        $model->call_time = now();
-        $model->city_area_id = CityArea::select('*')->first()->id;
-        $model->save();
-
-        foreach ($services as $service) {
-            Ticket101ServicePlan::create([
-                'card112_id' => $model->id
-            ]);
-        }*/
-
         return View::make('card112.create')
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect($serviceTypes)->toArray())
             ->with('model', new Card112Resource(new Card112()))
-//            ->with('model', $model)
             ->with('service_plans', $ticket101_service_plans)
             ->render();
     }
@@ -142,7 +137,7 @@ class Card112Controller extends Controller
     {
         $data = $this->repository->createFilledWithRelations($request->all());
         return redirect('/card112/'.$data->id.'/edit');
-        return redirect(route('card112.index'));
+        #return redirect(route('card112.index'));
     }
 
     public function show($id)
