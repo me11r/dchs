@@ -41,6 +41,7 @@ import AirRescueStaff from './views/AirRescueStaff/AddEditStaff';
 import AirRescueTech from './views/AirRescueTech/AddEditTech';
 import PhoneItem from './views/dictionary/Phone';
 import DistrictManagers from './components/DistrictManagers';
+import DatepickerSearch from './components/DatepickerSearch';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
@@ -80,6 +81,8 @@ Vue.component('tech-air-rescue', AirRescueTech);
 Vue.component('t-picker', TPicker);
 Vue.component('v-phone', PhoneItem);
 Vue.component('district-managers', DistrictManagers);
+
+Vue.component('v-datepicker-search', DatepickerSearch);
 
 Vue.config.productionTip = false;
 
@@ -194,7 +197,6 @@ if (document.getElementById('vue')) {
         el: '#vue'
     });
 }
-
 
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');
