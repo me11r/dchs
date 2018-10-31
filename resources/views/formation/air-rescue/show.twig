@@ -54,42 +54,42 @@
                     <td>
                         {% for item in tech_active  %}
                             {% if item.aircraft.type == 'helicopter' %}
-                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() ? "(" ~ item.additionalInfo() ~ ")" }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_reserve %}
                             {% if item.aircraft.type == 'helicopter' %}
-                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() ? "(" ~ item.additionalInfo() ~ ")" }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_repair %}
                             {% if item.aircraft.type == 'helicopter' %}
-                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() ? "(" ~ item.additionalInfo() ~ ")" }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_active  %}
                             {% if item.aircraft.type == 'airplane' %}
-                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() ? "(" ~ item.additionalInfo() ~ ")" }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_reserve %}
                             {% if item.aircraft.type == 'airplane' %}
-                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() ? "(" ~ item.additionalInfo() ~ ")" }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_repair %}
                             {% if item.aircraft.type == 'airplane' %}
-                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() ? "(" ~ item.additionalInfo() ~ ")" }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
