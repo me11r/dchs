@@ -50,11 +50,11 @@ class AjaxController extends AuthorizedController
         $result = [];
         $location = $request->location;
         $specialPlansQuery = SpecialPlan::search($location);
-        $specialPlansQuery->limit = 10;
+        $specialPlansQuery->limit = 5;
         $specialPlans = $specialPlansQuery->get();
 
         $operationalCardsQuery = OperationalCard::search($location);
-        $operationalCardsQuery->limit = 10;
+        $operationalCardsQuery->limit = 5;
         $operational_cards = $operationalCardsQuery->get();
 //        $operational_cards = OperationalCard::location($location)
 //            ->orWhere('object_name', 'like', "%$location%")
