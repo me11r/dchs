@@ -8,6 +8,7 @@ use App\FireDepartment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 /**
  * App\Models\SpecialPlan
@@ -48,6 +49,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SpecialPlan extends Model
 {
     use SoftDeletes;
+    use Searchable;
+
     protected $dates = ['deleted_at'];
 
     public $table = 'special_plans';
@@ -61,6 +64,16 @@ class SpecialPlan extends Model
         'location',
         'year_of_development',
     ];
+
+    public function searchableAs(): string
+    {
+        return __class__ . '_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return $this->only('location', 'object_name');
+    }
 
     public function fire_level()
     {
