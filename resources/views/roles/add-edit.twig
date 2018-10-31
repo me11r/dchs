@@ -18,7 +18,7 @@
                     <div class="col-md">
                         <h5 class="subtitle">Разрешения и роли</h5>
                         {% for group in right_groups %}
-                            <h5>{{ group.title }}</h5>
+                            <h6 class="title">{{ group.title }}</h6>
                             {% for r in group.rights %}
                                 <div class="form-check">
                                     <label for="right_{{ r.id }}" class="form-check-label">
@@ -27,6 +27,7 @@
                                     </label>
                                 </div>
                             {% endfor %}
+                            <br>
                         {% endfor %}
                     </div>
 

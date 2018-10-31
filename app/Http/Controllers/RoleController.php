@@ -2,14 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AccessDeniedException;
 use App\Right;
 use App\Rights\Group;
 use App\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
     private $view = 'roles';
+
+    public function before()
+    {
+        $user = \Auth::user();
+        if (!isset($user) || (!$user->hasRight('CAN_MANAGE_USERS'))) {
+            throw new AccessDeniedException();
+        }
+
+        return true;
+    }
 
     public function index(Request $request)
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AirRescueReport;
 use App\Dictionary\CityArea;
 use App\DistrictManager;
 use App\Enums\FormationOrganisation;
@@ -36,6 +37,7 @@ class FormationRecordController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
+
         foreach (FormationOrganisation::$namesMapping as $organisation => $name) {
             $this->createTodayForOrganisation($organisation);
         }
@@ -59,6 +61,8 @@ class FormationRecordController extends Controller
     public function totalEdit($id)
     {
         $item = (new FormationRecord())->findOrFail($id);
+        $fields = (new FormationRecord())->getRows(); // собираем поля для таблицы
+
         $formationDistrictManager = FormationDistrictManager::date($item->date)->first();
         $date = $item->date;
         $cityAreas = CityArea::all();
@@ -71,13 +75,46 @@ class FormationRecordController extends Controller
             }
         }
 
-
         $dutyShiftItems = OperDutyShiftStaffItem::date($date)->with(['staff', 'shift'])->get();
         $items = (new FormationRecord())->where('date', '=', $item->date)
-            ->where('organisation', '!=', FormationOrganisation::DCHS_ALMATY)
+            ->whereNotIn('organisation', [
+                FormationOrganisation::DCHS_ALMATY,
+//                FormationOrganisation::AIR_RESCUE,
+                FormationOrganisation::DISTRICT_MANAGERS,
+            ])
             ->get();
+
+        $airRescueReport = AirRescueReport::whereDate('created_at', $item->date)
+            ->with(['tech'])
+            ->first();
+
+        foreach ($items as $item){
+            if($item->organisation == 'air_rescue' && $airRescueReport){
+                $item->head = $airRescueReport->staff_head;
+                $item->staff_total = $airRescueReport->staff_total;
+                $item->staff_action = $airRescueReport->staff_action;
+                $item->staff_duty_shift = $airRescueReport->staff_duty_shift;
+                $item->tech_main_action = $airRescueReport->tech()->where('status', 'action')->count();
+                $item->tech_main_reserve = $airRescueReport->tech()->where('status', 'reserve')->count();
+                $item->tech_special_action = 0;
+                $item->tech_special_reserve = 0;
+                $item->tech_additional_action = 0;
+                $item->tech_additional_reserve = 0;
+                $item->tech_other_action = 0;
+                $item->tech_other_reserve = 0;
+                $item->gsm_gasoline = $item->jet_fuel_action ?? 0;
+                $item->gsm_diesel = 0;
+                $item->radio_stations = $airRescueReport->radio_stations ?? 0;
+                $item->personal_respiratory_protection = $airRescueReport->personal_respiratory_protection ?? 0;
+                $item->personal_protection = $airRescueReport->personal_protection ?? 0;
+                $item->other_protection = $airRescueReport->other_protection ?? 0;
+                $item->save();
+            }
+        }
+
         return View::make('formation-record.total-edit')
             ->with('item', $item)
+            ->with('fields', $fields)
             ->with('cityAreas', $cityAreas)
             ->with('formationDistrictManager', $formationDistrictManager)
             ->with('dutyShiftItems', $dutyShiftItems)
@@ -104,7 +141,11 @@ class FormationRecordController extends Controller
     private function createTodayForOrganisation($organisation)
     {
         $today = Carbon::today();
-        $todayModel = (new FormationRecord())->where('date', $today)->where('organisation', $organisation)->first();
+        $todayModel = FormationRecord::firstOrCreate([
+            'organisation' => $organisation,
+            'date' => $today,
+        ]);
+        /*$todayModel = (new FormationRecord())->where('date', $today)->where('organisation', $organisation)->first();
         if (!$todayModel) {
             $todayModel = (new FormationRecord())
                 ->fill([
@@ -112,7 +153,7 @@ class FormationRecordController extends Controller
                     'date' => $today
                 ])
                 ->save();
-        }
+        }*/
         return $todayModel;
     }
 

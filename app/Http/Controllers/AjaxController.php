@@ -85,8 +85,13 @@ class AjaxController extends AuthorizedController
     public function getRightIds(Request $request)
     {
         $user = Auth::user();
-//        return response()->json($user->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
-        return response()->json($user->role->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        $rightsArr = [];
+        foreach ($user->role->rights as $right){
+            $rightsArr[] = $right->id;
+            $rightsArr[] = $right->name;
+        }
+//        return response()->json($user->role->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        return response()->json($rightsArr, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function getRoadtripPlans(Request $request)

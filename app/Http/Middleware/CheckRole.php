@@ -21,7 +21,6 @@ class CheckRole
         $role = $user->role;
         if (!$role && !in_array($user->role, $roles)) {
             throw new AccessDeniedException();
-//            return redirect('/');
         }
 
         return $next($request);
