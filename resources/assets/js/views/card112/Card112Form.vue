@@ -7,6 +7,7 @@
             style="padding: 3px 15px">{{ model.id ? 'Редактирование' : 'Добавление' }}: Карточка 112</h4>
         <form
             :action="this.formRoute"
+            id="card112_form"
             method="POST">
             <input
                 type="hidden"
@@ -795,7 +796,20 @@ export default {
             }
         },
         setTab(tabIndex) {
+            if (window.card112FormData.model.id === 0 && tabIndex === 1){
+                let form = document.getElementById('card112_form');
+                let valid = form.checkValidity();
+
+                if(valid){
+                    form.submit();
+                }
+                else{
+                    return false;
+                }
+            }
+
             this.currentTabIndex = tabIndex;
+
         },
         getServiceTypeNameById(id) {
             return _.where(this.serviceTypes, {id: id})[0].name;
@@ -845,7 +859,11 @@ export default {
         // },
         'model.location'() {
             this.notifyMap();
-        }
+        },
+        /*'currentTabIndex'() {
+
+
+        }*/
     },
     beforeMount() {
         if (window.card112FormData) {
