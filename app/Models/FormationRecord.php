@@ -62,6 +62,40 @@ class FormationRecord extends Model
 {
     public $guarded = ['id'];
 
+    protected $fillable = [
+        'organisation',
+        'date',
+
+        'head',
+        'staff_total',
+        'staff_action',
+        'staff_duty_shift',
+        'tech_main_action',
+        'tech_main_reserve',
+        'tech_special_action',
+        'tech_special_reserve',
+        'tech_additional_action',
+        'tech_additional_reserve',
+        'tech_other_action',
+        'tech_other_reserve',
+        'gsm_gasoline',
+        'gsm_diesel',
+        'radio_stations',
+        'personal_respiratory_protection',
+        'personal_protection',
+        'other_protection',
+    ];
+
+    public function getRows()
+    {
+        $fillable = $this->getFillable();
+        $unset1 = array_search('organisation', $fillable);
+        $unset2 = array_search('date', $fillable);
+        unset($fillable[$unset1], $fillable[$unset2]);
+
+        return $fillable;
+    }
+
     public function organisationName(): string
     {
         return FormationOrganisation::getNameByType($this->organisation);
@@ -76,24 +110,24 @@ class FormationRecord extends Model
     public function scopeFilled($q)
     {
         return $q
-            ->whereNotNull('field_1_0_0')
-            ->whereNotNull('field_2_0_0')
-            ->whereNotNull('field_2_1_0')
-            ->whereNotNull('field_2_2_0')
-            ->whereNotNull('field_3_0_0')
-            ->whereNotNull('field_3_0_1')
-            ->whereNotNull('field_3_1_0')
-            ->whereNotNull('field_3_1_1')
-            ->whereNotNull('field_3_2_0')
-            ->whereNotNull('field_3_2_1')
-            ->whereNotNull('field_3_3_0')
-            ->whereNotNull('field_3_3_1')
-            ->whereNotNull('field_4_0_0')
-            ->whereNotNull('field_4_1_0')
-            ->whereNotNull('field_5_0_0')
-            ->whereNotNull('field_6_0_0')
-            ->whereNotNull('field_7_0_0')
-            ->whereNotNull('field_8_0_0')
+            ->whereNotNull('head')
+            ->whereNotNull('staff_total')
+            ->whereNotNull('staff_action')
+            ->whereNotNull('staff_duty_shift')
+            ->whereNotNull('tech_main_action')
+            ->whereNotNull('tech_main_reserve')
+            ->whereNotNull('tech_special_action')
+            ->whereNotNull('tech_special_reserve')
+            ->whereNotNull('tech_additional_action')
+            ->whereNotNull('tech_additional_reserve')
+            ->whereNotNull('tech_other_action')
+            ->whereNotNull('tech_other_reserve')
+            ->whereNotNull('gsm_gasoline')
+            ->whereNotNull('gsm_diesel')
+            ->whereNotNull('radio_stations')
+            ->whereNotNull('personal_respiratory_protection')
+            ->whereNotNull('personal_protection')
+            ->whereNotNull('other_protection')
             ;
     }
 }

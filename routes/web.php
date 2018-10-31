@@ -17,7 +17,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
     });
 
-    Route::group(['prefix' => 'admin'], function () {
+    Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function () {
         Route::get('users', 'AdminController@getUsers')->name('admin-users');
         Route::get('users/edit/{user_id?}', 'AdminController@getUserEdit')->where(['user_id' => '[0-9]+'])->name('admin-users-edit');
         Route::post('users/edit/{user_id?}', 'AdminController@postUserEdit')->where(['user_id' => '[0-9]+'])->name('post-admin-users-edit');
@@ -48,7 +48,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
 
     Route::resource('/card112', 'Card112Controller');
-    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');
+    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
 

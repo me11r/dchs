@@ -39,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in card101_results">
+                    <tr v-for="item in card101_results_">
                         <td>{{ item.title }}</td>
                         <td>{{ item.emergency_count_previous }}</td>
                         <td>{{ item.emergency_count_current }}</td>
@@ -51,7 +51,7 @@
                         <td>{{ item.died_current }}</td>
                         <td>{{ item.died_different }}</td>
                     </tr>
-                    <tr v-for="item in card112_results">
+                    <tr v-for="item in card112_results_">
                         <td>{{ item.title }}</td>
                         <td>{{ item.emergency_count_previous }}</td>
                         <td>{{ item.emergency_count_current }}</td>
@@ -106,7 +106,9 @@ export default {
             date_begin_: this.date_begin,
             date_end_: this.date_end,
             report_summary: {},
-            reason_id: null
+            reason_id: null,
+            card112_results_: this.card112_results,
+            card101_results_: this.card101_results
         };
     },
     methods: {
@@ -115,7 +117,7 @@ export default {
             let self = this;
             axios.get('/').then((resp) => {
                 self.results = resp.data.results;
-                self.card112_results = resp.data.card112_results;
+                self.card112_results_ = resp.data.card112_results;
                 // console.dir(resp);
             });
         }

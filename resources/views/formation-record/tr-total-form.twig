@@ -2,76 +2,82 @@
     <td style="padding: 5px">
         Итого
     </td>
-    <td>
-        <input readonly autocomplete="off" data-total="field_1_0_0" type="text" value="{{ item.field_1_0_0 }}"
-               name="items[{{ item.id }}][field_1_0_0]">
+    {% for row in fields %}
+        <td>
+            <input readonly autocomplete="off" type="text" min=0 oninput="validity.valid||(value='');" data-total="{{ row }}" value="{{ item.attribute(row) }}"
+                   name="items[{{ item.id }}][{{ row }}]">
+        </td>
+    {% endfor %}
+    {#<td>
+        <input readonly autocomplete="off" data-total="head" type="text" value="{{ item.head }}"
+               name="items[{{ item.id }}][head]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_2_0_0" type="text" value="{{ item.field_2_0_0 }}"
-               name="items[{{ item.id }}][field_2_0_0]">
+        <input readonly autocomplete="off" data-total="staff_total" type="text" value="{{ item.staff_total }}"
+               name="items[{{ item.id }}][staff_total]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_2_1_0" type="text" value="{{ item.field_2_1_0 }}"
-               name="items[{{ item.id }}][field_2_1_0]">
+        <input readonly autocomplete="off" data-total="staff_action" type="text" value="{{ item.staff_action }}"
+               name="items[{{ item.id }}][staff_action]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_2_2_0" type="text" value="{{ item.field_2_2_0 }}"
-               name="items[{{ item.id }}][field_2_2_0]">
+        <input readonly autocomplete="off" data-total="staff_duty_shift" type="text" value="{{ item.staff_duty_shift }}"
+               name="items[{{ item.id }}][staff_duty_shift]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_0_0" type="text" value="{{ item.field_3_0_0 }}"
-               name="items[{{ item.id }}][field_3_0_0]">
+        <input readonly autocomplete="off" data-total="tech_main_action" type="text" value="{{ item.tech_main_action }}"
+               name="items[{{ item.id }}][tech_main_action]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_0_1" type="text" value="{{ item.field_3_0_1 }}"
-               name="items[{{ item.id }}][field_3_0_1]">
+        <input readonly autocomplete="off" data-total="tech_main_reserve" type="text" value="{{ item.tech_main_reserve }}"
+               name="items[{{ item.id }}][tech_main_reserve]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_1_0" type="text" value="{{ item.field_3_1_0 }}"
-               name="items[{{ item.id }}][field_3_1_0]">
+        <input readonly autocomplete="off" data-total="tech_special_action" type="text" value="{{ item.tech_special_action }}"
+               name="items[{{ item.id }}][tech_special_action]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_1_1" type="text" value="{{ item.field_3_1_1 }}"
-               name="items[{{ item.id }}][field_3_1_1]">
+        <input readonly autocomplete="off" data-total="tech_special_reserve" type="text" value="{{ item.tech_special_reserve }}"
+               name="items[{{ item.id }}][tech_special_reserve]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_2_0" type="text" value="{{ item.field_3_2_0 }}"
-               name="items[{{ item.id }}][field_3_2_0]">
+        <input readonly autocomplete="off" data-total="tech_additional_action" type="text" value="{{ item.tech_additional_action }}"
+               name="items[{{ item.id }}][tech_additional_action]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_2_1" type="text" value="{{ item.field_3_2_1 }}"
-               name="items[{{ item.id }}][field_3_2_1]">
+        <input readonly autocomplete="off" data-total="tech_additional_reserve" type="text" value="{{ item.tech_additional_reserve }}"
+               name="items[{{ item.id }}][tech_additional_reserve]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_3_0" type="text" value="{{ item.field_3_3_0 }}"
-               name="items[{{ item.id }}][field_3_3_0]">
+        <input readonly autocomplete="off" data-total="tech_other_action" type="text" value="{{ item.tech_other_action }}"
+               name="items[{{ item.id }}][tech_other_action]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_3_3_1" type="text" value="{{ item.field_3_3_1 }}"
-               name="items[{{ item.id }}][field_3_3_1]">
+        <input readonly autocomplete="off" data-total="tech_other_reserve" type="text" value="{{ item.tech_other_reserve }}"
+               name="items[{{ item.id }}][tech_other_reserve]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_4_0_0" type="text" value="{{ item.field_4_0_0 }}"
-               name="items[{{ item.id }}][field_4_0_0]">
+        <input readonly autocomplete="off" data-total="gsm_gasoline" type="text" value="{{ item.gsm_gasoline }}"
+               name="items[{{ item.id }}][gsm_gasoline]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_4_1_0" type="text" value="{{ item.field_4_1_0 }}"
-               name="items[{{ item.id }}][field_4_1_0]">
+        <input readonly autocomplete="off" data-total="gsm_diesel" type="text" value="{{ item.gsm_diesel }}"
+               name="items[{{ item.id }}][gsm_diesel]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_5_0_0" type="text" value="{{ item.field_5_0_0 }}"
-               name="items[{{ item.id }}][field_5_0_0]">
+        <input readonly autocomplete="off" data-total="radio_stations" type="text" value="{{ item.radio_stations }}"
+               name="items[{{ item.id }}][radio_stations]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_6_0_0" type="text" value="{{ item.field_6_0_0 }}"
-               name="items[{{ item.id }}][field_6_0_0]">
+        <input readonly autocomplete="off" data-total="personal_respiratory_protection" type="text" value="{{ item.personal_respiratory_protection }}"
+               name="items[{{ item.id }}][personal_respiratory_protection]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_7_0_0" type="text" value="{{ item.field_7_0_0 }}"
-               name="items[{{ item.id }}][field_7_0_0]">
+        <input readonly autocomplete="off" data-total="personal_protection" type="text" value="{{ item.personal_protection }}"
+               name="items[{{ item.id }}][personal_protection]">
     </td>
     <td>
-        <input readonly autocomplete="off" data-total="field_8_0_0" type="text" value="{{ item.field_8_0_0 }}"
-               name="items[{{ item.id }}][field_8_0_0]">
-    </td>
+        <input readonly autocomplete="off" data-total="other_protection" type="text" value="{{ item.other_protection }}"
+               name="items[{{ item.id }}][other_protection]">
+    </td>#}
 </tr>

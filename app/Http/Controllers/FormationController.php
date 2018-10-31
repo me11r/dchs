@@ -85,11 +85,11 @@ class FormationController extends AuthorizedController
     public function getAirRescueView(Request $request, $id)
     {
         $data['report'] = AirRescueReport::find($id);
-        $data['total_persons_count'] = $data['report']->persons()->get();
-        $data['total_persons_head_count'] = $data['report']->persons()->status('head')->get();
-        $data['total_persons_active_count'] = $data['report']->persons()->status('action')->get();
-        $data['total_persons_available_count'] = $data['report']->persons()->status('available')->get();
-        $data['total_persons_oper_count'] = $data['report']->persons()->status('oper')->get();
+        $data['total_persons_count'] = $data['report']->staff_total;
+        $data['total_persons_head_count'] = $data['report']->staff_head;
+        $data['total_persons_active_count'] = $data['report']->staff_total;
+        $data['total_persons_available_count'] = $data['report']->staff_action;
+        $data['total_persons_oper_count'] = $data['report']->staff_duty_shift;
 
         $data['tech_active'] = $data['report']->tech()->status('action')->get();
         $data['tech_reserve'] = $data['report']->tech()->status('reserve')->get();
@@ -130,33 +130,14 @@ class FormationController extends AuthorizedController
         $report->personal_respiratory_protection = $request->personal_respiratory_protection;
         $report->personal_protection = $request->personal_protection;
         $report->other_protection = $request->other_protection;
+        $report->staff_total = $request->staff_total;
+        $report->staff_action = $request->staff_action;
+        $report->staff_duty_shift = $request->staff_duty_shift;
+        $report->staff_head = $request->staff_head;
 
         $report->save();
 
         $f = $request->all();
-
-        if($request->staff){
-
-            AirRescueReportPersonsItem::where('report_id', $report->id)
-                ->delete();
-
-            foreach ($request->staff as $type => $inputs) {
-                foreach ($inputs['staff_id'] as $input_key => $input) {
-
-                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
-                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
-
-                    AirRescueReportPersonsItem::create([
-                        'staff_id' => $input,
-                        'report_id' => $report->id,
-                        'comment' => $inputs['comment'][$input_key] ?? null,
-                        'date_from' => $date_from,
-                        'date_to' => $date_to,
-                        'status' => $type,
-                    ]);
-                }
-            }
-        }
 
         if($request->tech){
             AirRescueReportTechItem::where('report_id', $report->id)

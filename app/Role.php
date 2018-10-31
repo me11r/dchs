@@ -80,13 +80,29 @@ class Role extends Model
     public function hasRight($right)
     {
         if(is_array($right)){
-            $hasRight = $this->rights()
-                ->whereIn('right_id', $right)
-                ->exists();
+            $rights = Right::whereIn('title', $right)
+                ->orWhereIn('name', $right)
+                ->orWhereIn('id', $right)
+                ->get();
+            
+            if($rights->count()){
+                $rightsArr = $rights->pluck('id')->toArray();
+
+                $hasRight = $this->rights()
+                    ->whereIn('right_id', $rightsArr)
+                    ->exists();
+            }
+            else{
+                $hasRight = $this->rights()
+                    ->whereIn('right_id', $right)
+                    ->exists();
+            }
         }
         else{
             if(!is_numeric($right)){
-                $right = Right::where('title', $right)->first();
+                $right = Right::where('title', $right)
+                    ->orWhere('name', $right)
+                    ->first();
                 if($right){
                     $right = $right->id;
                 }
