@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form id="date-form" :action="formAction_">
+        <form id="date-form" action="formAction_">
             <b-field label="Выберите дату">
                 <b-datepicker
                         placeholder="Click to select..."
@@ -18,12 +18,17 @@
         props: {
             formAction: {
                 type: String,
-                default: '',
+                default: ''
             }
         },
         data: function () {
             return {
-                formAction_: this.formAction_
+                formAction_: this.formAction
+            }
+        },
+        methods: {
+            changeDate() {
+                alert();
             }
         }
     }
