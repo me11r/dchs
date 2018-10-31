@@ -23,10 +23,12 @@
                     <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;Карточки</a>
                     <div class="navbar-dropdown">
                         <a
+                            v-if="hasRight(2)"
                             href="/card/101"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточка 101</a>
                         <a
+                            v-if="hasRight(33)"
                             href="/card112"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp; Карточка 112
@@ -205,12 +207,14 @@
                     <a class="navbar-link is-small"><i class="fas fa-fw fa-road"></i>&nbsp;Путевые листы</a>
                     <div class="navbar-dropdown">
                         <a
+                            v-if="hasRight(9)"
                             href="/roadtrip/"
                             class="dropdown-item">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;
                             Путевые листы ДЧС
                         </a>
                         <a
+                            v-if="hasRight(32)"
                             href="/service-plans/"
                             class="dropdown-item">
                             <i class="fas fa-archway fa-fw"></i>&nbsp;
@@ -298,7 +302,7 @@ export default {
             document.getElementById('logout').submit();
         },
         hasRight: function (id) {
-            return this.rights[id] !== undefined;
+            return this.rights.indexOf(id) !== -1;
         },
         hasAnyRight: function () {
             const ids = Array.from(arguments);

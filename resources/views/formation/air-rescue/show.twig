@@ -1,7 +1,7 @@
 {% extends "layout/html" %}
 {% block content %}
     <div class="section container">
-    <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки АО "Казавиаспас"</h4>
+    <h4 class="title" style="padding: 3px 15px">Просмотр строевой записки АО "Казавиаспас" {{ report.created_at.format('d-m-Y') }}</h4>
 
     {#<form action="{{ route('formation-record.update', item.id) }}" method="POST">#}
         <input type="hidden" name="_method" value="PATCH">
@@ -46,52 +46,50 @@
                 <tr>
                     <td>АО "Казавиаспас"</td>
                     <td>
-                        {% for item in total_persons_head_count %}
-                            {{ item.staff.name }} <br>
-                        {% endfor %}
+                        {{ total_persons_head_count }}
                     </td>
-                    <td>{{ total_persons_active_count.count() }}</td>
-                    <td>{{ total_persons_available_count.count() }}</td>
-                    <td>{{ total_persons_oper_count.count() }}</td>
+                    <td>{{ total_persons_active_count }}</td>
+                    <td>{{ total_persons_available_count }}</td>
+                    <td>{{ total_persons_oper_count }}</td>
                     <td>
                         {% for item in tech_active  %}
                             {% if item.aircraft.type == 'helicopter' %}
-                                {{ item.aircraft.name }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_reserve %}
                             {% if item.aircraft.type == 'helicopter' %}
-                                {{ item.aircraft.name }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_repair %}
                             {% if item.aircraft.type == 'helicopter' %}
-                                {{ item.aircraft.name }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_active  %}
                             {% if item.aircraft.type == 'airplane' %}
-                                {{ item.aircraft.name }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_reserve %}
                             {% if item.aircraft.type == 'airplane' %}
-                                {{ item.aircraft.name }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for item in tech_repair %}
                             {% if item.aircraft.type == 'airplane' %}
-                                {{ item.aircraft.name }} <br>
+                                {{ item.aircraft.name }} {{ item.additionalInfo() }} <br>
                             {% endif %}
                         {% endfor %}
                     </td>

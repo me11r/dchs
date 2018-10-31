@@ -64,4 +64,38 @@ class AirRescueReportTechItem extends Model
     {
         return $this->belongsTo(Aircraft::class);
     }
+
+    public function additionalInfo()
+    {
+        $result = '';
+        if($this->simplex){
+            $result .= 'SIMPLEX, ';
+        }
+
+        if($this->vsu3){
+            $result .= 'ВСУ 3, ';
+        }
+
+        if($this->vsu5){
+            $result .= 'ВСУ 5, ';
+        }
+
+        if($this->vsu10){
+            $result .= 'ВСУ 10, ';
+        }
+
+        if($this->winch){
+            $result .= 'лебедка, ';
+        }
+
+        if($this->sur){
+            $result .= 'СУР, ';
+        }
+
+        if($this->external_suspension){
+            $result .= 'Внешняя подвеска (до 5т), ';
+        }
+
+        return $result;
+    }
 }

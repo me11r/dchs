@@ -2,7 +2,13 @@
     <td style="padding: 5px;">
         {{ item.organisationName() }}
     </td>
-    <td>
+    {% for row in fields %}
+        <td>
+            <input autocomplete="off" type="text" min=0 oninput="validity.valid||(value='');" data-field="{{ row }}" value="{{ item.attribute(row) }}"
+                   name="items[{{ item.id }}][{{ row }}]">
+        </td>
+    {% endfor %}
+    {#<td>
         <input autocomplete="off" type="text" min=0 oninput="validity.valid||(value='');" data-field="field_1_0_0" value="{{ item.field_1_0_0 }}"
                name="items[{{ item.id }}][field_1_0_0]">
     </td>
@@ -73,5 +79,5 @@
     <td>
         <input autocomplete="off" type="number" min=0 oninput="validity.valid||(value='');" data-field="field_8_0_0" value="{{ item.field_8_0_0 }}"
                name="items[{{ item.id }}][field_8_0_0]">
-    </td>
+    </td>#}
 </tr>
