@@ -1,6 +1,7 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="section container"><h4 class="title">Карточка 101</h4>
+    <div class="section container" id="vue">
+        <h4 class="title">Карточка 101</h4>
     <div class="columns is-gapless">
         <div class="column">
             <div class="tabs buttab">
@@ -14,9 +15,7 @@
         <div class="column is-narrow">
             <div>
                 <a href="/card/add101/" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
-                {#{% if id is defined or filter is defined %}#}
-                    <a href="/card/101/" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
-                {#{% endif %}#}
+                <a href="/card/101/" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
             </div>
         </div>
     </div>
@@ -28,8 +27,12 @@
                 </div>
                 <div class="control">
                 </div>
+
                 <div class="control">
                     <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                </div>
+                <div class="control">
+                    <v-datepicker-search></v-datepicker-search>
                 </div>
             </div>
         </form>

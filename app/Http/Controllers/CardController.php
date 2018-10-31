@@ -77,8 +77,15 @@ class CardController extends AuthorizedController
                     ->paginate($perPage);
             }
             else{
+                try{
+                    $date = Carbon::parse($search);
+                }
+                catch (\Exception $e){
+                    $date = null;
+                }
                 $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
                     ->where('location', "like", "$search%")
+                    ->orWhereDate('created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
                         $q->where('name', "like", "$search%");
                     })
