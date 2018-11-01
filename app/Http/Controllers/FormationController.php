@@ -76,7 +76,7 @@ class FormationController extends AuthorizedController
     public function getAirRescue(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 10);
-        $data['reports'] = AirRescueReport::paginate($data['per_page']);
+        $data['reports'] = AirRescueReport::orderBy('id', 'desc')->paginate($data['per_page']);
         $data['today'] = now();
 
         return view('formation.air-rescue.index', $data);
