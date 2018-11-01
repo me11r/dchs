@@ -12,6 +12,7 @@ use App\Formation\Operations;
 use App\Formation\Resources;
 use App\FormationMedicalReport;
 use App\FormationMudflowReport;
+use App\FormationOdPersonItem;
 use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
@@ -24,6 +25,7 @@ use App\Models\Vehicle;
 use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
+use App\StaffCpps;
 use App\User;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -76,7 +78,7 @@ class FormationController extends AuthorizedController
     public function getAirRescue(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 10);
-        $data['reports'] = AirRescueReport::paginate($data['per_page']);
+        $data['reports'] = AirRescueReport::orderBy('id', 'desc')->paginate($data['per_page']);
         $data['today'] = now();
 
         return view('formation.air-rescue.index', $data);
@@ -243,6 +245,9 @@ class FormationController extends AuthorizedController
         if ($model === null) {
             $model = new FormationPersonsReport();
         }
+
+        $od_staff = $model->getODStaff();
+
         $this->set('model', $model);
 
         if($read_only){
@@ -264,6 +269,7 @@ class FormationController extends AuthorizedController
         $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('od_staff', $od_staff)
             ->set('staff_table', $staff_table ?? null)
             ->set('read_only', $read_only)
             ->set('dept_id', $dept_id);
@@ -274,6 +280,8 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $formationReport = FormationReport::find($form_id);
+
+        //todo: временно отключено
         /*$canEditReport = $formationReport->canEditReport();
         if(!$canEditReport && Auth::id() != 1){
             return redirect('/formation/101')->with('_message', ['type' => 'danger', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
@@ -308,36 +316,73 @@ class FormationController extends AuthorizedController
         ];
         $model->fill($all)->save();
 
-        if($request->staff){
+        $f = $request->all();
 
-            FormationPersonsItem::where('report_id', $model->id)
+        if($request->staff){
+            FormationOdPersonItem::where('report_id', $model->id)
                 ->delete();
 
-            foreach ($request->staff as $type => $inputs) {
-                foreach ($inputs['staff_id'] as $input_key => $input) {
+            if($model->fireDepartment->title == 'ОД'){
 
-                    if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
-                        $data['status'] = 'active';
+                foreach ($request->staff as $type => $inputs) {
+                    foreach ($inputs['staff_id'] as $input_key => $input) {
+
+                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                            $data['status'] = 'active';
+                        }
+                        else{
+                            $data['status'] = 'inactive';
+                        }
+
+                        $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                        $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                        FormationOdPersonItem::create([
+                            'staff_id' => $input,
+                            'report_id' => $model->id,
+                            'comment' => $inputs['comment'][$input_key] ?? null,
+                            'date_from' => $date_from,
+                            'date_to' => $date_to,
+                            'rank' => $type,
+                            'table_name' => $type,
+                            'status' => $data['status'],
+                        ]);
                     }
-                    else{
-                        $data['status'] = 'inactive';
-                    }
-
-                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
-                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
-
-                    FormationPersonsItem::create([
-                        'staff_id' => $input,
-                        'report_id' => $model->id,
-                        'comment' => $inputs['comment'][$input_key] ?? null,
-                        'date_from' => $date_from,
-                        'date_to' => $date_to,
-                        'rank' => $type,
-                        'status' => $data['status'],
-                    ]);
                 }
             }
+            else{
+
+                foreach ($request->staff as $type => $inputs) {
+                    foreach ($inputs['staff_id'] as $input_key => $input) {
+
+                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                            $data['status'] = 'active';
+                        }
+                        else{
+                            $data['status'] = 'inactive';
+                        }
+
+                        $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                        $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                        FormationPersonsItem::create([
+                            'staff_id' => $input,
+                            'report_id' => $model->id,
+                            'comment' => $inputs['comment'][$input_key] ?? null,
+                            'date_from' => $date_from,
+                            'date_to' => $date_to,
+                            'rank' => $type,
+                            'status' => $data['status'],
+                        ]);
+                    }
+                }
+            }
+
+
         }
+
+
+
 
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
@@ -608,9 +653,9 @@ class FormationController extends AuthorizedController
 
         // лс ОД
         if(isset($people[19])){
-            foreach ($people[19]->formation_person_items as $item) {
+            foreach ($people[19]->formation_person_items_od as $item) {
                 if($item->status == 'active'){
-                    $dept_od_people[$item->rank][] = $item->staff;
+                    $dept_od_people[$item->rank][] = $item->staff();
                 }
             }
         }

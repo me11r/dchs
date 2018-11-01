@@ -55,7 +55,11 @@ class FormationRecordController extends Controller
     public function edit($id)
     {
         $item = (new FormationRecord())->findOrFail($id);
-        return View::make('formation-record.single-edit')->with('item', $item);
+        $fields = (new FormationRecord())->getRows(); // собираем поля для таблицы
+
+        return View::make('formation-record.single-edit')
+            ->with('fields', $fields)
+            ->with('item', $item);
     }
 
     public function totalEdit($id)
