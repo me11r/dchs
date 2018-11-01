@@ -93,7 +93,10 @@ export default class Add101Persons {
                 });
 
                 this.$on('addSelectedPersons', function (person) {
+                    console.dir(person)
                     this.selectedPersons.push(person);
+                    console.dir(this.selectedPersons);
+
                 });
 
                 this.$on('changeSelectedPersons', function (person) {
