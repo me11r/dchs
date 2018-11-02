@@ -21,7 +21,8 @@ class FormationStaffController extends Controller
         $data = $request->all();
         $od_people = (new FormationPersonsReport())->od_staff;
         if(in_array($data['rank'], $od_people)){
-            $resp = FormationPersonsItem::rank($request->rank)
+            $resp = FormationPersonsItem::with(['staff'])
+                ->rank($request->rank)
                 ->where('report_id', $request->id)
                 ->get();
         }
@@ -29,6 +30,11 @@ class FormationStaffController extends Controller
             $resp = FormationOdPersonItem::rank($request->rank)
                 ->where('report_id', $request->id)
                 ->get();
+
+
+            /*foreach ($resp as $key => $item) {
+                $item->staff;
+            }*/
         }
 
         return response()->json($resp);

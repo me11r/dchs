@@ -93,13 +93,11 @@ export default class Add101Persons {
                 });
 
                 this.$on('addSelectedPersons', function (person) {
-                    console.dir(person)
                     this.selectedPersons.push(person);
-                    console.dir(this.selectedPersons);
-
                 });
 
                 this.$on('changeSelectedPersons', function (person) {
+
                     this.selectedPersons = _.reject(this.selectedPersons, function(staffId){ return staffId === person.oldValue; });
                     this.selectedPersons.push(person.newValue);
                 });

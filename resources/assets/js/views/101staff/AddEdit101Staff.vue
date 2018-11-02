@@ -26,7 +26,7 @@
                             :id="getName('staff_id', item.id)"
                             v-model="item.staff_id">
                             <option
-                                v-for="s in getStaffFilter(item.staff_id)"
+                                v-for="s in getStaffFilter(item.staff)"
                                 :key="'staff_' + s.id"
                                 :value="s.id">{{ s.name }}
                             </option>
@@ -134,11 +134,14 @@ export default {
         getStaffFilter(selectedId) { //запрет на выбор одного и того же человека на разные позиции
             let scope = this;
             return this.staff_.filter(function (item) {
-                return scope.$parent.selectedPersons.indexOf(item.id) === -1 || item.id === selectedId;
+                console.dir(item)
+                console.dir(selectedId)
+
+                return scope.$parent.selectedPersons.indexOf(item.unique) === -1 || item.unique === selectedId.unique;
             });
         },
         selectStaff($event) {
-            console.dir($event.target.value);
+            // console.dir($event.target.value);
         },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
@@ -162,13 +165,16 @@ export default {
             return {
                 id: moment().valueOf(),
                 department: '',
+                staff: {
+                    unique: 0
+                },
                 name: '',
                 count: 0,
                 square: 0,
                 staff_id: 0
             };
         },
-        prepareRecords(records) {
+        /*prepareRecords(records) {
             records.map((item) => {
                 this.addItem({
                     id: parseInt(item.id),
@@ -180,7 +186,7 @@ export default {
                     date_end: moment(item.date_end)
                 });
             });
-        },
+        },*/
         removeItem(id) {
             if (confirm('Вы действительно хотите удалить эту запись?')) {
                 this.records_ = this.records_.filter(function (item) {
@@ -210,13 +216,12 @@ export default {
                 }
 
                 _.each(self.records_, (value) => {
-                    self.$parent.$emit('addSelectedPersons', value.staff_id);
+                    self.$parent.$emit('addSelectedPersons', value.staff.unique);
                 });
-
             });
         }
     },
-    computed:{
+    /*computed:{
         clonedItems(){
             return JSON.parse(JSON.stringify(this.records_));
         }
@@ -224,22 +229,22 @@ export default {
     watch: {
         clonedItems(newValue, oldValue){
             _.each(newValue, (value, key) => {
-                if(oldValue[key]) {
+                if(oldValue[key] !== undefined && oldValue[key].staff !== undefined) {
                     this.$parent.$emit('changeSelectedPersons', {
-                        oldValue: oldValue[key].staff_id,
-                        newValue: value.staff_id
+                        oldValue: oldValue[key].staff.unique || null,
+                        newValue: value.staff.unique || null
                     });
                 }
             });
             _.each(oldValue, (value, key) => {
                 if(!newValue[key]) {
                     this.$parent.$emit('removeSelectedPersons', {
-                        oldValue: value.staff_id
+                        oldValue: value.staff.unique || null
                     });
                 }
             });
         }
-    },
+    },*/
     beforeMount() {
         this.getStaff();
     }
