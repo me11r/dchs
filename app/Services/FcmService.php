@@ -39,6 +39,7 @@ class FcmService
      * @param string $title
      * @param string $body
      * @param null|string $action
+     * @param null|int $infoId
      * @return DownstreamResponse
      */
     public function sendToMany(array $tokens, string $title, string $body, ?string $action = null, ?int $infoId = null): DownstreamResponse
@@ -85,7 +86,7 @@ class FcmService
     private function modifyTokens(array $tokensToModify): void
     {
         foreach ($tokensToModify as $oldToken => $newToken) {
-            $user = (new User)->where('device_token', '=', $oldToken)->first();
+            $user = User::where('device_token', '=', $oldToken)->first();
             if ($user) {
                 $user->device_token = $newToken;
                 $user->save();
