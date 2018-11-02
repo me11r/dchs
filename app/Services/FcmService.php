@@ -41,7 +41,7 @@ class FcmService
      * @param null|string $action
      * @return DownstreamResponse
      */
-    public function sendToMany(array $tokens, string $title, string $body, ?string $action = null): DownstreamResponse
+    public function sendToMany(array $tokens, string $title, string $body, ?string $action = null, ?int $infoId = null): DownstreamResponse
     {
         $optionBuilder = new OptionsBuilder();
 
@@ -56,6 +56,11 @@ class FcmService
             'title' => $title,
             'body' => $body,
         ]);
+        if ($infoId !== null) {
+            $dataBuilder->addData([
+                'infoId' => $infoId
+            ]);
+        }
 
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
