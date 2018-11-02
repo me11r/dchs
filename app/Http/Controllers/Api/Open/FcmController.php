@@ -38,7 +38,8 @@ class FcmController extends Controller
     public function displayInfo(Request $request, int $infoId)
     {
         $content = <<<DEMO
-<b>Вери импортант инфо</b><p>For <i>{$infoId}</i></p>
+<b>Вери импортант инфо</b><p>For <i>{$infoId}</i></p><br/><div style="color:red">THIS IS RED!</div>
+<div><img src="https://i.kym-cdn.com/entries/icons/original/000/000/026/Gerard-Butler-This-Is-Sparta.jpg" alt=""></div>
 DEMO;
         return response()->json([
             'content' => $content,
