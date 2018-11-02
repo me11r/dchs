@@ -3,7 +3,7 @@
 namespace App\Repositories\Contracts;
 
 
-interface QuakeInterface
+interface QuakeInterface extends RepositoryInterface
 {
 
 }
