@@ -169,6 +169,7 @@ class FormationRecordController extends Controller
             ->toArray();
 
         $data['staff'] = OperDutyShiftStaff::whereNotIn('id', $busyStaff)->get();
+        $data['shift'] = OperDutyShift::find($operShift_id);
         $data['ods'] = OperDutyShift::all();
         $data['shift_id'] = $operShift_id;
         $data['date'] = $date;
