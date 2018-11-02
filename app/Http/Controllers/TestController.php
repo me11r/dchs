@@ -15,12 +15,14 @@ class TestController extends Controller
         $title = $request->get('title');
         $body = $request->get('body');
         $token = $request->get('token');
+        $info = $request->get('info');
 
         if ($title && $body && $token) {
             $this->dispatch(new SendFcmMessages(
                 [$token],
                 $title,
-                $body
+                $body,
+                $info
             ));
         }
 
