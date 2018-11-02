@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Cache;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpWord\PhpWord;
 use Spipu\Html2Pdf\Html2Pdf;
@@ -266,16 +267,21 @@ class ReportController extends AuthorizedController
 
     public function getReport112BranchesExport(Request $request)
     {
+        $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
+        $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
+
         $fileName = 'Отчет:'
-            . Carbon::parse($request->get('date_start'))->format('Y-m-d')
+            . $dateStart
             . '_'
-            . Carbon::parse($request->get('date_end'))->format('Y-m-d')
+            . $dateEnd
             . '.xls';
 
         $cards = (new Card112())
             ->where('incident_type_id', '=', $request->get('incident_type_id'))
             ->with(['cityArea'])
             ->get();
+
+        $incidentType = IncidentType::find($request->get('incident_type_id'));
 
         $preparedToExport = [];
         foreach ($cards as $card) {
@@ -301,28 +307,64 @@ class ReportController extends AuthorizedController
         $spreadsheet = new Spreadsheet();
         $writer = new Xls($spreadsheet);
 
-        $index = 0;
+        $rowIndex = 1;
+        $activeSheet = $spreadsheet->getActiveSheet();
+        $activeSheet
+            ->getCell('C' . $rowIndex)
+            ->setValue("Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStart}. по {$dateEnd}г. поступившие на линию «109» ССА.")
+            ->getStyle()
+            ->getFont()
+            ->setBold(true);
 
+        $rowIndex += 3;
         foreach ($preparedToExport as $key => $data) {
-            if ($spreadsheet->getSheet($index)) {
-                $spreadsheet->createSheet($index);
-            }
+            $activeSheet->getCell('E' . $rowIndex)->setValue($key)->getStyle()->getFont()->setBold(true);
 
-            $spreadsheet->setActiveSheetIndex($index);
-            $activeSheet = $spreadsheet->getActiveSheet();
+            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
+            $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
 
-            $activeSheet->setTitle($key);
-            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A1');
-            $activeSheet->fromArray($data, null, 'A2');
+            $activeSheet
+                ->getStyle('A'.($rowIndex + 1).':H'. $activeSheet->getHighestRow())
+                ->applyFromArray(Ticket101ExcelExport::HStyle);
 
-            foreach (range('A', 'W') as $columnID) {
-                $activeSheet->getColumnDimension($columnID)->setAutoSize(true);
-            }
+            $activeSheet
+                ->getStyle('A'.($rowIndex + 1).':H'. ($rowIndex + 1))
+                ->getFont()
+                ->setBold(true);
 
-            $index++;
+            $rowIndex = $activeSheet->getHighestRow();
+            $rowIndex += 3;
         }
 
-        $spreadsheet->setActiveSheetIndex(0);
+        $activeSheet->getColumnDimension('A')->setWidth(3);
+        $activeSheet->getColumnDimension('B')->setWidth(20);
+        $activeSheet->getColumnDimension('C')->setWidth(20);
+        $activeSheet->getColumnDimension('D')->setWidth(20);
+        $activeSheet->getColumnDimension('E')->setWidth(20);
+        $activeSheet->getColumnDimension('F')->setWidth(20);
+        $activeSheet->getColumnDimension('G')->setWidth(20);
+        $activeSheet->getColumnDimension('H')->setWidth(20);
+
+
+        $activeSheet = $spreadsheet->getActiveSheet();
+        $activeSheet->getStyle('A1:H'. $rowIndex)
+            ->getFont()
+            ->setSize(7)
+            ->setName('Times New Roman');
+
+
+        $activeSheet
+            ->getPageSetup()
+            ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
+            ->setFitToWidth(1)
+            ->setFitToHeight(0);
+
+        $activeSheet->getPageMargins()->setTop(0.25);
+        $activeSheet->getPageMargins()->setRight(0.25);
+        $activeSheet->getPageMargins()->setLeft(0.25);
+        $activeSheet->getPageMargins()->setBottom(0.25);
+
+        $activeSheet->freezePane('A1');
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');
