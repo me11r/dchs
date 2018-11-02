@@ -22,6 +22,7 @@ class TestController extends Controller
                 [$token],
                 $title,
                 $body,
+                null,
                 $info
             ));
         }
