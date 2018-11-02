@@ -87,6 +87,20 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 8, 'title' => 'Воздушные суда', 'name' => 'DICT_AIRCRAFTS'];
         $rights[] = ['right_group_id' => 8, 'title' => 'Ответственные по районам', 'name' => 'DICT_DISTRICT_MANAGERS'];
 
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ЦППС', 'name' => 'DICT_CPPS'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ЕДДС', 'name' => 'DICT_EDDS'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ИПЛ', 'name' => 'DICT_IPL'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - Страший мастер связи', 'name' => 'DICT_SENIOR_COMMUNICATION_MASTER'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - Водоканал', 'name' => 'DICT_WATER_CANAL'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ЦРБ', 'name' => 'DICT_CRB'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - База ГДЗС', 'name' => 'DICT_GDZS_BASE'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - Врач', 'name' => 'DICT_DOCTOR'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - Оперативные дежурные автомашины', 'name' => 'DICT_STAFF_DUTY_VEHICLE'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - КШМ', 'name' => 'DICT_KSHM'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ИПЛ "Жалын"', 'name' => 'DICT_ZHALIN'];
+        $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ДСПТ', 'name' => 'DICT_DSPT'];
+
+
         foreach (\App\Dictionary::all() as $dict) {
             $rights[] = ['right_group_id' => 8, 'title' => $dict->title, 'name' => mb_strtoupper(str_start($dict->table, 'dict_'))];
         }

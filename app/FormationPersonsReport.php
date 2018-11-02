@@ -148,6 +148,9 @@ class FormationPersonsReport extends Model
         $result = [];
         foreach ($od_people as $key => $od_person) {
             $result[$key] = $od_person::all();
+            foreach ($result[$key] as $item) {
+                $item->staff;
+            }
         }
 
         return $result;

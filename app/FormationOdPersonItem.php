@@ -17,6 +17,21 @@ class FormationOdPersonItem extends Model
         'table_name',
     ];
 
+    protected $appends = ['staff'];
+
+    public function getStaffAttribute()
+    {
+        $staff_tables = $this->report->od_staff;
+
+        if(isset($staff_tables[$this->table_name])){
+            $staff_entity = $staff_tables[$this->table_name]::find($this->staff_id);
+            $this->staff = $staff_entity;
+            return $staff_entity;
+        }
+
+        return null;
+    }
+
     public function report()
     {
         return $this->belongsTo(FormationPersonsReport::class, 'report_id');
@@ -29,10 +44,10 @@ class FormationOdPersonItem extends Model
 
     public function staff()
     {
-        $table = $this->table_name;
-        $staff_tables = $this->report->od_staff;
+        $staff_tables = $this->report->od_staff ?? null;
         if(isset($staff_tables[$this->table_name])){
             $staff_entity = $staff_tables[$this->table_name]::find($this->staff_id);
+            #$this->staff = $staff_entity;
             return ['name' => $staff_entity->name];
         }
 

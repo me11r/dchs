@@ -21,6 +21,7 @@ Route::group(
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
             Route::post('fcm/register', 'FcmController@register');
             Route::get('fcm/send_test', 'FcmController@sendTest');
+            Route::get('fcm/info/{infoId}', 'FcmController@displayInfo')->where('infoId', '[0-9]+');
         });
 
         Route::group(['prefix' => 'notification'], function (){

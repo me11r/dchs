@@ -31,6 +31,10 @@ class SendFcmMessages implements ShouldQueue
      * @var string
      */
     private $action;
+    /**
+     * @var int
+     */
+    private $infoId;
 
     /**
      * SendFcmMessages constructor.
@@ -39,12 +43,13 @@ class SendFcmMessages implements ShouldQueue
      * @param string $body
      * @param null|string $action
      */
-    public function __construct(array $tokens, string $title, string $body, ?string $action = null)
+    public function __construct(array $tokens, string $title, string $body, ?string $action = null, ?int $infoId = null)
     {
         $this->tokens = $tokens;
         $this->title = $title;
         $this->body = $body;
         $this->action = $action;
+        $this->infoId = $infoId;
     }
 
     /**
@@ -56,7 +61,8 @@ class SendFcmMessages implements ShouldQueue
             $this->tokens,
             $this->title,
             $this->body,
-            $this->action
+            $this->action,
+            $this->infoId
         );
     }
 }

@@ -35,12 +35,29 @@ class FcmController extends Controller
         return response()->json(['success' => $result, 'message' => '']);
     }
 
+    public function displayInfo(Request $request, int $infoId)
+    {
+        $content = <<<DEMO
+<b>Вери импортант инфо</b><p>For <i>{$infoId}</i></p>
+DEMO;
+        return response()->json([
+            'content' => $content,
+            'type' => 'html'
+        ], 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * @param Request $request
+     * @throws \Exception
+     */
     public function sendTest(Request $request)
     {
         dispatch(new SendFcmMessages(
             User::whereNotNull('device_token')->pluck('device_token')->toArray(),
             'title',
-            'body'
+            'body',
+            null,
+            \random_int(10000, 99999)
         ));
     }
 }
