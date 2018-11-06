@@ -57,48 +57,7 @@
 
         <div class="tbl" style="overflow-x: scroll">
             <table id="main_table" class="detailed-table table is-small is-fullwidth is-narrow is-hoverable" style="font-size: .7rem">
-                <thead>
-                <tr>
-                    <th class="rotate">
-                        <div><span>П/Ч</span></div>
-                    </th>
-                    {% for key,hd_pp in people_fl %}
-                        {% if hd_pp is iterable %}
-                            {% for hd1_pp in hd_pp %}
-                                <th class="rotate">
-                                    <div><span>{{ key }}: {{ hd1_pp }}</span></div>
-                                </th>
-                            {% endfor %}
-                        {% else %}
-                            <th class="rotate">
-                                <div><span>{{ hd_pp }}</span></div>
-                            </th>
-                        {% endif %}
-                    {% endfor %}
-                    {% for key,hd_pp in tech_fl %}
-                        {% if hd_pp is iterable %}
-                            {% for skey,hd1_pp in hd_pp %}
-                                {% if hd1_pp is iterable %}
-                                    {% for hd2_pp in hd1_pp %}
-                                        <th class="rotate">
-                                            <div><span>{{ key }}-{{ skey }}: {{ hd2_pp }}</span></div>
-                                        </th>
-                                    {% endfor %}
-                                {% else %}
-                                    <th class="rotate">
-                                        <div><span>{{ key }}: {{ hd1_pp }}</span></div>
-                                    </th>
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            <th class="rotate">
-                                <div><span>{{ hd_pp }}</span></div>
-                            </th>
-                        {% endif %}
-                    {% endfor %}
-
-                </tr>
-                </thead>
+                {% include 'formation/layout/view-101-table-header' %}
                 {% for dept in departments if dept.id != 13 %}
                     <tr {% if dept.tech_action|length == 0 %} style="background-color: #ff3317" {% endif %}>
                         <td>{{ dept.title }}</td>
