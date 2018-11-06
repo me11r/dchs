@@ -247,6 +247,11 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('emergency112_get_branches_export');
     });
 
+    /** Суточные отчеты в формате Ворд */
+    Route::group(['prefix' => 'reports'], function(){
+        Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');
+        Route::get('daily112/{format}', 'ReportController@getDaily112Formatted')->where('format', '(word)');
+    });
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });
