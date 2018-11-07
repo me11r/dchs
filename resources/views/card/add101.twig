@@ -227,11 +227,15 @@
                                 </div>
                                 <div class="column" style="margin-top: 60px;">
                                     {% if ticket.operational_plan_id %}
-                                        <a href="{{ url('/pdf/get-operational-plan/' ~ ticket.operational_plan_id) }}">
-                                            <span class="file-icon">
-                                                <i class="fas fa-file-pdf"></i>
-                                            </span>
-                                        </a>
+                                        {% for special_plan in ticket.operational_plan.special_plans %}
+                                            {% if special_plan.file %}
+                                                <a href="{{ '/storage/operational-plans/'~special_plan.file }}" target="_blank">
+                                                    <span class="file-icon">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </span>
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endif %}
                                 </div>
                                 <div class="column">
@@ -252,8 +256,8 @@
                                     </div>
                                 </div>
                                 <div class="column" style="margin-top: 60px;">
-                                    {% if ticket.operational_card_id %}
-                                        <a href="{{ url('/pdf/get-operational-card/' ~ ticket.operational_card_id) }}">
+                                    {% if ticket.operational_card_id and ticket.operational_card.file %}
+                                        <a href="{{ '/storage/operational-cards/'~ticket.operational_card.file }}" target="_blank">
                                             <span class="file-icon">
                                                 <i class="fas fa-file-pdf"></i>
                                             </span>
