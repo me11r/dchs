@@ -41,7 +41,7 @@ export default class Tabs {
                 form.querySelector('button[type=submit]').click();
             }
         }
-        if(i !== 4) {
+        if(i !== 6) {
             form.querySelector('button[type=submit]').classList.add('is-hidden');
         }else{
             form.querySelector('button[type=submit]').classList.remove('is-hidden');
@@ -66,9 +66,8 @@ export default class Tabs {
 
     isNext(step){
         if(step === 1){
-            if(!document.querySelectorAll('#location').value || !document.querySelectorAll('#fireplace').value)
+            if(!document.getElementById('location').value && !document.getElementById('fireplace').value)
                 return false;
-
         }
         return true;
     }
