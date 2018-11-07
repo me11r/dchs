@@ -19,6 +19,10 @@ Route::group(
 
         Route::apiResource('hydrant', 'HydrantController');
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
+        Route::post('101card/save-on-way', 'CardController@createOnWayRecord101card');
+        Route::post('101card/save-arrived', 'CardController@createArrivedRecord101card');
+        Route::post('101card/delete-on-way', 'CardController@deleteOnWayRecord101card');
+        Route::post('101card/delete-arrived', 'CardController@deleteArrivedRecord101card');
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
             Route::post('fcm/register', 'FcmController@register');
             Route::get('fcm/send_test', 'FcmController@sendTest');
