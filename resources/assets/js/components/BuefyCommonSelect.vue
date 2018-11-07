@@ -58,7 +58,7 @@ export default {
     name: 'BuefyCommonSelect',
     methods: {
         getOptionById(id) {
-            return _.where(this.options, {id: id})[0];
+            return _.filter(this.options, {id: id})[0];
         },
         select(option) {
             this.selected = option;
