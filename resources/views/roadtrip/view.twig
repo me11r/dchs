@@ -45,8 +45,16 @@
                 {#</tr>#}
             {#{% endif %}#}
             <tr>
-                <td class="has-text-right is-bold">Место пожара (адрес)</td>
+                <td class="has-text-right is-bold">Адрес</td>
                 <td>{{ trip.ticket.location|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Место пожара</td>
+                <td>{{ trip.ticket.fireplace|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Предварительная информация</td>
+                <td>{{ trip.ticket.pre_information|default('-') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Наименование объекта</td>
@@ -82,17 +90,9 @@
                 <td>{{ trip.ticket['ph_' ~ trip.department_id ~'_ot']|default('-') }}</td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">Пересечение улиц</td>
-                <td>{% if trip.ticket.crossroad_1_id %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
-            </tr>
-            <tr>
                 <td class="has-text-right is-bold">Ранг пожара
                 </td>
                 <td>{{ trip.ticket.fire_level.name|default('?') }}</td>
-            </tr>
-            <tr>
-                <td class="has-text-right is-bold">Объект горения</td>
-                <td>{{ trip.ticket.fire_object.name|default('?') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">
@@ -120,10 +120,6 @@
             <tr>
                 <td class="has-text-right is-bold">Конструктивные особенности</td>
                 <td>{{ trip.ticket.building_description|default('') }}</td>
-            </tr>
-            <tr>
-                <td class="has-text-right is-bold">Материал стен</td>
-                <td>{{ trip.ticket.wall_material.name|default('') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Год постройки</td>
@@ -167,6 +163,10 @@
             <tr>
                 <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
                 <td>{{ trip.created_at|date('d.m.Y') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Дополнительная информация</td>
+                <td>{{ trip.ticket.additional_description|default('') }}</td>
             </tr>
         </table>
 

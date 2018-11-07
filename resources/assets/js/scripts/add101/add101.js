@@ -32,7 +32,7 @@ export default class Add101Functions {
 
     bindPopupMessage() {
         globalBus.$on('specialPlanFound', (specialPlan) => {
-            alert(specialPlan['object_name']);
+            // alert(specialPlan['object_name']);
         });
         return this;
     }
