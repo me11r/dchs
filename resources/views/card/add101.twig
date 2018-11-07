@@ -66,13 +66,15 @@
                                                                class="button is-basic is-main"><i
                                                 class="far fa-map"></i>&nbsp;Открыть карту</a></label>
                                 <input name="location"
+                                       ref="location"
                                        id="location"
                                        class="input"
                                        v-model="location"
                                        @blur="onBlur"
-                                       @focus="onFocus">
+                                       @focus="onFocus"
+                                       @keyup="keyUp = true">
                                 <div class="dropdown-menu"
-                                     :style="{'display': showList && location === '' ? 'block': 'none'}"
+                                     :style="{'display': showList ? 'block': 'none'}"
                                      style="position: relative">
                                     <div class="dropdown-content">
                                         <a class="dropdown-item"
