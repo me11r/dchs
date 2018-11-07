@@ -417,7 +417,7 @@ class Ticket101 extends Model
 
     public function scopeGetRecommendations($q)
     {
-        return $q->where('')
+//        return $q->where('')
     }
 
 
