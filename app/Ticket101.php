@@ -119,6 +119,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $operational_card_id
  * @property int $fire_department_id
  * @property int $pre_information_id
+ * @property string|null $fireplace
+ * @property string|null $additional_description
  * @property-read \App\Dictionary\CityArea $city_area
  * @property-read \App\Dictionary\Street $crossroad_1
  * @property-read \App\Dictionary\Street $crossroad_2
