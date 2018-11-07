@@ -9,7 +9,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="dept in departments_">
+                <tr
+                    v-for="dept in departments_"
+                    :key="dept.id">
                     <td>{{ dept.department.title }}</td>
                     <td>{{ dept.tech.department }}</td>
                     <td>

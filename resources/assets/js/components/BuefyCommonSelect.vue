@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import * as _ from 'lodash';
 export default {
     props: {
         options: {
