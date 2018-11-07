@@ -161,9 +161,6 @@
 </template>
 
 <script>
-
-import Buefy from 'buefy';
-
 export default {
     name: 'MudflowProtectionForm',
     data() {
@@ -173,9 +170,6 @@ export default {
             method: 'POST',
             formRoute: ''
         };
-    },
-    components: {
-        'b-icon': Buefy['Icon']
     },
     computed: {
         formDataExists() {

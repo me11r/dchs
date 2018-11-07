@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Vue from 'vue';
+import Vue from '../../VueInstance';
 
 export default function bindServicePlan() {
     const autoc = document.querySelectorAll('[data-component="service-plan"]');

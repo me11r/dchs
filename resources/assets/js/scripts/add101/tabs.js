@@ -11,8 +11,6 @@ export default class Tabs {
         let valid = form.checkValidity();
         let fire_department_id = document.getElementById('fire_department_id');
 
-
-
         if ((this.activeTab === 0) && (this.isNewForm === true) && (i !== 0)) {
             if (valid) {
                 form.action += ('?comeback=' + i);

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue from '../../VueInstance';
 import Persons101Multiselect from '../../components/formation/Persons101Multiselect';
 
 export default class View101App {

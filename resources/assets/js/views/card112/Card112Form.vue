@@ -250,42 +250,47 @@
                                 <tr v-for="service in serviceTypes">
                                     <td>{{ service.name }}</td>
                                     <td>
-                                        <input type="text"
-                                               readonly
-                                               v-model="services[service.id].created_at"
-                                               :id="service.id + '_created_at'"
-                                               class="input">
+                                        <input
+                                            type="text"
+                                            readonly
+                                            v-model="services[service.id].created_at"
+                                            :id="service.id + '_created_at'"
+                                            class="input">
                                     </td>
                                     <td>
-                                        <input type="text"
-                                               class="input"
-                                               :id="service.id + '_name'"
-                                               v-model="services[service.id].name_accepted">
+                                        <input
+                                            type="text"
+                                            class="input"
+                                            :id="service.id + '_name'"
+                                            v-model="services[service.id].name_accepted">
                                     </td>
                                     <td>
-                                        <input type="text"
-                                               v-model="services[service.id].arrive_time"
-                                               :id="service.id + '_arrived_at'"
-                                               readonly
-                                               class="input">
+                                        <input
+                                            type="text"
+                                            v-model="services[service.id].arrive_time"
+                                            :id="service.id + '_arrived_at'"
+                                            readonly
+                                            class="input">
                                     </td>
                                     <td>
 
-                                        <input type="text"
-                                               class="input"
+                                        <input
+                                            type="text"
+                                            class="input"
                                             v-model="services[service.id].sent_at"
-                                               :id="service.id + '_sent_at'"
+                                            :id="service.id + '_sent_at'"
 
                                         >
 
                                     </td>
                                     <td>
                                         <label for="">
-                                            <input type="checkbox"
-                                                    @change="sendOneCheckService($event, model.id, service.id)"
-                                                   value="1"
+                                            <input
+                                                type="checkbox"
+                                                @change="sendOneCheckService($event, model.id, service.id)"
+                                                value="1"
 
-                                                   class="checkbox">
+                                                class="checkbox">
                                         </label>
                                     </td>
                                 </tr>
@@ -648,7 +653,6 @@
 
 import moment from 'moment';
 import axios from 'axios';
-import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 import {Card112Utils} from './card112utils';
 import {BuefyCommonSelect} from '../../components';
@@ -682,8 +686,6 @@ export default {
         };
     },
     components: {
-        'b-icon': Buefy['Icon'],
-        'b-timepicker': Buefy['Timepicker'],
         BuefyCommonSelect
     },
     computed: {
@@ -744,12 +746,10 @@ export default {
                                     });
                                 });
                             }
-
                         })
                         .catch(() => {
                         });
                 }, 10000);
-
             }
         },
         sendOneCheckService(event, cardId, service) {
@@ -796,20 +796,18 @@ export default {
             }
         },
         setTab(tabIndex) {
-            if (window.card112FormData.model.id === 0 && tabIndex === 1){
+            if (window.card112FormData.model.id === 0 && tabIndex === 1) {
                 let form = document.getElementById('card112_form');
                 let valid = form.checkValidity();
 
-                if(valid){
+                if (valid) {
                     form.submit();
-                }
-                else{
+                } else {
                     return false;
                 }
             }
 
             this.currentTabIndex = tabIndex;
-
         },
         getServiceTypeNameById(id) {
             return _.where(this.serviceTypes, {id: id})[0].name;
@@ -859,11 +857,10 @@ export default {
         // },
         'model.location'() {
             this.notifyMap();
-        },
-        /*'currentTabIndex'() {
+        }
+        /* 'currentTabIndex'() {
 
-
-        }*/
+        } */
     },
     beforeMount() {
         if (window.card112FormData) {
@@ -881,7 +878,6 @@ export default {
         console.dir(this.servicePlans);
 
         this.serviceTypes.forEach((item) => {
-
             this.services[item.id] = {
                 sent_at: '',
                 created_at: '',

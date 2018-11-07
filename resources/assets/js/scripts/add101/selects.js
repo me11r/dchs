@@ -1,6 +1,6 @@
 import {AREA_ID_FOUND} from '../../config/storage-keys';
 import {globalBus} from '../global-bus';
-import Vue from 'vue';
+import Vue from '../../VueInstance';
 
 export default function bindSelects() {
     document.querySelectorAll('[data-component="simple-select"]')

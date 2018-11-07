@@ -116,7 +116,6 @@
 <script>
 import moment from 'moment';
 import axios from 'axios';
-import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 
 export default {
@@ -150,10 +149,6 @@ export default {
             day_names: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 
         };
-    },
-    components: {
-        'b-icon': Buefy['Icon'],
-        'b-datepicker': Buefy['Datepicker']
     },
     methods: {
         getTechFilter(selectedId) {
