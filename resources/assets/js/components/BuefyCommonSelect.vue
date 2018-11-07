@@ -10,8 +10,6 @@
 </template>
 
 <script>
-import { Autocomplete } from 'buefy/src/components/autocomplete';
-import {_} from 'vue-underscore';
 
 export default {
     props: {
@@ -58,9 +56,6 @@ export default {
         }
     },
     name: 'BuefyCommonSelect',
-    components: {
-        'b-autocomplete': Autocomplete
-    },
     methods: {
         getOptionById(id) {
             return _.where(this.options, {id: id})[0];
