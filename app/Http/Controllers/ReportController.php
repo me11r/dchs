@@ -11,8 +11,10 @@ use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\IncidentType;
+use App\Models\OperationalPlan;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\OperationalCard;
 use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
@@ -466,4 +468,38 @@ class ReportController extends AuthorizedController
 
         dd('Кеш не заполнен');
     }
+
+
+    public function getOperationalPlan($id)
+    {
+        $operationalPlan = OperationalPlan::find($id);
+        if($operationalPlan) {
+            $html = view('pdf/operational-plan',
+                $operationalPlan
+            )->render();
+            $this->sendHtml("Оперативный план.pdf", $html);
+        }
+    }
+
+    public function getOperationalCard($id)
+    {
+        $operationalCard = OperationalCard::find($id);
+        if($operationalCard) {
+            $html = view('pdf/operational-card',
+                $operationalCard
+            )->render();
+            $this->sendHtml("Оперативная карточка.pdf", $html);
+        }
+    }
+
+    public function sendHtml($name, $html)
+    {
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $dompdf = new Dompdf();
+        $dompdf->loadHTML($html, 'UTF-8');
+        $dompdf->render();
+
+        $dompdf->stream($name);
+    }
+
 }

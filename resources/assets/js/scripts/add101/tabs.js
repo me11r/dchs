@@ -7,6 +7,9 @@ export default class Tabs {
     }
 
     setTab (i) {
+
+        if(!this.isNext(i)) return false;
+
         const form = document.getElementById('card-101-form');
         let valid = form.checkValidity();
         let fire_department_id = document.getElementById('fire_department_id');
@@ -38,6 +41,11 @@ export default class Tabs {
                 form.querySelector('button[type=submit]').click();
             }
         }
+        if(i !== 4) {
+            form.querySelector('button[type=submit]').classList.add('is-hidden');
+        }else{
+            form.querySelector('button[type=submit]').classList.remove('is-hidden');
+        }
 
         let tabs = document.querySelectorAll('#cardadd101 .tabs li');
         let panels = document.querySelectorAll('#cardadd101 .panels > div');
@@ -54,5 +62,14 @@ export default class Tabs {
             nextTab = 0;
         }
         this.setTab(nextTab);
+    }
+
+    isNext(step){
+        if(step === 1){
+            if(!document.querySelectorAll('#location').value || !document.querySelectorAll('#fireplace').value)
+                return false;
+
+        }
+        return true;
     }
 };
