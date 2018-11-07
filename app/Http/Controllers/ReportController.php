@@ -29,8 +29,10 @@ use Illuminate\Support\Facades\Cache;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Writer\WriterInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 
 class ReportController extends AuthorizedController
@@ -266,16 +268,21 @@ class ReportController extends AuthorizedController
 
     public function getReport112BranchesExport(Request $request)
     {
+        $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
+        $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
+
         $fileName = 'Отчет:'
-            . Carbon::parse($request->get('date_start'))->format('Y-m-d')
+            . $dateStart
             . '_'
-            . Carbon::parse($request->get('date_end'))->format('Y-m-d')
+            . $dateEnd
             . '.xls';
 
         $cards = (new Card112())
             ->where('incident_type_id', '=', $request->get('incident_type_id'))
             ->with(['cityArea'])
             ->get();
+
+        $incidentType = IncidentType::find($request->get('incident_type_id'));
 
         $preparedToExport = [];
         foreach ($cards as $card) {
@@ -301,28 +308,64 @@ class ReportController extends AuthorizedController
         $spreadsheet = new Spreadsheet();
         $writer = new Xls($spreadsheet);
 
-        $index = 0;
+        $rowIndex = 1;
+        $activeSheet = $spreadsheet->getActiveSheet();
+        $activeSheet
+            ->getCell('C' . $rowIndex)
+            ->setValue("Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStart}. по {$dateEnd}г. поступившие на линию «109» ССА.")
+            ->getStyle()
+            ->getFont()
+            ->setBold(true);
 
+        $rowIndex += 3;
         foreach ($preparedToExport as $key => $data) {
-            if ($spreadsheet->getSheet($index)) {
-                $spreadsheet->createSheet($index);
-            }
+            $activeSheet->getCell('E' . $rowIndex)->setValue($key)->getStyle()->getFont()->setBold(true);
 
-            $spreadsheet->setActiveSheetIndex($index);
-            $activeSheet = $spreadsheet->getActiveSheet();
+            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
+            $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
 
-            $activeSheet->setTitle($key);
-            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A1');
-            $activeSheet->fromArray($data, null, 'A2');
+            $activeSheet
+                ->getStyle('A'.($rowIndex + 1).':H'. $activeSheet->getHighestRow())
+                ->applyFromArray(Ticket101ExcelExport::HStyle);
 
-            foreach (range('A', 'W') as $columnID) {
-                $activeSheet->getColumnDimension($columnID)->setAutoSize(true);
-            }
+            $activeSheet
+                ->getStyle('A'.($rowIndex + 1).':H'. ($rowIndex + 1))
+                ->getFont()
+                ->setBold(true);
 
-            $index++;
+            $rowIndex = $activeSheet->getHighestRow();
+            $rowIndex += 3;
         }
 
-        $spreadsheet->setActiveSheetIndex(0);
+        $activeSheet->getColumnDimension('A')->setWidth(3);
+        $activeSheet->getColumnDimension('B')->setWidth(20);
+        $activeSheet->getColumnDimension('C')->setWidth(20);
+        $activeSheet->getColumnDimension('D')->setWidth(20);
+        $activeSheet->getColumnDimension('E')->setWidth(20);
+        $activeSheet->getColumnDimension('F')->setWidth(20);
+        $activeSheet->getColumnDimension('G')->setWidth(20);
+        $activeSheet->getColumnDimension('H')->setWidth(20);
+
+
+        $activeSheet = $spreadsheet->getActiveSheet();
+        $activeSheet->getStyle('A1:H'. $rowIndex)
+            ->getFont()
+            ->setSize(7)
+            ->setName('Times New Roman');
+
+
+        $activeSheet
+            ->getPageSetup()
+            ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
+            ->setFitToWidth(1)
+            ->setFitToHeight(0);
+
+        $activeSheet->getPageMargins()->setTop(0.25);
+        $activeSheet->getPageMargins()->setRight(0.25);
+        $activeSheet->getPageMargins()->setLeft(0.25);
+        $activeSheet->getPageMargins()->setBottom(0.25);
+
+        $activeSheet->freezePane('A1');
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');
@@ -423,5 +466,94 @@ class ReportController extends AuthorizedController
         }
 
         dd('Кеш не заполнен');
+    }
+
+    /**
+     * @param Request $request
+     * @param string $format
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \Throwable
+     */
+    public function getDaily101Formatted(Request $request, string $format = 'word')
+    {
+        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
+        $view = view('reports.export.word.daily-report-101', $report)->render();
+        $word = new PhpWord();
+        $section = $word->addSection();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
+        $file = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
+        return $this->createWordFileDownload($writer, $file);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $format
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \PhpOffice\PhpWord\Exception\Exception
+     * @throws \Throwable
+     */
+    public function getDaily112Formatted(Request $request, string $format = 'word')
+    {
+        $data['yesterday'] = now()->subHours(24);
+        $data['today'] = now();
+
+        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
+            ->whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today'])
+            ->whereNotNull('card112_id');
+
+        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $data['emergencies'] = $card112_day->count();
+        $data['cards112'] = $card112_day->get();
+        $data['card112_count'] = $card112_day->count();
+        $data['card112_count_finished'] = $card112_day->count();
+        $data['card101_count'] = $card101_day->count();
+        $data['emergencies_human_in_danger'] = Card112::all();
+        $data['emergencies_human_not_in_danger'] = Card112::all();
+        $data['fires_count'] = $card101_day->count();
+        $data['dead_count'] = $card112_day->sum('dead');
+        $data['evacuated_count'] = $card112_day->sum('evacuated');
+        $data['poisoned_by_gas_count'] = $card112_day->sum('poisoned');
+        $data['hurt_count'] = $card112_day->sum('injured_hard');
+        $data['saved_count'] = $card112_day->sum('saved');
+        $data['card112_roadtrips'] = $card112_roadtrips->get();
+        $data['mudflow_emergency_count'] = $card112_day->filterByServiceType('ГУ Казселезащита')->count();
+        $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
+        $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
+        $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
+            $q->status('action');
+        })->first();*/
+
+        $data['air_rescue_report_tech'] = $air_rescue_report->first() ? $air_rescue_report->first()->tech()->status('action')->get() : [];
+
+        $view = view('reports.export.word.daily-report-112', $data)->render();
+        $word = new PhpWord();
+        $section = $word->addSection();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
+        $file = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
+        return $this->createWordFileDownload($writer, $file);
+
+    }
+
+    private function createWordFileDownload(WriterInterface $writer, string $filename){
+        return response()->stream(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Description' => 'File Transfer',
+            'Content-Disposition'=> 'attachment; filename="'.$filename.'"',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Transfer-Encoding' => 'binary',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0'
+        ]);
     }
 }

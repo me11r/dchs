@@ -1,6 +1,11 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="section container-fluid">
+    <script>
+        window.odStaff = {{ od_staff | json_encode() | raw }};
+        window.people = {{ people | json_encode() | raw }};
+        window.formId = '{{ form_id }}';
+    </script>
+    <div class="section container-fluid" id="view-101-app">
     <div class="panel">
         <div class="level" style="padding: 10px">
             <div class="level-left">
@@ -18,58 +23,41 @@
             </div>
         </div>
         <div class="level">
-            <p class="">ДСПТ: {% for key, p in dept_od_people.dspt|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p class="">ЦППС: {% for key, p in dept_od_people.cpps|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p class="">ЕДДС: {% for key, p in dept_od_people.edds|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p class="">ИПЛ : {% for key, p in dept_od_people.ipl|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p class=""></p>
-            <p class="">Водоканал: {% for key, p in dept_od_people.water_supply|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'ДСПТ'"
+                        :rank="'dspt'">
+                </persons101-multiselect>
+            </p>
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'ЦППС'"
+                        :rank="'cpps'">
+                </persons101-multiselect>
+            </p>
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'ЕДДС'"
+                        :rank="'edds'">
+                </persons101-multiselect>
+            </p>
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'ИПЛ'"
+                        :rank="'ipl'">
+                </persons101-multiselect>
+            </p>
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'Водоканал'"
+                        :rank="'water_supply'">
+                </persons101-multiselect>
+            </p>
         </div>
 
         <div class="tbl" style="overflow-x: scroll">
             <table id="main_table" class="detailed-table table is-small is-fullwidth is-narrow is-hoverable" style="font-size: .7rem">
-                <thead>
-                <tr>
-                    <th class="rotate">
-                        <div><span>П/Ч</span></div>
-                    </th>
-                    {% for key,hd_pp in people_fl %}
-                        {% if hd_pp is iterable %}
-                            {% for hd1_pp in hd_pp %}
-                                <th class="rotate">
-                                    <div><span>{{ key }}: {{ hd1_pp }}</span></div>
-                                </th>
-                            {% endfor %}
-                        {% else %}
-                            <th class="rotate">
-                                <div><span>{{ hd_pp }}</span></div>
-                            </th>
-                        {% endif %}
-                    {% endfor %}
-                    {% for key,hd_pp in tech_fl %}
-                        {% if hd_pp is iterable %}
-                            {% for skey,hd1_pp in hd_pp %}
-                                {% if hd1_pp is iterable %}
-                                    {% for hd2_pp in hd1_pp %}
-                                        <th class="rotate">
-                                            <div><span>{{ key }}-{{ skey }}: {{ hd2_pp }}</span></div>
-                                        </th>
-                                    {% endfor %}
-                                {% else %}
-                                    <th class="rotate">
-                                        <div><span>{{ key }}: {{ hd1_pp }}</span></div>
-                                    </th>
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            <th class="rotate">
-                                <div><span>{{ hd_pp }}</span></div>
-                            </th>
-                        {% endif %}
-                    {% endfor %}
-
-                </tr>
-                </thead>
+                {% include 'formation/layout/view-101-table-header' %}
                 {% for dept in departments if dept.id != 13 %}
                     <tr {% if dept.tech_action|length == 0 %} style="background-color: #ff3317" {% endif %}>
                         <td>{{ dept.title }}</td>
@@ -179,9 +167,27 @@
             </table>
         </div>
         <div class="column">
-            <p><span class="has-text-weight-bold">ЦРБ: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.crb|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">База ГДЗС: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.gdzs_base|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Врач: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.doctor|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p>
+                <persons101-multiselect
+                    :title-class="'has-text-weight-bold'"
+                    :name="'ЦРБ'"
+                    :rank="'crb'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                    :title-class="'has-text-weight-bold'"
+                    :name="'База ГДЗС'"
+                    :rank="'gdzs_base'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Врач'"
+                        :rank="'doctor'">
+                </persons101-multiselect>
+            </p>
         </div>
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Посты ПЧ-13:</h3>
@@ -193,16 +199,76 @@
         <div class="column">
             {#<h3 class="title" style="text-decoration: underline !important;">ОД:</h3>#}
             <h3 class="title" style="text-decoration: underline !important;">Оперативные дежурные автомашины:</h3>
-            <p><span class="has-text-weight-bold">Тулпар-1: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar1|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Тулпар-2: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar2|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Тулпар-3: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar3|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Тулпар-4: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar4|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Тулпар-5: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar5|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Тулпар-7: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar7|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Тулпар-8: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar8|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">Тулпар-10: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.tulpar10|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">КШМ: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.kshm|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">ИПЛ «Жалын»: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> {% for key, p in dept_od_people.ipl_zhalyn|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-1'"
+                        :rank="'tulpar1'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-2'"
+                        :rank="'tulpar2'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-3'"
+                        :rank="'tulpar3'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-4'"
+                        :rank="'tulpar4'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-5'"
+                        :rank="'tulpar5'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-7'"
+                        :rank="'tulpar7'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-8'"
+                        :rank="'tulpar8'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'Тулпар-10'"
+                        :rank="'tulpar10'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'КШМ'"
+                        :rank="'kshm'">
+                </persons101-multiselect>
+            </p>
+            <p>
+                <persons101-multiselect
+                        :title-class="'has-text-weight-bold'"
+                        :name="'ИПЛ «Жалын»'"
+                        :rank="'ipl_zhalyn'">
+                </persons101-multiselect>
+            </p>
         </div>
     </div>
     </div>

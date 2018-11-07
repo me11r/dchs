@@ -1,0 +1,16 @@
+Место пожара (адрес) - {{ ticket.location|default('?') }} <br>
+Наименование объекта - {{ ticket.object_name|default('?') }} <br>
+Пересечение улиц - {% if ticket.crossroad_1_id %}({{ ticket.crossroad_1.name|default('-') }} &times; {{ ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %} <br>
+Ранг пожара - {{ ticket.fire_level.name|default('?') }} <br>
+Объект горения	- {{ ticket.fire_object.name|default('?') }} <br>
+Этажность - {{ ticket.storey_count|default('?') }} <br>
+На каком этаже горит - {{ ticket.floor|default('?') }} <br>
+Конструктивные особенности - {{ ticket.building_description|default('?') }} <br>
+Материал стен - {{ ticket.wall_material.name|default('?') }} <br>
+Год постройки - {{ ticket.year_of_development|default('?') }} <br>
+Площадь объекта - {{ ticket.building_square|default('?') }} <br>
+Наличие угрозы людям - {% if ticket.people_in_danger ==1 %} Да {% else %} Нет {% endif %} <br>
+ФИО заявителя - {{ ticket.caller_name|default('?') }} <br>
+Телефон заявителя - {{ ticket.caller_phone|default('?') }} <br>
+Время получения сообщения о ЧС - {{ ticket.created_at|date('d.m.Y H:i') }} <br>
+Дата(день,месяц,год) - {{ ticket.created_at|date('d.m.Y') }}

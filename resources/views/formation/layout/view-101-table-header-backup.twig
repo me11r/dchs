@@ -1,0 +1,42 @@
+<thead>
+<tr>
+    <th class="rotate">
+        <div><span>П/Ч</span></div>
+    </th>
+    {% for key,hd_pp in people_fl %}
+        {% if hd_pp is iterable %}
+            {% for hd1_pp in hd_pp %}
+                <th class="rotate">
+                    <div><span>{{ key }}: {{ hd1_pp }}</span></div>
+                </th>
+            {% endfor %}
+        {% else %}
+            <th class="rotate">
+                <div><span>{{ hd_pp }}</span></div>
+            </th>
+        {% endif %}
+    {% endfor %}
+    {% for key,hd_pp in tech_fl %}
+        {% if hd_pp is iterable %}
+            {% for skey,hd1_pp in hd_pp %}
+                {% if hd1_pp is iterable %}
+                    {% for hd2_pp in hd1_pp %}
+                        <th class="rotate">
+                            <div><span>{{ key }}-{{ skey }}: {{ hd2_pp }}</span></div>
+                        </th>
+                    {% endfor %}
+                {% else %}
+                    <th class="rotate">
+                        <div><span>{{ key }}: {{ hd1_pp }}</span></div>
+                    </th>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <th class="rotate">
+                <div><span>{{ hd_pp }}</span></div>
+            </th>
+        {% endif %}
+    {% endfor %}
+
+</tr>
+</thead>

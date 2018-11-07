@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Open;
 
 use App\Http\Requests\Fcm\RegisterRequest;
 use App\Jobs\SendFcmMessages;
+use App\Ticket101;
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -37,10 +38,9 @@ class FcmController extends Controller
 
     public function displayInfo(Request $request, int $infoId)
     {
-        $content = <<<DEMO
-<b>Вери импортант инфо</b><p>For <i>{$infoId}</i></p><br/><div style="color:red">THIS IS RED!</div>
-<div><img src="https://i.kym-cdn.com/entries/icons/original/000/000/026/Gerard-Butler-This-Is-Sparta.jpg" alt=""></div>
-DEMO;
+        $ticket = Ticket101::find($infoId);
+        $content = $ticket ? view('open.fcm.info', compact('ticket'))->render() : 'Ticket not found';
+
         return response()->json([
             'content' => $content,
             'type' => 'html'

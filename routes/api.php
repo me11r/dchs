@@ -15,6 +15,7 @@ Route::group(
         Route::get('101/get-staff', 'FormationStaffController@staff_page');
         Route::get('112-formation/get-staff', 'FormationController@staff_page');
         Route::get('district-managers/get-staff', 'FormationController@staff_page_district_managers');
+        Route::post('101/sync-formation-od-persons', 'FormationStaffController@syncFormationOdPersons');
 
         Route::apiResource('hydrant', 'HydrantController');
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');

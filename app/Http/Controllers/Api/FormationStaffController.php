@@ -20,13 +20,12 @@ class FormationStaffController extends Controller
     {
         $data = $request->all();
         $od_people = (new FormationPersonsReport())->od_staff;
-        if(in_array($data['rank'], $od_people)){
+        if (in_array($data['rank'], $od_people)) {
             $resp = FormationPersonsItem::with(['staff'])
                 ->rank($request->rank)
                 ->where('report_id', $request->id)
                 ->get();
-        }
-        else{
+        } else {
             $resp = FormationOdPersonItem::rank($request->rank)
                 ->where('report_id', $request->id)
                 ->get();
@@ -38,5 +37,36 @@ class FormationStaffController extends Controller
         }
 
         return response()->json($resp);
+    }
+
+    public function syncFormationOdPersons(Request $request)
+    {
+        $formId = $request->get('formId', []);
+        $selectedStaff = $request->get('selectedStaff', []);
+        $type = $request->get('type');
+
+        $formationPersonsReport = FormationPersonsReport::where('form_id', '=', $formId)
+            ->where('dept_id', '=', 19)
+            ->first();
+
+        if (!$formationPersonsReport) {
+            $formationPersonsReport = FormationPersonsReport::create(['form_id' => $formId, 'dept_id' => 19]);
+        }
+        FormationOdPersonItem::where('report_id', $formationPersonsReport->id)->where('table_name', '=', $type)->delete();
+
+        foreach ($selectedStaff as $staff) {
+            FormationOdPersonItem::create([
+                'staff_id' => $staff['id'],
+                'report_id' => $formationPersonsReport->id,
+                'comment' => null,
+                'date_from' => null,
+                'date_to' => null,
+                'rank' => $type,
+                'table_name' => $type,
+                'status' => 'inactive',
+            ]);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

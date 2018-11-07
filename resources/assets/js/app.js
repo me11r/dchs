@@ -43,6 +43,7 @@ import AirRescueTech from './views/AirRescueTech/AddEditTech';
 import PhoneItem from './views/dictionary/Phone';
 import DistrictManagers from './components/DistrictManagers';
 import DatepickerSearch from './components/DatepickerSearch';
+import View101App from './scripts/formation/view-101-app';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
@@ -212,6 +213,11 @@ if (document.getElementById('vue')) {
     new Vue({
         el: '#vue'
     });
+}
+
+const View101AppElement = document.getElementById('view-101-app');
+if (View101AppElement) {
+    window.View101App = (new View101App()).createApp(View101AppElement, window.people, window.odStaff, window.formId);
 }
 
 require('./scripts/emergency-situation/edit-form');
