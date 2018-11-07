@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Arrived101;
+use App\EventInfo;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\OnWay101;
 use App\Ticket101;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -42,6 +45,76 @@ class CardController extends Controller
                 'square' => 0,
             ]);
         }
+
+        return response()->json($resp);
+    }
+
+    public function createOnWayRecord101card(Request $request)
+    {
+        $data = $request->all();
+        $resp = [];
+        if($request->record){
+            $resp = OnWay101::updateOrCreate(['id' => $request->record['id']],[
+                'ticket101_id' => $request->ticket_id,
+                'time' => $request->record['time'],
+                'information' => $request->record['information'],
+                'event_info_id' => $request->record['event_info_id'],
+                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+            ]);
+
+            $resp = OnWay101::with([
+                'event_info',
+                'fire_department_result.tech',
+                'fire_department_result.department',])
+                ->where('id', $resp->id)
+                ->first();
+
+        }
+
+        return response()->json($resp);
+    }
+
+    public function createArrivedRecord101card(Request $request)
+    {
+        $data = $request->all();
+        $resp = [];
+        if($request->record){
+            $resp = Arrived101::updateOrCreate(['id' => $request->record['id']],[
+                'ticket101_id' => $request->ticket_id,
+                'working_time' => $request->record['working_time'],
+                'quantity' => $request->record['quantity'],
+                'information' => $request->record['information'],
+                'event_info_arrived_id' => $request->record['event_info_id'],
+                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+            ]);
+
+            $resp = Arrived101::with([
+                'event_info',
+                'fire_department_result.tech',
+                'fire_department_result.department',
+                ])
+                ->where('id', $resp->id)
+                ->first();
+
+        }
+
+        return response()->json($resp);
+    }
+
+    public function deleteOnWayRecord101card(Request $request)
+    {
+        $data = $request->all();
+        $record = OnWay101::destroy($request->id);
+        $resp = [];
+
+        return response()->json($resp);
+    }
+
+    public function deleteArrivedRecord101card(Request $request)
+    {
+        $data = $request->all();
+        $record = Arrived101::destroy($request->id);
+        $resp = [];
 
         return response()->json($resp);
     }
