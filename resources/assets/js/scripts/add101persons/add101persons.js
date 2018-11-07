@@ -97,7 +97,7 @@ export default class Add101Persons {
                 });
 
                 this.$on('changeSelectedPersons', function (person) {
-
+                    // console.dir(person)
                     this.selectedPersons = _.reject(this.selectedPersons, function(staffId){ return staffId === person.oldValue; });
                     this.selectedPersons.push(person.newValue);
                 });

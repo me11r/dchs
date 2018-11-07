@@ -12,6 +12,7 @@ import OtherRecords from '../../components/ticket101/OtherRecords';
 import OtherRecordsReadOnly from '../../components/ticket101/OtherRecordsReadOnly.vue';
 import axios from "axios/index";
 import {HydrantMapList} from "../../views/hydrant-map";
+import moment from 'moment';
 
 export default class Add101Functions {
     bindElements() {
@@ -61,20 +62,28 @@ export default class Add101Functions {
                             let accepted_time = 'accepted_time_' + item.id;
                             let out_time = 'out_time_' + item.id;
                             let ret_time = 'ret_time_' + item.id;
+                            let send_time = 'send_time_' + item.id;
+
                             let accepted_time_item = document.getElementById(
                                 accepted_time);
+
                             let out_time_item = document.getElementById(
                                 out_time);
+
                             let ret_time_item = document.getElementById(
                                 ret_time);
 
+                            let send_time_item = document.getElementById(
+                                send_time);
+
+                            if(item.dispatched === 1){
+                                send_time_item.value = item.dispatch_time;
+                            }
+
                             if (accepted_time_item && out_time_item) {
-                                // accepted_time_item.value = item.out_time;
-                                // console.dir(item)
-                                // if(item.accept_time !== null){
+
                                 accepted_time_item.value = item.accept_time;
                                 out_time_item.value = item.out_time;
-                                // }
 
                             }
 

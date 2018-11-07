@@ -34,6 +34,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Writer\WriterInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 
 class ReportController extends AuthorizedController
@@ -502,4 +503,93 @@ class ReportController extends AuthorizedController
         $dompdf->stream($name);
     }
 
+
+    /**
+     * @param Request $request
+     * @param string $format
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \Throwable
+     */
+    public function getDaily101Formatted(Request $request, string $format = 'word')
+    {
+        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
+        $view = view('reports.export.word.daily-report-101', $report)->render();
+        $word = new PhpWord();
+        $section = $word->addSection();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
+        $file = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
+        return $this->createWordFileDownload($writer, $file);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $format
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \PhpOffice\PhpWord\Exception\Exception
+     * @throws \Throwable
+     */
+    public function getDaily112Formatted(Request $request, string $format = 'word')
+    {
+        $data['yesterday'] = now()->subHours(24);
+        $data['today'] = now();
+
+        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
+            ->whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today'])
+            ->whereNotNull('card112_id');
+
+        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $data['emergencies'] = $card112_day->count();
+        $data['cards112'] = $card112_day->get();
+        $data['card112_count'] = $card112_day->count();
+        $data['card112_count_finished'] = $card112_day->count();
+        $data['card101_count'] = $card101_day->count();
+        $data['emergencies_human_in_danger'] = Card112::all();
+        $data['emergencies_human_not_in_danger'] = Card112::all();
+        $data['fires_count'] = $card101_day->count();
+        $data['dead_count'] = $card112_day->sum('dead');
+        $data['evacuated_count'] = $card112_day->sum('evacuated');
+        $data['poisoned_by_gas_count'] = $card112_day->sum('poisoned');
+        $data['hurt_count'] = $card112_day->sum('injured_hard');
+        $data['saved_count'] = $card112_day->sum('saved');
+        $data['card112_roadtrips'] = $card112_roadtrips->get();
+        $data['mudflow_emergency_count'] = $card112_day->filterByServiceType('ГУ Казселезащита')->count();
+        $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
+        $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
+        $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
+            $q->status('action');
+        })->first();*/
+
+        $data['air_rescue_report_tech'] = $air_rescue_report->first() ? $air_rescue_report->first()->tech()->status('action')->get() : [];
+
+        $view = view('reports.export.word.daily-report-112', $data)->render();
+        $word = new PhpWord();
+        $section = $word->addSection();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
+        $file = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
+        return $this->createWordFileDownload($writer, $file);
+
+    }
+
+    private function createWordFileDownload(WriterInterface $writer, string $filename){
+        return response()->stream(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Description' => 'File Transfer',
+            'Content-Disposition'=> 'attachment; filename="'.$filename.'"',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Transfer-Encoding' => 'binary',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0'
+        ]);
+    }
 }

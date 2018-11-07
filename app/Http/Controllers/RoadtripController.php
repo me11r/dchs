@@ -109,6 +109,7 @@ class RoadtripController extends AuthorizedController
             ],
             [
                 'dispatched' => true,
+                'dispatch_time' => now(),
                 'dispatch_id' => $plan->id,
                 'tech_id' => $tech_id,
                 'ticket101_id' => $ticket_id,
@@ -137,6 +138,7 @@ class RoadtripController extends AuthorizedController
             ]);
 
             $result->dispatched = true;
+            $result->dispatch_time = now();
             $result->dispatch_id = $plan->id;
             $result->save();
         }

@@ -770,6 +770,8 @@ class FormationController extends AuthorizedController
 
 
         $this->set('people', $people)
+            ->set('form_id', $form_id)
+            ->set('od_staff', (new FormationPersonsReport())->getODStaff())
             ->set('tech', $tech)
             ->set('dept13_people', $dept13_people)
             ->set('dept_od_people', $dept_od_people)

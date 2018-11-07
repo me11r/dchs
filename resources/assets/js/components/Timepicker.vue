@@ -1,5 +1,5 @@
 <template>
-    <b-timepicker :name="name_" v-model="computedDate"></b-timepicker>
+    <b-timepicker @keyup="test" :name="name_" v-model="computedDate" :readonly="readOnly"></b-timepicker>
 </template>
 
 <script>
@@ -10,8 +10,8 @@
             return {
                 time: this.inputdate,
                 name_: this.name,
-                // time: new Date(),
-                c_date: this.computedDate
+                c_date: this.computedDate,
+                readOnly: this.isReadOnly,
             }
         },
         props: {
@@ -22,6 +22,10 @@
             name: {
                 type: String,
                 default: '00:00'
+            },
+            isReadOnly: {
+                type: Boolean,
+                default: true
             }
         },
         components: {
@@ -41,6 +45,11 @@
 
                 }
                 return dt;
+            }
+        },
+        methods: {
+            test(){
+                console.dir(123);
             }
         }
     }

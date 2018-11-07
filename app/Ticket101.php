@@ -360,6 +360,15 @@ class Ticket101 extends Model
             ->where('department', $service)->first();
     }
 
+    public function on_ways()
+    {
+        return $this->hasMany(OnWay101::class, 'ticket101_id');
+    }
+
+    public function arrived()
+    {
+        return $this->hasMany(Arrived101::class, 'ticket101_id');
+    }
 
     public function wall_material()
     {

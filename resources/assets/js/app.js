@@ -21,6 +21,7 @@ import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
+import Ticket101OnWay from './components/ticket101/OnWayInfo';
 // import YandexMapsBus from './scripts/yandex-maps-bus';
 
 import Add101Functions from './scripts/add101/add101';
@@ -42,6 +43,7 @@ import AirRescueTech from './views/AirRescueTech/AddEditTech';
 import PhoneItem from './views/dictionary/Phone';
 import DistrictManagers from './components/DistrictManagers';
 import DatepickerSearch from './components/DatepickerSearch';
+import View101App from './scripts/formation/view-101-app';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
@@ -83,6 +85,9 @@ Vue.component('v-phone', PhoneItem);
 Vue.component('district-managers', DistrictManagers);
 
 Vue.component('v-datepicker-search', DatepickerSearch);
+Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
+Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
+Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
 
 Vue.config.productionTip = false;
 
@@ -192,10 +197,27 @@ if (document.getElementById('fire-object-div')) {
     });
 }
 
+if (document.getElementById('ticket101-onway')) {
+    new Vue({
+        el: '#ticket101-onway'
+    });
+}
+
+if (document.getElementById('ticket101-arrived')) {
+    new Vue({
+        el: '#ticket101-arrived'
+    });
+}
+
 if (document.getElementById('vue')) {
     new Vue({
         el: '#vue'
     });
+}
+
+const View101AppElement = document.getElementById('view-101-app');
+if (View101AppElement) {
+    window.View101App = (new View101App()).createApp(View101AppElement, window.people, window.odStaff, window.formId);
 }
 
 require('./scripts/emergency-situation/edit-form');
