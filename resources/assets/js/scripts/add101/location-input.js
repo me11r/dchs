@@ -14,21 +14,24 @@ export default function bindLocationInputApp() {
             location: '',
             fire_department_id: '',
             showList: false,
+            keyUp: false,
             items: [],
             yandexMapsBus: {},
             currentCity: 'Алматы'
         },
         methods: {
             searchLocationPlans: lodash.debounce(function () {
-                axios.get('/ajax/find_special_plan', {
-                    params: {
-                        location: this.location
-                    }
-                }).then((response) => {
-                    this.setData(response.data);
-                }).catch(() => {
-                    this.setData([]);
-                });
+                if(this.keyUp || this.location === '') {
+                    axios.get('/ajax/find_special_plan', {
+                        params: {
+                            location: this.location
+                        }
+                    }).then((response) => {
+                        this.setData(response.data);
+                    }).catch(() => {
+                        this.setData([]);
+                    });
+                }
             }, 300),
             setData(items) {
                 if (items.special_plans !== undefined) {
@@ -79,8 +82,7 @@ export default function bindLocationInputApp() {
                 if (this.location.length > 0) {
                     this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.location);
                 }
-            },
-
+            }
         },
         watch: {
             location(newValue, oldValue) {
@@ -111,6 +113,10 @@ export default function bindLocationInputApp() {
             });
             this.location = element.dataset.value;
             this.yandexMapsBus = new YandexMapsBus();
+            var object = this.$refs.location;
+            Vue.nextTick(function() {
+                object.focus();
+            });
             // this.checkRoadtrips();
         }
     });
