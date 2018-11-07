@@ -55,8 +55,6 @@ export default {
                         // window.localStorage.setItem('fire_department_id_found', dept_id);
                         window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, dept_id);
                         globalBus.$emit('is_common_house', dept_id);
-
-                        console.dir(dept_id);
                     }
                 });
 

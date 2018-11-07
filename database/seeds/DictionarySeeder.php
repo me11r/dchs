@@ -121,6 +121,16 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'staff_dspts',
                 'model' => \App\StaffDspt::class
             ],
+            [
+                'title' => 'Нормативно-справочная информация',
+                'table' => 'event_infos',
+                'model' => \App\EventInfo::class
+            ],
+            [
+                'title' => 'Нормативно-справочная информация: на месте',
+                'table' => 'event_info_arriveds',
+                'model' => \App\EventInfoArrived::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

@@ -10,6 +10,8 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
+use App\EventInfo;
+use App\EventInfoArrived;
 use App\FireDepartment;
 use App\FormationReport;
 use App\FormationTechReport;
@@ -121,6 +123,15 @@ class CardController extends AuthorizedController
         ];
 
         $service_notify = ServiceType::all();
+        $eventInfos = EventInfo::all();
+        $eventInfosArrived = EventInfoArrived::all();
+        $departmentsOnWay = FireDepartmentResult::with(['department', 'tech'])
+            ->onWay($card_id)
+            ->get();
+
+        $departmentsArrived = FireDepartmentResult::with(['department', 'tech'])
+            ->arrived($card_id)
+            ->get();
 
         $ssv_out = FireDepartment::recommend()->get();
         $wall_materials = WallMaterial::all();
@@ -135,7 +146,11 @@ class CardController extends AuthorizedController
         $operational_cards = OperationalCard::all();
 
         $this->set('wall_materials', $wall_materials);
+        $this->set('departmentsOnWay', $departmentsOnWay);
+        $this->set('departmentsArrived', $departmentsArrived);
         $this->set('operational_cards', $operational_cards);
+        $this->set('eventInfos', $eventInfos);
+        $this->set('eventInfosArrived', $eventInfosArrived);
         $this->set('ssv_out', $ssv_out);
         $this->set('dep_results', $dep_results);
         $this->set('gu_notify', $gu_notify);
@@ -165,6 +180,14 @@ class CardController extends AuthorizedController
                 'crossroad_1',
                 'crossroad_2',
                 'other_records',
+                'on_ways',
+                'on_ways.event_info',
+                'on_ways.fire_department_result.tech',
+                'on_ways.fire_department_result.department',
+                'arrived',
+                'arrived.event_info',
+                'arrived.fire_department_result.tech',
+                'arrived.fire_department_result.department',
                 'results',
                 'notifications',
                 'notifications.service'
@@ -296,7 +319,7 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except(['ph', 'departments_to_ride', 'time_arrive']);
+        $data = $request->except(['ph', 'departments_to_ride', 'time_arrive', 'on_way']);
         $repartments_to_ride = $request->departments_to_ride;
         $r = $request->all();
 
