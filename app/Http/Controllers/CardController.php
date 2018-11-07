@@ -314,16 +314,18 @@ class CardController extends AuthorizedController
                 }
             }
         }
-
     }
 
     public function postAdd101(Request $request, $card_id = 0)
     {
         $data = $request->except(['ph', 'departments_to_ride', 'time_arrive', 'on_way']);
         $repartments_to_ride = $request->departments_to_ride;
+        $deptsToGetBack = collect([]);
         $r = $request->all();
 
         unset($data['comeback']);
+        $back = '/card/101';
+
         $comeback = $request->get('comeback', false);
         $otherRecords = array_get($data, 'other_records', []);
         unset($data['other_records']);
@@ -350,7 +352,6 @@ class CardController extends AuthorizedController
         /*если поменяли уровень пожара, новые рекомендации */
         if ($card->fire_level_id !== null) {
 
-
             /*todo:*/
             /* повышаем ранг*/
             if ($card->fire_level_id < $request->fire_level_id) {
@@ -358,7 +359,16 @@ class CardController extends AuthorizedController
                 $card->road_trip_plans()->where('is_accepted', false)->delete();
             } /* понижаем ранг*/
             elseif ($card->fire_level_id > $request->fire_level_id) {
-                $card->results()->whereNull('out_time')->delete();
+                $deptsToDelete = $card->results()->whereNull('out_time'); //подразделение, которые еще не выехали, нужно удалить
+
+                //подразделение, которые уже выехали, но, возможно не входят в дальнейшие рекомендации,
+                //нужно вернуть
+                $deptsToGetBack = $card->results()
+                    ->whereNotNull('out_time')
+                    ->recommended()
+                    ->get();
+
+                $deptsToDelete->delete();
                 $card->road_trip_plans()->where('is_accepted', false)->delete();
             }
         }
@@ -376,9 +386,15 @@ class CardController extends AuthorizedController
             $this->createNotificationServices($card);
         }
 
-        $back = '/card/101';
 
         $this->recommend($request, $card);
+
+        if($deptsToGetBack->count()){
+            $getBackArray = $deptsToGetBack->pluck('tech_id')->toArray();
+            $card->results()
+                ->whereIn('tech_id', $getBackArray)
+                ->markToGetBack();
+        }
 
         $this->saveArriveTimes($request);
 
@@ -426,8 +442,10 @@ class CardController extends AuthorizedController
         if($request->time_arrive){
             foreach ($request->time_arrive as $id => $item) {
                 $dept_to_ride = FireDepartmentResult::find($id);
-                $dept_to_ride->arrive_time = $item;
-                $dept_to_ride->save();
+                if($dept_to_ride){
+                    $dept_to_ride->arrive_time = $item;
+                    $dept_to_ride->save();
+                }
             }
         }
     }

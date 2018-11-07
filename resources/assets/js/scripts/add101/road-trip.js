@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Vue from 'vue';
+import Vue from '../../VueInstance';
 
 export default function bindRoadTrip() {
     const element = document.querySelector('[data-component="road-trip"]');

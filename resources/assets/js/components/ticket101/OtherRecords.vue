@@ -125,7 +125,6 @@
 
 <script>
 import moment from 'moment';
-import Buefy from 'buefy';
 import axios from 'axios';
 import {_} from 'vue-underscore';
 
@@ -137,10 +136,6 @@ export default {
             trunks: []
         };
     },
-    components: {
-        'b-icon': Buefy['Icon'],
-        'b-timepicker': Buefy['Timepicker']
-    },
     methods: {
         createNewItem() {
             let token = document.head.querySelector('meta[name="csrf-token"]');
@@ -149,7 +144,7 @@ export default {
             let card_data = window.ticket101add;
 
             axios.post('/api/101card/save-other-records', {
-                    ticket_id: card_data.ticketId,
+                ticket_id: card_data.ticketId
             }).then((response) => {
                 let data = response.data;
                 console.dir(data);
@@ -172,7 +167,7 @@ export default {
 
             axios.post('/api/101card/save-other-records', {
                 ticket_id: card_data.ticketId,
-                records: this.records,
+                records: this.records
             });
         },
         addEmptyItem() {

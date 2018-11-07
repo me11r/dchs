@@ -9,15 +9,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="dept in departments_">
+                <tr
+                    v-for="dept in departments_"
+                    :key="dept.id">
                     <td>{{ dept.department.title }}</td>
                     <td>{{ dept.tech.department }}</td>
                     <td>
                         <div class="add_button">
                             <button
-                                    class="button is-small is-outlined is-success"
-                                    type="button"
-                                    @click.prevent="createNewItem(dept)">
+                                class="button is-small is-outlined is-success"
+                                type="button"
+                                @click.prevent="createNewItem(dept)">
                                 <i class="fa fa-plus"></i>&nbsp;Добавить
                             </button>
                         </div>
@@ -35,15 +37,15 @@
                 <label :for="'on_way['+item.id+'][event_info_id]'">Событие</label>
                 <div class="select">
                     <select
-                            required
-                            title="Ситуация"
-                            :name="'on_way['+item.id+'][event_info_id]'"
-                            :id="'on_way['+item.id+'][event_info_id]'"
-                            v-model="item.event_info_id">
+                        required
+                        title="Ситуация"
+                        :name="'on_way['+item.id+'][event_info_id]'"
+                        :id="'on_way['+item.id+'][event_info_id]'"
+                        v-model="item.event_info_id">
                         <option
-                                v-for="e in eventData_"
-                                :key="'event_' + e.id"
-                                :value="e.id">{{ e.name }}
+                            v-for="e in eventData_"
+                            :key="'event_' + e.id"
+                            :value="e.id">{{ e.name }}
                         </option>
                     </select>
                 </div>
@@ -55,7 +57,10 @@
                 :name="'on_way['+item.id+'][id]'">
             <div class="control">
                 <label>Количество</label>
-                <input class="input" type="number" v-model="item.quantity">
+                <input
+                    class="input"
+                    type="number"
+                    v-model="item.quantity">
             </div>
 
             <input
@@ -64,77 +69,83 @@
                 :name="'on_way['+item.id+'][id]'">
             <div class="control">
                 <label>Время работы</label>
-                <input class="input" type="number" v-model="item.working_time">
+                <input
+                    class="input"
+                    type="number"
+                    v-model="item.working_time">
             </div>
-
-
 
             <div class="field is-narrow">
                 <label>Информация</label>
-                <textarea v-model="item.information" :name="'on_way['+item.id+'][time]'" :id="'on_way['+item.id+'][information]'" class="textarea" cols="30" rows="3"></textarea>
+                <textarea
+                    v-model="item.information"
+                    :name="'on_way['+item.id+'][time]'"
+                    :id="'on_way['+item.id+'][information]'"
+                    class="textarea"
+                    cols="30"
+                    rows="3"></textarea>
             </div>
 
             <div class="field">
 
                 <div class="control is-narrow">
                     <button
-                            class="button is-small is-outlined is-success square-button-36"
-                            @click.prevent="addToTable(item)"
-                            type="button"
-                            title="Добавить">
+                        class="button is-small is-outlined is-success square-button-36"
+                        @click.prevent="addToTable(item)"
+                        type="button"
+                        title="Добавить">
                         <i class="fa fa-plus"></i>
                     </button>
                 </div>
                 <br>
                 <div class="control is-narrow">
                     <button
-                            class="button is-small is-outlined is-danger square-button-36"
-                            @click.prevent="removeItem(item.id)"
-                            type="button"
-                            title="Удалить">
+                        class="button is-small is-outlined is-danger square-button-36"
+                        @click.prevent="removeItem(item.id)"
+                        type="button"
+                        title="Удалить">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
 
             </div>
 
-
         </div>
         <div class="field">
             <table class="table is-fullwidth is-hoverable">
                 <thead>
-                <tr>
-                    <th>ПЧ</th>
-                    <th>Отделение</th>
-                    <th>Событие</th>
-                    <th>Количество</th>
-                    <th>Время работы</th>
-                    <th>Информация</th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th>ПЧ</th>
+                        <th>Отделение</th>
+                        <th>Событие</th>
+                        <th>Количество</th>
+                        <th>Время работы</th>
+                        <th>Информация</th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr v-for="record in tableRecords">
-                    <td>{{ record.fire_department_result.department.title }}</td>
-                    <td>{{ record.fire_department_result.tech.department }}</td>
-                    <td>{{ record.event_info.name }}</td>
-                    <td>{{ record.working_time }}</td>
-                    <td>{{ record.quantity }}</td>
-                    <td>{{ record.information }}</td>
-                    <td>
-                        <div class="control is-narrow">
-                            <label>Удалить</label>
+                    <tr v-for="record in tableRecords">
+                        <td>{{ record.fire_department_result.department.title }}</td>
+                        <td>{{ record.fire_department_result.tech.department }}</td>
+                        <td>{{ record.event_info.name }}</td>
+                        <td>{{ record.working_time }}</td>
+                        <td>{{ record.quantity }}</td>
+                        <td>{{ record.information }}</td>
+                        <td>
+                            <div class="control is-narrow">
+                                <label>Удалить</label>
 
-                            <button
+                                <button
                                     class="button is-small is-outlined is-danger square-button-36"
                                     @click.prevent="removeItemFromTable(record.id)"
                                     type="button"
                                     title="Удалить">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -144,9 +155,8 @@
 
 <script>
 import moment from 'moment';
-import Buefy from 'buefy';
-import axios from 'axios';
 import {_} from 'vue-underscore';
+import axios from 'axios';
 
 export default {
     name: 'ArrivedInfo',
@@ -179,15 +189,10 @@ export default {
             eventData_: this.eventData
         };
     },
-    components: {
-        'b-icon': Buefy['Icon'],
-        'b-timepicker': Buefy['Timepicker']
-    },
     mounted() {
     },
     methods: {
         createNewItem(dept) {
-
             let token = document.head.querySelector('meta[name="csrf-token"]');
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
@@ -201,16 +206,15 @@ export default {
                 quantity: 1,
                 fire_department_result: dept,
                 event_info: {
-                    name: 'ствол',
-                },
+                    name: 'ствол'
+                }
             });
         },
-        getTime(value){
+        getTime(value) {
             this.time = value;
         },
         addToTable(item) {
-
-            this.postItem(item)
+            this.postItem(item);
             this.records_ = this.records_.filter(function (i) {
                 return i.id !== item.id;
             });
@@ -222,7 +226,7 @@ export default {
 
             axios.post('/api/101card/save-arrived', {
                 ticket_id: card_data.ticketId,
-                record: record,
+                record: record
             }).then((resp) => {
                 this.tableRecords.push(resp.data);
             });
@@ -240,8 +244,8 @@ export default {
                 information: '',
                 event_info_id: 1,
                 event_info: {
-                    name: 'светофор',
-                },
+                    name: 'светофор'
+                }
             };
         },
         closeTimePickerByRefName(refName) {
@@ -270,7 +274,7 @@ export default {
             _.where(this.records_, {id: id})[0]['time'] = moment().toDate();
             this.closeTimePickerByRefName('onway_time_picker_' + id);
         }
-    },
+    }
 };
 </script>
 

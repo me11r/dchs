@@ -1,10 +1,9 @@
 import axios from 'axios';
-import Vue from 'vue';
+import Vue from '../../VueInstance';
 import {globalBus} from '../global-bus';
 import {MAP_LOCATION_EXCHANGE_KEY, YANDEX_FIRE_DEPT_FOUND} from '../../config/storage-keys';
 import YandexMapsBus from '../../scripts/yandex-maps-bus';
-
-const lodash = require('lodash');
+import lodash from 'lodash';
 
 export default function bindLocationInputApp() {
     const element = document.querySelector('[data-component="location-input"]');
@@ -36,8 +35,7 @@ export default function bindLocationInputApp() {
             setData(items) {
                 if (items.special_plans !== undefined) {
                     this.items = items.special_plans;
-                }
-                else {
+                } else {
                     document.getElementById('fire_level_id').value = 1;
                     this.items = items;
                 }
@@ -63,7 +61,7 @@ export default function bindLocationInputApp() {
                 this.location = item.location;
                 globalBus.$emit('specialPlanFound', item);
                 this.showList = false;
-                if (item.is_card === true){
+                if (item.is_card === true) {
                     document.getElementById('fire_level_id').value = 2;
                     document.getElementById('operational_card_id').value = item.id;
                 }
@@ -91,7 +89,7 @@ export default function bindLocationInputApp() {
                     this.notifyMap();
                 }
             },
-            'fire_department_id'(newValue, oldValue){
+            'fire_department_id'(newValue, oldValue) {
                 globalBus.$emit('is_common_house', newValue);
             }
         },
@@ -104,8 +102,7 @@ export default function bindLocationInputApp() {
             window.addEventListener('storage', (event) => {
                 if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
                     this.location = event.newValue;
-                }
-                else if (event.key === YANDEX_FIRE_DEPT_FOUND) {
+                } else if (event.key === YANDEX_FIRE_DEPT_FOUND) {
                     this.fire_department_id = event.newValue;
                     // this.fire_department();
                     globalBus.$emit('is_common_house', event.newValue);

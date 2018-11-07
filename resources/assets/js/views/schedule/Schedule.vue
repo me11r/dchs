@@ -82,9 +82,6 @@
 
 <script>
 import moment from 'moment';
-import axios from 'axios';
-import Buefy from 'buefy';
-import {_} from 'vue-underscore';
 
 export default {
     name: 'OtherRecords',
@@ -124,9 +121,6 @@ export default {
             fire_levels_: this.fire_levels,
             report_id_: this.report_id
         };
-    },
-    components: {
-        'b-icon': Buefy['Icon']
     },
     methods: {
         getName(control, id) {
