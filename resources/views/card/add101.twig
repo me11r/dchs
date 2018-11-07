@@ -72,7 +72,7 @@
                                        @blur="onBlur"
                                        @focus="onFocus">
                                 <div class="dropdown-menu"
-                                     :style="{'display': showList && location === '' ? 'block': 'none'}"
+                                     :style="{'display': showList ? 'block': 'none'}"
                                      style="position: relative">
                                     <div class="dropdown-content">
                                         <a class="dropdown-item"
