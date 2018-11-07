@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue from '../../VueInstance';
 import {globalBus} from '../global-bus';
 
 export default function bindObjectNameInput() {

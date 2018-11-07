@@ -85,7 +85,6 @@
 <script>
 import moment from 'moment';
 import axios from 'axios';
-import Buefy from 'buefy';
 
 export default {
     name: 'Add101Staff',
@@ -121,9 +120,6 @@ export default {
             total: 0,
             isActive_: this.active
         };
-    },
-    components: {
-        'b-icon': Buefy['Icon']
     },
     methods: {
         getStaffFilter(selectedId) {

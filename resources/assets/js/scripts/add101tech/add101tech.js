@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import {_} from 'vue-underscore';
+import Vue from '../../VueInstance';
 
 export default class Add101Tech {
     createApp(element) {
