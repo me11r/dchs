@@ -1,9 +1,6 @@
 import axios from 'axios';
-import Vue from 'vue';
-import Buefy from 'buefy';
 import {_} from 'vue-underscore';
-import {globalBus} from "../global-bus";
-import {AREA_ID_FOUND} from "../../config/storage-keys";
+import Vue from '../../VueInstance';
 
 export default function bindAutocomplete() {
     const autoc = document.querySelectorAll('[data-component="autocomplete"]');
@@ -19,11 +16,6 @@ export default function bindAutocomplete() {
                 name: sname,
                 hid: shid
             },
-            components: {
-                'b-icon': Buefy['Icon'],
-                'b-timepicker': Buefy['Timepicker'],
-                'b-autocomplete': Buefy['Autocomplete']
-            },
             methods: {
                 onSelect: function (selected) {
                     this.hid = selected.id;
@@ -31,7 +23,10 @@ export default function bindAutocomplete() {
                 },
                 getData: _.debounce(function () {
                     const area = document.getElementById('city_area');
-                    const areaId = area[area.selectedIndex].value;
+                    let areaId = 0;
+                    if (area[area.selectedIndex] !== undefined) {
+                        areaId = area[area.selectedIndex].value;
+                    }
                     this.data = [];
                     this.isFetching = true;
                     axios.get('/ajax/street/' + areaId + '/?q=' + this.name)

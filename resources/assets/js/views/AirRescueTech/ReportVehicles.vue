@@ -83,14 +83,8 @@
 
 <script>
 import axios from 'axios';
-import Buefy from 'buefy';
 export default {
     name: 'Report101Vehicles',
-    components: {
-        'b-icon': Buefy['Icon'],
-        'b-timepicker': Buefy['Timepicker'],
-        'b-autocomplete': Buefy['Autocomplete']
-    },
     props: {
         vehicles: {
             type: Array,

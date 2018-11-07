@@ -31,13 +31,13 @@
             </div>
 
             <!--<div class="control is-narrow">-->
-                <!--<label :for="'other_records['+item.id+'][square]'">Площадь</label>-->
-                <!--<input-->
-                    <!--placeholder="Площадь"-->
-                    <!--type="number"-->
-                    <!--class="input"-->
-                    <!--step="0.01"-->
-                    <!--v-model="item.square">-->
+            <!--<label :for="'other_records['+item.id+'][square]'">Площадь</label>-->
+            <!--<input-->
+            <!--placeholder="Площадь"-->
+            <!--type="number"-->
+            <!--class="input"-->
+            <!--step="0.01"-->
+            <!--v-model="item.square">-->
             <!--</div>-->
         </div>
     </div>
@@ -45,7 +45,6 @@
 
 <script>
 import moment from 'moment';
-import Buefy from 'buefy';
 import {_} from 'vue-underscore';
 
 export default {
@@ -55,10 +54,6 @@ export default {
             records: [],
             trunks: []
         };
-    },
-    components: {
-        'b-icon': Buefy['Icon'],
-        'b-timepicker': Buefy['Timepicker']
     },
     methods: {
         addEmptyItem() {

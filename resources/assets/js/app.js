@@ -4,10 +4,7 @@ import '../sass/auth.scss';
 import '../sass/app.scss';
 import '../sass/shake.scss';
 
-import Vue from 'vue';
-import Buefy from 'buefy';
 import axios from 'axios';
-import VueLocalStorage from 'vue-localstorage';
 
 import Navbar from './ui/Navbar';
 import {Card112Form} from './views/card112';
@@ -47,6 +44,7 @@ import View101App from './scripts/formation/view-101-app';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
+import Vue from './VueInstance';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -88,14 +86,6 @@ Vue.component('v-datepicker-search', DatepickerSearch);
 Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
 Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
-
-Vue.config.productionTip = false;
-
-Vue.use(Buefy, {
-    defaultIconPack: 'fas'
-});
-
-Vue.use(VueLocalStorage);
 
 // верхнее меню
 if (document.getElementById('navbar')) {

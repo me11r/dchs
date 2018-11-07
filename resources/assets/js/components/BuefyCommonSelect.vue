@@ -10,9 +10,7 @@
 </template>
 
 <script>
-import Buefy from 'buefy';
-import {_} from 'vue-underscore';
-
+import * as _ from 'lodash';
 export default {
     props: {
         options: {
@@ -58,12 +56,9 @@ export default {
         }
     },
     name: 'BuefyCommonSelect',
-    components: {
-        'b-autocomplete': Buefy['Autocomplete']
-    },
     methods: {
         getOptionById(id) {
-            return _.where(this.options, {id: id})[0];
+            return _.find(this.options, {id: id});
         },
         select(option) {
             this.selected = option;
