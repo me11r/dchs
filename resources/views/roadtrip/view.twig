@@ -108,13 +108,35 @@
             {% if trip.ticket.operational_plan_id %}
                 <tr>
                     <td class="has-text-right is-bold">№ оперативного плана</td>
-                    <td>{{ trip.ticket.operational_plan.name|default('') }}</td>
+                    <td>
+                        {{ trip.ticket.operational_plan.name|default('') }}
+                        {% if trip.ticket.operational_plan_id %}
+                            {% for special_plan in trip.ticket.operational_plan.special_plans %}
+                                {% if special_plan.file %}
+                                    <a href="{{ '/storage/operational-plans/'~special_plan.file }}" target="_blank">
+                                                    <span class="file-icon">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </span>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
                 </tr>
             {% endif %}
             {% if trip.ticket.operational_card_id %}
                 <tr>
                     <td class="has-text-right is-bold">№ оперативного плана</td>
-                    <td>{{ trip.ticket.operational_card.oc_number|default('') }}</td>
+                    <td>
+                        {{ trip.ticket.operational_card.oc_number|default('') }}
+                        {% if trip.ticket.operational_card_id and trip.ticket.operational_card.file %}
+                            <a href="{{ '/storage/operational-cards/'~trip.ticket.operational_card.file }}" target="_blank">
+                                            <span class="file-icon">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </span>
+                            </a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endif %}
             <tr>
