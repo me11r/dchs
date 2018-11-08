@@ -15,6 +15,7 @@ use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
+use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\WallMaterial;
@@ -417,9 +418,13 @@ class Ticket101 extends Model
         return $result;
     }
 
-    public function scopeGetRecommendations($q)
+    public function getRecommendations()
     {
-//        return $q->where('')
+        $schedule = Schedule::where('fire_department_main_id', $this->fire_department_id)
+            ->where('dict_fire_level_id', $this->fire_level_id)
+            ->get();
+
+        return $schedule;
     }
 
 

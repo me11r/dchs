@@ -216,6 +216,11 @@ class CardController extends AuthorizedController
         $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
             ->max('square');
 
+        if($ticket->results()->where('get_back', true)->exists()){
+            session(['notification.get_back' => 1]);
+        }
+
+
         $fire_dep_results_info = '';
         foreach ($ticket->results()->where('dispatched', true)->get() as $item) {
             $fire_dep_results_info .= "{$item->department->name}: {$item->departments}; ";
@@ -321,7 +326,6 @@ class CardController extends AuthorizedController
     public function postAdd101(Request $request, $card_id = 0)
     {
         $data = $request->except(['ph', 'departments_to_ride', 'time_arrive', 'on_way']);
-        $repartments_to_ride = $request->departments_to_ride;
         $deptsToGetBack = collect([]);
         $r = $request->all();
 
@@ -354,7 +358,6 @@ class CardController extends AuthorizedController
         /*если поменяли уровень пожара, новые рекомендации */
         if ($card->fire_level_id !== null) {
 
-            /*todo:*/
             /* повышаем ранг*/
             if ($card->fire_level_id < $request->fire_level_id) {
                 $card->results()->whereNull('out_time')->delete();
@@ -391,11 +394,17 @@ class CardController extends AuthorizedController
 
         $this->recommend($request, $card);
 
+        //если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
+        // надо вернуть
         if($deptsToGetBack->count()){
             $getBackArray = $deptsToGetBack->pluck('tech_id')->toArray();
-            $card->results()
+
+            $alreadyRecommended = $card->results()
+                ->recommended()
                 ->whereIn('tech_id', $getBackArray)
                 ->markToGetBack();
+
+            session(['notification.get_back' => $alreadyRecommended]);
         }
 
         $this->saveArriveTimes($request);
