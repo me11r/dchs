@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="panels">
-                <div id="tab_call" class="is-hidden">
+                <div id="tab_call" class="">
 
                     <div class="columns">
                         <div class="column">
@@ -324,9 +324,12 @@
                             <tr>
                                 {#Подразделение#}
                                 <td class="has-text-right"
-                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended %}
-                                            style="color: green"
-                                        {% endif %} id="ph_{{ ssv.id }}_text">{{ ssv.name }}
+                                    {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and not ssv.res.get_back %}
+                                        style="color: green"
+                                    {% elseif ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and ssv.res.get_back %}
+                                        style="color: darkred"
+                                    {% endif %}
+                                    id="ph_{{ ssv.id }}_text">{{ ssv.name }}
                                 </td>
 
                                 {#Отделения#}
@@ -505,6 +508,13 @@
                     </div>
                     <div id="ticket101-arrived">
 
+                        {% if session('notification.get_back') == 1 %}
+                            <notification
+                                    message="Необходимо оповестить отделения о понижении ранга"
+                            >
+
+                            </notification>
+                        {% endif %}
                         <ticket101-arrived
                                 :records="{{ ticket.arrived }}"
                                 {#:departments="{{ departmentsArrived }}"#}
