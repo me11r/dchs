@@ -87,6 +87,8 @@ Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
 Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
 
+Vue.component('notification', require('./components/Notification'));
+
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
