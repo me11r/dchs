@@ -85,7 +85,7 @@ export default {
             }
         },
         loadSound: function () {
-            return AlarmSound.getContext().then((audio) => {
+            return AlarmSound().getContext().then((audio) => {
                 this.audio = audio;
             });
         },

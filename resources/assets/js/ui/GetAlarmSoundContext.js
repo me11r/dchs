@@ -30,6 +30,11 @@ class GetAlarmSoundContext {
     }
 }
 
-const instance = new GetAlarmSoundContext('/assets/alarm.wav');
+let instance;
 
-export default instance;
+export default function() {
+    if (instance === undefined) {
+        instance = new GetAlarmSoundContext('/assets/alarm.wav');
+    }
+    return instance;
+};
