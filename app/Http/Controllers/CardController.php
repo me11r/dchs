@@ -146,6 +146,8 @@ class CardController extends AuthorizedController
         $operational_cards = OperationalCard::all();
 
         $this->set('wall_materials', $wall_materials);
+        $this->set('notification_get_back', session()->pull('notification.get_back', 0));
+        $this->set('wall_materials', $wall_materials);
         $this->set('departmentsOnWay', $departmentsOnWay);
         $this->set('departmentsArrived', $departmentsArrived);
         $this->set('operational_cards', $operational_cards);

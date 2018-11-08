@@ -86,6 +86,7 @@ Vue.component('v-datepicker-search', DatepickerSearch);
 Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
 Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
+Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
 
 Vue.component('notification', require('./components/Notification'));
 
@@ -205,6 +206,16 @@ if (document.getElementById('vue')) {
     new Vue({
         el: '#vue'
     });
+}
+
+//безысходность
+let vues = document.getElementsByClassName('vue');
+if(vues.length){
+    for(let i in vues){
+        new Vue({
+            el: vues[i]
+        });
+    }
 }
 
 const View101AppElement = document.getElementById('view-101-app');

@@ -1,6 +1,4 @@
 export default class Tabs {
-    // export axios from 'axios';
-
     constructor () {
         this.activeTab = 0;
         this.isNewForm = (document.getElementById('card-101-form-id').getAttribute('data-id') === '0');
@@ -31,7 +29,6 @@ export default class Tabs {
                 var data = new FormData(form);
                 let axios = require('axios');
                 let id = document.getElementById('card-101-form-id').dataset.id;
-                // console.dir(id)
                 axios.post('/card/add101/' + id, data).catch((resp) => {
                     console.dir(resp.response.data.message);
                 });
