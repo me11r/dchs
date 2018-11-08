@@ -28,22 +28,27 @@
                     </li>
                     <li>
                         <a onclick="window.add101tabs.setTab(2);">
-                            <i class="fas fa-truck-moving"></i>&nbsp;В пути
+                            <i class="fas fa-aviato"></i>&nbsp;Хронология
                         </a>
                     </li>
                     <li>
                         <a onclick="window.add101tabs.setTab(3);">
+                            <i class="fas fa-truck-moving"></i>&nbsp;В пути
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="window.add101tabs.setTab(4);">
                             <i class="fas fa-truck-moving"></i>&nbsp;На месте
                         </a>
                     </li>
                     <li>
-                        <a onclick="window.add101tabs.setTab(4);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
+                        <a onclick="window.add101tabs.setTab(5);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
                     </li>
                     <li>
-                        <a onclick="window.add101tabs.setTab(5);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
+                        <a onclick="window.add101tabs.setTab(6);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
                     </li>
                     <li>
-                        <a onclick="window.add101tabs.setTab(6);">
+                        <a onclick="window.add101tabs.setTab(7);">
                             <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
                         </a>
                     </li>
@@ -55,7 +60,7 @@
                 </div>
             </div>
             <div class="panels">
-                <div id="tab_call" class="">
+                <div id="tab_call" class="is-hidden">
 
                     <div class="columns">
                         <div class="column">
@@ -143,16 +148,15 @@
                                 <div class="column">
                                     <label for="fire_level_id">Ранг пожара</label>
                                     <div class="select"
-                                         data-component="simple-select"
-                                         data-special="specialPlan"
-                                         data-value="{{ ticket.fire_level_id }}"
-                                         data-name="fire_level_id"
+                                         {#data-component="simple-select"#}
+                                         {#data-special="specialPlan"#}
+                                         {#data-value="{{ ticket.fire_level_id }}"#}
+                                         {#data-name="fire_level_id"#}
                                          style="display: block">
-                                        <select name="fire_level_id" id="fire_level_id" required
-                                                v-model="selectedId">
+                                        <select name="fire_level_id" id="fire_level_id1" required>
                                             <option value="">-</option>
                                             {% for object in fire_levels %}
-                                                <option value="{{ object.id }}">{{ object.name }}</option>
+                                                <option {% if object.id  == ticket.fire_level_id %} selected {% endif %} value="{{ object.id }}">{{ object.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -336,7 +340,7 @@
                                 <td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'action' %}
-                                            <label for="">
+                                            <label {% if i.get_back %} style="color: darkred" {% endif %} for="">
                                                 <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %}
                                                        name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]"
                                                        id="dept_{{ i.id }}" value="1"
@@ -450,6 +454,15 @@
                         {% endfor %}
                     </table>
                 </div>
+                <div id="tab-chronology" class="is-hidden">
+                    <div class="vue">
+                        <ticket101-chronology
+                                :records="{{ ticket.on_ways }}"
+                                :departments="{{ departmentsOnWay }}"
+                                :event-data="{{ eventInfos }}"
+                        ></ticket101-chronology>
+                    </div>
+                </div>
                 <div id="tab-on-way" class="is-hidden">
                     <div id="ticket101-onway">
 
@@ -508,7 +521,7 @@
                     </div>
                     <div id="ticket101-arrived">
 
-                        {% if session('notification.get_back') == 1 %}
+                        {% if notification_get_back == 1 %}
                             <notification
                                     message="Необходимо оповестить отделения о понижении ранга"
                             >

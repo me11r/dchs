@@ -33,7 +33,10 @@ export default function bindLocationInputApp() {
                 if (items.special_plans !== undefined) {
                     this.items = items.special_plans;
                 } else {
-                    document.getElementById('fire_level_id').value = 1;
+                    // console.dir(window.ticket101add)
+                    if(window.ticket101add.ticketId === '') {
+                        document.getElementById('fire_level_id1').value = 1;
+                    }
                     this.items = items;
                 }
                 this.showList = this.items.length > 0;
@@ -59,7 +62,7 @@ export default function bindLocationInputApp() {
                 globalBus.$emit('specialPlanFound', item);
                 this.showList = false;
                 if (item.is_card === true) {
-                    document.getElementById('fire_level_id').value = 2;
+                    document.getElementById('fire_level_id1').value = 2;
                     document.getElementById('operational_card_id').value = item.id;
                 }
             },
@@ -93,7 +96,7 @@ export default function bindLocationInputApp() {
         },
         computed: {
             fire_department() {
-                document.getElementById('fire_level_id').value = this.fire_department_id;
+                document.getElementById('fire_department_id').value = this.fire_department_id;
             }
         },
         mounted() {
