@@ -29,7 +29,6 @@ export default class Tabs {
                 var data = new FormData(form);
                 let axios = require('axios');
                 let id = document.getElementById('card-101-form-id').dataset.id;
-                // console.dir(id)
                 axios.post('/card/add101/' + id, data).catch((resp) => {
                     console.dir(resp.response.data.message);
                 });
