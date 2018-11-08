@@ -4,11 +4,13 @@
 
 <script>
 import axios from 'axios';
+import AlarmSound from './GetAlarmSoundContext';
 
 export default {
     name: 'ServicePlanNotifier',
     data: function () {
         return {
+            needChecking: false,
             checking: false,
             alarming: false,
             shown: false,
@@ -81,26 +83,33 @@ export default {
             if (!play && this.alarming) {
                 this.audio.stop();
             }
+        },
+        loadSound: function () {
+            return AlarmSound.getContext().then((audio) => {
+                this.audio = audio;
+            });
+        },
+        configureTimer: function () {
+            this.timer = setInterval(() => {
+                if (!this.checking) {
+                    this.check();
+                }
+            }, 5300);
+        },
+        startChecks: function() {
+            if (this.needChecking) {
+                this.loadSound().then(() => {
+                    this.configureTimer();
+                });
+            }
+        },
+        delayLoad: function () {
+            setTimeout(() => { this.startChecks(); }, 5500);
         }
     },
     mounted: function () {
-        this.audioctx = new AudioContext();
-        axios.get(
-            '/assets/alarm.wav',
-            {responseType: 'arraybuffer'}
-        ).then((response) => {
-            this.audioctx.decodeAudioData(response.data, (buffer) => {
-                this.audio = this.audioctx.createBufferSource();
-                this.audio.buffer = buffer;
-                this.audio.loop = true;
-                this.audio.connect(this.audioctx.destination);
-            });
-        });
-        this.timer = setInterval(() => {
-            if (!this.checking) {
-                this.check();
-            }
-        }, 5000);
+        this.needChecking = window._global_ajax_timers.check_service_plans;
+        this.delayLoad();
     }
 };
 </script>

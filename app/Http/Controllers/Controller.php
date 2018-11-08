@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Page\Metadata;
+use App\Right;
 use Auth;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -25,6 +26,21 @@ abstract class Controller extends BaseController
 
     public function before()
     {
+        $params = ['check_roadtrips' => false, 'check_service_plans' => false];
+        $user = \Auth::user();
+        if ($user !== null) {
+            $dept = $user->department;
+            if ($dept !== null) {
+                $params['check_roadtrips'] = true;
+            }
+            $service = $user->service_type;
+            $canRecieve = $user->hasRight(Right::CAN_RECEIVE_SERVICE_PLAN);
+            if ($service !== null && $canRecieve) {
+                $params['check_service_plans'] = true;
+            }
+        }
+
+        $this->set('_global_ajax_timers', json_encode($params));
     }
 
     public function after()
