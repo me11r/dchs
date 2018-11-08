@@ -260,10 +260,8 @@
                                          {#data-value="{{ ticket.fire_level_id }}"#}
                                          {#data-name="fire_level_id"#}
                                          style="display: block">
-                                        <select name="fire_level_id" id="fire_level_id" required
-                                                style="width: 100%;"
-                                                v-model="selectedId">
-                                        <select name="fire_level_id" id="fire_level_id1" required>
+                                        <select name="fire_level_id" id="fire_level_id1" required
+                                                style="width: 100%;">
                                             <option value="">-</option>
                                             {% for object in fire_levels %}
                                                 <option {% if object.id  == ticket.fire_level_id %} selected {% endif %} value="{{ object.id }}">{{ object.name }}</option>
