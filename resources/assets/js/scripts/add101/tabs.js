@@ -36,7 +36,7 @@ export default class Tabs {
                 form.querySelector('button[type=submit]').click();
             }
         }
-        if (i !== 6) {
+        if (i !== 7) {
             form.querySelector('button[type=submit]').classList.add('is-hidden');
         } else {
             form.querySelector('button[type=submit]').classList.remove('is-hidden');
