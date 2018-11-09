@@ -8,6 +8,7 @@ use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\OnWay101;
+use App\Services\Ticket101\NotificationService;
 use App\Ticket101;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,13 +20,37 @@ class CardController extends Controller
 
     }
 
+    public function sendNotifications(Request $request, NotificationService $notificationService)
+    {
+        $notificationService->sendNotificationsForGroups(
+            $request->get('notificationMessage'),
+            (int)$request->get('ticket101Id'),
+            $request->get('notificationGroups', [])
+        );
+
+        return response()->json([]);
+    }
+
+    public function getTicket101(Request $request)
+    {
+        return response()->json([
+            'ticket101' => Ticket101::with([
+                'popup_notifications',
+                'popup_notifications.user',
+                'popup_notifications.status',
+                'popup_notifications.group'])
+                ->where('id', '=', $request->get('id'))
+                ->first()
+        ]);
+    }
+
     public function createOtherRecord101card(Request $request)
     {
         $data = $request->all();
         $resp = [];
-        if($request->records){
+        if ($request->records) {
             foreach ($request->records as $record) {
-                Ticket101OtherRecord::updateOrCreate(['id' => $record['id']],[
+                Ticket101OtherRecord::updateOrCreate(['id' => $record['id']], [
                     'ticket101_id' => $request->ticket_id,
                     'time' => $record['time'],
                     'comment' => $record['comment'],
@@ -34,8 +59,7 @@ class CardController extends Controller
                     'square' => $record['square'],
                 ]);
             }
-        }
-        else{
+        } else {
             $resp = Ticket101OtherRecord::create([
                 'ticket101_id' => $request->ticket_id,
                 'time' => '00.00',
@@ -53,8 +77,8 @@ class CardController extends Controller
     {
         $data = $request->all();
         $resp = [];
-        if($request->record){
-            $resp = OnWay101::updateOrCreate(['id' => $request->record['id']],[
+        if ($request->record) {
+            $resp = OnWay101::updateOrCreate(['id' => $request->record['id']], [
                 'ticket101_id' => $request->ticket_id,
                 'time' => $request->record['time'],
                 'information' => $request->record['information'],
@@ -78,8 +102,8 @@ class CardController extends Controller
     {
         $data = $request->all();
         $resp = [];
-        if($request->record){
-            $resp = Arrived101::updateOrCreate(['id' => $request->record['id']],[
+        if ($request->record) {
+            $resp = Arrived101::updateOrCreate(['id' => $request->record['id']], [
                 'ticket101_id' => $request->ticket_id,
                 'working_time' => $request->record['working_time'],
                 'quantity' => $request->record['quantity'],
@@ -92,7 +116,7 @@ class CardController extends Controller
                 'event_info',
                 'fire_department_result.tech',
                 'fire_department_result.department',
-                ])
+            ])
                 ->where('id', $resp->id)
                 ->first();
 
@@ -124,7 +148,7 @@ class CardController extends Controller
         $id = $request->id;
         $ticket = Ticket101::find($id);
 
-        if(!$ticket){
+        if (!$ticket) {
             return response()->json([], 200);
         }
 

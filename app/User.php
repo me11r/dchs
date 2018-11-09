@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Auth;
  * @property string $email
  * @property string $password
  * @property string $device_token
+ * @property string $call_name
+ * @property string $position
  * @property string|null $remember_token
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -74,7 +76,9 @@ class User extends Authenticatable
         'fire_department_id',
         'role_id',
         'device_token',
-        'service_type_id'
+        'service_type_id',
+        'call_name',
+        'position'
     ];
 
     /**
@@ -87,10 +91,24 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = ['full_username'];
+
     /*    public function rights_()
         {
             return $this->hasManyThrough(\App\Right::class, \App\User\Right::class, 'right_id', 'id', 'id');
         }*/
+
+    public function getFullUsernameAttribute()
+    {
+        return $this->name .
+            '(' .
+            implode(', ', array_filter(
+                [$this->email, $this->call_name, $this->position],
+                function ($value) {
+                    return (bool)$value;
+                })) .
+            ')';
+    }
 
     public function rights()
     {
