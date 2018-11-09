@@ -34,6 +34,7 @@ Route::group(
             Route::post('fcm/mark_message_as_delivered', 'FcmController@markMessageAsDelivered');
         });
 
+
         Route::group(['prefix' => 'notification'], function (){
             Route::post('ticket101send', 'NotificationController@ticket101Send');
             Route::post('ticket112send', 'NotificationController@ticket112Send');

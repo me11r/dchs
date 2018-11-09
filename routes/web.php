@@ -257,5 +257,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('daily112/{format}', 'ReportController@getDaily112Formatted')->where('format', '(word)');
     });
 
+    /** Мессенджер */
+    Route::group(['namespace' => 'Api\\Messenger', 'prefix' => 'api/messenger', 'middleware' => ['auth']], function() {
+        Route::get('users/list', 'MessengerController@getUserList');
+    });
+
+
+
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

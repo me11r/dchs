@@ -15,6 +15,7 @@ class RoleController extends Controller
 
     public function before()
     {
+        parent::before();
         $user = \Auth::user();
         if (!isset($user) || (!$user->hasRight('CAN_MANAGE_USERS'))) {
             throw new AccessDeniedException();
