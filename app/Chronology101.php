@@ -26,12 +26,12 @@ class Chronology101 extends Model
 
     public function event_info()
     {
-        if($this->event_info_id !== null){
-            return $this->belongsTo(EventInfo::class, 'event_info_id');
-        }
-        else{
-            return $this->belongsTo(EventInfoArrived::class, 'event_info_arrived_id');
-        }
+        return $this->belongsTo(EventInfo::class, 'event_info_id');
+    }
+
+    public function event_info_arrived()
+    {
+        return $this->belongsTo(EventInfoArrived::class, 'event_info_arrived_id');
     }
 
     public function fire_department_result()

@@ -207,6 +207,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/pdf/operational-report', 'ReportController@getOperational')->name('operational-report');
     Route::get('/pdf/report101/{type}', 'ReportController@getReport101')->name('report101');
     Route::get('/xls/report101/forces', 'ReportController@exportForcesXls')->name('report101.forces.xls');
+    Route::get('/xls/card101/chronology/{card_id}', 'ReportController@exportCard101ChronologyXls')->name('card101.chronology.xls');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');

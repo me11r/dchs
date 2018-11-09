@@ -190,6 +190,11 @@ class CardController extends AuthorizedController
                 'arrived.event_info',
                 'arrived.fire_department_result.tech',
                 'arrived.fire_department_result.department',
+                'chronologies',
+                'chronologies.event_info',
+                'chronologies.event_info_arrived',
+                'chronologies.fire_department_result.tech',
+                'chronologies.fire_department_result.department',
                 'results',
                 'notifications',
                 'notifications.service'

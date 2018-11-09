@@ -32,23 +32,13 @@
                         </a>
                     </li>
                     <li>
-                        <a onclick="window.add101tabs.setTab(3);">
-                            <i class="fas fa-truck-moving"></i>&nbsp;В пути
-                        </a>
+                        <a onclick="window.add101tabs.setTab(3);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
                     </li>
                     <li>
-                        <a onclick="window.add101tabs.setTab(4);">
-                            <i class="fas fa-truck-moving"></i>&nbsp;На месте
-                        </a>
+                        <a onclick="window.add101tabs.setTab(4);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
                     </li>
                     <li>
-                        <a onclick="window.add101tabs.setTab(5);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
-                    </li>
-                    <li>
-                        <a onclick="window.add101tabs.setTab(6);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
-                    </li>
-                    <li>
-                        <a onclick="window.add101tabs.setTab(7);">
+                        <a onclick="window.add101tabs.setTab(5);">
                             <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
                         </a>
                     </li>
@@ -455,26 +445,7 @@
                     </table>
                 </div>
                 <div id="tab-chronology" class="is-hidden">
-                    <div class="vue">
-                        <ticket101-chronology
-                                :records="{{ ticket.on_ways }}"
-                                :departments="{{ departmentsOnWay }}"
-                                :event-data="{{ eventInfos }}"
-                        ></ticket101-chronology>
-                    </div>
-                </div>
-                <div id="tab-on-way" class="is-hidden">
-                    <div id="ticket101-onway">
 
-                        <ticket101-onway
-                                :records="{{ ticket.on_ways }}"
-                                :departments="{{ departmentsOnWay }}"
-                                :event-data="{{ eventInfos }}"
-                        >
-                        </ticket101-onway>
-                    </div>
-                </div>
-                <div id="tab-arrived" class="is-hidden">
                     <div class="field">
                         <div data-component="timepicker"
                              data-value="{{ attribute(ticket, 'loc_time')|default('') }}">
@@ -519,7 +490,8 @@
                             </b-timepicker>
                         </div>
                     </div>
-                    <div id="ticket101-arrived">
+
+                    <div id="ticket101-chronology">
 
                         {% if notification_get_back == 1 %}
                             <notification
@@ -528,13 +500,14 @@
 
                             </notification>
                         {% endif %}
-                        <ticket101-arrived
-                                :records="{{ ticket.arrived }}"
-                                {#:departments="{{ departmentsArrived }}"#}
+
+                        <ticket101-chronology
+                                :records="{{ ticket.chronologies }}"
                                 :departments="{{ departmentsOnWay }}"
-                                :event-data="{{ eventInfosArrived }}"
-                        >
-                        </ticket101-arrived>
+                                :card="{{ ticket }}"
+                                :event-info="{{ eventInfos }}"
+                                :event-info-arrived="{{ eventInfosArrived }}"
+                        ></ticket101-chronology>
                     </div>
                 </div>
                 <div id="tab_notify" class="is-hidden">

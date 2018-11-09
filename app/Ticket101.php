@@ -249,6 +249,11 @@ class Ticket101 extends Model
     protected $fillable = [];
     protected $guarded = ['id'];
 
+    public function chronologies()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id');
+    }
+
     public function crossroad_1()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
