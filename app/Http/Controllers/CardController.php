@@ -147,6 +147,8 @@ class CardController extends AuthorizedController
         $operational_cards = OperationalCard::all();
 
         $this->set('wall_materials', $wall_materials);
+        $this->set('notification_get_back', session()->pull('notification.get_back', 0));
+        $this->set('wall_materials', $wall_materials);
         $this->set('departmentsOnWay', $departmentsOnWay);
         $this->set('departmentsArrived', $departmentsArrived);
         $this->set('operational_cards', $operational_cards);
@@ -181,14 +183,11 @@ class CardController extends AuthorizedController
                 'crossroad_1',
                 'crossroad_2',
                 'other_records',
-                'on_ways',
-                'on_ways.event_info',
-                'on_ways.fire_department_result.tech',
-                'on_ways.fire_department_result.department',
-                'arrived',
-                'arrived.event_info',
-                'arrived.fire_department_result.tech',
-                'arrived.fire_department_result.department',
+                'chronologies',
+                'chronologies.event_info',
+                'chronologies.event_info_arrived',
+                'chronologies.fire_department_result.tech',
+                'chronologies.fire_department_result.department',
                 'results',
                 'notifications',
                 'notifications.service',
@@ -196,7 +195,10 @@ class CardController extends AuthorizedController
                 'popup_notifications.user',
                 'popup_notifications.status',
                 'popup_notifications.group',
-                'notification_groups'
+                'notification_groups',
+                'notifications.service',
+                'operational_card',
+                'operational_plan.special_plans'
             ])
             ->findOrNew($card_id);
 
@@ -219,6 +221,11 @@ class CardController extends AuthorizedController
 
         $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
             ->max('square');
+
+        if($ticket->results()->where('get_back', true)->exists()){
+            session(['notification.get_back' => 1]);
+        }
+
 
         $fire_dep_results_info = '';
         foreach ($ticket->results()->where('dispatched', true)->get() as $item) {
@@ -326,7 +333,6 @@ class CardController extends AuthorizedController
     public function postAdd101(Request $request, $card_id = 0)
     {
         $data = $request->except(['ph', 'departments_to_ride', 'time_arrive', 'on_way']);
-        $repartments_to_ride = $request->departments_to_ride;
         $deptsToGetBack = collect([]);
         $r = $request->all();
 
@@ -359,7 +365,6 @@ class CardController extends AuthorizedController
         /*если поменяли уровень пожара, новые рекомендации */
         if ($card->fire_level_id !== null) {
 
-            /*todo:*/
             /* повышаем ранг*/
             if ($card->fire_level_id < $request->fire_level_id) {
                 $card->results()->whereNull('out_time')->delete();
@@ -396,11 +401,17 @@ class CardController extends AuthorizedController
 
         $this->recommend($request, $card);
 
+        //если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
+        // надо вернуть
         if($deptsToGetBack->count()){
             $getBackArray = $deptsToGetBack->pluck('tech_id')->toArray();
-            $card->results()
+
+            $alreadyRecommended = $card->results()
+                ->recommended()
                 ->whereIn('tech_id', $getBackArray)
                 ->markToGetBack();
+
+            session(['notification.get_back' => $alreadyRecommended]);
         }
 
         $this->saveArriveTimes($request);

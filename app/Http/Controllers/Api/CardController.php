@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Arrived101;
+use App\Chronology101;
 use App\EventInfo;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
@@ -98,6 +99,36 @@ class CardController extends Controller
         return response()->json($resp);
     }
 
+    public function createChronologyRecord101card(Request $request)
+    {
+        $data = $request->all();
+        $resp = [];
+        if($request->record){
+            $resp = Chronology101::updateOrCreate(['id' => $request->record['id']],[
+                'ticket101_id' => $request->ticket_id,
+                'time' => $request->input('record.time', null),
+                'information' => $request->input('record.information', null),
+                'event_info_id' => $request->input('record.event_info_id', null),
+                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+
+                'working_time' => $request->input('record.working_time', null),
+                'quantity' => $request->input('record.quantity', null),
+                'event_info_arrived_id' => $request->input('record.event_info_arrived_id', null),
+            ]);
+
+            $resp = Chronology101::with([
+                'event_info',
+                'event_info_arrived',
+                'fire_department_result.tech',
+                'fire_department_result.department',])
+                ->where('id', $resp->id)
+                ->first();
+
+        }
+
+        return response()->json($resp);
+    }
+
     public function createArrivedRecord101card(Request $request)
     {
         $data = $request->all();
@@ -129,6 +160,15 @@ class CardController extends Controller
     {
         $data = $request->all();
         $record = OnWay101::destroy($request->id);
+        $resp = [];
+
+        return response()->json($resp);
+    }
+
+    public function deleteChronologyRecord101card(Request $request)
+    {
+        $data = $request->all();
+        $record = Chronology101::destroy($request->id);
         $resp = [];
 
         return response()->json($resp);

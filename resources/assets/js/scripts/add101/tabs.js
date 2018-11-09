@@ -1,9 +1,8 @@
 export default class Tabs {
-    // export axios from 'axios';
-
     constructor () {
         this.activeTab = 0;
         this.notificationActiveTab = 0;
+        this.tabsCount = 0;
         this.isNewForm = (document.getElementById('card-101-form-id').getAttribute('data-id') === '0');
     }
 
@@ -41,10 +40,10 @@ export default class Tabs {
         } else {
             if (valid) {
                 // var form = document.getElementById('card-101-form');
+                window.location.hash = '#return='+ i;
                 var data = new FormData(form);
                 let axios = require('axios');
                 let id = document.getElementById('card-101-form-id').dataset.id;
-                // console.dir(id)
                 axios.post('/card/add101/' + id, data).catch((resp) => {
                     console.dir(resp.response.data.message);
                 });
@@ -52,7 +51,7 @@ export default class Tabs {
                 form.querySelector('button[type=submit]').click();
             }
         }
-        if (i !== 6) {
+        if (i !== 7) {
             form.querySelector('button[type=submit].is-main').classList.add('is-hidden');
         } else {
             form.querySelector('button[type=submit].is-main').classList.remove('is-hidden');
@@ -60,6 +59,7 @@ export default class Tabs {
 
         let tabs = document.querySelectorAll('#cardadd101 .tabs li');
         let panels = document.querySelectorAll('#cardadd101 .panels > div');
+        this.tabsCount = panels.length;
         tabs[this.activeTab].classList.remove('is-active');
         panels[this.activeTab].classList.add('is-hidden');
         tabs[i].classList.add('is-active');
@@ -69,7 +69,7 @@ export default class Tabs {
 
     nextTab () {
         let nextTab = this.activeTab + 1;
-        if (nextTab > 4) {
+        if (nextTab >= this.tabsCount) {
             nextTab = 0;
         }
         this.setTab(nextTab);

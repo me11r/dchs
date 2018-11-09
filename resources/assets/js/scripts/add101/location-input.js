@@ -13,27 +13,33 @@ export default function bindLocationInputApp() {
             location: '',
             fire_department_id: '',
             showList: false,
+            keyUp: false,
             items: [],
             yandexMapsBus: {},
             currentCity: 'Алматы'
         },
         methods: {
             searchLocationPlans: lodash.debounce(function () {
-                axios.get('/ajax/find_special_plan', {
-                    params: {
-                        location: this.location
-                    }
-                }).then((response) => {
-                    this.setData(response.data);
-                }).catch(() => {
-                    this.setData([]);
-                });
+                if(this.keyUp) {
+                    axios.get('/ajax/find_special_plan', {
+                        params: {
+                            location: this.location
+                        }
+                    }).then((response) => {
+                        this.setData(response.data);
+                    }).catch(() => {
+                        this.setData([]);
+                    });
+                }
             }, 300),
             setData(items) {
                 if (items.special_plans !== undefined) {
                     this.items = items.special_plans;
                 } else {
-                    document.getElementById('fire_level_id').value = 1;
+                    // console.dir(window.ticket101add)
+                    if(window.ticket101add.ticketId === '') {
+                        document.getElementById('fire_level_id1').value = 1;
+                    }
                     this.items = items;
                 }
                 this.showList = this.items.length > 0;
@@ -44,11 +50,13 @@ export default function bindLocationInputApp() {
                 if (items.building) {
 
                     // document.getElementById('fire_object_id').value = items.building.object_type_id;
+                    document.getElementById('building_description').value = items.building.wall_material.name;
                     document.getElementById('square').value = items.building.square;
                     document.getElementById('year_of_development').value = items.building.year_of_development;
                     document.querySelector('[id="storey_count"]').value = items.building.number_of_storeys;
                 } else {
                     // document.getElementById('fire_object_id').value = '';
+                    document.getElementById('building_description').value = '';
                     document.getElementById('square').value = '';
                     document.getElementById('year_of_development').value = '';
                     document.querySelector('[id="storey_count"]').value = '';
@@ -59,7 +67,7 @@ export default function bindLocationInputApp() {
                 globalBus.$emit('specialPlanFound', item);
                 this.showList = false;
                 if (item.is_card === true) {
-                    document.getElementById('fire_level_id').value = 2;
+                    document.getElementById('fire_level_id1').value = 2;
                     document.getElementById('operational_card_id').value = item.id;
                 }
             },
@@ -78,7 +86,6 @@ export default function bindLocationInputApp() {
                     this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.location);
                 }
             }
-
         },
         watch: {
             location(newValue, oldValue) {
@@ -93,7 +100,7 @@ export default function bindLocationInputApp() {
         },
         computed: {
             fire_department() {
-                document.getElementById('fire_level_id').value = this.fire_department_id;
+                document.getElementById('fire_department_id').value = this.fire_department_id;
             }
         },
         mounted() {
@@ -108,6 +115,10 @@ export default function bindLocationInputApp() {
             });
             this.location = element.dataset.value;
             this.yandexMapsBus = new YandexMapsBus();
+            var object = this.$refs.location;
+            Vue.nextTick(function() {
+                object.focus();
+            });
             // this.checkRoadtrips();
         }
     });

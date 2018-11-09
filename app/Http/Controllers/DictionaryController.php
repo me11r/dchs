@@ -285,6 +285,10 @@ class DictionaryController extends AuthorizedController
                 $record = new SpecialPlan();
             }
 
+            $fileName = time().'.'.$request->file->getClientOriginalExtension();
+            $request->file->storeAs('operational-plans',$fileName);
+
+            $record->file = $fileName;
             $record->fire_level_id = $request->fire_level_id;
             $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;
@@ -304,6 +308,10 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'operational-cards'){
             $record  = OperationalCard::firstOrNew(['id' => $request->id]);
 
+            $fileName = time().'.'.$request->file->getClientOriginalExtension();
+            $request->file->storeAs('operational-cards',$fileName);
+
+            $record->file = $fileName;
             $record->fire_level_id = $request->fire_level_id;
 //            $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;

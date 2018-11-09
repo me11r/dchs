@@ -18,7 +18,7 @@ import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
-import Ticket101OnWay from './components/ticket101/OnWayInfo';
+// import Ticket101OnWay from './components/ticket101/OnWayInfo';
 // import YandexMapsBus from './scripts/yandex-maps-bus';
 
 import Add101Functions from './scripts/add101/add101';
@@ -88,6 +88,9 @@ Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
 Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
+Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
+
+Vue.component('notification', require('./components/Notification'));
 
 // верхнее меню
 if (document.getElementById('navbar')) {
@@ -206,6 +209,22 @@ if (document.getElementById('vue')) {
         el: '#vue'
     });
 }
+
+if (document.getElementById('ticket101-chronology')) {
+    new Vue({
+        el: '#ticket101-chronology'
+    });
+}
+
+/*//безысходность
+let vues = document.getElementsByClassName('vue');
+if(vues.length){
+    for(let i in vues){
+        new Vue({
+            el: vues[i]
+        });
+    }
+}*/
 
 const View101AppElement = document.getElementById('view-101-app');
 if (View101AppElement) {

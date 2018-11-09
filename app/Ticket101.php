@@ -17,6 +17,7 @@ use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
+use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\WallMaterial;
@@ -252,6 +253,11 @@ class Ticket101 extends Model
     protected $fillable = [];
     protected $guarded = ['id'];
 
+    public function chronologies()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id');
+    }
+
     public function crossroad_1()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
@@ -382,16 +388,6 @@ class Ticket101 extends Model
             ->where('department', $service)->first();
     }
 
-    public function on_ways()
-    {
-        return $this->hasMany(OnWay101::class, 'ticket101_id');
-    }
-
-    public function arrived()
-    {
-        return $this->hasMany(Arrived101::class, 'ticket101_id');
-    }
-
     public function wall_material()
     {
         return $this->belongsTo(WallMaterial::class, 'wall_material_id');
@@ -439,9 +435,13 @@ class Ticket101 extends Model
         return $result;
     }
 
-    public function scopeGetRecommendations($q)
+    public function getRecommendations()
     {
-//        return $q->where('')
+        $schedule = Schedule::where('fire_department_main_id', $this->fire_department_id)
+            ->where('dict_fire_level_id', $this->fire_level_id)
+            ->get();
+
+        return $schedule;
     }
 
 

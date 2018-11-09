@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
-                <form action="/dictionaries/{{ type }}/create-edit" method="post">
+                <form action="/dictionaries/{{ type }}/create-edit" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" value="{{ record.id|default() }}"/>
                     <div class="field">
@@ -69,7 +69,14 @@
                         <input required type="text" class="input" name="operational_plan" id="operational_plan" value=""/>
                     </div>
 
-
+                    <div class="field">
+                        <input type="file" name="file" required />
+                        {% if record and record.file %}
+                            <a href="{{ '/storage/operational-plans/'~record.file }}" class="button is-info" target="_blank">
+                                Скачать файл
+                            </a>
+                        {% endif %}
+                    </div>
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
