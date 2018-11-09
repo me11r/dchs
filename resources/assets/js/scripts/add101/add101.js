@@ -9,6 +9,7 @@ import bindServicePlan from './service-plan';
 import {globalBus} from '../global-bus';
 import OtherRecords from '../../components/ticket101/OtherRecords';
 import OtherRecordsReadOnly from '../../components/ticket101/OtherRecordsReadOnly.vue';
+import PopupNotifications from '../../components/ticket101/PopupNotifications.vue';
 import axios from 'axios';
 import Vue from '../../VueInstance';
 
@@ -25,6 +26,7 @@ export default class Add101Functions {
         this.bindOtherRecordsBlock();
         this.bindOtherRecordsBlockResults();
         this.checkRoadtrips();
+        this.bindPopupNotifications();
         return this;
     }
 
@@ -47,6 +49,10 @@ export default class Add101Functions {
     }
     bindOtherRecordsBlockResults() {
         return new Vue({el: '#ticket101_other_records_results', render: h => h(OtherRecordsReadOnly)});
+    }
+
+    bindPopupNotifications() {
+        return new Vue({el: '#ticket101add_popup_notifications', render: h => h(PopupNotifications)});
     }
 
     checkRoadtrips() {
