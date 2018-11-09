@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Weather;
 use App\Repositories\Contracts\WeatherInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 
@@ -27,8 +29,9 @@ class WeatherController extends Controller
 
     public function create()
     {
-        return View::make('weather.add')
-            ->render();
+        $record['date'] = today();
+        $next_date = Carbon::tomorrow();
+        return view('weather.add', compact('record', 'next_date'));
     }
 
     public function show($id)
@@ -38,7 +41,9 @@ class WeatherController extends Controller
 
     public function edit($id)
     {
-        abort(418, 'Раздел в разработке');
+        $record = Weather::find($id);
+        $next_date = Carbon::parse($record->date)->addDay()->format('d-m-Y');
+        return \view('weather.add', compact('record', 'next_date'));
     }
 
     public function store(Request $request)
@@ -49,7 +54,8 @@ class WeatherController extends Controller
 
     public function update(Request $request, $id)
     {
-        abort(418, 'Раздел в разработке');
+        $this->repository->updateModel($request, $id);
+        return back();
     }
 
     public function destroy($id)

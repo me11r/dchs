@@ -99,7 +99,8 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - КШМ', 'name' => 'DICT_KSHM'];
         $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ИПЛ "Жалын"', 'name' => 'DICT_ZHALIN'];
         $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ДСПТ', 'name' => 'DICT_DSPT'];
-        #$rights[] = ['right_group_id' => 8, 'title' => 'Нормативно-справочная информация', 'name' => 'DICT_EVENT_INFO'];
+
+        $rights[] = ['right_group_id' => 6, 'title' => 'РГП Казгидромет (заполнение данных)', 'name' => 'KAZGIDROMET_FILLING'];
 
 
         foreach (\App\Dictionary::all() as $dict) {

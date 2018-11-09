@@ -381,7 +381,7 @@
                                     {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and not ssv.res.get_back %}
                                         style="color: green"
                                     {% elseif ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and ssv.res.get_back %}
-                                        style="color: darkred"
+                                        style="color: #f9221e"
                                     {% endif %}
                                     id="ph_{{ ssv.id }}_text">{{ ssv.name }}
                                 </td>
@@ -390,7 +390,7 @@
                                 <td>
                                     {% for i in ticket.results|default([]) %}
                                         {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'action' %}
-                                            <label {% if i.get_back %} style="color: darkred" {% endif %} for="">
+                                            <label {% if i.get_back %} style="color: #f9221e" class="blink5" {% endif %} for="">
                                                 <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %}
                                                        name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]"
                                                        id="dept_{{ i.id }}" value="1"
@@ -906,4 +906,19 @@
             </div>
         </form>
     </section>
+    <style>
+        .blink5 {
+            -webkit-animation: blink5 1s linear infinite;
+            animation: blink5 1s linear infinite;
+        }
+        @-webkit-keyframes blink5 {
+            0% { color: rgb(226, 228, 0); }
+            100% { color: rgb(246, 0, 0); }
+        }
+        @keyframes blink5 {
+            0% { color: rgb(226, 228, 0); }
+            100% { color: rgb(246, 0, 0); }
+        }
+    </style>
 {% endblock content %}
+
