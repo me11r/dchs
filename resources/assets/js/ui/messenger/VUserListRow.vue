@@ -27,7 +27,7 @@ export default {
             return moment().diff(visitTime, 'minutes') < 5;
         },
         userOnlineClass: function() {
-          return this.isUserOnline?'online':'';
+            return this.isUserOnline ? 'online' : '';
         }
     }
 };
