@@ -44,6 +44,7 @@ import View101App from './scripts/formation/view-101-app';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
+import VueMessenger from './ui/messenger/Messenger';
 import Vue from './VueInstance';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
@@ -213,16 +214,12 @@ if (document.getElementById('ticket101-chronology')) {
         el: '#ticket101-chronology'
     });
 }
-
-/*//безысходность
-let vues = document.getElementsByClassName('vue');
-if(vues.length){
-    for(let i in vues){
-        new Vue({
-            el: vues[i]
-        });
-    }
-}*/
+if (document.getElementById('emergency_messenger')) {
+    new Vue({
+        el: '#emergency_messenger',
+        render: h => h(VueMessenger)
+    });
+}
 
 const View101AppElement = document.getElementById('view-101-app');
 if (View101AppElement) {

@@ -31,6 +31,7 @@ Route::group(
             Route::get('fcm/info/{infoId}', 'FcmController@displayInfo')->where('infoId', '[0-9]+');
         });
 
+
         Route::group(['prefix' => 'notification'], function (){
             Route::post('ticket101send', 'NotificationController@ticket101Send');
             Route::post('ticket112send', 'NotificationController@ticket112Send');
