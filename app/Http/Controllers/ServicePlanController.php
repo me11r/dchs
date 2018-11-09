@@ -26,8 +26,9 @@ class ServicePlanController extends Controller
     {
         $per_page = $request->get('per_page', 10);
 
-        $records = Ticket101ServicePlan::department($service)->paginate($per_page);
-
+        $records = Ticket101ServicePlan::department($service)
+            ->orderBy('id', 'desc')
+            ->paginate($per_page);
 
         return view('service-plans.index', compact('records', 'per_page'));
     }

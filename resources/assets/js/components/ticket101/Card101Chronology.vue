@@ -409,14 +409,14 @@
             },
             removeItemOnWay(id) {
                 if (confirm('Вы действительно хотите удалить эту запись?')) {
-                    this.records_ = this.records_onway.filter(function (item) {
+                    this.records_onway = this.records_onway.filter(function (item) {
                         return item.id !== id;
                     });
                 }
             },
             removeItemArrived(id) {
                 if (confirm('Вы действительно хотите удалить эту запись?')) {
-                    this.records_ = this.records_arrived.filter(function (item) {
+                    this.records_arrived = this.records_arrived.filter(function (item) {
                         return item.id !== id;
                     });
                 }
