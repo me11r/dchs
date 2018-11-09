@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\Open;
 
+use App\Enums\NotificationStatusType;
 use App\Http\Requests\Fcm\RegisterRequest;
 use App\Jobs\SendFcmMessages;
+use App\Models\Notification\Notification;
 use App\Ticket101;
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -45,6 +47,16 @@ class FcmController extends Controller
             'content' => $content,
             'type' => 'html'
         ], 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function markMessageAsDelivered(Request $request)
+    {
+        $notification = (new Notification())->where('id', '=', (int)$request->get('message_id'))->first();
+        if ($notification) {
+            $notification->notification_status_id = NotificationStatusType::DELIVERED;
+            $notification->receive_date = date('Y-m-d H:i:s');
+            $notification->save();
+        }
     }
 
     /**

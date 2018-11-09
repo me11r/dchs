@@ -41,6 +41,7 @@ import PhoneItem from './views/dictionary/Phone';
 import DistrictManagers from './components/DistrictManagers';
 import DatepickerSearch from './components/DatepickerSearch';
 import View101App from './scripts/formation/view-101-app';
+import NotificationGroupsUsersMultiselect from './components/notification-groups/NotificationGroupsUsersMultiselect';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
@@ -89,6 +90,7 @@ Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo')
 Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
 
 Vue.component('notification', require('./components/Notification'));
+Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 
 // верхнее меню
 if (document.getElementById('navbar')) {

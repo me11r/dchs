@@ -220,6 +220,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/schedules', 'ScheduleController');
     Route::resource('/morainic-lakes', 'MorainicLakeController');
     Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
+    Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
 
