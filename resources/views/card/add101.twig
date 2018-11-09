@@ -56,7 +56,7 @@
                     <div class="bd-klmn-lead">
                         <div class="columns is-variable bd-klmn-columns is-3">
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field" data-component="location-input"
                                          data-value="{{ ticket.location|default('') }}">
                                         <label for="location">Адрес <a href="{{ url('/card/mapscreen') }}"
@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field" style="margin-top: 15px;">
                                         <p class="control"
                                            data-component="object-name-input"
@@ -108,7 +108,7 @@
                         </div>
                         <div class="columns is-variable bd-klmn-columns is-3">
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field">
                                         <label for="fireplace">Место пожара</label>
                                         <input
@@ -121,7 +121,7 @@
                                 </div>
                             </div>
                             <div class="column is-3">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <p class="control"
                                        data-component="buefy-common-select"
                                        data-name="operational_plan_id"
@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                             <div class="column is-3">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <label for="operational_card_id">Оперативная карточка</label>
                                     <div class="select"
                                          data-component="simple-select"
@@ -180,7 +180,7 @@
                         </div>
                         <div class="columns is-variable bd-klmn-columns is-3">
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field">
                                         <div class="control">
                                             <label for="pre_information">Предварительная информация</label>
@@ -191,7 +191,7 @@
                                 </div>
                             </div>
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <label for="building_description">Конструктивные особенности</label>
                                     <textarea class="textarea" name="building_description" id="building_description"
                                               cols="30"
@@ -202,7 +202,7 @@
                         <div class="columns is-variable bd-klmn-columns is-3">
 
                             <div class="column is-2">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <p class="control"
                                        data-name="fire_department_id"
                                        data-component="buefy-common-select"
@@ -223,7 +223,7 @@
                                 </div>
                             </div>
                             <div class="column is-2">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <p class="control">
                                         <label for="city_area">Район города</label>
                                     </p>
@@ -242,7 +242,7 @@
                                 </div>
                             </div>
                             <div class="column is-2">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <label for="fire_level_id">Ранг пожара</label>
                                     <div class="select"
                                          {#data-component="simple-select"#}
@@ -261,7 +261,7 @@
                                 </div>
                             </div>
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field">
                                         <label for="year_of_development">Год постройки</label>
                                         <input
@@ -276,7 +276,7 @@
                         </div>
                         <div class="columns is-variable bd-klmn-columns is-3">
                             <div class="column is-3">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <label for="storey_count">Этажность</label>
                                     <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
                                            name="storey_count" id="storey_count"
@@ -284,7 +284,7 @@
                                 </div>
                             </div>
                             <div class="column is-3">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <label for="floor">На каком этаже пожар</label>
                                     <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
                                            name="floor" id="floor"
@@ -292,7 +292,7 @@
                                 </div>
                             </div>
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field">
                                         <label for="square">Площадь объекта</label>
                                         <input
@@ -308,7 +308,7 @@
                         </div>
                         <div class="columns is-variable bd-klmn-columns is-3">
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field">
                                         <p class="control is-expanded">
                                             <label for="caller_name">ФИО Заявителя</label>
@@ -319,7 +319,7 @@
                                 </div>
                             </div>
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field" style="margin-top: 15px;">
                                         <div class="checkbox">
                                             <label for="people_in_danger">Опасность для людей</label>
@@ -334,7 +334,7 @@
                         </div>
                         <div class="columns is-variable bd-klmn-columns is-3">
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field">
                                         <p class="control">
                                             <label for="caller_phone">Телефон заявителя</label>
@@ -345,7 +345,7 @@
                                 </div>
                             </div>
                             <div class="column is-half">
-                                <div class="bd-notification is-primary has-text-centered">
+                                <div class="bd-notification is-primary">
                                     <div class="field">
                                         <label for="additional_description">Дополнительная информация</label>
                                         <textarea class="textarea" name="additional_description" id="additional_description"
