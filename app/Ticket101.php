@@ -249,6 +249,11 @@ class Ticket101 extends Model
     protected $fillable = [];
     protected $guarded = ['id'];
 
+    public function chronologies()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id');
+    }
+
     public function crossroad_1()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
@@ -359,16 +364,6 @@ class Ticket101 extends Model
     {
         return Ticket101ServicePlan::where('card_id', $ticket)
             ->where('department', $service)->first();
-    }
-
-    public function on_ways()
-    {
-        return $this->hasMany(OnWay101::class, 'ticket101_id');
-    }
-
-    public function arrived()
-    {
-        return $this->hasMany(Arrived101::class, 'ticket101_id');
     }
 
     public function wall_material()

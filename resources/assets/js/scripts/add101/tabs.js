@@ -26,6 +26,7 @@ export default class Tabs {
         } else {
             if (valid) {
                 // var form = document.getElementById('card-101-form');
+                window.location.hash = '#return='+ i;
                 var data = new FormData(form);
                 let axios = require('axios');
                 let id = document.getElementById('card-101-form-id').dataset.id;
