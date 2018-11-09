@@ -208,7 +208,13 @@ if (document.getElementById('vue')) {
     });
 }
 
-//безысходность
+if (document.getElementById('ticket101-chronology')) {
+    new Vue({
+        el: '#ticket101-chronology'
+    });
+}
+
+/*//безысходность
 let vues = document.getElementsByClassName('vue');
 if(vues.length){
     for(let i in vues){
@@ -216,7 +222,7 @@ if(vues.length){
             el: vues[i]
         });
     }
-}
+}*/
 
 const View101AppElement = document.getElementById('view-101-app');
 if (View101AppElement) {

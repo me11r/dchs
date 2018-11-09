@@ -36,6 +36,7 @@ function saveTokenOnServer (token) {
 function subscribe () {
     messaging.onMessage((payload) => {
         console.log('Got notification', payload);
+        // eslint-disable-next-line no-new
         new Notification(payload.notification.title, payload.notification);
     });
 }
@@ -45,7 +46,6 @@ document.addEventListener('DOMContentLoaded', (e) => {
         Notification.requestPermission().then(() => {
             messaging.getToken().then((token) => {
                 saveTokenOnServer(token).then(() => {
-                    console.log('Saved token');
                 }).catch(() => {
                     alert('Произошла ошибка сохранения токена уведомлений');
                 });
