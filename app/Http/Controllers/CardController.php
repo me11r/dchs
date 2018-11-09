@@ -189,7 +189,9 @@ class CardController extends AuthorizedController
                 'chronologies.fire_department_result.department',
                 'results',
                 'notifications',
-                'notifications.service'
+                'notifications.service',
+                'operational_card',
+                'operational_plan.special_plans'
             ])
             ->findOrNew($card_id);
 

@@ -52,54 +52,157 @@
             <div class="panels">
                 <div id="tab_call" class="is-hidden">
 
-                    <div class="columns">
-                        <div class="column">
-                            <div class="field" data-component="location-input"
-                                 data-value="{{ ticket.location|default('') }}">
-                                <label for="location">Адрес <a href="{{ url('/card/mapscreen') }}"
-                                                               target="_blank"
-                                                               class="button is-basic is-main"><i
-                                                class="far fa-map"></i>&nbsp;Открыть карту</a></label>
-                                <input name="location"
-                                       id="location"
-                                       class="input"
-                                       v-model="location"
-                                       @blur="onBlur"
-                                       @focus="onFocus">
-                                <div class="dropdown-menu"
-                                     :style="{'display': showList && location === '' ? 'block': 'none'}"
-                                     style="position: relative">
-                                    <div class="dropdown-content">
-                                        <a class="dropdown-item"
-                                           @click="selectItem(item)"
-                                           v-for="item in items">
-                                            <div class="row">
-                                                <span v-html="item.location"></span>
-                                                <small>, <span v-html="item.object_name"></span></small>
+
+                    <div class="bd-klmn-lead">
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field" data-component="location-input"
+                                         data-value="{{ ticket.location|default('') }}">
+                                        <label for="location">Адрес <a href="{{ url('/card/mapscreen') }}"
+                                                                       target="_blank"
+                                                                       class="button is-basic is-main"><i
+                                                        class="far fa-map"></i>&nbsp;Открыть карту</a></label>
+                                        <input name="location"
+                                               ref="location"
+                                               id="location"
+                                               class="input"
+                                               v-model="location"
+                                               @blur="onBlur"
+                                               @focus="onFocus"
+                                               @keyup="keyUp = true">
+                                        <div class="dropdown-menu"
+                                             :style="{'display': showList ? 'block': 'none'}"
+                                             style="position: relative">
+                                            <div class="dropdown-content">
+                                                <a class="dropdown-item"
+                                                   @click="selectItem(item)"
+                                                   v-for="item in items">
+                                                    <div class="row">
+                                                        <span v-html="item.location"></span>
+                                                        <small>, <span v-html="item.object_name"></span></small>
+                                                    </div>
+                                                </a>
                                             </div>
-                                        </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="field">
-                                <label for="fireplace">Место пожара</label>
-                                <input
-                                        id="fireplace"
-                                        name="fireplace"
-                                        class="input"
-                                        value="{{ ticket.fireplace }}"
-                                >
-                            </div>
-                            <div class="field">
-                                <div class="control">
-                                    <label for="pre_information">Предварительная информация</label>
-                                    <textarea class="textarea" name="pre_information" id="pre_information" cols="30"
-                                              rows="2">{{ ticket.pre_information|default('') }}</textarea>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field" style="margin-top: 15px;">
+                                        <p class="control"
+                                           data-component="object-name-input"
+                                           data-value="{{ ticket.object_name|default('') }}">
+                                            <label for="object_name">Наименование объекта</label>
+                                            <input type="text"
+                                                   class="input"
+                                                   name="object_name"
+                                                   id="object_name"
+                                                   v-model="object_name"
+                                            />
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field">
+                                        <label for="fireplace">Место пожара</label>
+                                        <input
+                                                id="fireplace"
+                                                name="fireplace"
+                                                class="input"
+                                                value="{{ ticket.fireplace }}"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <p class="control"
+                                       data-component="buefy-common-select"
+                                       data-name="operational_plan_id"
+                                       data-value="{{ ticket.operational_plan_id|default(0) }}">
+                                        <label for="operational_plan_id">Оперативный план</label>
+                                        <input type="hidden"
+                                               name="operational_plan_id"
+                                               id="operational_plan_id"
+                                               v-model="selectedId">
+                                        <buefy-common-select
+                                                :options='{{ operational_plans | json_encode() | raw }}'
+                                                :min-length="1"
+                                                v-model="selectedId">
+                                        </buefy-common-select>
+                                    </p>
+                                    {% if ticket.operational_plan_id %}
+                                        {% for special_plan in ticket.operational_plan.special_plans %}
+                                            {% if special_plan.file %}
+                                                <a href="{{ '/storage/operational-plans/'~special_plan.file }}" target="_blank">
+                                                    <span class="file-icon">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </span>
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <label for="operational_card_id">Оперативная карточка</label>
+                                    <div class="select"
+                                         data-component="simple-select"
+                                         data-special="specialPlan"
+                                         data-value="{{ ticket.operational_card_id }}"
+                                         data-name="operational_cards"
+                                         style="display: block">
+                                        <select name="operational_card_id" id="operational_card_id"
+                                                style="width: 100%;"
+                                                v-model="selectedId">
+                                            <option value="">-</option>
+                                            {% for object in operational_cards %}
+                                                <option value="{{ object.id }}">{{ object.oc_number }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {% if ticket.operational_card_id and ticket.operational_card.file %}
+                                            <a href="{{ '/storage/operational-cards/'~ticket.operational_card.file }}" target="_blank">
+                                            <span class="file-icon">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field">
+                                        <div class="control">
+                                            <label for="pre_information">Предварительная информация</label>
+                                            <textarea class="textarea" name="pre_information" id="pre_information" cols="30"
+                                                      rows="2">{{ ticket.pre_information|default('') }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <label for="building_description">Конструктивные особенности</label>
+                                    <textarea class="textarea" name="building_description" id="building_description"
+                                              cols="30"
+                                              rows="2">{{ ticket.building_description|default('') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
 
-                            <div class="columns">
-                                <div class="column">
+                            <div class="column is-2">
+                                <div class="bd-notification is-primary has-text-centered">
                                     <p class="control"
                                        data-name="fire_department_id"
                                        data-component="buefy-common-select"
@@ -118,7 +221,9 @@
                                         </buefy-common-select>
                                     </p>
                                 </div>
-                                <div class="column">
+                            </div>
+                            <div class="column is-2">
+                                <div class="bd-notification is-primary has-text-centered">
                                     <p class="control">
                                         <label for="city_area">Район города</label>
                                     </p>
@@ -135,7 +240,9 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="column">
+                            </div>
+                            <div class="column is-2">
+                                <div class="bd-notification is-primary has-text-centered">
                                     <label for="fire_level_id">Ранг пожара</label>
                                     <div class="select"
                                          {#data-component="simple-select"#}
@@ -143,7 +250,8 @@
                                          {#data-value="{{ ticket.fire_level_id }}"#}
                                          {#data-name="fire_level_id"#}
                                          style="display: block">
-                                        <select name="fire_level_id" id="fire_level_id1" required>
+                                        <select name="fire_level_id" id="fire_level_id1" required
+                                                style="width: 100%;">
                                             <option value="">-</option>
                                             {% for object in fire_levels %}
                                                 <option {% if object.id  == ticket.fire_level_id %} selected {% endif %} value="{{ object.id }}">{{ object.name }}</option>
@@ -151,149 +259,101 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="column">
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field">
+                                        <label for="year_of_development">Год постройки</label>
+                                        <input
+                                                id="year_of_development"
+                                                name="year_of_development"
+                                                class="input"
+                                                value="{{ ticket.year_of_development }}"
+                                        >
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="columns">
-                                <p class="column">
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary has-text-centered">
                                     <label for="storey_count">Этажность</label>
                                     <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
                                            name="storey_count" id="storey_count"
                                            value="{{ ticket.storey_count|default('') }}"/>
-                                </p>
-                                <p class="column">
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary has-text-centered">
                                     <label for="floor">На каком этаже пожар</label>
                                     <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
                                            name="floor" id="floor"
                                            value="{{ ticket.floor|default('') }}"/>
-                                </p>
+                                </div>
                             </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field">
+                                        <label for="square">Площадь объекта</label>
+                                        <input
+                                                id="square"
+                                                name="building_square"
+                                                class="input"
+                                                value="{{ ticket.building_square }}"
 
-                            <div class="field">
-                                <p class="control is-expanded">
-                                    <label for="caller_name">ФИО Заявителя</label>
-                                    <input type="text" class="input" name="caller_name" id="caller_name"
-                                           value="{{ ticket.caller_name|default('') }}"/>
-                                </p>
-                            </div>
-                            <div class="field">
-                                <p class="control">
-                                    <label for="caller_phone">Телефон заявителя</label>
-                                    <input type="text" class="input" name="caller_phone" id="caller_phone"
-                                           value="{{ ticket.caller_phone|default('') }}"/>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div class="field">
-                                <p class="control"
-                                   data-component="object-name-input"
-                                   data-value="{{ ticket.object_name|default('') }}">
-                                    <label for="object_name">Наименование объекта</label>
-                                    <input type="text"
-                                           class="input"
-                                           name="object_name"
-                                           id="object_name"
-                                           v-model="object_name"
-                                    />
-                                </p>
-                            </div>
-                            <div class="columns">
-                                <div class="column">
-                                    <p class="control"
-                                       data-component="buefy-common-select"
-                                       data-name="operational_plan_id"
-                                       data-value="{{ ticket.operational_plan_id|default(0) }}">
-                                        <label for="operational_plan_id">Оперативный план</label>
-                                        <input type="hidden"
-                                               name="operational_plan_id"
-                                               id="operational_plan_id"
-                                               v-model="selectedId">
-                                        <buefy-common-select
-                                                :options='{{ operational_plans | json_encode() | raw }}'
-                                                :min-length="1"
-                                                v-model="selectedId">
-                                        </buefy-common-select>
-                                    </p>
-                                </div>
-                                <div class="column" style="margin-top: 60px;">
-                                    {% if ticket.operational_plan_id %}
-                                        <a href="{{ url('/pdf/get-operational-plan/' ~ ticket.operational_plan_id) }}">
-                                            <span class="file-icon">
-                                                <i class="fas fa-file-pdf"></i>
-                                            </span>
-                                        </a>
-                                    {% endif %}
-                                </div>
-                                <div class="column">
-                                    <label for="operational_card_id">Оперативная карточка</label>
-                                    <div class="select"
-                                         data-component="simple-select"
-                                         data-special="specialPlan"
-                                         data-value="{{ ticket.operational_card_id }}"
-                                         data-name="operational_cards"
-                                         style="display: block">
-                                        <select name="operational_card_id" id="operational_card_id"
-                                                v-model="selectedId">
-                                            <option value="">-</option>
-                                            {% for object in operational_cards %}
-                                                <option value="{{ object.id }}">{{ object.oc_number }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        >
                                     </div>
                                 </div>
-                                <div class="column" style="margin-top: 60px;">
-                                    {% if ticket.operational_card_id %}
-                                        <a href="{{ url('/pdf/get-operational-card/' ~ ticket.operational_card_id) }}">
-                                            <span class="file-icon">
-                                                <i class="fas fa-file-pdf"></i>
-                                            </span>
-                                        </a>
-                                    {% endif %}
-                                    </p>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field">
+                                        <p class="control is-expanded">
+                                            <label for="caller_name">ФИО Заявителя</label>
+                                            <input type="text" class="input" name="caller_name" id="caller_name"
+                                                   value="{{ ticket.caller_name|default('') }}"/>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="field">
-                                <label for="building_description">Конструктивные особенности</label>
-                                <textarea class="textarea" name="building_description" id="building_description"
-                                          cols="30"
-                                          rows="2">{{ ticket.building_description|default('') }}</textarea>
-                            </div>
-                            <div class="field">
-                                <label for="year_of_development">Год постройки</label>
-                                <input
-                                        id="year_of_development"
-                                        name="year_of_development"
-                                        class="input"
-                                        value="{{ ticket.year_of_development }}"
-                                >
-                            </div>
-                            <div class="field">
-                                <label for="square">Площадь объекта</label>
-                                <input
-                                        id="square"
-                                        name="building_square"
-                                        class="input"
-                                        value="{{ ticket.building_square }}"
-
-                                >
-                            </div>
-                            <div class="field">
-                                <div class="checkbox">
-                                    <input type="hidden" name="people_in_danger" value="0"/>
-                                    <input type="checkbox" name="people_in_danger" value="1" id="people_in_danger"
-                                           {% if ticket.people_in_danger %}checked{% endif %}/>
-                                    <label for="people_in_danger">Опасность для людей</label>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field" style="margin-top: 15px;">
+                                        <div class="checkbox">
+                                            <label for="people_in_danger">Опасность для людей</label>
+                                            Да - <input type="radio" name="people_in_danger" value="1" {% if ticket.people_in_danger %}checked{% endif %}>
+                                            Неизвестно - <input type="radio" name="people_in_danger" value="0" {% if not ticket.people_in_danger %}checked{% endif %}>
+                                            {#<input type="checkbox" name="people_in_danger" value="1" id="people_in_danger"#}
+                                                   {#{% if ticket.people_in_danger %}checked{% endif %}/>#}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="field">
-                                <label for="additional_description">Дополнительная информация</label>
-                                <textarea class="textarea" name="additional_description" id="additional_description"
-                                          cols="30"
-                                          rows="2">{{ ticket.additional_description|default('') }}</textarea>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field">
+                                        <p class="control">
+                                            <label for="caller_phone">Телефон заявителя</label>
+                                            <input type="text" class="input" name="caller_phone" id="caller_phone"
+                                                   value="{{ ticket.caller_phone|default('') }}"/>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary has-text-centered">
+                                    <div class="field">
+                                        <label for="additional_description">Дополнительная информация</label>
+                                        <textarea class="textarea" name="additional_description" id="additional_description"
+                                                  cols="30"
+                                                  rows="2">{{ ticket.additional_description|default('') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

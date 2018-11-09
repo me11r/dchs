@@ -63,6 +63,7 @@ class SpecialPlan extends Model
         'operational_plan_id',
         'location',
         'year_of_development',
+        'file'
     ];
 
     public function searchableAs(): string

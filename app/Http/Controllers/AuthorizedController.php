@@ -12,6 +12,7 @@ class AuthorizedController extends Controller
 {
     public function before()
     {
+        parent::before();
     }
 
     public function __construct()

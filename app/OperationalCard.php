@@ -44,6 +44,7 @@ class OperationalCard extends Model
         'object_name',
         'location',
         'note',
+        'file'
     ];
 
     public function searchableAs(): string

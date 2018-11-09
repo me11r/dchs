@@ -40,7 +40,13 @@ class RoadtripController extends AuthorizedController
 
     public function getView($plan_id)
     {
-        $trip = RoadtripPlan::with(['ticket', 'department', 'results'])
+        $trip = RoadtripPlan::with([
+            'ticket',
+            'ticket.operational_card',
+            'ticket.operational_plan.special_plans',
+            'department',
+            'results'
+        ])
             ->findOrFail($plan_id);
 
         if(!$trip->is_accepted){
