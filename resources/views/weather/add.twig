@@ -1,18 +1,125 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container section">
+    <div class="container section" xmlns="http://www.w3.org/1999/html">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
-                <h4 class="title">Добавить</h4>
-                <form action="{{ route('weather.store') }}" method="post" enctype="multipart/form-data">
+                <h4 class="title">{% if record.id is defined %}
+                        Редактировать данные за {{ record.date|date('d-m-Y') }}
+                    {% else %}
+                        Добавить данные за {{ record.date.date|date('d-m-Y') }}
+                    {% endif %}
+                    <div class="level-right printing-invisible">
+                        <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
+                    </div>
+                </h4>
+                <form action="{% if record.id is defined %}{{ route('weather.update', {id:record.id}) }}{% else %}{{ route('weather.store') }}{% endif %}" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
+                    {% if record.id is defined %}
+                        {{ method_field('put') }}
+                    {% endif %}
                     <div class="field">
                         <label for="date">Дата</label>
-                        <input type="date" class="input" name="date" id="date" value="{{ "" | date('now()') }}" required />
+                        {% if record.id is defined %}
+                            <input type="text" disabled class="input" value="{{ record.date|date('d-m-Y') }}" />
+                        {% else %}
+                            <input type="date" class="input" name="date" id="date" value="{{ record.date | date('now()') }}" required />
+                        {% endif %}
                     </div>
                     <div class="field">
-                        <input type="file" name="file" required />
+                        <label for="">Номер</label>
+                        <input type="text" name="number" value="{{ record.number ?? '' }}" class="input">
                     </div>
+
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <label for="date">О погоде за день {{ record.date|date('d-m-Y') }}</label>
+                                <textarea class="textarea" name="weather_now" rows="1" id="weather_now">{{ record.weather_now ?? '' }}</textarea>
+                            </div>
+                            <div class="field">
+                                <label for="date">О режиме водных объектов {{ record.date|date('d-m-Y') }}</label>
+                                <textarea class="textarea" name="water_now" rows="1" id="water_now">{{ record.water_now ?? '' }}</textarea>
+                            </div>
+                            <div class="field">
+                                <label for="date">Радиационная обстановка города {{ record.date|date('d-m-Y') }}</label>
+                                <textarea class="textarea" name="radiation_now" rows="1" id="radiation_now">{{ record.radiation_now ?? '' }}</textarea>
+                            </div>
+                            <div class="field">
+                                <label for="date">Качество состояния атмосферного воздуха {{ record.date|date('d-m-Y') }}</label>
+                                <textarea class="textarea" name="atmosphere_now" id="atmosphere_now">{{ record.atmosphere_now ?? '' }}</textarea>
+                            </div>
+                            <div class="field">
+                                <label for="date">Адрес</label>
+                                <textarea class="textarea" name="address" rows="1" id="address">{{ record.address ?? '' }}</textarea>
+                            </div>
+                            <div class="field">
+                                <label for="">Директор филиала</label>
+                                <input type="text" name="filial_director" value="{{ record.filial_director ?? '' }}" class="input">
+                            </div>
+                            <div class="field">
+                                <label for="">Исполнитель</label>
+                                <input type="text" name="executor" value="{{ record.executor ?? '' }}" class="input">
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                <label for="date">Погода по области на {{ next_date|date('d-m-Y') }}</label>
+                                <textarea class="textarea" name="forecast_area" rows="1" id="forecast_area">{{ record.forecast_area ?? '' }}</textarea>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Город</th>
+                                        <th>Прогноз на дату<br>
+                                            {{ next_date|date('d-m-Y') }}
+                                        </th>
+                                        <th>Абсолютный максимум</th>
+                                        <th>Абсолютный минимум</th>
+                                    </tr>
+                                <tbody>
+                                    <tr>
+                                        <td>Алматы</td>
+                                        <td class="td_padding">
+                                            <textarea class="textarea" rows="1" name="forecast_city1" id="forecast_city1">{{ record.forecast_city1 ?? '' }}</textarea>
+                                        </td>
+                                        <td class="td_padding">
+                                            <textarea class="textarea" rows="1" name="city1_abs_max" id="city1_abs_max">{{ record.city1_abs_max ?? '' }}</textarea>
+                                        </td>
+                                        <td class="td_padding">
+                                            <textarea class="textarea" rows="1" name="city1_abs_min" id="city1_abs_min">{{ record.city1_abs_min ?? '' }}</textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Талдыкорган</td>
+                                        <td class="td_padding">
+                                            <textarea class="textarea" rows="1" name="forecast_city2" id="forecast_city2">{{ record.forecast_city2 ?? '' }}</textarea>
+                                        </td>
+                                        <td class="td_padding">
+                                            <textarea class="textarea" rows="1" name="city2_abs_max" id="city2_abs_max">{{ record.city2_abs_max ?? '' }}</textarea>
+                                        </td>
+                                        <td class="td_padding">
+                                            <textarea class="textarea" rows="1" name="city2_abs_min" id="city2_abs_min">{{ record.city2_abs_min ?? '' }}</textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                </thead>
+                            </table>
+                            <div class="field">
+                                <label for="date">Гидрологический прогноз по Алматинской области {{ next_date|date('d-m-Y') }}</label>
+                                <textarea class="textarea" rows="1" name="forecast_water" id="forecast_water">{{ record.forecast_water ?? '' }}</textarea>
+                            </div>
+                            <div class="field">
+                                <label for="date">Прогноз метеорологических условий загрязнения воздуха по г. Алматы {{ next_date|date('d-m-Y') }}</label>
+                                <textarea class="textarea" rows="1" name="forecast_atmosphere" id="forecast_atmosphere">{{ record.forecast_atmosphere ?? '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="date">Доп.информация</label>
+                        <textarea class="textarea" rows="2" name="note" id="note">{{ record.note ?? '' }}</textarea>
+                    </div>
+
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
@@ -22,4 +129,19 @@
             </div>
         </div>
     </div>
+    <style>
+        .td_padding{
+            padding: 5px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const printButton = document.getElementById('open-print-button');
+            printButton.addEventListener('click', (e) => {
+                window.print();
+                e.preventDefault();
+            });
+
+        });
+    </script>
 {% endblock content %}
