@@ -20,7 +20,7 @@ export default function bindLocationInputApp() {
         },
         methods: {
             searchLocationPlans: lodash.debounce(function () {
-                if(this.keyUp || this.location === '') {
+                if(this.keyUp) {
                     axios.get('/ajax/find_special_plan', {
                         params: {
                             location: this.location
@@ -50,11 +50,13 @@ export default function bindLocationInputApp() {
                 if (items.building) {
 
                     // document.getElementById('fire_object_id').value = items.building.object_type_id;
+                    document.getElementById('building_description').value = items.building.wall_material.name;
                     document.getElementById('square').value = items.building.square;
                     document.getElementById('year_of_development').value = items.building.year_of_development;
                     document.querySelector('[id="storey_count"]').value = items.building.number_of_storeys;
                 } else {
                     // document.getElementById('fire_object_id').value = '';
+                    document.getElementById('building_description').value = '';
                     document.getElementById('square').value = '';
                     document.getElementById('year_of_development').value = '';
                     document.querySelector('[id="storey_count"]').value = '';
