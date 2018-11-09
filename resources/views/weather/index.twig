@@ -30,9 +30,9 @@
                         {{ item.date | date('d.m.Y') }}
                     </td>
                     <td class="has-text-right">
-                        <a href="{{ '/storage/weather/'~item.file }}" class="button is-info" target="_blank">
+                        <a href="/weather/{{ item.id }}/edit" class="button is-info is-small">
                             <i class="fas fa-file-upload"></i>&nbsp;
-                            Вложенный файл
+                            Редактировать
                         </a>
                     </td>
                 </tr>

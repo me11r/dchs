@@ -213,7 +213,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
-    Route::resource('/weather', 'WeatherController');
+    Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
     Route::resource('/vehicles', 'VehicleController');
     Route::resource('/staff', 'StaffController');
