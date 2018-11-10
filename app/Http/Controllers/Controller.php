@@ -39,10 +39,10 @@ abstract class Controller extends BaseController
             if ($service !== null && $canRecieve) {
                 $params['check_service_plans'] = true;
             }
-        }
 
-        $user->last_connect_at = Carbon::now();
-        $user->save();
+            $user->last_connect_at = Carbon::now();
+            $user->save();
+        }
 
         $this->set('_global_ajax_timers', json_encode($params));
     }
