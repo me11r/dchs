@@ -28,6 +28,7 @@ class ServicePlanController extends Controller
 
         $records = Ticket101ServicePlan::department($service)
             ->orderBy('id', 'desc')
+            ->whereNotNull('dispatched_time')
             ->paginate($per_page);
 
         return view('service-plans.index', compact('records', 'per_page'));
@@ -52,15 +53,23 @@ class ServicePlanController extends Controller
     {
         $all = $request->all();
         if($request->cardType == 101){
-            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+            $servicePlan = Ticket101ServicePlan::updateOrCreate([
                 'service_type_id' => $request->service_id,
                 'card_id' => $request->card_id,
+            ],[
+                'service_type_id' => $request->service_id,
+                'card_id' => $request->card_id,
+                'dispatched_time' => now(),
             ]);
         }
         else{
-            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+            $servicePlan = Ticket101ServicePlan::updateOrCreate([
+                'service_type_id' => $request->service_id,
+                'card_id' => $request->card_id,
+            ],[
                 'service_type_id' => $request->service_id,
                 'card112_id' => $request->card_id,
+                'dispatched_time' => now(),
             ]);
         }
 

@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int ticket101_id
  * @mixin \Eloquent
  * @property int|null $notification_service_id
- * @property int $ticket101_id
  * @property string|null $message_time
  * @property string|null $name
  * @property string|null $arrive_time
