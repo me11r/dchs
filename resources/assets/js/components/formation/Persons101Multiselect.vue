@@ -54,8 +54,26 @@ export default {
 
             return data.join(', ');
         },
+        tableName() {
+            const tulparTypes = [
+                'tulpar1',
+                'tulpar2',
+                'tulpar3',
+                'tulpar4',
+                'tulpar5',
+                'tulpar7',
+                'tulpar8',
+                'tulpar10'
+            ];
+
+            if (tulparTypes.indexOf(this.rank) !== -1) {
+                return 'duty_vehicle';
+            } else {
+                return this.rank;
+            }
+        },
         options() {
-            return this.$parent.odStaff && this.$parent.odStaff[this.rank] ? this.$parent.odStaff[this.rank] : [];
+            return this.$parent.odStaff && this.$parent.odStaff[this.tableName] ? this.$parent.odStaff[this.tableName] : [];
         }
     },
     data() {
@@ -76,7 +94,8 @@ export default {
             axios.post('/api/101/sync-formation-od-persons', {
                 formId: this.$parent.formId,
                 type: this.rank,
-                selectedStaff: this.$parent.selectedStaff[this.rank]
+                selectedStaff: this.$parent.selectedStaff[this.rank],
+                tableName: this.tableName
             });
         }
     },
