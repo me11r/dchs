@@ -234,7 +234,7 @@
                         <a
                             v-if="hasRight(24)"
                             href="/reports/101/forces-resources/"
-                            class="dropdown-item is-small"><i class="fas fa-air-freshener"></i>
+                            class="dropdown-item is-small"><i class="fas fa-archive"></i>
                             &nbsp; Учет сил и средств</a>
                     </div>
                 </div>
