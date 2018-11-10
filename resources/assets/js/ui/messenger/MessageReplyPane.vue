@@ -3,14 +3,18 @@
         <div class="attach-file"><a class="upload"><i class="fas fa-upload fa-fw fa-2x"></i></a></div>
         <div class="text">
             <textarea
-                    :readonly="sending"
+                :readonly="sending"
                 v-model="message"
                 name="message-text"
-                class="reply-textarea"></textarea></div>
+                class="reply-textarea"
+                @keypress.enter.exact="sendMessage"
+        ></textarea></div>
         <div class="send-message"><a
             @click.prevent="sendMessage"
             class="send">
-            <i class="fas fa-fw fa-2x" :class="sendingClass"></i>
+            <i
+                class="fas fa-fw fa-2x"
+                :class="sendingClass"></i>
         </a></div>
     </div>
 </template>
@@ -48,8 +52,10 @@ export default {
         },
         send: function() {
             this.sending = true;
-            return api.post('send', {message: this.message, to: this.user.id}).then(() => {
+            return api.post('message/send', {message: this.message, to: this.user.id}).then(() => {
+                evbus.$emit('messenger-message-sent', this.message, this.user);
                 this.sending = false;
+                this.message = '';
             });
         }
     },

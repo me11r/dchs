@@ -259,6 +259,7 @@ Route::group(['middleware' => 'auth'], function () {
     /** Мессенджер */
     Route::group(['namespace' => 'Api\\Messenger', 'prefix' => 'api/messenger', 'middleware' => ['auth']], function() {
         Route::get('users/list', 'MessengerController@getUserList');
+        Route::post('message/send', 'MessengerController@postMessage');
     });
 
 
