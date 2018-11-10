@@ -378,13 +378,7 @@ class FormationController extends AuthorizedController
                     }
                 }
             }
-
-
         }
-
-
-
-
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
