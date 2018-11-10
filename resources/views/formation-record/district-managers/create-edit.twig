@@ -10,17 +10,16 @@
         <form action="" method="post">
             {{ csrf_field() }}
             <input type="hidden" name="date" value="{{ date }}"/>
-            {#<input type="hidden" name="form_id" value="{{ form_id }}"/>#}
-            {#{% include "formation/field.twig" with {fields: fieldlist, prefix: '', model: model} %}#}
             <fieldset>
                 <legend>На лицо личного состава</legend>
 
                 {% for district in districts %}
                     <div class="field">
                         <label for="field_2_1">{{ district.name }} район</label>
-                        <district-managers :staff="{{ staff }}" :block_type="{{ district.id }}" :model_id="{{ report.id ?? 0 }}"></district-managers>
-                        {#<staff-formation-record112 :shift-id="{{ shift_id }}" date-input="{{ date }}" :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
-                                   block_type="duty_officer"></staff-formation-record112>#}
+                        <district-managers :staff="{{ district.district_managers }}"
+                                           :block_type="{{ district.id }}"
+                                           :model_id="{{ report.id ?? 0 }}">
+                        </district-managers>
                     </div>
                 {% endfor %}
 
