@@ -1,33 +1,38 @@
 <template>
-<div class="message-pane" :class="activeClass">
-    fsdgsdgsgsdgsgsgs
-</div>
+    <div
+        class="message-pane"
+        :class="activeClass">
+        {{ user.id }}
+        fsdgsdgsgsdgsgsgs
+        {{ user.name }}
+    </div>
 </template>
 
 <script>
-  export default {
+import EventBus from './MessengerEventBus';
+const evbus = EventBus();
+export default {
     name: 'MessagePane',
-    props: {
-      me: {
-        type: Object,
-        default: ()=>{},
-      },
-      user: {
-        type: Object,
-        default: ()=>{},
-      },
-      selected: {
-        type: Boolean,
-        default: false
-      }
+    data: function() {
+        return {
+            me: {},
+            user: {},
+            messages: [],
+            selected: false
+        };
     },
-
     computed: {
-      activeClass: function() {
-        return this.selected?"is-active":'';
-      }
+        activeClass: function() {
+            return this.selected ? 'is-active' : '';
+        }
+    },
+    mounted: function() {
+        evbus.$on('messenger-selected-user', (user) => {
+            this.user = user;
+            this.selected = true;
+        });
     }
-  };
+};
 </script>
 
 <style lang="scss" scoped>
