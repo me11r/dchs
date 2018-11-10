@@ -341,9 +341,9 @@ class Ticket101 extends Model
     public function notifications()
     {
         return $this
-                ->hasMany(Ticket101Notification::class, 'ticket101_id', 'id')
-                ->join('service_types', 'service_types.id', '=', 'ticket101_notifications.notification_service_id')
-                ->orderBy('service_types.priority', 'DESC');
+                ->hasMany(Ticket101Notification::class, 'ticket101_id', 'id');
+                //->join('service_types', 'service_types.id', '=', 'ticket101_notifications.notification_service_id')
+                //->orderBy('service_types.priority', 'DESC');
     }
 
     public function results()

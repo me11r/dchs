@@ -28,6 +28,7 @@ use App\Models\Trunk;
 use App\Models\WallMaterial;
 use App\OperationalCard;
 use App\Ticket101;
+use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -398,6 +399,8 @@ class CardController extends AuthorizedController
             $this->createNotificationServices($card);
         }
 
+        $this->createServicePlans($card);
+
 
         $this->recommend($request, $card);
 
@@ -445,13 +448,22 @@ class CardController extends AuthorizedController
         }
     }
 
+    private function createServicePlans(Ticket101 $ticket101): void
+    {
+        foreach (ServiceType::all() as $service) {
+            Ticket101ServicePlan::firstOrCreate([
+                'service_type_id' => $service->id,
+                'card_id' => $ticket101->id,
+            ]);
+        }
+    }
+
     private function updateNotificationServices(array $notificationServices)
     {
         foreach ($notificationServices as $id => $data) {
             $record = Ticket101Notification::find($id);
             $record->name = $data['name'] ?? null;
             $record->save();
-//            (new Ticket101Notification())->find($id)->update($data);
         }
     }
 
