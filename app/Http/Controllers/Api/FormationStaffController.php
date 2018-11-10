@@ -44,6 +44,7 @@ class FormationStaffController extends Controller
         $formId = $request->get('formId', []);
         $selectedStaff = $request->get('selectedStaff', []);
         $type = $request->get('type');
+        $tableName = $request->get('tableName');
 
         $formationPersonsReport = FormationPersonsReport::where('form_id', '=', $formId)
             ->where('dept_id', '=', 19)
@@ -52,7 +53,10 @@ class FormationStaffController extends Controller
         if (!$formationPersonsReport) {
             $formationPersonsReport = FormationPersonsReport::create(['form_id' => $formId, 'dept_id' => 19]);
         }
-        FormationOdPersonItem::where('report_id', $formationPersonsReport->id)->where('table_name', '=', $type)->delete();
+        FormationOdPersonItem::where('report_id', $formationPersonsReport->id)
+            ->where('rank', '=', $type)
+            ->where('table_name', '=', $tableName)
+            ->delete();
 
         foreach ($selectedStaff as $staff) {
             FormationOdPersonItem::create([
@@ -62,7 +66,7 @@ class FormationStaffController extends Controller
                 'date_from' => null,
                 'date_to' => null,
                 'rank' => $type,
-                'table_name' => $type,
+                'table_name' => $tableName,
                 'status' => 'inactive',
             ]);
         }
