@@ -47,7 +47,7 @@ export default {
         &.is-active {
             display: block;
             min-width: 600px;
-            border-right: 1px solid $primary;
+            //border-right: 1px solid $primary;
         }
     }
 </style>

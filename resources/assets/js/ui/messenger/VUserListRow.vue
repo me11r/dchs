@@ -69,14 +69,17 @@ export default {
         border-bottom: 1px solid cadetblue;
         background-color: $white-ter;
         cursor: pointer;
+        border-left: 1px solid cadetblue;
 
         &.is-active {
-            background-color: $white-bis;
+            background-color: $blueish;
             font-weight: bold;
+            border-left: 1px solid transparent;
         }
 
         &:hover {
             background-color: $white;
+            color: $primary;
         }
 
         .status-icon {
