@@ -4,12 +4,15 @@
             class="messenger"
             :class="openedClass"
             v-if="isOpened">
-            <div class="header has-text-right"><a
-                class="closer"
-                @click.prevent="openUp"><i class="fas fa-times"></i></a>
+            <div class="header">
+                <div class="title has-text-centered">{{ selectedUser.name }}</div>
+                <div class="header__closer has-text-right"><a
+                    class="closer"
+                    @click.prevent="openUp"><i class="fas fa-times"></i></a>
+                </div>
             </div>
             <div class="messenger-body">
-                <v-message-pane></v-message-pane>
+                <v-message-pane/>
                 <v-user-list/>
             </div>
         </div>
@@ -27,16 +30,22 @@
 <script>
 import VueMessengerUserList from './UsersList';
 import VueMessagePane from './MessagePane';
+import EventBus from './MessengerEventBus';
+const evbus = EventBus();
 export default {
     name: 'Messenger',
     data: function() {
         return {
+            selectedUser: {
+                id: 0,
+                name: ''
+            },
             isOpened: false
         };
     },
     components: {
         'v-user-list': VueMessengerUserList,
-      'v-message-pane' : VueMessagePane
+        'v-message-pane': VueMessagePane
     },
     computed: {
         openedClass: function() {
@@ -81,12 +90,21 @@ export default {
             }
             .header {
                 background-color: $primary;
-                .closer {
-                    padding: 3px 5px;
-                    color: $primary-invert;
-                    &:hover {
-                        color: $white;
+                display: flex;
+                .header__closer {
+                    width: 250px;
+                    .closer {
+                        padding: 3px 5px;
+                        color: $primary-invert;
+
+                        &:hover {
+                            color: $white;
+                        }
                     }
+                }
+                .title {
+                    flex-grow: 1;
+                    font-weight: bold;
                 }
             }
             .messenger-body {
