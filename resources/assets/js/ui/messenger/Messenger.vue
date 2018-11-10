@@ -5,7 +5,7 @@
             :class="openedClass"
             v-if="isOpened">
             <div class="header">
-                <div class="title has-text-centered">{{ selectedUser.name }}</div>
+                <div class="header__title has-text-centered">{{ selectedUser.name }}</div>
                 <div class="header__closer has-text-right"><a
                     class="closer"
                     @click.prevent="openUp"><i class="fas fa-times"></i></a>
@@ -56,6 +56,12 @@ export default {
         openUp: function() {
             this.isOpened = !this.isOpened;
         }
+    },
+    mounted: function() {
+        evbus.$on('messenger-selected-user', (user) => {
+            console.log(user);
+            this.selectedUser = user;
+        });
     }
 };
 </script>
@@ -63,6 +69,7 @@ export default {
 <style lang="scss">
     @import "../../../sass/variables";
     #emergency_messenger {
+        text-shadow: 0 1px 0 #fff;
         z-index: 9999;
         position: fixed;
         bottom: 0;
@@ -102,14 +109,14 @@ export default {
                         }
                     }
                 }
-                .title {
+                .header__title {
                     flex-grow: 1;
                     font-weight: bold;
+                    color: $primary-invert;
                 }
             }
             .messenger-body {
                 display: flex;
-                overflow-y: scroll;
                 max-height: 100%;
                 height: 100%;
             }
