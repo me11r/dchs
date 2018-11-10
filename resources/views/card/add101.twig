@@ -20,26 +20,26 @@
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
             <div class="tabs buttab is-boxed" id="">
                 <ul>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Путевка</a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(1);">
                             <i class="fas fa-truck-moving"></i>&nbsp;Высылка
                         </a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(2);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(3);">
                             <i class="fas fa-aviato"></i>&nbsp;Хронология
                         </a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(4);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(5);">
                             <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
                         </a>
@@ -51,7 +51,7 @@
                     <i class="fas fa-circle-notch fa-spin fa-6x"></i>
                 </div>
             </div>
-            <div class="panels">
+            <div class="panels panels-main">
                 <div id="tab_call" class="is-hidden">
 
 
@@ -580,7 +580,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div id="tab-chronology" class="is-hidden">
+                <div id="tab_chronology" class="is-hidden">
 
                     <div class="field">
                         <div data-component="timepicker"

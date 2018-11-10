@@ -58,13 +58,15 @@ export default class Tabs {
         }
 
         let tabs = document.querySelectorAll('#cardadd101 .tabs li');
-        let panels = document.querySelectorAll('#cardadd101 .panels > div');
-        this.tabsCount = panels.length;
+        let panels = document.querySelectorAll('#cardadd101 .panels-main > div');
+        // this.tabsCount = tabs.length;
+        this.tabsCount = document.querySelectorAll('#cardadd101 .main-tab').length;
         tabs[this.activeTab].classList.remove('is-active');
         panels[this.activeTab].classList.add('is-hidden');
         tabs[i].classList.add('is-active');
         panels[i].classList.remove('is-hidden');
         this.activeTab = i;
+        console.dir(panels)
     }
 
     nextTab () {
