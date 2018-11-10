@@ -1,5 +1,6 @@
 <template>
-    <div id="emergency_messenger">
+    <div id="emergency_messenger"
+         class="is-hidden-touch">
         <div
             class="messenger"
             :class="openedClass"
