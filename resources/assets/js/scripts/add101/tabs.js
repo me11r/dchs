@@ -1,8 +1,22 @@
 export default class Tabs {
     constructor () {
         this.activeTab = 0;
+        this.notificationActiveTab = 0;
         this.tabsCount = 0;
         this.isNewForm = (document.getElementById('card-101-form-id').getAttribute('data-id') === '0');
+    }
+
+    setNotificationTab(index) {
+        let tabs = document.querySelectorAll('#cardadd101 .notifications .tabs li');
+        let panels = document.querySelectorAll('#cardadd101 .notifications .panels');
+
+        tabs[this.notificationActiveTab].classList.remove('is-active');
+        panels[this.notificationActiveTab].classList.add('is-hidden');
+
+        tabs[index].classList.add('is-active');
+        panels[index].classList.remove('is-hidden');
+
+        this.notificationActiveTab = index;
     }
 
     setTab (i) {
@@ -38,9 +52,9 @@ export default class Tabs {
             }
         }
         if (i !== 7) {
-            form.querySelector('button[type=submit]').classList.add('is-hidden');
+            form.querySelector('button[type=submit].is-main').classList.add('is-hidden');
         } else {
-            form.querySelector('button[type=submit]').classList.remove('is-hidden');
+            form.querySelector('button[type=submit].is-main').classList.remove('is-hidden');
         }
 
         let tabs = document.querySelectorAll('#cardadd101 .tabs li');
