@@ -9,6 +9,7 @@
                 @click.prevent="openUp"><i class="fas fa-times"></i></a>
             </div>
             <div class="messenger-body">
+                <v-message-pane></v-message-pane>
                 <v-user-list/>
             </div>
         </div>
@@ -25,6 +26,7 @@
 
 <script>
 import VueMessengerUserList from './UsersList';
+import VueMessagePane from './MessagePane';
 export default {
     name: 'Messenger',
     data: function() {
@@ -33,7 +35,8 @@ export default {
         };
     },
     components: {
-        'v-user-list': VueMessengerUserList
+        'v-user-list': VueMessengerUserList,
+      'v-message-pane' : VueMessagePane
     },
     computed: {
         openedClass: function() {
@@ -71,7 +74,6 @@ export default {
             }
         }
         .messenger {
-            transition: max-height 2s ease-in-out;
             max-height: 0;
             &.is-open {
                 height: 500px;
@@ -79,7 +81,6 @@ export default {
             }
             .header {
                 background-color: $primary;
-                width: 250px;
                 .closer {
                     padding: 3px 5px;
                     color: $primary-invert;
@@ -89,6 +90,7 @@ export default {
                 }
             }
             .messenger-body {
+                display: flex;
                 overflow-y: scroll;
                 max-height: 100%;
                 height: 100%;

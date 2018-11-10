@@ -63,5 +63,6 @@ export default {
     .users-list {
         height: 100%;
         font-size: 14px;
+        min-width: 250px;
     }
 </style>

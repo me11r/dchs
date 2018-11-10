@@ -25,6 +25,7 @@ class AddMessengerMessagesTable extends Migration
             $table->softDeletes();
 
             $table->index(['sender_id', 'reciever_id']);
+            $table->index(['reciever_id', 'is_viewed']);
         });
     }
 
