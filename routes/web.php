@@ -196,7 +196,6 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('dictionaries.row.delete');
 
     Route::delete('/dictionaries/delete/{name}/{row_id}', 'DictionaryController@deleteByName')
-        ->where('name', 'incident-types|operational-plans|operational-cards')
         ->where('row_id', '[0-9]+')
         ->name('dictionaries.row.delete_by_name');
 
