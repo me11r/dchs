@@ -62,7 +62,9 @@ export default {
     }
     .users-list {
         height: 100%;
+        min-height: 100%;
         font-size: 14px;
         min-width: 250px;
+        overflow-y: scroll;
     }
 </style>

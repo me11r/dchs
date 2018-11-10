@@ -2,13 +2,14 @@
     <div
         class="message-pane"
         :class="activeClass">
-        {{ user.id }}
-        fsdgsdgsgsdgsgsgs
-        {{ user.name }}
+        <v-messages-list :user="user"/>
+        <v-reply-pane/>
     </div>
 </template>
 
 <script>
+import VMessagesList from './MessagesListPane';
+import VReplyPane from './MessageReplyPane';
 import EventBus from './MessengerEventBus';
 const evbus = EventBus();
 export default {
@@ -17,9 +18,12 @@ export default {
         return {
             me: {},
             user: {},
-            messages: [],
             selected: false
         };
+    },
+    components: {
+        'v-messages-list': VMessagesList,
+        'v-reply-pane': VReplyPane
     },
     computed: {
         activeClass: function() {
