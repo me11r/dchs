@@ -45,12 +45,15 @@ import NotificationGroupsUsersMultiselect from './components/notification-groups
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
+import VueMessenger from './ui/messenger/Messenger';
 import Vue from './VueInstance';
+import VueDateFilter from './scripts/DateFilter';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
+Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
@@ -91,6 +94,7 @@ Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersM
 Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
 
 Vue.component('notification', require('./components/Notification'));
+Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 Vue.component('btn-close-card', require('./components/ticket101/CloseTicket'));
 
 // верхнее меню
@@ -222,16 +226,12 @@ if (document.getElementById('ticket101-chronology')) {
         el: '#ticket101-chronology'
     });
 }
-
-/*//безысходность
-let vues = document.getElementsByClassName('vue');
-if(vues.length){
-    for(let i in vues){
-        new Vue({
-            el: vues[i]
-        });
-    }
-}*/
+if (document.getElementById('emergency_messenger')) {
+    new Vue({
+        el: '#emergency_messenger',
+        render: h => h(VueMessenger)
+    });
+}
 
 const View101AppElement = document.getElementById('view-101-app');
 if (View101AppElement) {

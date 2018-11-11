@@ -38,6 +38,7 @@ class FormationController extends AuthorizedController
 {
     public function before()
     {
+        parent::before();
         return $this->needAnyRight([
             Right::CAN_ACCESS_FORMATION_REPORT_101,
             Right::CAN_ACCESS_FORMATION_REPORT_ROSO,

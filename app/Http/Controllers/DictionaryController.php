@@ -68,6 +68,7 @@ class DictionaryController extends AuthorizedController
 
     public function before()
     {
+        parent::before();
         $this->needRight(Right::CAN_EDIT_DICTIONARIES);
         $user = \auth()->user();
         $this->user = $user;
