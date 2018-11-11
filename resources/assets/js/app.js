@@ -90,6 +90,7 @@ Vue.component('v-datepicker-search', DatepickerSearch);
 Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
 Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
+Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
 
 Vue.component('notification', require('./components/Notification'));

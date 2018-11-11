@@ -17,6 +17,7 @@ use App\FormationReport;
 use App\FormationTechReport;
 use App\Http\Middleware\Rights\FormationRecord;
 use App\Models\FireDepartmentResult;
+use App\Models\Notification\NotificationGroup;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
@@ -191,6 +192,12 @@ class CardController extends AuthorizedController
                 'results',
                 'notifications',
                 'notifications.service',
+                'popup_notifications',
+                'popup_notifications.user',
+                'popup_notifications.status',
+                'popup_notifications.group',
+                'notification_groups',
+                'notifications.service',
                 'operational_card',
                 'operational_plan.special_plans'
             ])
@@ -233,6 +240,7 @@ class CardController extends AuthorizedController
 //            $ticket->notifications()->get();
 //        }
 
+        $this->set('notificationGroups', (new NotificationGroup())->get());
         $this->set('recommendedDispatched', $recommendedDispatched);
         $this->set('fire_dep_results_info', $fire_dep_results_info);
         $this->set('water_sources', $water_sources);
