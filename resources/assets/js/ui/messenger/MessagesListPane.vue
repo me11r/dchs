@@ -5,10 +5,21 @@
             v-if="loading">
             <v-preloader/>
         </div>
+        <div
+            class="messages"
+            v-if="!loading"
+            v-for="message in messages"
+            :key="message.id"
+        ><v-message
+            :message="message"
+            :me="me"
+            :user="user"
+        /></div>
     </div>
 </template>
 
 <script>
+import VMessage from './SingleMessage';
 import SvgPreloader from './SvgPreloader';
 import EventBus from './MessengerEventBus';
 import axios from 'axios';
@@ -18,6 +29,17 @@ const api = axios.create({
 });
 export default {
     name: 'MessagesListPane',
+    props: {
+        me: {
+            type: Object,
+            default: function() {
+                return {
+                    id: 0,
+                    name: ''
+                };
+            }
+        }
+    },
     data: function() {
         return {
             user: {
@@ -29,16 +51,17 @@ export default {
         };
     },
     components: {
-        'v-preloader': SvgPreloader
+        'v-preloader': SvgPreloader,
+        'v-message': VMessage
     },
     computed: {},
     methods: {
         addMessage: function(message) {
             this.messages.push({type: 'text', message: message});
         },
-        fetchMessages: function(user) {
+        fetchMessages: function() {
             this.loading = true;
-            return api.get('/messages/list/' + user.id)
+            return api.get('/messages/list/' + this.user.id)
                 .then(response => {
                     this.messages = response.data.messages;
                     this.loading = false;
@@ -49,13 +72,14 @@ export default {
     mounted: function() {
         evbus.$on('messenger-selected-user', (user) => {
             this.user = user;
-            this.fetchMessages(user);
+            this.fetchMessages();
         });
         evbus.$on('messenger-message-sent', (message, user) => {
             if (user.id === this.user.id) {
                 this.addMessage(message);
             }
         });
+        setInterval(this.fetchMessages, 1300);
     }
 };
 </script>

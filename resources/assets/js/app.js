@@ -47,11 +47,13 @@ import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
 import VueMessenger from './ui/messenger/Messenger';
 import Vue from './VueInstance';
+import VueDateFilter from './scripts/DateFilter';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
+Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
