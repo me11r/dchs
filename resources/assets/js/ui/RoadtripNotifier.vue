@@ -57,7 +57,7 @@ export default {
             this.checking = true;
             axios.get('/ajax/roadtrips').then(response => {
                 this.plans = response.data;
-                if (this.plans.length >= 0) {
+                if (this.plans.length > 0) {
                     this.notify();
                     this.alertSound(true);
                 } else {
