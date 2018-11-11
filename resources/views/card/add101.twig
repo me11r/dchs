@@ -5,7 +5,9 @@
             records: {{ ticket.other_records | json_encode() | raw }},
             other_records_unique: {{ other_records_unique | json_encode() | raw }},
             trunks: {{ trunks | json_encode() | raw }},
-            ticketId: '{{ ticket.id }}'
+            ticketId: '{{ ticket.id }}',
+            ticket101: {{ ticket | json_encode() | raw }},
+            notificationGroups: {{ notificationGroups | json_encode() | raw }}
         };
     </script>
 
@@ -18,26 +20,26 @@
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
             <div class="tabs buttab is-boxed" id="">
                 <ul>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Путевка</a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(1);">
                             <i class="fas fa-truck-moving"></i>&nbsp;Высылка
                         </a>
                     </li>
-                    <li>
-                        <a onclick="window.add101tabs.setTab(2);">
+                    <li class="main-tab">
+                        <a onclick="window.add101tabs.setTab(2);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
+                    </li>
+                    <li class="main-tab">
+                        <a onclick="window.add101tabs.setTab(3);">
                             <i class="fas fa-aviato"></i>&nbsp;Хронология
                         </a>
                     </li>
-                    <li>
-                        <a onclick="window.add101tabs.setTab(3);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
-                    </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(4);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(5);">
                             <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
                         </a>
@@ -49,7 +51,7 @@
                     <i class="fas fa-circle-notch fa-spin fa-6x"></i>
                 </div>
             </div>
-            <div class="panels">
+            <div class="panels panels-main">
                 <div id="tab_call" class="is-hidden">
 
 
@@ -504,7 +506,81 @@
                         {% endfor %}
                     </table>
                 </div>
-                <div id="tab-chronology" class="is-hidden">
+                <div id="tab_notify" class="is-hidden notifications">
+                    <div class="tabs buttab is-boxed" id="">
+                        <ul>
+                            <li class="is-active">
+                                <a onclick="window.add101tabs.setNotificationTab(0);">
+                                    <i class="fas fa-envelope"></i>&nbsp;Руководство
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="window.add101tabs.setNotificationTab(1);">
+                                    <i class="fas fa-envelope"></i>&nbsp;Службы взаимодействия
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="panels index-1">
+                        <div id="ticket101add_popup_notifications"></div>
+                    </div>
+
+                    <div class="panels is-hidden index-1">
+                        {#<h5 class="subtitle">Время сообщения руководству ГУ:</h5>#}
+                        {#<div class="field is-grouped">#}
+                            {#{% for name,title in gu_notify %}#}
+                                {#<div class="control" data-component="timepicker"#}
+                                     {#data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">#}
+                                    {#<label for="notify_{{ name }}_time">{{ title }}</label>#}
+                                    {#<b-timepicker @focus="closeAll()" type="text" v-model="value" style="max-width: 4rem"#}
+                                                  {#name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">#}
+                                        {#<div class="field is-grouped" style="justify-content: space-between">#}
+                                            {#<p class="control">#}
+                                                {#<a class="button is-primary is-small"#}
+                                                   {#@click="()=> {value = new Date(); close();}">#}
+                                                    {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
+                                                    {#<span>Сейчас</span>#}
+                                                {#</a>#}
+                                            {#</p>#}
+                                            {#<p class="control">#}
+                                                {#<a class="button is-outlined is-small" @click="close()">#}
+                                                    {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
+                                                {#</a>#}
+                                            {#</p>#}
+                                        {#</div>#}
+                                    {#</b-timepicker>#}
+                                {#</div>#}
+                            {#{% endfor %}#}
+                        {#</div>#}
+                        {#<div class="field" data-component="timepicker"#}
+                             {#data-value="{{ ticket.next_notify_time|default('') }}">#}
+                            {#<label for="next_notify_time">Время следующего взаимодействия</label>#}
+                            {#<b-timepicker @focus="closeAll()" v-model="value" type="text" style="max-width: 4rem"#}
+                                          {#name="next_notify_time" id="next_notify_time" :value="value">#}
+                                {#<div class="field is-grouped" style="justify-content: space-between">#}
+                                    {#<p class="control">#}
+                                        {#<a class="button is-primary is-small"#}
+                                           {#@click="()=> {value = new Date(); close();}">#}
+                                            {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
+                                            {#<span>Сейчас</span>#}
+                                        {#</a>#}
+                                    {#</p>#}
+                                    {#<p class="control">#}
+                                        {#<a class="button is-outlined is-small" @click="close()">#}
+                                            {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
+                                        {#</a>#}
+                                    {#</p>#}
+                                {#</div>#}
+                            {#</b-timepicker>#}
+                        {#</div>#}
+                        {#<h5 class="subtitle">Службы</h5>#}
+                        {% if ticket and ticket.id %}
+                            {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div id="tab_chronology" class="is-hidden">
 
                     <div class="field">
                         <div data-component="timepicker"
@@ -569,59 +645,6 @@
                                 :event-info-arrived="{{ eventInfosArrived }}"
                         ></ticket101-chronology>
                     </div>
-                </div>
-                <div id="tab_notify" class="is-hidden">
-                    <h5 class="subtitle">Время сообщения руководству ГУ:</h5>
-                    <div class="field is-grouped">
-                        {% for name,title in gu_notify %}
-                            <div class="control" data-component="timepicker"
-                                 data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
-                                <label for="notify_{{ name }}_time">{{ title }}</label>
-                                <b-timepicker @focus="closeAll()" type="text" v-model="value" style="max-width: 4rem"
-                                              name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">
-                                    <div class="field is-grouped" style="justify-content: space-between">
-                                        <p class="control">
-                                            <a class="button is-primary is-small"
-                                               @click="()=> {value = new Date(); close();}">
-                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                <span>Сейчас</span>
-                                            </a>
-                                        </p>
-                                        <p class="control">
-                                            <a class="button is-outlined is-small" @click="close()">
-                                                <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                            </a>
-                                        </p>
-                                    </div>
-                                </b-timepicker>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="field" data-component="timepicker"
-                         data-value="{{ ticket.next_notify_time|default('') }}">
-                        <label for="next_notify_time">Время следующего взаимодействия</label>
-                        <b-timepicker @focus="closeAll()" v-model="value" type="text" style="max-width: 4rem"
-                                      name="next_notify_time" id="next_notify_time" :value="value">
-                            <div class="field is-grouped" style="justify-content: space-between">
-                                <p class="control">
-                                    <a class="button is-primary is-small"
-                                       @click="()=> {value = new Date(); close();}">
-                                        <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                        <span>Сейчас</span>
-                                    </a>
-                                </p>
-                                <p class="control">
-                                    <a class="button is-outlined is-small" @click="close()">
-                                        <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                    </a>
-                                </p>
-                            </div>
-                        </b-timepicker>
-                    </div>
-                    <h5 class="subtitle">Службы</h5>
-                    {% if ticket and ticket.id %}
-                        {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
-                    {% endif %}
                 </div>
                 <div id="tab_other" class="is-hidden">
                     <h5 class="subtitle">Обстановка с места пожара:</h5>
@@ -822,12 +845,6 @@
                                   class="textarea">{{ ticket.more_info|default('') }}</textarea>
                     </div>
                     <div class="field">
-                        {#<div class="checkbox">#}
-                        {#<input type="hidden" name="hydrant_found" value="0"/>#}
-                        {#<input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"#}
-                        {#{% if ticket.hydrant_found == 1 %}checked{% endif %}/>#}
-                        {#<label for="hydrant_found">Наличие ПГ/ПВ</label>#}
-                        {#</div>#}
                         <div class="control">
                             <label for="water_supply_source_id">Источник противопожарного водоснабжения</label>
                         </div>
@@ -888,23 +905,30 @@
                         </div>
                     </div>
 
+
+
                 </div>
+
             </div>
             <div class="panel"
                  style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
-                    <p class="level-left">
+                    {#todo убрано по требованию заказчика#}
+                    {#<p class="level-left">
                         <button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
                             Следующий раздел
                         </button>
-                    </p>
+                    </p>#}
                     <p class="level-right">
-                        <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Закрыть
+                        <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Сохранить
                         </button>
                     </p>
                 </div>
             </div>
         </form>
+        <p class="level-right" id="btn-close-card">
+            <btn-close-card :ticket="{{ ticket }}"></btn-close-card>
+        </p>
     </section>
     <style>
         .blink5 {

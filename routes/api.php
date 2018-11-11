@@ -25,10 +25,13 @@ Route::group(
         Route::post('101card/delete-chronology', 'CardController@deleteChronologyRecord101card');
         Route::post('101card/delete-on-way', 'CardController@deleteOnWayRecord101card');
         Route::post('101card/delete-arrived', 'CardController@deleteArrivedRecord101card');
+        Route::get('101card/get_ticket101', 'CardController@getTicket101');
+        Route::post('101card/send_notifications', 'CardController@sendNotifications');
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
             Route::post('fcm/register', 'FcmController@register');
             Route::get('fcm/send_test', 'FcmController@sendTest');
             Route::get('fcm/info/{infoId}', 'FcmController@displayInfo')->where('infoId', '[0-9]+');
+            Route::post('fcm/mark_message_as_delivered', 'FcmController@markMessageAsDelivered');
         });
 
 

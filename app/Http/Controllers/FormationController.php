@@ -228,9 +228,8 @@ class FormationController extends AuthorizedController
 
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
-        }
-        else{
-            $departments = FireDepartment::all();
+        } else {
+            $departments = FireDepartment::where('id', '!=', 19)->get();
         }
 
         $fieldlist = [
@@ -378,13 +377,7 @@ class FormationController extends AuthorizedController
                     }
                 }
             }
-
-
         }
-
-
-
-
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
@@ -396,9 +389,8 @@ class FormationController extends AuthorizedController
         $belongsToDept = Auth::user()->fire_department_id;
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
-        }
-        else{
-            $departments = FireDepartment::all();
+        } else {
+            $departments = FireDepartment::where('id', '!=', 19)->get();
         }
 
         $model = (new FormationTechReport)->where('form_id', $form_id)->where('dept_id', $dept_id)->first();

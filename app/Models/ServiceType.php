@@ -36,7 +36,7 @@ class ServiceType extends Model
 
     public $timestamps = false;
 
-    public $fillable = ['name', 'head_user_id'];
+    public $fillable = ['name', 'head_user_id', 'priority'];
 
     public function headUser()
     {

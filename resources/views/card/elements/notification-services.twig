@@ -10,22 +10,39 @@
     </tr>
     </thead>
     <tbody>
-    {% for notification in ticket.notifications %}
+    {% for notification in ticket.service_plans %}
         <tr>
-            <td>{{ notification.service.name }}</td>
+            <td>
+                <label>
+                    <input type="checkbox"
+                           data-component="service-plan"
+                           name="notification_services[{{ notification.id }}][checked]"
+                            {% if notification.dispatched_time %} checked {% endif %}
+                           value="1"
+                           @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ notification.service_type.id }}', {{ notification.id }})"
+                           class="checkbox">
+                    {{ notification.service_type.name }}
+                </label>
+
+            </td>
             <td data-component="timepicker1"
                 data-value="">
-                <input type="text"
-                       readonly
-                       value="{{ notification.message_time }}"
-                       id="{{ notification.id }}_message_time"
-                       name="notification_services[{{ notification.id }}][message_time]"
-                       class="input">
+                {% for item in ticket.notifications %}
+                    {% if item.notification_service_id == notification.service_type.id %}
+                        <input type="text"
+                               readonly
+                               value="{{ item.message_time }}"
+                               id="{{ item.id }}_message_time"
+                               name="notification_services[{{ notification.id }}][message_time]"
+                               class="input">
+                    {% endif %}
+                {% endfor %}
+
             </td>
             <td>
                 <input type="text"
                        class="input"
-                       value="{{ notification.name }}"
+                       value="{{ notification.name_accepted }}"
                        id="{{ notification.id }}_name"
                        name="notification_services[{{ notification.id }}][name]"/>
             </td>
@@ -38,23 +55,18 @@
                        class="input">
             </td>
             <td>
-                {% for item in ticket.service_plans %}
-                    {% if item.service_type_id == notification.notification_service_id%}
-                        {{ item.created_at.format('d.m.Y H:i') }}
-                    {% endif %}
-                {% endfor %}
-
+                <p id="{{ notification.id }}_dispatched_time">
+                    {{ notification.dispatched_time ? notification.dispatched_time.format('d.m.Y H:i') : '' }}
+                </p>
             </td>
             <td>
-                <label for="">
-                    <input type="checkbox"
-                           data-component="service-plan"
-                           name="notification_services[{{ notification.id }}][checked]"
-                           {% if notification.checked %} checked {% endif %}
-                           value="1"
-                           @change="sendOneCheckService($event, {{ ticket.id|default(0) }}, '{{ notification.service.id }}', {{ notification.id }})"
-                           class="checkbox">
-                </label>
+                {% for item in ticket.notifications %}
+                    {% if item.notification_service_id == notification.service_type.id %}
+                        <p id="{{ item.id }}_notification_dispatched_time">
+                            {{ item.checked ? item.created_at.format('d.m.Y H:i') : '' }}
+                        </p>
+                    {% endif %}
+                {% endfor %}
             </td>
         </tr>
     {% endfor %}
