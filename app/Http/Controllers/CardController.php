@@ -471,4 +471,13 @@ class CardController extends AuthorizedController
             }
         }
     }
+
+    public function postSwitchStateCard($card_id)
+    {
+        $card = Ticket101::findOrFail($card_id);
+        $card->closed = !$card->closed;
+        $card->save();
+
+        return response()->json('ok');
+    }
 }

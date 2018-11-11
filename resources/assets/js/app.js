@@ -92,6 +92,7 @@ Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chr
 
 Vue.component('notification', require('./components/Notification'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
+Vue.component('btn-close-card', require('./components/ticket101/CloseTicket'));
 
 // верхнее меню
 if (document.getElementById('navbar')) {
@@ -148,10 +149,10 @@ if (document.getElementById('cardadd101')) {
         } else {
             window.add101tabs.setTab(0);
         }
-        document.getElementById('nexttab').addEventListener('click', (e) => {
+        /*document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
-        });
+        });*/
     });
 }
 
@@ -208,6 +209,12 @@ if (document.getElementById('ticket101-arrived')) {
 if (document.getElementById('vue')) {
     new Vue({
         el: '#vue'
+    });
+}
+
+if (document.getElementById('btn-close-card')) {
+    new Vue({
+        el: '#btn-close-card'
     });
 }
 
