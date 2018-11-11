@@ -919,16 +919,17 @@
                             Следующий раздел
                         </button>
                     </p>#}
-                    <p class="level-right">
+                    <p class="level-left">
                         <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Сохранить
                         </button>
+                    </p>
+                    <p class="level-right" id="btn-close-card">
+                        <btn-close-card :ticket="{{ ticket }}"></btn-close-card>
                     </p>
                 </div>
             </div>
         </form>
-        <p class="level-right" id="btn-close-card">
-            <btn-close-card :ticket="{{ ticket }}"></btn-close-card>
-        </p>
+
     </section>
     <style>
         .blink5 {
