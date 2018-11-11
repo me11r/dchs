@@ -2,12 +2,12 @@
     <div class="messages-list">
         <div
             class="messages-loading"
-            v-if="loading">
+            v-if="loading && !loaded">
             <v-preloader/>
         </div>
         <div
             class="messages"
-            v-if="!loading"
+            v-if="!loading || loaded"
             v-for="message in messages"
             :key="message.id"
         ><v-message
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import VMessage from './SingleMessage';
 import SvgPreloader from './SvgPreloader';
 import EventBus from './MessengerEventBus';
@@ -47,6 +48,7 @@ export default {
                 name: ''
             },
             loading: false,
+            loaded: false,
             messages: []
         };
     },
@@ -57,7 +59,7 @@ export default {
     computed: {},
     methods: {
         addMessage: function(message) {
-            this.messages.push({type: 'text', message: message});
+            this.messages.push({type: 'text', message: message, created_at: moment().format('YYYY-MM-DD hh:mm')});
         },
         fetchMessages: function() {
             this.loading = true;
@@ -65,13 +67,21 @@ export default {
                 .then(response => {
                     this.messages = response.data.messages;
                     this.loading = false;
+                    this.loaded = true;
+                })
+                .then(() => {
+                    this.scrollDown();
                 });
+        },
+        scrollDown: function() {
+            this.$el.scrollTop(this.$el.scrollHeight);
         }
 
     },
     mounted: function() {
         evbus.$on('messenger-selected-user', (user) => {
             this.user = user;
+            this.loaded = false;
             this.fetchMessages();
         });
         evbus.$on('messenger-message-sent', (message, user) => {
