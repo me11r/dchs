@@ -366,6 +366,9 @@ class Ticket101 extends Model
         $is_today = $created_date->isToday();
         $pass_after_9 = now()->format('H') > 9;
 
+        if($this->closed){
+            return false;
+        }
         if(!$is_yesterday && !$is_today){
             return false;
         }
@@ -406,6 +409,11 @@ class Ticket101 extends Model
     public function scopeReal($q, $search = true)
     {
         return $q->where('is_real', $search);
+    }
+
+    public function scopeClosed($q, $search = true)
+    {
+        return $q->where('closed', $search);
     }
 
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)

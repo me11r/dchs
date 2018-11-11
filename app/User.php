@@ -160,6 +160,10 @@ class User extends Authenticatable
             return false;
         }
 
+        if($this->role->name == 'admin'){
+            return true;
+        }
+
         return $this->role->hasRight($right_id);
     }
 

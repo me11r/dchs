@@ -31,6 +31,7 @@ use App\Ticket101;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CardController extends AuthorizedController
@@ -358,8 +359,13 @@ class CardController extends AuthorizedController
 
         /** @var Ticket101 $card */
         $card = Ticket101::findOrNew($card_id);
+
         $canEditTicket = $card->canEditTicket();
-        if (!$canEditTicket) {
+        if (!$canEditTicket && !Auth::user()->hasRight('CARD101_EDIT_CLOSED')) {
+
+            if ($request->ajax()) {
+                return response()->json('ok', 403);
+            }
             return redirect('/card/add101/')->with('_message', ['type' => 'error', 'text' => 'Данные не могут быть сохранены. Архивная карточка']);
         }
 
