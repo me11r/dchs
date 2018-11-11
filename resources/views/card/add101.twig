@@ -845,12 +845,6 @@
                                   class="textarea">{{ ticket.more_info|default('') }}</textarea>
                     </div>
                     <div class="field">
-                        {#<div class="checkbox">#}
-                        {#<input type="hidden" name="hydrant_found" value="0"/>#}
-                        {#<input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"#}
-                        {#{% if ticket.hydrant_found == 1 %}checked{% endif %}/>#}
-                        {#<label for="hydrant_found">Наличие ПГ/ПВ</label>#}
-                        {#</div>#}
                         <div class="control">
                             <label for="water_supply_source_id">Источник противопожарного водоснабжения</label>
                         </div>
@@ -911,23 +905,30 @@
                         </div>
                     </div>
 
+
+
                 </div>
+
             </div>
             <div class="panel"
                  style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
-                    <p class="level-left">
+                    {#todo убрано по требованию заказчика#}
+                    {#<p class="level-left">
                         <button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
                             Следующий раздел
                         </button>
-                    </p>
+                    </p>#}
                     <p class="level-right">
-                        <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Закрыть
+                        <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Сохранить
                         </button>
                     </p>
                 </div>
             </div>
         </form>
+        <p class="level-right" id="btn-close-card">
+            <btn-close-card :ticket="{{ ticket }}"></btn-close-card>
+        </p>
     </section>
     <style>
         .blink5 {
