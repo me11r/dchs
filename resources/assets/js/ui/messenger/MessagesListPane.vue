@@ -74,7 +74,7 @@ export default {
                 });
         },
         scrollDown: function() {
-            ///this.$el.scrollTop(this.$el.scrollHeight);
+            this.$el.scrollTop = this.$el.scrollHeight;
         }
 
     },
