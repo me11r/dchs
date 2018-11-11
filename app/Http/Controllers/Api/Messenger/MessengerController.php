@@ -22,7 +22,8 @@ class MessengerController extends Controller
         return response()->json(['users' => $users], 200, [], JSON_UNESCAPED_UNICODE);
     }
 
-    public function postMessage(Request $request) {
+    public function postMessage(Request $request)
+    {
         $me = \Auth::user();
         $to = (int)$request->get('to');
         $text = $request->get('message');
@@ -34,5 +35,29 @@ class MessengerController extends Controller
         $message->save();
 
         return response()->json(['status' => 'ok']);
+    }
+
+    /**
+     * @param Request $request
+     * @param $user_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMessages(Request $request, $user_id)
+    {
+        $me = \Auth::user();
+        $messages = (new Message())
+            ->where(function ($query) use ($me, $user_id) {
+                return $query->where('sender_id', $me->id)
+                    ->where('reciever_id', $user_id);
+            })
+            ->orWhere(function ($query) use ($me, $user_id) {
+                return $query->where('sender_id', $user_id)
+                    ->where('reciever_id', $me->id);
+            })
+            ->orderBy('id', 'asc')
+            ->limit(30)
+            ->get();
+
+        return response()->json(['messages' => $messages]);
     }
 }

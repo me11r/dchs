@@ -261,6 +261,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['namespace' => 'Api\\Messenger', 'prefix' => 'api/messenger', 'middleware' => ['auth']], function() {
         Route::get('users/list', 'MessengerController@getUserList');
         Route::post('message/send', 'MessengerController@postMessage');
+        Route::get('messages/list/{user_id}', 'MessengerController@getMessages')->where('user_id', '[0-9]+');
     });
 
 

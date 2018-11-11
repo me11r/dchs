@@ -60,7 +60,7 @@ export default {
         }
     },
     mounted: function() {
-        evbus.$on('messenger-select-user', (user) => {
+        evbus.$on('messenger-selected-user', (user) => {
             this.user = user;
         });
     }
