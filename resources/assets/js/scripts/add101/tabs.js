@@ -51,11 +51,11 @@ export default class Tabs {
                 form.querySelector('button[type=submit]').click();
             }
         }
-        if (i !== 7) {
+        /*if (i !== 7) {
             form.querySelector('button[type=submit].is-main').classList.add('is-hidden');
         } else {
             form.querySelector('button[type=submit].is-main').classList.remove('is-hidden');
-        }
+        }*/
 
         let tabs = document.querySelectorAll('#cardadd101 .tabs li');
         let panels = document.querySelectorAll('#cardadd101 .panels-main > div');
@@ -66,7 +66,6 @@ export default class Tabs {
         tabs[i].classList.add('is-active');
         panels[i].classList.remove('is-hidden');
         this.activeTab = i;
-        console.dir(panels)
     }
 
     nextTab () {

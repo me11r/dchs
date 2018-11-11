@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/card/101', 'CardController@get101')->name('card101');
     Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+']);
+    Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
 
