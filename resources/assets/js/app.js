@@ -1,8 +1,5 @@
 /* eslint-disable no-new */
-import '../sass/fonts.scss';
-import '../sass/auth.scss';
 import '../sass/app.scss';
-import '../sass/shake.scss';
 
 import axios from 'axios';
 
@@ -152,10 +149,10 @@ if (document.getElementById('cardadd101')) {
         } else {
             window.add101tabs.setTab(0);
         }
-        /*document.getElementById('nexttab').addEventListener('click', (e) => {
+        /* document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
-        });*/
+        }); */
     });
 }
 
