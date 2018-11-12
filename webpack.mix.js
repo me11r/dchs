@@ -33,7 +33,7 @@ if (mix.inProduction()) {
                 drop_console: true
             }
         },
-        processCssUrls: false,
+        processCssUrls: true,
         extractVueStyles: true
     });
 } else {
