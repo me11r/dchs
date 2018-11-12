@@ -23,6 +23,7 @@
     </script>
     <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-messaging.js"></script>
+    <link rel="stylesheet" href="{{ mix('/assets/app.css') }}">
     {% if _global_ajax_timers is defined %}
         <script>
             window._global_ajax_timers = {{ _global_ajax_timers|raw }}
@@ -62,6 +63,5 @@
         transition: opacity ease-out 10s;
     }
 </style>
-<link rel="stylesheet" href="{{ mix('/assets/app.css') }}">
 </body>
 </html>
