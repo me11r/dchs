@@ -34,4 +34,10 @@ class OperationalPlan extends Model
     public $table = 'dict_operational_plan';
 
     public $fillable = ['name'];
+
+
+    public function special_plans()
+    {
+        return $this->hasMany(SpecialPlan::class, 'operational_plan_id', 'id');
+    }
 }

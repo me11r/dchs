@@ -222,4 +222,18 @@ class Card112 extends Model
 
         return $result;
     }
+
+    public function scopeFilterByServiceType($q, $filter)
+    {
+        return $q->whereHas('service_plans.service_type', function ($service_type) use ($filter){
+            $service_type->where('name', $filter);
+        });
+    }
+
+    public function scopeFilterByIncidentType($q, $filter)
+    {
+        return $q->whereHas('incident', function ($service_type) use ($filter){
+            $service_type->where('name', $filter);
+        });
+    }
 }

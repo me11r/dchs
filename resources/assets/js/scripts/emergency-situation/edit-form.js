@@ -1,5 +1,5 @@
 import moment from 'moment';
-import Vue from 'vue';
+import Vue from '../../VueInstance';
 
 if (document.getElementById('emergency-situation-form')) {
     new Vue({

@@ -1,0 +1,217 @@
+<?php
+
+namespace App\Services\ReportExport;
+
+
+use App\FireDepartment;
+use App\FormationTechReport;
+
+trait CommonExportTools
+{
+    /**
+     * @return array
+     */
+    private function getFirstTableSumRow()
+    {
+        return [
+            'Итого', // Наименование пожарных подразделений
+
+            $this->sumPeople['total'], // В карауле по списку л/с
+
+            $this->sumPeople['active'], // На лицо личного состава -> Всего
+            $this->sumPeople['head_guards'], // На лицо личного состава -> Нач. караулов
+            $this->sumPeople['commander_squads'], // На лицо личного состава -> Ком. отделений
+            $this->sumPeople['drivers'], // На лицо личного состава -> Шоферы
+            $this->sumPeople['privates'], // На лицо личного состава -> Ряд. состав
+            $this->sumPeople['dispatchers'], // На лицо личного состава -> Диспетчеров
+
+            $this->sumPeople['vacation'], // Отсутствуют -> Отпуск
+            $this->sumPeople['study'], // Отсутствуют -> Учебный
+            $this->sumPeople['maternity'], // Отсутствуют -> Декрет
+            $this->sumPeople['sick'], // Отсутствуют -> Больные
+            $this->sumPeople['business_trip'], // Отсутствуют -> Командировка
+            $this->sumPeople['other'], // Отсутствуют -> Др. причины
+
+            $this->sumPeople['gas_smoke_protection_service'], // ГДЗС
+
+            '-', // Аппараты
+
+            '-', // Мотопомпы Водяная/Грязевая
+
+            '-', // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
+            '-', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
+
+            '-', // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
+            '-', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
+
+            '-', // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
+            '-', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
+        ];
+    }
+
+    /**
+     * @param FireDepartment $department
+     * @return array
+     */
+    private function getFirstTableRowForDepartment(FireDepartment $department)
+    {
+        $id = $department->id;
+
+        $peopleData = array_get($this->people, $id, []);
+        $techData = array_get($this->tech, $id, []);
+
+        return [
+            $department->name, // Наименование пожарных подразделений
+
+            array_get($peopleData, 'total', 0), // В карауле по списку л/с
+
+            array_get($peopleData, 'active', 0), // На лицо личного состава -> Всего
+            array_get($peopleData, 'head_guards', 0), // На лицо личного состава -> Нач. караулов
+            array_get($peopleData, 'commander_squads', 0), // На лицо личного состава -> Ком. отделений
+            array_get($peopleData, 'drivers', 0), // На лицо личного состава -> Шоферы
+            array_get($peopleData, 'privates', 0), // На лицо личного состава -> Ряд. состав
+            array_get($peopleData, 'dispatchers', 0), // На лицо личного состава -> Диспетчеров
+
+            array_get($peopleData, 'vacation', 0), // Отсутствуют -> Отпуск
+            array_get($peopleData, 'study', 0), // Отсутствуют -> Учебный
+            array_get($peopleData, 'maternity', 0), // Отсутствуют -> Декрет
+            array_get($peopleData, 'sick', 0), // Отсутствуют -> Больные
+            array_get($peopleData, 'business_trip', 0), // Отсутствуют -> Командировка
+            array_get($peopleData, 'other', 0), // Отсутствуют -> Др. причины
+
+            array_get($peopleData, 'gas_smoke_protection_service', 0), // ГДЗС
+
+            '-', // Аппараты
+
+            isset($this->tech[$id]) ? (int)array_get($techData, 'motor_water_pump', 0) . '/' . (int)array_get($techData, 'motor_mud_pump', 0) : '0/0', // Мотопомпы Водяная/Грязевая
+
+            $department->tech_action ? implode("\n", $department->tech_action->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
+            $department->tech_action ? implode("\n", $department->tech_action->pluck('vehicle.base')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
+
+            $department->tech_reserve ? implode("\n", $department->tech_reserve->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
+            $department->tech_reserve ? implode("\n", $department->tech_reserve->pluck('vehicle.base')->toArray()) : '', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
+
+            $department->tech_repair ? implode("\n", $department->tech_repair->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
+            $department->tech_repair ? implode("\n", $department->tech_repair->pluck('vehicle.base')->toArray()) : '', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
+        ];
+    }
+
+
+    /**
+     * @param FireDepartment $department
+     * @return array
+     */
+    private function getSecondTableRowForDepartment(FireDepartment $department)
+    {
+        $id = $department->id;
+
+        $techData = array_get($this->tech, $id, []);
+        $headGuard = array_get($techData, 'head_guard');
+
+        return [
+            $department->name, // Наименование пожарных подразделений
+
+            (int)array_get($techData, 'firehose_125', 0), // Имеется на автомобилях в боевом расчете -> Рукавов -> 125мм
+            (int)array_get($techData, 'firehose_75', 0), // Имеется на автомобилях в боевом расчете -> Рукавов -> 75мм
+            (int)array_get($techData, 'firehose_77', 0), // Имеется на автомобилях в боевом расчете -> Рукавов -> 77мм
+            (int)array_get($techData, 'firehose_51', 0), // Имеется на автомобилях в боевом расчете -> Рукавов -> 51мм
+
+            (int)array_get($techData, 'barrel_stationary', 0), // Имеется на автомобилях в боевом расчете -> Лафетн. Ств. стац
+            (int)array_get($techData, 'barrel_portable', 0), // Имеется на автомобилях в боевом расчете -> Лафетн. Ств. переносной
+            (int)array_get($techData, 'pgs_600', 0), // Имеется на автомобилях в боевом расчете -> ГПС-600
+            (int)array_get($techData, 'purga', 0), // Имеется на автомобилях в боевом расчете -> Пурга
+            (int)array_get($techData, 'radio_station_portable', 0), // Имеется на автомобилях в боевом расчете -> Переносная радиостанция
+            (int)array_get($techData, 'flashlight', 0), // Имеется на автомобилях в боевом расчете -> Электрофонари
+            (int)array_get($techData, 'searchlight', 0), // Имеется на автомобилях в боевом расчете -> Прожектора
+            (int)array_get($techData, 'tok', 0) . '/' . (int)array_get($techData, 'l1', 0), // Имеется на автомобилях в боевом расчете -> ТОК/Л-1
+            (int)array_get($techData, 'knapsack_devices', 0), // Имеется на автомобилях в боевом расчете -> Ранцевые аппараты
+            (int)array_get($techData, 'shovel', 0), // Имеется на автомобилях в боевом расчете -> Лопаты
+            (int)array_get($techData, 'flapper', 0), // Имеется на автомобилях в боевом расчете -> Хлопушки
+            (int)array_get($techData, 'life_rope', 0), // Имеется на автомобилях в боевом расчете -> Спасательные веревки
+            (int)array_get($techData, 'foamer', 0), // Имеется на автомобилях в боевом расчете -> Пенообразователя
+
+            (int)array_get($techData, 'foamer_in_stock', 0), // Пенообразователя на складе
+
+            (int)array_get($techData, 'damaged_hydrant_street', 0), // Количество неисправных водоисточников -> ПГ -> уличный
+            (int)array_get($techData, 'damaged_hydrant_object', 0), // Количество неисправных водоисточников -> ПГ -> объектовый
+            (int)array_get($techData, 'damaged_pv', 0), // Количество неисправных водоисточников -> ПВ
+
+            (int)array_get($techData, 'active_gasoline', 0), // в боевом расчете -> бензин
+            (int)array_get($techData, 'active_diesel', 0), // в боевом расчете -> солярка
+
+            (int)array_get($techData, 'reserved_gasoline', 0), // в резерве -> бензин
+            (int)array_get($techData, 'reserved_diesel', 0), // в резерве -> солярка
+
+            (int)array_get($techData, 'generator', 0) . '/' .
+            (int)array_get($techData, 'exhauster', 0) . '/' .
+            (int)array_get($techData, 'girs', 0) . '/' .
+            (int)array_get($techData, 'iup', 0), // 1 генератор 2 дымосос 3 гирсы
+
+            $headGuard ? $headGuard->name : '' // Ф.И.О Начальника караула или лица его подменяющего
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getSecondTableSumRow()
+    {
+        $sumArray = [];
+        list($cols) = array_divide((new FormationTechReport())->first()->toArray());
+
+        $this->tech->each(function (FormationTechReport $item) use (&$sumArray, $cols) {
+            foreach ($cols as $key) {
+                if (\is_int($item->{$key}) || \is_string($item->{$key})) {
+                    if (!isset($sumArray[$key])) {
+                        $sumArray[$key] = 0;
+                    }
+                    $sumArray[$key] += (int)$item->{$key};
+                }
+            }
+        });
+
+        return [
+            'Итого', // Наименование пожарных подразделений
+
+            (int)array_get($sumArray, 'firehose_125'), // Имеется на автомобилях в боевом расчете -> Рукавов -> 125мм
+            (int)array_get($sumArray, 'firehose_75'), // Имеется на автомобилях в боевом расчете -> Рукавов -> 75мм
+            (int)array_get($sumArray, 'firehose_77'), // Имеется на автомобилях в боевом расчете -> Рукавов -> 77мм
+            (int)array_get($sumArray, 'firehose_51'), // Имеется на автомобилях в боевом расчете -> Рукавов -> 51мм
+
+            (int)array_get($sumArray, 'barrel_stationary'), // Имеется на автомобилях в боевом расчете -> Лафетн. Ств. стац
+            (int)array_get($sumArray, 'barrel_portable'), // Имеется на автомобилях в боевом расчете -> Лафетн. Ств. переносной
+            (int)array_get($sumArray, 'pgs_600'), // Имеется на автомобилях в боевом расчете -> ГПС-600
+            (int)array_get($sumArray, 'purga'), // Имеется на автомобилях в боевом расчете -> Пурга
+            (int)array_get($sumArray, 'radio_station_portable'), // Имеется на автомобилях в боевом расчете -> Переносная радиостанция
+            (int)array_get($sumArray, 'flashlight'), // Имеется на автомобилях в боевом расчете -> Электрофонари
+            (int)array_get($sumArray, 'searchlight'), // Имеется на автомобилях в боевом расчете -> Прожектора
+            (int)(int)array_get($sumArray, 'tok') . '/' . (int)(int)array_get($sumArray, 'l1'), // Имеется на автомобилях в боевом расчете -> ТОК/Л-1
+            (int)array_get($sumArray, 'knapsack_devices'), // Имеется на автомобилях в боевом расчете -> Ранцевые аппараты
+            (int)array_get($sumArray, 'shovel'), // Имеется на автомобилях в боевом расчете -> Лопаты
+            (int)array_get($sumArray, 'flapper'), // Имеется на автомобилях в боевом расчете -> Хлопушки
+            (int)array_get($sumArray, 'life_rope'), // Имеется на автомобилях в боевом расчете -> Спасательные веревки
+            (int)array_get($sumArray, 'foamer'), // Имеется на автомобилях в боевом расчете -> Пенообразователя
+
+            (int)array_get($sumArray, 'foamer_in_stock'), // Пенообразователя на складе
+
+            (int)array_get($sumArray, 'damaged_hydrant_street'), // Количество неисправных водоисточников -> ПГ -> уличный
+            (int)array_get($sumArray, 'damaged_hydrant_object'), // Количество неисправных водоисточников -> ПГ -> объектовый
+            (int)array_get($sumArray, 'damaged_pv'), // Количество неисправных водоисточников -> ПВ
+
+            (int)array_get($sumArray, 'active_gasoline'), // в боевом расчете -> бензин
+            (int)array_get($sumArray, 'active_diesel'), // в боевом расчете -> солярка
+
+            (int)array_get($sumArray, 'reserved_gasoline'), // в резерве -> бензин
+            (int)array_get($sumArray, 'reserved_diesel'), // в резерве -> солярка
+
+            (int)(int)array_get($sumArray, 'generator') . '/' .
+            (int)(int)array_get($sumArray, 'exhauster') . '/' .
+            (int)(int)array_get($sumArray, 'girs') . '/' .
+            (int)(int)array_get($sumArray, 'iup'), // 1 генератор 2 дымосос 3 гирсы
+
+            '-' // Ф.И.О Начальника караула или лица его подменяющего
+        ];
+    }
+
+
+}

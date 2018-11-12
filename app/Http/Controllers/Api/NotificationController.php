@@ -23,7 +23,9 @@ class NotificationController extends Controller
             dispatch(new SendFcmMessages(
                 [$user->device_token],
                 'Карточка 101 №' . $model->ticket101_id,
-                $model->ticket101->location
+                $model->ticket101->location,
+                null,
+                $model->id
             ));
 
             return response()->json([

@@ -28,6 +28,16 @@
                    value="{{ request.token | default('') }}">
             <br>
             <br>
+            <label for="info">Info</label>
+            <input required
+                   class="input"
+                   type="text"
+                   name="info"
+                   id="info"
+                   value="{{ request.info | default('') }}">
+            <br>
+
+            <br>
             <button type="submit" class="button is-primary" style="min-width: 6rem"><i
                         class="fa fa-meh-rolling-eyes"></i>&nbsp;Send
             </button>

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import Vue from 'vue';
+import Vue from '../../VueInstance';
+import moment from 'moment';
 
 export default function bindServicePlan() {
     const autoc = document.querySelectorAll('[data-component="service-plan"]');
@@ -17,6 +18,7 @@ export default function bindServicePlan() {
                                 cardType: 101
                             })
                             .then((response) => {
+                                document.getElementById(notificationId + '_dispatched_time').innerHTML = moment().format('DD.MM.Y HH:SS');
                             })
                             .catch(() => {
                             });
@@ -31,6 +33,7 @@ export default function bindServicePlan() {
                                 if (data['success']) {
                                     document.querySelector(`[id="${notificationId + '_message_time'}"]`).value = data['time'];
                                     document.querySelector(`[id="${notificationId + '_name'}"]`).value = data['name'];
+                                    document.querySelector(`[id="${notificationId + '_notification_dispatched_time'}"]`).value = data['time'];
                                 } else {
                                     this.$snackbar.open({
                                         message: data['message'],

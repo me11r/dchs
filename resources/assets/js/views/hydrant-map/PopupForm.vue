@@ -115,7 +115,6 @@
 
 <script>
 import {BuefyCommonSelect} from '../../components';
-import Buefy from 'buefy';
 
 export default {
     name: 'PopupForm',
@@ -133,7 +132,6 @@ export default {
     },
     components: {
         BuefyCommonSelect,
-        'b-datepicker': Buefy['Datepicker']
     },
     computed: {
         fireDepartmentsOptions() {

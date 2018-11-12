@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\QuakeResource;
 use App\Repositories\Contracts\QuakeInterface;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
@@ -38,7 +39,9 @@ class QuakeController extends Controller
 
     public function edit($id)
     {
-        abort(418, 'Раздел в разработке');
+        return View::make('quakes.edit')
+            ->with('model', new QuakeResource($this->repository->find($id)))
+            ->render();
     }
 
     public function store(Request $request)
@@ -49,11 +52,13 @@ class QuakeController extends Controller
 
     public function update(Request $request, $id)
     {
-        abort(418, 'Раздел в разработке');
+        $this->repository->update($request->all(), $id);
+        return redirect(route('quakes.index'));
     }
 
     public function destroy($id)
     {
-        abort(418, 'Раздел в разработке');
+        $this->repository->delete($id);
+        return redirect(route('quakes.index'));
     }
 }

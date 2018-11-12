@@ -13,8 +13,11 @@ use App\Dictionary\Street;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
+use App\Models\Notification\Notification;
+use App\Models\Notification\NotificationGroup;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
+use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\WallMaterial;
@@ -119,6 +122,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $operational_card_id
  * @property int $fire_department_id
  * @property int $pre_information_id
+ * @property string|null $fireplace
+ * @property boolean $notifications_sent
+ * @property string $notification_message
+ * @property string|null $additional_description
  * @property-read \App\Dictionary\CityArea $city_area
  * @property-read \App\Dictionary\Street $crossroad_1
  * @property-read \App\Dictionary\Street $crossroad_2
@@ -246,6 +253,11 @@ class Ticket101 extends Model
     protected $fillable = [];
     protected $guarded = ['id'];
 
+    public function chronologies()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id');
+    }
+
     public function crossroad_1()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
@@ -308,12 +320,30 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+    public function popup_notifications()
+    {
+        return $this->belongsToMany(
+            Notification::class,
+            'ticket101_popup_notifications',
+            'ticket101_id'
+        );
+    }
+
+    public function notification_groups()
+    {
+        return $this->belongsToMany(
+            NotificationGroup::class,
+            'ticket101_notification_groups',
+            'ticket101_id'
+        );
+    }
+
     public function notifications()
     {
-        return $this->hasMany(Ticket101Notification::class, 'ticket101_id', 'id');
+        return $this
+                ->hasMany(Ticket101Notification::class, 'ticket101_id', 'id');
+                //->join('service_types', 'service_types.id', '=', 'ticket101_notifications.notification_service_id')
+                //->orderBy('service_types.priority', 'DESC');
     }
 
     public function results()
@@ -336,6 +366,9 @@ class Ticket101 extends Model
         $is_today = $created_date->isToday();
         $pass_after_9 = now()->format('H') > 9;
 
+        if($this->closed){
+            return false;
+        }
         if(!$is_yesterday && !$is_today){
             return false;
         }
@@ -358,7 +391,6 @@ class Ticket101 extends Model
             ->where('department', $service)->first();
     }
 
-
     public function wall_material()
     {
         return $this->belongsTo(WallMaterial::class, 'wall_material_id');
@@ -372,6 +404,16 @@ class Ticket101 extends Model
     public function service_plans()
     {
         return $this->hasMany(Ticket101ServicePlan::class, 'card_id');
+    }
+
+    public function scopeReal($q, $search = true)
+    {
+        return $q->where('is_real', $search);
+    }
+
+    public function scopeClosed($q, $search = true)
+    {
+        return $q->where('closed', $search);
     }
 
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
@@ -399,6 +441,15 @@ class Ticket101 extends Model
             + $baseQuery->sum('hospitalized_count');
 
         return $result;
+    }
+
+    public function getRecommendations()
+    {
+        $schedule = Schedule::where('fire_department_main_id', $this->fire_department_id)
+            ->where('dict_fire_level_id', $this->fire_level_id)
+            ->get();
+
+        return $schedule;
     }
 
 

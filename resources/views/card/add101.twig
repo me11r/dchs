@@ -5,7 +5,9 @@
             records: {{ ticket.other_records | json_encode() | raw }},
             other_records_unique: {{ other_records_unique | json_encode() | raw }},
             trunks: {{ trunks | json_encode() | raw }},
-            ticketId: '{{ ticket.id }}'
+            ticketId: '{{ ticket.id }}',
+            ticket101: {{ ticket | json_encode() | raw }},
+            notificationGroups: {{ notificationGroups | json_encode() | raw }}
         };
     </script>
 
@@ -18,22 +20,27 @@
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
             <div class="tabs buttab is-boxed" id="">
                 <ul>
-                    <li>
-                        <a onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Звонок</a>
+                    <li class="main-tab">
+                        <a onclick="window.add101tabs.setTab(0);"><i class="fas fa-phone"></i>&nbsp;Путевка</a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(1);">
-                            <i class="fas fa-truck-moving"></i>&nbsp;Подразделения
+                            <i class="fas fa-truck-moving"></i>&nbsp;Высылка
                         </a>
                     </li>
-                    <li>
+                    <li class="main-tab">
                         <a onclick="window.add101tabs.setTab(2);"><i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
                     </li>
-                    <li>
-                        <a onclick="window.add101tabs.setTab(3);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
+                    <li class="main-tab">
+                        <a onclick="window.add101tabs.setTab(3);">
+                            <i class="fas fa-aviato"></i>&nbsp;Хронология
+                        </a>
                     </li>
-                    <li>
-                        <a onclick="window.add101tabs.setTab(4);">
+                    <li class="main-tab">
+                        <a onclick="window.add101tabs.setTab(4);"><i class="fas fa-info-circle"></i>&nbsp;Прочее</a>
+                    </li>
+                    <li class="main-tab">
+                        <a onclick="window.add101tabs.setTab(5);">
                             <i class="fas fa-check-double"></i>&nbsp;Итоги выезда
                         </a>
                     </li>
@@ -44,313 +51,536 @@
                     <i class="fas fa-circle-notch fa-spin fa-6x"></i>
                 </div>
             </div>
-            <div class="panels">
+            <div class="panels panels-main">
                 <div id="tab_call" class="is-hidden">
-                    <h5 class="subtitle">Сведения поступившие со звонком:</h5>
 
-                    <div class="field" data-component="location-input" data-value="{{ ticket.location|default('') }}">
-                        <label for="location">Место пожара (Адрес) <a href="{{ url('/card/mapscreen') }}"
-                                                                      target="_blank"
-                                                                      class="button is-basic is-main"><i
-                                        class="far fa-map"></i>&nbsp;Открыть карту</a></label>
-                        <input name="location"
-                               id="location"
-                               class="input"
-                               v-model="location"
-                               @blur="onBlur"
-                               @focus="onFocus">
-                        <div class="dropdown-menu"
-                             :style="{'display': showList? 'block': 'none'}"
-                             style="position: relative">
-                            <div class="dropdown-content">
-                                <a class="dropdown-item"
-                                   @click="selectItem(item)"
-                                   v-for="item in items">
-                                    <div class="row">
-                                        <span v-html="item.location"></span>
-                                        <small>, <span v-html="item.object_name"></span></small>
+
+                    <div class="bd-klmn-lead">
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field" data-component="location-input"
+                                         data-value="{{ ticket.location|default('') }}">
+                                        <label for="location">Адрес <a href="{{ url('/card/mapscreen') }}"
+                                                                       target="_blank"
+                                                                       class="button is-basic is-main"><i
+                                                        class="far fa-map"></i>&nbsp;Открыть карту</a></label>
+                                        <input name="location"
+                                               ref="location"
+                                               id="location"
+                                               class="input"
+                                               v-model="location"
+                                               @blur="onBlur"
+                                               @focus="onFocus"
+                                               @keyup="keyUp = true">
+                                        <div class="dropdown-menu"
+                                             :style="{'display': showList ? 'block': 'none'}"
+                                             style="position: relative">
+                                            <div class="dropdown-content">
+                                                <a class="dropdown-item"
+                                                   @click="selectItem(item)"
+                                                   v-for="item in items">
+                                                    <div class="row">
+                                                        <span v-html="item.location"></span>
+                                                        <small>, <span v-html="item.object_name"></span></small>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                </a>
+                                </div>
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field" style="margin-top: 15px;">
+                                        <p class="control"
+                                           data-component="object-name-input"
+                                           data-value="{{ ticket.object_name|default('') }}">
+                                            <label for="object_name">Наименование объекта</label>
+                                            <input type="text"
+                                                   class="input"
+                                                   name="object_name"
+                                                   id="object_name"
+                                                   v-model="object_name"
+                                            />
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="field">
-                        <p class="control">
-                            <label for="city_area">Район города</label>
-                        </p>
-                        <div class="select"
-                             data-component="simple-select"
-                             data-special="specialPlan"
-                             data-value="{{ ticket.city_area_id }}"
-                             data-name="city_area_id">
-                            <select name="city_area_id" id="city_area" v-model="selectedId">
-                                <option value="">-</option>
-                                {% for area in city_area %}
-                                    <option value="{{ area.id }}">{{ area.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="field is-grouped">
-                        <div class="control is-expanded" data-component="autocomplete"
-                             data-name="{{ ticket.crossroad_1.name|default('') }}"
-                             data-hid="{{ ticket.crossroad_1_id|default('') }}">
-                            <label for="crossroad_1_id">Пересечение улицы</label>
-                            <input type="hidden" name="crossroad_1_id" id="crossroad_1_hid" :value="hid"/>
-                            <b-autocomplete
-                                    field="name"
-                                    ref="crossroad_1_hid"
-                                    id="crossroad_1_id"
-                                    v-model="name"
-                                    :data="data"
-                                    :loading="isFetching"
-                                    @input="getData"
-                                    @select="onSelect"
-                            >
-                                <template slot-scope="props">
-                                    {% verbatim %}
-                                    <div class="row"><span>{{ props.option.name }}</span><small v-if="props.option.area">, {{ props.option.area.name }} район</small></div>
-                                    {% endverbatim %}
-                                </template>
-                                <template slot="empty">Подходящих улиц не найдено</template>
-                            </b-autocomplete>
-                        </div>
-                        <div class="control is-expanded" data-component="autocomplete"
-                             data-name="{{ ticket.crossroad_2.name|default('') }}"
-                             data-hid="{{ ticket.crossroad_2_id|default('') }}">
-                            <label for="crossroad_2_id">и улицы</label>
-                            <input type="hidden" name="crossroad_2_id" id="crossroad_2_hid" :value="hid"/>
-                            <b-autocomplete type="text" id="crossroad_2_id"
-                                            field="name"
-                                            ref="crossroad_2_hid"
-                                            id="crossroad_2_id"
-                                            v-model="name"
-                                            :data="data"
-                                            :loading="isFetching"
-                                            @input="getData"
-                                            @select="onSelect"
-                            >
-                                <template slot-scope="props">
-                                    {% verbatim %}
-                                    <div class="row"><span>{{ props.option.name }}</span><small v-if="props.option.area">, {{ props.option.area.name }} район</small></div>
-                                    {% endverbatim %}
-                                </template>
-                                <template slot="empty">Подходящих улиц не найдено</template>
-
-                            </b-autocomplete>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <div class="control">
-                            <label for="pre_information_id">Предварительная информация</label>
-                        </div>
-                        <div class="select"
-                             data-component="simple-select"
-                             data-value="{{ ticket.pre_information_id }}"
-                             data-name="pre_information_id"
-                             style="width:50%; padding-right: 6px;">
-                            <select name="pre_information_id"
-                                    id="pre_information_id"
-                                    v-model="selectedId"
-                                    style="width: 100%"
-                                    required>
-                                <option value="">-</option>
-                                {% for object in fire_object_options %}
-                                    <option value="{{ object.id }}">{{ object.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="fire-object-div">
-                        <fire-object :fire_objects="{{ fire_object }}" :ticket="{{ ticket }}"></fire-object>
-                    </div>
-                    <br>
-                    <div class="field is-grouped">
-                        <div class="field">
-                            <label class="field-label" for="wall_material_id">Материал стен</label>
-                            <div class="control">
-                            <div class="select">
-                            {#<input#}
-                                    {#id="wall_material_id"#}
-                                    {#class="input">#}
-                            <select class="select" name="wall_material_id" id="wall_material_id"
-                                    style="width: 100%;">
-                                <option value="">-</option>
-                                {% for wall_material in wall_materials %}
-                                    <option {{ ticket.wall_material_id == wall_material.id ? 'selected' : '' }} value="{{ wall_material.id }}">{{ wall_material.name }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field">
+                                        <label for="fireplace">Место пожара</label>
+                                        <input
+                                                id="fireplace"
+                                                name="fireplace"
+                                                class="input"
+                                                value="{{ ticket.fireplace }}"
+                                        >
+                                    </div>
+                                </div>
                             </div>
-                            </div>
-                        </div>
-                        <div class="control">
-                            <label for="year_of_development">Год постройки</label>
-                            <input
-                                    id="year_of_development"
-                                    name="year_of_development"
-                                    class="input"
-                                    value="{{ ticket.year_of_development }}"
-                            >
-                        </div>
-                        <div class="control">
-                            <label for="square">Площадь объекта</label>
-                            <input
-                                    id="square"
-                                    name="building_square"
-                                    class="input"
-                                    value="{{ ticket.building_square }}"
-
-                            >
-                        </div>
-                    </div>
-
-                    <div class="field is-grouped">
-                        <p class="control"
-                           data-component="object-name-input"
-                           data-value="{{ ticket.object_name|default('') }}">
-                            <label for="object_name">Наименование объекта</label>
-                            <input type="text"
-                                   class="input"
-                                   name="object_name"
-                                   id="object_name"
-                                   v-model="object_name"
-                            />
-                        </p>
-
-                        <p class="control"
-                           data-component="buefy-common-select"
-                           data-name="operational_plan_id"
-                           data-value="{{ ticket.operational_plan_id|default(0) }}">
-                            <label for="operational_plan_id">Оперативный план</label>
-                            <input type="hidden"
-                                   name="operational_plan_id"
-                                   id="operational_plan_id"
-                                   v-model="selectedId">
-                            <buefy-common-select
-                                    :options='{{ operational_plans | json_encode() | raw }}'
-                                    :min-length="1"
-                                    v-model="selectedId">
-                            </buefy-common-select>
-                        </p>
-
-                        <div class="control">
-                            <label for="operational_card_id">Оперативная карточка</label>
-                            <div class="select"
-                                 data-component="simple-select"
-                                 data-special="specialPlan"
-                                 data-value="{{ ticket.operational_card_id }}"
-                                 data-name="operational_cards"
-                                 style="display: block">
-                                <select name="operational_card_id" id="operational_card_id" v-model="selectedId">
-                                    <option value="">-</option>
-                                    {% for object in operational_cards %}
-                                        <option value="{{ object.id }}">{{ object.oc_number }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="control">
-                            <label for="fire_level_id">Ранг пожара</label>
-                            <div class="select"
-                                 data-component="simple-select"
-                                 data-special="specialPlan"
-                                 data-value="{{ ticket.fire_level_id }}"
-                                 data-name="fire_level_id"
-                                 style="display: block">
-                                <select name="fire_level_id" id="fire_level_id" required v-model="selectedId">
-                                    <option value="">-</option>
-                                    {% for object in fire_levels %}
-                                        <option value="{{ object.id }}">{{ object.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-
-                        <p class="control"
-                           data-name="fire_department_id"
-                           data-component="buefy-common-select"
-                           data-value="{{ ticket.fire_department_id|default(0) }}">
-                            <label for="fire_department_id">Микроучасток</label>
-                            <input type="hidden"
-                                   name="fire_department_id"
-                                   required
-                                   id="fire_department_id"
-                                   v-model="selectedId">
-                            <buefy-common-select
-                                    :options='{{ fire_departments | json_encode() | raw }}'
-                                    :min-length="1"
-                                    required="required"
-                                    v-model="selectedId">
-                            </buefy-common-select>
-                        </p>
-                    </div>
-
-                    <div class="field">
-                        <div class="checkbox">
-                            <input type="hidden" name="people_in_danger" value="0"/>
-                            <input type="checkbox" name="people_in_danger" value="1" id="people_in_danger"
-                                   {% if ticket.people_in_danger %}checked{% endif %}/>
-                            <label for="people_in_danger">Опасность для людей</label>
-                        </div>
-                    </div>
-                    <div class="field is-grouped">
-                        <p class="control">
-                            <label for="storey_count">Этажность</label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="storey_count" id="storey_count"
-                                   value="{{ ticket.storey_count|default('') }}"/>
-                        </p>
-                        <p class="control">
-                            <label for="floor">На каком этаже пожар</label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="floor" id="floor"
-                                   value="{{ ticket.floor|default('') }}"/>
-                        </p>
-                    </div>
-                    <div class="field">
-                        <label for="building_description">Конструктивные особенности</label>
-                        <textarea class="textarea" name="building_description" id="building_description" cols="30"
-                                  rows="2">{{ ticket.building_description|default('') }}</textarea>
-                    </div>
-                    <div class="field is-grouped">
-                        <p class="control is-expanded">
-                            <label for="caller_name">ФИО Заявителя</label>
-                            <input type="text" class="input" name="caller_name" id="caller_name"
-                                   value="{{ ticket.caller_name|default('') }}"/>
-                        </p>
-                        <p class="control">
-                            <label for="caller_phone">Телефон заявителя</label>
-                            <input type="text" class="input" name="caller_phone" id="caller_phone"
-                                   value="{{ ticket.caller_phone|default('') }}"/>
-                        </p>
-                    </div>
-                    <div class="field">
-                        <div id="control" data-component="timepicker"
-                             data-value="{{ attribute(ticket, 'register_time')|default(date().format('H:i')) }}">
-                            <label for="register_time">Время регистрации сообщения</label>
-                            <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
-                                          style="max-width: 6rem;" name="register_time" :value="value">
-                                <div class="field is-grouped" style="justify-content: space-between">
-                                    <p class="control">
-                                        <a class="button is-primary is-small"
-                                           @click="()=> {value = new Date(); close();}">
-                                            <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                            <span>Сейчас</span>
-                                        </a>
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary">
+                                    <p class="control"
+                                       data-component="buefy-common-select"
+                                       data-name="operational_plan_id"
+                                       data-value="{{ ticket.operational_plan_id|default(0) }}">
+                                        <label for="operational_plan_id">Оперативный план</label>
+                                        <input type="hidden"
+                                               name="operational_plan_id"
+                                               id="operational_plan_id"
+                                               v-model="selectedId">
+                                        <buefy-common-select
+                                                :options='{{ operational_plans | json_encode() | raw }}'
+                                                :min-length="1"
+                                                v-model="selectedId">
+                                        </buefy-common-select>
                                     </p>
-                                    <p class="control">
-                                        <a class="button is-outlined is-small" @click="close()">
-                                            <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                        </a>
+                                    {% if ticket.operational_plan_id %}
+                                        {% for special_plan in ticket.operational_plan.special_plans %}
+                                            {% if special_plan.file %}
+                                                <a href="{{ '/storage/operational-plans/'~special_plan.file }}" target="_blank">
+                                                    <span class="file-icon">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </span>
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary">
+                                    <label for="operational_card_id">Оперативная карточка</label>
+                                    <div class="select"
+                                         data-component="simple-select"
+                                         data-special="specialPlan"
+                                         data-value="{{ ticket.operational_card_id }}"
+                                         data-name="operational_cards"
+                                         style="display: block">
+                                        <select name="operational_card_id" id="operational_card_id"
+                                                style="width: 100%;"
+                                                v-model="selectedId">
+                                            <option value="">-</option>
+                                            {% for object in operational_cards %}
+                                                <option value="{{ object.id }}">{{ object.oc_number }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {% if ticket.operational_card_id and ticket.operational_card.file %}
+                                            <a href="{{ '/storage/operational-cards/'~ticket.operational_card.file }}" target="_blank">
+                                            <span class="file-icon">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field">
+                                        <div class="control">
+                                            <label for="pre_information">Предварительная информация</label>
+                                            <textarea class="textarea" name="pre_information" id="pre_information" cols="30"
+                                                      rows="2">{{ ticket.pre_information|default('') }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <label for="building_description">Конструктивные особенности</label>
+                                    <textarea class="textarea" name="building_description" id="building_description"
+                                              cols="30"
+                                              rows="2">{{ ticket.building_description|default('') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+
+                            <div class="column is-2">
+                                <div class="bd-notification is-primary">
+                                    <p class="control"
+                                       data-name="fire_department_id"
+                                       data-component="buefy-common-select"
+                                       data-value="{{ ticket.fire_department_id|default(0) }}">
+                                        <label for="fire_department_id">Микроучасток</label>
+                                        <input type="hidden"
+                                               name="fire_department_id"
+                                               required
+                                               id="fire_department_id"
+                                               v-model="selectedId">
+                                        <buefy-common-select
+                                                :options='{{ fire_departments | json_encode() | raw }}'
+                                                :min-length="1"
+                                                required="required"
+                                                v-model="selectedId">
+                                        </buefy-common-select>
                                     </p>
                                 </div>
-                            </b-timepicker>
+                            </div>
+                            <div class="column is-2">
+                                <div class="bd-notification is-primary">
+                                    <p class="control">
+                                        <label for="city_area">Район города</label>
+                                    </p>
+                                    <div class="select"
+                                         data-component="simple-select"
+                                         data-special="specialPlan"
+                                         data-value="{{ ticket.city_area_id }}"
+                                         data-name="city_area_id">
+                                        <select name="city_area_id" id="city_area" v-model="selectedId">
+                                            <option value="">-</option>
+                                            {% for area in city_area %}
+                                                <option value="{{ area.id }}">{{ area.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-2">
+                                <div class="bd-notification is-primary">
+                                    <label for="fire_level_id">Ранг пожара</label>
+                                    <div class="select"
+                                         {#data-component="simple-select"#}
+                                         {#data-special="specialPlan"#}
+                                         {#data-value="{{ ticket.fire_level_id }}"#}
+                                         {#data-name="fire_level_id"#}
+                                         style="display: block">
+                                        <select name="fire_level_id" id="fire_level_id1" required
+                                                style="width: 100%;">
+                                            <option value="">-</option>
+                                            {% for object in fire_levels %}
+                                                <option {% if object.id  == ticket.fire_level_id %} selected {% endif %} value="{{ object.id }}">{{ object.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field">
+                                        <label for="year_of_development">Год постройки</label>
+                                        <input
+                                                id="year_of_development"
+                                                name="year_of_development"
+                                                class="input"
+                                                value="{{ ticket.year_of_development }}"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary">
+                                    <label for="storey_count">Этажность</label>
+                                    <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                           name="storey_count" id="storey_count"
+                                           value="{{ ticket.storey_count|default('') }}"/>
+                                </div>
+                            </div>
+                            <div class="column is-3">
+                                <div class="bd-notification is-primary">
+                                    <label for="floor">На каком этаже пожар</label>
+                                    <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                           name="floor" id="floor"
+                                           value="{{ ticket.floor|default('') }}"/>
+                                </div>
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field">
+                                        <label for="square">Площадь объекта</label>
+                                        <input
+                                                id="square"
+                                                name="building_square"
+                                                class="input"
+                                                value="{{ ticket.building_square }}"
+
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field">
+                                        <p class="control is-expanded">
+                                            <label for="caller_name">ФИО Заявителя</label>
+                                            <input type="text" class="input" name="caller_name" id="caller_name"
+                                                   value="{{ ticket.caller_name|default('') }}"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field" style="margin-top: 15px;">
+                                        <div class="checkbox">
+                                            <label for="people_in_danger">Опасность для людей</label>
+                                            Да - <input type="radio" name="people_in_danger" value="1" {% if ticket.people_in_danger %}checked{% endif %}>
+                                            Неизвестно - <input type="radio" name="people_in_danger" value="0" {% if not ticket.people_in_danger %}checked{% endif %}>
+                                            {#<input type="checkbox" name="people_in_danger" value="1" id="people_in_danger"#}
+                                                   {#{% if ticket.people_in_danger %}checked{% endif %}/>#}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns is-variable bd-klmn-columns is-3">
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field">
+                                        <p class="control">
+                                            <label for="caller_phone">Телефон заявителя</label>
+                                            <input type="text" class="input" name="caller_phone" id="caller_phone"
+                                                   value="{{ ticket.caller_phone|default('') }}"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-half">
+                                <div class="bd-notification is-primary">
+                                    <div class="field">
+                                        <label for="additional_description">Дополнительная информация</label>
+                                        <textarea class="textarea" name="additional_description" id="additional_description"
+                                                  cols="30"
+                                                  rows="2">{{ ticket.additional_description|default('') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div id="tab-truck" class="is-hidden">
-                    <h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>
+                    {#<h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>#}
+                    <table class="table is-narrow is-hoverable is-fullwidth" data-component="road-trip">
+                        <tr>
+                            <th>Подразделение</th>
+                            <th>Отделения</th>
+                            <th>Принято в работу</th>
+                            <th>Время выезда</th>
+                            <th>Время прибытия</th>
+                            <th>Время возвращения</th>
+                            <th>
+                                <a @click="sendAllTripPlans()"
+                                   class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
+                                </a>
+                            </th>
+                            <th>Время оповещения</th>
+                        </tr>
+                        {% for index,ssv in ssv_out %}
+                            <tr>
+                                {#Подразделение#}
+                                <td class="has-text-right"
+                                    {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and not ssv.res.get_back %}
+                                        style="color: green"
+                                    {% elseif ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and ssv.res.get_back %}
+                                        style="color: #f9221e"
+                                    {% endif %}
+                                    id="ph_{{ ssv.id }}_text">{{ ssv.name }}
+                                </td>
+
+                                {#Отделения#}
+                                <td>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'action' %}
+                                            <label {% if i.get_back %} style="color: #f9221e" class="blink5" {% endif %} for="">
+                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %}
+                                                       name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]"
+                                                       id="dept_{{ i.id }}" value="1"
+                                                       type="checkbox"> {{ i.tech.department }}
+                                            </label>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'reserve' %}
+                                            <label for="">
+                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %}
+                                                       name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]"
+                                                       id="dept_{{ i.id }}" value="1"
+                                                       type="checkbox"> {{ i.tech.reserve }}
+                                                <span class="small">Р</span>
+                                            </label>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+
+                                {#Принято в работу#}
+                                <td>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input id="accepted_time_{{ i.id }}" style="height: 25px; font-size: 12px;"
+                                                   type="text" class="input"
+                                                   value="{% if i.dispatched and i.out_time %} {{ i.updated_at.format('d.m.Y')|default('') }} {% endif %}"
+                                                   readonly>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </td>
+
+                                {#Время выезда#}
+                                <td>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input id="out_time_{{ i.id }}" style="height: 25px; font-size: 12px;"
+                                                   type="text" class="input"
+                                                   value="{% if i.dispatched and i.out_time %} {{ i.out_time|default('') }} {% endif %}"
+                                                   readonly>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+
+                                {#Время прибытия#}
+                                <td>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+
+                                            <div class="">
+                                                {#<t-picker :is-read-only="false" name="time_arrive[{{ i.id }}]"inputdate="{{ i.arrive_time }}"></t-picker>#}
+                                                <timepicker-input name="time_arrive[{{ i.id }}]" style="height: 25px; font-size: 12px;" value="{{ i.arrive_time }}"></timepicker-input>
+                                            </div>
+
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+
+                                {#Время возвращения#}
+                                <td>
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+
+                                            <input id="ret_time_{{ i.id }}" style="height: 25px; font-size: 12px;"
+                                                   type="text" class="input"
+                                                   value="{% if i.dispatched and i.ret_time %} {{ i.ret_time|default('') }} {% endif %}"
+                                                   readonly>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+
+                                {#Отправка#}
+                                <td>
+
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            {% if i.dispatched %}
+                                                <a style="height: 25px;" disabled="disabled"
+                                                   class="button is-primary small is-outlined"><i
+                                                            class="fas fa-bus"></i>&nbsp;Подразделение отправлено
+                                                    - {{ i.tech.department ?? i.tech.reserve }}</a>
+                                            {% else %}
+                                                <a style="height: 25px;"
+                                                   @click="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }}, {{ i.id }})"
+                                                   {#class="button is-primary small is-outlined"><i
+                                                            class="fas fa-bus"></i>&nbsp;Отправить подразделение
+                                                    - {{ i.tech.department ?? i.tech.reserve }}</a>#}
+                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Выслать</a>
+                                                <br>
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </td>
+
+                                {#Время оповещения#}
+                                <td class="is-expanded">
+                                    {% for i in ticket.results|default([]) %}
+                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                                            <input id="send_time_{{ i.id }}" style="height: 25px; font-size: 12px;" type="text" class="input"
+                                                   value="{% if i.dispatched %} {{ i.dispatch_time|default('') }} {% endif %}"
+                                                   readonly>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div id="tab_notify" class="is-hidden notifications">
+                    <div class="tabs buttab is-boxed" id="">
+                        <ul>
+                            <li class="is-active">
+                                <a onclick="window.add101tabs.setNotificationTab(0);">
+                                    <i class="fas fa-envelope"></i>&nbsp;Руководство
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="window.add101tabs.setNotificationTab(1);">
+                                    <i class="fas fa-envelope"></i>&nbsp;Службы взаимодействия
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="panels index-1">
+                        <div id="ticket101add_popup_notifications"></div>
+                    </div>
+
+                    <div class="panels is-hidden index-1">
+                        {#<h5 class="subtitle">Время сообщения руководству ГУ:</h5>#}
+                        {#<div class="field is-grouped">#}
+                            {#{% for name,title in gu_notify %}#}
+                                {#<div class="control" data-component="timepicker"#}
+                                     {#data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">#}
+                                    {#<label for="notify_{{ name }}_time">{{ title }}</label>#}
+                                    {#<b-timepicker @focus="closeAll()" type="text" v-model="value" style="max-width: 4rem"#}
+                                                  {#name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">#}
+                                        {#<div class="field is-grouped" style="justify-content: space-between">#}
+                                            {#<p class="control">#}
+                                                {#<a class="button is-primary is-small"#}
+                                                   {#@click="()=> {value = new Date(); close();}">#}
+                                                    {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
+                                                    {#<span>Сейчас</span>#}
+                                                {#</a>#}
+                                            {#</p>#}
+                                            {#<p class="control">#}
+                                                {#<a class="button is-outlined is-small" @click="close()">#}
+                                                    {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
+                                                {#</a>#}
+                                            {#</p>#}
+                                        {#</div>#}
+                                    {#</b-timepicker>#}
+                                {#</div>#}
+                            {#{% endfor %}#}
+                        {#</div>#}
+                        {#<div class="field" data-component="timepicker"#}
+                             {#data-value="{{ ticket.next_notify_time|default('') }}">#}
+                            {#<label for="next_notify_time">Время следующего взаимодействия</label>#}
+                            {#<b-timepicker @focus="closeAll()" v-model="value" type="text" style="max-width: 4rem"#}
+                                          {#name="next_notify_time" id="next_notify_time" :value="value">#}
+                                {#<div class="field is-grouped" style="justify-content: space-between">#}
+                                    {#<p class="control">#}
+                                        {#<a class="button is-primary is-small"#}
+                                           {#@click="()=> {value = new Date(); close();}">#}
+                                            {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
+                                            {#<span>Сейчас</span>#}
+                                        {#</a>#}
+                                    {#</p>#}
+                                    {#<p class="control">#}
+                                        {#<a class="button is-outlined is-small" @click="close()">#}
+                                            {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
+                                        {#</a>#}
+                                    {#</p>#}
+                                {#</div>#}
+                            {#</b-timepicker>#}
+                        {#</div>#}
+                        {#<h5 class="subtitle">Службы</h5>#}
+                        {% if ticket and ticket.id %}
+                            {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div id="tab_chronology" class="is-hidden">
 
                     <div class="field">
                         <div data-component="timepicker"
@@ -397,212 +627,24 @@
                         </div>
                     </div>
 
-                    <table class="table is-narrow is-hoverable is-fullwidth" data-component="road-trip">
-                        <tr>
-                            <th>Подразделение</th>
-                            <th>Отделения</th>
-                            <th>Принято в работу</th>
-                            <th>Время выезда</th>
-                            <th>Время прибытия</th>
-                            <th>Время возвращения</th>
-                            <th>
-                                <a @click="sendAllTripPlans()"
-                                   class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка сил и средств согласно рангу
-                                </a>
-                            </th>
-                        </tr>
-                        {% for index,ssv in ssv_out %}
-                            <tr>
-                                <td class="has-text-right"
-                                        {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended %}
-                                            style="color: green"
-                                        {% endif %} id="ph_{{ ssv.id }}_text">{{ ssv.name }}
-                                </td>
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'action' %}
-                                            <label for="">
-                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]" id="dept_{{ i.id }}" value="1" type="checkbox"> {{ i.tech.department }}
-                                            </label>
-                                            <br>
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'reserve' %}
-                                            <label for="">
-                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %} name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]" id="dept_{{ i.id }}" value="1" type="checkbox"> {{ i.tech.reserve }}
-                                                <span class="small">Резерв</span>
-                                            </label>
-                                            <br>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input id="accepted_time_{{ i.id }}" style="height: 25px; font-size: 12px;" type="text" class="input"
-                                               value="{% if i.dispatched and i.out_time %} {{ i.updated_at.format('d.m.Y')|default('') }} {% endif %}"
-                                               readonly>
-                                        {% endif %}
-                                    {% endfor %}
+                    <div id="ticket101-chronology">
 
-                                </td>
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input id="out_time_{{ i.id }}" style="height: 25px; font-size: 12px;" type="text" class="input"
-                                               value="{% if i.dispatched and i.out_time %} {{ i.out_time|default('') }} {% endif %}"
-                                               readonly>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
+                        {% if notification_get_back == 1 %}
+                            <notification
+                                    message="Необходимо оповестить отделения о понижении ранга"
+                            >
 
-                                            <div class="field">
-                                                {#<div data-component="timepicker"#}
-                                                     {#data-value="{{ attribute(ticket, 'liqv_time')|default('') }}">#}
-                                                    {#<b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"#}
-                                                                  {#style="max-width: 6rem;" name="liqv_time{{ random() }}" :value="value">#}
-                                                        {#<div class="field is-grouped" style="justify-content: space-between">#}
-                                                            {#<p class="control">#}
-                                                                {#<a class="button is-primary is-small"#}
-                                                                   {#@click="()=> {value = new Date(); close();}">#}
-                                                                    {#<b-icon pack="far" icon="clock"></b-icon>&nbsp;#}
-                                                                    {#<span>Сейчас</span>#}
-                                                                {#</a>#}
-                                                            {#</p>#}
-                                                            {#<p class="control">#}
-                                                                {#<a class="button is-outlined is-small" @click="close()">#}
-                                                                    {#<i class="fas fa-check"></i>&nbsp;<span>Принять</span>#}
-                                                                {#</a>#}
-                                                            {#</p>#}
-                                                        {#</div>#}
-                                                    {#</b-timepicker>#}
-                                                {#</div>#}
-                                                {#<t-picker inputdate="{{ attribute(ticket, 'loc_time')|default('')|raw }}"></t-picker>#}
-                                                <t-picker name="time_arrive[{{ i.id }}]" inputdate="{{ i.arrive_time }}"></t-picker>
-                                            </div>
+                            </notification>
+                        {% endif %}
 
-
-                                            {#<b-field>#}
-                                                {#<b-timepicker#}
-                                                        {#value="{value = new Date()}"#}
-                                                        {#v-model="value"#}
-                                                        {#placeholder=""#}
-                                                        {#icon="clock"#}
-                                                        {#editable>#}
-                                                {#</b-timepicker>#}
-                                            {#</b-field>#}
-
-                                            {#<input type="datetime-local">#}
-
-                                            {#<input style="height: 25px; font-size: 12px;" type="text" class="input"#}
-                                               {#value="{% if i.dispatched and i.arrive_time %} {{ i.arrive_time|default('') }} {% endif %}"#}
-                                               {#readonly>#}
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                                {#<td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
-                                                   value="{% if i.dispatched and i.loc_time %} {{ i.loc_time|default('') }} {% endif %}"
-                                                   readonly>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input style="height: 25px; font-size: 12px;" type="text" class="input"
-                                                   value="{% if i.dispatched and i.liqv_time %} {{ i.liqv_time|default('') }} {% endif %}"
-                                                   readonly>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>#}
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input id="ret_time_{{ i.id }}" style="height: 25px; font-size: 12px;" type="text" class="input"
-                                                   value="{% if i.dispatched and i.ret_time %} {{ i.ret_time|default('') }} {% endif %}"
-                                                   readonly>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                                <td>
-
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            {% if i.dispatched %}
-                                                <a style="height: 25px;" disabled="disabled"
-                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Подразделение отправлено - {{ i.tech.department ?? i.tech.reserve }}</a>
-                                            {% else %}
-                                                <a style="height: 25px;" @click="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }}, {{ i.id }})"
-                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправить подразделение - {{ i.tech.department ?? i.tech.reserve }}</a>
-                                            {% endif %}
-
-                                        {% endif %}
-                                    {% endfor %}
-
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div id="tab_notify" class="is-hidden">
-                    <h5 class="subtitle">Время сообщения руководству ГУ:</h5>
-                    <div class="field is-grouped">
-                        {% for name,title in gu_notify %}
-                            <div class="control" data-component="timepicker"
-                                 data-value="{{ attribute(ticket, 'notify_' ~ name ~ '_time')| default('') }}">
-                                <label for="notify_{{ name }}_time">{{ title }}</label>
-                                <b-timepicker @focus="closeAll()" type="text" v-model="value" style="max-width: 4rem"
-                                              name="notify_{{ name }}_time" :value="value" id="notify_{{ name }}_time">
-                                    <div class="field is-grouped" style="justify-content: space-between">
-                                        <p class="control">
-                                            <a class="button is-primary is-small"
-                                               @click="()=> {value = new Date(); close();}">
-                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                                <span>Сейчас</span>
-                                            </a>
-                                        </p>
-                                        <p class="control">
-                                            <a class="button is-outlined is-small" @click="close()">
-                                                <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                            </a>
-                                        </p>
-                                    </div>
-                                </b-timepicker>
-                            </div>
-                        {% endfor %}
+                        <ticket101-chronology
+                                :records="{{ ticket.chronologies }}"
+                                :departments="{{ departmentsOnWay }}"
+                                :card="{{ ticket }}"
+                                :event-info="{{ eventInfos }}"
+                                :event-info-arrived="{{ eventInfosArrived }}"
+                        ></ticket101-chronology>
                     </div>
-                    <div class="field" data-component="timepicker"
-                         data-value="{{ ticket.next_notify_time|default('') }}">
-                        <label for="next_notify_time">Время следующего взаимодействия</label>
-                        <b-timepicker @focus="closeAll()" v-model="value" type="text" style="max-width: 4rem"
-                                      name="next_notify_time" id="next_notify_time" :value="value">
-                            <div class="field is-grouped" style="justify-content: space-between">
-                                <p class="control">
-                                    <a class="button is-primary is-small"
-                                       @click="()=> {value = new Date(); close();}">
-                                        <b-icon pack="far" icon="clock"></b-icon>&nbsp;
-                                        <span>Сейчас</span>
-                                    </a>
-                                </p>
-                                <p class="control">
-                                    <a class="button is-outlined is-small" @click="close()">
-                                        <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                    </a>
-                                </p>
-                            </div>
-                        </b-timepicker>
-                    </div>
-                    <h5 class="subtitle">Службы</h5>
-                    {% if ticket and ticket.id %}
-                        {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
-                    {% endif %}
                 </div>
                 <div id="tab_other" class="is-hidden">
                     <h5 class="subtitle">Обстановка с места пожара:</h5>
@@ -683,7 +725,7 @@
                             <p>
                                 <label for="result_fire_level_id">Уточненный ранг пожара</label>
                             <div class="select">
-                                <select name="result_fire_level_id"  id="result_fire_level_id">
+                                <select name="result_fire_level_id" id="result_fire_level_id">
                                     <option value="">-</option>
                                     {% for fire_level in fire_levels %}
                                         <option value="{{ fire_level.id }}"
@@ -700,7 +742,8 @@
                         </div>
                         <div class="control">
                             <label for="square_max">Площадь пожара</label>
-                            <input min=0 oninput="validity.valid||(value='');" class="input" type="number" id="square_max" value="{{ max_square }}">
+                            <input min=0 oninput="validity.valid||(value='');" class="input" type="number"
+                                   id="square_max" value="{{ max_square }}">
                         </div>
                         <div class="control">
                             <span class="field">м<sup><small>2</small></sup></span>
@@ -737,26 +780,30 @@
                         <div class="control">
                             <label for="rescued_count">Спасено людей
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="rescued_count" id="rescued_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="rescued_count" id="rescued_count"
                                    value="{{ ticket.rescued_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="evac_count">Эвакуировано людей
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="evac_count" id="evac_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="evac_count" id="evac_count"
                                    value="{{ ticket.evac_count|default('') }}"/>
                         </div>
 
                         <div class="control">
                             <label for="co2_poisoned_count">Получили отравления угарным газом
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="co2_poisoned_count" id="co2_poisoned_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="co2_poisoned_count" id="co2_poisoned_count"
                                    value="{{ ticket.co2_poisoned_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="ch4_poisoned_count">Получили отравления природным газом
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="ch4_poisoned_count" id="ch4_poisoned_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="ch4_poisoned_count" id="ch4_poisoned_count"
                                    value="{{ ticket.ch4_poisoned_count|default('') }}"/>
                         </div>
 
@@ -765,26 +812,30 @@
                         <div class="control">
                             <label for="gpt_burns_count">Получили ожоги
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="gpt_burns_count" id="gpt_burns_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="gpt_burns_count" id="gpt_burns_count"
                                    value="{{ ticket.gpt_burns_count|default('') }}"/>
                         </div>
 
                         <div class="control">
                             <label for="people_death_count">Гибель людей
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="people_death_count" id="people_death_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="people_death_count" id="people_death_count"
                                    value="{{ ticket.people_death_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="children_death_count">Гибель детей
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="children_death_count" id="children_death_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="children_death_count" id="children_death_count"
                                    value="{{ ticket.children_death_count|default('') }}"/>
                         </div>
                         <div class="control">
                             <label for="hospitalized_count">Госпитализировано
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="hospitalized_count" id="hospitalized_count"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="hospitalized_count" id="hospitalized_count"
                                    value="{{ ticket.hospitalized_count|default('') }}"/>
                         </div>
                     </div>
@@ -794,12 +845,6 @@
                                   class="textarea">{{ ticket.more_info|default('') }}</textarea>
                     </div>
                     <div class="field">
-                        {#<div class="checkbox">#}
-                        {#<input type="hidden" name="hydrant_found" value="0"/>#}
-                        {#<input type="checkbox" name="hydrant_found" id="hydrant_found" value="1"#}
-                        {#{% if ticket.hydrant_found == 1 %}checked{% endif %}/>#}
-                        {#<label for="hydrant_found">Наличие ПГ/ПВ</label>#}
-                        {#</div>#}
                         <div class="control">
                             <label for="water_supply_source_id">Источник противопожарного водоснабжения</label>
                         </div>
@@ -818,7 +863,8 @@
                         <div class="control">
                             <label for="distance">Расстояние до места
                             </label>
-                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input" name="distance" id="distance"
+                            <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   name="distance" id="distance"
                                    value="{{ ticket.distance|default('') }}"/>
                         </div>
                     </div>
@@ -859,22 +905,45 @@
                         </div>
                     </div>
 
+
+
                 </div>
+
             </div>
             <div class="panel"
                  style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
-                    <p class="level-left">
+                    {#todo убрано по требованию заказчика#}
+                    {#<p class="level-left">
                         <button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
                             Следующий раздел
                         </button>
-                    </p>
-                    <p class="level-right">
-                        <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Закрыть
+                    </p>#}
+                    <p class="level-left">
+                        <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp; Сохранить
                         </button>
+                    </p>
+                    <p class="level-right" id="btn-close-card">
+                        <btn-close-card :ticket="{{ ticket }}"></btn-close-card>
                     </p>
                 </div>
             </div>
         </form>
+
     </section>
+    <style>
+        .blink5 {
+            -webkit-animation: blink5 1s linear infinite;
+            animation: blink5 1s linear infinite;
+        }
+        @-webkit-keyframes blink5 {
+            0% { color: rgb(226, 228, 0); }
+            100% { color: rgb(246, 0, 0); }
+        }
+        @keyframes blink5 {
+            0% { color: rgb(226, 228, 0); }
+            100% { color: rgb(246, 0, 0); }
+        }
+    </style>
 {% endblock content %}
+

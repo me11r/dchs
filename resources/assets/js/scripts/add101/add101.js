@@ -7,11 +7,11 @@ import bindSelects from './selects';
 import bindRoadTrip from './road-trip';
 import bindServicePlan from './service-plan';
 import {globalBus} from '../global-bus';
-import Vue from 'vue';
 import OtherRecords from '../../components/ticket101/OtherRecords';
 import OtherRecordsReadOnly from '../../components/ticket101/OtherRecordsReadOnly.vue';
-import axios from "axios/index";
-import {HydrantMapList} from "../../views/hydrant-map";
+import PopupNotifications from '../../components/ticket101/PopupNotifications.vue';
+import axios from 'axios';
+import Vue from '../../VueInstance';
 
 export default class Add101Functions {
     bindElements() {
@@ -26,12 +26,13 @@ export default class Add101Functions {
         this.bindOtherRecordsBlock();
         this.bindOtherRecordsBlockResults();
         this.checkRoadtrips();
+        this.bindPopupNotifications();
         return this;
     }
 
     bindPopupMessage() {
         globalBus.$on('specialPlanFound', (specialPlan) => {
-            alert(specialPlan['object_name']);
+            // alert(specialPlan['object_name']);
         });
         return this;
     }
@@ -50,40 +51,46 @@ export default class Add101Functions {
         return new Vue({el: '#ticket101_other_records_results', render: h => h(OtherRecordsReadOnly)});
     }
 
+    bindPopupNotifications() {
+        return new Vue({el: '#ticket101add_popup_notifications', render: h => h(PopupNotifications)});
+    }
+
     checkRoadtrips() {
         let ticket_id = window.ticket101add.ticketId;
-        if(ticket_id !== 0) {
+        if (ticket_id !== 0) {
             var timerId = setInterval(function() {
                 axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
                     if (response.data.recommendations !== undefined) {
                         response.data.recommendations.forEach(function (item) {
-
                             let accepted_time = 'accepted_time_' + item.id;
                             let out_time = 'out_time_' + item.id;
                             let ret_time = 'ret_time_' + item.id;
+                            let send_time = 'send_time_' + item.id;
+
                             let accepted_time_item = document.getElementById(
                                 accepted_time);
+
                             let out_time_item = document.getElementById(
                                 out_time);
+
                             let ret_time_item = document.getElementById(
                                 ret_time);
 
+                            let send_time_item = document.getElementById(
+                                send_time);
+
+                            if (item.dispatched === 1) {
+                                send_time_item.value = item.dispatch_time;
+                            }
+
                             if (accepted_time_item && out_time_item) {
-                                // accepted_time_item.value = item.out_time;
-                                // console.dir(item)
-                                // if(item.accept_time !== null){
                                 accepted_time_item.value = item.accept_time;
                                 out_time_item.value = item.out_time;
-                                // }
-
                             }
 
                             if (ret_time_item) {
-
                                 ret_time_item.value = item.ret_time;
-
                             }
-
                         });
                     }
                 });

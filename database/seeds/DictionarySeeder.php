@@ -60,6 +60,77 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'oper_duty_shift_staffs',
                 'model' => \App\OperDutyShiftStaff::class
             ],
+
+            [
+                'title' => 'ЛС - ЦППС',
+                'table' => 'staff_cpps',
+                'model' => \App\StaffCpps::class
+            ],
+            [
+                'title' => 'ЛС - ЕДДС',
+                'table' => 'staff_edds',
+                'model' => \App\StaffEdds::class
+            ],
+            [
+                'title' => 'ЛС - ИПЛ',
+                'table' => 'staff_ipls',
+                'model' => \App\StaffIpl::class
+            ],
+            [
+                'title' => 'ЛС - Страший мастер связи',
+                'table' => 'staff_senior_communication_masters',
+                'model' => \App\StaffSeniorCommunicationMaster::class
+            ],
+            [
+                'title' => 'ЛС - Водоканал',
+                'table' => 'staff_water_canals',
+                'model' => \App\StaffWaterCanal::class
+            ],
+            [
+                'title' => 'ЛС - ЦРБ',
+                'table' => 'staff_crbs',
+                'model' => \App\StaffCrb::class
+            ],
+            [
+                'title' => 'ЛС - База ГДЗС',
+                'table' => 'staff_gdzs_bases',
+                'model' => \App\StaffGdzsBase::class
+            ],
+            [
+                'title' => 'ЛС - Врач',
+                'table' => 'staff_doctors',
+                'model' => \App\StaffDoctor::class
+            ],
+            [
+                'title' => 'ЛС - Оперативные дежурные автомашины',
+                'table' => 'staff_duty_vehicles',
+                'model' => \App\StaffDutyVehicle::class
+            ],
+            [
+                'title' => 'ЛС - КШМ',
+                'table' => 'staff_kshms',
+                'model' => \App\StaffKshm::class
+            ],
+            [
+                'title' => 'ЛС - ИПЛ "Жалын"',
+                'table' => 'staff_zhalins',
+                'model' => \App\StaffZhalin::class
+            ],
+            [
+                'title' => 'ЛС - ДСПТ',
+                'table' => 'staff_dspts',
+                'model' => \App\StaffDspt::class
+            ],
+            [
+                'title' => 'Нормативно-справочная информация',
+                'table' => 'event_infos',
+                'model' => \App\EventInfo::class
+            ],
+            [
+                'title' => 'Нормативно-справочная информация: на месте',
+                'table' => 'event_info_arriveds',
+                'model' => \App\EventInfoArrived::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

@@ -54,7 +54,6 @@
 <script>
 import moment from 'moment';
 import axios from 'axios';
-import Buefy from 'buefy';
 import _ from 'lodash';
 export default {
     name: 'CreateEditStaff',
@@ -99,9 +98,6 @@ export default {
             total: 0,
             isActive_: this.active
         };
-    },
-    components: {
-        'b-icon': Buefy['Icon']
     },
     methods: {
         getStaffFilter(selectedId) {
@@ -191,15 +187,15 @@ export default {
             });
         }
     },
-    computed:{
-        clonedItems(){
+    computed: {
+        clonedItems() {
             return JSON.parse(JSON.stringify(this.records_));
         }
     },
     watch: {
-        clonedItems(newValue, oldValue){
+        clonedItems(newValue, oldValue) {
             _.each(newValue, (value, key) => {
-                if(oldValue[key]) {
+                if (oldValue[key]) {
                     this.$parent.$emit('changeSelectedPersons', {
                         oldValue: oldValue[key].staff_id,
                         newValue: value.staff_id
@@ -207,7 +203,7 @@ export default {
                 }
             });
             _.each(oldValue, (value, key) => {
-                if(!newValue[key]) {
+                if (!newValue[key]) {
                     this.$parent.$emit('removeSelectedPersons', {
                         oldValue: value.staff_id
                     });

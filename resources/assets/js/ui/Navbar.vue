@@ -23,10 +23,12 @@
                     <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;Карточки</a>
                     <div class="navbar-dropdown">
                         <a
+                            v-if="hasRight(2)"
                             href="/card/101"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточка 101</a>
                         <a
+                            v-if="hasRight(33)"
                             href="/card112"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp; Карточка 112
@@ -143,14 +145,57 @@
                     v-if="hasAnyRight(11,21,22,23,24)">
                     <a class="navbar-link is-small"><i class="fas fa-receipt fa-fw"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown">
-                        <a
+                        <div
                             v-if="hasRight(11)"
-                            href="/pdf/dailyReport"
-                            target="_blank"
-                            class="dropdown-item is-small">
-                            <i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Суточный отчет
-                        </a>
+                            class="dropdown-item">
+                            <div class="level is-mobile">
+                                <div class="level-left">
+                                    <i class="fas fa-receipt fa-fw"></i>&nbsp;Суточный отчет
+                                </div>
+                                <div class="level-right">
+                                    <div class="buttons is-right">
+                                        <a
+                                            href="/pdf/dailyReport"
+                                            target="_blank"
+                                            class=" button is-small">
+                                            <i class="fas fa-file-pdf"></i>.pdf
+                                        </a>
+                                        <a
+                                            href="/reports/daily101/word"
+                                            target="_blank"
+                                            class=" button is-small">
+                                            <i class="fas fa-file-word"></i>.doc
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="dropdown-item"
+                            v-if="hasRight(11)">
+                            <div class="level is-mobile">
+                                <div class="level-left">
+                                    <i class="fas fa-receipt fa-fw"></i>&nbsp;
+                                    Суточный отчет 112
+                                </div>
+                                <div class="level-right">
+                                    <div class="buttons">
+                                        <a
+                                            href="/pdf/operational-report"
+                                            target="_blank"
+                                            class="button is-small"><i class="fas fa-file-pdf"></i>.pdf
+                                        </a>
+                                        <a
+                                            href="/reports/daily112/word"
+                                            target="_blank"
+                                            class=" button is-small">
+                                            <i class="fas fa-file-word"></i>.doc
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                         <a
                             v-if="hasRight(21)"
                             href="/information"
@@ -186,18 +231,25 @@
                             href="/reports/112/branches"
                             class="dropdown-item is-small"><i class="fas fa-tree"></i>
                             &nbsp; Подтопления / Падение веток и деревьев</a>
+                        <a
+                            v-if="hasRight(24)"
+                            href="/reports/101/forces-resources/"
+                            class="dropdown-item is-small"><i class="fas fa-archive"></i>
+                            &nbsp; Учет сил и средств</a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-fw fa-road"></i>&nbsp;Путевые листы</a>
                     <div class="navbar-dropdown">
                         <a
+                            v-if="hasRight(9)"
                             href="/roadtrip/"
                             class="dropdown-item">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;
                             Путевые листы ДЧС
                         </a>
                         <a
+                            v-if="hasRight(32)"
                             href="/service-plans/"
                             class="dropdown-item">
                             <i class="fas fa-archway fa-fw"></i>&nbsp;
@@ -285,7 +337,7 @@ export default {
             document.getElementById('logout').submit();
         },
         hasRight: function (id) {
-            return this.rights[id] !== undefined;
+            return this.rights.indexOf(id) !== -1;
         },
         hasAnyRight: function () {
             const ids = Array.from(arguments);

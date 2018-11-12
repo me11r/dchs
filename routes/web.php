@@ -17,7 +17,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
     });
 
-    Route::group(['prefix' => 'admin'], function () {
+    Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function () {
         Route::get('users', 'AdminController@getUsers')->name('admin-users');
         Route::get('users/edit/{user_id?}', 'AdminController@getUserEdit')->where(['user_id' => '[0-9]+'])->name('admin-users-edit');
         Route::post('users/edit/{user_id?}', 'AdminController@postUserEdit')->where(['user_id' => '[0-9]+'])->name('post-admin-users-edit');
@@ -44,11 +44,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/card/101', 'CardController@get101')->name('card101');
     Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+']);
+    Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
 
     Route::resource('/card112', 'Card112Controller');
-    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');
+    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
 
@@ -163,6 +164,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'service-plans'], function (){
         Route::get('/', 'ServicePlanController@getList');
         Route::post('send', 'ServicePlanController@postSend');
+        Route::post('check', 'ServicePlanController@postCheck');
         Route::post('accept/{id}/{service}', 'ServicePlanController@postAccept')->where('id', '[0-9]+');
         Route::post('arrive/{id}/{service}', 'ServicePlanController@postArrive')->where('id', '[0-9]+');
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
@@ -195,25 +197,30 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('dictionaries.row.delete');
 
     Route::delete('/dictionaries/delete/{name}/{row_id}', 'DictionaryController@deleteByName')
-        ->where('name', 'incident-types|operational-plans|operational-cards')
         ->where('row_id', '[0-9]+')
         ->name('dictionaries.row.delete_by_name');
 
 
     Route::get('/pdf/dailyReport', 'ReportController@getDaily')->name('dailyReport');
-    Route::get('/pdf/report101', 'ReportController@getReport101')->name('report101');
+    Route::get('/pdf/get-operational-plan/{id}', 'ReportController@getOperationalPlan')->name('operational-plan')->where('id', '[0-9]+');;
+    Route::get('/pdf/get-operational-card/{id}', 'ReportController@getOperationalCard')->name('operational-card')->where('id', '[0-9]+');;
+    Route::get('/pdf/operational-report', 'ReportController@getOperational')->name('operational-report');
+    Route::get('/pdf/report101/{type}', 'ReportController@getReport101')->name('report101');
+    Route::get('/xls/report101/forces', 'ReportController@exportForcesXls')->name('report101.forces.xls');
+    Route::get('/xls/card101/chronology/{card_id}', 'ReportController@exportCard101ChronologyXls')->name('card101.chronology.xls');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
-    Route::resource('/weather', 'WeatherController');
+    Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
     Route::resource('/vehicles', 'VehicleController');
     Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
     Route::resource('/morainic-lakes', 'MorainicLakeController');
     Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
+    Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
 
@@ -222,6 +229,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/staff', 'ReportController@postReport101Staff')->name('staff_post');
         Route::get('/vehicles', 'ReportController@getReport101Vehicles')->name('vehicles');
         Route::post('/vehicles', 'ReportController@postReport101Vehicles')->name('vehicles_post');
+
+        Route::get('/forces-resources', 'ReportController@getForces')->name('forces');
 
         Route::get('/emergency', 'ReportController@getReport101Emergency')->name('emergency101_get');
         Route::post('/emergency', 'ReportController@postReport101Emergency')->name('emergency101_post');
@@ -241,6 +250,20 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/branches_export', 'ReportController@getReport112BranchesExport')
             ->name('emergency112_get_branches_export');
     });
+
+    /** Суточные отчеты в формате Ворд */
+    Route::group(['prefix' => 'reports'], function(){
+        Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');
+        Route::get('daily112/{format}', 'ReportController@getDaily112Formatted')->where('format', '(word)');
+    });
+
+    /** Мессенджер */
+    Route::group(['namespace' => 'Api\\Messenger', 'prefix' => 'api/messenger', 'middleware' => ['auth']], function() {
+        Route::get('users/list', 'MessengerController@getUserList');
+        Route::post('message/send', 'MessengerController@postMessage');
+        Route::get('messages/list/{user_id}', 'MessengerController@getMessages')->where('user_id', '[0-9]+');
+    });
+
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

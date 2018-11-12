@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card112\Card112;
 use App\Models\ServiceType;
 use App\Ticket101ServicePlan;
 use Illuminate\Http\Request;
@@ -25,8 +26,10 @@ class ServicePlanController extends Controller
     {
         $per_page = $request->get('per_page', 10);
 
-        $records = Ticket101ServicePlan::department($service)->paginate($per_page);
-
+        $records = Ticket101ServicePlan::department($service)
+            ->orderBy('id', 'desc')
+            ->whereNotNull('dispatched_time')
+            ->paginate($per_page);
 
         return view('service-plans.index', compact('records', 'per_page'));
     }
@@ -50,20 +53,43 @@ class ServicePlanController extends Controller
     {
         $all = $request->all();
         if($request->cardType == 101){
-            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+            $servicePlan = Ticket101ServicePlan::updateOrCreate([
                 'service_type_id' => $request->service_id,
                 'card_id' => $request->card_id,
+            ],[
+                'service_type_id' => $request->service_id,
+                'card_id' => $request->card_id,
+                'dispatched_time' => now(),
             ]);
         }
         else{
-            $servicePlan = Ticket101ServicePlan::firstOrCreate([
+            $servicePlan = Ticket101ServicePlan::updateOrCreate([
+                'service_type_id' => $request->service_id,
+                'card_id' => $request->card_id,
+            ],[
                 'service_type_id' => $request->service_id,
                 'card112_id' => $request->card_id,
+                'dispatched_time' => now(),
             ]);
         }
 
         return response()->json($servicePlan);
     }
+
+    public function postCheck(Request $request)
+    {
+        $id = $request->card_id;
+        $ticket = Card112::find($id);
+
+        if(!$ticket){
+            return response()->json(['servicePlans' => []], 200);
+        }
+
+        $data['servicePlans'] = $ticket->service_plans;
+
+        return response()->json($data);
+    }
+
 
     public function postAccept(Request $request, $id, $service)
     {

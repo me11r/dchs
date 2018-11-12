@@ -1,6 +1,6 @@
 import {BuefyCommonSelect} from '../../components';
-import Vue from 'vue';
 import {globalBus} from '../global-bus';
+import Vue from '../../VueInstance';
 
 export default function bindBuefyCommonSelects() {
     document.querySelectorAll('[data-component="buefy-common-select"]')

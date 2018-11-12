@@ -4,6 +4,7 @@ namespace App;
 
 use App\Dictionary\FireLevel;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 /**
  * App\OperationalCard
@@ -34,6 +35,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OperationalCard extends Model
 {
+    use Searchable;
+
     protected $fillable = [
         'fire_department_id',
         'fire_level_id',
@@ -41,7 +44,18 @@ class OperationalCard extends Model
         'object_name',
         'location',
         'note',
+        'file'
     ];
+
+    public function searchableAs(): string
+    {
+        return __class__ . '_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return $this->only('location', 'object_name');
+    }
 
     public function fire_department()
     {

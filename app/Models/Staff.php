@@ -33,6 +33,8 @@ class Staff extends Model
 {
     protected $table = 'staff';
 
+    protected $appends = ['unique'];
+
     protected $fillable = [
         'department_id',
         'name',
@@ -41,6 +43,16 @@ class Staff extends Model
         'position',
         'status',
     ];
+
+    public function getUniqueAttribute()
+    {
+        return $this->unique();
+    }
+
+    public function unique()
+    {
+        return $this->id . $this->created_at->timestamp;
+    }
 
     public function department()
     {

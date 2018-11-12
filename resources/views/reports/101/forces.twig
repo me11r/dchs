@@ -1,0 +1,9 @@
+{% extends "layout/html" %}
+{% block content %}
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&load=Geolink"
+            type="text/javascript">
+    </script>
+    <div id="vue" class="container section">
+        <report-forces :reports="{{ reports }}"></report-forces>
+    </div>
+{% endblock content %}

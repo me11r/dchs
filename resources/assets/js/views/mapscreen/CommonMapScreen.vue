@@ -55,40 +55,34 @@ export default {
                         // window.localStorage.setItem('fire_department_id_found', dept_id);
                         window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, dept_id);
                         globalBus.$emit('is_common_house', dept_id);
-
-                        console.dir(dept_id);
                     }
                 });
-
-
-
         },
         houseFound(lat, long, name) {
             this.resetAllObjects();
             this.setPointOnTheMap(lat, long, name);
             this.initFireDepartmentAreas();
-            console.dir(this.fireDepartmentAreas)
+            console.dir(this.fireDepartmentAreas);
             let dept_id = this.yandexMapsBus.fireDepartmentArea(lat, long, this.fireDepartmentAreas, this.map);
             // window.localStorage.setItem('fire_department_id_found', dept_id);
             window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, dept_id);
-
         },
         resetAllObjects() {
             this.map.geoObjects.removeAll();
         },
         setPointOnTheMap(lat, long, name) {
             const geoObject = new ymaps.GeoObject({
-                    geometry: {
-                        type: "Point",
-                        coordinates: [lat, long]
-                    },
-                    properties: {
-                        iconContent: name
-                    }
-                }, {
-                    preset: 'islands#darkBlueStretchyIcon',
-                    draggable: false
-                });
+                geometry: {
+                    type: 'Point',
+                    coordinates: [lat, long]
+                },
+                properties: {
+                    iconContent: name
+                }
+            }, {
+                preset: 'islands#darkBlueStretchyIcon',
+                draggable: false
+            });
             this.map.geoObjects.add(geoObject);
             this.map.setZoom(this.zoom);
             this.map.panTo([lat, long]);
@@ -119,10 +113,9 @@ export default {
             this.initFireDepartmentAreas();
         },
         initFireDepartmentAreas() {
-
             // var polygons = this.fireDepartmentAreas.length > 0 ? this.fireDepartmentAreas : this.yandexMapsBus.polygons();
             var polygons = this.yandexMapsBus.polygons();
-            if(this.fireDepartmentAreas.length === 0){
+            if (this.fireDepartmentAreas.length === 0) {
                 this.fireDepartmentAreas = polygons;
             }
             // Добавляем многоугольник на карту.
@@ -135,7 +128,7 @@ export default {
         this.yandexMapsBus = new YandexMapsBus();
         this.initMap();
         let initHouseData = window.localStorage.getItem(YANDEX_HOUSE_FOUND);
-        if (initHouseData){
+        if (initHouseData) {
             initHouseData = JSON.parse(initHouseData);
             this.houseFound(initHouseData['lat'], initHouseData['long'], initHouseData['name']);
         }

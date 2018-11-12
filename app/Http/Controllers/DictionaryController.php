@@ -27,6 +27,40 @@ class DictionaryController extends AuthorizedController
         'id', 'created_at', 'updated_at', 'deleted_at'
     ];
 
+    private $dictionaries = [];
+    private $user = null;
+
+    private $additional_dicts = [
+        [
+            'title' => 'Пожарные части',
+            'href' => '/dictionaries/fire-departments',
+        ],
+        [
+            'title' => 'Типы инцидентов',
+            'href' => '/dictionaries/incident-types',
+        ],
+        [
+            'title' => 'Опер планы',
+            'href' => '/dictionaries/operational-plans',
+        ],
+        [
+            'title' => 'Опер карточки',
+            'href' => '/dictionaries/operational-cards',
+        ],
+        [
+            'title' => 'Типы воздушных судов',
+            'href' => '/dictionaries/aircraft-types',
+        ],
+        [
+            'title' => 'Воздушные суда',
+            'href' => '/dictionaries/aircrafts',
+        ],
+        [
+            'title' => 'Ответственные по районам',
+            'href' => '/dictionaries/district-managers',
+        ],
+    ];
+
     public function __construct(Request $request)
     {
         parent::__construct();
@@ -34,7 +68,18 @@ class DictionaryController extends AuthorizedController
 
     public function before()
     {
+        parent::before();
         $this->needRight(Right::CAN_EDIT_DICTIONARIES);
+        $user = \auth()->user();
+        $this->user = $user;
+        foreach (Dictionary::all() as $dict) {
+            if(!$user->isAdmin() && !$user->hasRight($dict->title)){
+                continue;
+            }
+            else{
+                $this->dictionaries[] = $dict;
+            }
+        }
     }
 
     protected function getEditableFields(Model $model) {
@@ -83,7 +128,6 @@ class DictionaryController extends AuthorizedController
 //                    ->paginate($data['per_page'])
                     ->get();
             }
-
 
             $data['title'] = "Оперативные планы";
             $data['filter_department'] = $request->filter_department;
@@ -201,6 +245,7 @@ class DictionaryController extends AuthorizedController
         }
         elseif($name == 'district-managers'){
             $data['record'] = DistrictManager::find($id);
+            $data['city_areas'] = Dictionary\CityArea::all();
             $data['title'] = "Ответственный по району";
         }
         return view($view, $data);
@@ -241,6 +286,10 @@ class DictionaryController extends AuthorizedController
                 $record = new SpecialPlan();
             }
 
+            $fileName = time().'.'.$request->file->getClientOriginalExtension();
+            $request->file->storeAs('operational-plans',$fileName);
+
+            $record->file = $fileName;
             $record->fire_level_id = $request->fire_level_id;
             $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;
@@ -260,6 +309,10 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'operational-cards'){
             $record  = OperationalCard::firstOrNew(['id' => $request->id]);
 
+            $fileName = time().'.'.$request->file->getClientOriginalExtension();
+            $request->file->storeAs('operational-cards',$fileName);
+
+            $record->file = $fileName;
             $record->fire_level_id = $request->fire_level_id;
 //            $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;
@@ -303,6 +356,7 @@ class DictionaryController extends AuthorizedController
             $record->rank = $request->rank;
             $record->nickname = $request->nickname;
             $record->position = $request->position;
+            $record->city_area_id = $request->city_area_id;
 
             $record->save();
 
@@ -340,18 +394,49 @@ class DictionaryController extends AuthorizedController
 
     public function getIndex()
     {
-        $dicts = Dictionary::all();
-        $this->set('dictionaries', $dicts);
+        $dicts = $this->dictionaries;
+
+        $user = $this->user;
+
+        $additional_dicts = [];
+
+        foreach ($this->additional_dicts as $dict) {
+            if(!$user->isAdmin() && !$user->hasRight($dict['title'])){
+                continue;
+            }
+            else{
+                $additional_dicts[] = $dict;
+            }
+        }
+
+        $this->set('dictionaries', $dicts)
+            ->set('additional_dicts', $additional_dicts)
+        ;
     }
 
-    public function getList($dict_id)
+    public function getList(Request $request, $dict_id)
     {
         $dictionary = (new \App\Dictionary)->find($dict_id);
         $this->set('dictinfo', $dictionary);
+
+        $search = trim($request->search);
+
         $dict = new $dictionary->model;
-        $this->set('dictionary', $dict->get());
+
         $fields = $this->getEditableFields($dict);
+
+        if(in_array('title', $fields) && $search){
+            $this->set('dictionary', $dict->where('title', 'like', "%$search%")->get());
+        }
+        elseif(in_array('name', $fields) && $search){
+            $this->set('dictionary', $dict->where('name', 'like', "%$search%")->get());
+        }
+        else{
+            $this->set('dictionary', $dict->get());
+        }
+
         $this->set('fields', $fields);
+        $this->set('search', $search);
     }
 
     public function getEdit($dict_id, $row_id = 0)
@@ -408,6 +493,10 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'operational-cards':
                 $dict = OperationalCard::class;
+                break;
+            case 'district-managers':
+                $dict = DistrictManager::class;
+                break;
         }
 
         $dict = new $dict;

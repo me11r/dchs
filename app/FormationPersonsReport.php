@@ -106,14 +106,53 @@ class FormationPersonsReport extends Model
         'other',
         'gas_smoke_protection_service',
     ];
+    
+    public $od_staff = [
+        'dspt' => StaffDspt::class,
+        'cpps' => StaffCpps::class,
+        'crb' => StaffCrb::class,
+        'doctor' => StaffDoctor::class,
+        'duty_vehicle' => StaffDutyVehicle::class,
+        'edds' => StaffEdds::class,
+        'gdzs_base' => StaffGdzsBase::class,
+        'ipl' => StaffIpl::class,
+        'kshm' => StaffKshm::class,
+        'senior_communication_master' => StaffSeniorCommunicationMaster::class,
+        'water_supply' => StaffWaterCanal::class,
+        'zhalin' => StaffZhalin::class,
+    ];
 
     public function scopeTodayRecords($q)
     {
         return $q->whereDate('created_at', date('Y-m-d'));
     }
 
+    public function fireDepartment()
+    {
+        return $this->belongsTo(FireDepartment::class, 'dept_id');
+    }
+
     public function formation_person_items()
     {
         return $this->hasMany(FormationPersonsItem::class, 'report_id');
+    }
+
+    public function formation_person_items_od()
+    {
+        return $this->hasMany(FormationOdPersonItem::class, 'report_id');
+    }
+    
+    public function getODStaff()
+    {
+        $od_people = $this->od_staff;
+        $result = [];
+        foreach ($od_people as $key => $od_person) {
+            $result[$key] = $od_person::all();
+            foreach ($result[$key] as $item) {
+                $item->staff;
+            }
+        }
+
+        return $result;
     }
 }

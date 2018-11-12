@@ -64,9 +64,29 @@ class FireDepartmentResult extends Model
         'ret_time',
         'dispatched',
         'dispatch_id',
+        'dispatch_time',
         'tech_id',
         'recommended',
+        'get_back',
     ];
+
+    public function scopeOnWay($q, $ticket_id)
+    {
+        return $q->where('ticket101_id', $ticket_id)
+            ->whereNotNull('out_time');
+    }
+
+    public function scopeMarkToGetBack($q)
+    {
+        return $q->update(['get_back' => true, 'updated_at' => now()]);
+    }
+
+    public function scopeArrived($q, $ticket_id)
+    {
+        return $q->where('ticket101_id', $ticket_id)
+            ->whereNotNull('arrive_time')
+            ->whereNull('ret_time');
+    }
 
     public function getOutTimeAttribute($value)
     {

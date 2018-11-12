@@ -9,6 +9,7 @@
 namespace App\Dictionary;
 
 
+use App\DistrictManager;
 use App\FireDepartment;
 use App\Models\CityMicroArea;
 use App\Models\Schedule;
@@ -61,6 +62,11 @@ class CityArea extends Model
     public function fire_departments()
     {
         return $this->hasMany(FireDepartment::class, 'city_area_id');
+    }
+
+    public function district_managers()
+    {
+        return $this->hasMany(DistrictManager::class, 'city_area_id');
     }
 
 }

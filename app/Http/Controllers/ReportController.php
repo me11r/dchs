@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\AirRescueReport;
 use App\Dictionary\FireObject;
+use App\FormationReport;
+use App\FormationTechReport;
 use App\Models\Card112\Card112;
+use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\IncidentType;
+use App\Models\OperationalPlan;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\OperationalCard;
 use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\ReportForcesExcelExport;
+use App\Services\ReportExport\Ticket101ChronologyExcelExport;
+use App\Services\ReportExport\Ticket101ExcelExport;
+use App\Services\ReportExport\Ticket101WordExport;
 use App\Ticket101;
+use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
@@ -21,8 +32,10 @@ use Illuminate\Support\Facades\Cache;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Writer\WriterInterface;
 use Spipu\Html2Pdf\Html2Pdf;
 
 class ReportController extends AuthorizedController
@@ -60,198 +73,107 @@ class ReportController extends AuthorizedController
         $dompdf->stream($file_name);
     }
 
-    public function getReport101()
+    public function getOperational()
+    {
+        $data['yesterday'] = now()->subHours(24);
+        $data['today'] = now();
+
+        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
+            ->whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today'])
+            ->whereNotNull('card112_id');
+
+        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $data['emergencies'] = $card112_day->count();
+        $data['cards112'] = $card112_day->get();
+        $data['card112_count'] = $card112_day->count();
+        $data['card112_count_finished'] = $card112_day->count();
+        $data['card101_count'] = $card101_day->count();
+        $data['emergencies_human_in_danger'] = Card112::all();
+        $data['emergencies_human_not_in_danger'] = Card112::all();
+        $data['fires_count'] = $card101_day->count();
+        $data['dead_count'] = $card112_day->sum('dead');
+        $data['evacuated_count'] = $card112_day->sum('evacuated');
+        $data['poisoned_by_gas_count'] = $card112_day->sum('poisoned');
+        $data['hurt_count'] = $card112_day->sum('injured_hard');
+        $data['saved_count'] = $card112_day->sum('saved');
+        $data['card112_roadtrips'] = $card112_roadtrips->get();
+        $data['mudflow_emergency_count'] = $card112_day->filterByServiceType('ГУ Казселезащита')->count();
+        $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
+        $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
+        $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
+            $q->status('action');
+        })->first();*/
+
+        $data['air_rescue_report_tech'] = $air_rescue_report->first() ? $air_rescue_report->first()->tech()->status('action')->get() : [];
+
+        $html = view('pdf/operational-report', $data)->render();
+
+        #test
+//        return $html;
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $date = date('d-m-Y');
+        $file_name = "Суточный отчет - $date.pdf";
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHTML($html, 'UTF-8');
+        $dompdf->render();
+
+        $dompdf->stream($file_name);
+    }
+
+    public function getReport101($type)
     {
         if ($data = Cache::get('report101_data')) {
-            $html = view('pdf/formation-report', $data);
-            $html_test = view('pdf/formation-report-test', $data);
+            /** @var FormationReport $formationReport */
+            $formationReport = $data['report'];
 
-            $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+            switch ($type) {
+                case 'xls':
+                    $ticket101Export = new Ticket101ExcelExport(
+                        $formationReport,
+                        $data['departments'],
+                        $data['people'],
+                        $data['tech'],
+                        $data['sumArray']['people']
+                    );
 
-            $cellRowSpan = ['vMerge' => 'restart'];
-            $cellRowContinue = ['vMerge' => 'continue'];
-            $cellColSpan = ['gridSpan' => 2];
+                    $writer = $ticket101Export->getXlsWriter();
+                    header('Content-Type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachment;filename="' . Carbon::parse($formationReport->created_at)->format('d-m-Y') . ' отчет.xls' . '"');
+                    $writer->save('php://output');
+                    break;
+                case 'pdf':
+                case 'docx':
+                    $ticket101Export = new Ticket101WordExport(
+                        $formationReport,
+                        $data['departments'],
+                        $data['people'],
+                        $data['tech'],
+                        $data['sumArray']['people']
+                    );
 
-            $phpWord = new \PhpOffice\PhpWord\PhpWord();
-            $section = $phpWord->addSection(['orientation' => 'landscape',]);
-            $section->getStyle()->setBreakType('continuous');
-//            $header = $section->addHeader();
-            $table = $section->addTable();
+                    // @todo PDF не работает корректно (но вроде оно и не нужно)
+                    $writer = $ticket101Export->getWriter($type === 'pdf' ? 'PDF' : 'Word2007');
+                    $fileName = Carbon::parse($formationReport->created_at)->format('d-m-Y') . " отчет.$type";
+                    $writer->save(public_path($fileName));
 
-            $table->addRow(-0.5, array('exactHeight' => -5));
-
-            $table->addCell(700, $cellRowSpan)->addText('ПЧ');
-            $table->addCell(700, $cellRowSpan)->addText('В карауле по списку л/с');
-
-            $table->addCell(700, ['gridSpan' => 6])->addText('На лицо личного состава');
-            $table->addCell(700, ['gridSpan' => 6])->addText('Отсутствуют');
-            $table->addCell(700, $cellRowSpan)->addText('ГДЗС');
-            $table->addCell(700, $cellRowSpan)->addText('Аппараты');
-            $table->addCell(700, $cellRowSpan)->addText('Мотопомпы');
-            $table->addCell(700, ['gridSpan' => 6])->addText('Пожарная техника');
-
-            $table->addRow();
-
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-
-            $table->addCell(700, $cellRowSpan)->addText('всего');
-            $table->addCell(700, $cellRowSpan)->addText('нач.кар');
-            $table->addCell(700, $cellRowSpan)->addText('ком.отд');
-            $table->addCell(700, $cellRowSpan)->addText('Шоферы');
-            $table->addCell(700, $cellRowSpan)->addText('Ряд.состав');
-            $table->addCell(700, $cellRowSpan)->addText('Ряд.Диспетчеров');
-            $table->addCell(700, $cellRowSpan)->addText('Отпуск');
-            $table->addCell(700, $cellRowSpan)->addText('Учебный');
-            $table->addCell(700, $cellRowSpan)->addText('Декрет');
-            $table->addCell(700, $cellRowSpan)->addText('Больные');
-            $table->addCell(700, $cellRowSpan)->addText('Командировка');
-            $table->addCell(700, $cellRowSpan)->addText('Др.причины');
-
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-
-            $table->addCell(700, ['gridSpan' => 2])->addText('В боевом расчёте');
-            $table->addCell(700, ['gridSpan' => 2])->addText('В резерве');
-            $table->addCell(700, ['gridSpan' => 2])->addText('На ремонте');
-
-            $table->addRow();
-
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-            $table->addCell(700, $cellRowContinue);
-
-            $table->addCell(500, $cellRowSpan)->addText('Тип осн. пожарного а/м');
-            $table->addCell(500, $cellRowSpan)->addText('Марка');
-            $table->addCell(500, $cellRowSpan)->addText('Тип осн. а/м');
-            $table->addCell(500, $cellRowSpan)->addText('Марка');
-            $table->addCell(500, $cellRowSpan)->addText('Тип осн. а/м');
-            $table->addCell(500, $cellRowSpan)->addText('Марка');
-
-            $table->addRow(-0.5, array('exactHeight' => -5));
-
-            foreach (range(1, 23) as $item) {
-                $table->addCell(null, $cellRowContinue);
+                    return response()->download(public_path($fileName));
+                    break;
             }
 
-            $table->addRow(-0.5, array('exactHeight' => -5));
-
-            foreach (range(1, 23) as $item) {
-                $table->addCell(700)->addText(str_random(8));
-            }
-
-            $table->addRow(-0.5, array('exactHeight' => -5));
-            dd($data);
-
-            foreach ($data['departments'] as $dept) {
-
-                $table->addCell(700)->addText($dept->title);
-
-                foreach ($data['people_fields'] as $ppl) {
-                    $table->addCell(700)->addText($data['people'][$dept->id][$ppl] ?? '-');
-                }
-
-                foreach ($data['tech_fields'] as $tch) {
-                    $table->addCell(700)->addText($data['tech'][$dept->id][$tch] ?? '-');
-                }
-
-                $tech_action_name = '';
-                $tech_action_base = '';
-                $tech_reserve_name = '';
-                $tech_reserve_base = '';
-                $tech_repair_name = '';
-                $tech_repair_base = '';
-
-                foreach ($dept->tech_action as $action) {
-                    $tech_action_name .= $action->vehicle->name ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_action_name ?? '-');
-
-                foreach ($dept->tech_action as $action) {
-                    $tech_action_base .= $action->vehicle->base ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_action_base ?? '-');
-
-                foreach ($dept->tech_reserve as $tech_reserve) {
-                    $tech_reserve_name .= $tech_reserve->vehicle->name ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_reserve_name ?? '-');
-
-                foreach ($dept->tech_reserve as $tech_reserve) {
-                    $tech_reserve_base .= $tech_reserve->vehicle->base ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_reserve_base ?? '-');
-
-                foreach ($dept->tech_repair as $tech_repair) {
-                    $tech_repair_name .= $tech_repair->vehicle->name ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_repair_name ?? '-');
-
-                foreach ($dept->tech_repair as $tech_repair) {
-                    $tech_repair_base .= $tech_repair->vehicle->bas ?? '-';
-                }
-
-                $table->addCell(700)->addText($tech_repair_base ?? '-');
-
-                $table->addRow();
-
-            }
-
-//            $table->addRow();
-
-            $table->addCell(700)->addText('Итого');
-
-            foreach (range(1, 22) as $item) {
-                $table->addCell(700)->addText(str_random(8));
-            }
-//            foreach ($data['people_fields'] as $ppl){
-//                $table->addCell(700)->addText($data['sumArray']['people'][$ppl] ?? 0);
-//            }
-//
-//            foreach ($data['tech_fields'] as $tch){
-//                if($tch == 'field_4'){
-//                    $table->addCell(700)->addText('-');
-//                }
-//                else{
-//                    $table->addCell(700)->addText($data['sumArray']['tech'][$tch] ?? 0);
-//                }
-//            }
-//
-//            $table->addCell(700)->addText($data['tech_items_count']['tech_action'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_items_count']['tech_action'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_action'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_reserve'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_repair'] ?? 0);
-//            $table->addCell(700)->addText($data['tech_reserve']['tech_repair'] ?? 0);
-
-//            \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html_test, false, false);
-            $phpWord->save(public_path('123.docx'));
-            return response()->download('123.docx');
-
-//            $html2pdf = new Html2Pdf('L');
-//            $html2pdf->writeHTML($html);
-//            $html2pdf->output('report101.pdf');
+            return dd('Некорректный тип');
         }
+
+        return dd('Кеш не заполнен');
     }
 
     public function getReport101Staff()
@@ -349,16 +271,21 @@ class ReportController extends AuthorizedController
 
     public function getReport112BranchesExport(Request $request)
     {
+        $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
+        $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
+
         $fileName = 'Отчет:'
-            . Carbon::parse($request->get('date_start'))->format('Y-m-d')
+            . $dateStart
             . '_'
-            . Carbon::parse($request->get('date_end'))->format('Y-m-d')
+            . $dateEnd
             . '.xls';
 
         $cards = (new Card112())
             ->where('incident_type_id', '=', $request->get('incident_type_id'))
             ->with(['cityArea'])
             ->get();
+
+        $incidentType = IncidentType::find($request->get('incident_type_id'));
 
         $preparedToExport = [];
         foreach ($cards as $card) {
@@ -384,33 +311,301 @@ class ReportController extends AuthorizedController
         $spreadsheet = new Spreadsheet();
         $writer = new Xls($spreadsheet);
 
-        $index = 0;
+        $rowIndex = 1;
+        $activeSheet = $spreadsheet->getActiveSheet();
+        $activeSheet
+            ->getCell('C' . $rowIndex)
+            ->setValue("Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStart}. по {$dateEnd}г. поступившие на линию «109» ССА.")
+            ->getStyle()
+            ->getFont()
+            ->setBold(true);
 
+        $rowIndex += 3;
         foreach ($preparedToExport as $key => $data) {
-            if ($spreadsheet->getSheet($index)) {
-                $spreadsheet->createSheet($index);
-            }
+            $activeSheet->getCell('E' . $rowIndex)->setValue($key)->getStyle()->getFont()->setBold(true);
 
-            $spreadsheet->setActiveSheetIndex($index);
-            $activeSheet = $spreadsheet->getActiveSheet();
+            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
+            $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
 
-            $activeSheet->setTitle($key);
-            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A1');
-            $activeSheet->fromArray($data, null, 'A2');
+            $activeSheet
+                ->getStyle('A'.($rowIndex + 1).':H'. $activeSheet->getHighestRow())
+                ->applyFromArray(Ticket101ExcelExport::HStyle);
 
-            foreach (range('A', 'W') as $columnID) {
-                $activeSheet->getColumnDimension($columnID)->setAutoSize(true);
-            }
+            $activeSheet
+                ->getStyle('A'.($rowIndex + 1).':H'. ($rowIndex + 1))
+                ->getFont()
+                ->setBold(true);
 
-            $index++;
+            $rowIndex = $activeSheet->getHighestRow();
+            $rowIndex += 3;
         }
 
-        $spreadsheet->setActiveSheetIndex(0);
+        $activeSheet->getColumnDimension('A')->setWidth(3);
+        $activeSheet->getColumnDimension('B')->setWidth(20);
+        $activeSheet->getColumnDimension('C')->setWidth(20);
+        $activeSheet->getColumnDimension('D')->setWidth(20);
+        $activeSheet->getColumnDimension('E')->setWidth(20);
+        $activeSheet->getColumnDimension('F')->setWidth(20);
+        $activeSheet->getColumnDimension('G')->setWidth(20);
+        $activeSheet->getColumnDimension('H')->setWidth(20);
+
+
+        $activeSheet = $spreadsheet->getActiveSheet();
+        $activeSheet->getStyle('A1:H'. $rowIndex)
+            ->getFont()
+            ->setSize(7)
+            ->setName('Times New Roman');
+
+
+        $activeSheet
+            ->getPageSetup()
+            ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
+            ->setFitToWidth(1)
+            ->setFitToHeight(0);
+
+        $activeSheet->getPageMargins()->setTop(0.25);
+        $activeSheet->getPageMargins()->setRight(0.25);
+        $activeSheet->getPageMargins()->setLeft(0.25);
+        $activeSheet->getPageMargins()->setBottom(0.25);
+
+        $activeSheet->freezePane('A1');
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    public function getForces(Request $request)
+    {
+        $today = Carbon::today();
+
+        $data = [];
+
+        $report_id = FormationReport::approved()->max('id');
+        $data['reports'] = FormationTechReport::where('form_id', $report_id)
+            ->has('items')
+            ->orderBy('dept_id')
+            ->with(['items', 'department'])
+            ->get();
+
+        foreach ($data['reports'] as $report_key => $report) {
+            foreach ($report->items as $item_key => $tech_item) {
+                $report->items[$item_key]['departures_count'] = FireDepartmentResult::
+//                    where('fire_department_id', $report->dept_id)->
+                    whereDate('created_at', $today)->
+                    where('tech_id', $tech_item->id)->
+                    whereNotNull('out_time')->
+                    count()
+                ;
+                $report->items[$item_key]['status'] = Ticket101::whereHas('results', function ($q) use ($today, $tech_item){
+                    $q->whereDate('created_at', $today)->
+                        where('tech_id', $tech_item->id)->
+                        whereNull('ret_time')->
+                        whereNotNull('out_time');
+                })
+                    ->with(['results', 'fire_level'])
+                    ->first();
+
+                $report->items[$item_key]['address'] = $report->items[$item_key]['status']->location ?? null;
+                $report->items[$item_key]['fire_rank'] = $report->items[$item_key]['status']->fire_level->name ?? null;
+                $report->items[$item_key]['out_time'] = $report->items[$item_key]['status']->fire_level->name ?? null;
+
+                if($report->items[$item_key]['status']){
+                    $roadtripItem = $report->items[$item_key]['status']->results()->where('tech_id', $tech_item->id)->first();
+                    if($roadtripItem){
+                        $report->items[$item_key]['out_time'] = $roadtripItem->out_time;
+                        $report->items[$item_key]['arrive_time'] = $roadtripItem->arrive_time;
+                    }
+                }
+                else{
+                    $report->items[$item_key]['out_time'] = null;
+                    $report->items[$item_key]['arrive_time'] = null;
+                }
+
+
+                /*if($report->items[$item_key]['status']){
+
+                }
+                else{
+
+                }*/
+
+                    /*FireDepartmentResult::
+//                    where('fire_department_id', $report->dept_id)->
+                    whereDate('created_at', $today)->
+                    where('tech_id', $tech_item->id)->
+                    with(['ticket'])->
+                    whereNotNull('out_time')->
+                    first()->ticket ?? null;
+                ;*/
+            }
+        }
+
+        Cache::put('report_forces_data', $data, 3600);
+
+        if($request->ajax()){
+            return response()->json($data);
+        }
+
+
+        return view('reports.101.forces', $data);
+
+    }
+
+    public function exportForcesXls()
+    {
+        if ($data = Cache::get('report_forces_data')){
+            $exportService = new ReportForcesExcelExport($data['reports']);
+            $writer = $exportService->getXlsWriter();
+            $fileName = 'Учет сил и средств (' . date('d.m.Y H-i') . ').xls';
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="' . $fileName . '"');
+            header('Cache-Control: max-age=0');
+
+            $writer->save('php://output');
+        }
+
+        dd('Кеш не заполнен');
+    }
+
+    public function exportCard101ChronologyXls($cardId)
+    {
+        $exportService = new Ticket101ChronologyExcelExport($cardId);
+        $card = Ticket101::find($cardId);
+        $writer = $exportService->getXlsWriter();
+        $fileName = 'Хронология карточки 101 (' . date('d.m.Y H-i') . ').xls';
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+
+    }
+
+
+    public function getOperationalPlan($id)
+    {
+        $operationalPlan = OperationalPlan::find($id);
+        if($operationalPlan) {
+            $html = view('pdf/operational-plan',
+                $operationalPlan
+            )->render();
+            $this->sendHtml("Оперативный план.pdf", $html);
+        }
+    }
+
+    public function getOperationalCard($id)
+    {
+        $operationalCard = OperationalCard::find($id);
+        if($operationalCard) {
+            $html = view('pdf/operational-card',
+                $operationalCard
+            )->render();
+            $this->sendHtml("Оперативная карточка.pdf", $html);
+        }
+    }
+
+    public function sendHtml($name, $html)
+    {
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $dompdf = new Dompdf();
+        $dompdf->loadHTML($html, 'UTF-8');
+        $dompdf->render();
+
+        $dompdf->stream($name);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param string $format
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \Throwable
+     */
+    public function getDaily101Formatted(Request $request, string $format = 'word')
+    {
+        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
+        $view = view('reports.export.word.daily-report-101', $report)->render();
+        $word = new PhpWord();
+        $section = $word->addSection();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
+        $file = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
+        return $this->createWordFileDownload($writer, $file);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $format
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \PhpOffice\PhpWord\Exception\Exception
+     * @throws \Throwable
+     */
+    public function getDaily112Formatted(Request $request, string $format = 'word')
+    {
+        $data['yesterday'] = now()->subHours(24);
+        $data['today'] = now();
+
+        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
+            ->whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today'])
+            ->whereNotNull('card112_id');
+
+        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
+            ->whereDate('created_at', '<=', $data['today']);
+
+        $data['emergencies'] = $card112_day->count();
+        $data['cards112'] = $card112_day->get();
+        $data['card112_count'] = $card112_day->count();
+        $data['card112_count_finished'] = $card112_day->count();
+        $data['card101_count'] = $card101_day->count();
+        $data['emergencies_human_in_danger'] = Card112::all();
+        $data['emergencies_human_not_in_danger'] = Card112::all();
+        $data['fires_count'] = $card101_day->count();
+        $data['dead_count'] = $card112_day->sum('dead');
+        $data['evacuated_count'] = $card112_day->sum('evacuated');
+        $data['poisoned_by_gas_count'] = $card112_day->sum('poisoned');
+        $data['hurt_count'] = $card112_day->sum('injured_hard');
+        $data['saved_count'] = $card112_day->sum('saved');
+        $data['card112_roadtrips'] = $card112_roadtrips->get();
+        $data['mudflow_emergency_count'] = $card112_day->filterByServiceType('ГУ Казселезащита')->count();
+        $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
+        $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
+        $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
+            $q->status('action');
+        })->first();*/
+
+        $data['air_rescue_report_tech'] = $air_rescue_report->first() ? $air_rescue_report->first()->tech()->status('action')->get() : [];
+
+        $view = view('reports.export.word.daily-report-112', $data)->render();
+        $word = new PhpWord();
+        $section = $word->addSection();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
+        $file = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
+        return $this->createWordFileDownload($writer, $file);
+
+    }
+
+    private function createWordFileDownload(WriterInterface $writer, string $filename){
+        return response()->stream(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Description' => 'File Transfer',
+            'Content-Disposition'=> 'attachment; filename="'.$filename.'"',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Transfer-Encoding' => 'binary',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0'
+        ]);
     }
 }

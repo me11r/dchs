@@ -40,7 +40,13 @@ class RoadtripController extends AuthorizedController
 
     public function getView($plan_id)
     {
-        $trip = RoadtripPlan::with(['ticket', 'department', 'results'])
+        $trip = RoadtripPlan::with([
+            'ticket',
+            'ticket.operational_card',
+            'ticket.operational_plan.special_plans',
+            'department',
+            'results'
+        ])
             ->findOrFail($plan_id);
 
         if(!$trip->is_accepted){
@@ -91,7 +97,7 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
-    public function getSend($dept_id, $ticket_id, $tech_id = null)
+    public function getSend(Request $request, $dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
@@ -109,6 +115,7 @@ class RoadtripController extends AuthorizedController
             ],
             [
                 'dispatched' => true,
+                'dispatch_time' => now(),
                 'dispatch_id' => $plan->id,
                 'tech_id' => $tech_id,
                 'ticket101_id' => $ticket_id,
@@ -117,6 +124,10 @@ class RoadtripController extends AuthorizedController
         );
 
         RoadtripSubscription::notifyDepartment($dept_id, $plan->id);
+
+        if($request->ajax()){
+            return response()->json('ok', 200);
+        }
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
             ->with('_message', [
@@ -137,6 +148,7 @@ class RoadtripController extends AuthorizedController
             ]);
 
             $result->dispatched = true;
+            $result->dispatch_time = now();
             $result->dispatch_id = $plan->id;
             $result->save();
         }

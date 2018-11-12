@@ -10,6 +10,7 @@ use App\Models\IncidentType;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
 use App\Ticket101ServicePlan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -28,6 +29,7 @@ class Card112Controller extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
+        $search = trim($request->search);
 
         $sort = $request->get('sort', 'created_at');
         $id = $request->input('filter.id', '');
@@ -63,6 +65,36 @@ class Card112Controller extends Controller
                 ->orderBy($sort, 'desc')
                 ->paginate($perPage);
         }
+        elseif($search){
+            if(is_numeric($search)){
+                $items = $this
+                    ->repository
+                    ->with(['street', 'street.area'])
+                    ->where('id', $search)
+                    ->orderBy($sort,'desc')
+                    ->paginate($perPage);
+            }
+            else{
+                try{
+                    $date = Carbon::parse(str_replace(['/', '.'],'-',$search));
+                }
+                catch (\Exception $e){
+                    $date = null;
+                }
+
+                $items = $this
+                    ->repository
+                    ->with(['street', 'street.area'])
+                    ->where('location', "like", "$search%")
+                    ->orWhereDate('created_at', $date)
+                    ->orWhereHas('cityArea', function ($q) use ($search){
+                        $q->where('name', "like", "$search%");
+                    })
+                    ->orderBy($sort,'desc')
+                    ->paginate($perPage);
+            }
+
+        }
         else{
             $items = $this
                 ->repository
@@ -77,6 +109,7 @@ class Card112Controller extends Controller
 
         return View::make('card112.index')
             ->with('items', $items)
+            ->with('search', $search)
             ->with('city_areas', $city_areas)
             ->with('per_page', $perPage)
             ->render();
@@ -103,7 +136,8 @@ class Card112Controller extends Controller
     public function store(Request $request)
     {
         $data = $this->repository->createFilledWithRelations($request->all());
-        return redirect(route('card112.index'));
+        return redirect('/card112/'.$data->id.'/edit');
+        #return redirect(route('card112.index'));
     }
 
     public function show($id)

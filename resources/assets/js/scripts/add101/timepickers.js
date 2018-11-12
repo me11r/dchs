@@ -1,6 +1,5 @@
-import Vue from 'vue';
-import Buefy from 'buefy';
 import {globalBus} from '../global-bus';
+import Vue from '../../VueInstance';
 
 export default function bindTimepickers() {
     const pickers = document.querySelectorAll('[data-component="timepicker"]');
@@ -20,10 +19,6 @@ export default function bindTimepickers() {
                 return {
                     value: dt
                 };
-            },
-            components: {
-                'b-icon': Buefy['Icon'],
-                'b-timepicker': Buefy['Timepicker']
             },
             methods: {
                 close: function () {

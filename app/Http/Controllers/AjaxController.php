@@ -49,15 +49,17 @@ class AjaxController extends AuthorizedController
     {
         $result = [];
         $location = $request->location;
-        $specialPlans = (new SpecialPlan)
-            ->where('location', 'like', "%$location%")
-            ->limit(10)
-            ->get();
+        $specialPlansQuery = SpecialPlan::search($location);
+        $specialPlansQuery->limit = 5;
+        $specialPlans = $specialPlansQuery->get();
 
-        $operational_cards = OperationalCard::location($location)
-            ->orWhere('object_name', 'like', "%$location%")
-            ->limit(10)
-            ->get();
+        $operationalCardsQuery = OperationalCard::search($location);
+        $operationalCardsQuery->limit = 5;
+        $operational_cards = $operationalCardsQuery->get();
+//        $operational_cards = OperationalCard::location($location)
+//            ->orWhere('object_name', 'like', "%$location%")
+//            ->limit(10)
+//            ->get();
 
         foreach ($operational_cards as $key => $operational_card) {
             $operational_card->is_card = true;
@@ -83,8 +85,13 @@ class AjaxController extends AuthorizedController
     public function getRightIds(Request $request)
     {
         $user = Auth::user();
-//        return response()->json($user->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
-        return response()->json($user->role->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        $rightsArr = [];
+        foreach ($user->role->rights as $right){
+            $rightsArr[] = $right->id;
+            $rightsArr[] = $right->name;
+        }
+//        return response()->json($user->role->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        return response()->json($rightsArr, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
     public function getRoadtripPlans(Request $request)
@@ -106,7 +113,7 @@ class AjaxController extends AuthorizedController
     public function getServicePlans(Request $request)
     {
         $service = (Auth::user())->service_type;
-        $canRecieve = Auth::user()->hasRight(Right::CAN_VIEW_112_CARD);
+        $canRecieve = Auth::user()->hasRight(Right::CAN_RECEIVE_SERVICE_PLAN);
         if ($service === null || !$canRecieve) {
             return response()->json(['plans' => [], 'service_id' => 0], 200);
         }
@@ -115,8 +122,10 @@ class AjaxController extends AuthorizedController
         $trips = $trips
             ->where('is_closed', false)
             ->where('service_type_id', $service->id)
+            ->whereNotNull('dispatched_time')
             ->where('is_accepted', false)
             ->get();
+
         return response()->json(['plans' => $trips, 'service_id' => $service->id], 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 

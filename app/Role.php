@@ -74,18 +74,45 @@ class Role extends Model
     public function rights()
     {
         return $this->belongsToMany(Right::class, 'role_to_rights', 'role_id');
+            /*->withPivot('right_id');*/
     }
 
     public function hasRight($right)
     {
         if(is_array($right)){
-            $hasRight = $this->rights()->whereIn('right_id', $right)->exists();
+            $rights = Right::whereIn('title', $right)
+                ->orWhereIn('name', $right)
+                ->orWhereIn('id', $right)
+                ->get();
+            
+            if($rights->count()){
+                $rightsArr = $rights->pluck('id')->toArray();
+
+                $hasRight = $this->rights()
+                    ->whereIn('right_id', $rightsArr)
+                    ->exists();
+            }
+            else{
+                $hasRight = $this->rights()
+                    ->whereIn('right_id', $right)
+                    ->exists();
+            }
         }
         else{
-            $hasRight = $this->rights()->where('right_id', $right)->exists();
+            if(!is_numeric($right)){
+                $right = Right::where('title', $right)
+                    ->orWhere('name', $right)
+                    ->first();
+                if($right){
+                    $right = $right->id;
+                }
+            }
+            $hasRight = $this->rights()
+                ->where('right_id', $right)
+                ->exists();
+
         }
         return $hasRight ? true : false;
-
     }
 }
 

@@ -12,6 +12,7 @@ use App\Formation\Operations;
 use App\Formation\Resources;
 use App\FormationMedicalReport;
 use App\FormationMudflowReport;
+use App\FormationOdPersonItem;
 use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
@@ -24,6 +25,7 @@ use App\Models\Vehicle;
 use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
+use App\StaffCpps;
 use App\User;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -36,6 +38,7 @@ class FormationController extends AuthorizedController
 {
     public function before()
     {
+        parent::before();
         return $this->needAnyRight([
             Right::CAN_ACCESS_FORMATION_REPORT_101,
             Right::CAN_ACCESS_FORMATION_REPORT_ROSO,
@@ -76,7 +79,7 @@ class FormationController extends AuthorizedController
     public function getAirRescue(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 10);
-        $data['reports'] = AirRescueReport::paginate($data['per_page']);
+        $data['reports'] = AirRescueReport::orderBy('id', 'desc')->paginate($data['per_page']);
         $data['today'] = now();
 
         return view('formation.air-rescue.index', $data);
@@ -85,11 +88,11 @@ class FormationController extends AuthorizedController
     public function getAirRescueView(Request $request, $id)
     {
         $data['report'] = AirRescueReport::find($id);
-        $data['total_persons_count'] = $data['report']->persons()->get();
-        $data['total_persons_head_count'] = $data['report']->persons()->status('head')->get();
-        $data['total_persons_active_count'] = $data['report']->persons()->status('action')->get();
-        $data['total_persons_available_count'] = $data['report']->persons()->status('available')->get();
-        $data['total_persons_oper_count'] = $data['report']->persons()->status('oper')->get();
+        $data['total_persons_count'] = $data['report']->staff_total;
+        $data['total_persons_head_count'] = $data['report']->staff_head;
+        $data['total_persons_active_count'] = $data['report']->staff_total;
+        $data['total_persons_available_count'] = $data['report']->staff_action;
+        $data['total_persons_oper_count'] = $data['report']->staff_duty_shift;
 
         $data['tech_active'] = $data['report']->tech()->status('action')->get();
         $data['tech_reserve'] = $data['report']->tech()->status('reserve')->get();
@@ -114,7 +117,7 @@ class FormationController extends AuthorizedController
     {
         $data['staff'] = Staff::all();
         $data['tech'] = Aircraft::with(['aircraft_type'])->get();
-        $data['model'] = Aircraft::find($id);
+        $data['model'] = AirRescueReport::find($id);
 
         return view('formation.air-rescue.add-edit', $data);
     }
@@ -130,33 +133,14 @@ class FormationController extends AuthorizedController
         $report->personal_respiratory_protection = $request->personal_respiratory_protection;
         $report->personal_protection = $request->personal_protection;
         $report->other_protection = $request->other_protection;
+        $report->staff_total = $request->staff_total;
+        $report->staff_action = $request->staff_action;
+        $report->staff_duty_shift = $request->staff_duty_shift;
+        $report->staff_head = $request->staff_head;
 
         $report->save();
 
         $f = $request->all();
-
-        if($request->staff){
-
-            AirRescueReportPersonsItem::where('report_id', $report->id)
-                ->delete();
-
-            foreach ($request->staff as $type => $inputs) {
-                foreach ($inputs['staff_id'] as $input_key => $input) {
-
-                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
-                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
-
-                    AirRescueReportPersonsItem::create([
-                        'staff_id' => $input,
-                        'report_id' => $report->id,
-                        'comment' => $inputs['comment'][$input_key] ?? null,
-                        'date_from' => $date_from,
-                        'date_to' => $date_to,
-                        'status' => $type,
-                    ]);
-                }
-            }
-        }
 
         if($request->tech){
             AirRescueReportTechItem::where('report_id', $report->id)
@@ -164,9 +148,22 @@ class FormationController extends AuthorizedController
             $f = $request->all();
             foreach ($request->tech as $type => $inputs) {
                 foreach ($inputs as $input_key => $input) {
-                    foreach ($input as $id) {
+                    if($input_key != 'aircraft_id'){
+                        continue;
+                    }
+
+                    foreach ($input as $input_index => $id) {
                         $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
                         $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                        $simplex = $inputs['simplex'][$input_index] ?? 0;
+                        $vsu3 = $inputs['vsu3'][$input_index] ?? 0;
+                        $vsu5 = $inputs['vsu5'][$input_index] ?? 0;
+                        $vsu10 = $inputs['vsu10'][$input_index] ?? 0;
+                        $winch = $inputs['winch'][$input_index] ?? 0;
+                        $sur = $inputs['sur'][$input_index] ?? 0;
+                        $external_suspension = $inputs['external_suspension'][$input_index] ?? 0;
+
                         if($id){
                             AirRescueReportTechItem::create([
                                 'aircraft_id' => $id,
@@ -177,6 +174,13 @@ class FormationController extends AuthorizedController
                                 'comment' => $inputs['comment'][$input_key] ?? null,
                                 'date_from' => $date_from,
                                 'date_to' => $date_to,
+                                'simplex' => $simplex,
+                                'vsu3' => $vsu3,
+                                'vsu5' => $vsu5,
+                                'vsu10' => $vsu10,
+                                'winch' => $winch,
+                                'sur' => $sur,
+                                'external_suspension' => $external_suspension,
                             ]);
                         }
                     }
@@ -224,9 +228,8 @@ class FormationController extends AuthorizedController
 
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
-        }
-        else{
-            $departments = FireDepartment::all();
+        } else {
+            $departments = FireDepartment::where('id', '!=', 19)->get();
         }
 
         $fieldlist = [
@@ -242,6 +245,9 @@ class FormationController extends AuthorizedController
         if ($model === null) {
             $model = new FormationPersonsReport();
         }
+
+        $od_staff = $model->getODStaff();
+
         $this->set('model', $model);
 
         if($read_only){
@@ -263,6 +269,7 @@ class FormationController extends AuthorizedController
         $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('od_staff', $od_staff)
             ->set('staff_table', $staff_table ?? null)
             ->set('read_only', $read_only)
             ->set('dept_id', $dept_id);
@@ -273,6 +280,8 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $formationReport = FormationReport::find($form_id);
+
+        //todo: временно отключено
         /*$canEditReport = $formationReport->canEditReport();
         if(!$canEditReport && Auth::id() != 1){
             return redirect('/formation/101')->with('_message', ['type' => 'danger', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
@@ -307,37 +316,68 @@ class FormationController extends AuthorizedController
         ];
         $model->fill($all)->save();
 
-        if($request->staff){
+        $f = $request->all();
 
-            FormationPersonsItem::where('report_id', $model->id)
+        if($request->staff){
+            FormationOdPersonItem::where('report_id', $model->id)
                 ->delete();
 
-            foreach ($request->staff as $type => $inputs) {
-                foreach ($inputs['staff_id'] as $input_key => $input) {
+            if($model->fireDepartment->title == 'ОД'){
 
-                    if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
-                        $data['status'] = 'active';
+                foreach ($request->staff as $type => $inputs) {
+                    foreach ($inputs['staff_id'] as $input_key => $input) {
+
+                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                            $data['status'] = 'active';
+                        }
+                        else{
+                            $data['status'] = 'inactive';
+                        }
+
+                        $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                        $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                        FormationOdPersonItem::create([
+                            'staff_id' => $input,
+                            'report_id' => $model->id,
+                            'comment' => $inputs['comment'][$input_key] ?? null,
+                            'date_from' => $date_from,
+                            'date_to' => $date_to,
+                            'rank' => $type,
+                            'table_name' => $type,
+                            'status' => $data['status'],
+                        ]);
                     }
-                    else{
-                        $data['status'] = 'inactive';
+                }
+            }
+            else{
+
+                foreach ($request->staff as $type => $inputs) {
+                    foreach ($inputs['staff_id'] as $input_key => $input) {
+
+                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                            $data['status'] = 'active';
+                        }
+                        else{
+                            $data['status'] = 'inactive';
+                        }
+
+                        $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
+                        $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
+
+                        FormationPersonsItem::create([
+                            'staff_id' => $input,
+                            'report_id' => $model->id,
+                            'comment' => $inputs['comment'][$input_key] ?? null,
+                            'date_from' => $date_from,
+                            'date_to' => $date_to,
+                            'rank' => $type,
+                            'status' => $data['status'],
+                        ]);
                     }
-
-                    $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
-                    $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
-
-                    FormationPersonsItem::create([
-                        'staff_id' => $input,
-                        'report_id' => $model->id,
-                        'comment' => $inputs['comment'][$input_key] ?? null,
-                        'date_from' => $date_from,
-                        'date_to' => $date_to,
-                        'rank' => $type,
-                        'status' => $data['status'],
-                    ]);
                 }
             }
         }
-
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
@@ -349,9 +389,8 @@ class FormationController extends AuthorizedController
         $belongsToDept = Auth::user()->fire_department_id;
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
-        }
-        else{
-            $departments = FireDepartment::all();
+        } else {
+            $departments = FireDepartment::where('id', '!=', 19)->get();
         }
 
         $model = (new FormationTechReport)->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
@@ -436,6 +475,7 @@ class FormationController extends AuthorizedController
         ];
 
         $dept13_people = [];
+        $dept_od_people = [];
 
         $people_fieldlist = [
             'В карауле по списку л/с',
@@ -604,6 +644,15 @@ class FormationController extends AuthorizedController
             }
         }
 
+        // лс ОД
+        if(isset($people[19])){
+            foreach ($people[19]->formation_person_items_od as $item) {
+                if($item->status == 'active'){
+                    $dept_od_people[$item->rank][] = $item->staff();
+                }
+            }
+        }
+
         foreach ($departments as $key => $dep) {
             if(isset($tech[$dep->id]) && $tech[$dep->id]->formation_tech_items->count()){
                 $departments[$key]->tech_action = $tech[$dep->id]->formation_tech_items()->status('action')->with('vehicle')->get();
@@ -618,8 +667,38 @@ class FormationController extends AuthorizedController
         }
 
         $ttl_count = [];
-//        $tech_fields_temp = $tech_fields2;
+        $tech_fields_temp[] = 'firehose_125';
+        $tech_fields_temp[] = 'firehose_75';
+        $tech_fields_temp[] = 'firehose_77';
+        $tech_fields_temp[] = 'firehose_51';
+        $tech_fields_temp[] = 'barrel_stationary';
+        $tech_fields_temp[] = 'barrel_portable';
+        $tech_fields_temp[] = 'pgs_600';
+        $tech_fields_temp[] = 'purga';
+        $tech_fields_temp[] = 'radio_station_portable';
+        $tech_fields_temp[] = 'flashlight';
+        $tech_fields_temp[] = 'searchlight';
+        $tech_fields_temp[] = 'tok';
+        $tech_fields_temp[] = 'l1';
+        $tech_fields_temp[] = 'knapsack_devices';
+        $tech_fields_temp[] = 'shovel';
+        $tech_fields_temp[] = 'flapper';
+        $tech_fields_temp[] = 'life_rope';
+        $tech_fields_temp[] = 'foamer';
+        $tech_fields_temp[] = 'foamer_in_stock';
+        $tech_fields_temp[] = 'damaged_hydrant_street';
+        $tech_fields_temp[] = 'damaged_hydrant_object';
+        $tech_fields_temp[] = 'damaged_pv';
+        $tech_fields_temp[] = 'active_gasoline';
+        $tech_fields_temp[] = 'active_diesel';
+        $tech_fields_temp[] = 'reserved_gasoline';
+        $tech_fields_temp[] = 'reserved_diesel';
+        $tech_fields_temp[] = 'generator';
+        $tech_fields_temp[] = 'exhauster';
+        $tech_fields_temp[] = 'girs';
+        $tech_fields_temp[] = 'iup';
         $tech_fields_temp[] = 'head_guard_id';
+
 
         foreach ($departments as $dep) {
             $tech_items_count['tech_action'] += count($dep->tech_action);
@@ -645,7 +724,7 @@ class FormationController extends AuthorizedController
             }
         }
 
-        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments, $people_fields, $tech_fields, $people, $tech);
+        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech);
         $user = Auth::user();
 
         $dataToReport = [
@@ -684,8 +763,11 @@ class FormationController extends AuthorizedController
 
 
         $this->set('people', $people)
+            ->set('form_id', $form_id)
+            ->set('od_staff', (new FormationPersonsReport())->getODStaff())
             ->set('tech', $tech)
             ->set('dept13_people', $dept13_people)
+            ->set('dept_od_people', $dept_od_people)
             ->set('user', $user)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)

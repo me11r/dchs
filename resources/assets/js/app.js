@@ -1,13 +1,7 @@
 /* eslint-disable no-new */
-import '../sass/fonts.scss';
-import '../sass/auth.scss';
 import '../sass/app.scss';
-import '../sass/shake.scss';
 
-import Vue from 'vue';
-import Buefy from 'buefy';
 import axios from 'axios';
-import VueLocalStorage from 'vue-localstorage';
 
 import Navbar from './ui/Navbar';
 import {Card112Form} from './views/card112';
@@ -20,6 +14,8 @@ import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
+import ReportForces from './views/reports/emergency/ReportForces';
+// import Ticket101OnWay from './components/ticket101/OnWayInfo';
 // import YandexMapsBus from './scripts/yandex-maps-bus';
 
 import Add101Functions from './scripts/add101/add101';
@@ -40,14 +36,21 @@ import AirRescueStaff from './views/AirRescueStaff/AddEditStaff';
 import AirRescueTech from './views/AirRescueTech/AddEditTech';
 import PhoneItem from './views/dictionary/Phone';
 import DistrictManagers from './components/DistrictManagers';
+import DatepickerSearch from './components/DatepickerSearch';
+import View101App from './scripts/formation/view-101-app';
+import NotificationGroupsUsersMultiselect from './components/notification-groups/NotificationGroupsUsersMultiselect';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
+import VueMessenger from './ui/messenger/Messenger';
+import Vue from './VueInstance';
+import VueDateFilter from './scripts/DateFilter';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
+Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
@@ -64,6 +67,7 @@ Vue.component('report101-staff', Report101Staff);
 Vue.component('report101-vehicles', Report101Vehicles);
 Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
 Vue.component('report101-emergency', Report101Emergency);
+Vue.component('report-forces', ReportForces);
 Vue.component('report112-emergency', Report112Emergency);
 Vue.component('report112-branches', ReportPeriod112Branches);
 Vue.component('main-report', MainPageReport);
@@ -79,13 +83,16 @@ Vue.component('t-picker', TPicker);
 Vue.component('v-phone', PhoneItem);
 Vue.component('district-managers', DistrictManagers);
 
-Vue.config.productionTip = false;
+Vue.component('v-datepicker-search', DatepickerSearch);
+Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
+Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
+Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
+Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
+Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
 
-Vue.use(Buefy, {
-    defaultIconPack: 'fas'
-});
-
-Vue.use(VueLocalStorage);
+Vue.component('notification', require('./components/Notification'));
+Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
+Vue.component('btn-close-card', require('./components/ticket101/CloseTicket'));
 
 // верхнее меню
 if (document.getElementById('navbar')) {
@@ -142,10 +149,10 @@ if (document.getElementById('cardadd101')) {
         } else {
             window.add101tabs.setTab(0);
         }
-        document.getElementById('nexttab').addEventListener('click', (e) => {
+        /* document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
-        });
+        }); */
     });
 }
 
@@ -187,12 +194,46 @@ if (document.getElementById('fire-object-div')) {
     });
 }
 
+if (document.getElementById('ticket101-onway')) {
+    new Vue({
+        el: '#ticket101-onway'
+    });
+}
+
+if (document.getElementById('ticket101-arrived')) {
+    new Vue({
+        el: '#ticket101-arrived'
+    });
+}
+
 if (document.getElementById('vue')) {
     new Vue({
         el: '#vue'
     });
 }
 
+if (document.getElementById('btn-close-card')) {
+    new Vue({
+        el: '#btn-close-card'
+    });
+}
+
+if (document.getElementById('ticket101-chronology')) {
+    new Vue({
+        el: '#ticket101-chronology'
+    });
+}
+if (document.getElementById('emergency_messenger')) {
+    new Vue({
+        el: '#emergency_messenger',
+        render: h => h(VueMessenger)
+    });
+}
+
+const View101AppElement = document.getElementById('view-101-app');
+if (View101AppElement) {
+    window.View101App = (new View101App()).createApp(View101AppElement, window.people, window.odStaff, window.formId);
+}
 
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');
