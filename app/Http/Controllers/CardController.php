@@ -322,8 +322,22 @@ class CardController extends AuthorizedController
                         if (isset($results[$schedule_dept])) {
                             if ($results[$schedule_dept]->fire_department_id == $schedule_item->fire_department_id) {
 
-                                $results[$schedule_dept]->recommended = true;
-                                $results[$schedule_dept]->save();
+                                $same_address_exists = FireDepartmentResult::whereHas('ticket', function ($q_ticket) use ($card){
+                                    $q_ticket
+                                        ->closed(false)
+                                        ->where('city_area_id',$card->city_area_id)
+                                        ->where('fire_department_id',$card->fire_department_id)
+                                        ->real();
+                                })
+                                    ->where('fire_department_id',$results[$schedule_dept]->fire_department_id)
+                                    ->where('tech_id',$results[$schedule_dept]->tech_id)
+                                    ->recommended(true)
+                                    ->first();
+
+                                if(!$same_address_exists){
+                                    $results[$schedule_dept]->recommended = true;
+                                    $results[$schedule_dept]->save();
+                                }
                             }
                         }
                     }

@@ -1,7 +1,8 @@
 let mix = require('laravel-mix');
 
-mix.js('resources/assets/js/app.js', 'public/assets/app.js')
+mix
     .sass('resources/assets/sass/app.scss', 'public/assets/app.css')
+    .js('resources/assets/js/app.js', 'public/assets/app.js')
     .copy('resources/static', 'public/assets');
 
 mix.webpackConfig({
@@ -27,7 +28,7 @@ if (mix.inProduction()) {
             cache: true,
             uglifyOptions: {
                 compress: true,
-                comments: false,
+                comments: true,
                 mangle: true,
                 drop_console: true
             }
