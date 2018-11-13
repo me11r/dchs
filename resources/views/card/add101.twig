@@ -127,6 +127,7 @@
                                     <p class="control"
                                        data-component="buefy-common-select"
                                        data-name="operational_plan_id"
+                                       data-plans="{{ special_plans }}"
                                        data-value="{{ ticket.operational_plan_id|default(0) }}">
                                         <label for="operational_plan_id">Оперативный план</label>
                                         <input type="hidden"
@@ -138,22 +139,26 @@
                                                 :min-length="1"
                                                 v-model="selectedId">
                                         </buefy-common-select>
-                                    </p>
-                                    {% if ticket.operational_plan_id %}
-                                        {% for special_plan in ticket.operational_plan.special_plans %}
-                                            {% if special_plan.file %}
-                                                <a href="{{ '/storage/operational-plans/'~special_plan.file }}" target="_blank">
+                                        {% if ticket.operational_plan_id %}
+                                            {% for special_plan in ticket.operational_plan.special_plans %}
+                                                {% if special_plan.file %}
+                                                    <a href="{{ '/storage/operational-plans/'~special_plan.file }}" target="_blank">
+                                                    <span class="file-icon">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </span>
+                                                    </a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <template v-if="file">
+                                                <a :href="'/storage/operational-plans/'+file" target="_blank">
                                                     <span class="file-icon">
                                                         <i class="fas fa-file-pdf"></i>
                                                     </span>
                                                 </a>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        <template v-if="operationalPlanPdf">
-                                            link
-                                        </template>
-                                    {% endif %}
+                                            </template>
+                                        {% endif %}
+                                    </p>
                                 </div>
                             </div>
                             <div class="column is-3">
@@ -163,6 +168,7 @@
                                          data-component="simple-select"
                                          data-special="specialPlan"
                                          data-value="{{ ticket.operational_card_id }}"
+                                         data-cards="{{ operational_cards }}"
                                          data-name="operational_cards"
                                          style="display: block">
                                         <select name="operational_card_id" id="operational_card_id"
@@ -180,8 +186,12 @@
                                             </span>
                                             </a>
                                         {% else %}
-                                            <template v-if="operationalCardPdf">
-                                                link
+                                            <template v-if="file">
+                                                <a :href="'/storage/operational-cards/'+file" target="_blank">
+                                                    <span class="file-icon">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </span>
+                                                </a>
                                             </template>
                                         {% endif %}
                                     </div>
