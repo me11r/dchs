@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\CityArea whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\CityArea withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\CityArea withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DistrictManager[] $district_managers
  */
 class CityArea extends Model
 {

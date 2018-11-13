@@ -37,6 +37,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101ServicePlan whereServiceTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101ServicePlan whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property \Carbon\Carbon $dispatched_time
+ * @property int|null $card112_id
+ * @property-read \App\Models\Card112\Card112|null $ticket112
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101ServicePlan dispatched($search)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101ServicePlan whereCard112Id($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101ServicePlan whereDispatchedTime($value)
  */
 class Ticket101ServicePlan extends Model
 {

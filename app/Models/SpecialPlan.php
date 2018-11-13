@@ -45,6 +45,8 @@ use Laravel\Scout\Searchable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecialPlan withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SpecialPlan withoutTrashed()
+ * @property string $file
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereFile($value)
  */
 class SpecialPlan extends Model
 {
