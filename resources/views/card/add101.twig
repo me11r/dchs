@@ -18,6 +18,19 @@
         <form action="" method="post" id="card-101-form">
             {{ csrf_field() }}
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
+            <div id="other-rides">
+                {% if card_type != 'real'or ticket.drill_type is not null%}
+                        <other-rides
+                                :ride-types="{{ ride_types }}"
+                                :other-ride="{{ ticket.other_ride|raw|json_encode }}"
+                                :ticket="{{ ticket }}"
+                                :fire-departments="{{ fire_departments_vue }}"
+                                :staff="{{ staff }}"
+                        ></other-rides>
+
+                {% endif %}
+            </div>
+            <br>
             <div class="tabs buttab is-boxed" id="">
                 <ul>
                     <li class="main-tab">

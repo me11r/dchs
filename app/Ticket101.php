@@ -320,6 +320,11 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
     }
 
+    public function other_ride()
+    {
+        return $this->hasOne(Ticket101Other::class,'ticket_101_id');
+    }
+
     public function popup_notifications()
     {
         return $this->belongsToMany(
@@ -406,9 +411,9 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101ServicePlan::class, 'card_id');
     }
 
-    public function scopeReal($q, $search = true)
+    public function scopeReal($q, $search = null)
     {
-        return $q->where('is_real', $search);
+        return $q->where('drill_type', $search);
     }
 
     public function scopeClosed($q, $search = true)
@@ -450,6 +455,16 @@ class Ticket101 extends Model
             ->get();
 
         return $schedule;
+    }
+
+    public function scopeCheckDrill($q, $search)
+    {
+        if($search){
+            return $q->whereNotNull('drill_type');
+        }
+        else{
+            return $q->whereNull('drill_type');
+        }
     }
 
 
