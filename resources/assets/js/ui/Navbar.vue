@@ -30,7 +30,7 @@
                         </a>
                         <a
                             v-if="hasRight(2)"
-                            href="#"
+                            href="/card/add101/0/other"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
                             Прочие 101

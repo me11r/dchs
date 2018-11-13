@@ -74,6 +74,7 @@
                             </select>
                         </form>
                     </th>
+                    <th>Тип</th>
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
@@ -83,6 +84,7 @@
                         <td>{{ ticket.location }}</td>
                         <td>{{ ticket.city_area.name|default('-') }} {% if ticket.crossroad_1_id %}({{ ticket.crossroad_1.name|default('-') }} &times; {{ ticket.crossroad_2.name|default('-') }}){% endif %}</td>
                         <td class="has-text-right">{{ ticket.created_at|date('H:i d.m.Y') }}</td>
+                        <td class="has-text-right">{{ ticket.drill_type ?? '' }}</td>
                         <td class="has-text-right">
                             <a href="/card/add101/{{ ticket.id }}/{{ type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
                         </td>

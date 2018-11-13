@@ -459,6 +459,7 @@ class Ticket101 extends Model
 
     public function scopeCheckDrill($q, $search)
     {
+        return $q;
         if($search){
             return $q->whereNotNull('drill_type');
         }
