@@ -47,6 +47,9 @@ export default {
         if (!this.isLoadedList) {
             this.updateUsers();
         }
+        setInterval(() => {
+            this.updateUsers();
+        }, 3600);
     }
 };
 </script>

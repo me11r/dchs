@@ -16,11 +16,30 @@ class MessengerController extends Controller
         $me = \Auth::user();
         $users = (new User())
             ->where('id', '<>', $me->id)
-            ->withCount('unreadMessages')
             ->orderBy('last_connect_at', 'desc')
             ->orderBy('id')
             ->get(['id', 'name', 'last_connect_at']);
+        $unread = $this->getUnreadCount($me->id);
+        foreach ($users as &$user) {
+            $user->unread_count = 0;
+            if (isset($unread[$user->id])){
+                $user->unread_count = $unread[$user->id]['cnt'];
+            }
+        }
         return response()->json(['users' => $users], 200, [], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getUnreadCount($user_id)
+    {
+        $cgr = \DB::raw('count(*) as cnt');
+        $messages = (new Message())
+            ->where('reciever_id', $user_id)
+            ->where('is_viewed', false)
+            ->groupBy(['sender_id'])
+            ->select(['sender_id', $cgr])
+            ->get()
+            ->keyBy('sender_id');
+        return $messages;
     }
 
     public function postMessage(Request $request)
@@ -56,8 +75,10 @@ class MessengerController extends Controller
                     ->where('reciever_id', $me->id);
             })
             ->orderBy('id', 'asc')
-            ->limit(30)
+            ->limit(150)
             ->get();
+
+        $this->markAsRead($me, $user_id);
 
         return response()->json(['messages' => $messages]);
     }
@@ -70,5 +91,20 @@ class MessengerController extends Controller
             ->where('is_viewed', false)
             ->count();
         return response()->json(['unread' => $unread]);
+    }
+
+    protected function markAsRead(User $me, int $user_id)
+    {
+        $messages = (new Message())
+            ->where(function ($query) use ($me, $user_id) {
+                return $query->where('sender_id', $me->id)
+                    ->where('reciever_id', $user_id);
+            })
+            ->orWhere(function ($query) use ($me, $user_id) {
+                return $query->where('sender_id', $user_id)
+                    ->where('reciever_id', $me->id);
+            })
+            ->update(['is_viewed' => true]);
+        return $messages;
     }
 }

@@ -78,6 +78,7 @@ export default {
         evbus.$on('messenger-selected-user', (user) => {
             this.selectedUser = user;
         });
+        this.checkUnreadAny();
         setInterval(() => {
             this.checkUnreadAny();
         }, 3400);
