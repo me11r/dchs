@@ -43,7 +43,7 @@ export default function bindBuefyCommonSelects() {
                         if (element.dataset.name === 'operational_plan_id') {
                             let plans = JSON.parse(element.dataset.plans) || [];
                             _.each(plans, (plan) => {
-                                if (parseInt(plan.operational_plan_id) === parseInt(this.selectedId)) {
+                                if (parseInt(plan.operational_plan_id) === parseInt(this.selectedId) &&  plan.file !== '') {
                                     this.file = plan.file;
                                 }
                             });
