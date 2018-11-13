@@ -9,7 +9,9 @@ export default function bindSelects() {
                 el: element,
                 data: {
                     selectedId: null,
-                    name: ''
+                    name: '',
+                    operationalCardPdf: false,
+                    operationalPlanPdf: false,
                 },
                 methods: {
                     onSpecialPlanFound(specialPlan) {
@@ -36,6 +38,14 @@ export default function bindSelects() {
                 watch: {
                     'selectedId'() {
                         if (element.dataset.name === 'fire_level_id') {
+                            console.dir(this.selectedId);
+                        }
+                        if (element.dataset.name === 'operational_cards') {
+                            this.operationalCardPdf = false;
+                            console.dir(this.selectedId);
+                        }
+                        if (element.dataset.name === 'operational_plan_id') {
+                            this.operationalCardPdf = false;
                             console.dir(this.selectedId);
                         }
                     }
