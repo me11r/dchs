@@ -8,7 +8,10 @@ use App\User;
 
 trait MessengerTrait
 {
-    public function sendMessageAboutFormationAction($message = null)
+    /**
+     * @param null $message
+     */
+    public function sendMessageAboutFormationAction($message = null): void
     {
         if ($this->isUserHaveToSendMessageAboutFormationAction()) {
             $users = $this->getUsersToNoticeAboutFormationAction();
@@ -30,11 +33,17 @@ trait MessengerTrait
         }
     }
 
-    private function isUserHaveToSendMessageAboutFormationAction()
+    /**
+     * @return bool
+     */
+    private function isUserHaveToSendMessageAboutFormationAction(): bool
     {
         return Role::whereName('emergency_service')->first()->id === \Auth::user()->role_id;
     }
 
+    /**
+     * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
     private function getUsersToNoticeAboutFormationAction()
     {
         return User::whereRoleId(Role::whereName('dispatcher_od112')->first()->id)->get();
