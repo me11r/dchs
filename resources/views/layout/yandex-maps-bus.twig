@@ -1,6 +1,6 @@
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
 <script>
-    window.areas = {{ areas | json_encode() | raw }};
+    window.areas = {{ areas | default('[]') | json_encode() | raw }};
     ymaps.ready(function () {
         window.ymaps = ymaps;
     });
