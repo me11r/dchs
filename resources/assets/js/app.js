@@ -96,6 +96,7 @@ Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chr
 Vue.component('notification', require('./components/Notification'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 Vue.component('btn-close-card', require('./components/ticket101/CloseTicket'));
+Vue.component('other-rides', require('./components/ticket101/OtherRides'));
 
 // верхнее меню
 if (document.getElementById('navbar')) {
@@ -218,6 +219,12 @@ if (document.getElementById('vue')) {
 if (document.getElementById('btn-close-card')) {
     new Vue({
         el: '#btn-close-card'
+    });
+}
+
+if (document.getElementById('other-rides')) {
+    new Vue({
+        el: '#other-rides'
     });
 }
 

@@ -22,12 +22,15 @@ use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
 use App\Models\ServiceType;
+use App\Models\Staff;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
 use App\Models\WallMaterial;
 use App\OperationalCard;
+use App\RideType;
 use App\Ticket101;
+use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,7 +45,7 @@ class CardController extends AuthorizedController
         $this->set('areas', (new CityArea())->get()->toArray());
     }
 
-    public function get101(Request $request)
+    public function get101(Request $request, $card_type = null)
     {
         $perPage = $request->get('per_page', 10);
 
@@ -55,6 +58,7 @@ class CardController extends AuthorizedController
         $city_area = $request->input('filter.city_area', '');
 
         $city_areas = Ticket101::groupBy('city_area_id')
+            ->checkDrill($card_type)
             ->get(['city_area_id'])
             ->pluck('city_area_id')
             ->toArray();
@@ -64,6 +68,7 @@ class CardController extends AuthorizedController
         if($id){
             $tickets = Ticket101::with(['city_area'])
                 ->orderBy($sort,'desc')
+                ->checkDrill($card_type)
                 ->where('id',$id)
                 ->paginate($perPage);
         }
@@ -71,6 +76,7 @@ class CardController extends AuthorizedController
 
             $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
                 ->where('city_area_id', $city_area)
+                ->checkDrill($card_type)
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
@@ -78,6 +84,7 @@ class CardController extends AuthorizedController
             if(is_numeric($search)){
                 $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
                     ->where('id', $search)
+                    ->checkDrill($card_type)
                     ->orderBy($sort,'desc')
                     ->paginate($perPage);
             }
@@ -89,6 +96,7 @@ class CardController extends AuthorizedController
                     $date = null;
                 }
                 $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                    ->checkDrill($card_type)
                     ->where('location', "like", "$search%")
                     ->orWhereDate('created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
@@ -101,6 +109,7 @@ class CardController extends AuthorizedController
         }
         else{
             $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
+                ->checkDrill($card_type)
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
@@ -109,11 +118,12 @@ class CardController extends AuthorizedController
             ->set('city_areas', $city_areas)
             ->set('id', $id)
             ->set('search', $search)
+            ->set('type', $card_type)
             ->set('city_area', $city_area)
             ->set('per_page', $perPage);
     }
 
-    public function getAdd101(Request $request, $card_id = 0)
+    public function getAdd101(Request $request, $card_id = 0, $card_type = 'real')
     {
         $gu_notify = [
             '100' => '100',
@@ -151,6 +161,10 @@ class CardController extends AuthorizedController
         $this->set('wall_materials', $wall_materials);
         $this->set('notification_get_back', session()->pull('notification.get_back', 0));
         $this->set('wall_materials', $wall_materials);
+        $this->set('staff', Staff::all());
+        $this->set('ride_types', RideType::all());
+        $this->set('fire_departments_vue', FireDepartment::recommend()->get());
+        $this->set('card_type', $card_type);
         $this->set('departmentsOnWay', $departmentsOnWay);
         $this->set('departmentsArrived', $departmentsArrived);
         $this->set('operational_cards', $operational_cards);
@@ -200,6 +214,7 @@ class CardController extends AuthorizedController
                 'notification_groups',
                 'notifications.service',
                 'operational_card',
+                'other_ride',
                 'operational_plan.special_plans'
             ])
             ->findOrNew($card_id);
@@ -348,7 +363,14 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except(['ph', 'departments_to_ride', 'time_arrive', 'on_way']);
+        $data = $request->except([
+            'ph',
+            'departments_to_ride',
+            'time_arrive',
+            'on_way',
+            'other_rides',
+        ]);
+
         $deptsToGetBack = collect([]);
         $r = $request->all();
 
@@ -439,8 +461,19 @@ class CardController extends AuthorizedController
 
         $this->saveArriveTimes($request);
 
+        if($request->input('other_rides', []) && $request->input('drill_type', '')){
+            $other_ride = $request->input('other_rides', []);
+            $other_ride['ticket_101_id'] = $card->id;
+
+            $ticket_other = Ticket101Other::updateOrCreate(['ticket_101_id' => $card->id], $other_ride);
+        }
+
+        $card_type = ($ticket_other->drill_type ?? null) ==  null ? ''  : '/other';
         if ($comeback) {
-            $back = '/card/add101/' . $card->id . '#return=' . $comeback;
+            $back = "/card/add101/{$card->id}{$card_type}#return={$comeback}";
+        }
+        else{
+            $back = "/card/add101/{$card->id}{$card_type}";
         }
 
         if ($request->ajax()) {
