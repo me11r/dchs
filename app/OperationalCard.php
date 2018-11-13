@@ -32,6 +32,8 @@ use Laravel\Scout\Searchable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OperationalCard whereOcNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OperationalCard whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $file
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\OperationalCard whereFile($value)
  */
 class OperationalCard extends Model
 {

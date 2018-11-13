@@ -16,6 +16,7 @@ class MessengerController extends Controller
         $me = \Auth::user();
         $users = (new User())
             ->where('id', '<>', $me->id)
+            ->withCount('unreadMessages')
             ->orderBy('last_connect_at', 'desc')
             ->orderBy('id')
             ->get(['id', 'name', 'last_connect_at']);

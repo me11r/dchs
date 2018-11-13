@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\RoleToRight whereRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\RoleToRight whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Role $role
  */
 class RoleToRight extends Model
 {

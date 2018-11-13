@@ -245,6 +245,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Ticket101 withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Ticket101 withoutTrashed()
  * @mixin \Eloquent
+ * @property int|null $closed
+ * @property int $is_real
+ * @property string|null $pre_information
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Chronology101[] $chronologies
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Notification\NotificationGroup[] $notification_groups
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Notification\Notification[] $popup_notifications
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 closed($search = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 real($search = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereAdditionalDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereClosed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereFireplace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereIsReal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereNotificationMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereNotificationsSent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePreInformation($value)
  */
 class Ticket101 extends Model
 {
