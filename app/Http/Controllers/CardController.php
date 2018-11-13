@@ -24,6 +24,7 @@ use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
 use App\Models\ServiceType;
+use App\Models\SpecialPlan;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
@@ -151,6 +152,7 @@ class CardController extends AuthorizedController
 
         $dep_results = FireDepartmentResult::all();
         $operational_cards = OperationalCard::all();
+        $special_plans = SpecialPlan::all();
 
         $this->set('wall_materials', $wall_materials);
         $this->set('notification_get_back', session()->pull('notification.get_back', 0));
@@ -158,6 +160,7 @@ class CardController extends AuthorizedController
         $this->set('departmentsOnWay', $departmentsOnWay);
         $this->set('departmentsArrived', $departmentsArrived);
         $this->set('operational_cards', $operational_cards);
+        $this->set('special_plans', $special_plans);
         $this->set('eventInfos', $eventInfos);
         $this->set('eventInfosArrived', $eventInfosArrived);
         $this->set('ssv_out', $ssv_out);
