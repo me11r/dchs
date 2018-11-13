@@ -43,10 +43,13 @@ export default class Tabs {
                 window.location.hash = '#return='+ i;
                 var data = new FormData(form);
                 let axios = require('axios');
-                let id = document.getElementById('card-101-form-id').dataset.id;
-                axios.post('/card/add101/' + id, data).catch((resp) => {
-                    console.dir(resp.response.data.message);
-                });
+                let id = document.getElementById('card-101-form-id').dataset.id
+                if(this.activeTab !== 0){
+                    axios.post('/card/add101/' + id, data).catch((resp) => {
+                        console.dir(resp.response.data.message);
+                    });
+                }
+
             } else {
                 form.querySelector('button[type=submit]').click();
             }
