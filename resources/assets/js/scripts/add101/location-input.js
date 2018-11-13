@@ -112,7 +112,6 @@ export default function bindLocationInputApp() {
                     globalBus.$emit('is_common_house', event.newValue);
                 }
             });
-            // this.yandexMapsBus = new YandexMapsBus();
 
             (new YandexMapsBus())
                 .getInstance()

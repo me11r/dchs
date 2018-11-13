@@ -16,7 +16,9 @@ use App\FireDepartment;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Http\Middleware\Rights\FormationRecord;
+use App\Http\Resources\HydrantResource;
 use App\Models\FireDepartmentResult;
+use App\Models\Hydrant;
 use App\Models\Notification\NotificationGroup;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
@@ -40,6 +42,8 @@ class CardController extends AuthorizedController
     public function getMapscreen(Request $request)
     {
         $this->set('areas', (new CityArea())->get()->toArray());
+        $this->set('fireDepartments', collect(FireDepartment::all(['id', 'title']))->toArray());
+        $this->set('model', new HydrantResource(new Hydrant()));
     }
 
     public function get101(Request $request)

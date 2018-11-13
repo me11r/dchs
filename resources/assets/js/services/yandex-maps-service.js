@@ -1,29 +1,36 @@
-let ymaps = null;
+let localYmaps = null;
 
 export default class YMapsService {
     constructor() {
-        if (!ymaps) {
+        if (!localYmaps) {
             this.listenToReady();
         }
     }
 
     listenToReady() {
-        window.addEventListener('load', () => {
-            window.ymaps.ready(function () {
-                ymaps = window.ymaps;
-            });
-        });
+        const setYmaps = () => {
+            if (window.ymaps) {
+                window.ymaps.ready(function () {
+                    localYmaps = window.ymaps;
+                });
+            } else {
+                setTimeout(() => {
+                    setYmaps();
+                }, 50);
+            }
+        };
+        setYmaps();
     }
 
     getYmaps() {
         return new Promise((resolve) => {
             const resolveMap = (resolve) => {
-                if (ymaps) {
-                    resolve(ymaps);
+                if (localYmaps) {
+                    resolve(localYmaps);
                 } else {
                     setTimeout(() => {
                         resolveMap(resolve);
-                    }, 100);
+                    }, 50);
                 }
             };
             resolveMap(resolve);
