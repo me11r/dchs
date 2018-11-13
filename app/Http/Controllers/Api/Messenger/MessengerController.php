@@ -61,4 +61,14 @@ class MessengerController extends Controller
 
         return response()->json(['messages' => $messages]);
     }
+
+    public function getAnyUnread(Request $request)
+    {
+        $me = \Auth::user();
+        $unread = (new Message())
+            ->where('reciever_id', $me->id)
+            ->where('is_viewed', false)
+            ->count();
+        return response()->json(['unread' => $unread]);
+    }
 }
