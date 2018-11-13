@@ -97,7 +97,7 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
-    public function getSend($dept_id, $ticket_id, $tech_id = null)
+    public function getSend(Request $request, $dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
@@ -124,6 +124,10 @@ class RoadtripController extends AuthorizedController
         );
 
         RoadtripSubscription::notifyDepartment($dept_id, $plan->id);
+
+        if($request->ajax()){
+            return response()->json('ok', 200);
+        }
 
         return redirect(route('card101add', ['card_id' => $ticket_id]))
             ->with('_message', [

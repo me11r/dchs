@@ -1,0 +1,39 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section" id="vue">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">Группы личного состава</h4>
+                <form action="{% if item.id is null %}{{ route('notification-groups.store') }}{% else %}{{ route('notification-groups.update', item.id) }}{% endif %}" method="post">
+                    <input
+                            type="hidden"
+                            name="_method"
+                            value="{% if item is defined and item.id is defined and item.id %}PATCH{% else %}POST{% endif %}">
+
+                    {{ csrf_field() }}
+
+                    <div class="field">
+                        <label for="name">Название</label>
+                        <input required
+                               type="text"
+                               class="input"
+                               name="name"
+                               id="name"
+                               value="{{ attribute(item, 'name')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="users">Пользователи</label>
+                        <notifications-groups-users-multiselect
+                                :users='{{ users | json_encode() | raw }}'
+                                :selected-users='{{ selectedUsers | json_encode() | raw }}' />
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        </button>
+                        <a href="{{ route('notification-groups.index') }}" class="button is-light">Назад</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

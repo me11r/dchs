@@ -863,61 +863,74 @@ export default {
         } */
     },
     beforeMount() {
-        if (window.card112FormData) {
-            this.streets = window.card112FormData.streets;
-            this.cityAreas = window.card112FormData.cityAreas;
-            this.incidentTypes = window.card112FormData.incidentTypes;
-            this.serviceTypes = window.card112FormData.serviceTypes;
-            this.method = window.card112FormData.method;
-            this.formRoute = window.card112FormData.formRoute;
-            this.model = window.card112FormData.model;
-            this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
-            this.servicePlans = window.card112FormData.servicePlans;
-        }
-
-        console.dir(this.servicePlans);
-
-        this.serviceTypes.forEach((item) => {
-            this.services[item.id] = {
-                sent_at: '',
-                created_at: '',
-                name_accepted: '',
-                arrive_time: ''
-            };
-        });
-
-        if (this.servicePlans !== undefined) {
-            this.servicePlans.forEach((plan) => {
-                this.serviceTypes.forEach((item) => {
-                    if (plan.service_type_id === item.id) {
-                        this.services[item.id] = {
-                            sent_at: plan.created_at || moment().format('d-m-Y'),
-                            created_at: plan.created_at || moment().format('d-m-Y'),
-                            name_accepted: plan.name_accepted || '',
-                            arrive_time: plan.arrive_time || ''
-                        };
-                    }
-                });
-            });
-        }
+        // if (window.card112FormData) {
+        //     this.streets = window.card112FormData.streets;
+        //     this.cityAreas = window.card112FormData.cityAreas;
+        //     this.incidentTypes = window.card112FormData.incidentTypes;
+        //     this.serviceTypes = window.card112FormData.serviceTypes;
+        //     this.method = window.card112FormData.method;
+        //     this.formRoute = window.card112FormData.formRoute;
+        //     this.model = window.card112FormData.model;
+        //     this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
+        //     this.servicePlans = window.card112FormData.servicePlans;
+        // }
     },
     mounted() {
-        this.yandexMapsBus = new YandexMapsBus();
-        this.checkServices();
-        window.addEventListener('storage', (event) => {
-            if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
-                this.model.location = event.newValue;
-            }
+        (new YandexMapsBus())
+            .getInstance()
+            .then((yandexMapsBus) => {
+                this.yandexMapsBus = yandexMapsBus;
 
-            window.addEventListener('storage', (event) => {
-                if (event.key === AREA_ID_FOUND) {
-                    this.model.city_area_id = parseInt(event.newValue);
+                this.streets = window.card112FormData.streets;
+                this.cityAreas = window.card112FormData.cityAreas;
+                this.incidentTypes = window.card112FormData.incidentTypes;
+                this.serviceTypes = window.card112FormData.serviceTypes;
+                this.method = window.card112FormData.method;
+                this.formRoute = window.card112FormData.formRoute;
+                this.model = window.card112FormData.model;
+                this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
+                this.servicePlans = window.card112FormData.servicePlans;
+
+                this.serviceTypes.forEach((item) => {
+                    this.services[item.id] = {
+                        sent_at: '',
+                        created_at: '',
+                        name_accepted: '',
+                        arrive_time: ''
+                    };
+                });
+
+                if (this.servicePlans !== undefined) {
+                    this.servicePlans.forEach((plan) => {
+                        this.serviceTypes.forEach((item) => {
+                            if (plan.service_type_id === item.id) {
+                                this.services[item.id] = {
+                                    sent_at: plan.created_at || moment().format('d-m-Y'),
+                                    created_at: plan.created_at || moment().format('d-m-Y'),
+                                    name_accepted: plan.name_accepted || '',
+                                    arrive_time: plan.arrive_time || ''
+                                };
+                            }
+                        });
+                    });
                 }
+
+                this.checkServices();
+                window.addEventListener('storage', (event) => {
+                    if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
+                        this.model.location = event.newValue;
+                    }
+
+                    window.addEventListener('storage', (event) => {
+                        if (event.key === AREA_ID_FOUND) {
+                            this.model.city_area_id = parseInt(event.newValue);
+                        }
+                    });
+                });
+                globalBus.$on(AREA_ID_FOUND, (value) => {
+                    this.model.city_area_id = value;
+                });
             });
-        });
-        globalBus.$on(AREA_ID_FOUND, (value) => {
-            this.model.city_area_id = value;
-        });
     }
 };
 </script>

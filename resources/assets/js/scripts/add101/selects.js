@@ -1,6 +1,7 @@
 import {AREA_ID_FOUND} from '../../config/storage-keys';
 import {globalBus} from '../global-bus';
 import Vue from '../../VueInstance';
+import {_} from 'vue-underscore';
 
 export default function bindSelects() {
     document.querySelectorAll('[data-component="simple-select"]')
@@ -9,7 +10,8 @@ export default function bindSelects() {
                 el: element,
                 data: {
                     selectedId: null,
-                    name: ''
+                    name: '',
+                    file: null
                 },
                 methods: {
                     onSpecialPlanFound(specialPlan) {
@@ -37,6 +39,14 @@ export default function bindSelects() {
                     'selectedId'() {
                         if (element.dataset.name === 'fire_level_id') {
                             console.dir(this.selectedId);
+                        }
+                        if (element.dataset.name === 'operational_cards') {
+                            let cards = JSON.parse(element.dataset.cards) || [];
+                            _.each(cards, (card) => {
+                                if (parseInt(card.id) === parseInt(this.selectedId)) {
+                                    this.file = card.file;
+                                }
+                            });
                         }
                     }
                 }

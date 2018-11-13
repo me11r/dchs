@@ -98,7 +98,9 @@ export default {
             return control + `[${this.block_type_}][]`;
         },
         addEmptyItem() {
-            this.addItem({});
+            this.addItem({
+                id: moment().valueOf()
+            });
         },
         addItem(item) {
             this.records_.push(item);
