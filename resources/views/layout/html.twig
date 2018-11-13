@@ -11,21 +11,26 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="prefetch" href="{{ mix('assets/app.js') }}">
+    <link rel="preload" href="{{ mix('assets/app.js') }}" as="script">
     <meta name="msapplication-TileColor" content="#b91d47">
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="stylesheet" href="{{ asset('/custom.css') }}">
-    <link rel="stylesheet" href="{{ mix('assets/app.css') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
     <script>
       window.csrf_token = '{{ csrf_token() }}';
     </script>
     <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-messaging.js"></script>
+    <link rel="stylesheet" href="{{ mix('/assets/app.css') }}">
     {% if _global_ajax_timers is defined %}
         <script>
             window._global_ajax_timers = {{ _global_ajax_timers|raw }}
+        </script>
+    {% else %}
+        <script>
+          window._global_ajax_timers = {% verbatim %}{'check_service_plans':true, 'check_roadtrips': true}{% endverbatim %}
         </script>
     {% endif %}
 </head>
@@ -39,6 +44,7 @@
 </section>
 <div id="roadtrip_notifier"></div>
 <div id="service_plans_notifier"></div>
+<div id="emergency_messenger"></div>
 <script src="{{ mix('assets/app.js') }}"></script>
 <script>
   window.addEventListener('load', () => {

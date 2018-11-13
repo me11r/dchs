@@ -22,6 +22,7 @@
                     <th>Позывной</th>
                     <th>Должность</th>
                     <th>Телефон</th>
+                    <th>Район</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -38,6 +39,7 @@
                                 {{ phone.phone }} <br>
                             {% endfor %}
                         </td>
+                        <td>{{ record.city_area.name|default('') }}</td>
                         <td>
 
                             <form method="POST"

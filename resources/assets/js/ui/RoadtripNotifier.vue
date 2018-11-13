@@ -85,6 +85,8 @@ export default {
         loadSound: function () {
             return AlarmSound().getContext().then((audio) => {
                 this.audio = audio;
+            }).catch(error => {
+                console.log(error, 'errored');
             });
         },
         configureTimer: function () {

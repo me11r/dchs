@@ -40,6 +40,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Ticket101ServicePlan extends Model
 {
+    protected $casts = [
+        'dispatched_time' => 'datetime'
+    ];
+
     protected $fillable = [
         'service_type_id',
         'card_id',
@@ -49,6 +53,7 @@ class Ticket101ServicePlan extends Model
         'is_accepted',
         'arrive_time',
         'name_accepted',
+        'dispatched_time',
     ];
 
     public function ticket()
@@ -74,5 +79,10 @@ class Ticket101ServicePlan extends Model
     public function results()
     {
         return $this->hasMany(FireDepartmentResult::class, 'dispatch_id');
+    }
+
+    public function scopeDispatched($q, $search)
+    {
+        return $q->whereNotNull('dispatched');
     }
 }

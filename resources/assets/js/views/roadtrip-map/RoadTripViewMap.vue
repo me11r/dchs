@@ -197,7 +197,8 @@ export default {
         drawMainRoute() {
             const self = this;
             self.ymaps
-                .route([self.fromString, self.emergencyString], {avoidTrafficJams: true})
+                // .route([self.fromString, self.emergencyString], {avoidTrafficJams: true})
+                .route([self.emergencyString,self.fromString], {avoidTrafficJams: true})
                 .then((route) => {
                     self.route = route;
                     self.map.geoObjects.add(route);

@@ -27,6 +27,26 @@
                         {% endif %}
                     </div>
 
+                    <div class="field ">
+                        <label for="call_name">Позывной</label>
+                        <input type="text" class="input {{ errors.has('call_name')?'is-danger' }}" name="call_name" id="call_name" value="{{ old('call_name')|default(user.call_name|default('')) }}"/>
+                        {% if errors.has('call_name') %}
+                            <span class="input-feedback">
+                                <small>{{ errors.first('call_name') }}</small>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="field ">
+                        <label for="position">Должность</label>
+                        <input type="text" class="input {{ errors.has('position')?'is-danger' }}" name="position" id="position" value="{{ old('position')|default(user.position|default('')) }}"/>
+                        {% if errors.has('position') %}
+                            <span class="input-feedback">
+                                <small>{{ errors.first('position') }}</small>
+                            </span>
+                        {% endif %}
+                    </div>
+
                     <div class="field">
                         <label for="role_id">Роль</label>
                         <br>

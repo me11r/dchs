@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/card/101', 'CardController@get101')->name('card101');
     Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+']);
+    Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
 
@@ -196,7 +197,6 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('dictionaries.row.delete');
 
     Route::delete('/dictionaries/delete/{name}/{row_id}', 'DictionaryController@deleteByName')
-        ->where('name', 'incident-types|operational-plans|operational-cards')
         ->where('row_id', '[0-9]+')
         ->name('dictionaries.row.delete_by_name');
 
@@ -213,13 +213,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
-    Route::resource('/weather', 'WeatherController');
+    Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
     Route::resource('/vehicles', 'VehicleController');
     Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
     Route::resource('/morainic-lakes', 'MorainicLakeController');
     Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
+    Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
 
@@ -255,6 +256,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');
         Route::get('daily112/{format}', 'ReportController@getDaily112Formatted')->where('format', '(word)');
     });
+
+    /** Мессенджер */
+    Route::group(['namespace' => 'Api\\Messenger', 'prefix' => 'api/messenger', 'middleware' => ['auth']], function() {
+        Route::get('users/list', 'MessengerController@getUserList');
+        Route::post('message/send', 'MessengerController@postMessage');
+        Route::get('messages/list/{user_id}', 'MessengerController@getMessages')->where('user_id', '[0-9]+');
+    });
+
+
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

@@ -13,6 +13,8 @@ use App\Dictionary\Street;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\Models\FireDepartmentResult;
+use App\Models\Notification\Notification;
+use App\Models\Notification\NotificationGroup;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
@@ -121,6 +123,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $fire_department_id
  * @property int $pre_information_id
  * @property string|null $fireplace
+ * @property boolean $notifications_sent
+ * @property string $notification_message
  * @property string|null $additional_description
  * @property-read \App\Dictionary\CityArea $city_area
  * @property-read \App\Dictionary\Street $crossroad_1
@@ -316,12 +320,30 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+    public function popup_notifications()
+    {
+        return $this->belongsToMany(
+            Notification::class,
+            'ticket101_popup_notifications',
+            'ticket101_id'
+        );
+    }
+
+    public function notification_groups()
+    {
+        return $this->belongsToMany(
+            NotificationGroup::class,
+            'ticket101_notification_groups',
+            'ticket101_id'
+        );
+    }
+
     public function notifications()
     {
-        return $this->hasMany(Ticket101Notification::class, 'ticket101_id', 'id');
+        return $this
+                ->hasMany(Ticket101Notification::class, 'ticket101_id', 'id');
+                //->join('service_types', 'service_types.id', '=', 'ticket101_notifications.notification_service_id')
+                //->orderBy('service_types.priority', 'DESC');
     }
 
     public function results()
@@ -344,6 +366,9 @@ class Ticket101 extends Model
         $is_today = $created_date->isToday();
         $pass_after_9 = now()->format('H') > 9;
 
+        if($this->closed){
+            return false;
+        }
         if(!$is_yesterday && !$is_today){
             return false;
         }
@@ -384,6 +409,11 @@ class Ticket101 extends Model
     public function scopeReal($q, $search = true)
     {
         return $q->where('is_real', $search);
+    }
+
+    public function scopeClosed($q, $search = true)
+    {
+        return $q->where('closed', $search);
     }
 
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)

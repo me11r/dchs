@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Page\Metadata;
 use App\Right;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -38,6 +39,9 @@ abstract class Controller extends BaseController
             if ($service !== null && $canRecieve) {
                 $params['check_service_plans'] = true;
             }
+
+            $user->last_connect_at = Carbon::now();
+            $user->save();
         }
 
         $this->set('_global_ajax_timers', json_encode($params));

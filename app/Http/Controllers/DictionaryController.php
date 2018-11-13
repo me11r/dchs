@@ -68,6 +68,7 @@ class DictionaryController extends AuthorizedController
 
     public function before()
     {
+        parent::before();
         $this->needRight(Right::CAN_EDIT_DICTIONARIES);
         $user = \auth()->user();
         $this->user = $user;
@@ -127,7 +128,6 @@ class DictionaryController extends AuthorizedController
 //                    ->paginate($data['per_page'])
                     ->get();
             }
-
 
             $data['title'] = "Оперативные планы";
             $data['filter_department'] = $request->filter_department;
@@ -245,6 +245,7 @@ class DictionaryController extends AuthorizedController
         }
         elseif($name == 'district-managers'){
             $data['record'] = DistrictManager::find($id);
+            $data['city_areas'] = Dictionary\CityArea::all();
             $data['title'] = "Ответственный по району";
         }
         return view($view, $data);
@@ -355,6 +356,7 @@ class DictionaryController extends AuthorizedController
             $record->rank = $request->rank;
             $record->nickname = $request->nickname;
             $record->position = $request->position;
+            $record->city_area_id = $request->city_area_id;
 
             $record->save();
 
@@ -491,6 +493,10 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'operational-cards':
                 $dict = OperationalCard::class;
+                break;
+            case 'district-managers':
+                $dict = DistrictManager::class;
+                break;
         }
 
         $dict = new $dict;

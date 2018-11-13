@@ -1,8 +1,5 @@
 /* eslint-disable no-new */
-import '../sass/fonts.scss';
-import '../sass/auth.scss';
 import '../sass/app.scss';
-import '../sass/shake.scss';
 
 import axios from 'axios';
 
@@ -41,15 +38,19 @@ import PhoneItem from './views/dictionary/Phone';
 import DistrictManagers from './components/DistrictManagers';
 import DatepickerSearch from './components/DatepickerSearch';
 import View101App from './scripts/formation/view-101-app';
+import NotificationGroupsUsersMultiselect from './components/notification-groups/NotificationGroupsUsersMultiselect';
 
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
+import VueMessenger from './ui/messenger/Messenger';
 import Vue from './VueInstance';
+import VueDateFilter from './scripts/DateFilter';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
+Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
@@ -86,9 +87,12 @@ Vue.component('v-datepicker-search', DatepickerSearch);
 Vue.component('timepicker-input', require('./components/TimepickerInput.vue'));
 Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
+Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
 
 Vue.component('notification', require('./components/Notification'));
+Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
+Vue.component('btn-close-card', require('./components/ticket101/CloseTicket'));
 
 // верхнее меню
 if (document.getElementById('navbar')) {
@@ -145,10 +149,10 @@ if (document.getElementById('cardadd101')) {
         } else {
             window.add101tabs.setTab(0);
         }
-        document.getElementById('nexttab').addEventListener('click', (e) => {
+        /* document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
-        });
+        }); */
     });
 }
 
@@ -208,21 +212,23 @@ if (document.getElementById('vue')) {
     });
 }
 
+if (document.getElementById('btn-close-card')) {
+    new Vue({
+        el: '#btn-close-card'
+    });
+}
+
 if (document.getElementById('ticket101-chronology')) {
     new Vue({
         el: '#ticket101-chronology'
     });
 }
-
-/*//безысходность
-let vues = document.getElementsByClassName('vue');
-if(vues.length){
-    for(let i in vues){
-        new Vue({
-            el: vues[i]
-        });
-    }
-}*/
+if (document.getElementById('emergency_messenger')) {
+    new Vue({
+        el: '#emergency_messenger',
+        render: h => h(VueMessenger)
+    });
+}
 
 const View101AppElement = document.getElementById('view-101-app');
 if (View101AppElement) {
