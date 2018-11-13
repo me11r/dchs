@@ -22,6 +22,10 @@
                 :value="item">{{ item }} метров
             </option>
         </select>
+        <!--<img-->
+        <!--:src="staticMapPath"-->
+        <!--v-if="staticMapPath">-->
+
         <div
             :style="{'width':width + 'px', 'height': height + 'px'}"
             class="road-trip-view-yandex-map printing-full-width"
@@ -106,7 +110,7 @@ export default {
                     'l': 'map',
                     'll': center[1] + ',' + center[0],
                     'pl': routeCoordinates.join(','),
-                    'pt': firstPoint + ',pm2ntm' + '~' + lastPoint + ',pm2wtm' + (hydrants.length > 0 ? '~' + hydrants.join('~') : ''),
+                    'pt': firstPoint + ',flag' + '~' + lastPoint + ',pm2wtm' + (hydrants.length > 0 ? '~' + hydrants.join('~') : ''),
                     'z': 16,
                     'size': '650,450'
                 };
@@ -198,8 +202,12 @@ export default {
             const self = this;
             self.ymaps
                 // .route([self.fromString, self.emergencyString], {avoidTrafficJams: true})
-                .route([self.emergencyString,self.fromString], {avoidTrafficJams: true})
+                .route([self.emergencyString, self.fromString], {avoidTrafficJams: true})
                 .then((route) => {
+                    var wayPoint = route.getWayPoints().get(0);
+                    wayPoint.properties.set({ text: 'ПЧ' });
+                    wayPoint.options.set({ iconContentLayout: this.ymaps.templateLayoutFactory.createClass('{{ properties.text }}') });
+
                     self.route = route;
                     self.map.geoObjects.add(route);
                 })

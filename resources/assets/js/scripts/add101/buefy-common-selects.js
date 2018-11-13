@@ -1,6 +1,7 @@
 import {BuefyCommonSelect} from '../../components';
 import {globalBus} from '../global-bus';
 import Vue from '../../VueInstance';
+import {_} from "vue-underscore";
 
 export default function bindBuefyCommonSelects() {
     document.querySelectorAll('[data-component="buefy-common-select"]')
@@ -9,7 +10,8 @@ export default function bindBuefyCommonSelects() {
                 el: element,
                 data: {
                     selectedId: null,
-                    name: ''
+                    name: '',
+                    file: null
                 },
                 components: {
                     BuefyCommonSelect
@@ -34,6 +36,18 @@ export default function bindBuefyCommonSelects() {
                         globalBus.$on('is_common_house', (value) => {
                             this.selectedId = parseInt(value);
                         });
+                    }
+                },
+                watch: {
+                    'selectedId'() {
+                        if (element.dataset.name === 'operational_plan_id') {
+                            let plans = JSON.parse(element.dataset.plans) || [];
+                            _.each(plans, (plan) => {
+                                if (parseInt(plan.operational_plan_id) === parseInt(this.selectedId) &&  plan.file !== '') {
+                                    this.file = plan.file;
+                                }
+                            });
+                        }
                     }
                 }
             });

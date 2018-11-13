@@ -20,18 +20,45 @@
             :class="menuClass">
             <div class="navbar-start">
                 <div class="navbar-item has-dropdown is-hoverable is-small">
-                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;Карточки</a>
+                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;101</a>
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight(2)"
-                            href="/card/101"
+                            href="/card/add101"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Карточка 101</a>
+                            Путевка 101
+                        </a>
                         <a
-                            v-if="hasRight(33)"
-                            href="/card112"
+                            v-if="hasRight(2)"
+                            href="#"
                             class="dropdown-item is-small"><i
-                            class="fas fa-address-card fa-fw"></i>&nbsp; Карточка 112
+                            class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Прочие 101
+                        </a>
+                        <a
+                                v-if="hasRight(2)"
+                                href="/card/101"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 101
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;112</a>
+                    <div class="navbar-dropdown">
+                        <a
+                                v-if="hasRight(33)"
+                                href="/card112/create"
+                                class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Путевка 112
+                        </a>
+                        <a
+                                v-if="hasRight(33)"
+                                href="/card112"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 112
                         </a>
                     </div>
                 </div>
@@ -113,11 +140,6 @@
                             href="/chats"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Ручной ввод хронометража</a>
-                        <a
-                            v-if="hasRight(26)"
-                            href="/hydrant"
-                            class="dropdown-item is-small"><i class="fas fa-truck fa-fw"></i>&nbsp;
-                            Расположение гидрантов</a>
                         <a
                             v-if="hasRight(27)"
                             href="/vehicles"

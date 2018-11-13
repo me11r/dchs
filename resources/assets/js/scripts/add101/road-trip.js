@@ -6,9 +6,9 @@ export default function bindRoadTrip() {
     return new Vue({
         el: element,
         data: {
-            plans_sent: false,
+            plans_sent: false
         },
-        mounted(){
+        mounted() {
             let token = document.head.querySelector('meta[name="csrf-token"]');
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
@@ -22,7 +22,6 @@ export default function bindRoadTrip() {
             },
             gerQuery(i, part) {
                 return new Promise((resolve) => {
-
                     if (part !== '') {
                         axios.get('/roadtrip/send/' + i + '/' + window.ticket101add.ticketId, {
                             params: {
@@ -60,7 +59,7 @@ export default function bindRoadTrip() {
                 });
             },
             sendOneCheck(event, dept_id, dept_number, res_id) {
-                /*проставляем галочки в чекбосах*/
+                /* проставляем галочки в чекбосах */
                 let object = document.getElementById(`dept_${res_id}`);
                 let is_checked = object.checked;
                 object.checked = !is_checked;
@@ -84,6 +83,6 @@ export default function bindRoadTrip() {
                 });
             }
 
-        },
+        }
     });
 }

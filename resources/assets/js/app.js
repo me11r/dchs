@@ -1,15 +1,12 @@
 /* eslint-disable no-new */
-import '../sass/fonts.scss';
-import '../sass/auth.scss';
 import '../sass/app.scss';
-import '../sass/shake.scss';
 
 import axios from 'axios';
 
 import Navbar from './ui/Navbar';
 import {Card112Form} from './views/card112';
 import {MudflowProtectionForm} from './views/mudflowProtection';
-import {HydrantMapList} from './views/hydrant-map';
+// import {HydrantMapList} from './views/hydrant-map';
 import {CommonMapScreen} from './views/mapscreen';
 import RoadtripNotifier from './ui/RoadtripNotifier';
 import ServicePlanNotifier from './ui/ServicePlanNotifier';
@@ -19,7 +16,6 @@ import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
 // import Ticket101OnWay from './components/ticket101/OnWayInfo';
-// import YandexMapsBus from './scripts/yandex-maps-bus';
 
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
@@ -59,7 +55,7 @@ Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
 Vue.component('card112', Card112Form);
 Vue.component('mudflow-protection-form', MudflowProtectionForm);
-Vue.component('hydrants-map', HydrantMapList);
+// Vue.component('hydrants-map', HydrantMapList);
 Vue.component('common-map', CommonMapScreen);
 // Vue.component('roadtrip-notifier', RoadtripNotifier);
 Vue.component('roadtrip-map', RoadTripViewMap);
@@ -114,12 +110,12 @@ if (document.getElementById(card112FormBlockId)) {
 }
 
 // Расположение гидрантов на карте (список)
-const hydrantMapListBlock = 'hydrant-map-list-block';
-if (document.getElementById(hydrantMapListBlock)) {
-    window.initHydrantMapList = () => {
-        new Vue({el: '#' + hydrantMapListBlock, render: h => h(HydrantMapList)});
-    };
-}
+// const hydrantMapListBlock = 'hydrant-map-list-block';
+// if (document.getElementById(hydrantMapListBlock)) {
+//     window.initHydrantMapList = () => {
+//         new Vue({el: '#' + hydrantMapListBlock, render: h => h(HydrantMapList)});
+//     };
+// }
 
 // Карта в просмотре путевого листа
 const roadTripViewYandexMapBlockId = 'road-trip-view-yandex-map-block';
@@ -153,10 +149,10 @@ if (document.getElementById('cardadd101')) {
         } else {
             window.add101tabs.setTab(0);
         }
-        /*document.getElementById('nexttab').addEventListener('click', (e) => {
+        /* document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
-        });*/
+        }); */
     });
 }
 

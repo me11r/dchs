@@ -1,8 +1,10 @@
 @import "variables";
+@import "fonts";
 @import "../../../node_modules/bulma/bulma";
 @import "../../../node_modules/buefy/src/scss/buefy";
 @import "common";
 @import "printing";
+@import '../sass/shake.scss';
 
 html, body {
   margin: 0;
