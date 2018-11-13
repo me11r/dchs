@@ -114,11 +114,6 @@
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Ручной ввод хронометража</a>
                         <a
-                            v-if="hasRight(26)"
-                            href="/hydrant"
-                            class="dropdown-item is-small"><i class="fas fa-truck fa-fw"></i>&nbsp;
-                            Расположение гидрантов</a>
-                        <a
                             v-if="hasRight(27)"
                             href="/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-car fa-fw"></i>&nbsp;

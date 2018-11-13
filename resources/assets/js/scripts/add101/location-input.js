@@ -20,7 +20,7 @@ export default function bindLocationInputApp() {
         },
         methods: {
             searchLocationPlans: lodash.debounce(function () {
-                if(this.keyUp) {
+                if (this.keyUp) {
                     axios.get('/ajax/find_special_plan', {
                         params: {
                             location: this.location
@@ -37,7 +37,7 @@ export default function bindLocationInputApp() {
                     this.items = items.special_plans;
                 } else {
                     // console.dir(window.ticket101add)
-                    if(window.ticket101add.ticketId === '') {
+                    if (window.ticket101add.ticketId === '') {
                         document.getElementById('fire_level_id1').value = 1;
                     }
                     this.items = items;
@@ -48,7 +48,6 @@ export default function bindLocationInputApp() {
                 }
 
                 if (items.building) {
-
                     // document.getElementById('fire_object_id').value = items.building.object_type_id;
                     document.getElementById('building_description').value = items.building.wall_material.name;
                     document.getElementById('square').value = items.building.square;
@@ -113,12 +112,18 @@ export default function bindLocationInputApp() {
                     globalBus.$emit('is_common_house', event.newValue);
                 }
             });
-            this.location = element.dataset.value;
-            this.yandexMapsBus = new YandexMapsBus();
-            var object = this.$refs.location;
-            Vue.nextTick(function() {
-                object.focus();
-            });
+
+            (new YandexMapsBus())
+                .getInstance()
+                .then((yandexMapsBus) => {
+                    this.yandexMapsBus = yandexMapsBus;
+                    this.location = element.dataset.value;
+                    var object = this.$refs.location;
+                    Vue.nextTick(function() {
+                        object.focus();
+                    });
+                });
+
             // this.checkRoadtrips();
         }
     });
