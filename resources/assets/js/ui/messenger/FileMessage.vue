@@ -3,7 +3,7 @@
         <a
             class="messenger-message-file"
             target="_blank"
-            :href="file.filepath">
+            :href="getUrl">
             <div class="icon">
                 <i class="far fa-file fa-fw fa-2x"></i>
             </div>
@@ -47,6 +47,9 @@ export default {
             const size = this.file.size;
             let i = (size === 0) ? 0 : (Math.floor(Math.log(size) / Math.log(1024)));
             return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['байт', 'килобайт', 'мегабайт', 'гигабайт', 'терабайт'][i];
+        },
+        getUrl: function() {
+            return '/api/upload/file/download/' + this.file.id;
         }
     },
     methods: {
