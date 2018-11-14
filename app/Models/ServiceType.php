@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereHeadUserId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ServiceType withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ServiceType withoutTrashed()
+ * @property int $priority
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType wherePriority($value)
  */
 class ServiceType extends Model
 {

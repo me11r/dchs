@@ -18,6 +18,44 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $note
+ * @property string|null $forecast_atmosphere
+ * @property string|null $forecast_water
+ * @property string|null $city2_abs_min
+ * @property string|null $city2_abs_max
+ * @property string|null $forecast_city2
+ * @property string|null $city1_abs_min
+ * @property string|null $city1_abs_max
+ * @property string|null $forecast_city1
+ * @property string|null $forecast_area
+ * @property string|null $executor
+ * @property string|null $filial_director
+ * @property string|null $address
+ * @property string|null $atmosphere_now
+ * @property string|null $radiation_now
+ * @property string|null $water_now
+ * @property string|null $weather_now
+ * @property string|null $number
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather date($search)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather today()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereAtmosphereNow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereCity1AbsMax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereCity1AbsMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereCity2AbsMax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereCity2AbsMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereExecutor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereFilialDirector($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereForecastArea($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereForecastAtmosphere($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereForecastCity1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereForecastCity2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereForecastWater($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereRadiationNow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereWaterNow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Weather whereWeatherNow($value)
  */
 class Weather extends Model
 {

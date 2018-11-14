@@ -63,16 +63,17 @@ export default {
         },
         fetchMessages: function() {
             this.loading = true;
-            return api.get('/messages/list/' + this.user.id)
-                .then(response => {
+            if (this.user.id !== 0) {
+                return api.get('/messages/list/' + this.user.id).then(response => {
                     this.messages = response.data.messages;
                     this.loading = false;
                     this.loaded = true;
-                })
-                .then(() => {
+                }).then(() => {
                     this.scrollDown();
                 });
+            }
         },
+
         scrollDown: function() {
             this.$el.scrollTop = this.$el.scrollHeight;
         }
@@ -89,7 +90,7 @@ export default {
                 this.addMessage(message);
             }
         });
-        setInterval(this.fetchMessages, 1300);
+        setInterval(this.fetchMessages, 2300);
     }
 };
 </script>

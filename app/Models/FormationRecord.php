@@ -57,6 +57,42 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord filled()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord todayRecord($organisation)
+ * @property string|null $head
+ * @property int|null $staff_total
+ * @property int|null $staff_action
+ * @property int|null $staff_duty_shift
+ * @property int|null $tech_main_action
+ * @property int|null $tech_main_reserve
+ * @property int|null $tech_special_action
+ * @property int|null $tech_special_reserve
+ * @property int|null $tech_additional_action
+ * @property int|null $tech_additional_reserve
+ * @property int|null $tech_other_action
+ * @property int|null $tech_other_reserve
+ * @property int|null $gsm_gasoline
+ * @property int|null $gsm_diesel
+ * @property int|null $radio_stations
+ * @property int|null $personal_respiratory_protection
+ * @property int|null $personal_protection
+ * @property int|null $other_protection
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereGsmDiesel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereGsmGasoline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereHead($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereOtherProtection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord wherePersonalProtection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord wherePersonalRespiratoryProtection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereRadioStations($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereStaffAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereStaffDutyShift($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereStaffTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechAdditionalAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechAdditionalReserve($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechMainAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechMainReserve($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechOtherAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechOtherReserve($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechSpecialAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationRecord whereTechSpecialReserve($value)
  */
 class FormationRecord extends Model
 {

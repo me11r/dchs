@@ -50,6 +50,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereAcceptTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereRecommended($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereTechId($value)
+ * @property int|null $get_back
+ * @property string|null $dispatch_time
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult arrived($ticket_id)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult markToGetBack()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult onWay($ticket_id)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereDispatchTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FireDepartmentResult whereGetBack($value)
  */
 class FireDepartmentResult extends Model
 {

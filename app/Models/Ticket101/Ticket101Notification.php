@@ -32,6 +32,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ticket101\Ticket101Notification whereNotificationServiceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ticket101\Ticket101Notification whereTicket101Id($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ticket101\Ticket101Notification whereUpdatedAt($value)
+ * @property int $ticket101_id
+ * @property int|null $ticket112_id
+ * @property-read \App\Models\Card112\Card112|null $ticket112
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ticket101\Ticket101Notification whereTicket112Id($value)
  */
 class Ticket101Notification extends Model
 {

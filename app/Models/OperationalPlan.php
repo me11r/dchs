@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OperationalPlan whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\OperationalPlan withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\OperationalPlan withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SpecialPlan[] $special_plans
  */
 class OperationalPlan extends Model
 {
