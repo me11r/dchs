@@ -29,10 +29,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @mixin \Eloquent
  * @property string $mime
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UploadedFile whereMime($value)
+ * @property int $size
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UploadedFile whereSize($value)
  */
 class UploadedFile extends \Eloquent
 {
     use SoftDeletes;
     protected $table = 'file_uploads';
-    protected $fillable = ['filename', 'filepath', 'mime'];
+    protected $fillable = ['filename', 'filepath', 'mime', 'size'];
 }

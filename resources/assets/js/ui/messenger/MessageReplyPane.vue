@@ -1,6 +1,19 @@
 <template>
     <div class="reply-pane">
-        <div class="attach-file"><a class="upload"><i class="fas fa-upload fa-fw fa-2x"></i></a></div>
+        <div class="attach-file">
+            <a
+                class="upload"
+                @click="triggerFileSelection"><i
+                    class="fas fa-fw fa-2x"
+                    :class="uploadingClass"></i></a>
+            <input
+                type="file"
+                name="file"
+                ref="messenger-file-upload"
+                id="messenger-file-upload"
+                @change="doUpload"
+            >
+        </div>
         <div class="text">
             <textarea
                 :readonly="sending"
@@ -27,6 +40,9 @@ const evbus = EventBus();
 const api = axios.create({
     baseURL: '/api/messenger/'
 });
+const fileUploadApi = axios.create({
+    baseURL: '/api/upload/'
+});
 export default {
     name: 'MessageReplyPane',
     data: function() {
@@ -36,19 +52,54 @@ export default {
                 id: 0,
                 name: ''
             },
+            uploading: false,
             sending: false
         };
     },
     computed: {
         sendingClass: function() {
             return this.sending ? 'fa-spin fa-circle-notch' : 'fa-comment-alt';
+        },
+        uploadingClass: function() {
+            return this.uploading ? 'fa-spin fa-circle-notch' : 'fa-upload';
         }
     },
     methods: {
+        triggerFileSelection: function() {
+            if (!this.uploading) {
+                const refname = 'messenger-file-upload';
+                const upload = this.$refs[refname];
+                upload.click();
+            }
+        },
         sendMessage: function() {
             if (!this.sending && (this.message !== '') && (this.user)) {
                 this.send();
             }
+        },
+        doUpload: function(event) {
+            this.uploading = true;
+            const fileinput = event.srcElement;
+            const file = fileinput.files[0];
+            let formData = new FormData();
+            formData.append('file', file);
+            fileUploadApi.post('file', formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            )
+                .then(response => {
+                    const fileId = response.data.id;
+                    this.sendFile(fileId)
+                        .then(response => {
+                            this.uploading = false;
+                        });
+                }).catch(error => {
+                    this.uploading = false;
+                    throw error;
+                });
         },
         send: function() {
             this.sending = true;
@@ -57,6 +108,9 @@ export default {
                 this.sending = false;
                 this.message = '';
             });
+        },
+        sendFile: function(fileId) {
+            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: this.user.id});
         }
     },
     mounted: function() {
@@ -70,6 +124,9 @@ export default {
 <style lang="scss" scoped>
     @import "../../../sass/variables";
 
+    #messenger-file-upload {
+        display: none;
+    }
     .reply-pane {
         display: flex;
         min-height: 100px;

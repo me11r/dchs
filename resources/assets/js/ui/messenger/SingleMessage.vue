@@ -10,7 +10,7 @@
                 <div
                     class="viewed"
                     v-if="message.is_viewed">
-                    <i class="far fa-check-circle fa-fw"></i>&nbsp;{{ message.updated_at|dateFilter('DD.MM, HH:mm') }}</div>
+                <i class="far fa-check-circle fa-fw"></i>&nbsp;{{ message.updated_at|dateFilter('DD.MM, HH:mm') }}</div>
             </div>
         </div>
     </div>
@@ -27,6 +27,7 @@ export default {
                     message: '',
                     sender_id: 0,
                     reciever_id: 0,
+                    type: 'text',
                     is_viewed: false
                 };
             }

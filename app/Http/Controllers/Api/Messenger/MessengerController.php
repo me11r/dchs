@@ -49,9 +49,13 @@ class MessengerController extends Controller
         $me = \Auth::user();
         $to = (int)$request->get('to');
         $text = $request->get('message');
+        $type = $request->get('type', 'text');
+        $file_id = $request->get('file_id', null);
         $message = new Message([
             'message' => $text,
             'sender_id' => $me->id,
+            'message_type'=> $type,
+            'file_id' => $file_id,
             'reciever_id' => $to
         ]);
         $message->save();
