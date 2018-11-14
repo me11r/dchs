@@ -170,13 +170,15 @@ export default {
 
             .reply-textarea {
                 outline: none;
-                width: 100%;
+                max-width: 100%;
+                min-width: 100%;
                 font-size: 16px;
                 padding: 3px 5px;
                 min-height: 100%;
                 line-height: 1.1;
                 border: none;
                 box-sizing: border-box;
+                resize: none;
             }
         }
 
