@@ -73,6 +73,19 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 wherePoisoned($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereSaved($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereSavedAnimals($value)
+ * @property string|null $incident_place
+ * @property string|null $additional_incident_place
+ * @property string|null $reason
+ * @property string|null $chronology_start_time
+ * @property string|null $chronology_end_time
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Ticket101ServicePlan[] $service_plans
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 filterByIncidentType($filter)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 filterByServiceType($filter)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereAdditionalIncidentPlace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereChronologyEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereChronologyStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereIncidentPlace($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereReason($value)
  */
 class Card112 extends Model
 {

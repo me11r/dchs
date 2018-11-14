@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Staff whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read mixed $unique
  */
 class Staff extends Model
 {

@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Right whereTitle($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Right whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Right whereName($value)
  */
 class Right extends Model
 {

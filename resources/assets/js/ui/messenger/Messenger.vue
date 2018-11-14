@@ -1,6 +1,7 @@
 <template>
-    <div id="emergency_messenger"
-         class="is-hidden-touch">
+    <div
+        id="emergency_messenger"
+        class="is-hidden-touch">
         <div
             class="messenger"
             :class="openedClass"
@@ -20,6 +21,9 @@
         <div
             class="opener"
             v-if="!isOpened">
+            <div
+                class="unread"
+                v-if="unread > 0">{{ unread }}</div>
             <a
                 @click.prevent="openUp">
                 <i class="fas fa-comments fa-2x fa-fw"></i>
@@ -29,10 +33,12 @@
 </template>
 
 <script>
+import axios from 'axios';
 import VueMessengerUserList from './UsersList';
 import VueMessagePane from './MessagePane';
 import EventBus from './MessengerEventBus';
 const evbus = EventBus();
+const api = axios.create({ baseURL: '/api/messenger'});
 export default {
     name: 'Messenger',
     data: function() {
@@ -41,6 +47,7 @@ export default {
                 id: 0,
                 name: ''
             },
+            unread: 0,
             isOpened: false
         };
     },
@@ -55,14 +62,26 @@ export default {
     },
     methods: {
         openUp: function() {
+            if (this.isOpened) {
+                evbus.$emit('messenger-selected-user', {id: 0, name: ''});
+            }
             this.isOpened = !this.isOpened;
+        },
+        checkUnreadAny: function() {
+            return api.get('/messages/unread')
+                .then(response => {
+                    this.unread = response.data.unread;
+                });
         }
     },
     mounted: function() {
         evbus.$on('messenger-selected-user', (user) => {
-            console.log(user);
             this.selectedUser = user;
         });
+        this.checkUnreadAny();
+        setInterval(() => {
+            this.checkUnreadAny();
+        }, 3400);
     }
 };
 </script>
@@ -81,7 +100,23 @@ export default {
         box-shadow: 0px -2px 8px rgba(0,0,0,.3);
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
-
+        .opener {
+            .unread {
+                background-color: $red;
+                border-radius: 500px;
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+                text-shadow: 0 1px 0 rgba(0,0,0,.4);
+                text-align: center;
+                border: 1px solid $primary;
+                box-shadow: 1px -1px 2px rgba(0,0,0,.4);
+                position: absolute;
+                margin-top: -10px;
+                margin-right: -10px;
+                color: $white;
+            }
+        }
         .opener > a {
             display: inline-block;
             color: $primary;

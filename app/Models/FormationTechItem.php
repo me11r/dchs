@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereDateFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereDateTo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem whereReserve($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FormationTechItem reserved($department = null)
  */
 class FormationTechItem extends Model
 {
