@@ -221,7 +221,6 @@ class CardController extends AuthorizedController
                 'notification_groups',
                 'notifications.service',
                 'operational_card',
-                'other_ride',
                 'operational_plan.special_plans'
             ])
             ->findOrNew($card_id);
@@ -279,6 +278,7 @@ class CardController extends AuthorizedController
     {
         $results = [];
         $formationTechItems = [];
+        $now = now();
 
         $schedules = Schedule::where('fire_department_main_id', $card->fire_department_id)
             ->where('dict_fire_level_id', $card->fire_level_id)
@@ -353,6 +353,7 @@ class CardController extends AuthorizedController
                                 })
                                     ->where('fire_department_id',$results[$schedule_dept]->fire_department_id)
                                     ->where('tech_id',$results[$schedule_dept]->tech_id)
+                                    ->where('created_at', '>', $now->subSeconds(15))
                                     ->recommended(true)
                                     ->first();
 
@@ -375,7 +376,6 @@ class CardController extends AuthorizedController
             'departments_to_ride',
             'time_arrive',
             'on_way',
-            'other_rides',
         ]);
 
         $deptsToGetBack = collect([]);
@@ -468,14 +468,14 @@ class CardController extends AuthorizedController
 
         $this->saveArriveTimes($request);
 
-        if($request->input('other_rides', []) && $request->input('drill_type', '')){
+        /*if($request->input('other_rides', []) && $request->input('drill_type', '')){
             $other_ride = $request->input('other_rides', []);
             $other_ride['ticket_101_id'] = $card->id;
 
             $ticket_other = Ticket101Other::updateOrCreate(['ticket_101_id' => $card->id], $other_ride);
-        }
+        }*/
 
-        $card_type = ($ticket_other->drill_type ?? null) ==  null ? ''  : '/other';
+        $card_type = ($ticket_other->drill_type ?? null) ==  null ? ''  : '/drill';
         if ($comeback) {
             $back = "/card/add101/{$card->id}{$card_type}#return={$comeback}";
         }
@@ -547,5 +547,21 @@ class CardController extends AuthorizedController
         $card->save();
 
         return response()->json('ok');
+    }
+
+    public function getAdd101OtherRide(Request $request)
+    {
+        if($request->isMethod('POST')){
+            $f = $request->all();
+            Ticket101Other::create($request->input('other_rides'));
+
+            return back()->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
+        }
+        else{
+            $data['fire_departments_vue'] = FireDepartment::all();
+            $data['ride_types'] = RideType::all();
+            $data['staff'] = Staff::all();
+            return view('card/101other_rides', $data);
+        }
     }
 }
