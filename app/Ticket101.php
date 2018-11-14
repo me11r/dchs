@@ -457,15 +457,16 @@ class Ticket101 extends Model
         return $schedule;
     }
 
+    /*для разделения вьюшек 101 карточки: реальных и учебных*/
     public function scopeCheckDrill($q, $search)
     {
         return $q;
-        if($search){
+        /*if($search){
             return $q->whereNotNull('drill_type');
         }
         else{
             return $q->whereNull('drill_type');
-        }
+        }*/
     }
 
 
