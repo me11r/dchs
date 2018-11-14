@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Models\UploadedFile;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\HeaderBag;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileUploadController extends Controller
 {
@@ -50,7 +53,7 @@ class FileUploadController extends Controller
         $upload = UploadedFile::findOrFail($file_id);
         $path = \Storage::path($upload->filepath);
         $response = new BinaryFileResponse($path);
-        $response->headers->makeDisposition('attachment', $upload->filename, sha1($upload->filename));
+        $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $upload->filename, sha1($upload->filename));
         return $response;
     }
 }
