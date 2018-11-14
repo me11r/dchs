@@ -335,10 +335,10 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
     }
 
-    public function other_ride()
+    /*public function other_ride()
     {
         return $this->hasOne(Ticket101Other::class,'ticket_101_id');
-    }
+    }*/
 
     public function popup_notifications()
     {

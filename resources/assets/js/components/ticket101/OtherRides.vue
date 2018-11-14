@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="column is-2">
+        <!--<div class="column is-2">
             <div class="bd-notification is-primary">
                 <label for="drill_type">Тип карточки</label>
                 <div class="select"
@@ -11,12 +11,12 @@
                             style="width: 100%;">
                         <option value=""></option>
                         <option v-for="item in ['ПТЗ', 'ПТУ']" :value="item">{{ item }}</option>
-                        <!--<option value="ПТЗ">ПТЗ</option>-->
-                        <!--<option value="ПТУ">ПТУ</option>-->
+                        &lt;!&ndash;<option value="ПТЗ">ПТЗ</option>&ndash;&gt;
+                        &lt;!&ndash;<option value="ПТУ">ПТУ</option>&ndash;&gt;
                     </select>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="column is-2">
             <div class="bd-notification is-primary">
                 <label for="ride_type_id">Наименование</label>
@@ -60,6 +60,18 @@
                                name="other_rides[department]"
                                v-model="otherRide_.department"
                                id="other_rides[department]">
+                    </div>
+                </div>
+            </div>
+            <div class="column is-2">
+                <div class="bd-notification is-primary">
+                    <div class="field">
+                        <label for="other_rides[object_name]">Наименование объекта</label>
+                        <input type="text"
+                               class="input"
+                               name="other_rides[object_name]"
+                               v-model="otherRide_.object_name"
+                               id="other_rides[object_name]">
                     </div>
                 </div>
             </div>
