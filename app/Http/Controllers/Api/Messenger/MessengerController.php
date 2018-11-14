@@ -13,12 +13,14 @@ class MessengerController extends Controller
 {
     public function getUserList(Request $request)
     {
+        $online = \DB::raw('IF((DATE_SUB(NOW(), INTERVAL 5 MINUTE) < last_connect_at), 1, 0) as online');
         $me = \Auth::user();
         $users = (new User())
+            ->select(['id', 'name', 'last_connect_at', $online])
             ->where('id', '<>', $me->id)
-            ->orderBy('last_connect_at', 'desc')
+            ->orderBy('online', 'desc')
             ->orderBy('id')
-            ->get(['id', 'name', 'last_connect_at']);
+            ->get();
         $unread = $this->getUnreadCount($me->id);
         foreach ($users as &$user) {
             $user->unread_count = 0;
@@ -47,9 +49,13 @@ class MessengerController extends Controller
         $me = \Auth::user();
         $to = (int)$request->get('to');
         $text = $request->get('message');
+        $type = $request->get('type', 'text');
+        $file_id = $request->get('file_id', null);
         $message = new Message([
             'message' => $text,
             'sender_id' => $me->id,
+            'message_type'=> $type,
+            'file_id' => $file_id,
             'reciever_id' => $to
         ]);
         $message->save();

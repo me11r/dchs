@@ -260,6 +260,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereNotificationMessage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereNotificationsSent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 wherePreInformation($value)
+ * @property string|null $drill_type
+ * @property-read \App\Ticket101Other $other_ride
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 checkDrill($search)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereDrillType($value)
  */
 class Ticket101 extends Model
 {
