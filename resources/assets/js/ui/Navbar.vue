@@ -30,7 +30,7 @@
                         </a>
                         <a
                             v-if="hasRight(2)"
-                            href="/card/add101/0/other"
+                            @click.prevent="toggleOpenModal101"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
                             Прочие 101
@@ -322,6 +322,32 @@
                 </div>
             </div>
         </div>
+
+        <!--Карточка 101: прочие выезда-->
+        <div class="modal"
+            :class="opened_modal101">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">101 карточка</p>
+                    <button class="delete" aria-label="close" @click.prevent="toggleOpenModal101"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="level">
+                        <div class="level-left">
+                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-other-rides/">Прочие выезда</a>
+                        </div>
+                        <div class="level-right">
+                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <!--<button class="button is-success">Save changes</button>-->
+                    <!--<button class="button">Cancel</button>-->
+                </footer>
+            </div>
+        </div>
     </nav>
 </template>
 
@@ -341,6 +367,7 @@ export default {
     data: function () {
         return {
             opened: false,
+            opened_modal101_: false,
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             rights: getLocalRights()
         };
@@ -348,11 +375,17 @@ export default {
     computed: {
         menuClass: function () {
             return this.opened ? 'is-active' : '';
+        },
+        opened_modal101: function () {
+            return this.opened_modal101_ ? 'is-active' : '';
         }
     },
     methods: {
         toggleOpen: function () {
             this.opened = !this.opened;
+        },
+        toggleOpenModal101: function () {
+            this.opened_modal101_ = !this.opened_modal101_;
         },
 
         logout: function () {
