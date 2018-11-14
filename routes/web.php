@@ -268,6 +268,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('messages/list/unread/{user_id}', 'MessengerController@getUnreadCount')->where('user_id', '[0-9]+');
     });
 
+    Route::group(['namespace' => 'Api\\Upload', 'prefix' => 'api/upload', 'middleware' => ['auth']], function() {
+        Route::post('file', 'FileUploadController@postUpload')
+            ->name('storage.file.upload');
+        Route::get('file/info/{file_id}', 'FileUploadController@getFileInfo')
+            ->where('file_id', '[0-9]+')
+            ->name('storage.file.info');
+        Route::get('file/download/{file_id}', 'FileUploadController@getFile')
+            ->where('file_id', '[0-9]+')
+            ->name('storage.file.download');
+    });
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');
