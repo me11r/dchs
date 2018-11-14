@@ -101,6 +101,7 @@ export default {
             flex-grow:1;
         }
         .message-file {
+            display: flex;
             flex-grow: 1;
         }
         .timer {
