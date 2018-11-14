@@ -1,7 +1,16 @@
 <template>
     <div
         class="message"
-        :class="messageClass"><div class="message-text">{{ message.message }}</div>
+        :class="messageClass">
+        <div
+            class="message-text"
+            v-if="message.message_type === 'text'">{{ message.message }}</div>
+        <v-file-message
+            class="message-file"
+            v-if="message.message_type === 'file'"
+            :message="message"
+            :file="message.file"
+        />
         <div class="timer">
             <div class="top">
                 <i class="far fa-clock fa-fw"></i>&nbsp;{{ message.created_at|dateFilter('DD.MM, HH:mm') }}
@@ -17,8 +26,12 @@
 </template>
 
 <script>
+import VFileMessage from './FileMessage';
 export default {
     name: 'SingleMessage',
+    components: {
+        'v-file-message': VFileMessage
+    },
     props: {
         message: {
             type: Object,
@@ -27,7 +40,7 @@ export default {
                     message: '',
                     sender_id: 0,
                     reciever_id: 0,
-                    type: 'text',
+                    message_type: 'text',
                     is_viewed: false
                 };
             }
@@ -86,6 +99,9 @@ export default {
         }
         .message-text {
             flex-grow:1;
+        }
+        .message-file {
+            flex-grow: 1;
         }
         .timer {
             align-self: flex-end;

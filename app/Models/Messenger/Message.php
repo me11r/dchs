@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models\Messenger;
 
 
+use App\Models\UploadedFile;
 use Illuminate\Database\Query\Builder;
 
 final /**
@@ -36,6 +37,7 @@ class Message extends \Eloquent
 {
     protected $table = 'messenger_messages';
     protected $fillable = ['message', 'file_id', 'sender_id', 'reciever_id', 'is_viewed', 'message_type'];
+    protected $with = ['file'];
 
     /**
      * @param $query Builder
@@ -44,5 +46,9 @@ class Message extends \Eloquent
     public function scopeUnread($query)
     {
         return $query->where('is_viewed', false);
+    }
+
+    public function file() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_id');
     }
 }

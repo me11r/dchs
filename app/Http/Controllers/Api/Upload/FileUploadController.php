@@ -12,7 +12,7 @@ class FileUploadController extends Controller
 {
     public function formStorageFilename(string $filename) {
         $hash = sha1($filename);
-        $prefix = 'upload/'.substr($hash, 4, 2) . '/' . substr($hash,8, 2). '/';
+        $prefix = '/upload/'.substr($hash, 4, 2) . '/' . substr($hash,8, 2). '/';
         return $prefix . $hash;
     }
 
