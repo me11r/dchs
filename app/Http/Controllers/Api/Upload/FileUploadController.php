@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\Upload;
 use App\Http\Controllers\Controller;
 use App\Models\UploadedFile;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class FileUploadController extends Controller
 {
@@ -47,6 +48,9 @@ class FileUploadController extends Controller
     public function getFile(Request $request, $file_id)
     {
         $upload = UploadedFile::findOrFail($file_id);
-        return \Storage::download($upload->filepath, $upload->filename, ['Content-Type' => $upload->mime]);
+        $path = \Storage::path($upload->filepath);
+        $response = new BinaryFileResponse($path);
+        $response->headers->makeDisposition('attachment', $upload->filename, sha1($upload->filename));
+        return $response;
     }
 }
