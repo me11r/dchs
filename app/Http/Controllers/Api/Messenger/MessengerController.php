@@ -102,11 +102,8 @@ class MessengerController extends Controller
     protected function markAsRead(User $me, int $user_id)
     {
         $messages = (new Message())
+
             ->where(function ($query) use ($me, $user_id) {
-                return $query->where('sender_id', $me->id)
-                    ->where('reciever_id', $user_id);
-            })
-            ->orWhere(function ($query) use ($me, $user_id) {
                 return $query->where('sender_id', $user_id)
                     ->where('reciever_id', $me->id);
             })
