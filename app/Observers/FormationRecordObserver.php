@@ -10,11 +10,15 @@ class FormationRecordObserver
 
     public function creating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в строевой записке');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в строевой записке');
+        }
     }
 
     public function updating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в строевой записке');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в строевой записке');
+        }
     }
 }

@@ -13,7 +13,7 @@ trait MessengerTrait
      */
     public function sendMessageAboutFormationAction($message = null): void
     {
-        if ($this->isUserHaveToSendMessageAboutFormationAction()) {
+        if (\Auth::user() && $this->isUserHaveToSendMessageAboutFormationAction()) {
             $users = $this->getUsersToNoticeAboutFormationAction();
 
             if ($users->count() > 0) {
