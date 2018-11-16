@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Arrived101;
 use App\Chronology101;
 use App\EventInfo;
+use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
@@ -19,6 +20,17 @@ class CardController extends Controller
     public function delete()
     {
 
+    }
+
+    public function postPromoteToAction(Request $request)
+    {
+        $all = $request->all();
+        $reserved_item = FireDepartmentResult::find($request->id);
+        $reserved_item->promoted_at = now();
+        $reserved_item->promoted_department = $request->promoted_department;
+        $reserved_item->save();
+
+        return response()->json(['ok']);
     }
 
     public function sendNotifications(Request $request, NotificationService $notificationService)

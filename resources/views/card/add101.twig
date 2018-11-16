@@ -19,8 +19,6 @@
             {{ csrf_field() }}
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
 
-
-
             <div id="other-rides">
                 {% if card_type != 'real'or ticket.drill_type is not null%}
 
@@ -41,17 +39,10 @@
                         </div>
                     </div>
 
-                        {#<other-rides
-                                :ride-types="{{ ride_types }}"
-                                :other-ride="{{ ticket.other_ride|raw|json_encode }}"
-                                :ticket="{{ ticket }}"
-                                :fire-departments="{{ fire_departments_vue }}"
-                                :staff="{{ staff }}"
-                        ></other-rides>#}
-
                 {% endif %}
             </div>
             <br>
+
             <div class="tabs buttab is-boxed" id="">
                 <ul>
                     <li class="main-tab">
@@ -412,151 +403,15 @@
                     </div>
                 </div>
                 <div id="tab-truck" class="is-hidden">
-                    {#<h5 class="subtitle">Время выезда, прибытия, возвращения подразделений:</h5>#}
-                    <table class="table is-narrow is-hoverable is-fullwidth" data-component="road-trip">
-                        <tr>
-                            <th>Подразделение</th>
-                            <th>Отделения</th>
-                            <th>Принято в работу</th>
-                            <th>Время выезда</th>
-                            <th>Время прибытия</th>
-                            <th>Время возвращения</th>
-                            <th>
-                                <a @click="sendAllTripPlans()"
-                                   class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
-                                </a>
-                            </th>
-                            <th>Время оповещения</th>
-                        </tr>
-                        {% for index,ssv in ssv_out %}
-                            <tr>
-                                {#Подразделение#}
-                                <td class="has-text-right"
-                                    {% if ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and not ssv.res.get_back %}
-                                        style="color: green"
-                                    {% elseif ssv.res.fire_department_id is defined and ssv.res.fire_department_id == ssv.id and ssv.res.recommended and ssv.res.get_back %}
-                                        style="color: #f9221e"
-                                    {% endif %}
-                                    id="ph_{{ ssv.id }}_text">{{ ssv.name }}
-                                </td>
 
-                                {#Отделения#}
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'action' %}
-                                            <label {% if i.get_back %} style="color: #f9221e" class="blink5" {% endif %} for="">
-                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %}
-                                                       name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]"
-                                                       id="dept_{{ i.id }}" value="1"
-                                                       type="checkbox"> {{ i.tech.department }}
-                                            </label>
-                                            <br>
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id and i.tech.status == 'reserve' %}
-                                            <label for="">
-                                                <input @change="selectToSend($event, {{ i.id }})" {% if i.recommended or i.dispatched %} {{ 'checked' }} {% endif %}
-                                                       name="departments_to_ride[{{ ssv.id }}][{{ i.id }}]"
-                                                       id="dept_{{ i.id }}" value="1"
-                                                       type="checkbox"> {{ i.tech.reserve }}
-                                                <span class="small">Р</span>
-                                            </label>
-                                            <br>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
+                    <div id="tab-truck-vue">
+                        <ticket101-truck
+                            :departments="{{ ssv_out|raw|json_encode }}"
+                            :results="{{ ticket.results }}"
+                        >
+                        </ticket101-truck>
+                    </div>
 
-                                {#Принято в работу#}
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input id="accepted_time_{{ i.id }}" style="height: 25px; font-size: 12px;"
-                                                   type="text" class="input"
-                                                   value="{% if i.dispatched and i.out_time %} {{ i.updated_at.format('d.m.Y')|default('') }} {% endif %}"
-                                                   readonly>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                </td>
-
-                                {#Время выезда#}
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input id="out_time_{{ i.id }}" style="height: 25px; font-size: 12px;"
-                                                   type="text" class="input"
-                                                   value="{% if i.dispatched and i.out_time %} {{ i.out_time|default('') }} {% endif %}"
-                                                   readonly>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-
-                                {#Время прибытия#}
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-
-                                            <div class="">
-                                                {#<t-picker :is-read-only="false" name="time_arrive[{{ i.id }}]"inputdate="{{ i.arrive_time }}"></t-picker>#}
-                                                <timepicker-input name="time_arrive[{{ i.id }}]" style="height: 25px; font-size: 12px;" value="{{ i.arrive_time }}"></timepicker-input>
-                                            </div>
-
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-
-                                {#Время возвращения#}
-                                <td>
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-
-                                            <input id="ret_time_{{ i.id }}" style="height: 25px; font-size: 12px;"
-                                                   type="text" class="input"
-                                                   value="{% if i.dispatched and i.ret_time %} {{ i.ret_time|default('') }} {% endif %}"
-                                                   readonly>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-
-                                {#Отправка#}
-                                <td>
-
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            {% if i.dispatched %}
-                                                <a style="height: 25px;" disabled="disabled"
-                                                   class="button is-primary small is-outlined"><i
-                                                            class="fas fa-bus"></i>&nbsp;Подразделение отправлено
-                                                    - {{ i.tech.department ?? i.tech.reserve }}</a>
-                                            {% else %}
-                                                <a style="height: 25px;"
-                                                   @click="sendOneCheck($event, {{ ssv.id }}, {{ i.tech.id }}, {{ i.id }})"
-                                                   {#class="button is-primary small is-outlined"><i
-                                                            class="fas fa-bus"></i>&nbsp;Отправить подразделение
-                                                    - {{ i.tech.department ?? i.tech.reserve }}</a>#}
-                                                   class="button is-primary small is-outlined"><i class="fas fa-bus"></i>&nbsp;Выслать</a>
-                                                <br>
-                                            {% endif %}
-
-                                        {% endif %}
-                                    {% endfor %}
-
-                                </td>
-
-                                {#Время оповещения#}
-                                <td class="is-expanded">
-                                    {% for i in ticket.results|default([]) %}
-                                        {% if i.tech.department is defined and i.tech.formation_tech_report.dept_id == ssv.id %}
-                                            <input id="send_time_{{ i.id }}" style="height: 25px; font-size: 12px;" type="text" class="input"
-                                                   value="{% if i.dispatched %} {{ i.dispatch_time|default('') }} {% endif %}"
-                                                   readonly>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
                 </div>
                 <div id="tab_notify" class="is-hidden notifications">
                     <div class="tabs buttab is-boxed" id="">
