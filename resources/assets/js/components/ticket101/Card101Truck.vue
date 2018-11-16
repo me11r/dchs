@@ -22,17 +22,18 @@
 
                         <td class=""
                             :id="`ph_${department.id}_text`"
-                            :class="isRecommended(department)">
+                            :class="[isRecommended(department), needToGetBack(department)]">
                             {{ department.title }}
                         </td>
 
                         <!--Отделения-->
                         <td>
                             <p v-for="i in formActive[department.id]">
-                                <label for="">
+                                <label :class="[isRecommended(department), needToGetBack(department)]">
                                     <input @change="selectToSend($event, i.id)"
                                            :name="`departments_to_ride[${department.id }][${i.id}]`"
                                            :id="`dept_${i.id}`" value="1"
+
                                            type="checkbox"> {{ i.tech.department ? i.tech.department : i.promoted_department }}
                                 </label>
                                 <!--<br>-->
@@ -256,6 +257,13 @@
 
                 return '';
             },
+            needToGetBack(department){
+                if(department.get_back === 1){
+                    return 'blink5';
+                }
+
+                return '';
+            },
             addToActive(result){
                 if(result.promoted_at === null && result.promoted_department !== null){
                     result.promoted_at = moment().format();
@@ -366,5 +374,18 @@
 
     .color-red{
         color: #f9221e;
+    }
+
+    .blink5 {
+        -webkit-animation: blink5 1s linear infinite;
+        animation: blink5 1s linear infinite;
+    }
+    @-webkit-keyframes blink5 {
+        0% { color: rgb(226, 228, 0); }
+        100% { color: rgb(246, 0, 0); }
+    }
+    @keyframes blink5 {
+        0% { color: rgb(226, 228, 0); }
+        100% { color: rgb(246, 0, 0); }
     }
 </style>
