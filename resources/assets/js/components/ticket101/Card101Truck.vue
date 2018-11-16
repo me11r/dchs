@@ -29,13 +29,12 @@
                         <!--Отделения-->
                         <td>
                             <p v-for="i in formActive[department.id]">
-                                <label :class="[isRecommended(department), needToGetBack(department)]">
+                                <label :class="[i.recommended === 1 ? 'color-green' : '', needToGetBack(department)]">
                                     <input @change="selectToSend($event, i.id)"
                                            :name="`departments_to_ride[${department.id }][${i.id}]`"
                                            :id="`dept_${i.id}`"
                                            value="1"
                                            v-model="i.recommended"
-
                                            type="checkbox"> {{ i.tech.department ? i.tech.department : i.promoted_department }}
                                 </label>
                                 <!--<br>-->
