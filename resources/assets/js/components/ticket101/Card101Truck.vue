@@ -32,7 +32,9 @@
                                 <label :class="[isRecommended(department), needToGetBack(department)]">
                                     <input @change="selectToSend($event, i.id)"
                                            :name="`departments_to_ride[${department.id }][${i.id}]`"
-                                           :id="`dept_${i.id}`" value="1"
+                                           :id="`dept_${i.id}`"
+                                           value="1"
+                                           v-model="i.recommended"
 
                                            type="checkbox"> {{ i.tech.department ? i.tech.department : i.promoted_department }}
                                 </label>
@@ -305,6 +307,14 @@
                 }).then((response) => {
 
                 });
+            },
+
+            isSelected(item){
+                if(item.recommended === 1 || item.dispatched === 1){
+                    return true;
+                }
+
+                return false;
             }
 
 
