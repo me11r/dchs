@@ -10,11 +10,15 @@ class FormationTechReportObserver
 
     public function creating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в технике строевой записки');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в технике строевой записки');
+        }
     }
 
     public function updating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в технике строевой записки');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в технике строевой записки');
+        }
     }
 }

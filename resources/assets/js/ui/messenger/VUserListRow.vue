@@ -98,7 +98,7 @@ export default {
         &.is-active {
             background-color: $blueish;
             font-weight: bold;
-            border-left: 1px solid transparent;
+            border-left: 3px solid cadetblue;
         }
 
         &:hover {
