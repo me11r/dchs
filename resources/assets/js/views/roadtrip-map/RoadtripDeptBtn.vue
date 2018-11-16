@@ -4,17 +4,17 @@
             @click.prevent="dispatchDept()"
             v-if="is_dispatched_== 0"
             class="button is-info"
-            href=""><i class="far fa-bell"></i>&nbsp;Назначить: отделение -  {{ dep_.tech.department }}</a>
+            href=""><i class="far fa-bell"></i>&nbsp;Назначить: отделение -  {{ dep_.tech.department ? dep_.tech.department : dep_.promoted_department }}</a>
         <a
             @click.prevent="markDeptReturn()"
             v-if="is_dispatched_== 1 && dep.ret_time == null"
             class="button is-success is-outlined"
-            href=""><i class="fas fa-retweet"></i>&nbsp;Отметить возвращение: отделение -  {{ dep_.tech.department }}</a>
+            href=""><i class="fas fa-retweet"></i>&nbsp;Отметить возвращение: отделение -  {{ dep_.tech.department ? dep_.tech.department : dep_.promoted_department }}</a>
         <a
             @click.prevent=""
             v-if="is_returned_"
             class="button is-disabled"
-            href=""><i class="fas fa-retweet"></i>&nbsp;Отделение вернулось: {{ dep_.tech.department }}</a>
+            href=""><i class="fas fa-retweet"></i>&nbsp;Отделение вернулось: {{ dep_.tech.department ? dep_.tech.department : dep_.promoted_department }}</a>
     </div>
 </template>
 
