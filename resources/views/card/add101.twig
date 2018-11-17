@@ -841,12 +841,13 @@
                         <input type="text" id="owner" name="owner" value="{{ ticket.owner|default('') }}"
                                class="input"/>
                     </div>
-                    <h5 class="subtitle">Приложения</h5>
-                    <div class="field">
-                        <div class="file is-info has-name">
-                            <label class="file-label">
-                                <input class="file-input" type="file" name="file_1">
-                                <span class="file-cta">
+                    <div style="width: 50%; margin-right: 20px; display: inline-block">
+                        <h5 class="subtitle">Приложения</h5>
+                        <div class="field">
+                            <div class="file is-info has-name">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="file_1">
+                                    <span class="file-cta">
                                     <span class="file-icon">
                                         <i class="fas fa-upload"></i>
                                     </span>
@@ -859,15 +860,15 @@
                                         {% endif %}
                                     </span>
                               </span>
-                            </label>
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="field">
-                        <div class="file is-info has-name">
-                            <label class="file-label">
-                                <input class="file-input" type="file" name="file_2">
-                                <span class="file-cta">
+                        <div class="field">
+                            <div class="file is-info has-name">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="file_2">
+                                    <span class="file-cta">
                                     <span class="file-icon">
                                         <i class="fas fa-upload"></i>
                                     </span>
@@ -880,15 +881,15 @@
                                         {% endif %}
                                     </span>
                                  </span>
-                            </label>
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="field">
-                        <div class="file is-info has-name">
-                            <label class="file-label">
-                                <input class="file-input" type="file" name="file_3">
-                                <span class="file-cta">
+                        <div class="field">
+                            <div class="file is-info has-name">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="file_3">
+                                    <span class="file-cta">
                                     <span class="file-icon">
                                         <i class="fas fa-upload"></i>
                                     </span>
@@ -901,15 +902,15 @@
                                         {% endif %}
                                     </span>
                                  </span>
-                            </label>
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="field">
-                        <div class="file is-info has-name">
-                            <label class="file-label">
-                                <input class="file-input" type="file" name="file_4">
-                                <span class="file-cta">
+                        <div class="field">
+                            <div class="file is-info has-name">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="file_4">
+                                    <span class="file-cta">
                                     <span class="file-icon">
                                         <i class="fas fa-upload"></i>
                                     </span>
@@ -922,8 +923,32 @@
                                         {% endif %}
                                     </span>
                                  </span>
-                            </label>
+                                </label>
+                            </div>
                         </div>
+                    </div>
+
+                    <div style="width: 45%; display: inline-block;">
+                        <table class="table is-striped is-fullwidth">
+                            <tr>
+                                <td>Часть</td>
+                                <td>Отделение</td>
+                                <td>Расстрояние</td>
+                                <td>Время</td>
+                            </tr>
+                            <tbody>
+                                {% for result in ticket.results %}
+                                    {% if result.dispatched %}
+                                    <tr>
+                                        <td>{{ result.department.name }}</td>
+                                        <td>{{ result.tech.department }}</td>
+                                        <td></td>
+                                        <td>{{ result.getDuration() }}</td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
 
                 </div>

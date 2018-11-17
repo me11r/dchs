@@ -215,6 +215,7 @@ class CardController extends AuthorizedController
                 'results',
                 'results.tech',
                 'results.tech.formation_tech_report',
+                'results.department',
                 'notifications',
                 'notifications.service',
                 'popup_notifications',

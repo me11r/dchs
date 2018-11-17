@@ -140,4 +140,16 @@ class FireDepartmentResult extends Model
         return $q->where('recommended', $search);
     }
 
+    public function getDuration()
+    {
+        $outTime = $this->out_time ? Carbon::parse($this->out_time) : null;
+        $retTime = $this->ret_time ? Carbon::parse($this->ret_time) : null;
+
+        if ($outTime && $retTime){
+            return gmdate('H:i:s', $outTime->diffInSeconds($retTime));
+        }
+
+        return 'Нет результата';
+    }
+
 }
