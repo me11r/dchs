@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\Upload;
 
 use App\Http\Controllers\Controller;
 use App\Models\UploadedFile;
+use App\Services\FileUploadService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderBag;
@@ -14,26 +15,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileUploadController extends Controller
 {
-    public function formStorageFilename(string $filename) {
-        $hash = sha1($filename);
-        $prefix = '/upload/'.substr($hash, 4, 2) . '/' . substr($hash,8, 2). '/';
-        return $prefix . $hash;
-    }
 
-    public function postUpload(Request $request)
+    public function postUpload(Request $request, FileUploadService $service)
     {
         $fieldname = $request->get('fieldname', 'file');
-        $file =  $request->file($fieldname);
-        $filename = $file->getClientOriginalName();
-        $mime = $file->getMimeType();
-        $path = $file->store($this->formStorageFilename($filename));
-        $upload = new UploadedFile([
-            'filename' => $filename,
-            'filepath' => $path,
-            'mime' => $mime,
-            'size' => $file->getSize(),
-        ]);
-        $upload->save();
+        $upload = $service->saveFile($request->file($fieldname));
 
         return response()->json($upload);
     }

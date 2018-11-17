@@ -32,6 +32,7 @@ use App\Models\Trunk;
 use App\Models\WallMaterial;
 use App\OperationalCard;
 use App\RideType;
+use App\Services\FileUploadService;
 use App\Ticket101;
 use App\Ticket101Other;
 use App\Ticket101ServicePlan;
@@ -376,6 +377,10 @@ class CardController extends AuthorizedController
             'departments_to_ride',
             'time_arrive',
             'on_way',
+            'file_1',
+            'file_2',
+            'file_3',
+            'file_4'
         ]);
 
         $deptsToGetBack = collect([]);
@@ -468,6 +473,8 @@ class CardController extends AuthorizedController
 
         $this->saveArriveTimes($request);
 
+        $this->saveFiles($card, $request);
+
         /*if($request->input('other_rides', []) && $request->input('drill_type', '')){
             $other_ride = $request->input('other_rides', []);
             $other_ride['ticket_101_id'] = $card->id;
@@ -488,6 +495,19 @@ class CardController extends AuthorizedController
         }
 
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
+    }
+
+    private function saveFiles(Ticket101 $ticket101, Request $request)
+    {
+        $service = new FileUploadService();
+        foreach ([1, 2, 3, 4] as $i) {
+            $file = $request->file('file_' . $i);
+            if ($file) {
+                $upload = $service->saveFile($file);
+                $ticket101->{'file_' . $i . '_id'} = $upload->id;
+                $ticket101->save();
+            }
+        }
     }
 
     private function saveOtherRecords(Ticket101 $ticket101, array $otherRecords)
