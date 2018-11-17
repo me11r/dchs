@@ -213,6 +213,8 @@ class CardController extends AuthorizedController
                 'chronologies.fire_department_result.tech',
                 'chronologies.fire_department_result.department',
                 'results',
+                'results.tech',
+                'results.tech.formation_tech_report',
                 'notifications',
                 'notifications.service',
                 'popup_notifications',

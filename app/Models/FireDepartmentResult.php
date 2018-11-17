@@ -75,6 +75,8 @@ class FireDepartmentResult extends Model
         'tech_id',
         'recommended',
         'get_back',
+        'promoted_at',
+        'promoted_department',
     ];
 
     public function scopeOnWay($q, $ticket_id)
