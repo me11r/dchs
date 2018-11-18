@@ -223,9 +223,13 @@ class CardController extends AuthorizedController
                 'notification_groups',
                 'notifications.service',
                 'operational_card',
-                'operational_plan.special_plans'
+                'operational_plan.special_plans',
+                'service_plans',
+                'service_plans.service_type'
             ])
             ->findOrNew($card_id);
+
+//        dd($ticket->service_plans->first());
 
         $recommendedDispatched = $ticket->results()
             ->isDispatched()
