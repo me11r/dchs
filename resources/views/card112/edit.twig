@@ -11,6 +11,7 @@
             model: {{ model | json_encode() | raw }},
             servicePlans: {{ service_plans | json_encode() | raw }},
             method: 'PATCH',
+            notificationGroups: {{ notificationGroups | json_encode() | raw }},
             formRoute: '{{ route('card112.update', model.id) }}'
         };
     </script>

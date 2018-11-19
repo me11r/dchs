@@ -35,6 +35,8 @@ Route::group(
             Route::post('fcm/mark_message_as_delivered', 'FcmController@markMessageAsDelivered');
         });
 
+        Route::get('card112/get_card112', 'Card112Controller@getCard112');
+        Route::post('card112/send_notifications', 'Card112Controller@sendNotifications');
 
         Route::group(['prefix' => 'notification'], function (){
             Route::post('ticket101send', 'NotificationController@ticket101Send');
