@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\AirRescueReport;
 use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationTechReport;
@@ -10,6 +11,7 @@ use App\Models\FormationRecord;
 use App\Models\MorainicLakeReport;
 use App\Models\Quake;
 use App\Models\Weather;
+use App\Observers\AirRescueReportObserver;
 use App\Observers\EmergencySituationObserver;
 use App\Observers\FormationPersonsReportObserver;
 use App\Observers\FormationRecordObserver;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         MorainicLakeReport::observe(MorainicLakeReportObserver::class);
         Weather::observe(WeatherObserver::class);
         Quake::observe(QuakeObserver::class);
+        AirRescueReport::observe(AirRescueReportObserver::class);
 
         Paginator::defaultView('pagination::default');
     }

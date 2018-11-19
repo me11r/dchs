@@ -66,8 +66,14 @@ export default {
                 'tulpar10'
             ];
 
+            const zhalynTypes = [
+                'ipl_zhalyn'
+            ];
+
             if (tulparTypes.indexOf(this.rank) !== -1) {
                 return 'duty_vehicle';
+            } else if (zhalynTypes.indexOf(this.rank) !== -1) {
+                return 'zhalin';
             } else {
                 return this.rank;
             }
@@ -111,7 +117,8 @@ export default {
         cursor: pointer;
         padding: 0 20px 0 0;
     }
+
     .name-span:hover {
-        color:#15A4FA;
+        color: #15A4FA;
     }
 </style>
