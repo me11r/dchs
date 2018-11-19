@@ -38,7 +38,7 @@ trait MessengerTrait
      */
     private function isUserHaveToSendMessageAboutFormationAction(): bool
     {
-        return Role::whereName('emergency_service')->first()->id !== \Auth::user()->role_id;
+        return Role::whereName('emergency_service')->first()->id === \Auth::user()->role_id;
     }
 
     /**
