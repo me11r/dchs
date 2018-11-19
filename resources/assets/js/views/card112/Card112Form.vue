@@ -25,7 +25,7 @@
                     <li :class="{'is-active': currentTabIndex === 1}">
                         <a
                             @click="setTab(1)">
-                        <i class="fas fa-envelope"></i>&nbsp;Службы</a>
+                        <i class="fas fa-envelope"></i>&nbsp;Уведомления</a>
                     </li>
                     <li :class="{'is-active': currentTabIndex === 2}">
                         <a
@@ -233,69 +233,92 @@
                         </div>
                     </div>
                     <div :style="{'display': currentTabIndex === 1 ? 'block': 'none'}">
-                        <h5 class="subtitle">Службы:</h5>
+                        <div class="tabs buttab is-boxed">
+                            <ul>
+                                <li :class="{'is-active': servicesTabIndex === 0}">
+                                    <a @click="servicesTabIndex = 0">
+                                        <i class="fas fa-envelope"></i>&nbsp;Руководство
+                                    </a>
+                                </li>
+                                <li :class="{'is-active': servicesTabIndex === 1}">
+                                    <a @click="servicesTabIndex = 1">
+                                        <i class="fas fa-envelope"></i>&nbsp;Службы взаимодействия
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
-                        <table class="table is-expanded is-striped is-narrow is-fullwidth">
-                            <thead>
-                                <tr>
-                                    <th>Службы</th>
-                                    <th>Время сообщения</th>
-                                    <th>Фамилия<br>принявшего сообщение</th>
-                                    <th>Время прибытия</th>
-                                    <th>Путевой лист отправлен</th>
-                                    <th>Уведомление отправлено</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="service in serviceTypes">
-                                    <td>{{ service.name }}</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            readonly
-                                            v-model="services[service.id].created_at"
-                                            :id="service.id + '_created_at'"
-                                            class="input">
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="input"
-                                            :id="service.id + '_name'"
-                                            v-model="services[service.id].name_accepted">
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            v-model="services[service.id].arrive_time"
-                                            :id="service.id + '_arrived_at'"
-                                            readonly
-                                            class="input">
-                                    </td>
-                                    <td>
+                        <div
+                            class="panels index-1"
+                            :style="{'display': servicesTabIndex === 0? 'block': 'none'}">
+                            <card112-popup-notifications/>
+                        </div>
 
-                                        <input
-                                            type="text"
-                                            class="input"
-                                            v-model="services[service.id].sent_at"
-                                            :id="service.id + '_sent_at'"
-
-                                        >
-
-                                    </td>
-                                    <td>
-                                        <label for="">
+                        <div
+                            class="panels index-1"
+                            :style="{'display': servicesTabIndex === 1? 'block': 'none'}">
+                            <table class="table is-expanded is-striped is-narrow is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th>Службы</th>
+                                        <th>Время сообщения</th>
+                                        <th>Фамилия<br>принявшего сообщение</th>
+                                        <th>Время прибытия</th>
+                                        <th>Путевой лист отправлен</th>
+                                        <th>Уведомление отправлено</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="service in serviceTypes">
+                                        <td>{{ service.name }}</td>
+                                        <td>
                                             <input
-                                                type="checkbox"
-                                                @change="sendOneCheckService($event, model.id, service.id)"
-                                                value="1"
+                                                type="text"
+                                                readonly
+                                                v-model="services[service.id].created_at"
+                                                :id="service.id + '_created_at'"
+                                                class="input">
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                class="input"
+                                                :id="service.id + '_name'"
+                                                v-model="services[service.id].name_accepted">
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                v-model="services[service.id].arrive_time"
+                                                :id="service.id + '_arrived_at'"
+                                                readonly
+                                                class="input">
+                                        </td>
+                                        <td>
 
-                                                class="checkbox">
-                                        </label>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                            <input
+                                                type="text"
+                                                class="input"
+                                                v-model="services[service.id].sent_at"
+                                                :id="service.id + '_sent_at'"
+
+                                            >
+
+                                        </td>
+                                        <td>
+                                            <label for="">
+                                                <input
+                                                    type="checkbox"
+                                                    @change="sendOneCheckService($event, model.id, service.id)"
+                                                    value="1"
+
+                                                    class="checkbox">
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
                         <h5 class="subtitle">Информация с места происшествия:</h5>
@@ -659,6 +682,7 @@ import {BuefyCommonSelect} from '../../components';
 import {MAP_LOCATION_EXCHANGE_KEY, AREA_ID_FOUND} from '../../config/storage-keys';
 import {globalBus} from '../../scripts/global-bus';
 import YandexMapsBus from '../../scripts/yandex-maps-bus';
+import Card112PopupNotifications from "../../components/card112/Card112PopupNotifications";
 
 export default {
     name: 'Card112Form',
@@ -682,10 +706,12 @@ export default {
             yandexMapsBus: {},
             currentCity: 'Алматы',
             servicePlans: [],
-            services: []
+            services: [],
+            servicesTabIndex: 0
         };
     },
     components: {
+        Card112PopupNotifications,
         BuefyCommonSelect
     },
     computed: {
