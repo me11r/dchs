@@ -154,7 +154,31 @@
                                        data-name="operational_plan_id"
                                        data-plans="{{ special_plans }}"
                                        data-value="{{ ticket.operational_plan_id|default(0) }}">
-                                        <label for="operational_plan_id">Оперативный план</label>
+                                        <label for="operational_plan_id">
+                                            Оперативный план
+                                            <span style="position: absolute;top: -5px;right: 85px;">
+                                                {% if ticket.operational_plan_id %}
+                                                    {% for special_plan in ticket.operational_plan.special_plans %}
+                                                        {% if special_plan.file %}
+                                                            <a href="{{ '/storage/operational-plans/'~special_plan.file }}"
+                                                               target="_blank">
+                                                            <span class="file-icon">
+                                                                <i class="fas fa-file-pdf fa-2x"></i>
+                                                            </span>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <template v-if="file">
+                                                        <a :href="'/storage/operational-plans/'+file" target="_blank">
+                                                            <span class="file-icon">
+                                                                <i class="fas fa-file-pdf fa-2x"></i>
+                                                            </span>
+                                                        </a>
+                                                    </template>
+                                                {% endif %}
+                                            </span>
+                                        </label>
                                         <input type="hidden"
                                                name="operational_plan_id"
                                                id="operational_plan_id"
@@ -164,32 +188,14 @@
                                                 :min-length="1"
                                                 v-model="selectedId">
                                         </buefy-common-select>
-                                        {% if ticket.operational_plan_id %}
-                                            {% for special_plan in ticket.operational_plan.special_plans %}
-                                                {% if special_plan.file %}
-                                                    <a href="{{ '/storage/operational-plans/'~special_plan.file }}"
-                                                       target="_blank">
-                                                    <span class="file-icon">
-                                                        <i class="fas fa-file-pdf"></i>
-                                                    </span>
-                                                    </a>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% else %}
-                                            <template v-if="file">
-                                                <a :href="'/storage/operational-plans/'+file" target="_blank">
-                                                    <span class="file-icon">
-                                                        <i class="fas fa-file-pdf"></i>
-                                                    </span>
-                                                </a>
-                                            </template>
-                                        {% endif %}
                                     </p>
                                 </div>
                             </div>
                             <div class="column is-3">
                                 <div class="bd-notification is-primary">
-                                    <label for="operational_card_id">Оперативная карточка</label>
+                                    <label for="operational_card_id">
+                                        Оперативная карточка
+                                    </label>
                                     <div class="select"
                                          data-component="simple-select"
                                          data-special="specialPlan"
@@ -197,6 +203,24 @@
                                          data-cards="{{ operational_cards }}"
                                          data-name="operational_cards"
                                          style="display: block">
+                                        <span style="position: absolute;top: -30px;right: 85px;">
+                                            {% if ticket.operational_card_id and ticket.operational_card.file %}
+                                                <a href="{{ '/storage/operational-cards/'~ticket.operational_card.file }}"
+                                                   target="_blank">
+                                            <span class="file-icon">
+                                                <i class="fas fa-file-pdf fa-2x"></i>
+                                            </span>
+                                                </a>
+                                            {% else %}
+                                                <template v-if="file">
+                                                    <a :href="'/storage/operational-cards/'+file" target="_blank">
+                                                    <span class="file-icon">
+                                                        <i class="fas fa-file-pdf fa-2x"></i>
+                                                    </span>
+                                                    </a>
+                                                </template>
+                                            {% endif %}
+                                        </span>
                                         <select name="operational_card_id" id="operational_card_id"
                                                 style="width: 100%;"
                                                 v-model="selectedId">
@@ -205,22 +229,6 @@
                                                 <option value="{{ object.id }}">{{ object.oc_number }}</option>
                                             {% endfor %}
                                         </select>
-                                        {% if ticket.operational_card_id and ticket.operational_card.file %}
-                                            <a href="{{ '/storage/operational-cards/'~ticket.operational_card.file }}"
-                                               target="_blank">
-                                            <span class="file-icon">
-                                                <i class="fas fa-file-pdf"></i>
-                                            </span>
-                                            </a>
-                                        {% else %}
-                                            <template v-if="file">
-                                                <a :href="'/storage/operational-cards/'+file" target="_blank">
-                                                    <span class="file-icon">
-                                                        <i class="fas fa-file-pdf"></i>
-                                                    </span>
-                                                </a>
-                                            </template>
-                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
