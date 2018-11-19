@@ -224,6 +224,14 @@ class RoadtripController extends AuthorizedController
         return response()->json(['ok'], 200);
     }
 
+    public function postArrived(Request $request)
+    {
+        $result = FireDepartmentResult::find($request->dept_id);
+        $result->arrive_time = now()->format('H:i:s');
+        $result->save();
+        return response()->json(['ok'], 200);
+    }
+
     public function postReturn(Request $request)
     {
         $f = $request->all();

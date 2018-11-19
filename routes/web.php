@@ -152,6 +152,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('id', '[0-9]+')
             ->name('roadtrip.plan.print');
         Route::post('dispatch', 'RoadtripController@postDispatch');
+        Route::post('arrived', 'RoadtripController@postArrived');
         Route::post('return', 'RoadtripController@postReturn');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
@@ -209,6 +210,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/pdf/operational-report', 'ReportController@getOperational')->name('operational-report');
     Route::get('/pdf/report101/{type}', 'ReportController@getReport101')->name('report101');
     Route::get('/xls/report101/forces', 'ReportController@exportForcesXls')->name('report101.forces.xls');
+    Route::get('/xls/report101/emergency', 'ReportController@exportEmergency101Xls')->name('report101.emergency.xls');
+    Route::get('/xls/report112/emergency', 'ReportController@exportEmergency112Xls')->name('report112.emergency.xls');
     Route::get('/xls/card101/chronology/{card_id}', 'ReportController@exportCard101ChronologyXls')->name('card101.chronology.xls');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');

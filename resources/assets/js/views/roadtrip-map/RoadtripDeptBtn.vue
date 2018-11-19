@@ -6,13 +6,18 @@
             class="button is-info"
             href=""><i class="far fa-bell"></i>&nbsp;Назначить: отделение -  {{ dep_.tech.department ? dep_.tech.department : dep_.promoted_department }}</a>
         <a
+            @click.prevent="markDeptArrived()"
+            v-else-if="is_dispatched_== 1 && is_arrived_ === false"
+            class="button is-warning is-outlined"
+            href=""><i class="fas fa-retweet"></i>&nbsp;Отметить прибытие: отделение -  {{ dep_.tech.department ? dep_.tech.department : dep_.promoted_department }}</a>
+        <a
             @click.prevent="markDeptReturn()"
-            v-if="is_dispatched_== 1 && dep.ret_time == null"
+            v-else-if="is_arrived_ && dep.ret_time == null"
             class="button is-success is-outlined"
             href=""><i class="fas fa-retweet"></i>&nbsp;Отметить возвращение: отделение -  {{ dep_.tech.department ? dep_.tech.department : dep_.promoted_department }}</a>
         <a
             @click.prevent=""
-            v-if="is_returned_"
+            v-else-if="is_returned_"
             class="button is-disabled"
             href=""><i class="fas fa-retweet"></i>&nbsp;Отделение вернулось: {{ dep_.tech.department ? dep_.tech.department : dep_.promoted_department }}</a>
     </div>
@@ -42,6 +47,7 @@ export default {
             dep_: this.dep,
             is_dispatched_: this.dep.out_time != null,
             is_returned_: this.dep.ret_time != null,
+            is_arrived_: (this.dep.arrive_time !== null),
             roadtrip_id_: this.trip.ret_time
         };
     },
@@ -55,6 +61,14 @@ export default {
                 self.is_dispatched_ = 1;
             });
         },
+        markDeptArrived() {
+            let self = this;
+            axios.post('/roadtrip/arrived', {
+                dept_id: self.dep_.id
+            }).then((resp) => {
+                self.is_arrived_ = true;
+            });
+        },
         markDeptReturn() {
             let self = this;
             axios.post('/roadtrip/return', {
@@ -64,6 +78,9 @@ export default {
                 self.dep.ret_time = 1;
             });
         }
+    },
+    created() {
+        console.dir(this.is_arrived_);
     }
 };
 </script>
