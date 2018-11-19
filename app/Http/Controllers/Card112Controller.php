@@ -7,6 +7,7 @@ use App\Dictionary\Street;
 use App\Http\Resources\Card112\Card112Resource;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
+use App\Models\Notification\NotificationGroup;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
 use App\Ticket101ServicePlan;
@@ -43,7 +44,7 @@ class Card112Controller extends Controller
 
         $city_areas = CityArea::whereIn('id', $city_areas)->get();
 
-        if($id){
+        if ($id) {
             $items = $this
                 ->repository
                 ->with([
@@ -51,10 +52,9 @@ class Card112Controller extends Controller
                     'street.area'
                 ])
                 ->orderBy($sort, 'desc')
-                ->where('id',$id)
+                ->where('id', $id)
                 ->paginate($perPage);
-        }
-        elseif($city_area){
+        } elseif ($city_area) {
 
             $items = $this
                 ->repository
@@ -64,21 +64,18 @@ class Card112Controller extends Controller
                 ])
                 ->orderBy($sort, 'desc')
                 ->paginate($perPage);
-        }
-        elseif($search){
-            if(is_numeric($search)){
+        } elseif ($search) {
+            if (is_numeric($search)) {
                 $items = $this
                     ->repository
                     ->with(['street', 'street.area'])
                     ->where('id', $search)
-                    ->orderBy($sort,'desc')
+                    ->orderBy($sort, 'desc')
                     ->paginate($perPage);
-            }
-            else{
-                try{
-                    $date = Carbon::parse(str_replace(['/', '.'],'-',$search));
-                }
-                catch (\Exception $e){
+            } else {
+                try {
+                    $date = Carbon::parse(str_replace(['/', '.'], '-', $search));
+                } catch (\Exception $e) {
                     $date = null;
                 }
 
@@ -87,15 +84,14 @@ class Card112Controller extends Controller
                     ->with(['street', 'street.area'])
                     ->where('location', "like", "$search%")
                     ->orWhereDate('created_at', $date)
-                    ->orWhereHas('cityArea', function ($q) use ($search){
+                    ->orWhereHas('cityArea', function ($q) use ($search) {
                         $q->where('name', "like", "$search%");
                     })
-                    ->orderBy($sort,'desc')
+                    ->orderBy($sort, 'desc')
                     ->paginate($perPage);
             }
 
-        }
-        else{
+        } else {
             $items = $this
                 ->repository
                 ->with([
@@ -128,6 +124,7 @@ class Card112Controller extends Controller
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect($serviceTypes)->toArray())
+            ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('model', new Card112Resource(new Card112()))
             ->with('service_plans', $ticket101_service_plans)
             ->render();
@@ -136,7 +133,7 @@ class Card112Controller extends Controller
     public function store(Request $request)
     {
         $data = $this->repository->createFilledWithRelations($request->all());
-        return redirect('/card112/'.$data->id.'/edit');
+        return redirect('/card112/' . $data->id . '/edit');
         #return redirect(route('card112.index'));
     }
 
@@ -156,7 +153,18 @@ class Card112Controller extends Controller
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect($serviceTypes->toArray()))
             ->with('service_plans', $ticket101_service_plans)
-            ->with('model', new Card112Resource($this->repository->where('id', '=', $id)->with(['serviceReactions', 'chronology'])->first()));
+            ->with('notificationGroups', (new NotificationGroup())->get())
+            ->with('model', new Card112Resource($this->repository->where('id', '=', $id)
+                ->with([
+                    'serviceReactions',
+                    'chronology',
+                    'notificationGroups',
+                    'popupNotifications',
+                    'popupNotifications.user',
+                    'popupNotifications.status',
+                    'popupNotifications.group'
+                ])
+                ->first()));
     }
 
     public function update(Request $request, $id)
