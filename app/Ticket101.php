@@ -20,6 +20,7 @@ use App\Models\OperationalPlan;
 use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\Models\UploadedFile;
 use App\Models\WallMaterial;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -633,5 +634,20 @@ class Ticket101 extends Model
         }*/
     }
 
+    public function file_1() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_1_id');
+    }
+
+    public function file_2() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_2_id');
+    }
+
+    public function file_3() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_3_id');
+    }
+
+    public function file_4() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_4_id');
+    }
 
 }

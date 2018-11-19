@@ -5,6 +5,8 @@ namespace App\Models\Card112;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\Models\IncidentType;
+use App\Models\Notification\Notification;
+use App\Models\Notification\NotificationGroup;
 use App\Ticket101ServicePlan;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $dead
  * @property int $evacuated
  * @property int $hospitalized
+ * @property bool $notifications_sent
+ * @property string $notification_message
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $additional_comment
@@ -202,6 +206,30 @@ class Card112 extends Model
     public function cityArea()
     {
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function popupNotifications()
+    {
+        return $this->belongsToMany(
+            Notification::class,
+            'card112_popup_notifications',
+            'card_112_id'
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function notificationGroups()
+    {
+        return $this->belongsToMany(
+            NotificationGroup::class,
+            'card112_notification_groups',
+            'card_112_id'
+        );
     }
 
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)

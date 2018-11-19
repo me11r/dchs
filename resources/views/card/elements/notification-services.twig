@@ -11,6 +11,7 @@
     </thead>
     <tbody>
     {% for notification in ticket.service_plans %}
+        {% if notification.service_type and notification.service_type.id %}
         <tr>
             <td>
                 <label>
@@ -69,6 +70,7 @@
                 {% endfor %}
             </td>
         </tr>
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>
