@@ -264,6 +264,55 @@ class Card112 extends Model
         return $result;
     }
 
+    public function scopeGetDetailedStat($q, $date_begin, $date_end, $reason_id = null)
+    {
+        $result = [];
+        $areas = CityArea::all();
+
+        $date_begin = $date_begin ? $date_begin: now()->subYear();
+        $date_end = $date_end ? $date_end : now();
+
+        if($reason_id){
+            $reasons = IncidentType::where('id', $reason_id)->get();
+        }
+        else{
+            $reasons = IncidentType::orderBy('name')->get();
+        }
+
+        foreach ($reasons as $reason) {
+            foreach ($areas as $area) {
+
+                $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                    ->where('additional_incident_type_id', $reason->id)
+                    ->where('city_area_id', $area->id);
+
+                $result[$reason->name][$area->name]['total'] = $baseQuery->count();
+                $types = [
+                    'injured',
+                    'dead',
+                    'evacuated',
+                    'hospitalized',
+                    'injured_hard',
+                    'poisoned',
+                    'saved',
+                    'saved_animals'
+                ];
+
+                foreach ($types as $type) {
+                    $result[$reason->name][$area->name][$type] = $baseQuery->sum($type);
+                }
+
+                $result[$reason->name][$area->name]['hurt'] = $baseQuery->sum('injured')
+                    + $baseQuery->sum('hospitalized')
+                    + $baseQuery->sum('injured_hard')
+                    + $baseQuery->sum('poisoned');
+
+            }
+        }
+
+        return $result;
+    }
+
     public function scopeFilterByServiceType($q, $filter)
     {
         return $q->whereHas('service_plans.service_type', function ($service_type) use ($filter){
