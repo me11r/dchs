@@ -97,6 +97,7 @@
                                                v-model="location"
                                                @blur="onBlur"
                                                @focus="onFocus"
+                                               tabindex="1"
                                                @keyup="keyUp = true">
                                         <div class="dropdown-menu"
                                              :style="{'display': showList ? 'block': 'none'}"
@@ -124,6 +125,7 @@
                                             <label for="object_name">Наименование объекта</label>
                                             <input type="text"
                                                    class="input"
+                                                   tabindex="11"
                                                    name="object_name"
                                                    id="object_name"
                                                    v-model="object_name"
@@ -141,6 +143,7 @@
                                         <input
                                                 id="fireplace"
                                                 name="fireplace"
+                                                tabindex="2"
                                                 class="input"
                                                 value="{{ ticket.fireplace }}"
                                         >
@@ -186,6 +189,7 @@
                                         <buefy-common-select
                                                 :options='{{ operational_plans | json_encode() | raw }}'
                                                 :min-length="1"
+                                                tabindex="12"
                                                 v-model="selectedId">
                                         </buefy-common-select>
                                     </p>
@@ -239,7 +243,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <label for="pre_information">Предварительная информация</label>
-                                            <textarea class="textarea" name="pre_information" id="pre_information"
+                                            <textarea tabindex="3" class="textarea" name="pre_information" id="pre_information"
                                                       cols="30"
                                                       rows="2">{{ ticket.pre_information|default('') }}</textarea>
                                         </div>
@@ -249,7 +253,7 @@
                             <div class="column is-half">
                                 <div class="bd-notification is-primary">
                                     <label for="building_description">Конструктивные особенности</label>
-                                    <textarea class="textarea" name="building_description" id="building_description"
+                                    <textarea tabindex="13" class="textarea" name="building_description" id="building_description"
                                               cols="30"
                                               rows="2">{{ ticket.building_description|default('') }}</textarea>
                                 </div>
@@ -272,6 +276,7 @@
                                         <buefy-common-select
                                                 :options='{{ fire_departments | json_encode() | raw }}'
                                                 :min-length="1"
+                                                tabindex="4"
                                                 required="required"
                                                 v-model="selectedId">
                                         </buefy-common-select>
@@ -288,7 +293,7 @@
                                          data-special="specialPlan"
                                          data-value="{{ ticket.city_area_id }}"
                                          data-name="city_area_id">
-                                        <select name="city_area_id" id="city_area" v-model="selectedId">
+                                        <select tabindex="5" name="city_area_id" id="city_area" v-model="selectedId">
                                             <option value="">-</option>
                                             {% for area in city_area %}
                                                 <option value="{{ area.id }}">{{ area.name }}</option>
@@ -306,7 +311,7 @@
                                             {#data-value="{{ ticket.fire_level_id }}"#}
                                             {#data-name="fire_level_id"#}
                                          style="display: block">
-                                        <select name="fire_level_id" id="fire_level_id1" required
+                                        <select tabindex="6" name="fire_level_id" id="fire_level_id1" required
                                                 style="width: 100%;">
                                             <option value="">-</option>
                                             {% for object in fire_levels %}
@@ -324,6 +329,7 @@
                                         <input
                                                 id="year_of_development"
                                                 name="year_of_development"
+                                                tabindex="14"
                                                 class="input"
                                                 value="{{ ticket.year_of_development }}"
                                         >
@@ -335,7 +341,7 @@
                             <div class="column is-3">
                                 <div class="bd-notification is-primary">
                                     <label for="storey_count">Этажность</label>
-                                    <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                    <input tabindex="7" min=0 oninput="validity.valid||(value='');" type="number" class="input"
                                            name="storey_count" id="storey_count"
                                            value="{{ ticket.storey_count|default('') }}"/>
                                 </div>
@@ -343,7 +349,7 @@
                             <div class="column is-3">
                                 <div class="bd-notification is-primary">
                                     <label for="floor">На каком этаже пожар</label>
-                                    <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                    <input tabindex="8" min=0 oninput="validity.valid||(value='');" type="number" class="input"
                                            name="floor" id="floor"
                                            value="{{ ticket.floor|default('') }}"/>
                                 </div>
@@ -354,6 +360,7 @@
                                         <label for="square">Площадь объекта</label>
                                         <input
                                                 id="square"
+                                                tabindex="15"
                                                 name="building_square"
                                                 class="input"
                                                 value="{{ ticket.building_square }}"
@@ -369,7 +376,7 @@
                                     <div class="field">
                                         <p class="control is-expanded">
                                             <label for="caller_name">ФИО Заявителя</label>
-                                            <input type="text" class="input" name="caller_name" id="caller_name"
+                                            <input tabindex="9" type="text" class="input" name="caller_name" id="caller_name"
                                                    value="{{ ticket.caller_name|default('') }}"/>
                                         </p>
                                     </div>
@@ -380,9 +387,9 @@
                                     <div class="field" style="margin-top: 15px;">
                                         <div class="checkbox">
                                             <label for="people_in_danger">Опасность для людей</label>
-                                            Да - <input type="radio" name="people_in_danger" value="1"
+                                            Да - <input tabindex="16" type="radio" name="people_in_danger" value="1"
                                                         {% if ticket.people_in_danger %}checked{% endif %}>
-                                            Неизвестно - <input type="radio" name="people_in_danger" value="0"
+                                            Неизвестно - <input tabindex="16" type="radio" name="people_in_danger" value="0"
                                                                 {% if not ticket.people_in_danger %}checked{% endif %}>
                                             {#<input type="checkbox" name="people_in_danger" value="1" id="people_in_danger"#}
                                             {#{% if ticket.people_in_danger %}checked{% endif %}/>#}
@@ -397,7 +404,7 @@
                                     <div class="field">
                                         <p class="control">
                                             <label for="caller_phone">Телефон заявителя</label>
-                                            <input type="text" class="input" name="caller_phone" id="caller_phone"
+                                            <input tabindex="10" type="text" class="input" name="caller_phone" id="caller_phone"
                                                    value="{{ ticket.caller_phone|default('') }}"/>
                                         </p>
                                     </div>
@@ -410,6 +417,7 @@
                                         <textarea class="textarea" name="additional_description"
                                                   id="additional_description"
                                                   cols="30"
+                                                  tabindex="17"
                                                   rows="2">{{ ticket.additional_description|default('') }}</textarea>
                                     </div>
                                 </div>
