@@ -50,6 +50,12 @@ class AjaxController extends AuthorizedController
         $result = [];
         $location = $request->location;
 
+        //экранируем спец. символы
+        $location = quotemeta($location);
+
+        $location = str_replace(['\\'], '\\\\', $location);
+        $location = str_replace(['/'], '\\\\/', $location);
+
         /*не используем elasticsearch на локалке*/
         if(env('IS_LOCAL', false)){
             $specialPlansQuery = SpecialPlan::where('object_name', 'like', "%$location%")
@@ -60,6 +66,8 @@ class AjaxController extends AuthorizedController
         else{
             //экранируем спец. символы
             $location = quotemeta($location);
+            $location = str_replace('\\', '/\\', $location);
+
             $specialPlansQuery = SpecialPlan::search($location);
             $operationalCardsQuery = OperationalCard::search($location);
         }
