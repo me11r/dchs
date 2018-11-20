@@ -326,6 +326,63 @@
                 }
 
                 return false;
+            },
+            findActive(id){
+                return _.findIndex(this.results_, {id:id});
+            },
+            checkRoadtrips() {
+                let ticket_id = window.ticket101add.ticketId;
+                let self = this;
+                if (ticket_id !== 0) {
+                    var timerId = setInterval(() => {
+                        axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
+                            if (response.data.recommendations !== undefined) {
+                                // self.results_ = response.data.recommendations;
+                                response.data.recommendations.forEach((item) => {
+                                    let accepted_time = 'accepted_time_' + item.id;
+                                    let out_time = 'out_time_' + item.id;
+                                    let ret_time = 'ret_time_' + item.id;
+                                    let send_time = 'send_time_' + item.id;
+
+                                    let accepted_time_item = document.getElementById(
+                                        accepted_time);
+
+                                    let out_time_item = document.getElementById(
+                                        out_time);
+
+                                    let ret_time_item = document.getElementById(
+                                        ret_time);
+
+                                    let send_time_item = document.getElementById(
+                                        send_time);
+
+                                    if (item.dispatched === 1) {
+                                        send_time_item.value = item.dispatch_time;
+                                    }
+
+                                    if (accepted_time_item && out_time_item) {
+                                        accepted_time_item.value = item.accept_time;
+                                        out_time_item.value = item.out_time;
+                                    }
+
+                                    if (ret_time_item) {
+                                        ret_time_item.value = item.ret_time;
+                                    }
+
+                                    let index = _.findIndex(self.results_, {id: item.id});
+
+                                    // Replace item at index using native splice
+                                    self.results_.splice(index, 1, item);
+
+
+
+                                });
+
+                            }
+                        });
+                    // }, 10000);
+                    }, 3000);
+                }
             }
 
 
@@ -352,6 +409,7 @@
             }
         },
         mounted(){
+            this.checkRoadtrips();
             // console.dir(this.results_);
         }
     }
