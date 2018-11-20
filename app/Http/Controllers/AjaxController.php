@@ -58,6 +58,8 @@ class AjaxController extends AuthorizedController
                 ->orWhere('location', 'like', "%$location%");
         }
         else{
+            //экранируем спец. символы
+            $location = quotemeta($location);
             $specialPlansQuery = SpecialPlan::search($location);
             $operationalCardsQuery = OperationalCard::search($location);
         }
