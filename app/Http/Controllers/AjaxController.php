@@ -62,7 +62,7 @@ class AjaxController extends AuthorizedController
         else{
             //экранируем спец. символы
             $location = addcslashes($location, '"\\/');
-            $location = addcslashes($location, '\\');
+//            $location = addcslashes($location, '\\');
 
             $specialPlansQuery = SpecialPlan::search($location);
             $operationalCardsQuery = OperationalCard::search($location);
