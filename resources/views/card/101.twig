@@ -38,7 +38,7 @@
             </form>
         </div>
         <div class="panel">
-            <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
                 <thead>
                 <tr>
                     <th>№ КУИ</th>
@@ -87,6 +87,8 @@
                         <td class="has-text-right">{{ ticket.drill_type ?? '' }}</td>
                         <td class="has-text-right">
                             <a href="/card/add101/{{ ticket.id }}/{{ type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+
+                            <delete-card-btn :can-delete="{{ can_delete }}" :ticket="{{ ticket }}"></delete-card-btn>
                         </td>
                     </tr>
                 {% else %}

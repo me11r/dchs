@@ -204,7 +204,11 @@ class CardController extends Controller
             return response()->json([], 200);
         }
 
-        $data['recommendations'] = $ticket->results;
+        $data['recommendations'] = $ticket->results()->with([
+            'tech',
+            'tech.formation_tech_report',
+            'department',
+        ])->get();
 
         return response()->json($data);
     }

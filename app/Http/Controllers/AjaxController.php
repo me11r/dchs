@@ -62,7 +62,6 @@ class AjaxController extends AuthorizedController
         else{
             //экранируем спец. символы
             $location = addcslashes($location, '"\\/');
-//            $location = addcslashes($location, '\\');
 
             $specialPlansQuery = SpecialPlan::search($location);
             $operationalCardsQuery = OperationalCard::search($location);
@@ -72,10 +71,6 @@ class AjaxController extends AuthorizedController
 
         $operationalCardsQuery->limit = 5;
         $operational_cards = $operationalCardsQuery->get();
-//        $operational_cards = OperationalCard::location($location)
-//            ->orWhere('object_name', 'like', "%$location%")
-//            ->limit(10)
-//            ->get();
 
         foreach ($operational_cards as $key => $operational_card) {
             $operational_card->is_card = true;
