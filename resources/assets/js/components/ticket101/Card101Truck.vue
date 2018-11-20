@@ -2,6 +2,14 @@
     <div>
         <b-tabs>
             <b-tab-item label="Боевой расчет" icon="fa fa-truck-moving">
+                <div class="level">
+                    <div class="level-right">
+                        <a @click="sendAllTripPlans()"
+                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
+                        </a>
+                    </div>
+                </div>
+
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                     <tr>
@@ -12,12 +20,8 @@
                         <th>Время прибытия</th>
                         <th>Время возвращения</th>
                         <th>Отправка</th>
+                        <th>Время регистрации</th>
                         <th>Время оповещения</th>
-                        <th>
-                            <a @click="sendAllTripPlans()"
-                               class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
-                            </a>
-                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -114,6 +118,17 @@
                             </p>
                         </td>
 
+                        <!--Время регистрации-->
+                        <td>
+                            <p v-for="i in formActive[department.id]">
+                                <input
+                                       type="text"
+                                       readonly
+                                       :value="ticket_.created_at"
+                                       class="input small-imput">
+                            </p>
+                        </td>
+
                         <!--{#Время оповещения#}-->
                         <td class="is-expanded">
                             <p v-for="i in formActive[department.id]">
@@ -124,7 +139,6 @@
                                        class="input small-imput">
                             </p>
                         </td>
-                        <td></td>
                     </tr>
                     </tbody>
                 </table>
@@ -233,12 +247,19 @@
                     return [];
                 }
             },
+            ticket: {
+                type: Object,
+                default: () => {
+                    return {};
+                }
+            },
 
         },
         data() {
             return {
                 departments_: this.departments,
                 results_: this.results,
+                ticket_: this.ticket,
                 active: [],
                 reserve: [],
             };
