@@ -14,12 +14,6 @@ export default function bindRoadTrip() {
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
         },
         methods: {
-            sendAllTripPlans() {
-                axios.get('/roadtrip/send-all/' + window.ticket101add.ticketId).then((response) => {
-                    alert('Силы отправлены');
-                }).catch(() => {
-                });
-            },
             gerQuery(i, part) {
                 return new Promise((resolve) => {
                     if (part !== '') {

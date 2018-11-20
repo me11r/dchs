@@ -13,6 +13,11 @@
                         <th>Время возвращения</th>
                         <th>Отправка</th>
                         <th>Время оповещения</th>
+                        <th>
+                            <a @click="sendAllTripPlans()"
+                               class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
+                            </a>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -257,6 +262,12 @@
                 }
 
                 return '';
+            },
+            sendAllTripPlans() {
+                axios.get('/roadtrip/send-all/' + window.ticket101add.ticketId).then((response) => {
+                    alert('Силы отправлены');
+                }).catch(() => {
+                });
             },
             needToGetBack(department){
                 if(department.get_back === 1){
