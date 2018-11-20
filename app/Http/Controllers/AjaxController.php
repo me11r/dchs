@@ -49,11 +49,21 @@ class AjaxController extends AuthorizedController
     {
         $result = [];
         $location = $request->location;
-        $specialPlansQuery = SpecialPlan::search($location);
+
+        /*не используем elasticsearch на локалке*/
+        if(env('IS_LOCAL', false)){
+            $specialPlansQuery = SpecialPlan::where('object_name', 'like', "%$location%")
+                ->orWhere('location', 'like', "%$location%");
+            $operationalCardsQuery = OperationalCard::where('object_name', 'like', "%$location%")
+                ->orWhere('location', 'like', "%$location%");
+        }
+        else{
+            $specialPlansQuery = SpecialPlan::search($location);
+            $operationalCardsQuery = OperationalCard::search($location);
+        }
         $specialPlansQuery->limit = 5;
         $specialPlans = $specialPlansQuery->get();
 
-        $operationalCardsQuery = OperationalCard::search($location);
         $operationalCardsQuery->limit = 5;
         $operational_cards = $operationalCardsQuery->get();
 //        $operational_cards = OperationalCard::location($location)
