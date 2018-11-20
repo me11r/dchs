@@ -35,9 +35,18 @@ export default function bindLocationInputApp() {
             setData(items) {
                 if (items.special_plans !== undefined) {
                     this.items = items.special_plans;
-                } else {
-                    // console.dir(window.ticket101add)
+
+                    //определение ранга пожара только при создании карточки
+                    //т.к. при редкатировании он может сбиться при вводе адреса
                     if (window.ticket101add.ticketId === '') {
+                        document.getElementById('fire_level_id1').value = this.items[0].fire_level_id;
+                    }
+                    // console.dir("special plan found:")
+                    // console.dir(this.items)
+
+                } else {
+                    if (window.ticket101add.ticketId === '') {
+                        console.dir("it's a new card")
                         document.getElementById('fire_level_id1').value = 1;
                     }
                     this.items = items;
@@ -48,7 +57,6 @@ export default function bindLocationInputApp() {
                 }
 
                 if (items.building) {
-                    // document.getElementById('fire_object_id').value = items.building.object_type_id;
                     document.getElementById('building_description').value = items.building.wall_material.name;
                     document.getElementById('square').value = items.building.square;
                     document.getElementById('year_of_development').value = items.building.year_of_development;

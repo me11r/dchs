@@ -124,6 +124,7 @@
                                        class="input small-imput">
                             </p>
                         </td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </table>
