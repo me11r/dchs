@@ -36,6 +36,7 @@ use App\Services\FileUploadService;
 use App\Ticket101;
 use App\Ticket101Other;
 use App\Ticket101ServicePlan;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +59,10 @@ class CardController extends AuthorizedController
         $f = $request->all();
 
         $search = trim($request->search);
+
+        if(Auth::user()->hasRight('DELETE_CARD101')){
+            $can_delete = true;
+        }
 
         $sort = $request->get('sort', 'created_at');
         $id = $request->input('filter.id', '');
@@ -124,6 +129,7 @@ class CardController extends AuthorizedController
             ->set('city_areas', $city_areas)
             ->set('id', $id)
             ->set('search', $search)
+            ->set('can_delete', $can_delete ?? false)
             ->set('type', $card_type)
             ->set('city_area', $city_area)
             ->set('per_page', $perPage);
@@ -590,5 +596,14 @@ class CardController extends AuthorizedController
             $data['staff'] = Staff::all();
             return view('card/101other_rides', $data);
         }
+    }
+
+    public function postDelete(Request $request)
+    {
+        if(Auth::user()->hasRight('DELETE_CARD101')){
+            Ticket101::destroy($request->id);
+        }
+
+        return response()->json(['ok'], 200);
     }
 }
