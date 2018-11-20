@@ -11,7 +11,15 @@
                     <div class="level-right has-text-right">
                         <button
                             class="button is-primary"
-                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
+                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать
+                        </button>
+                    </div>
+                    <div class="level-right has-text-right">
+                        <a
+                            href="/xls/report112/emergency"
+                            class="button is-primary"
+                        ><i class="fas fa-print"></i>&nbsp;Сохранить в XLS
+                        </a>
                     </div>
                 </div>
                 <br>
@@ -48,29 +56,49 @@
                             class="date"
                             type="date">
                     </div>
-                    <table class="table">
+                    <table class="formation-record-table">
                         <thead>
                             <tr>
-                                <td>Пострадавших людей/детей</td>
-                                <td>Погибших людей/детей</td>
-                                <td>Эвакуированных людей/детей</td>
-                                <td>Госпитализированных людей/детей</td>
-                                <td>Травмированных людей/детей</td>
-                                <td>Отравление людей/детей</td>
-                                <td>Спасено людей/детей</td>
-                                <td>Спасено животных</td>
+                                <td class="is-narrow">Происшествие</td>
+                                <td></td>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>{{ report_summary.injured }}</td>
-                                <td>{{ report_summary.dead }}</td>
-                                <td>{{ report_summary.evacuated }}</td>
-                                <td>{{ report_summary.hospitalized }}</td>
-                                <td>{{ report_summary.injured_hard }}</td>
-                                <td>{{ report_summary.poisoned }}</td>
-                                <td>{{ report_summary.saved }}</td>
-                                <td>{{ report_summary.saved_animals }}</td>
+                            <tr v-for="(record, title) in report_summary">
+                                <td class="is-narrow">{{ title }}</td>
+                                <td>
+                                    <table class="formation-record-table">
+                                        <thead>
+                                        <tr>
+                                            <td>Район города</td>
+                                            <td>Кол-во происшествий(ЧС)</td>
+                                            <td>Пострадавших людей/детей</td>
+                                            <td>Погибших людей/детей</td>
+                                            <td>Эвакуированных людей/детей</td>
+                                            <td>Госпитализированных людей/детей</td>
+                                            <td>Травмированных людей/детей</td>
+                                            <td>Отравление людей/детей</td>
+                                            <td>Спасено людей/детей</td>
+                                            <td>Спасено животных</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="(cityArea, citAreaTitle) in record">
+                                            <td>{{ citAreaTitle }}</td>
+                                            <td>{{ cityArea.total }}</td>
+                                            <td>{{ cityArea.injured }}</td>
+                                            <td>{{ cityArea.dead }}</td>
+                                            <td>{{ cityArea.evacuated }}</td>
+                                            <td>{{ cityArea.hospitalized }}</td>
+                                            <td>{{ cityArea.injured_hard }}</td>
+                                            <td>{{ cityArea.poisoned }}</td>
+                                            <td>{{ cityArea.saved }}</td>
+                                            <td>{{ cityArea.saved_animals }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -117,9 +145,7 @@ export default {
 
             window.history.pushState('page2', 'Title', '/reports/112/emergency?reason=' + this.reason_id);
 
-            // console.dir(this.reason_id);
-
-            this.post_data();
+            this.post_data(this.reason_id);
         },
         print() {
             window.print();
@@ -138,13 +164,15 @@ export default {
 
         selectPeriod() {
             this.post_data();
+            console.dir(this.report_summary);
         }
     },
 
     created () {
-        const token = document.head.querySelector('meta[name="csrf-token"]');
-        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+        // const token = document.head.querySelector('meta[name="csrf-token"]');
+        // axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        // axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+        // this.post_data();
     }
 };
 </script>

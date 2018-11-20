@@ -11,12 +11,16 @@ class EmergencySituationObserver
 
     public function creating(EmergencySituation $model)
     {
-        $model->user_id = \Auth::user()->id;
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в оперативной информации');
+        if (\Auth::user()) {
+            $model->user_id = \Auth::user()->id;
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в оперативной информации');
+        }
     }
 
     public function updating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в оперативной информации');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в оперативной информации');
+        }
     }
 }

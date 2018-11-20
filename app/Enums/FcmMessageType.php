@@ -12,4 +12,5 @@ namespace App\Enums;
 class FcmMessageType
 {
     public const TICKET101_NOTIFICATION = 'TICKET101_NOTIFICATION';
+    public const CARD112_NOTIFICATION = 'CARD112_NOTIFICATION';
 }

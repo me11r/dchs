@@ -10,11 +10,15 @@ class QuakeObserver
 
     public function creating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"');
+        }
     }
 
     public function updating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"');
+        }
     }
 }

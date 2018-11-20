@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AirRescueReport;
 use App\Dictionary\FireObject;
+use App\Dictionary\TripResult;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\Card112\Card112;
@@ -22,7 +23,9 @@ use App\Repositories\Contracts\Ticket101Interface;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
+use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
+use App\Services\ReportExport\Ticket112PeriodExcelExport;
 use App\Ticket101;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
@@ -229,7 +232,7 @@ class ReportController extends AuthorizedController
 
     public function getReport101Emergency()
     {
-        $reasons = FireObject::orderBy('name')->get();
+        $reasons = TripResult::orderBy('name')->get();
         return view('reports.101.emergency', compact('reasons'));
     }
 
@@ -237,8 +240,9 @@ class ReportController extends AuthorizedController
     {
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
-        $reason_id = $request->reason_id;
-        $result = Ticket101::getStat($date_begin, $date_end, $reason_id);
+        $result_id = $request->result_id;
+
+        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
 
         return response()->json($result);
     }
@@ -254,7 +258,8 @@ class ReportController extends AuthorizedController
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
         $reason_id = $request->reason_id;
-        $result = Card112::getStat($date_begin, $date_end, $reason_id);
+
+        $result = Card112::getDetailedStat($date_begin, $date_end, $reason_id);
 
         return response()->json($result);
     }
@@ -474,9 +479,48 @@ class ReportController extends AuthorizedController
     public function exportCard101ChronologyXls($cardId)
     {
         $exportService = new Ticket101ChronologyExcelExport($cardId);
-        $card = Ticket101::find($cardId);
         $writer = $exportService->getXlsWriter();
         $fileName = 'Хронология карточки 101 (' . date('d.m.Y H-i') . ').xls';
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+
+    }
+
+    public function exportEmergency101Xls(Request $request)
+    {
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+        $result_id = $request->result_id;
+
+        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
+
+        $exportService = new Ticket101PeriodExcelExport($stat);
+        $writer = $exportService->getXlsWriter();
+        $fileName = 'Отчет по карточке 101 за период.xls';
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+
+    }
+
+    public function exportEmergency112Xls(Request $request)
+    {
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+        $result_id = $request->result_id;
+
+        $stat = Card112::getDetailedStat($date_begin, $date_end, $result_id);
+
+        $exportService = new Ticket112PeriodExcelExport($stat);
+        $writer = $exportService->getXlsWriter();
+        $fileName = 'Отчет по карточке 112 за период.xls';
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');

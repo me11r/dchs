@@ -5,6 +5,8 @@ namespace App\Models\Card112;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\Models\IncidentType;
+use App\Models\Notification\Notification;
+use App\Models\Notification\NotificationGroup;
 use App\Ticket101ServicePlan;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $dead
  * @property int $evacuated
  * @property int $hospitalized
+ * @property bool $notifications_sent
+ * @property string $notification_message
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $additional_comment
@@ -204,6 +208,30 @@ class Card112 extends Model
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function popupNotifications()
+    {
+        return $this->belongsToMany(
+            Notification::class,
+            'card112_popup_notifications',
+            'card_112_id'
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function notificationGroups()
+    {
+        return $this->belongsToMany(
+            NotificationGroup::class,
+            'card112_notification_groups',
+            'card_112_id'
+        );
+    }
+
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
     {
         $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);
@@ -232,6 +260,55 @@ class Card112 extends Model
             + $baseQuery->sum('hospitalized')
             + $baseQuery->sum('injured_hard')
             + $baseQuery->sum('poisoned');
+
+        return $result;
+    }
+
+    public function scopeGetDetailedStat($q, $date_begin, $date_end, $reason_id = null)
+    {
+        $result = [];
+        $areas = CityArea::all();
+
+        $date_begin = $date_begin ? $date_begin: now()->subYear();
+        $date_end = $date_end ? $date_end : now();
+
+        if($reason_id){
+            $reasons = IncidentType::where('id', $reason_id)->get();
+        }
+        else{
+            $reasons = IncidentType::orderBy('name')->get();
+        }
+
+        foreach ($reasons as $reason) {
+            foreach ($areas as $area) {
+
+                $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                    ->where('additional_incident_type_id', $reason->id)
+                    ->where('city_area_id', $area->id);
+
+                $result[$reason->name][$area->name]['total'] = $baseQuery->count();
+                $types = [
+                    'injured',
+                    'dead',
+                    'evacuated',
+                    'hospitalized',
+                    'injured_hard',
+                    'poisoned',
+                    'saved',
+                    'saved_animals'
+                ];
+
+                foreach ($types as $type) {
+                    $result[$reason->name][$area->name][$type] = $baseQuery->sum($type);
+                }
+
+                $result[$reason->name][$area->name]['hurt'] = $baseQuery->sum('injured')
+                    + $baseQuery->sum('hospitalized')
+                    + $baseQuery->sum('injured_hard')
+                    + $baseQuery->sum('poisoned');
+
+            }
+        }
 
         return $result;
     }

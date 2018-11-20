@@ -10,11 +10,15 @@ class MorainicLakeReportObserver
 
     public function creating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Моренные озёра"');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Моренные озёра"');
+        }
     }
 
     public function updating()
     {
-        $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Моренные озёра"');
+        if (\Auth::user()) {
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Моренные озёра"');
+        }
     }
 }

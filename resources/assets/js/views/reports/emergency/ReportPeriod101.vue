@@ -13,20 +13,26 @@
                             class="button is-primary"
                             @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
                     </div>
+                    <div class="level-right has-text-right">
+                        <a
+                                href="/xls/report101/emergency"
+                                class="button is-primary"
+                                ><i class="fas fa-print"></i>&nbsp;Сохранить в XLS
+                        </a>
+                    </div>
                 </div>
                 <br>
                 <form>
                     <div class="field">
-                        <label for="reason">Предварительная информация</label>
+                        <label for="reason">Результат выезда</label>
                         <select
-                            @change="selectReason"
+                            @change="selectResult"
                             class="select"
                             name=""
                             id="reason">
                             <option value=""></option>
                             <option
-                                v-model="reason_id"
-                                v-for="item in reasons_"
+                                v-for="item in results_"
                                 :value="item.id"
                                 :key="item.id">{{ item.name }}
                             </option>
@@ -48,9 +54,13 @@
                             class="date"
                             type="date">
                     </div>
-                    <table class="table">
+                    <table class="formation-record-table">
                         <thead>
                             <tr>
+                                <td>Результат выезда</td>
+                                <td>Объект горения</td>
+                                <td>Район города</td>
+                                <td>Адрес</td>
                                 <td>Спасено людей</td>
                                 <td>Эвакуировано людей</td>
                                 <td>Получили отравление угарным газом</td>
@@ -59,19 +69,48 @@
                                 <td>Гибель людей</td>
                                 <td>Гибель детей</td>
                                 <td>Госпитализировано</td>
+                                <td>Время первым прибывшего отделения</td>
+                                <td>Время в пути</td>
+                                <td>Ликвидация</td>
+                                <td>Локализация</td>
+                                <td>Использованные стволы</td>
+                                <td>Время работы стволов</td>
+                                <td>Затраченное время на локализацию</td>
+                                <td>Затраченное время на ликвидацию</td>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>{{ report_summary.rescued_count }}</td>
-                                <td>{{ report_summary.evac_count }}</td>
-                                <td>{{ report_summary.co2_poisoned_count }}</td>
-                                <td>{{ report_summary.ch4_poisoned_count }}</td>
-                                <td>{{ report_summary.gpt_burns_count }}</td>
-                                <td>{{ report_summary.people_death_count }}</td>
-                                <td>{{ report_summary.children_death_count }}</td>
-                                <td>{{ report_summary.hospitalized_count }}</td>
-                            </tr>
+                        <tr v-for="item in report_summary">
+                            <td>{{ item.trip_result ? item.trip_result.name : '' }}</td>
+                            <td>{{ item.burn_object ? item.burn_object.name : '' }}</td>
+                            <td>{{ item.city_area ? item.city_area.name : '' }}</td>
+                            <td>{{ item.location }}</td>
+                            <td>{{ item.rescued_count }}</td>
+                            <td>{{ item.evac_count }}</td>
+                            <td>{{ item.co2_poisoned_count }}</td>
+                            <td>{{ item.ch4_poisoned_count }}</td>
+                            <td>{{ item.gpt_burns_count }}</td>
+                            <td>{{ item.people_death_count }}</td>
+                            <td>{{ item.children_death_count }}</td>
+                            <td>{{ item.hospitalized_count }}</td>
+
+                            <td>{{ item.first_arrived_time }}</td>
+                            <td>{{ item.on_way_time }}</td> <!--из вкладки "Высылка" по формуле "время прибытия" - "время выезда"-->
+                            <td>{{ item.liqv_time }}</td>
+                            <td>{{ item.loc_time }}</td>
+                            <td>
+                                <p v-for="chronology in item.chronology">
+                                    Количество: {{ chronology.quantity }}<br>
+                                </p>
+                            </td>
+                            <td>
+                                <p v-for="chronology in item.chronology">
+                                    Количество: {{ chronology.working_time }}<br>
+                                </p>
+                            </td>
+                            <td>{{ item.loc_time_total }}</td> <!--по формуле "время локализации" - "время прибытия" -->
+                            <td>{{ item.liqv_time_total }}</td> <!--по формуле "время ликвидации" - "время прибытия" -->
+                        </tr>
                         </tbody>
                     </table>
                     <!--<div class="buttons has-text-right is-grouped is-right" style="">-->
@@ -96,7 +135,7 @@ export default {
             type: String,
             default: ''
         },
-        reasons: {
+        results: {
             type: Array,
             default: () => {}
         }
@@ -107,15 +146,15 @@ export default {
             date_begin_: this.date_begin,
             date_end_: this.date_end,
             report_summary: {},
-            reason_id: null,
-            reasons_: this.reasons
+            result_id: null,
+            results_: this.results
         };
     },
     methods: {
-        selectReason(event) {
-            this.reason_id = event.target.value;
+        selectResult(event) {
+            this.result_id = event.target.value;
 
-            window.history.pushState('page2', 'Title', '/reports/101/emergency?reason=' + this.reason_id);
+            window.history.pushState('page2', 'Title', '/reports/101/emergency?reason=' + this.result_id);
 
             // console.dir(this.reason_id);
 
@@ -129,9 +168,10 @@ export default {
             axios.post('/reports/101/emergency', {
                 date_begin: self.date_begin_,
                 date_end: self.date_end_,
-                reason_id: self.reason_id
+                result_id: self.result_id
             }).then((resp) => {
                 self.report_summary = resp.data;
+
                 console.dir(self.report_summary);
             });
         },
@@ -142,9 +182,9 @@ export default {
     },
 
     created () {
-        const token = document.head.querySelector('meta[name="csrf-token"]');
-        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+        // const token = document.head.querySelector('meta[name="csrf-token"]');
+        // axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        // axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
     }
 };
 </script>

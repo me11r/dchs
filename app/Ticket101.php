@@ -20,6 +20,7 @@ use App\Models\OperationalPlan;
 use App\Models\Schedule;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\Models\UploadedFile;
 use App\Models\WallMaterial;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -272,6 +273,11 @@ class Ticket101 extends Model
     protected $fillable = [];
     protected $guarded = ['id'];
 
+    protected $appends = [
+        'loc_time_total',
+        'liqv_time_total',
+    ];
+
     public function chronologies()
     {
         return $this->hasMany(Chronology101::class, 'ticket101_id');
@@ -299,6 +305,11 @@ class Ticket101 extends Model
     public function fire_object()
     {
         return $this->hasOne(BurntObject::class, 'id', 'fire_object_id');
+    }
+
+    public function burn_object()
+    {
+        return $this->hasOne(BurntObject::class, 'id', 'burn_object_id');
     }
 
     public function trip_result()
@@ -337,6 +348,55 @@ class Ticket101 extends Model
     public function other_records()
     {
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
+    }
+
+    public function first_department_arrived()
+    {
+        return $this->results()
+            ->selectRaw('arrive_time, id, out_time, out_time - arrive_time as on_way_time')
+            ->groupBy('id')
+            ->havingRaw('min(arrive_time)')
+            ->first();
+    }
+
+    public function getLocTimeTotalAttribute()
+    {
+        try{
+            //loc_time - arrived_time
+            if($this->loc_time){
+                $first_arrived = $this->first_department_arrived();
+                if($first_arrived && $first_arrived->arrive_time){
+                    $time1 = Carbon::parse($this->loc_time);
+                    $time2 = Carbon::parse($first_arrived->arrive_time);
+
+                    return $time1->diff($time2)->format('%H:%I:%S');
+                }
+            }
+            return null;
+        }
+        catch (\Exception $e){
+            return null;
+        }
+
+    }
+
+    public function getLiqvTimeTotalAttribute()
+    {
+        try {
+            if ($this->liqv_time) {
+                $first_arrived = $this->first_department_arrived();
+                if ($first_arrived && $first_arrived->arrive_time) {
+
+                    $time1 = Carbon::parse($this->liqv_time);
+                    $time2 = Carbon::parse($first_arrived->arrive_time);
+
+                    return $time1->diff($time2)->format('%H:%I:%S');
+                }
+            }
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /*public function other_ride()
@@ -467,6 +527,92 @@ class Ticket101 extends Model
         return $result;
     }
 
+    public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null)
+    {
+        $result = [];
+        $areas = CityArea::all();
+
+        $date_begin = $date_begin ? $date_begin: now()->subMonth();
+        $date_end = $date_end ? $date_end : now();
+
+        $tickets = $q->with([
+            'crossroad_1',
+            'burn_object',
+            'trip_result',
+            'city_area',
+            'crossroad_2',
+            'other_records',
+            'chronologies',
+            'chronologies.event_info',
+            'chronologies.event_info_arrived',
+            'chronologies.fire_department_result.tech',
+            'chronologies.fire_department_result.department',
+            'results',
+            'results.tech',
+            'results.tech.formation_tech_report',
+            'notifications',
+            'notifications.service',
+            'popup_notifications',
+            'popup_notifications.user',
+            'popup_notifications.status',
+            'popup_notifications.group',
+            'notification_groups',
+            'notifications.service',
+            'operational_card',
+            'operational_plan.special_plans'
+        ])
+            ->whereBetween('created_at',[$date_begin, $date_end]);
+
+        if($result_id){
+            $reasons = TripResult::where('id', $result_id)->get();
+            $tickets = $tickets->where('trip_result_id', $result_id);
+        }
+
+        $result = $tickets->orderBy('id', 'desc')->get();
+
+        foreach ($result as $key => $ticket) {
+            $first_arrived = $ticket->first_department_arrived();
+
+            if($first_arrived){
+                $first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
+                    ->format('H:i:s');
+
+                $result[$key]->first_arrived_time = $first_arrived->arrive_time;
+                $result[$key]->on_way_time = $first_arrived->on_way_time;
+
+            }
+        }
+
+        /*foreach ($reasons as $reason) {
+            foreach ($areas as $area) {
+                $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                    ->where('trip_result_id', $reason->id)
+                    ->where('city_area_id', $area->id);
+
+                $for_period = $baseQuery->get();
+
+                $result[$reason->name][$area->name]['total'] = $baseQuery->count();
+                $result[$reason->name][$area->name]['rescued_count'] = $baseQuery->sum('rescued_count');
+                $result[$reason->name][$area->name]['evac_count'] = $baseQuery->sum('evac_count');
+                $result[$reason->name][$area->name]['co2_poisoned_count'] = $baseQuery->sum('co2_poisoned_count');
+                $ticket$result[$reason->name][$area->name]['ch4_poisoned_count'] = $baseQuery->sum('ch4_poisoned_count');
+                $result[$reason->name][$area->name]['gpt_burns_count'] = $baseQuery->sum('gpt_burns_count');
+                $result[$reason->name][$area->name]['people_death_count'] = $baseQuery->sum('people_death_count');
+                $result[$reason->name][$area->name]['children_death_count'] = $baseQuery->sum('children_death_count');
+                $result[$reason->name][$area->name]['hospitalized_count'] = $baseQuery->sum('hospitalized_count');
+
+                $result[$reason->name][$area->name]['hurt'] = $baseQuery->sum('co2_poisoned_count')
+                    + $baseQuery->sum('ch4_poisoned_count')
+                    + $baseQuery->sum('gpt_burns_count')
+                    + $baseQuery->sum('hospitalized_count');
+            }
+        }*/
+
+
+
+        return $result;
+    }
+
     public function getRecommendations()
     {
         $schedule = Schedule::where('fire_department_main_id', $this->fire_department_id)
@@ -488,5 +634,20 @@ class Ticket101 extends Model
         }*/
     }
 
+    public function file_1() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_1_id');
+    }
+
+    public function file_2() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_2_id');
+    }
+
+    public function file_3() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_3_id');
+    }
+
+    public function file_4() {
+        return $this->hasOne(UploadedFile::class, 'id', 'file_4_id');
+    }
 
 }
