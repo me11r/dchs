@@ -95,6 +95,7 @@ Vue.component('btn-close-card', require('./components/ticket101/CloseTicket'));
 Vue.component('other-rides', require('./components/ticket101/OtherRides'));
 Vue.component('ticket101-truck', require('./components/ticket101/Card101Truck'));
 Vue.component('delete-card-btn', require('./components/ticket101/DeleteCardButton'));
+Vue.component('siren-speech-tech', require('./views/reports/SirenSpeechTech/SirenSpeechTechCreate'));
 
 // верхнее меню
 if (document.getElementById('navbar')) {

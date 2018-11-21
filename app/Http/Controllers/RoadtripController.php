@@ -49,15 +49,6 @@ class RoadtripController extends AuthorizedController
         ])
             ->findOrFail($plan_id);
 
-        if(!$trip->is_accepted){
-            $trip->is_accepted = true;
-            $trip->save();
-
-            $trip->results()->update(['accept_time' => now()]);
-        }
-
-        $departments = [];
-
         $results = $trip->ticket
             ->results()
             ->isDispatched()
@@ -65,6 +56,19 @@ class RoadtripController extends AuthorizedController
             ->where('fire_department_id', $trip->department_id)
             ->get();
 
+        foreach ($results as $result) {
+            if(!$result->accept_time){
+                $result->accept_time = now();
+                $result->save();
+            }
+        }
+
+        if(!$trip->is_accepted){
+            $trip->is_accepted = true;
+            $trip->save();
+        }
+
+        $departments = [];
 
         if($results->count()){
             foreach ($trip->ticket->results as $item) {
@@ -97,11 +101,10 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
+    /*send dept from 101 card view*/
     public function getSend(Request $request, $dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
-        $ticket = Ticket101::findOrFail($ticket_id);
-        $department = FireDepartment::findOrFail($dept_id);
 
         $plan = RoadtripPlan::firstOrCreate([
             'card_id' => $ticket_id,

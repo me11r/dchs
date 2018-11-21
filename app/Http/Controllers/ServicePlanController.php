@@ -78,6 +78,7 @@ class ServicePlanController extends Controller
 
     public function postCheck(Request $request)
     {
+        $f = $request->all();
         $id = $request->card_id;
         $ticket = Card112::find($id);
 

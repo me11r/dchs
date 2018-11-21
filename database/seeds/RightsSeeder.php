@@ -60,6 +60,11 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 6, 'title' => 'Может смотреть отчет по ЛС', 'name' => 'CAN_ACCESS_PERORT_PERSONS'],
             ['right_group_id' => 6, 'title' => 'Может смотреть отчет по технике', 'name' => 'CAN_ACCESS_PERORT_TECH'],
 
+            ['right_group_id' => 6, 'title' => 'Данные по СРУ: просмотр', 'name' => 'SIREN_SPEECH_TECH_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Данные по СРУ: создание', 'name' => 'SIREN_SPEECH_TECH_CREATE'],
+            ['right_group_id' => 6, 'title' => 'Данные по СРУ: редактирование', 'name' => 'SIREN_SPEECH_TECH_EDIT'],
+            ['right_group_id' => 6, 'title' => 'Данные по СРУ: удаление', 'name' => 'SIREN_SPEECH_TECH_DELETE'],
+
             ['right_group_id' => 7, 'title' => 'Ручной ввод хронометража', 'name' => 'CAN_ACCESS_MANUAL_INPUT_CHRONO'],
             ['right_group_id' => 7, 'title' => 'Расположение гидрантов', 'name' => 'CAN_ACCESS_HYDRANT'],
             ['right_group_id' => 7, 'title' => 'Транспортные средства', 'name' => 'CAN_ACCESS_TECH'],
