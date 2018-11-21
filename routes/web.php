@@ -257,6 +257,15 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('emergency112_get_branches_export');
     });
 
+    Route::group(['prefix' => 'reports/siren-speeches', 'as' => 'reports-siren-speeches.'], function () {
+        Route::get('/', 'SirenSpeechTechController@index')->name('index')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
+        Route::get('/create', 'SirenSpeechTechController@create')->name('create')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
+        Route::get('/edit/{id}', 'SirenSpeechTechController@edit')->name('edit')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
+        Route::put('/update/{id}', 'SirenSpeechTechController@update')->name('update')->middleware(['right:SIREN_SPEECH_TECH_EDIT']);
+        Route::post('/store', 'SirenSpeechTechController@store')->name('store')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
+        Route::delete('/delete/{id}', 'SirenSpeechTechController@delete')->name('delete')->middleware(['right:SIREN_SPEECH_TECH_DELETE']);
+    });
+
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
         Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');

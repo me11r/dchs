@@ -150,10 +150,15 @@ class User extends Authenticatable
         $user = Auth::user();
         if($user && $user->role){
             if(is_array($role)){
-                $query = $user->role()->whereIn('name', $role)->exists();
+                $query = $user->role()->whereIn('name', $role)
+                    ->orWhereIn('title', $role)
+                    ->exists();
             }
             else{
-                $query = $user->role()->where('name', $role)->exists();
+                $query = $user->role()
+                    ->where('name', $role)
+                    ->orWhere('title', $role)
+                    ->exists();
             }
 
             return $query;
