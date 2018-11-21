@@ -362,12 +362,13 @@ class CardController extends AuthorizedController
                                     $q_ticket
                                         ->closed(false)
                                         ->where('city_area_id',$card->city_area_id)
+                                        ->where('id', '<>', $card->id)
                                         ->where('fire_department_id',$card->fire_department_id)
                                         ->real();
                                 })
                                     ->where('fire_department_id',$results[$schedule_dept]->fire_department_id)
                                     ->where('tech_id',$results[$schedule_dept]->tech_id)
-                                    ->where('created_at', '>', $now->subSeconds(15))
+                                    ->whereTime('created_at', '>', $now->subSeconds(15))
                                     ->recommended(true)
                                     ->first();
 
