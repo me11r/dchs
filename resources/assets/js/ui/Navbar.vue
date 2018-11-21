@@ -258,6 +258,12 @@
                             href="/reports/101/forces-resources/"
                             class="dropdown-item is-small"><i class="fas fa-archive"></i>
                             &nbsp; Учет сил и средств</a>
+                        <a
+                            v-if="hasRight('SIREN_SPEECH_TECH_SHOW')"
+                            href="/reports/siren-speeches/"
+                            class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
+                            &nbsp; Данные по СРУ
+                        </a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">

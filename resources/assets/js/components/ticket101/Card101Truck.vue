@@ -54,9 +54,9 @@
                         <!--{#Принято в работу#}-->
                         <td>
                             <p v-for="i in formActive[department.id]">
-                                <input :id="`accepted_time_${i.id }`"
+                                <input :id="`accept_time_${i.id }`"
                                        type="text"
-                                       :value="(i.dispatched && i.out_time) ? i.updated_at : ''"
+                                       :value="i.accept_time"
                                        readonly
                                        class="input small-imput">
                             </p>
@@ -66,7 +66,7 @@
                         <!--{#Время выезда#}-->
                         <td>
                             <p v-for="i in formActive[department.id]">
-                                <input :id="`accepted_time_${i.id }`"
+                                <input :id="`out_time_${i.id }`"
                                        type="text"
                                        readonly
                                        :value="i.out_time"
@@ -135,7 +135,7 @@
                                 <input :id="`send_time_${i.id }`"
                                        type="text"
                                        readonly
-                                       :value="i.ret_time"
+                                       :value="i.dispatch_time"
                                        class="input small-imput">
                             </p>
                         </td>
@@ -360,22 +360,18 @@
                             if (response.data.recommendations !== undefined) {
                                 // self.results_ = response.data.recommendations;
                                 response.data.recommendations.forEach((item) => {
-                                    let accepted_time = 'accepted_time_' + item.id;
+                                    let accepted_time = 'accept_time_' + item.id;
                                     let out_time = 'out_time_' + item.id;
                                     let ret_time = 'ret_time_' + item.id;
                                     let send_time = 'send_time_' + item.id;
 
-                                    let accepted_time_item = document.getElementById(
-                                        accepted_time);
+                                    let accepted_time_item = document.getElementById(accepted_time);
 
-                                    let out_time_item = document.getElementById(
-                                        out_time);
+                                    let out_time_item = document.getElementById(out_time);
 
-                                    let ret_time_item = document.getElementById(
-                                        ret_time);
+                                    let ret_time_item = document.getElementById(ret_time);
 
-                                    let send_time_item = document.getElementById(
-                                        send_time);
+                                    let send_time_item = document.getElementById(send_time);
 
                                     if (item.dispatched === 1) {
                                         send_time_item.value = item.dispatch_time;
@@ -394,10 +390,24 @@
 
                                     // Replace item at index using native splice
                                     self.results_.splice(index, 1, item);
-
-
-
                                 });
+
+                                if (response.data.service_plans !== undefined) {
+                                    response.data.service_plans.forEach((item) => {
+                                        let accepted_name = item.id + '_name';
+                                        let message_time = item.id + '_message_time';
+                                        let arrive_time = item.id + '_arrive_time';
+
+                                        let accepted_name_item = document.getElementById(accepted_name);
+                                        let message_time_item = document.getElementById(message_time);
+                                        let arrive_time_item = document.getElementById(arrive_time);
+
+                                        accepted_name_item.value = item.name_accepted;
+                                        message_time_item.value = item.dispatched_time;
+                                        arrive_time_item.value = item.arrive_time;
+
+                                    });
+                                }
 
                             }
                         });

@@ -210,6 +210,8 @@ class CardController extends Controller
             'department',
         ])->get();
 
+        $data['service_plans'] = $ticket->service_plans;
+
         return response()->json($data);
     }
 }
