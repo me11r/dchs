@@ -266,7 +266,7 @@ export default {
         send: function (data) {
             this.printed = true;
             this.loader = false;
-            let count = window.copiesToPrint;
+            let count = window.copiesToPrint || 1;
             axios.post('http://localhost:13800/print/?pages=' + count, data).then(response => {
                 console.log('Repsonse', response);
             }).catch(() => {
