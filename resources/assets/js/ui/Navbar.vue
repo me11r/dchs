@@ -264,6 +264,12 @@
                             class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
                             &nbsp; Данные по СРУ
                         </a>
+                        <a
+                            v-if="hasRight('CALL_INFO_SHOW')"
+                            href="/reports/call-infos/"
+                            class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
+                            &nbsp; Информация по звонкам
+                        </a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">

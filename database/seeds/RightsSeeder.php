@@ -65,6 +65,11 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: редактирование', 'name' => 'SIREN_SPEECH_TECH_EDIT'],
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: удаление', 'name' => 'SIREN_SPEECH_TECH_DELETE'],
 
+            ['right_group_id' => 6, 'title' => 'Информация по звонкам: просмотр', 'name' => 'CALL_INFO_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Информация по звонкам: создание', 'name' => 'CALL_INFO_CREATE'],
+            ['right_group_id' => 6, 'title' => 'Информация по звонкам: редактирование', 'name' => 'CALL_INFO_EDIT'],
+            ['right_group_id' => 6, 'title' => 'Информация по звонкам: удаление', 'name' => 'CALL_INFO_DELETE'],
+
             ['right_group_id' => 7, 'title' => 'Ручной ввод хронометража', 'name' => 'CAN_ACCESS_MANUAL_INPUT_CHRONO'],
             ['right_group_id' => 7, 'title' => 'Расположение гидрантов', 'name' => 'CAN_ACCESS_HYDRANT'],
             ['right_group_id' => 7, 'title' => 'Транспортные средства', 'name' => 'CAN_ACCESS_TECH'],
