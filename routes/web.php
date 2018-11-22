@@ -149,7 +149,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
             ->name('roadtrip.plan.view')
             ->where('plan_id', '[0-9]+');
-        Route::get('/print/{id}', 'RoadtripController@getPrint')
+        Route::post('/print/{id}', 'RoadtripController@getPrint')
             ->where('id', '[0-9]+')
             ->name('roadtrip.plan.print');
         Route::post('dispatch', 'RoadtripController@postDispatch');
@@ -174,7 +174,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
         Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '[0-9]+');
         Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '[0-9]+');
-        Route::get('print/{id}', 'ServicePlanController@getPrint')
+        Route::get('post/{id}', 'ServicePlanController@getPrint')
             ->where('id', '[0-9]+')
             ->name('service-plans.print');
     });
