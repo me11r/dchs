@@ -8,6 +8,7 @@ use App\Dictionary\TripResult;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\Card112\Card112;
+use App\Models\EmergencySituation;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
@@ -15,6 +16,7 @@ use App\Models\IncidentType;
 use App\Models\OperationalPlan;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\Models\Weather;
 use App\OperationalCard;
 use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
@@ -26,6 +28,7 @@ use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
 use App\Services\ReportExport\Ticket112PeriodExcelExport;
+use App\SirenSpeechTech;
 use App\Ticket101;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
@@ -112,6 +115,16 @@ class ReportController extends AuthorizedController
         $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
         $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
         $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
+        $data['weather_forecast'] = Weather::latest()->first();
+        $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+
+        $data['trip_results101'] = [];
+
+        foreach (TripResult::all() as $tripResult) {
+            $data['trip_results101'][$tripResult->name] = $card101_day->where('trip_result_id', $tripResult->id)->count();
+        }
+
         /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
             $q->status('action');
         })->first();*/
@@ -625,6 +638,15 @@ class ReportController extends AuthorizedController
         $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
         $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
         $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
+        $data['weather_forecast'] = Weather::latest()->first();
+        $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+
+        $data['trip_results101'] = [];
+
+        foreach (TripResult::all() as $tripResult) {
+            $data['trip_results101'][$tripResult->name] = $card101_day->where('trip_result_id', $tripResult->id)->count();
+        }
         /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
             $q->status('action');
         })->first();*/
