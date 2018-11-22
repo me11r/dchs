@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AirRescueReport;
+use App\CallInfo;
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\FormationReport;
@@ -97,6 +98,8 @@ class ReportController extends AuthorizedController
         $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
             ->whereDate('created_at', '<=', $data['today']);
 
+        $callInfo = CallInfo::latest()->first();
+
         $data['emergencies'] = $card112_day->count();
         $data['cards112'] = $card112_day->get();
         $data['card112_count'] = $card112_day->count();
@@ -118,6 +121,7 @@ class ReportController extends AuthorizedController
         $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
         $data['weather_forecast'] = Weather::latest()->first();
         $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+        $data['call_info'] = $callInfo;
 
         $data['trip_results101'] = [];
 
@@ -620,6 +624,8 @@ class ReportController extends AuthorizedController
         $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
             ->whereDate('created_at', '<=', $data['today']);
 
+        $callInfo = CallInfo::latest()->first();
+
         $data['emergencies'] = $card112_day->count();
         $data['cards112'] = $card112_day->get();
         $data['card112_count'] = $card112_day->count();
@@ -641,6 +647,7 @@ class ReportController extends AuthorizedController
         $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
         $data['weather_forecast'] = Weather::latest()->first();
         $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+        $data['call_info'] = $callInfo;
 
         $data['trip_results101'] = [];
 
