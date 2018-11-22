@@ -174,7 +174,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
         Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '[0-9]+');
         Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '[0-9]+');
-        Route::get('post/{id}', 'ServicePlanController@getPrint')
+        Route::post('print/{id}', 'ServicePlanController@getPrint')
             ->where('id', '[0-9]+')
             ->name('service-plans.print');
     });
