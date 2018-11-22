@@ -270,12 +270,12 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'reports/call-infos', 'as' => 'reports-call-infos.'], function () {
-        Route::get('/', 'CallInfoController@index')->name('index')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
-        Route::get('/create', 'CallInfoController@create')->name('create')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
-        Route::get('/edit/{id}', 'CallInfoController@edit')->name('edit')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
-        Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:SIREN_SPEECH_TECH_EDIT']);
-        Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
-        Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:SIREN_SPEECH_TECH_DELETE']);
+        Route::get('/', 'CallInfoController@index')->name('index')->middleware(['right:CALL_INFO_SHOW_SHOW']);
+        Route::get('/create', 'CallInfoController@create')->name('create')->middleware(['right:CALL_INFO_SHOW_CREATE']);
+        Route::get('/edit/{id}', 'CallInfoController@edit')->name('edit')->middleware(['right:CALL_INFO_SHOW_SHOW']);
+        Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:CALL_INFO_SHOW_EDIT']);
+        Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_SHOW_CREATE']);
+        Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_SHOW_DELETE']);
     });
 
     /** Суточные отчеты в формате Ворд */
