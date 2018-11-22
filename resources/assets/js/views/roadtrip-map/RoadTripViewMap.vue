@@ -240,8 +240,15 @@ export default {
         },
         printRoadTrip(newValue) {
             const url = window.location.pathname.split('/');
-            const id = parseInt(url.pop());
-            axios.get('/roadtrip/print/' + id,
+            let id = parseInt(url.pop());
+            let printPath = '/roadtrip/print/';
+
+            if(!id) {
+                id = document.getElementById('autoprint').dataset.id;
+                printPath = '/service-plans/print/';
+            }
+
+            axios.get(printPath + id,
                 {
                     responseType: 'arraybuffer',
                     params: {

@@ -174,6 +174,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
         Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '[0-9]+');
         Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '[0-9]+');
+        Route::get('print/{id}', 'ServicePlanController@getPrint')
+            ->where('id', '[0-9]+')
+            ->name('service-plans.plan.print');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
@@ -264,6 +267,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/update/{id}', 'SirenSpeechTechController@update')->name('update')->middleware(['right:SIREN_SPEECH_TECH_EDIT']);
         Route::post('/store', 'SirenSpeechTechController@store')->name('store')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
         Route::delete('/delete/{id}', 'SirenSpeechTechController@delete')->name('delete')->middleware(['right:SIREN_SPEECH_TECH_DELETE']);
+    });
+
+    Route::group(['prefix' => 'reports/call-infos', 'as' => 'reports-call-infos.'], function () {
+        Route::get('/', 'CallInfoController@index')->name('index')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
+        Route::get('/create', 'CallInfoController@create')->name('create')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
+        Route::get('/edit/{id}', 'CallInfoController@edit')->name('edit')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
+        Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:SIREN_SPEECH_TECH_EDIT']);
+        Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
+        Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:SIREN_SPEECH_TECH_DELETE']);
     });
 
     /** Суточные отчеты в формате Ворд */
