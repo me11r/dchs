@@ -321,6 +321,38 @@
                         </div>
                     </div>
                     <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
+
+                        <h5 class="subtitle">Первоначальная информация:</h5>
+
+                        <div class="field">
+                            <p class="control">
+                                <label for="additional_street_id">Первоначальный адрес</label>
+                            </p>
+                            <input
+                                    class="input"
+                                    disabled
+                                    v-model="model.location">
+                        </div>
+
+                        <div
+                                class="control"
+                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                            <p class="control">
+                                <label for="incident_type_id">Происшествие</label>
+                            </p>
+                            <div class="select">
+                                <select disabled
+                                        v-model="model.incident_type_id">
+                                    <option
+                                            v-for="incidentType in incidentTypes"
+                                            :key="incidentType.id"
+                                            :value="incidentType.id">{{ incidentType.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+
                         <h5 class="subtitle">Информация с места происшествия:</h5>
                         <!--УТОЧНЕННЫЙ АДРЕС-->
                         <div class="field">
@@ -767,7 +799,7 @@ export default {
                                             created_at.value = plan.created_at || '';
                                             arrived_at.value = plan.arrive_time || '';
                                             sent_at.value = plan.created_at || '';
-                                            console.dir(plan);
+                                            // console.dir(plan);
                                         }
                                     });
                                 });
