@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Card112\Card112;
 use App\Models\ServiceType;
 use App\Ticket101ServicePlan;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -131,5 +133,34 @@ class ServicePlanController extends Controller
             'type' => 'success',
             'text' => 'Отмечено время возвращения!'
         ]);
+    }
+
+    public function getPrint(Request $request, $id)
+    {
+        if(env('IS_LOCAL', false) == true){
+            return response()->json('ok', 200);
+        }
+        $this->noLayout();
+        $html = view(
+            'pdf.service-plans-page',
+            [
+                'record' => Ticket101ServicePlan::find($id),
+                'image_path' => $request->get('image_path')
+            ])
+            ->render();
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+        $options = new Options();
+        $options->setIsRemoteEnabled(true);
+
+        $dompdf = new Dompdf();
+        $dompdf->setOptions($options);
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->render();
+
+        $pdf = $dompdf->output(['isRemoteEnabled' => true]);
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf;
+        }, 'service-plan-'.$id.'.pdf', ['Content-type' => 'application/pdf']);
     }
 }
