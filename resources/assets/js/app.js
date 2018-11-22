@@ -156,6 +156,11 @@ if (document.getElementById('cardadd101')) {
             e.preventDefault();
             tabs.nextTab();
         }); */
+
+        document.getElementById('truck_tab_button').addEventListener('click', (e) => {
+            e.preventDefault();
+            tabs.nextTab(1);
+        });
     });
 }
 

@@ -976,18 +976,23 @@
                  style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
                     {#todo убрано по требованию заказчика#}
-                    {#<p class="level-left">
-                        <button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
+                    <p class="level-left">
+                        {#<button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
                             Следующий раздел
+                        </button>#}
+                        <button id="truck_tab_button" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
+                            Высылка
                         </button>
-                    </p>#}
+                    </p>
+
+                    <p class="level-right" id="btn-close-card">
+                        <btn-close-card :ticket="{{ ticket }}"></btn-close-card>
+                    </p>
+
                     <p class="level-left">
                         <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp;
                             Сохранить
                         </button>
-                    </p>
-                    <p class="level-right" id="btn-close-card">
-                        <btn-close-card :ticket="{{ ticket }}"></btn-close-card>
                     </p>
                 </div>
             </div>
