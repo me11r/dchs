@@ -176,7 +176,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '[0-9]+');
         Route::get('print/{id}', 'ServicePlanController@getPrint')
             ->where('id', '[0-9]+')
-            ->name('service-plans.plan.print');
+            ->name('service-plans.print');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
