@@ -1036,4 +1036,20 @@ class FormationController extends AuthorizedController
         ]);
     }
 
+    public function approveAirRescue(Request $request, $id)
+    {
+        $formationRecord = AirRescueReport::find($id);
+
+        if(Auth::user()->hasRight(['CAN_APPROVE_FORMATION_RECORD'])){
+
+            $formationRecord->approved = true;
+            $formationRecord->save();
+        }
+        else{
+            $this->throwAccessDenied();
+        }
+
+        return back();
+    }
+
 }

@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/create', 'FormationController@getAirRescueCreate');
             Route::get('/{id}/edit', 'FormationController@getAirRescueEdit');
             Route::post('/edit-create', 'FormationController@getAirRescueEditCreate');
+            Route::post('/approve/{id}', 'FormationController@approveAirRescue');
         });
         Route::get('addToday', 'FormationController@getAddToday');
         Route::post('addToday', 'FormationController@postAddToday');
@@ -131,14 +132,14 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
-    Route::group(['middleware' => 'rights.formation.record'],
-        function () {
+    Route::group(['middleware' => 'rights.formation.record'], function () {
             Route::get('formation-record/{organisation}', 'FormationRecordController@singleIndex')->name('formation-record.single-index');
             Route::get('formation-record/{id}/total-edit', 'FormationRecordController@totalEdit')->name('formation-record.total-edit');
             Route::post('formation-record/{id}/total-update', 'FormationRecordController@totalUpdate')->name('formation-record.total-update');
             Route::match(['get', 'post'],'formation-record/staff/{date}/{ods}', 'FormationRecordController@staffCreateEdit')->name('formation-record.staff_CreateEdit');
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');
+            Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
         }
     );
 
@@ -222,12 +223,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
+    Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
     Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
     Route::resource('/vehicles', 'VehicleController');
     Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
-    Route::resource('/morainic-lakes', 'MorainicLakeController');
+    #Route::resource('/morainic-lakes', 'MorainicLakeController');
     Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
     Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');

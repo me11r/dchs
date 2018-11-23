@@ -155,11 +155,6 @@
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
                             Пожарные части</a>
-                        <a
-                            v-if="hasRight(30)"
-                            href="/morainic-lakes"
-                            class="dropdown-item is-small"><i class="fas fa-allergies fa-fw"></i>&nbsp;
-                            Моренные озера</a>
                     </div>
                 </div>
                 <div
@@ -218,7 +213,7 @@
                             </div>
 
                         </div>
-                        <a
+                        <!--<a
                             v-if="hasRight(21)"
                             href="/information"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
@@ -227,7 +222,7 @@
                             v-if="hasRight(22)"
                             href="/emergency-situation"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
-                            Оперативная информация</a>
+                            Оперативная информация</a>-->
                         <a
                             v-if="hasRight(23)"
                             href="/reports/101/staff"
@@ -270,6 +265,23 @@
                             class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
                             &nbsp; Информация по звонкам
                         </a>
+                    </div>
+                </div>
+                <div
+                    class="navbar-item has-dropdown is-hoverable is-small"
+                    v-if="hasAnyRight(21,22)">
+                    <a class="navbar-link is-small"><i class="fas fa-info fa-fw"></i>&nbsp;Информация</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            v-if="hasRight(21)"
+                            href="/information"
+                            class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
+                            Информация от служб взаимодействия</a>
+                        <a
+                            v-if="hasRight(22)"
+                            href="/emergency-situation"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
+                            Оперативная информация</a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">
