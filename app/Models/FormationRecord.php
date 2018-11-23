@@ -120,6 +120,7 @@ class FormationRecord extends Model
         'personal_respiratory_protection',
         'personal_protection',
         'other_protection',
+        'approved',
     ];
 
     public function getRows()

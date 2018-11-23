@@ -6,6 +6,7 @@ use App\Models\MorainicLake;
 use App\Models\MorainicLakeReport;
 use App\Models\MorainicLakeSummary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MorainicLakeSummaryController extends Controller
 {
@@ -58,6 +59,10 @@ class MorainicLakeSummaryController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::user()->hasRight(['CAN_CREATE_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
+
         $all = $request->all();
         $date = date('Y-m-d');
         $report = MorainicLakeReport::firstOrCreate(['date' => $date]);
@@ -66,7 +71,6 @@ class MorainicLakeSummaryController extends Controller
             $item['date'] = $date;
 
             MorainicLakeSummary::updateOrCreate(['morainic_lake_id' => $id, 'date' => $date],$item);
-//            $this->repository->create($item);
         }
         return redirect()->route("$this->table.index");
     }
@@ -79,6 +83,10 @@ class MorainicLakeSummaryController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if(!Auth::user()->hasRight(['CAN_VIEW_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
+
         $lakesSummary = $this->repository::where('date', $id)->get();
         $lakesSumRaw = $this->repository::where('date', $id);
         $date = $id;
@@ -133,6 +141,9 @@ class MorainicLakeSummaryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
 
         foreach ($request->input('lake', []) as $key_id => $item) {
             $item['morainic_lake_id'] = $key_id;

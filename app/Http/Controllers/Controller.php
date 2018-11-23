@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AccessDeniedException;
 use App\Page\Metadata;
 use App\Right;
 use Auth;
@@ -125,6 +126,11 @@ abstract class Controller extends BaseController
 
         $this->after();
         return $response;
+    }
+
+    public function throwAccessDenied()
+    {
+        throw new AccessDeniedException();
     }
 
 }

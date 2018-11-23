@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MorainicLake;
 use Illuminate\Http\Request;
-
+//todo Удалить контроллер
 class MorainicLakeController extends Controller
 {
     private $repository;

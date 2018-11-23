@@ -23,6 +23,22 @@
             <tr class="{% if report.report_date == today %}is-primary{% else %}{% endif %}">
                 <td>{{ report.created_at }}</td>
                 <td class="has-text-right">
+                    {% if report.approved %}
+                        <a href="#"
+                           class="button is-small is-basic">
+                            <i class="fas fa-glasses"></i>&nbsp;
+                            Утверждено
+                        </a>
+                    {% else %}
+                        <form method="post" action="/formation/air-rescue/approve/{{ report.id }}" style="display: inline">
+                            {{ csrf_field() }}
+                            <button onclick="return confirm('Утвердить?');"
+                                    class="button is-small is-warning">
+                                <i class="fas fa-glasses"></i>&nbsp;
+                                Утвердить
+                            </button>
+                        </form>
+                    {% endif %}
                     <a href="{{ url('formation/air-rescue/' ~ report.id ~ '/edit') }}" class="button is-basic is-small"><i class="fas fa-user"></i>&nbsp;Редактировать</a>
                     <a href="{{ url('formation/air-rescue/' ~ report.id) }}" class="button is-info is-small"><i class="fas fa-glasses"></i>&nbsp;Просмотр</a>
                     {#<a href="{{ url('formation/add101tech/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp; Указать технику</a>#}

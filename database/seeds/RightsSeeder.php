@@ -21,6 +21,7 @@ class RightsSeeder extends Seeder
             ['title' => 'Отчеты'],              //6
             ['title' => 'Ввод данных'],         //7
             ['title' => 'Справочники'],         //8
+            ['title' => 'Информация'],          //9
         ];
 
         foreach ($groups as $group) {
@@ -54,6 +55,8 @@ class RightsSeeder extends Seeder
             ['title' => 'Служба спасения г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_EMERGENCY_ALMATY'],
 
             ['title' => 'Может одобрять суточный отчет', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_REPORT_101'],
+            ['title' => 'Может утверждать Журнал строевых записок ДЧС г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_RECORD'],
+            ['title' => 'Может редактировать Журнал строевых записок ДЧС г.Алматы после утверждения', 'right_group_id' => 5, 'name' => 'CAN_EDIT_APPROVED_FORMATION_RECORD'],
 
             ['right_group_id' => 6, 'title' => 'Может смотреть информацию', 'name' => 'CAN_ACCESS_INFO'],
             ['right_group_id' => 6, 'title' => 'Может смотреть оперативную информацию', 'name' => 'CAN_ACCESS_OPER_INFO'],
@@ -112,7 +115,23 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ДСПТ', 'name' => 'DICT_DSPT'];
 
         $rights[] = ['right_group_id' => 6, 'title' => 'РГП Казгидромет (заполнение данных)', 'name' => 'KAZGIDROMET_FILLING'];
+
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: редактирование после закрытия', 'name' => 'CARD101_EDIT_CLOSED'];
+
+
+        $rights[] = ['right_group_id' => 9, 'title' => 'Сводная информация по мореным озерам: просмотр', 'name' => 'CAN_VIEW_MORAINIC_LAKE_SUMMARIES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'Сводная информация по мореным озерам: создание', 'name' => 'CAN_CREATE_MORAINIC_LAKE_SUMMARIES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'Сводная информация по мореным озерам: редактирование', 'name' => 'CAN_EDIT_MORAINIC_LAKE_SUMMARIES'];
+
+        $rights[] = ['right_group_id' => 9, 'title' => 'СОМЭ: просмотр', 'name' => 'CAN_VIEW_QUAKES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'СОМЭ: создание', 'name' => 'CAN_CREATE_QUAKES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'СОМЭ: редактирование', 'name' => 'CAN_EDIT_QUAKES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'СОМЭ: удаление', 'name' => 'CAN_DELETE_QUAKES'];
+
+        $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": просмотр', 'name' => 'CAN_VIEW_MUDFLOW_PROTECTION'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": редактирование', 'name' => 'CAN_EDIT_MUDFLOW_PROTECTION'];
+
+
 
 
         foreach (\App\Dictionary::all() as $dict) {
