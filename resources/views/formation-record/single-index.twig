@@ -25,6 +25,22 @@
                 <tr>
                     <td class="has-text-right">{{ item.date|date('Y-m-d') }}</td>
                     <td class="has-text-right">
+                        {% if item.approved %}
+                            <a href="#"
+                               class="button is-small is-basic">
+                                <i class="fas fa-glasses"></i>&nbsp;
+                                Утверждено
+                            </a>
+                        {% else %}
+                            <form method="post" action="/formation-record/approve/{{ item.id }}" style="display: inline">
+                                {{ csrf_field() }}
+                                <button onclick="return confirm('Утвердить?');"
+                                        class="button is-small is-warning">
+                                    <i class="fas fa-glasses"></i>&nbsp;
+                                    Утвердить
+                                </button>
+                            </form>
+                        {% endif %}
                         <a href="{{ route('formation-record.edit', item.id) }}"
                            class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
