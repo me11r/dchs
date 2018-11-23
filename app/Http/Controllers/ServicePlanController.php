@@ -137,14 +137,16 @@ class ServicePlanController extends Controller
 
     public function getPrint(Request $request, $id)
     {
-        if(env('IS_LOCAL', false) == true){
+        $record = Ticket101ServicePlan::find($id);
+        if($record->printed){
             return response()->json('', 200);
         }
+
         $this->noLayout();
         $html = view(
             'pdf.service-plans-page',
             [
-                'record' => Ticket101ServicePlan::find($id),
+                'record' => $record,
                 'image_path' => $request->get('image_path')
             ])
             ->render();
@@ -159,6 +161,10 @@ class ServicePlanController extends Controller
         $dompdf->render();
 
         $pdf = $dompdf->output(['isRemoteEnabled' => true]);
+
+        $record->printed = true;
+        $record->save();
+
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf;
         }, 'service-plan-'.$id.'.pdf', ['Content-type' => 'application/pdf']);
