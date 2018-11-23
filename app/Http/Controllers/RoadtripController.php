@@ -191,14 +191,17 @@ class RoadtripController extends AuthorizedController
 
     public function getPrint(Request $request, $id)
     {
-        if(env('IS_LOCAL', false) == true){
-//            return response()->json('', 200);
+        $record = RoadtripPlan::with(['ticket', 'department', 'results'])->find($id);
+
+        if($record->printed){
+            return response()->json('', 200);
         }
+
         $this->noLayout();
         $html = view(
             'pdf.roadtrip-page',
             [
-                'trip' => RoadtripPlan::with(['ticket', 'department', 'results'])->find($id),
+                'trip' => $record,
                 'image_path' => $request->get('image_path')
             ])
             ->render();
@@ -213,6 +216,10 @@ class RoadtripController extends AuthorizedController
         $dompdf->render();
 
         $pdf = $dompdf->output(['isRemoteEnabled' => true]);
+
+        $record->printed = true;
+        $record->save();
+
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf;
         }, 'roadtrip-'.$id.'.pdf', ['Content-type' => 'application/pdf']);

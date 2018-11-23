@@ -60,6 +60,7 @@ class Ticket101ServicePlan extends Model
         'arrive_time',
         'name_accepted',
         'dispatched_time',
+        'printed',
     ];
 
     public function ticket()

@@ -256,8 +256,7 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.dir(response.data)
-                    if(response.data){
+                    if(response.data.byteLength > 2){
                         this.send(response.data);
                     }
                     else{
