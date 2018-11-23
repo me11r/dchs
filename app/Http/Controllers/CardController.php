@@ -368,7 +368,7 @@ class CardController extends AuthorizedController
                                 })
                                     ->where('fire_department_id',$results[$schedule_dept]->fire_department_id)
                                     ->where('tech_id',$results[$schedule_dept]->tech_id)
-                                    ->whereTime('created_at', '>', $now->subSeconds(15)->format('H:i:s'))
+                                    ->where('created_at', '>', $now->addSeconds(15)->format('Y-m-d H:i:s'))
                                     ->recommended(true)
                                     ->first();
 
