@@ -248,7 +248,7 @@ export default {
                 printPath = '/service-plans/print/';
             }
 
-            axios.post(printPath + id,
+            axios.get(printPath + id,
                 {
                     responseType: 'arraybuffer',
                     params: {
@@ -256,7 +256,13 @@ export default {
                     }
                 })
                 .then(response => {
-                    this.send(response.data);
+                    console.dir(response.data)
+                    if(response.data){
+                        this.send(response.data);
+                    }
+                    else{
+                        this.loader = false;
+                    }
                 })
                 .catch(() => {
                     this.loader = false;
