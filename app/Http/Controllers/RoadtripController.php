@@ -192,7 +192,7 @@ class RoadtripController extends AuthorizedController
     public function getPrint(Request $request, $id)
     {
         if(env('IS_LOCAL', false) == true){
-            return response()->json('ok', 200);
+//            return response()->json('', 200);
         }
         $this->noLayout();
         $html = view(
