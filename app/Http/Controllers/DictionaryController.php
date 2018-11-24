@@ -286,10 +286,13 @@ class DictionaryController extends AuthorizedController
                 $record = new SpecialPlan();
             }
 
-            $fileName = time().'.'.$request->file->getClientOriginalExtension();
-            $request->file->storeAs('operational-plans',$fileName);
+            if($request->file){
+                $fileName = time().'.'.$request->file->getClientOriginalExtension();
+                $request->file->storeAs('operational-plans',$fileName);
 
-            $record->file = $fileName;
+                $record->file = $fileName;
+            }
+
             $record->fire_level_id = $request->fire_level_id;
             $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;
