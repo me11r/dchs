@@ -46,7 +46,6 @@ export default function bindLocationInputApp() {
 
                 } else {
                     if (window.ticket101add.ticketId === '') {
-                        console.dir("it's a new card")
                         document.getElementById('fire_level_id1').value = 1;
                     }
                     this.items = items;
@@ -74,7 +73,7 @@ export default function bindLocationInputApp() {
                 globalBus.$emit('specialPlanFound', item);
                 this.showList = false;
                 if (item.is_card === true) {
-                    document.getElementById('fire_level_id1').value = 2;
+                    // document.getElementById('fire_level_id1').value = 2;
                     document.getElementById('operational_card_id').value = item.id;
                 }
             },

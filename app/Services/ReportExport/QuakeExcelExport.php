@@ -6,6 +6,7 @@ namespace App\Services\ReportExport;
 use App\FireDepartment;
 use App\FormationReport;
 use App\Models\MudflowProtection;
+use App\Models\Quake;
 use App\Models\River;
 use App\Ticket101;
 use Carbon\Carbon;
@@ -21,7 +22,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
-class MudflowExcelExport
+class QuakeExcelExport
 {
 
     /**
@@ -29,7 +30,7 @@ class MudflowExcelExport
      */
     private $spreadsheet;
 
-    private $model;
+    private $models;
 
     const HStyle = [
         'alignment' => [
@@ -58,10 +59,10 @@ class MudflowExcelExport
         ]
     ];
 
-    public function __construct($model_id = null)
+    public function __construct()
     {
         $this->spreadsheet = new Spreadsheet();
-        $this->model = MudflowProtection::find($model_id);
+        $this->models = Quake::orderBy('date_almaty', 'DESC')->get();
 
         $this->prepareSpreadsheet();
     }
@@ -77,7 +78,7 @@ class MudflowExcelExport
     private function prepareSpreadsheet()
     {
         $sheet = $this->getActiveSheetByIndex(0);
-        $sheet->setTitle('ГУ "Казселезащита"');
+        $sheet->setTitle('ТОО СОМЭ');
         $this->addTableData($sheet);
     }
 
@@ -91,23 +92,18 @@ class MudflowExcelExport
         $rowIndex = $startRowIndex;
         $headers = [
             '№',
-            'Бассейн реки',
-            'Информация',
-            'Наименование гидропостов и их отметка',
-            'Расход воды',
-            'Критический расход воды',
-            'Мутность воды',
-            'Максимальная мутность воды',
-            'Температура воздуха',
-            'Температура воды',
-            'Осадки',
-            'Высота снега',
-            'Погода',
-            'Комментарий',
-            'Дата и время',
+            'Описание',
+            'Дата и время Алматинского времени',
+            'Дата и время по Гринвичу',
+            'Эпицентр землетрясения',
+            'Энергетический класс землетрясения',
+            'Магнитуда MPV',
+            'Координаты эпицентра',
+            'Глубина',
+            'Сведения об ощутимости',
         ];
         $sheet->fromArray($headers);
-        $sheet->getStyle("A1:M1")->applyFromArray([
+        $sheet->getStyle("A1:J1")->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -118,36 +114,28 @@ class MudflowExcelExport
             ]
         ]);
 
-        $rivers = River::all();
-
-        foreach (range('A', 'O') as $item) {
+        foreach (range('A', 'J') as $item) {
             $sheet->getColumnDimension($item)->setAutoSize(true);
         }
 
-        foreach ($rivers as $key => $river) {
-            foreach ($river->gaugingStations as $gaugingStation) {
-                $arr = [
-                    ++$key,
-                    $river->name,
-                    $gaugingStation->mudflowProtection->information,
-                    $gaugingStation->name,
-                    $gaugingStation->mudflowProtection->water_flow_rate,
-                    $gaugingStation->mudflowProtection->critical_water_flow_rate,
-                    $gaugingStation->mudflowProtection->turbidity_of_water,
-                    $gaugingStation->mudflowProtection->max_turbidity_of_water,
-                    $gaugingStation->mudflowProtection->air_temperature,
-                    $gaugingStation->mudflowProtection->water_temperature,
-                    $gaugingStation->mudflowProtection->precipitation,
-                    $gaugingStation->mudflowProtection->height_of_snow,
-                    $gaugingStation->mudflowProtection->weather,
-                    $gaugingStation->mudflowProtection->comment,
-                    $gaugingStation->mudflowProtection->updated_at->format('d.m.Y H:i:s'),
-                ];
+        $key = 0;
+        foreach ($this->models as $item) {
+            $arr = [
+                ++$key,
+                $item->description,
+                $item->date_almaty,
+                $item->date_greenwich,
+                $item->epicenter,
+                $item->energy_class,
+                $item->mpv,
+                $item->coordinates,
+                $item->deep,
+                $item->information,
+            ];
 
-                $sheet->fromArray($arr, null, "A$rowIndex");
-                $sheet->getStyle("A$rowIndex:O$rowIndex")->applyFromArray(self::HStyle);
-                $rowIndex++;
-            }
+            $sheet->fromArray($arr, null, "A$rowIndex");
+            $sheet->getStyle("A$rowIndex:J$rowIndex")->applyFromArray(self::HStyle);
+            $rowIndex++;
         }
     }
 
