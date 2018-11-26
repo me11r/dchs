@@ -116,6 +116,47 @@ class MorainicLakeSummaryController extends Controller
         ));
     }
 
+    public function exportXls(Request $request, $id)
+    {
+        if(!Auth::user()->hasRight(['CAN_VIEW_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
+
+        $lakesSummary = $this->repository::where('date', $id)->get();
+        $lakesSumRaw = $this->repository::where('date', $id);
+        $date = $id;
+        $report = MorainicLakeReport::where('date', $date)->first();
+        $otherRecords = MorainicLakeReport::where('date', '!=', $date)->get();
+        $compare_with = $request->compare_with;
+        $comparedRecord = MorainicLakeReport::where('date', $compare_with)->first();
+        $comparedRecords = $this->repository::where('date', $compare_with);
+
+        $comparedRecordsResult['initial_volume'] = $lakesSumRaw->sum('initial_volume') - $comparedRecords->sum('initial_volume');
+        $comparedRecordsResult['current_volume'] = $lakesSumRaw->sum('current_volume') - $comparedRecords->sum('current_volume');
+        $comparedRecordsResult['inflow_glacier'] = $lakesSumRaw->sum('inflow_glacier') - $comparedRecords->sum('inflow_glacier');
+        $comparedRecordsResult['drainage_total'] = ($lakesSumRaw->sum('drainage_via_evacuation_channel') + $lakesSumRaw->sum('drainage_via_pump') + $lakesSumRaw->sum('drainage_via_siphon')) - ($comparedRecords->sum('drainage_via_evacuation_channel') + $comparedRecords->sum('drainage_via_pump') + $comparedRecords->sum('drainage_via_siphon'));
+        $comparedRecordsResult['water_dropped_day'] = $lakesSumRaw->sum('water_dropped_day') - $comparedRecords->sum('water_dropped_day');
+        $comparedRecordsResult['water_dropped_total'] = $lakesSumRaw->sum('water_dropped_total') - $comparedRecords->sum('water_dropped_total');
+        $comparedRecordsResult['zero_isotherm'] = $lakesSumRaw->sum('zero_isotherm') - $comparedRecords->sum('zero_isotherm');
+
+        $fileName = 'Сводная информация по мореным озерам.xls';
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        return view('morainic-lakes-reports.show', compact(
+            'lakesSummary',
+            'lakesSumRaw',
+            'otherRecords',
+            'compare_with',
+            'comparedRecords',
+            'comparedRecordsResult',
+            'comparedRecord',
+            'date',
+            'report'
+        ));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

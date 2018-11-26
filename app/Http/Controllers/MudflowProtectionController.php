@@ -24,23 +24,15 @@ class MudflowProtectionController extends Controller
 
     public function exportExcel()
     {
-        $rivers = $this->repository->with([
-            'gaugingStations',
-            'gaugingStations.mudflowProtection'
-        ])->get();
-
         $fileName = 'Казселезащита.xls';
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');
         header('Cache-Control: max-age=0');
 
-        $writer = new MudflowExcelExport();
-        $writer->getXlsWriter();
-
-        return View::make('mudflow.index')
-            ->with('rivers', $rivers)
-            ->render();
+        $exportService = new MudflowExcelExport();
+        $writer = $exportService->getXlsWriter();
+        $writer->save('php://output');
     }
 
     public function index()
