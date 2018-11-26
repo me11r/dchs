@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\QuakeResource;
 use App\Repositories\Contracts\QuakeInterface;
+use App\Services\ReportExport\QuakeExcelExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
@@ -80,5 +81,22 @@ class QuakeController extends Controller
         }
         $this->repository->delete($id);
         return redirect(route('quakes.index'));
+    }
+
+    public function exportExcel()
+    {
+        if(!Auth::user()->hasRight(['CAN_VIEW_QUAKES'])){
+            $this->throwAccessDenied();
+        }
+
+        $fileName = 'ТОО СОМЭ.xls';
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $exportService = new QuakeExcelExport();
+        $writer = $exportService->getXlsWriter();
+        $writer->save('php://output');
     }
 }

@@ -43,13 +43,13 @@
             <br>
         {% endfor %}
     </div>
-    <p>
+    <div>
         {#8. ГУ «СП и АСР»: всего выездов – {{ fires_count }}, из них: пожары - {{ fires_count }}, сухостой - 0,  мусор – 0, КЗ – 0, бдительность населения – 0, отравление природным/ угарным газом – 0, погибло – 0, спасен – 0, эвакуировано – 0, пострадавший – 0.#}
         8. ГУ «СП и АСР»: всего выездов – {{ fires_count }}
         {% if fires_count > 0 %}
         , из них: {% for tripResult, count in trip_results101 %} <p style="padding-left: 40px">{{ tripResult }}: {{ count }}</p> {% endfor %}
         {% endif %}
-    </p>
+    </div>
     <p>
         {#9. ЕДДС: Всего поступивших  звонков на «112» - {{ card112_count }}, «101» - {{ card101_count }} #}{#, «109» - 384.#}
         9. ЕДДС: Всего поступивших  звонков на «112» - {{ call_info.count_112|default(0) }}, «101» - {{ call_info.count_101|default(0) }} , «109» - {{ call_info.count_109|default(0) }}.

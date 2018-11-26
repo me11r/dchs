@@ -226,11 +226,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
     Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
+    Route::get('/quakes/export/xls', 'QuakeController@exportExcel');
     Route::resource('/vehicles', 'VehicleController');
     Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
     #Route::resource('/morainic-lakes', 'MorainicLakeController');
     Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
+    Route::get('/morainic-lakes-summaries/export/xls/{date}', 'MorainicLakeSummaryController@exportXls');
     Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
