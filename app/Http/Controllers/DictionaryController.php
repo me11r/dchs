@@ -102,30 +102,52 @@ class DictionaryController extends AuthorizedController
         $data['type'] = $name;
         $data['fire_departments'] = FireDepartment::all();
         $data['city_areas'] = Dictionary\CityArea::all();
+        $data['search'] = $request->search;
 
         $data['user'] = Auth::user();
 
         $sort = $request->sort ? $request->sort : 'id';
 
         if($name == 'incident-types'){
-            $data['records'] = IncidentType::paginate($data['per_page']);
+            if($request->search){
+                $data['records'] = IncidentType::where('name', 'like',"%$request->search%")
+                    ->paginate($data['per_page']);
+            }
+            else{
+                $data['records'] = IncidentType::paginate($data['per_page']);
+            }
             $data['title'] = "Типы инцидентов";
         }
         elseif($name == 'operational-plans'){
+
+            $specialPlan = SpecialPlan::orderBy($sort);
+
+            if($request->search){
+                $specialPlan = $specialPlan
+                    ->where('object_name', 'like',"%$request->search%")
+                    ->orWhere('location', 'like',"%$request->search%")
+                    ->orWhereHas('city_area', function ($q) use ($request){
+                        $q->where('name', $request->search);
+                    })
+                    ->orWhereHas('fire_department', function ($q) use ($request){
+                        $q->where('title', $request->search);
+                    });
+            }
+
             if(!Auth::user()->department){
 
-                $data['records'] = SpecialPlan::orderBy($sort)->paginate($data['per_page']);
+                $data['records'] = $specialPlan->paginate($data['per_page']);
             }
             else{
-                $data['records'] = SpecialPlan::where('fire_department_id', Auth::user()->fire_department_id)
+                $data['records'] = $specialPlan
+                    ->where('fire_department_id', Auth::user()->fire_department_id)
                     ->orderBy($sort)
                     ->paginate($data['per_page']);
             }
 
             if($request->filter_department){
-                $data['records'] = SpecialPlan::orderBy($sort)
+                $data['records'] = $specialPlan
                     ->where('fire_department_id', $request->filter_department)
-//                    ->paginate($data['per_page'])
                     ->get();
             }
 
@@ -133,48 +155,92 @@ class DictionaryController extends AuthorizedController
             $data['filter_department'] = $request->filter_department;
         }
         elseif($name == 'operational-cards'){
+
+            $operCard = OperationalCard::orderBy('id');
+
+            if($request->search){
+                $operCard = $operCard->where('object_name', 'like', "%$request->search%")
+                    ->orWhere('location', 'like', "%$request->search%")
+                    ->orWhere('oc_number', $request->search)
+                    ->orWhereHas('fire_department', function ($q) use ($request){
+                        $q->where('title', $request->search);
+                    });
+            }
+
             if(!Auth::user()->department){
-                $data['records'] = OperationalCard::paginate($data['per_page']);
+                $data['records'] = $operCard->paginate($data['per_page']);
             }
             else{
-                $data['records'] = OperationalCard::where('fire_department_id', Auth::user()->fire_department_id)
+                $data['records'] = $operCard->where('fire_department_id', Auth::user()->fire_department_id)
                     ->paginate($data['per_page']);
             }
+
             $data['title'] = "Оперативные карточки";
         }
         elseif($name == 'aircraft-types'){
-            $data['records'] = AircraftType::paginate($data['per_page']);
-            $data['title'] = "Типы воздушных судов";
-        }
-        elseif($name == 'aircraft-types'){
-            $data['records'] = AircraftType::paginate($data['per_page']);
+            $aircraftType = AircraftType::orderBy('id');
+
+            if($request->search){
+                $aircraftType = $aircraftType->where('name', 'like', "%$request->search%");
+            }
+            $data['records'] = $aircraftType->paginate($data['per_page']);
+
             $data['title'] = "Типы воздушных судов";
         }
         elseif($name == 'aircrafts'){
-            $data['records'] = Aircraft::paginate($data['per_page']);
+            $aircraft = Aircraft::orderBy('id');
+
+            if($request->search){
+                $aircraft = $aircraft->where('name', 'like', "%$request->search%");
+            }
+
+            $data['records'] = $aircraft->paginate($data['per_page']);
             $data['title'] = "Воздушные суда";
         }
         elseif($name == 'district-managers'){
-            $data['records'] = DistrictManager::paginate($data['per_page']);
+            $model = DistrictManager::orderBy('id');
+
+            if($request->search){
+                $model = $model->where('name', 'like', "%$request->search%")
+                    ->orWhere('rank', 'like', "%$request->search%")
+                    ->orWhere('nickname', 'like', "%$request->search%")
+                    ->orWhere('position', 'like', "%$request->search%")
+                    ->orWhereHas('city_area', function ($q) use ($request){
+                        $q->where('name', $request->search);
+                    })
+                    ->orWhereHas('phones', function ($q) use ($request){
+                        $q->where('phone', $request->search);
+                    });
+            }
+
+            $data['records'] = $model->paginate($data['per_page']);
             $data['title'] = "Ответственные по районам";
         }
         elseif($name == 'fire-departments'){
-            $data['records'] = FireDepartment::orderBy($sort)
-                ->paginate($data['per_page']);
+            $dept = FireDepartment::orderBy($sort);
+
+            if($request->search){
+                $data['search'] = $request->search;
+                $dept = $dept->where('title', 'like',"$request->search")
+                    ->orWhereHas('city_area', function ($q) use ($request){
+                        $q->where('name', $request->search);
+                    });
+            }
 
             if($request->city_area_id){
-                $data['records'] = FireDepartment::orderBy($sort)
-                ->where('city_area_id', $request->city_area_id)
-                    ->paginate($data['per_page']);
+                $data['records'] = $dept
+                ->where('city_area_id', $request->city_area_id);
                 $data['city_area'] = $request->city_area_id;
             }
 
             if($request->filter_department){
-                $data['records'] = FireDepartment::orderBy($sort)
-                    ->where('id', $request->filter_department)
-                    ->paginate($data['per_page']);
+                $data['records'] = $dept
+                    ->where('id', $request->filter_department);
                 $data['filter_department'] = $request->filter_department;
             }
+
+            $data['records'] = $dept
+                ->paginate($data['per_page']);
 
             $data['title'] = "Пожарные части";
         }
@@ -191,7 +257,12 @@ class DictionaryController extends AuthorizedController
         $data['per_page'] = $request->get('per_page', 20);
         $data['type'] = $name;
 
-        if(Auth::user()->anyRole(['admin','dispatcher_od', 'Диспетчер 101'])){
+        if(Auth::user()->anyRole([
+            'admin',
+            'dispatcher_od',
+            'Диспетчер 101',
+            'Диспетчер ОД 101',
+        ])){
             $fireDepts = FireDepartment::all();
         }
         else{
@@ -308,14 +379,22 @@ class DictionaryController extends AuthorizedController
             $data['title'] = "Оперативные планы";
             $data['incident_categories'] = IncidentTypeCategory::all();
 
+            return redirect('/dictionaries/operational-plans')->with('_message', [
+                'type' => 'success',
+                'text' => 'Запись в справочнике успешно сохранена'
+            ]);
+
         }
         elseif($name == 'operational-cards'){
             $record  = OperationalCard::firstOrNew(['id' => $request->id]);
 
-            $fileName = time().'.'.$request->file->getClientOriginalExtension();
-            $request->file->storeAs('operational-cards',$fileName);
+            if($request->file){
+                $fileName = time().'.'.$request->file->getClientOriginalExtension();
+                $request->file->storeAs('operational-cards',$fileName);
 
-            $record->file = $fileName;
+                $record->file = $fileName;
+            }
+
             $record->fire_level_id = $request->fire_level_id;
 //            $record->city_area_id = $request->city_area_id;
             $record->object_name = $request->object_name;
@@ -327,6 +406,11 @@ class DictionaryController extends AuthorizedController
 
             $data['record'] = $record;
             $data['title'] = "Оперативные карты";
+
+            return redirect('/dictionaries/operational-cards')->with('_message', [
+                'type' => 'success',
+                'text' => 'Запись в справочнике успешно сохранена'
+            ]);
 
         }
         elseif($name == 'aircraft-types'){
