@@ -47,9 +47,17 @@ class CardController extends AuthorizedController
 
     public function getMapscreen(Request $request)
     {
+        $isAdmin = Auth::user()->isAdmin();
+        $canEditOwnHydrants = Auth::user()->hasRight('CAN_EDIT_MAP_HYDRANTS');
+        $userDept = Auth::user()->fire_department_id;
+
         $this->set('areas', (new CityArea())->get()->toArray());
         $this->set('fireDepartments', collect(FireDepartment::all(['id', 'title']))->toArray());
         $this->set('model', new HydrantResource(new Hydrant()));
+
+        $this->set('isAdmin', $isAdmin);
+        $this->set('canEditOwnHydrants', $canEditOwnHydrants);
+        $this->set('userDept', $userDept);
     }
 
     public function get101(Request $request, $card_type = null)

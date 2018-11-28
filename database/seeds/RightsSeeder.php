@@ -79,6 +79,7 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Личный состав', 'name' => 'CAN_ACCESS_PERSONS'],
             ['right_group_id' => 7, 'title' => 'Пожарные части', 'name' => 'CAN_ACCESS_FIRE_DEPTS'],
             ['right_group_id' => 7, 'title' => 'Моренные озера', 'name' => 'CAN_ACCESS_FIRE_LAKES'],
+            ['right_group_id' => 7, 'title' => 'Редактировать данные по гидрантам в рамках своей ПЧ', 'name' => 'CAN_EDIT_MAP_HYDRANTS'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 

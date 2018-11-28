@@ -64,6 +64,7 @@ export default {
             this.selected = option;
             const input = option && option.id ? option.id : null;
             this.$emit('input', input);
+            this.$emit('update:value', input);
         },
         changeInitialOption() {
             const initialOption = this.getOptionById(this.value);
