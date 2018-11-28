@@ -581,7 +581,7 @@ class FormationController extends AuthorizedController
         ];
         $tech_fields = [
 //            null,
-            null,
+            'device',
             'motor_water_pump',
             'motor_mud_pump',
         ];
