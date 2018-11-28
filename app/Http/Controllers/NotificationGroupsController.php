@@ -14,8 +14,16 @@ class NotificationGroupsController extends Controller
      */
     public function index(Request $request)
     {
+        $records = NotificationGroup::with(['users']);
+        if($request->search){
+            $records = $records->where('name', 'like', "%$request->search%")
+                ->orWhereHas('users', function ($q) use ($request){
+                    $q->where('name','like', "%$request->search%")
+                        ->orWhere('email','like', "%$request->search%");
+                });
+        }
         $perPage = $request->get('per_page', 20);
-        $items = NotificationGroup::with(['users'])->paginate($perPage);
+        $items = $records->paginate($perPage);
 
         return response(view('dictionary.notification-groups.index', [
             'items' => $items,

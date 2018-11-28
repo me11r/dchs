@@ -21,12 +21,12 @@ class FormationStaffController extends Controller
         $data = $request->all();
         $od_people = (new FormationPersonsReport())->od_staff;
         if (in_array($data['rank'], $od_people)) {
-            $resp = FormationPersonsItem::with(['staff'])
+            $resp = FormationOdPersonItem::with(['staff'])
                 ->rank($request->rank)
                 ->where('report_id', $request->id)
                 ->get();
         } else {
-            $resp = FormationOdPersonItem::rank($request->rank)
+            $resp = FormationPersonsItem::rank($request->rank)
                 ->where('report_id', $request->id)
                 ->get();
 
