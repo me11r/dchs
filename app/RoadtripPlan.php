@@ -45,6 +45,7 @@ class RoadtripPlan extends Model
         'return_time',
         'is_closed',
         'is_accepted',
+        'printed',
     ];
 
     public function ticket()

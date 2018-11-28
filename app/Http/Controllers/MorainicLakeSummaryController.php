@@ -6,6 +6,7 @@ use App\Models\MorainicLake;
 use App\Models\MorainicLakeReport;
 use App\Models\MorainicLakeSummary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MorainicLakeSummaryController extends Controller
 {
@@ -58,6 +59,10 @@ class MorainicLakeSummaryController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::user()->hasRight(['CAN_CREATE_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
+
         $all = $request->all();
         $date = date('Y-m-d');
         $report = MorainicLakeReport::firstOrCreate(['date' => $date]);
@@ -66,7 +71,6 @@ class MorainicLakeSummaryController extends Controller
             $item['date'] = $date;
 
             MorainicLakeSummary::updateOrCreate(['morainic_lake_id' => $id, 'date' => $date],$item);
-//            $this->repository->create($item);
         }
         return redirect()->route("$this->table.index");
     }
@@ -79,6 +83,10 @@ class MorainicLakeSummaryController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if(!Auth::user()->hasRight(['CAN_VIEW_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
+
         $lakesSummary = $this->repository::where('date', $id)->get();
         $lakesSumRaw = $this->repository::where('date', $id);
         $date = $id;
@@ -95,6 +103,47 @@ class MorainicLakeSummaryController extends Controller
         $comparedRecordsResult['water_dropped_day'] = $lakesSumRaw->sum('water_dropped_day') - $comparedRecords->sum('water_dropped_day');
         $comparedRecordsResult['water_dropped_total'] = $lakesSumRaw->sum('water_dropped_total') - $comparedRecords->sum('water_dropped_total');
         $comparedRecordsResult['zero_isotherm'] = $lakesSumRaw->sum('zero_isotherm') - $comparedRecords->sum('zero_isotherm');
+        return view('morainic-lakes-reports.show', compact(
+            'lakesSummary',
+            'lakesSumRaw',
+            'otherRecords',
+            'compare_with',
+            'comparedRecords',
+            'comparedRecordsResult',
+            'comparedRecord',
+            'date',
+            'report'
+        ));
+    }
+
+    public function exportXls(Request $request, $id)
+    {
+        if(!Auth::user()->hasRight(['CAN_VIEW_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
+
+        $lakesSummary = $this->repository::where('date', $id)->get();
+        $lakesSumRaw = $this->repository::where('date', $id);
+        $date = $id;
+        $report = MorainicLakeReport::where('date', $date)->first();
+        $otherRecords = MorainicLakeReport::where('date', '!=', $date)->get();
+        $compare_with = $request->compare_with;
+        $comparedRecord = MorainicLakeReport::where('date', $compare_with)->first();
+        $comparedRecords = $this->repository::where('date', $compare_with);
+
+        $comparedRecordsResult['initial_volume'] = $lakesSumRaw->sum('initial_volume') - $comparedRecords->sum('initial_volume');
+        $comparedRecordsResult['current_volume'] = $lakesSumRaw->sum('current_volume') - $comparedRecords->sum('current_volume');
+        $comparedRecordsResult['inflow_glacier'] = $lakesSumRaw->sum('inflow_glacier') - $comparedRecords->sum('inflow_glacier');
+        $comparedRecordsResult['drainage_total'] = ($lakesSumRaw->sum('drainage_via_evacuation_channel') + $lakesSumRaw->sum('drainage_via_pump') + $lakesSumRaw->sum('drainage_via_siphon')) - ($comparedRecords->sum('drainage_via_evacuation_channel') + $comparedRecords->sum('drainage_via_pump') + $comparedRecords->sum('drainage_via_siphon'));
+        $comparedRecordsResult['water_dropped_day'] = $lakesSumRaw->sum('water_dropped_day') - $comparedRecords->sum('water_dropped_day');
+        $comparedRecordsResult['water_dropped_total'] = $lakesSumRaw->sum('water_dropped_total') - $comparedRecords->sum('water_dropped_total');
+        $comparedRecordsResult['zero_isotherm'] = $lakesSumRaw->sum('zero_isotherm') - $comparedRecords->sum('zero_isotherm');
+
+        $fileName = 'Сводная информация по мореным озерам.xls';
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
         return view('morainic-lakes-reports.show', compact(
             'lakesSummary',
             'lakesSumRaw',
@@ -133,6 +182,9 @@ class MorainicLakeSummaryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_MORAINIC_LAKE_SUMMARIES'])){
+            $this->throwAccessDenied();
+        }
 
         foreach ($request->input('lake', []) as $key_id => $item) {
             $item['morainic_lake_id'] = $key_id;

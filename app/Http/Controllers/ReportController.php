@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\AirRescueReport;
+use App\CallInfo;
 use App\Dictionary\FireObject;
+use App\Dictionary\TripResult;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\Card112\Card112;
+use App\Models\EmergencySituation;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
@@ -14,6 +17,7 @@ use App\Models\IncidentType;
 use App\Models\OperationalPlan;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\Models\Weather;
 use App\OperationalCard;
 use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
@@ -22,7 +26,10 @@ use App\Repositories\Contracts\Ticket101Interface;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
+use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
+use App\Services\ReportExport\Ticket112PeriodExcelExport;
+use App\SirenSpeechTech;
 use App\Ticket101;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
@@ -91,6 +98,8 @@ class ReportController extends AuthorizedController
         $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
             ->whereDate('created_at', '<=', $data['today']);
 
+        $callInfo = CallInfo::latest()->first();
+
         $data['emergencies'] = $card112_day->count();
         $data['cards112'] = $card112_day->get();
         $data['card112_count'] = $card112_day->count();
@@ -109,6 +118,17 @@ class ReportController extends AuthorizedController
         $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
         $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
         $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
+        $data['weather_forecast'] = Weather::latest()->first();
+        $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+        $data['call_info'] = $callInfo;
+
+        $data['trip_results101'] = [];
+
+        foreach (TripResult::all() as $tripResult) {
+            $data['trip_results101'][$tripResult->name] = $card101_day->where('trip_result_id', $tripResult->id)->count();
+        }
+
         /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
             $q->status('action');
         })->first();*/
@@ -229,7 +249,7 @@ class ReportController extends AuthorizedController
 
     public function getReport101Emergency()
     {
-        $reasons = FireObject::orderBy('name')->get();
+        $reasons = TripResult::orderBy('name')->get();
         return view('reports.101.emergency', compact('reasons'));
     }
 
@@ -237,8 +257,9 @@ class ReportController extends AuthorizedController
     {
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
-        $reason_id = $request->reason_id;
-        $result = Ticket101::getStat($date_begin, $date_end, $reason_id);
+        $result_id = $request->result_id;
+
+        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
 
         return response()->json($result);
     }
@@ -254,7 +275,8 @@ class ReportController extends AuthorizedController
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
         $reason_id = $request->reason_id;
-        $result = Card112::getStat($date_begin, $date_end, $reason_id);
+
+        $result = Card112::getDetailedStat($date_begin, $date_end, $reason_id);
 
         return response()->json($result);
     }
@@ -474,9 +496,48 @@ class ReportController extends AuthorizedController
     public function exportCard101ChronologyXls($cardId)
     {
         $exportService = new Ticket101ChronologyExcelExport($cardId);
-        $card = Ticket101::find($cardId);
         $writer = $exportService->getXlsWriter();
         $fileName = 'Хронология карточки 101 (' . date('d.m.Y H-i') . ').xls';
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+
+    }
+
+    public function exportEmergency101Xls(Request $request)
+    {
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+        $result_id = $request->result_id;
+
+        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
+
+        $exportService = new Ticket101PeriodExcelExport($stat);
+        $writer = $exportService->getXlsWriter();
+        $fileName = 'Отчет по карточке 101 за период.xls';
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+
+    }
+
+    public function exportEmergency112Xls(Request $request)
+    {
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+        $result_id = $request->result_id;
+
+        $stat = Card112::getDetailedStat($date_begin, $date_end, $result_id);
+
+        $exportService = new Ticket112PeriodExcelExport($stat);
+        $writer = $exportService->getXlsWriter();
+        $fileName = 'Отчет по карточке 112 за период.xls';
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');
@@ -563,6 +624,8 @@ class ReportController extends AuthorizedController
         $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
             ->whereDate('created_at', '<=', $data['today']);
 
+        $callInfo = CallInfo::latest()->first();
+
         $data['emergencies'] = $card112_day->count();
         $data['cards112'] = $card112_day->get();
         $data['card112_count'] = $card112_day->count();
@@ -581,6 +644,16 @@ class ReportController extends AuthorizedController
         $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
         $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
         $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+        $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
+        $data['weather_forecast'] = Weather::latest()->first();
+        $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+        $data['call_info'] = $callInfo;
+
+        $data['trip_results101'] = [];
+
+        foreach (TripResult::all() as $tripResult) {
+            $data['trip_results101'][$tripResult->name] = $card101_day->where('trip_result_id', $tripResult->id)->count();
+        }
         /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
             $q->status('action');
         })->first();*/

@@ -4,7 +4,7 @@
     </td>
     {% for row in fields %}
         <td>
-            <input autocomplete="off" type="text" min=0 oninput="validity.valid||(value='');" data-field="{{ row }}" value="{{ item.attribute(row) }}"
+            <input autocomplete="off" class="calc-field" type="text" min=0 oninput="validity.valid||(value='');" data-field="{{ row }}" value="{{ item.attribute(row) }}"
                    name="items[{{ item.id }}][{{ row }}]">
         </td>
     {% endfor %}

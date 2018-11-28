@@ -20,7 +20,7 @@ export default function bindLocationInputApp() {
         },
         methods: {
             searchLocationPlans: lodash.debounce(function () {
-                if(this.keyUp) {
+                if (this.keyUp) {
                     axios.get('/ajax/find_special_plan', {
                         params: {
                             location: this.location
@@ -35,9 +35,17 @@ export default function bindLocationInputApp() {
             setData(items) {
                 if (items.special_plans !== undefined) {
                     this.items = items.special_plans;
+
+                    //определение ранга пожара только при создании карточки
+                    //т.к. при редкатировании он может сбиться при вводе адреса
+                    if (window.ticket101add.ticketId === '') {
+                        document.getElementById('fire_level_id1').value = this.items[0].fire_level_id;
+                    }
+                    // console.dir("special plan found:")
+                    // console.dir(this.items)
+
                 } else {
-                    // console.dir(window.ticket101add)
-                    if(window.ticket101add.ticketId === '') {
+                    if (window.ticket101add.ticketId === '') {
                         document.getElementById('fire_level_id1').value = 1;
                     }
                     this.items = items;
@@ -48,8 +56,6 @@ export default function bindLocationInputApp() {
                 }
 
                 if (items.building) {
-
-                    // document.getElementById('fire_object_id').value = items.building.object_type_id;
                     document.getElementById('building_description').value = items.building.wall_material.name;
                     document.getElementById('square').value = items.building.square;
                     document.getElementById('year_of_development').value = items.building.year_of_development;
@@ -67,7 +73,7 @@ export default function bindLocationInputApp() {
                 globalBus.$emit('specialPlanFound', item);
                 this.showList = false;
                 if (item.is_card === true) {
-                    document.getElementById('fire_level_id1').value = 2;
+                    // document.getElementById('fire_level_id1').value = 2;
                     document.getElementById('operational_card_id').value = item.id;
                 }
             },
@@ -113,12 +119,18 @@ export default function bindLocationInputApp() {
                     globalBus.$emit('is_common_house', event.newValue);
                 }
             });
-            this.location = element.dataset.value;
-            this.yandexMapsBus = new YandexMapsBus();
-            var object = this.$refs.location;
-            Vue.nextTick(function() {
-                object.focus();
-            });
+
+            (new YandexMapsBus())
+                .getInstance()
+                .then((yandexMapsBus) => {
+                    this.yandexMapsBus = yandexMapsBus;
+                    this.location = element.dataset.value;
+                    var object = this.$refs.location;
+                    Vue.nextTick(function() {
+                        object.focus();
+                    });
+                });
+
             // this.checkRoadtrips();
         }
     });

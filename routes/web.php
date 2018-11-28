@@ -41,10 +41,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 
-    Route::get('/card/101', 'CardController@get101')->name('card101');
-    Route::get('/card/add101/{card_id?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
-    Route::post('/card/add101/{card_id?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+']);
+    Route::get('/card/101/{card_type?}', 'CardController@get101')->name('card101');
+    Route::get('/card/add101/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+', 'card_type' => '[A-Za-z]+']);
+    Route::match(['get', 'post'],'/card/add101-other-rides/', 'CardController@getAdd101OtherRide')->name('card101addOtherRide');
+    #Route::get('/card/add101-other/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
+    Route::post('/card/add101/{card_id?}/{card_type?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+','card_type' => '[A-Za-z]+']);
     Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
+    Route::post('/card/101/delete', 'CardController@postDelete')->name('card101.delete');
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
 
@@ -66,6 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/create', 'FormationController@getAirRescueCreate');
             Route::get('/{id}/edit', 'FormationController@getAirRescueEdit');
             Route::post('/edit-create', 'FormationController@getAirRescueEditCreate');
+            Route::post('/approve/{id}', 'FormationController@approveAirRescue');
         });
         Route::get('addToday', 'FormationController@getAddToday');
         Route::post('addToday', 'FormationController@postAddToday');
@@ -128,14 +132,14 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
-    Route::group(['middleware' => 'rights.formation.record'],
-        function () {
+    Route::group(['middleware' => 'rights.formation.record'], function () {
             Route::get('formation-record/{organisation}', 'FormationRecordController@singleIndex')->name('formation-record.single-index');
             Route::get('formation-record/{id}/total-edit', 'FormationRecordController@totalEdit')->name('formation-record.total-edit');
             Route::post('formation-record/{id}/total-update', 'FormationRecordController@totalUpdate')->name('formation-record.total-update');
             Route::match(['get', 'post'],'formation-record/staff/{date}/{ods}', 'FormationRecordController@staffCreateEdit')->name('formation-record.staff_CreateEdit');
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');
+            Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
         }
     );
 
@@ -150,6 +154,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('id', '[0-9]+')
             ->name('roadtrip.plan.print');
         Route::post('dispatch', 'RoadtripController@postDispatch');
+        Route::post('arrived', 'RoadtripController@postArrived');
         Route::post('return', 'RoadtripController@postReturn');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
@@ -170,6 +175,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('return/{id}/{service}', 'ServicePlanController@postReturn')->where('id', '[0-9]+');
         Route::get('{service}', 'ServicePlanController@getIndex')->where('service', '[0-9]+');
         Route::get('{service}/{id}/show', 'ServicePlanController@getShow')->where('service', '[0-9]+');
+        Route::get('print/{id}', 'ServicePlanController@getPrint')
+            ->where('id', '[0-9]+')
+            ->name('service-plans.print');
     });
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
@@ -207,19 +215,24 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/pdf/operational-report', 'ReportController@getOperational')->name('operational-report');
     Route::get('/pdf/report101/{type}', 'ReportController@getReport101')->name('report101');
     Route::get('/xls/report101/forces', 'ReportController@exportForcesXls')->name('report101.forces.xls');
+    Route::get('/xls/report101/emergency', 'ReportController@exportEmergency101Xls')->name('report101.emergency.xls');
+    Route::get('/xls/report112/emergency', 'ReportController@exportEmergency112Xls')->name('report112.emergency.xls');
     Route::get('/xls/card101/chronology/{card_id}', 'ReportController@exportCard101ChronologyXls')->name('card101.chronology.xls');
     Route::resource('/chats', 'ChatController');
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
+    Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
     Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
+    Route::get('/quakes/export/xls', 'QuakeController@exportExcel');
     Route::resource('/vehicles', 'VehicleController');
     Route::resource('/staff', 'StaffController');
     Route::resource('/schedules', 'ScheduleController');
-    Route::resource('/morainic-lakes', 'MorainicLakeController');
+    #Route::resource('/morainic-lakes', 'MorainicLakeController');
     Route::resource('/morainic-lakes-summaries', 'MorainicLakeSummaryController');
+    Route::get('/morainic-lakes-summaries/export/xls/{date}', 'MorainicLakeSummaryController@exportXls');
     Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
@@ -251,6 +264,24 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('emergency112_get_branches_export');
     });
 
+    Route::group(['prefix' => 'reports/siren-speeches', 'as' => 'reports-siren-speeches.'], function () {
+        Route::get('/', 'SirenSpeechTechController@index')->name('index')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
+        Route::get('/create', 'SirenSpeechTechController@create')->name('create')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
+        Route::get('/edit/{id}', 'SirenSpeechTechController@edit')->name('edit')->middleware(['right:SIREN_SPEECH_TECH_SHOW']);
+        Route::put('/update/{id}', 'SirenSpeechTechController@update')->name('update')->middleware(['right:SIREN_SPEECH_TECH_EDIT']);
+        Route::post('/store', 'SirenSpeechTechController@store')->name('store')->middleware(['right:SIREN_SPEECH_TECH_CREATE']);
+        Route::delete('/delete/{id}', 'SirenSpeechTechController@delete')->name('delete')->middleware(['right:SIREN_SPEECH_TECH_DELETE']);
+    });
+
+    Route::group(['prefix' => 'reports/call-infos', 'as' => 'reports-call-infos.'], function () {
+        Route::get('/', 'CallInfoController@index')->name('index')->middleware(['right:CALL_INFO_SHOW_SHOW']);
+        Route::get('/create', 'CallInfoController@create')->name('create')->middleware(['right:CALL_INFO_SHOW_CREATE']);
+        Route::get('/edit/{id}', 'CallInfoController@edit')->name('edit')->middleware(['right:CALL_INFO_SHOW_SHOW']);
+        Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:CALL_INFO_SHOW_EDIT']);
+        Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_SHOW_CREATE']);
+        Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_SHOW_DELETE']);
+    });
+
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
         Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');
@@ -261,9 +292,22 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['namespace' => 'Api\\Messenger', 'prefix' => 'api/messenger', 'middleware' => ['auth']], function() {
         Route::get('users/list', 'MessengerController@getUserList');
         Route::post('message/send', 'MessengerController@postMessage');
+        Route::get('messages/unread', 'MessengerController@getAnyUnread');
         Route::get('messages/list/{user_id}', 'MessengerController@getMessages')->where('user_id', '[0-9]+');
+
+        Route::get('messages/list/unread/{user_id}', 'MessengerController@getUnreadCount')->where('user_id', '[0-9]+');
     });
 
+    Route::group(['namespace' => 'Api\\Upload', 'prefix' => 'api/upload', 'middleware' => ['auth']], function() {
+        Route::post('file', 'FileUploadController@postUpload')
+            ->name('storage.file.upload');
+        Route::get('file/info/{file_id}', 'FileUploadController@getFileInfo')
+            ->where('file_id', '[0-9]+')
+            ->name('storage.file.info');
+        Route::get('file/download/{file_id}', 'FileUploadController@getFile')
+            ->where('file_id', '[0-9]+')
+            ->name('storage.file.download');
+    });
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

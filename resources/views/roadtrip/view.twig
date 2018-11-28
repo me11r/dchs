@@ -72,13 +72,7 @@
                             {% for dep in results %}
                                 {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
                                     <roadtrip-dept-btn :trip="{{ trip }}" :dep="{{ dep }}"></roadtrip-dept-btn>
-                                {#{% else %}#}
-                                    {#<form action="#" method="post">#}
-                                        {#{{ csrf_field() }}#}
-                                        {#<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение: отделение -  {{ dep.departments }}</button>#}
-                                    {#</form>#}
                                 {% endif %}
-
                             {% endfor %}
                         </div>
                     {% endif %}

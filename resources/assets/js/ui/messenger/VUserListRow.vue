@@ -3,10 +3,14 @@
         class="user-list__row"
         :class="selectedClass"
         @click="select"
-    >
+    ><div class="user-list__row__section">
         <i
             class="status-icon fas fa-circle"
             :class="userOnlineClass"></i>&nbsp;{{ user.name }}
+    </div>
+        <div
+            class="user-list__row__aside"
+            v-if="hasUnread">{{ user.unread_count }}</div>
     </div>
 </template>
 <script>
@@ -21,7 +25,13 @@ export default {
         user: {
             type: Object,
             default: function() {
-                return {};
+                return {
+                    id: 0,
+                    name: '',
+                    fullname: '',
+                    unread_count: 0,
+                    last_connect_at: null
+                };
             }
         }
     },
@@ -31,6 +41,9 @@ export default {
         };
     },
     computed: {
+        hasUnread: function() {
+            return this.user.unread_count > 0;
+        },
         isUserOnline: function() {
             if (!this.user.last_connect_at) {
                 return false;
@@ -64,17 +77,28 @@ export default {
     @import "../../../sass/variables";
 
     .user-list__row {
+        display: flex;
         color: $primary;
         padding: 2px 5px;
         border-bottom: 1px solid cadetblue;
         background-color: $white-ter;
         cursor: pointer;
         border-left: 1px solid cadetblue;
+        &__section {
+            flex-grow: 1;
+        }
+        &__aside {
+            flex-grow: 0;
+            color: $white;
+            background-color: darken($red, 20%);
+            padding: 0 5px;
+            border-radius: 300px;
+        }
 
         &.is-active {
             background-color: $blueish;
             font-weight: bold;
-            border-left: 1px solid transparent;
+            border-left: 3px solid cadetblue;
         }
 
         &:hover {

@@ -11,6 +11,7 @@
     </thead>
     <tbody>
     {% for notification in ticket.service_plans %}
+        {% if notification.service_type and notification.service_type.id %}
         <tr>
             <td>
                 <label>
@@ -32,7 +33,7 @@
                         <input type="text"
                                readonly
                                value="{{ item.message_time }}"
-                               id="{{ item.id }}_message_time"
+                               id="{{ notification.id }}_message_time"
                                name="notification_services[{{ notification.id }}][message_time]"
                                class="input">
                     {% endif %}
@@ -49,6 +50,7 @@
             <td data-component="timepicker1"
                 data-value="">
                 <input type="text"
+                       id="{{ notification.id }}_arrive_time"
                        name="notification_services[{{ notification.id }}][arrive_time]"
                        value="{{ notification.arrive_time }}"
                        readonly
@@ -69,6 +71,7 @@
                 {% endfor %}
             </td>
         </tr>
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>

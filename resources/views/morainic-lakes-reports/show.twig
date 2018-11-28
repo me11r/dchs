@@ -1,7 +1,15 @@
 {% extends "layout/html" %}
 {% block content %}
-    <h4 class="title" style="padding: 3px 15px">Сводная информация по мореным озерам на {{ date }}</h4>
     <div class="panel">
+        <div class="level">
+            <div class="level-left">
+                <h4 class="title" style="padding: 3px 15px">Сводная информация по мореным озерам на {{ date }}</h4>
+            </div>
+            <div class="level-right">
+                <a href="/morainic-lakes-summaries/export/xls/{{ date }}" class="button is-success">Сохранить в XLS</a>
+            </div>
+        </div>
+        <br>
         <table class="formation-record-table">
             <thead>
             <tr>

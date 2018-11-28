@@ -30,6 +30,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $external_suspension
+ * @property int|null $sur
+ * @property int|null $winch
+ * @property int|null $vsu10
+ * @property int|null $vsu5
+ * @property int|null $vsu3
+ * @property int|null $simplex
+ * @property-read \App\AirRescueReport $report
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereExternalSuspension($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereSimplex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereSur($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereVsu10($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereVsu3($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereVsu5($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReportTechItem whereWinch($value)
  */
 class AirRescueReportTechItem extends Model
 {

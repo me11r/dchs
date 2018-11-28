@@ -171,6 +171,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereSearchlight($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereShovel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationTechReport whereTok($value)
+ * @property-read \App\FireDepartment $department
  */
 class FormationTechReport extends Model
 {

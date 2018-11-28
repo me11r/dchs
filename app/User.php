@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\AccessDeniedException;
+use App\Models\Messenger\Message;
 use App\Models\ServiceType;
 use App\Models\Staff;
 use App\Models\Vehicle;
@@ -58,6 +59,13 @@ use Illuminate\Support\Facades\Auth;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeviceToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereServiceTypeId($value)
+ * @property string|null $last_connect_at
+ * @property-read mixed $full_username
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messenger\Message[] $incomingMessages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Messenger\Message[] $outgoingMessages
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCallName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereLastConnectAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User wherePosition($value)
  */
 class User extends Authenticatable
 {
@@ -142,10 +150,15 @@ class User extends Authenticatable
         $user = Auth::user();
         if($user && $user->role){
             if(is_array($role)){
-                $query = $user->role()->whereIn('name', $role)->exists();
+                $query = $user->role()->whereIn('name', $role)
+                    ->orWhereIn('title', $role)
+                    ->exists();
             }
             else{
-                $query = $user->role()->where('name', $role)->exists();
+                $query = $user->role()
+                    ->where('name', $role)
+                    ->orWhere('title', $role)
+                    ->exists();
             }
 
             return $query;
@@ -230,6 +243,21 @@ class User extends Authenticatable
     public function service_type()
     {
         return $this->belongsTo(ServiceType::class, 'service_type_id');
+    }
+
+    public function incomingMessages()
+    {
+        return $this->hasMany(Message::class, 'reciever_id', 'id');
+    }
+
+    public function outgoingMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id', 'id');
+    }
+
+    public function unreadMessages()
+    {
+        return $this->incomingMessages()->unread();
     }
 
     /*public function canRole($role = null)

@@ -13,13 +13,27 @@
                     <a href="/dictionaries" class="button is-info"><i class="fas fa-backspace"></i>&nbsp;Назад</a>
                 </div>
             </div>
+            <div>
+                <form action="" method="get">
+                    <div class="field   has-addons">
+                        <div class="control is-expanded">
+                            <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
+                        </div>
+                        <div class="control">
+                        </div>
+                        <div class="control">
+                            <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <table class="table is-striped is-narrow is-hoverable">
                 <thead>
                 <tr>
                     <th>№</th>
                     <th>
                         <a href="?sort=id">ПЧ</a>
-                        {% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101']) %}
+                        {% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101', 'Диспетчер ОД 101']) %}
                             <form>
                                 <select name="filter_department" class="select control" onchange="this.form.submit()">
                                     {% for f in fire_departments %}

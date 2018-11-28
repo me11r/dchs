@@ -131,6 +131,16 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'event_info_arriveds',
                 'model' => \App\EventInfoArrived::class
             ],
+            [
+                'title' => 'Типы выездов',
+                'table' => 'ride_types',
+                'model' => \App\RideType::class
+            ],
+            [
+                'title' => 'Моренные озера',
+                'table' => 'morainic_lakes',
+                'model' => \App\Models\MorainicLake::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

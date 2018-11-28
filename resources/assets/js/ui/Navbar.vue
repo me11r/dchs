@@ -20,18 +20,45 @@
             :class="menuClass">
             <div class="navbar-start">
                 <div class="navbar-item has-dropdown is-hoverable is-small">
-                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;Карточки</a>
+                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;101</a>
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight(2)"
-                            href="/card/101"
+                            href="/card/add101"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Карточка 101</a>
+                            Путевка 101
+                        </a>
                         <a
-                            v-if="hasRight(33)"
-                            href="/card112"
+                            v-if="hasRight(2)"
+                            @click.prevent="toggleOpenModal101"
                             class="dropdown-item is-small"><i
-                            class="fas fa-address-card fa-fw"></i>&nbsp; Карточка 112
+                            class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Прочие 101
+                        </a>
+                        <a
+                                v-if="hasRight(2)"
+                                href="/card/101"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 101
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;112</a>
+                    <div class="navbar-dropdown">
+                        <a
+                                v-if="hasRight(33)"
+                                href="/card112/create"
+                                class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Путевка 112
+                        </a>
+                        <a
+                                v-if="hasRight(33)"
+                                href="/card112"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 112
                         </a>
                     </div>
                 </div>
@@ -114,11 +141,6 @@
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Ручной ввод хронометража</a>
                         <a
-                            v-if="hasRight(26)"
-                            href="/hydrant"
-                            class="dropdown-item is-small"><i class="fas fa-truck fa-fw"></i>&nbsp;
-                            Расположение гидрантов</a>
-                        <a
                             v-if="hasRight(27)"
                             href="/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-car fa-fw"></i>&nbsp;
@@ -133,11 +155,6 @@
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
                             Пожарные части</a>
-                        <a
-                            v-if="hasRight(30)"
-                            href="/morainic-lakes"
-                            class="dropdown-item is-small"><i class="fas fa-allergies fa-fw"></i>&nbsp;
-                            Моренные озера</a>
                     </div>
                 </div>
                 <div
@@ -196,7 +213,7 @@
                             </div>
 
                         </div>
-                        <a
+                        <!--<a
                             v-if="hasRight(21)"
                             href="/information"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
@@ -205,7 +222,7 @@
                             v-if="hasRight(22)"
                             href="/emergency-situation"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
-                            Оперативная информация</a>
+                            Оперативная информация</a>-->
                         <a
                             v-if="hasRight(23)"
                             href="/reports/101/staff"
@@ -236,6 +253,35 @@
                             href="/reports/101/forces-resources/"
                             class="dropdown-item is-small"><i class="fas fa-archive"></i>
                             &nbsp; Учет сил и средств</a>
+                        <a
+                            v-if="hasRight('SIREN_SPEECH_TECH_SHOW')"
+                            href="/reports/siren-speeches/"
+                            class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
+                            &nbsp; Данные по СРУ
+                        </a>
+                        <a
+                            v-if="hasRight('CALL_INFO_SHOW')"
+                            href="/reports/call-infos/"
+                            class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
+                            &nbsp; Информация по звонкам
+                        </a>
+                    </div>
+                </div>
+                <div
+                    class="navbar-item has-dropdown is-hoverable is-small"
+                    v-if="hasAnyRight(21,22)">
+                    <a class="navbar-link is-small"><i class="fas fa-info fa-fw"></i>&nbsp;Информация</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            v-if="hasRight(21)"
+                            href="/information"
+                            class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
+                            Информация от служб взаимодействия</a>
+                        <a
+                            v-if="hasRight(22)"
+                            href="/emergency-situation"
+                            class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
+                            Оперативная информация</a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">
@@ -300,6 +346,32 @@
                 </div>
             </div>
         </div>
+
+        <!--Карточка 101: прочие выезда-->
+        <div class="modal"
+            :class="opened_modal101">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">101 карточка</p>
+                    <button class="delete" aria-label="close" @click.prevent="toggleOpenModal101"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="level">
+                        <div class="level-left">
+                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-other-rides/">Прочие выезда</a>
+                        </div>
+                        <div class="level-right">
+                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <!--<button class="button is-success">Save changes</button>-->
+                    <!--<button class="button">Cancel</button>-->
+                </footer>
+            </div>
+        </div>
     </nav>
 </template>
 
@@ -319,6 +391,7 @@ export default {
     data: function () {
         return {
             opened: false,
+            opened_modal101_: false,
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             rights: getLocalRights()
         };
@@ -326,11 +399,17 @@ export default {
     computed: {
         menuClass: function () {
             return this.opened ? 'is-active' : '';
+        },
+        opened_modal101: function () {
+            return this.opened_modal101_ ? 'is-active' : '';
         }
     },
     methods: {
         toggleOpen: function () {
             this.opened = !this.opened;
+        },
+        toggleOpenModal101: function () {
+            this.opened_modal101_ = !this.opened_modal101_;
         },
 
         logout: function () {

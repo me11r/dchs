@@ -28,6 +28,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReport whereRadioStations($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $staff_duty_shift
+ * @property int|null $staff_action
+ * @property int|null $staff_total
+ * @property int|null $staff_head
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReport whereStaffAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReport whereStaffDutyShift($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReport whereStaffHead($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AirRescueReport whereStaffTotal($value)
  */
 class AirRescueReport extends Model
 {

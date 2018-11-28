@@ -6,6 +6,7 @@ use App\AirRescueReport;
 use App\Dictionary\CityArea;
 use App\DistrictManager;
 use App\Enums\FormationOrganisation;
+use App\Exceptions\AccessDeniedException;
 use App\FormationDistrictManager;
 use App\FormationDistrictManagerItem;
 use App\Models\FormationRecord;
@@ -15,6 +16,7 @@ use App\OperDutyShiftStaff;
 use App\OperDutyShiftStaffItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
 class FormationRecordController extends Controller
@@ -129,6 +131,11 @@ class FormationRecordController extends Controller
     {
         $item = $request->get('items', [])[$id];
         $itemModel = (new FormationRecord())->findOrFail($id);
+
+        if($itemModel->approved && !Auth::user()->hasRight(['CAN_EDIT_APPROVED_FORMATION_RECORD'])){
+            $this->throwAccessDenied();
+        }
+
         $itemModel->update($item);
         return redirect(route('formation-record.edit', ['id' => $itemModel->id]));
     }
@@ -177,6 +184,8 @@ class FormationRecordController extends Controller
         if($request->isMethod('post')){
             $all = $request->all();
 
+            $this->hasRightToEdit();
+
             OperDutyShiftStaffItem::date($date)
                 ->where('shift_id', $operShift_id)
                 ->delete();
@@ -206,6 +215,8 @@ class FormationRecordController extends Controller
         if($request->isMethod('post')){
             $all = $request->all();
 
+            $this->hasRightToEdit();
+
             $report = FormationDistrictManager::firstOrCreate([
                 'date' => $request->date
             ]);
@@ -223,5 +234,36 @@ class FormationRecordController extends Controller
         }
 
         return \view('formation-record.district-managers.create-edit', $data);
+    }
+
+    public function approve(Request $request, $id)
+    {
+        $formationRecord = FormationRecord::find($id);
+
+        if(Auth::user()->hasRight(['CAN_APPROVE_FORMATION_RECORD'])){
+
+            $formationRecord->approved = true;
+            $formationRecord->save();
+        }
+        else{
+            throw new AccessDeniedException();
+        }
+
+        return back();
+    }
+
+    public function hasRightToEdit()
+    {
+        $formationRecord = FormationRecord::whereDate('date', today())
+            ->where('organisation', 'dchs_almaty')
+            ->where('approved', true)
+            ->first();
+
+        if(!Auth::user()->hasRight(['CAN_EDIT_APPROVED_FORMATION_RECORD']) && $formationRecord){
+
+            $this->throwAccessDenied();
+        }
+
+        return true;
     }
 }

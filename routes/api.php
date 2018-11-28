@@ -6,7 +6,7 @@ Route::group(
     [
         // @TODO middleware doesn't work
         // @TODO middleware works but with Laravel Passport
-//        'middleware' => ['auth:api'],
+        //'middleware' => ['auth:api'],
         'namespace' => 'Api'
     ],
     function () {
@@ -25,6 +25,7 @@ Route::group(
         Route::post('101card/delete-chronology', 'CardController@deleteChronologyRecord101card');
         Route::post('101card/delete-on-way', 'CardController@deleteOnWayRecord101card');
         Route::post('101card/delete-arrived', 'CardController@deleteArrivedRecord101card');
+        Route::post('101card/promote-to-action', 'CardController@postPromoteToAction');
         Route::get('101card/get_ticket101', 'CardController@getTicket101');
         Route::post('101card/send_notifications', 'CardController@sendNotifications');
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
@@ -34,6 +35,8 @@ Route::group(
             Route::post('fcm/mark_message_as_delivered', 'FcmController@markMessageAsDelivered');
         });
 
+        Route::get('card112/get_card112', 'Card112Controller@getCard112');
+        Route::post('card112/send_notifications', 'Card112Controller@sendNotifications');
 
         Route::group(['prefix' => 'notification'], function (){
             Route::post('ticket101send', 'NotificationController@ticket101Send');

@@ -82,6 +82,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereStudy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereTotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\FormationPersonsReport whereVacation($value)
+ * @property-read \App\FireDepartment $fireDepartment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\FormationOdPersonItem[] $formation_person_items_od
  */
 class FormationPersonsReport extends Model
 {

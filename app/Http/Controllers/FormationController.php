@@ -581,7 +581,7 @@ class FormationController extends AuthorizedController
         ];
         $tech_fields = [
 //            null,
-            null,
+            'device',
             'motor_water_pump',
             'motor_mud_pump',
         ];
@@ -1034,6 +1034,22 @@ class FormationController extends AuthorizedController
             'type' => 'success',
             'text' => $text,
         ]);
+    }
+
+    public function approveAirRescue(Request $request, $id)
+    {
+        $formationRecord = AirRescueReport::find($id);
+
+        if(Auth::user()->hasRight(['CAN_APPROVE_FORMATION_RECORD'])){
+
+            $formationRecord->approved = true;
+            $formationRecord->save();
+        }
+        else{
+            $this->throwAccessDenied();
+        }
+
+        return back();
     }
 
 }

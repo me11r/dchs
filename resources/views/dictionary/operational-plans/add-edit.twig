@@ -66,11 +66,11 @@
 
                     <div class="field">
                         <label for="object_name">Оперплан (если нет в списке)</label>
-                        <input required type="text" class="input" name="operational_plan" id="operational_plan" value=""/>
+                        <input type="text" class="input" name="operational_plan" id="operational_plan" value=""/>
                     </div>
 
                     <div class="field">
-                        <input type="file" name="file" required />
+                        <input type="file" name="file" />
                         {% if record and record.file %}
                             <a href="{{ '/storage/operational-plans/'~record.file }}" class="button is-info" target="_blank">
                                 Скачать файл

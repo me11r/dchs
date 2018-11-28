@@ -1,14 +1,37 @@
 <template>
     <div
         class="message"
-        :class="messageClass"><div class="message-text">{{ message.message }}</div>
-        <div class="timer"><i class="far fa-clock fa-fw"></i>&nbsp;{{ message.created_at|dateFilter('HH:mm') }}</div>
+        :class="messageClass">
+        <div
+            class="message-text"
+            v-if="message.message_type === 'text'">{{ message.message }}</div>
+        <v-file-message
+            class="message-file"
+            v-if="message.message_type === 'file'"
+            :message="message"
+            :file="message.file"
+        />
+        <div class="timer">
+            <div class="top">
+                <i class="far fa-clock fa-fw"></i>&nbsp;{{ message.created_at|dateFilter('DD.MM, HH:mm') }}
+            </div>
+            <div class="bottom">
+                <div
+                    class="viewed"
+                    v-if="message.is_viewed">
+                <i class="far fa-check-circle fa-fw"></i>&nbsp;{{ message.updated_at|dateFilter('DD.MM, HH:mm') }}</div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import VFileMessage from './FileMessage';
 export default {
     name: 'SingleMessage',
+    components: {
+        'v-file-message': VFileMessage
+    },
     props: {
         message: {
             type: Object,
@@ -16,7 +39,9 @@ export default {
                 return {
                     message: '',
                     sender_id: 0,
-                    reciever_id: 0
+                    reciever_id: 0,
+                    message_type: 'text',
+                    is_viewed: false
                 };
             }
         },
@@ -45,7 +70,7 @@ export default {
     },
     computed: {
         messageClass: function() {
-            return (this.message.reciever_id === this.user.id) ? 'is-contacts-message' : 'is-mine-message';
+            return (this.message.sender_id === this.user.id) ? 'is-contacts-message' : 'is-mine-message';
         }
     },
     methods: {},
@@ -65,18 +90,29 @@ export default {
         box-shadow: 2px 2px 2px rgba(0,0,0,.1);
         display: flex;
         &.is-mine-message {
-            margin-right: 2rem;
+            margin-right: 1rem;
             background-color: $white-ter;
         }
         &.is-contacts-message {
-            margin-left: 2rem;
-            background-color: lighten($green, 90%);
+            margin-left:  1rem;
+            background-color: lighten($green, 60%);
         }
         .message-text {
             flex-grow:1;
         }
-        .message-timer {
+        .message-file {
+            display: flex;
+            flex-grow: 1;
+        }
+        .timer {
+            align-self: flex-end;
             flex-grow: 0;
+            font-size: 11px;
+            font-style: italic;
+            color: transparentize($primary, .3);
+            .viewed {
+                color: transparentize($cyan, .3);
+            }
         }
 
     }

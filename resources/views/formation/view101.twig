@@ -60,6 +60,7 @@
                 {% include 'formation/layout/view-101-table-header' %}
                 {% for dept in departments if dept.id != 13 %}
                     <tr {% if dept.tech_action|length == 0 %} style="background-color: #ff3317" {% endif %}>
+                        {#Наименование пожарных подразделений#}
                         <td>{{ dept.title }}</td>
 
                         {% for ppl in people_fields %}

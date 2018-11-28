@@ -14,8 +14,8 @@
             </div>
             <div class="column is-narrow">
                 <div>
-                    <a href="/card/add101/" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
-                    <a href="/card/101/" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
+                    <a href="/card/add101/0/{{ type }}" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
+                    <a href="/card/101/{{ type }}" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             </form>
         </div>
         <div class="panel">
-            <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+            <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
                 <thead>
                 <tr>
                     <th>№ КУИ</th>
@@ -74,17 +74,21 @@
                             </select>
                         </form>
                     </th>
+                    <th>Тип</th>
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
                 {% for ticket in tickets %}
                     <tr>
                         <td class="has-text-right">{{ ticket.id }}</td>
-                        <td>{{ ticket.location }}</td>
+                        <td>{{ ticket.location ?? ticket.fireplace }}</td>
                         <td>{{ ticket.city_area.name|default('-') }} {% if ticket.crossroad_1_id %}({{ ticket.crossroad_1.name|default('-') }} &times; {{ ticket.crossroad_2.name|default('-') }}){% endif %}</td>
                         <td class="has-text-right">{{ ticket.created_at|date('H:i d.m.Y') }}</td>
+                        <td class="has-text-right">{{ ticket.drill_type ?? '' }}</td>
                         <td class="has-text-right">
-                            <a href="{{ url('/card/add101/' ~ ticket.id) }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+                            <a href="/card/add101/{{ ticket.id }}/{{ type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+
+                            <delete-card-btn :can-delete="{{ can_delete }}" :ticket="{{ ticket }}"></delete-card-btn>
                         </td>
                     </tr>
                 {% else %}

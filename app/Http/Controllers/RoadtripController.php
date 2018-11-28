@@ -49,15 +49,6 @@ class RoadtripController extends AuthorizedController
         ])
             ->findOrFail($plan_id);
 
-        if(!$trip->is_accepted){
-            $trip->is_accepted = true;
-            $trip->save();
-
-            $trip->results()->update(['accept_time' => now()]);
-        }
-
-        $departments = [];
-
         $results = $trip->ticket
             ->results()
             ->isDispatched()
@@ -65,6 +56,19 @@ class RoadtripController extends AuthorizedController
             ->where('fire_department_id', $trip->department_id)
             ->get();
 
+        foreach ($results as $result) {
+            if(!$result->accept_time){
+                $result->accept_time = now();
+                $result->save();
+            }
+        }
+
+        if(!$trip->is_accepted){
+            $trip->is_accepted = true;
+            $trip->save();
+        }
+
+        $departments = [];
 
         if($results->count()){
             foreach ($trip->ticket->results as $item) {
@@ -97,11 +101,10 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
+    /*send dept from 101 card view*/
     public function getSend(Request $request, $dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
-        $ticket = Ticket101::findOrFail($ticket_id);
-        $department = FireDepartment::findOrFail($dept_id);
 
         $plan = RoadtripPlan::firstOrCreate([
             'card_id' => $ticket_id,
@@ -188,14 +191,17 @@ class RoadtripController extends AuthorizedController
 
     public function getPrint(Request $request, $id)
     {
-        if(env('IS_LOCAL', false) == true){
-            return response()->json('ok', 200);
+        $record = RoadtripPlan::with(['ticket', 'department', 'results'])->find($id);
+
+        if($record->printed){
+            return response()->json('', 200);
         }
+
         $this->noLayout();
         $html = view(
             'pdf.roadtrip-page',
             [
-                'trip' => RoadtripPlan::with(['ticket', 'department', 'results'])->find($id),
+                'trip' => $record,
                 'image_path' => $request->get('image_path')
             ])
             ->render();
@@ -210,6 +216,10 @@ class RoadtripController extends AuthorizedController
         $dompdf->render();
 
         $pdf = $dompdf->output(['isRemoteEnabled' => true]);
+
+        $record->printed = true;
+        $record->save();
+
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf;
         }, 'roadtrip-'.$id.'.pdf', ['Content-type' => 'application/pdf']);
@@ -220,6 +230,14 @@ class RoadtripController extends AuthorizedController
         $result = FireDepartmentResult::find($request->dept_id);
         $result->dispatched = true;
         $result->out_time = now()->format('H:i:s');
+        $result->save();
+        return response()->json(['ok'], 200);
+    }
+
+    public function postArrived(Request $request)
+    {
+        $result = FireDepartmentResult::find($request->dept_id);
+        $result->arrive_time = now()->format('H:i:s');
         $result->save();
         return response()->json(['ok'], 200);
     }

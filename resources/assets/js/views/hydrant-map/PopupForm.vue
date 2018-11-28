@@ -3,7 +3,7 @@
         class="popup">
         <div class="shadowed-background">
             <div class="popup-window">
-                <h5 class="subtitle">{{ model.id ? 'Редактирование' : 'Добавление' }}</h5>
+                <h5 class="subtitle">{{ model.id ? 'Редактирование гидранта' : 'Добавление гидранта' }}</h5>
 
                 <hr>
 
@@ -131,7 +131,7 @@ export default {
         };
     },
     components: {
-        BuefyCommonSelect,
+        BuefyCommonSelect
     },
     computed: {
         fireDepartmentsOptions() {
@@ -155,11 +155,7 @@ export default {
     },
     beforeMount() {
         this.model = this.item;
-        // if(this.model.updated_)
-        console.dir(this.item)
-        if (window.hydrantListData) {
-            this.fireDepartments = window.hydrantListData.fireDepartments;
-        }
+        this.fireDepartments = window.hydrantListData.fireDepartments;
     }
 };
 </script>

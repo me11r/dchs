@@ -43,11 +43,16 @@
             <br>
         {% endfor %}
     </div>
+    <div>
+        {#8. ГУ «СП и АСР»: всего выездов – {{ fires_count }}, из них: пожары - {{ fires_count }}, сухостой - 0,  мусор – 0, КЗ – 0, бдительность населения – 0, отравление природным/ угарным газом – 0, погибло – 0, спасен – 0, эвакуировано – 0, пострадавший – 0.#}
+        8. ГУ «СП и АСР»: всего выездов – {{ fires_count }}
+        {% if fires_count > 0 %}
+        , из них: {% for tripResult, count in trip_results101 %} <p style="padding-left: 40px">{{ tripResult }}: {{ count }}</p> {% endfor %}
+        {% endif %}
+    </div>
     <p>
-        8. ГУ «СП и АСР»: всего выездов – {{ fires_count }}, из них: пожары - {{ fires_count }}, сухостой - 0,  мусор – 0, КЗ – 0, бдительность населения – 0, отравление природным/ угарным газом – 0, погибло – 0, спасен – 0, эвакуировано – 0, пострадавший – 0.
-    </p>
-    <p>
-        9. ЕДДС: Всего поступивших  звонков на «112» - {{ card112_count }}, «101» - {{ card101_count }} {#, «109» - 384.#}
+        {#9. ЕДДС: Всего поступивших  звонков на «112» - {{ card112_count }}, «101» - {{ card101_count }} #}{#, «109» - 384.#}
+        9. ЕДДС: Всего поступивших  звонков на «112» - {{ call_info.count_112|default(0) }}, «101» - {{ call_info.count_101|default(0) }} , «109» - {{ call_info.count_109|default(0) }}.
     </p>
     <div>
         10. Казавиаспас: в аэропорту Боролдай в режиме дежурства:
@@ -64,13 +69,20 @@
         {% endfor %}
     </div>
     <p>
-        12. Данные по СРУ: всего – 591: С-40 (моторные) – 244, СРУ-347:  из них  в нерабочем – 2:
+        12. Данные по СРУ: всего – {{ siren_speech_tech.total|default(0) }}: С-40 (моторные) – {{ siren_speech_tech.motor|default(0) }}, СРУ-{{ siren_speech_tech.sst|default(0) }}:  из них  в нерабочем – {{ siren_speech_tech.broken|default(0) }}:
     </p>
-    <p style="margin-left: 40pt">1. Наурызбайский район, санаторий Алатау (демонтировано);</p>
-    <p style="margin-left: 40pt">2. Алмалинский  район, ОШ-91, ул. Докучаева, 31 «А» (демонтировано);</p>
+    {#<p style="margin-left: 40pt">1. Наурызбайский район, санаторий Алатау (демонтировано);</p>#}
+    {#<p style="margin-left: 40pt">2. Алмалинский  район, ОШ-91, ул. Докучаева, 31 «А» (демонтировано);</p>#}
     <p>
-        13. Мониторинг интернет пространства – негативная информация не зарегистрирована.
+        13. Прогноз погоды на {{ 'now'|date('d.m.Y') }}: г. Алматы: {{ weather_forecast.forecast_city1 }}.
     </p>
+    <div>
+        14. Кол-во выездов служб взаимодействия: {{ emergency_situations.count() }}.
+        {% for situation in emergency_situations %}
+            <p style="padding-left: 40px">Служба: {{ situation.user.service_type.name|default('') }}</p>
+            <div style="padding-left: 40px">{{ situation.size }}</div>
+        {% endfor %}
+    </div>
 
     <table style="margin-top: 200pt;">
         <tr>
