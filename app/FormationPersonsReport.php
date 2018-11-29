@@ -155,6 +155,10 @@ class FormationPersonsReport extends Model
             }
         }
 
+        $result['dspt_vacation'] = StaffDspt::all();
+        $result['dspt_sick'] = StaffDspt::all();
+        $result['dspt_business_trip'] = StaffDspt::all();
+
         return $result;
     }
 }

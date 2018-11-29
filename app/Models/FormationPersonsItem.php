@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\FormationPersonsReport;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -49,6 +50,11 @@ class FormationPersonsItem extends Model
         return $this->belongsTo(Staff::class, 'staff_id');
     }
 
+    public function report()
+    {
+        return $this->belongsTo(FormationPersonsReport::class, 'report_id');
+    }
+
     public function scopeRank($q, $rank)
     {
         return $q->where('rank', $rank);
@@ -59,5 +65,12 @@ class FormationPersonsItem extends Model
         return $q->where('staff_id', $staff_id)
             ->where('status', $status)
             ->whereBetween('updated_at',[$date_begin, $date_end]);
+    }
+
+    public function scopeByRankAndForm($q, $rank, $form_id)
+    {
+        return $q->whereHas('report', function ($q) use ($form_id){
+            $q->where('form_id', $form_id);
+        })->where('rank', $rank);
     }
 }

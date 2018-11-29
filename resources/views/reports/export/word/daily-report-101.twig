@@ -430,6 +430,31 @@
         {% endfor %}
     {% endif %}
 
+    {% for title, tripResult in tripResults %}
+        <div style="padding-top: 50px; margin: 0 auto;width: 40%;">
+            &nbsp;&nbsp;&nbsp;{{ title }}:
+        </div>
+        {% for tripItem in tripResult %}
+            <div>
+                {{ loop.index }}. {{ tripItem.date }}. {{ tripItem.city_area }}, {{ tripItem.address }}: (заявитель: {{ tripItem.caller_name }}, тел: {{ tripItem.caller_phone }}).
+
+                {{ tripItem.pre_information }}
+
+                S={{ tripItem.square_max }} м2
+
+                {{ tripItem.first_dept_arrived.name }} ({{ tripItem.first_dept_arrived.tech_dept }}) на {{ tripItem.first_dept_arrived.vehicle }} прибыло в {{ tripItem.first_dept_arrived.arrive_time ?? null }} ({{ tripItem.first_dept_arrived.on_way_time }}).
+
+                Пожар локализован в {{ tripItem.loc_time }}
+
+                ликвидирован в {{ tripItem.liqv_time }}, {{ tripItem.chronology_str }}
+
+                На место пожара выезжал л/с: {{ tripItem.depts_out }}.
+
+                Материал зарегистрирован в КУИ №{{ tripItem.id }} от {{ tripItem.date2 }}.
+            </div>
+        {% endfor %}
+    {% endfor %}
+
 
     <br/><br/>
     <table>

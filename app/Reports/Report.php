@@ -2,6 +2,10 @@
 
 namespace App\Reports;
 
+use App\Chronology101;
+use App\Dictionary\TripResult;
+use App\Models\FireDepartmentResult;
+use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Repositories\Contracts\FireObjectInterface;
@@ -240,7 +244,69 @@ class Report
 
 
         ];
+        $data['tripResults'] = $this->tripResults();
         return $data;
+    }
+
+    private function tripResults()
+    {
+        $results = [];
+        foreach (TripResult::all() as $trip_result) {
+            foreach ($this->report as $ticket) {
+                if($ticket->trip_result_id === $trip_result->id){
+
+                    $firstDeptArrived = $ticket->first_department_arrived();
+                    $depts_out  = $ticket->results()->whereNotNull('arrive_time')->get();
+                    $depts_out_str = '';
+                    foreach ($depts_out as $out) {
+                        $depts_out_str .= "{$out->department->title}, ";
+                    }
+
+                    if($firstDeptArrived){
+                        $fireDeptResult = FireDepartmentResult::find($firstDeptArrived->id);
+                        $firstDeptArrived->name = $fireDeptResult->department->title;
+                        $firstDeptArrived->tech_dept = $fireDeptResult->tech->department;
+                        $firstDeptArrived->vehicle = $fireDeptResult->tech->vehicle->name;
+                    }
+
+
+                    $chronology = Chronology101::where('ticket101_id', $ticket->id)
+                        ->whereNotNull('event_info_arrived_id')
+                        ->get();
+                    
+                    $chronology_str = '';
+                    
+                    if($chronology->count()){
+                        foreach ($chronology as $chrono) {
+                            $chronology_str .= "$chrono->quantity " . ($chrono->event_info_arrived->name ?? null) . ', ';
+                        }
+                    }
+
+                    $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
+                        ->max('square');
+
+                    $results[$trip_result->name][] = [
+                        'result_title' => $trip_result->name,
+                        'date' => $ticket->created_at->format('d.m.Y H:i'),
+                        'date2' => $ticket->created_at->format('d.m.Y'),
+                        'city_area' => $ticket->city_area->name ?? null,
+                        'address' => $ticket->location,
+                        'caller_name' => $ticket->caller_name,
+                        'caller_phone' => $ticket->caller_phone,
+                        'pre_information' => $ticket->pre_information,
+                        'depts_out' => $depts_out_str,
+                        'first_dept_arrived' => $firstDeptArrived,
+                        'loc_time' => $ticket->loc_time,
+                        'liqv_time' => $ticket->liqv_time,
+                        'id' => $ticket->id,
+                        'chronology_str' => $chronology_str,
+                        'square_max' => $max_square,
+                    ];
+                }
+            }
+        }
+
+        return $results;
     }
 
     private function getDates()

@@ -26,6 +26,7 @@ use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
 use App\StaffCpps;
+use App\Ticket101Other;
 use App\User;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -222,14 +223,14 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
-        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION);
+        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION) && !Auth::user()->isAdmin();
 
         $belongsToDept = Auth::user()->fire_department_id;
 
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::where('id', '!=', 19)->get();
+            $departments = FireDepartment::where('id', '<>', 19)->get();
         }
 
         $fieldlist = [
@@ -474,6 +475,8 @@ class FormationController extends AuthorizedController
             'tech_repair' => 0,
         ];
 
+        $report = (new FormationReport)->find($form_id);
+
         $dept13_people = [];
         $dept_od_people = [];
 
@@ -631,9 +634,36 @@ class FormationController extends AuthorizedController
         $this->set('departments', $departments);
         $this->set('excluded_departments', FireDepartment::whereIn('id', $excludedIds)->get());
 
-        $this->set('report', (new FormationReport)->find($form_id));
+        $this->set('report', $report);
+
         $tech = (new FormationTechReport)->with('formation_tech_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
         $people = (new FormationPersonsReport)->with('formation_person_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
+
+        $dispatchers = FormationPersonsItem::byRankAndForm('dispatchers', $form_id)->get()->sortBy('staff_id');
+        $vacation = FormationPersonsItem::byRankAndForm('vacation', $form_id)->get()->sortBy('staff_id');
+        $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id');
+        $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy('staff_id');
+
+        $inactive_tech = $rawPeople = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($form_id){
+            $q->where('form_id', $form_id);
+        })->where('status', 'repair')
+            ->get();
+
+        $inactive_tech_cnt = [];
+        foreach ($inactive_tech as $inactive_tech_item){
+            if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
+                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
+            }
+            else{
+                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
+            }
+        }
+
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($report){
+            $q->where('name', 'Расстановка');
+        })
+            ->whereDate('created_at', $report->report_date)
+            ->get();
 
         // лс ПЧ-13
         if(isset($people[13])){
@@ -740,7 +770,7 @@ class FormationController extends AuthorizedController
             'sumArray' => $sumArray,
             'departments' => $departments,
             'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
-            'report' => FormationReport::find($form_id),
+            'report' => $report,
         ];
 
         Cache::put('report101_data', $dataToReport, 3600);
@@ -776,6 +806,15 @@ class FormationController extends AuthorizedController
             ->set('tech_fl', $tech_fieldlist)
             ->set('tech_items_count', $tech_items_count)
             ->set('ttl_count', $ttl_count)
+            ->set('dispatchers', $dispatchers)
+            ->set('formationCard101Others', $formationCard101Others)
+            ->set('report', $report)
+            ->set('vacation', $vacation)
+            ->set('sick', $sick)
+            ->set('business_trip', $business_trip)
+            ->set('inactive_tech', $inactive_tech)
+            ->set('inactive_tech_cnt', $inactive_tech_cnt)
+            ->set('canEditOd', Auth::user()->hasRight('CAN_EDIT_OD_FORMATION'))
             ->set('sumArray', $sumArray);
     }
 
