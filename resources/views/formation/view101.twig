@@ -4,6 +4,7 @@
         window.odStaff = {{ od_staff | json_encode() | raw }};
         window.people = {{ people | json_encode() | raw }};
         window.formId = '{{ form_id }}';
+        window.canEditOd = {{ canEditOd | json_encode() | raw }};
     </script>
     <div class="section container-fluid" id="view-101-app">
     <div class="panel">
@@ -320,6 +321,107 @@
                         :rank="'ipl_zhalyn'">
                 </persons101-multiselect>
             </p>
+        </div>
+        <div class="column">
+            <p><span class="has-text-weight-bold">1 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Резиденция Президента РК - {% for key, p in dept13_people.post1_president_residence|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">2 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Архив Президента РК - {% for key, p in dept13_people.post2_president_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">3 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Государственный архив РК - {% for key, p in dept13_people.post3_state_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">4 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Национальный Банк РК - {% for key, p in dept13_people.post4_national_bank|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+        </div>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Диспетчера:</h3>
+            <table class="table">
+                {% for item in dispatchers %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }} ({{ item.staff.rank }})</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <p><span class="has-text-weight-bold">1 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Резиденция Президента РК - {% for key, p in dept13_people.post1_president_residence|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">2 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Архив Президента РК - {% for key, p in dept13_people.post2_president_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">3 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Государственный архив РК - {% for key, p in dept13_people.post3_state_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">4 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Национальный Банк РК - {% for key, p in dept13_people.post4_national_bank|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+        </div>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Отпуск:</h3>
+            <table class="table">
+                {% for item in vacation %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <persons101-multiselect
+                    :name="'ДСПТ отпуск'"
+                    :inactive-type="vacation"
+                    :rank="'dspt_vacation'">
+            </persons101-multiselect>
+        </p>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Больничный:</h3>
+            <table class="table">
+                {% for item in sick %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }} {{ item.date_from ? 'c '~ item.date_from }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <persons101-multiselect
+                    :name="'ДСПТ больничный'"
+                    :inactive-type="sick"
+                    :rank="'dspt_sick'">
+            </persons101-multiselect>
+        </p>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Командировка:</h3>
+            <table class="table">
+                {% for item in business_trip %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <persons101-multiselect
+                    :name="'ДСПТ командировка'"
+                    :inactive-type="business_trip"
+                    :rank="'dspt_business_trip'">
+            </persons101-multiselect>
+        </p>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Расстановка на {{ report.report_date|date('d-m-Y') }}:</h3>
+            <table class="table">
+                {% for item in formationCard101Others %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ loop.index }}. {{ item.staff.department.name }}</span></td>
+                        <td>начало в {{ item.time_begin }} {{ item.object_name }} {{ item.direction }} {{ item.note }} {{ item.date_from ? 'c '~ item.date_from }}</td>
+                        {# начало в 09 час. 00 мин. Бостандыкский район, пр. Абая, 48 «А» (проведение 17-го Трофея МФГ по гандболу в УСК «Достык»)#}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНАЯ ТЕХНИКА:</h3>
+            <table class="table">
+                {% for item in inactive_tech %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.vehicle.fireDepartment.name }}</span></td>
+                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.name }}) {% endif %} {{ item.comment ? ' - '~item.comment }} {{ item.date_from ? ' с '~item.date_from }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="column">
+            <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
     </div>
     </div>

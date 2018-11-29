@@ -22,7 +22,7 @@
         };
         window.isAdmin = {{ isAdmin | json_encode() | raw }};
         window.canEditOwnHydrants = {{ canEditOwnHydrants | json_encode() | raw }};
-        window.userDept = {{ userDept }};
+        window.userDept = {{ userDept|default(0) }};
         window.initCommonMapScreen();
     </script>
 {% endblock content %}

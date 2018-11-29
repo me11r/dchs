@@ -40,6 +40,10 @@ export default {
             'type': String,
             'default': ''
         },
+        inactiveType: {
+            'type': String,
+            'default': ''
+        },
         titleClass: {
             'type': String | Object | Array,
             'default': ''
@@ -70,10 +74,18 @@ export default {
                 'ipl_zhalyn'
             ];
 
+            const dsptTypes = [
+                'dspt_vacation',
+                'dspt_business_trip',
+                'dspt_sick',
+            ];
+
             if (tulparTypes.indexOf(this.rank) !== -1) {
                 return 'duty_vehicle';
             } else if (zhalynTypes.indexOf(this.rank) !== -1) {
                 return 'zhalin';
+            } else if (dsptTypes.indexOf(this.rank) !== -1) {
+                return 'dspt';
             } else {
                 return this.rank;
             }
@@ -84,11 +96,17 @@ export default {
     },
     data() {
         return {
-            activated: false
+            activated: false,
+            inactiveType_: this.inactiveType,
         };
     },
     methods: {
         activateTrigger() {
+
+            if (window.canEditOd === false) {
+                return;
+            }
+
             if (this.activated) {
                 this.activated = false;
                 this.save();
@@ -99,6 +117,7 @@ export default {
         save() {
             axios.post('/api/101/sync-formation-od-persons', {
                 formId: this.$parent.formId,
+                inactiveType: this.inactiveType_,
                 type: this.rank,
                 selectedStaff: this.$parent.selectedStaff[this.rank],
                 tableName: this.tableName
