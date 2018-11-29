@@ -69,6 +69,9 @@ class ReportController extends AuthorizedController
             (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport()
         )->render();
 
+        //todo для теста
+        //return $html;
+
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
         $file_name = "Суточный отчет - $date.pdf";

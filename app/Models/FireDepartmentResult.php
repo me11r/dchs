@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Chronology101;
 use App\FireDepartment;
 use App\RoadtripPlan;
 use App\Ticket101;
@@ -78,6 +79,11 @@ class FireDepartmentResult extends Model
         'promoted_at',
         'promoted_department',
     ];
+
+    public function chronology()
+    {
+        return $this->hasMany(Chronology101::class, 'fire_department_result_id');
+    }
 
     public function scopeOnWay($q, $ticket_id)
     {

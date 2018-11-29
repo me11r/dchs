@@ -29,7 +29,7 @@
                             Путевка 101
                         </a>
                         <a
-                            v-if="hasRight(2)"
+                            v-if="hasRight('CARD101_ACCESS_OTHERS_RIDES')"
                             @click.prevent="toggleOpenModal101"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;

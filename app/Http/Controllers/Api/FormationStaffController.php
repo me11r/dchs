@@ -20,9 +20,8 @@ class FormationStaffController extends Controller
     {
         $data = $request->all();
         $od_people = (new FormationPersonsReport())->od_staff;
-        if (in_array($data['rank'], $od_people)) {
-            $resp = FormationOdPersonItem::with(['staff'])
-                ->rank($request->rank)
+        if (isset($od_people[$data['rank']])) {
+            $resp = FormationOdPersonItem::rank($request->rank)
                 ->where('report_id', $request->id)
                 ->get();
         } else {
@@ -67,7 +66,8 @@ class FormationStaffController extends Controller
                 'date_to' => null,
                 'rank' => $type,
                 'table_name' => $tableName,
-                'status' => 'inactive',
+//                'status' => 'inactive',
+                'status' => $request->inactiveType ? $request->inactiveType : 'active',
             ]);
         }
 

@@ -33,6 +33,7 @@
                         <p class="control">
                             <label>ПЧ</label>
                         </p>
+                        <!--v-on:update:value="model['fire_department_id'] = $event"-->
                         <buefy-common-select
                             id="fire_department_id"
                             name="fire_department_id"

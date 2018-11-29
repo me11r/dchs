@@ -43,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/card/101/{card_type?}', 'CardController@get101')->name('card101');
     Route::get('/card/add101/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+', 'card_type' => '[A-Za-z]+']);
-    Route::match(['get', 'post'],'/card/add101-other-rides/', 'CardController@getAdd101OtherRide')->name('card101addOtherRide');
+    Route::match(['get', 'post'],'/card/add101-other-rides/', 'CardController@getAdd101OtherRide')->name('card101addOtherRide')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
     #Route::get('/card/add101-other/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}/{card_type?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+','card_type' => '[A-Za-z]+']);
     Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);

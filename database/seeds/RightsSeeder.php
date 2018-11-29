@@ -53,6 +53,7 @@ class RightsSeeder extends Seeder
             ['title' => 'АО "Өртсөндіруші"', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ORTSERT'],
             ['title' => 'ДЧС г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_DCHS_ALMATY'],
             ['title' => 'Служба спасения г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_EMERGENCY_ALMATY'],
+            ['title' => 'СП и АСР: редактирование ОД', 'right_group_id' => 5, 'name' => 'CAN_EDIT_OD_FORMATION'],
 
             ['title' => 'Может одобрять суточный отчет', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_REPORT_101'],
             ['title' => 'Может утверждать Журнал строевых записок ДЧС г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_RECORD'],
@@ -79,6 +80,7 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Личный состав', 'name' => 'CAN_ACCESS_PERSONS'],
             ['right_group_id' => 7, 'title' => 'Пожарные части', 'name' => 'CAN_ACCESS_FIRE_DEPTS'],
             ['right_group_id' => 7, 'title' => 'Моренные озера', 'name' => 'CAN_ACCESS_FIRE_LAKES'],
+            ['right_group_id' => 7, 'title' => 'Редактировать данные по гидрантам в рамках своей ПЧ', 'name' => 'CAN_EDIT_MAP_HYDRANTS'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 
@@ -117,6 +119,7 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 6, 'title' => 'РГП Казгидромет (заполнение данных)', 'name' => 'KAZGIDROMET_FILLING'];
 
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: редактирование после закрытия', 'name' => 'CARD101_EDIT_CLOSED'];
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101', 'name' => 'CARD101_ACCESS_OTHERS_RIDES'];
 
 
         $rights[] = ['right_group_id' => 9, 'title' => 'Сводная информация по мореным озерам: просмотр', 'name' => 'CAN_VIEW_MORAINIC_LAKE_SUMMARIES'];
