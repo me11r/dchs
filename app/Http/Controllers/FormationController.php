@@ -238,7 +238,7 @@ class FormationController extends AuthorizedController
         ];
         $this->set('fieldlist', $fieldlist);
 
-        $staff = Staff::where('department_id', $dept_id)->get();
+        $staff = Staff::where('department_id', $dept_id)->orderBy('name')->get();
 
         $this->set('staff', $staff);
 

@@ -20,6 +20,7 @@ Route::group(
         Route::apiResource('hydrant', 'HydrantController');
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
         Route::post('101card/save-chronology', 'CardController@createChronologyRecord101card');
+        Route::post('101card/update-chronology', 'CardController@updateChronologyRecord101card');
         Route::post('101card/save-on-way', 'CardController@createOnWayRecord101card');
         Route::post('101card/save-arrived', 'CardController@createArrivedRecord101card');
         Route::post('101card/delete-chronology', 'CardController@deleteChronologyRecord101card');

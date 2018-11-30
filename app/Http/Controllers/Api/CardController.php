@@ -12,6 +12,7 @@ use App\Models\Ticket101\Ticket101OtherRecord;
 use App\OnWay101;
 use App\Services\Ticket101\NotificationService;
 use App\Ticket101;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -114,11 +115,20 @@ class CardController extends Controller
     public function createChronologyRecord101card(Request $request)
     {
         $data = $request->all();
+        if(str_contains($request->input('record.time'), 'Z')){
+            $time = Carbon::parse($request->input('record.time'), 'Asia/Almaty')
+                ->addHours(6)
+                ->format('H:i');
+        }
+        else{
+            $time = $request->input('record.time');
+        }
+
         $resp = [];
         if($request->record){
             $resp = Chronology101::updateOrCreate(['id' => $request->record['id']],[
                 'ticket101_id' => $request->ticket_id,
-                'time' => $request->input('record.time', null),
+                'time' => $time,
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
                 'fire_department_result_id' => $request->input('record.fire_department_result.id'),
@@ -139,6 +149,11 @@ class CardController extends Controller
         }
 
         return response()->json($resp);
+    }
+
+    public function updateChronologyRecord101card(Request $request)
+    {
+
     }
 
     public function createArrivedRecord101card(Request $request)
