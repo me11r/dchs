@@ -594,6 +594,9 @@ class ReportController extends AuthorizedController
     {
         $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
         $view = view('reports.export.word.daily-report-101', $report)->render();
+        /*TODO debug only*/
+        //return $view;
+
         $word = new PhpWord();
         $section = $word->addSection();
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);

@@ -259,7 +259,7 @@ class Report
                     $depts_out  = $ticket->results()->whereNotNull('arrive_time')->get();
                     $depts_out_str = '';
                     foreach ($depts_out as $out) {
-                        $depts_out_str .= "{$out->department->title}, ";
+                        $depts_out_str .= "{$out->department->title}({$out->tech->department}), ";
                     }
 
                     if($firstDeptArrived){
@@ -282,6 +282,11 @@ class Report
                         }
                     }
 
+                    $service_plans_str = '';
+                    foreach ($ticket->service_plans()->whereNotNull('dispatched_time')->get() as $service_plan) {
+                        $service_plans_str .= $service_plan->service_type->name . ', ';
+                    }
+
                     $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
                         ->max('square');
 
@@ -301,6 +306,9 @@ class Report
                         'id' => $ticket->id,
                         'chronology_str' => $chronology_str,
                         'square_max' => $max_square,
+                        'kui' => $ticket->kui,
+                        'ticket' => $ticket,
+                        'service_plans_str' => $service_plans_str,
                     ];
                 }
             }
