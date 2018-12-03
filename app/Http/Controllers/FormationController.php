@@ -303,6 +303,7 @@ class FormationController extends AuthorizedController
             'dept_id' => $dept_id,
             'active' => $request->total_active,
             'head_guards' => count($request->input('staff.head_guards.staff_id', [])),
+            'trainee' => count($request->input('staff.trainee.staff_id', [])),
             'commander_squads' => count($request->input('staff.commander_squads.staff_id', [])),
             'drivers' => count($request->input('staff.drivers.staff_id', [])),
             'privates' => count($request->input('staff.privates.staff_id', [])),
@@ -322,13 +323,15 @@ class FormationController extends AuthorizedController
         if($request->staff){
             FormationOdPersonItem::where('report_id', $model->id)
                 ->delete();
+            FormationPersonsItem::where('report_id', $model->id)
+                ->delete();
 
             if($model->fireDepartment->title == 'ОД'){
 
                 foreach ($request->staff as $type => $inputs) {
                     foreach ($inputs['staff_id'] as $input_key => $input) {
 
-                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other', 'trainee'])){
                             $data['status'] = 'active';
                         }
                         else{
@@ -356,7 +359,7 @@ class FormationController extends AuthorizedController
                 foreach ($request->staff as $type => $inputs) {
                     foreach ($inputs['staff_id'] as $input_key => $input) {
 
-                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other'])){
+                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other', 'trainee'])){
                             $data['status'] = 'active';
                         }
                         else{

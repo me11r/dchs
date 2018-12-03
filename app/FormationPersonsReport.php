@@ -107,6 +107,7 @@ class FormationPersonsReport extends Model
         'business_trip',
         'other',
         'gas_smoke_protection_service',
+        'trainee',
     ];
     
     public $od_staff = [
