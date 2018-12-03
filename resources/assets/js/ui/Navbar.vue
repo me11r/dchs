@@ -268,7 +268,7 @@
                         <a
                                 v-if="hasRight('ANALYTICS101_SHOW')"
                                 href="/reports/analytics101/"
-                                class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
+                                class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Аналитика
                         </a>
                     </div>
