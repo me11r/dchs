@@ -68,6 +68,7 @@ class Staff extends Model
             'drivers' => 'Водитель',
             'privates' => 'Рядовой',
             'dispatchers' => 'Диспетчер',
+            'trainee' => 'Стажер',
         ];
 
         if($status != null){

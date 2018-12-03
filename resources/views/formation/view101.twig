@@ -64,8 +64,11 @@
                         {#Наименование пожарных подразделений#}
                         <td>{{ dept.title }}</td>
 
+                        {#{{ dump(people_fields) }}#}
                         {% for ppl in people_fields %}
-                            <td>{{ people[dept.id][ppl]|default('-') }}</td>
+                            <td>
+                                {{ people[dept.id][ppl]|default('-') }}{% if ppl == 'privates' and people[dept.id]['trainee']|default(null) is not empty %}/{{ people[dept.id]['trainee'] }}{% endif %}
+                            </td>
                         {% endfor %}
 
                         {% for tch in tech_fields %}
