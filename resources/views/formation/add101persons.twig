@@ -194,6 +194,10 @@
                             <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
                                        block_type="dispatchers"></staff-101>
                         </div>
+                        <div class="field"><label for="field_2_5">Стажеры</label>
+                            <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                       block_type="trainee"></staff-101>
+                        </div>
 
                     {% endif %}
 
