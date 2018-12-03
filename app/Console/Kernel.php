@@ -27,6 +27,10 @@ class Kernel extends ConsoleKernel
          $schedule->command('create:formation_report101')
              ->daily()
              ->at('18:00');
+
+         $schedule->command('create:analytics101report')
+             ->daily()
+             ->at('08:00');
     }
 
     /**

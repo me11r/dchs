@@ -31,7 +31,10 @@ class StaffController extends Controller
         $per_page = 20;
 
         if(Auth::id() == 1){
-            $items = $this->repository->orderBy('department_id')->paginate($per_page);
+            $items = $this->repository
+                ->orderBy('department_id')
+                ->orderBy('name')
+                ->paginate($per_page);
         }
         else{
             $items = Auth::user()->staff()->orderBy('department_id')->paginate($per_page);
