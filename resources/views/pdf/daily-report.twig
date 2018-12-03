@@ -24,19 +24,16 @@
 <body>
 
 <div style="width:100%;font-size: 12px">
-    <div style="margin: 0 auto;width: 65%">
+    <div style="margin: 0 auto;width: 65%; font-weight: bold;">
         ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И
     </div>
     <div style="margin: 0 auto;padding-bottom: 30px;width: 65%;">
         &nbsp;&nbsp;АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК
     </div>
-    <div style="width: 200px; float: right;padding-bottom: 50px;padding-right: 20px">
-        Начальнику ГУ «СП и АСР» ДЧС г. Алматы КЧС МВД РК полковнику гражданской защиты Касыбаеву Р.А.
-    </div>
     <div style="clear: both"></div>
 
     <div style="margin: 0 auto;width: 40%;">
-        &nbsp;&nbsp;&nbsp;ОПЕРАТИВНАЯ ИНФОРМАЦИЯ ОГ-1
+        &nbsp;&nbsp;&nbsp;ОПЕРАТИВНАЯ ИНФОРМАЦИЯ
     </div>
     <div style="margin: 0 auto;width: 40%;">
         по пожарам, произошедшим на территории
@@ -458,59 +455,15 @@
 
 
     {% for title, tripResult in tripResults %}
-        <div style="padding-top: 50px; margin: 0 auto;width: 40%;">
+        <div style="padding-top: 50px; margin: 0 auto;width: 50%; font-weight: bold;">
             &nbsp;&nbsp;&nbsp;{{ title }}:
         </div>
         {% for tripItem in tripResult %}
             <div>
-                {{ loop.index }}. {{ tripItem.analytics }} {#{{ tripItem.date }}. {{ tripItem.city_area }}, {{ tripItem.address }}: (заявитель: {{ tripItem.caller_name }}, тел: {{ tripItem.caller_phone }}).
-
-                {{ tripItem.pre_information }}
-
-                S={{ tripItem.square_max }} м2
-
-                {% if tripItem.first_dept_arrived %}
-                    {{ tripItem.first_dept_arrived.name }} ({{ tripItem.first_dept_arrived.tech_dept }}) на {{ tripItem.first_dept_arrived.vehicle }} прибыло в {{ tripItem.first_dept_arrived.arrive_time ?? null }} ({{ tripItem.first_dept_arrived.on_way_time }}).
-                {% endif %}
-
-                Пожар локализован в {{ tripItem.loc_time }}
-
-                ликвидирован в {{ tripItem.liqv_time }}, {{ tripItem.chronology_str }}
-
-                На место пожара выезжал л/с: {{ tripItem.depts_out }}.
-
-                {% if tripItem.service_plans_str %}
-                    На место ЧС выезжали службы заимодействия: {{ tripItem.service_plans_str }}.
-                {% endif %}
-
-                Материал зарегистрирован в КУИ №{{ tripItem.kui }} от {{ tripItem.date2 }}.
-            </div>#}
+                {{ loop.index }}. {{ tripItem.analytics|raw }}
         {% endfor %}
     {% endfor %}
 
-
-
-
-    <div style="padding-top: 50px;">
-        <div style="float: left;width: 55%">
-            Старший инженер ЦППС ЦОУСС ГУ «СП и АСР ДЧС г. Аматы КЧС МВД РК» ст.
-            лейтенант гражданской защиты
-        </div>
-        <div style="float: right;width: 25%">
-            Нышанкулов Г.С.
-        </div>
-        <div style="clear: both"></div>
-
-        <div style="padding-top: 20px;">
-            <div style="float: left;width: 55%">
-                Оперативный дежурный ДСПТ ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК»
-                подполковник гражданской защиты
-            </div>
-            <div style="float: right;width: 25%">
-                Даус В.А.
-            </div>
-        </div>
-    </div>
 </div>
 
 </body>
