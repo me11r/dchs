@@ -290,7 +290,7 @@ class Report
                     $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
                         ->max('square');
 
-                    $results[$trip_result->name][] = [
+                    $result = [
                         'result_title' => $trip_result->name,
                         'date' => $ticket->created_at->format('d.m.Y H:i'),
                         'date2' => $ticket->created_at->format('d.m.Y'),
@@ -304,12 +304,17 @@ class Report
                         'loc_time' => $ticket->loc_time,
                         'liqv_time' => $ticket->liqv_time,
                         'id' => $ticket->id,
+                        'trip_result_id' => $trip_result->id,
                         'chronology_str' => $chronology_str,
                         'square_max' => $max_square,
                         'kui' => $ticket->kui,
                         'ticket' => $ticket,
                         'service_plans_str' => $service_plans_str,
                     ];
+
+                    $result['analytics'] = view('_templates.report101-analytics', $result)->render();
+
+                    $results[$trip_result->name][] = $result;
                 }
             }
         }
