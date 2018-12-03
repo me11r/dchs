@@ -48,13 +48,13 @@ class FormationService
 
                 if($peopleField == 'privates'){
                     //добавляем к списку стажеров
-                    $sumArray['people'][$peopleField] += $peopleReport[$department['id']]
+                    $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? $peopleReport[$department['id']]
                         ->formation_person_items()
                         ->whereHas('staff', function ($q) use ($department){
                             $q->where('department_id', $department['id']);
                         })
                         ->where('rank', 'trainee')
-                        ->count();
+                        ->count() : 0;
                 }
             }
 

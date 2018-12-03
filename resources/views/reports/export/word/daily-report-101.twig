@@ -1,28 +1,26 @@
-    <p style="margin: 0 auto;width: 65%">
+    <p style="margin: 0 auto;width: 50%; font-weight: bold; font-family: 'Times New Roman', Times, serif;">
         ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И
     </p>
-    <p style="margin: 0 auto;margin-bottom: 30pt;width: 65%;">
-        &nbsp;&nbsp;АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК
-    </p>
-    <p style="width: 200pt; float: right;margin-bottom: 50pt;margin-right: 20pt">
-        Начальнику ГУ «СП и АСР» ДЧС г. Алматы КЧС МВД РК полковнику гражданской защиты Касыбаеву Р.А.
+    <p style="margin: 0 auto;margin-bottom: 30pt;width: 50%; font-weight: bold;font-family: 'Times New Roman', Times, serif;">
+        АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК
     </p>
     <p style="clear: both"></p>
 
-    <p style="margin: 0 auto;width: 40%;">
-        &nbsp;&nbsp;&nbsp;ОПЕРАТИВНАЯ ИНФОРМАЦИЯ ОГ-1
+    <p style="margin: 0 auto;width: 50%; font-weight: bold;">
+        ОПЕРАТИВНАЯ ИНФОРМАЦИЯ
     </p>
-    <p style="margin: 0 auto;width: 40%;">
+    <p style="margin: 0 auto;width: 50%;">
         по пожарам, произошедшим на территории
     </p>
 
     <p style="margin: 0 auto;width: 50%;margin-bottom: 30pt;">
         г. Алматы с {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г. до {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.to }}г.
     </p>
+    <br/>
+    <br/>
 
-    <p>
-        За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:
-    </p>
+    <p>За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:</p>
+
     <p>1.Пожары – {{ fire.items | length }}</p>
     <p style="margin-left: 40pt">1.1. Транспорт – {{ burntTransportCount }}</p>
     <p style="margin-left: 40pt">1.2. Прочие объекты пожаров – {{ burntOtherCount }}</p>
@@ -430,32 +428,15 @@
         {% endfor %}
     {% endif %}
 
+    <br/>
+    <br/>
     {% for title, tripResult in tripResults %}
-        <div style="padding-top: 50px; margin: 0 auto;width: 40%;">
-            &nbsp;&nbsp;&nbsp;{{ title }}:
-        </div>
+        <div style="padding-top: 50px; margin: 0 auto;width: 50%; font-weight: bold;">{{ title }}:</div>
         {% for tripItem in tripResult %}
             <div>
-                {{ loop.index }}. {{ tripItem.analytics }}
+                {{ loop.index }}. {{ tripItem.analytics|raw }}
             </div>
         {% endfor %}
+        <br/>
     {% endfor %}
 
-
-    <br/><br/>
-    <table>
-        <tr>
-            <td width="50%">Старший инженер
-                <br/>ЦППС ЦОУСС ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК» ст.<br/>
-                лейтенант гражданской защиты
-            </td>
-            <td>Нышанкулов Г.С.
-            </td>
-        </tr>
-        <tr>
-            <td>Оперативный дежурный <br/>ДСПТ ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК»<br/>
-                подполковник гражданской защиты
-            </td>
-            <td>Даус В.А.</td>
-        </tr>
-    </table>
