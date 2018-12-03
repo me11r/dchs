@@ -265,6 +265,12 @@
                             class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
                             &nbsp; Информация по звонкам
                         </a>
+                        <a
+                                v-if="hasRight('ANALYTICS101_SHOW')"
+                                href="/reports/analytics101/"
+                                class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
+                            &nbsp; Данные по СРУ
+                        </a>
                     </div>
                 </div>
                 <div

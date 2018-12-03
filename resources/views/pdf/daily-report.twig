@@ -463,7 +463,7 @@
         </div>
         {% for tripItem in tripResult %}
             <div>
-                {{ loop.index }}. {{ tripItem.date }}. {{ tripItem.city_area }}, {{ tripItem.address }}: (заявитель: {{ tripItem.caller_name }}, тел: {{ tripItem.caller_phone }}).
+                {{ loop.index }}. {{ tripItem.analytics }} {#{{ tripItem.date }}. {{ tripItem.city_area }}, {{ tripItem.address }}: (заявитель: {{ tripItem.caller_name }}, тел: {{ tripItem.caller_phone }}).
 
                 {{ tripItem.pre_information }}
 
@@ -484,7 +484,7 @@
                 {% endif %}
 
                 Материал зарегистрирован в КУИ №{{ tripItem.kui }} от {{ tripItem.date2 }}.
-            </div>
+            </div>#}
         {% endfor %}
     {% endfor %}
 
