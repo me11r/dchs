@@ -268,8 +268,8 @@
                         <a
                                 v-if="hasRight('ANALYTICS101_SHOW')"
                                 href="/reports/analytics101/"
-                                class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
-                            &nbsp; Данные по СРУ
+                                class="dropdown-item is-small"><i class="fas fa-database"></i>
+                            &nbsp; Аналитика
                         </a>
                     </div>
                 </div>
