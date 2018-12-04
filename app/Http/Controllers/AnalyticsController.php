@@ -32,6 +32,13 @@ class AnalyticsController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
+
+        /*если вдруг запись не была создана кроном, создаем вручную*/
+        $hoursNow = now()->format('H');
+        if($hoursNow >= 8){
+            Analytics101::firstOrCreate(['date' => today()]);
+        }
+
         $data['items'] = Analytics101::orderBy('id', 'desc')
             ->paginate($perPage);
         $data['per_page'] = $perPage;
@@ -60,6 +67,11 @@ class AnalyticsController extends Controller
                 }
             }
         }
+
+        $data['record'] = Analytics101::with([
+            'items',
+            'items.trip_result',
+        ])->find($id);
 
         $data['tripResults'] = TripResult::all();
 
