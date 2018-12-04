@@ -2,6 +2,7 @@
 
 namespace App\Reports;
 
+use App\Analytics101Item;
 use App\Chronology101;
 use App\Dictionary\TripResult;
 use App\Models\FireDepartmentResult;
@@ -37,8 +38,9 @@ class Report
     public function getReport(): array
     {
         $this->report = $this->ticket101->getDaily(
-            date('Y-m-d H:i:s', $this->time - 60 * 60 * 24),
-            date('Y-m-d H:i:s', $this->time)
+            today()->addHours(8)->format('Y-m-d H:i:s'),
+
+            today()->addDay()->addHours(8)->format('Y-m-d H:i:s')
         );
 
         $burntTransportCount = count($this->filterByObject(
@@ -255,6 +257,9 @@ class Report
             foreach ($this->report as $ticket) {
                 if($ticket->trip_result_id === $trip_result->id){
 
+                    $analytics = Analytics101Item::where('ticket101_id', $ticket->id)
+                        ->where('trip_result_id', $trip_result->id)->first();
+
                     $firstDeptArrived = $ticket->first_department_arrived();
                     $depts_out  = $ticket->results()->whereNotNull('arrive_time')->get();
                     $depts_out_str = '';
@@ -312,7 +317,11 @@ class Report
                         'service_plans_str' => $service_plans_str,
                     ];
 
-                    $result['analytics'] = view('_templates.report101-analytics', $result)->render();
+                    if($analytics && !$analytics->text){
+                        $analytics->text = view('_templates.report101-analytics', $result)->render();
+                        $analytics->save();
+                    }
+                    $result['analytics'] = $analytics->text ?? null;
 
                     $results[$trip_result->name][] = $result;
                 }
