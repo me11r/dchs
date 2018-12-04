@@ -34,6 +34,7 @@ use App\OperationalCard;
 use App\RideType;
 use App\Services\FileUploadService;
 use App\Ticket101;
+use App\Ticket101Drill;
 use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use App\User;
@@ -604,6 +605,22 @@ class CardController extends AuthorizedController
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
             return view('card/101other_rides', $data);
+        }
+    }
+
+    public function getAdd101DrillRide(Request $request)
+    {
+        if($request->isMethod('POST')){
+            $f = $request->all();
+            Ticket101Drill::create($request->input('drill'));
+
+            return back()->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
+        }
+        else{
+            $data['fire_departments_vue'] = FireDepartment::all();
+            $data['ride_types'] = RideType::all();
+            $data['staff'] = Staff::all();
+            return view('card/101drill_rides', $data);
         }
     }
 

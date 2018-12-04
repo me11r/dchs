@@ -321,7 +321,8 @@ class Report
                         $analytics->text = view('_templates.report101-analytics', $result)->render();
                         $analytics->save();
                     }
-                    $result['analytics'] = $analytics->text ?? null;
+
+                    $result['analytics'] = $analytics->text ?? view('_templates.report101-analytics', $result)->render() ?? null;
 
                     $results[$trip_result->name][] = $result;
                 }
@@ -334,10 +335,10 @@ class Report
     private function getDates()
     {
         return [
-            'hour' => date('H', $this->time),
-            'minutes' => date('i', $this->time),
-            'from' => date('d.m.Y', $this->time - 60 * 60 * 24),
-            'to' => date('d.m.Y', $this->time)
+            'hour' => '08',
+            'minutes' => '00',
+            'to' => date('d.m.Y', $this->time + 60 * 60 * 24),
+            'from' => date('d.m.Y', $this->time)
         ];
     }
 

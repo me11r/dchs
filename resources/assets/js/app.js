@@ -93,6 +93,7 @@ Vue.component('notification', require('./components/Notification'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 Vue.component('btn-close-card', require('./components/ticket101/CloseTicket'));
 Vue.component('other-rides', require('./components/ticket101/OtherRides'));
+Vue.component('drill-rides', require('./components/ticket101/DrillRides'));
 Vue.component('ticket101-truck', require('./components/ticket101/Card101Truck'));
 Vue.component('delete-card-btn', require('./components/ticket101/DeleteCardButton'));
 Vue.component('siren-speech-tech', require('./views/reports/SirenSpeechTech/SirenSpeechTechCreate'));

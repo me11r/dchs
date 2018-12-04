@@ -368,7 +368,8 @@
                             <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-other-rides/">Прочие выезда</a>
                         </div>
                         <div class="level-right">
-                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>
+                            <!--<a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>-->
+                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-drill-rides/">Учения</a>
                         </div>
                     </div>
                 </section>
