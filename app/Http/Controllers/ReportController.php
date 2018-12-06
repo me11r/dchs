@@ -181,7 +181,8 @@ class ReportController extends AuthorizedController
                         $data['departments'],
                         $data['people'],
                         $data['tech'],
-                        $data['sumArray']['people']
+                        $data['sumArray']['people'],
+                        $data
                     );
 
                     // @todo PDF не работает корректно (но вроде оно и не нужно)

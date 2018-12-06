@@ -774,6 +774,8 @@ class FormationController extends AuthorizedController
             'departments' => $departments,
             'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
             'report' => $report,
+            'inactive_tech_cnt' => $inactive_tech_cnt,
+            'formationCard101Others' => $formationCard101Others,
         ];
 
         Cache::put('report101_data', $dataToReport, 3600);
