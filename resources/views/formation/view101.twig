@@ -326,12 +326,6 @@
             </p>
         </div>
         <div class="column">
-            <p><span class="has-text-weight-bold">1 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Резиденция Президента РК - {% for key, p in dept13_people.post1_president_residence|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">2 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Архив Президента РК - {% for key, p in dept13_people.post2_president_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">3 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Государственный архив РК - {% for key, p in dept13_people.post3_state_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">4 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Национальный Банк РК - {% for key, p in dept13_people.post4_national_bank|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-        </div>
-        <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Диспетчера:</h3>
             <table class="table">
                 {% for item in dispatchers %}
@@ -341,10 +335,6 @@
                     </tr>
                 {% endfor %}
             </table>
-            <p><span class="has-text-weight-bold">1 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Резиденция Президента РК - {% for key, p in dept13_people.post1_president_residence|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">2 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Архив Президента РК - {% for key, p in dept13_people.post2_president_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">3 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Государственный архив РК - {% for key, p in dept13_people.post3_state_archive|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-            <p><span class="has-text-weight-bold">4 пост: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Национальный Банк РК - {% for key, p in dept13_people.post4_national_bank|default([]) %} {{ p.name ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Отпуск:</h3>
