@@ -4,7 +4,9 @@
 namespace App\Services\ReportExport;
 
 use App\FireDepartment;
+use App\FormationPersonsReport;
 use App\FormationReport;
+use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Row;
@@ -52,13 +54,19 @@ class Ticket101WordExport
      */
     private $sumPeople;
 
+    /**
+     * @var array
+     */
+    private $data;
+
 
     public function __construct(
         FormationReport $formationReport,
         Collection $departments,
         Collection $people,
         Collection $tech,
-        array $sumPeople
+        array $sumPeople,
+        array $data
     )
     {
         $this->defineDomPdfWriter();
@@ -69,6 +77,7 @@ class Ticket101WordExport
         $this->people = $people;
         $this->tech = $tech;
         $this->sumPeople = $sumPeople;
+        $this->data = $data;
 
         $this->prepareDocument();
     }
@@ -91,6 +100,233 @@ class Ticket101WordExport
         $section->addPageBreak();
 
         $this->addSecondTable($section);
+
+        $this->addBottomText($section);
+
+    }
+
+    private function peopleByDept()
+    {
+        $people = $this->people;
+        $result = [];
+        foreach ($people as $dept_id => $personSummary) {
+
+            $fireDept = FireDepartment::find($dept_id);
+
+            $vacationPpl = $personSummary->formation_person_items()->rank('vacation')->get();
+            $dispatchersPpl = $personSummary->formation_person_items()->rank('dispatchers')->get();
+            $sickPpl = $personSummary->formation_person_items()->rank('sick')->get();
+            $businessPpl = $personSummary->formation_person_items()->rank('business_trip')->get();
+
+            /*ОД*/
+            $gdzs_base = $personSummary->formation_person_items_od()->rank('gdzs_base')->get();
+            $crb = $personSummary->formation_person_items_od()->rank('crb')->get();
+            $tulpar1 = $personSummary->formation_person_items_od()->rank('tulpar1')->get();
+            $tulpar2 = $personSummary->formation_person_items_od()->rank('tulpar2')->get();
+            $tulpar3 = $personSummary->formation_person_items_od()->rank('tulpar3')->get();
+            $tulpar4 = $personSummary->formation_person_items_od()->rank('tulpar4')->get();
+            $tulpar5 = $personSummary->formation_person_items_od()->rank('tulpar5')->get();
+            $tulpar7 = $personSummary->formation_person_items_od()->rank('tulpar7')->get();
+            $tulpar8 = $personSummary->formation_person_items_od()->rank('tulpar8')->get();
+            $tulpar10 = $personSummary->formation_person_items_od()->rank('tulpar10')->get();
+            $kshm = $personSummary->formation_person_items_od()->rank('kshm')->get();
+            $ipl_zhalyn = $personSummary->formation_person_items_od()->rank('ipl_zhalyn')->get();
+            $doctor = $personSummary->formation_person_items_od()->rank('doctor')->get();
+
+            /*пч-13*/
+            $post1_president_residence = $personSummary->formation_person_items()->rank('post1_president_residence')->get();
+            $post2_president_archive = $personSummary->formation_person_items()->rank('post2_president_archive')->get();
+            $post3_state_archive = $personSummary->formation_person_items()->rank('post3_state_archive')->get();
+            $post4_national_bank = $personSummary->formation_person_items()->rank('post4_national_bank')->get();
+
+            $result[$fireDept->title] = [
+                'vacation' => $vacationPpl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'dispatchers' => $dispatchersPpl->map(function ($item){return ($item->staff->name ?? null) . "({$item->staff->rank})";})->toArray(),
+                'sick' => $sickPpl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'business_trip' => $businessPpl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+
+                'gdzs_base' => $gdzs_base->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+
+                'crb' => $crb->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'post1_president_residence' => $post1_president_residence->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'post2_president_archive' => $post2_president_archive->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'post3_state_archive' => $post3_state_archive->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'post4_national_bank' => $post4_national_bank->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar1' => $tulpar1->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar2' => $tulpar2->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar3' => $tulpar3->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar4' => $tulpar4->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar5' => $tulpar5->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar7' => $tulpar7->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar8' => $tulpar8->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'tulpar10' => $tulpar10->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'kshm' => $kshm->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'ipl_zhalyn' => $ipl_zhalyn->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'doctor' => $doctor->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+            ];
+
+
+        }
+
+        return $result;
+    }
+
+    private function getReapiredTech()
+    {
+        $repairedTech = $this->formationReport->tech_reports->map(function ($item){
+            return $item->items()->status('repair')->get()->toArray();
+        });
+
+        $repairedTech = $repairedTech->filter(function ($item){
+            return count($item);
+        });
+
+        $result = [];
+        foreach ($repairedTech as $arr) {
+            foreach ($arr as $item) {
+                $vehicle = Vehicle::find($item['vehicle_id']);
+                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' '.$item['comment'];
+            }
+        }
+
+        return $result;
+    }
+
+    private function addBottomText(Section $section)
+    {
+        $people = $this->peopleByDept();
+
+        $repairedTech = $this->getReapiredTech();
+
+        $formationCard101Others = $this->data['formationCard101Others'];
+
+        $sections = [
+            'dispatchers' => 'Диспетчера: ',
+            'vacation' => 'Отпуск: ',
+            'sick' => 'Больничный: ',
+            'business_trip' => 'Командировка: ',
+            'crb' => 'ЦРБ: ',
+            'gdzs_base' => 'База ГДЗС: ',
+            'doctor' => 'Врач: ',
+            'just_title' => 'Посты ПЧ-13: ',
+            'post1_president_residence' => '1 пост: ',
+            'post2_president_archive' => '2 пост: ',
+            'post3_state_archive' => '3 пост: ',
+            'post4_national_bank' => '4 пост: ',
+            'just_title2' => 'Оперативные дежурные автомашины: ',
+            'tulpar1' => 'Тулпар-1: ',
+            'tulpar2' => 'Тулпар-2: ',
+            'tulpar3' => 'Тулпар-3: ',
+            'tulpar4' => 'Тулпар-4: ',
+            'tulpar5' => 'Тулпар-5: ',
+            'tulpar7' => 'Тулпар-7: ',
+            'tulpar8' => 'Тулпар-8: ',
+            'tulpar10' => 'Тулпар-10: ',
+            'kshm' => 'КШМ: ',
+            'ipl_zhalyn' => 'ИПЛ «Жалын»: ',
+        ];
+
+        $section->addText(
+            '',
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($sections as $array_key => $title) {
+            $section->addText(
+                $title,
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+
+            foreach ($people as $fireDept => $persons) {
+                if(isset($persons[$array_key]) && count($persons[$array_key])){
+                    $section->addText(
+                        "{$fireDept}: ". implode(',', $persons[$array_key]),
+                        ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                        ['align' => Jc::BOTH]
+                    );
+                }
+            }
+
+            $section->addText(
+                '',
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+        }
+
+        $date = Carbon::parse($this->formationReport->created_at)->format('d-m-Y') . 'г.';
+
+        $section->addText(
+            "Расстановка на {$date}: ",
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($formationCard101Others as $key => $item) {
+            $index = ++$key;
+            $section->addText(
+                "{$index}. {$item->staff->department->name}",
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+
+            $section->addText(
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . $item->date_from ? " c {$item->date_from}" : '',
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+        }
+
+        $section->addText(
+            '',
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Неисправная техника',
+            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($repairedTech as $fireDept => $tech) {
+            $section->addText(
+                "{$fireDept}: ". implode(',', $tech),
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+        }
+
+        $section->addText(
+            '',
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        $inactive_tech_cnt = $this->data['inactive_tech_cnt'];
+        $inactive_tech_cnt_str = '';
+        foreach ($inactive_tech_cnt as $name => $count) {
+            $inactive_tech_cnt_str .= "{$name} - {$count}, ";
+        }
+        $section->addText(
+            'Всего: __________________________________'.$inactive_tech_cnt_str,
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        /*$section->addText(
+            '',
+            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Больничные',
+            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );*/
     }
 
     private function addSecondTable(Section $section)
