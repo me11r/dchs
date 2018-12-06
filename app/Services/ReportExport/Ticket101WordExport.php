@@ -287,7 +287,7 @@ class Ticket101WordExport
 
         $section->addText(
             'Неисправная техника',
-            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
             ['align' => Jc::BOTH]
         );
 
