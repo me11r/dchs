@@ -132,6 +132,12 @@ class Ticket101WordExport
             $kshm = $personSummary->formation_person_items_od()->rank('kshm')->get();
             $ipl_zhalyn = $personSummary->formation_person_items_od()->rank('ipl_zhalyn')->get();
             $doctor = $personSummary->formation_person_items_od()->rank('doctor')->get();
+            $dspt = $personSummary->formation_person_items_od()->rank('dspt')->get();
+            $cpps = $personSummary->formation_person_items_od()->rank('cpps')->get();
+            $edds = $personSummary->formation_person_items_od()->rank('edds')->get();
+            $ipl = $personSummary->formation_person_items_od()->rank('ipl')->get();
+            $water_supply = $personSummary->formation_person_items_od()->rank('water_supply')->get();
+            $senior_communication_master = $personSummary->formation_person_items_od()->rank('senior_communication_master')->get();
 
             /*пч-13*/
             $post1_president_residence = $personSummary->formation_person_items()->rank('post1_president_residence')->get();
@@ -163,6 +169,12 @@ class Ticket101WordExport
                 'kshm' => $kshm->map(function ($item){return $item->staff->name ?? null;})->toArray(),
                 'ipl_zhalyn' => $ipl_zhalyn->map(function ($item){return $item->staff->name ?? null;})->toArray(),
                 'doctor' => $doctor->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'dspt' => $dspt->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'cpps' => $cpps->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'edds' => $edds->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'ipl' => $ipl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'water_supply' => $water_supply->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'senior_communication_master' => $senior_communication_master->map(function ($item){return $item->staff->name ?? null;})->toArray(),
             ];
 
 
@@ -171,7 +183,7 @@ class Ticket101WordExport
         return $result;
     }
 
-    private function getReapiredTech()
+    private function getRepairedTech()
     {
         $repairedTech = $this->formationReport->tech_reports->map(function ($item){
             return $item->items()->status('repair')->get()->toArray();
@@ -196,7 +208,7 @@ class Ticket101WordExport
     {
         $people = $this->peopleByDept();
 
-        $repairedTech = $this->getReapiredTech();
+        $repairedTech = $this->getRepairedTech();
 
         $formationCard101Others = $this->data['formationCard101Others'];
 
@@ -242,7 +254,7 @@ class Ticket101WordExport
             foreach ($people as $fireDept => $persons) {
                 if(isset($persons[$array_key]) && count($persons[$array_key])){
                     $section->addText(
-                        "{$fireDept}: ". implode(',', $persons[$array_key]),
+                        "{$fireDept}: ". implode(', ', $persons[$array_key]),
                         ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                         ['align' => Jc::BOTH]
                     );
@@ -287,13 +299,13 @@ class Ticket101WordExport
 
         $section->addText(
             'Неисправная техника',
-            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
             ['align' => Jc::BOTH]
         );
 
         foreach ($repairedTech as $fireDept => $tech) {
             $section->addText(
-                "{$fireDept}: ". implode(',', $tech),
+                "{$fireDept}: ". implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
@@ -572,15 +584,23 @@ class Ticket101WordExport
 
         $headCellFontStyle = ['name' => 'Times New Roman', 'size' => 9, 'bold' => true];
 
-        $row = $table->addRow();
-        $row->addCell()->addText('ДСПТ:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('ЕДДС:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('Ст. мастер связи:', $headCellFontStyle); // @TODO добавить значение
+        $people = $this->peopleByDept()['ОД'];
+        $dspt = implode(', ',$people['dspt']);
+        $cpps = implode(', ',$people['cpps']);
+        $edds = implode(', ',$people['edds']);
+        $ipl = implode(', ',$people['ipl']);
+        $water_supply = implode(', ',$people['water_supply']);
+        $senior_communication_master = implode(', ',$people['senior_communication_master']);
 
         $row = $table->addRow();
-        $row->addCell()->addText('ЦППС:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('ИПЛ:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('Водоканал:', $headCellFontStyle); // @TODO добавить значение
+        $row->addCell()->addText('ДСПТ:'.$dspt, $headCellFontStyle);
+        $row->addCell()->addText('ЕДДС:'.$edds, $headCellFontStyle);
+        $row->addCell()->addText('Ст. мастер связи:'.$senior_communication_master, $headCellFontStyle);
+
+        $row = $table->addRow();
+        $row->addCell()->addText('ЦППС:'.$cpps, $headCellFontStyle);
+        $row->addCell()->addText('ИПЛ:'.$ipl, $headCellFontStyle);
+        $row->addCell()->addText('Водоканал:'.$water_supply, $headCellFontStyle);
 
     }
 
