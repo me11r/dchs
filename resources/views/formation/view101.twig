@@ -81,8 +81,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for action in dept.tech_action %}
-                                {{ action.vehicle.base|default('-') }}<br>
+                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 2 %}
+                                {{ action.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -91,8 +91,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_reserve in dept.tech_reserve %}
-                                {{ tech_reserve.vehicle.base|default('-') }}<br>
+                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_reserve.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -101,8 +101,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_repair in dept.tech_repair %}
-                                {{ tech_repair.vehicle.base|default('-') }}<br>
+                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_repair.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
 
@@ -187,8 +187,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for action in dept.tech_action %}
-                                {{ action.vehicle.base|default('-') }}<br>
+                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 2 %}
+                                {{ action.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -197,8 +197,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_reserve in dept.tech_reserve %}
-                                {{ tech_reserve.vehicle.base|default('-') }}<br>
+                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_reserve.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -207,8 +207,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_repair in dept.tech_repair %}
-                                {{ tech_repair.vehicle.base|default('-') }}<br>
+                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_repair.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
 
