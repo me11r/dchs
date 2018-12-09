@@ -59,6 +59,7 @@ class Ticket101WordExport
      */
     private $data;
 
+    public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
     public function __construct(
         FormationReport $formationReport,
@@ -94,6 +95,8 @@ class Ticket101WordExport
         $section = $this->getNewSection();
 
         $this->addFirstPageTopData($section);
+
+        $section->addTextBreak(1, ['size' => 1]);
 
         $this->addFirstTable($section);
 
@@ -238,33 +241,35 @@ class Ticket101WordExport
             'ipl_zhalyn' => 'ИПЛ «Жалын»: ',
         ];
 
+        $generalFontStyle = ['name' => 'Times New Roman', 'size' => 8];
+        $generalBoldFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true];
+        $redFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true, 'color' => 'red', 'underline' => 'single'];
+
         $section->addText(
             '',
-            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
 
         foreach ($sections as $array_key => $title) {
             $section->addText(
                 $title,
-                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
-                ['align' => Jc::BOTH]
+                $redFontStyle,
+                array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
             );
 
             foreach ($people as $fireDept => $persons) {
                 if(isset($persons[$array_key]) && count($persons[$array_key])){
-                    $section->addText(
-                        "{$fireDept}: ". implode(', ', $persons[$array_key]),
-                        ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
-                        ['align' => Jc::BOTH]
-                    );
+                    $textRun = $section->addTextRun(self::$noPaddingPS);
+                    $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                    $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
                 }
             }
 
             $section->addText(
                 '',
-                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
-                ['align' => Jc::BOTH]
+                $generalFontStyle,
+                self::$noPaddingPS
             );
         }
 
@@ -272,7 +277,7 @@ class Ticket101WordExport
 
         $section->addText(
             "Расстановка на {$date}: ",
-            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            $redFontStyle,
             ['align' => Jc::BOTH]
         );
 
@@ -299,13 +304,13 @@ class Ticket101WordExport
 
         $section->addText(
             'Неисправная техника',
-            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            $redFontStyle,
             ['align' => Jc::BOTH]
         );
 
         foreach ($repairedTech as $fireDept => $tech) {
             $section->addText(
-                "{$fireDept}: ". implode(', ', $tech),
+                "{$fireDept}:\t\t". implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
@@ -323,8 +328,8 @@ class Ticket101WordExport
             $inactive_tech_cnt_str .= "{$name} - {$count}, ";
         }
         $section->addText(
-            'Всего: __________________________________'.$inactive_tech_cnt_str,
-            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            "Всего:\t\t".$inactive_tech_cnt_str,
+            $redFontStyle,
             ['align' => Jc::BOTH]
         );
 
@@ -344,7 +349,7 @@ class Ticket101WordExport
     private function addSecondTable(Section $section)
     {
         $tableStyle = new Table;
-        $tableStyle->setBorderColor('cccccc');
+        $tableStyle->setBorderColor('black');
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
@@ -361,8 +366,14 @@ class Ticket101WordExport
         foreach ($this->departments as $department) {
             if ($department->id !== 13) { // суеверия
                 $row = $table->addRow();
-                foreach ($this->getSecondTableRowForDepartment($department) as $value) {
-                    $this->addDataCellToRow($row, $value);
+                $rowData = $this->getSecondTableRowForDepartment($department);
+                foreach ($rowData as $key => $value) {
+                    $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                    if ($key === 0 || $key === (\count(array_keys($rowData)) - 1)){
+                        $fontStyle['bold'] = true;
+                    }
+
+                    $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
                 }
             }
         }
@@ -370,7 +381,7 @@ class Ticket101WordExport
         // сумма
         $row = $table->addRow();
         foreach ($this->getSecondTableSumRow() as $value) {
-            $this->addDataCellToRow($row, $value, [], ['bold' => true]);
+            $this->addDataCellToRow($row, $value, [], ['name' => 'Times New Roman', 'size' => 8, 'bold' => true], self::$noPaddingPS);
         }
     }
 
@@ -380,16 +391,16 @@ class Ticket101WordExport
         $cellRowSpanH = ['vMerge' => 'restart', 'valign' => Jc::CENTER];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
         $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
-        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER];
+        $hcAlignStyle = array_merge(['align' => Jc::CENTER, 'valign' => Jc::CENTER], self::$noPaddingPS);
 
         $table->addRow(700);
-        $table->addCell(null, $cellRowSpanV)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 17, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Имеется на автомобилях в боевом расчете', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText('Пенообразователя на складе', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Количество неисправных водоисточников', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText("1 генератор\n2 дымосос\n3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
+        $table->addCell(1200, $cellRowSpanV)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(9000, ['gridSpan' => 17, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Имеется на автомобилях в боевом расчете', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText('Пенообразователя на складе', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(1400, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Количество неисправных водоисточников', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText("1 генератор<w:br/>2 дымосос<w:br/>3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanH)->addText('Ф.И.О Начальника караула или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow(1250);
@@ -452,7 +463,7 @@ class Ticket101WordExport
     private function addFirstTable(Section $section)
     {
         $tableStyle = new Table;
-        $tableStyle->setBorderColor('cccccc');
+        $tableStyle->setBorderColor('black');
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
@@ -469,8 +480,13 @@ class Ticket101WordExport
         foreach ($this->departments as $department) {
             if ($department->id !== 13) { // суеверия
                 $row = $table->addRow();
-                foreach ($this->getFirstTableRowForDepartment($department) as $value) {
-                    $this->addDataCellToRow($row, $value);
+                foreach ($this->getFirstTableRowForDepartment($department) as $key => $value) {
+                    $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                    if ($key <= 16){
+                        $fontStyle['bold'] = true;
+                    }
+
+                    $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
                 }
             }
         }
@@ -478,7 +494,7 @@ class Ticket101WordExport
         // сумма
         $row = $table->addRow();
         foreach ($this->getFirstTableSumRow() as $value) {
-            $this->addDataCellToRow($row, $value, [], ['bold' => true]);
+            $this->addDataCellToRow($row, $value, [], ['bold' => true, 'name' => 'Times New Roman', 'size' => 8], self::$noPaddingPS);
         }
     }
 
@@ -498,18 +514,18 @@ class Ticket101WordExport
         $cellRowSpan = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
         $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
-        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER];
+        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
-        $table->addRow();
+        $table->addRow(700);
 
-        $table->addCell(null, $cellRowSpan)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('В карауле по списку л/с', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(900, $cellRowSpan)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(500, $cellRowSpan)->addText('В карауле по списку л/с', $hcFontStyle, $hcAlignStyle);
 
-        $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На лицо личного состава', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Мотопомпы', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На лицо личного состава', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(500, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(500, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(500, $cellRowSpan)->addText('Мотопомпы', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Пожарная техника', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow();
@@ -538,7 +554,7 @@ class Ticket101WordExport
         $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На ремонте', $hcFontStyle, $hcAlignStyle);
 
-        $table->addRow(1000);
+        $table->addRow(1200);
 
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
@@ -583,6 +599,7 @@ class Ticket101WordExport
         $table = $section->addTable($tableStyle);
 
         $headCellFontStyle = ['name' => 'Times New Roman', 'size' => 9, 'bold' => true];
+//        $paragraphStyle = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
         $people = $this->peopleByDept()['ОД'];
         $dspt = implode(', ',$people['dspt']);
@@ -593,14 +610,14 @@ class Ticket101WordExport
         $senior_communication_master = implode(', ',$people['senior_communication_master']);
 
         $row = $table->addRow();
-        $row->addCell()->addText('ДСПТ:'.$dspt, $headCellFontStyle);
-        $row->addCell()->addText('ЕДДС:'.$edds, $headCellFontStyle);
-        $row->addCell()->addText('Ст. мастер связи:'.$senior_communication_master, $headCellFontStyle);
+        $row->addCell()->addText('ДСПТ: '.$dspt . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ЕДДС: '.$edds. ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('Ст. мастер связи: '.$senior_communication_master. ';', $headCellFontStyle, self::$noPaddingPS);
 
         $row = $table->addRow();
-        $row->addCell()->addText('ЦППС:'.$cpps, $headCellFontStyle);
-        $row->addCell()->addText('ИПЛ:'.$ipl, $headCellFontStyle);
-        $row->addCell()->addText('Водоканал:'.$water_supply, $headCellFontStyle);
+        $row->addCell()->addText('ЦППС: '.$cpps. ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ИПЛ: '.$ipl. ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('Водоканал: '.$water_supply. ';', $headCellFontStyle, self::$noPaddingPS);
 
     }
 
