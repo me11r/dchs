@@ -475,6 +475,7 @@ class Ticket101WordExport
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
     {
+        $department13 = null;
         // все департаменты
         /** @var FireDepartment $department */
         foreach ($this->departments as $department) {
@@ -488,6 +489,8 @@ class Ticket101WordExport
 
                     $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
                 }
+            } else {
+                $department13 = $department;
             }
         }
 
@@ -495,6 +498,17 @@ class Ticket101WordExport
         $row = $table->addRow();
         foreach ($this->getFirstTableSumRow() as $value) {
             $this->addDataCellToRow($row, $value, [], ['bold' => true, 'name' => 'Times New Roman', 'size' => 8], self::$noPaddingPS);
+        }
+
+        if ($department13) {
+            $row = $table->addRow();
+            foreach ($this->getFirstTableRowForDepartment($department13) as $key => $value) {
+                $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                if ($key <= 16){
+                    $fontStyle['bold'] = true;
+                }
+                $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
+            }
         }
     }
 
