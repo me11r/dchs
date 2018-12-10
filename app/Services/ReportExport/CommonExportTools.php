@@ -83,7 +83,7 @@ trait CommonExportTools
 
             array_get($peopleData, 'gas_smoke_protection_service', 0), // ГДЗС
 
-            '-', // Аппараты
+            isset($this->tech[$id]) ? (int)array_get($techData, 'device', 0) : '-', // Аппараты
 
             isset($this->tech[$id]) ? (int)array_get($techData, 'motor_water_pump', 0) . '/' . (int)array_get($techData, 'motor_mud_pump', 0) : '0/0', // Мотопомпы Водяная/Грязевая
 
