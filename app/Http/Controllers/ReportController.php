@@ -187,7 +187,9 @@ class ReportController extends AuthorizedController
 
                     // @todo PDF не работает корректно (но вроде оно и не нужно)
                     $writer = $ticket101Export->getWriter($type === 'pdf' ? 'PDF' : 'Word2007');
-                    $fileName = Carbon::parse($formationReport->created_at)->format('d-m-Y') . " отчет.$type";
+                    $fileName = Carbon::parse($formationReport->created_at)
+                            ->addDay()
+                            ->format('d-m-Y') . " отчет.$type";
                     $writer->save(public_path($fileName));
 
                     return response()->download(public_path($fileName));
