@@ -61,6 +61,27 @@ class Ticket101WordExport
 
     public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
+    public static $sortedDepartmentNames = [
+        'ПЧ-1',
+        'ПЧ-2',
+        'ПЧ-3',
+        'ПЧ-4',
+        'ПЧ-5',
+        'ПЧ-6',
+        'СПЧ-7',
+        'СПЧ-8',
+        'СПЧ-9',
+        'ПЧ-10',
+        'СПЧ-11',
+        'ПЧ-12',
+        'СПЧ-14',
+        'СПЧ-15',
+        'ПП-16',
+        'ПП-17',
+        'СО',
+        'ПЧ-13'
+    ];
+
     public function __construct(
         FormationReport $formationReport,
         Collection $departments,
@@ -149,35 +170,89 @@ class Ticket101WordExport
             $post4_national_bank = $personSummary->formation_person_items()->rank('post4_national_bank')->get();
 
             $result[$fireDept->title] = [
-                'vacation' => $vacationPpl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'dispatchers' => $dispatchersPpl->map(function ($item){return ($item->staff->name ?? null) . "({$item->staff->rank})";})->toArray(),
-                'sick' => $sickPpl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'business_trip' => $businessPpl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'vacation' => $vacationPpl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'dispatchers' => $dispatchersPpl->map(function ($item) {
+                    return ($item->staff->name ?? null) . "({$item->staff->rank})";
+                })->toArray(),
+                'sick' => $sickPpl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'business_trip' => $businessPpl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
 
-                'gdzs_base' => $gdzs_base->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'gdzs_base' => $gdzs_base->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
 
-                'crb' => $crb->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'post1_president_residence' => $post1_president_residence->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'post2_president_archive' => $post2_president_archive->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'post3_state_archive' => $post3_state_archive->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'post4_national_bank' => $post4_national_bank->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar1' => $tulpar1->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar2' => $tulpar2->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar3' => $tulpar3->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar4' => $tulpar4->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar5' => $tulpar5->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar7' => $tulpar7->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar8' => $tulpar8->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'tulpar10' => $tulpar10->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'kshm' => $kshm->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'ipl_zhalyn' => $ipl_zhalyn->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'doctor' => $doctor->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'dspt' => $dspt->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'cpps' => $cpps->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'edds' => $edds->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'ipl' => $ipl->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'water_supply' => $water_supply->map(function ($item){return $item->staff->name ?? null;})->toArray(),
-                'senior_communication_master' => $senior_communication_master->map(function ($item){return $item->staff->name ?? null;})->toArray(),
+                'crb' => $crb->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post1_president_residence' => $post1_president_residence->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post2_president_archive' => $post2_president_archive->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post3_state_archive' => $post3_state_archive->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post4_national_bank' => $post4_national_bank->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar1' => $tulpar1->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar2' => $tulpar2->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar3' => $tulpar3->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar4' => $tulpar4->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar5' => $tulpar5->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar7' => $tulpar7->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar8' => $tulpar8->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar10' => $tulpar10->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'kshm' => $kshm->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'ipl_zhalyn' => $ipl_zhalyn->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'doctor' => $doctor->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'dspt' => $dspt->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'cpps' => $cpps->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'edds' => $edds->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'ipl' => $ipl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'water_supply' => $water_supply->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'senior_communication_master' => $senior_communication_master->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
             ];
 
 
@@ -188,11 +263,11 @@ class Ticket101WordExport
 
     private function getRepairedTech()
     {
-        $repairedTech = $this->formationReport->tech_reports->map(function ($item){
+        $repairedTech = $this->formationReport->tech_reports->map(function ($item) {
             return $item->items()->status('repair')->get()->toArray();
         });
 
-        $repairedTech = $repairedTech->filter(function ($item){
+        $repairedTech = $repairedTech->filter(function ($item) {
             return count($item);
         });
 
@@ -200,7 +275,7 @@ class Ticket101WordExport
         foreach ($repairedTech as $arr) {
             foreach ($arr as $item) {
                 $vehicle = Vehicle::find($item['vehicle_id']);
-                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' '.$item['comment'];
+                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . $item['comment'];
             }
         }
 
@@ -210,6 +285,7 @@ class Ticket101WordExport
     private function addBottomText(Section $section)
     {
         $people = $this->peopleByDept();
+        $people = array_replace(array_flip(self::$sortedDepartmentNames), $people); // сортируем
 
         $repairedTech = $this->getRepairedTech();
 
@@ -259,7 +335,7 @@ class Ticket101WordExport
             );
 
             foreach ($people as $fireDept => $persons) {
-                if(isset($persons[$array_key]) && count($persons[$array_key])){
+                if (isset($persons[$array_key]) && count($persons[$array_key])) {
                     $textRun = $section->addTextRun(self::$noPaddingPS);
                     $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                     $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
@@ -312,7 +388,7 @@ class Ticket101WordExport
 
         foreach ($repairedTech as $fireDept => $tech) {
             $section->addText(
-                "{$fireDept}:\t\t". implode(', ', $tech),
+                "{$fireDept}:\t\t" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
@@ -330,7 +406,7 @@ class Ticket101WordExport
             $inactive_tech_cnt_str .= "{$name} - {$count}, ";
         }
         $section->addText(
-            "Всего:\t\t".$inactive_tech_cnt_str,
+            "Всего:\t\t" . $inactive_tech_cnt_str,
             $redFontStyle,
             ['align' => Jc::BOTH]
         );
@@ -371,7 +447,7 @@ class Ticket101WordExport
                 $rowData = $this->getSecondTableRowForDepartment($department);
                 foreach ($rowData as $key => $value) {
                     $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
-                    if ($key === 0 || $key === (\count(array_keys($rowData)) - 1)){
+                    if ($key === 0 || $key === (\count(array_keys($rowData)) - 1)) {
                         $fontStyle['bold'] = true;
                     }
 
@@ -477,6 +553,7 @@ class Ticket101WordExport
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
     {
+        $department13 = null;
         // все департаменты
         /** @var FireDepartment $department */
         foreach ($this->departments as $department) {
@@ -484,12 +561,14 @@ class Ticket101WordExport
                 $row = $table->addRow();
                 foreach ($this->getFirstTableRowForDepartment($department) as $key => $value) {
                     $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
-                    if ($key <= 16){
+                    if ($key <= 16) {
                         $fontStyle['bold'] = true;
                     }
 
                     $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
                 }
+            } else {
+                $department13 = $department;
             }
         }
 
@@ -497,6 +576,17 @@ class Ticket101WordExport
         $row = $table->addRow();
         foreach ($this->getFirstTableSumRow() as $value) {
             $this->addDataCellToRow($row, $value, [], ['bold' => true, 'name' => 'Times New Roman', 'size' => 8], self::$noPaddingPS);
+        }
+
+        if ($department13) {
+            $row = $table->addRow();
+            foreach ($this->getFirstTableRowForDepartment($department13) as $key => $value) {
+                $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                if ($key <= 16) {
+                    $fontStyle['bold'] = true;
+                }
+                $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
+            }
         }
     }
 
@@ -527,7 +617,7 @@ class Ticket101WordExport
         $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
         $table->addCell(500, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
         $table->addCell(500, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(500, $cellRowSpan)->addText('Мотопомпы', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(700, $cellRowSpan)->addText('Мотопомпы<w:br/>Водяная<w:br/>Грязевая', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Пожарная техника', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow();
@@ -606,22 +696,22 @@ class Ticket101WordExport
 //        $paragraphStyle = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
         $people = $this->peopleByDept()['ОД'];
-        $dspt = implode(', ',$people['dspt']);
-        $cpps = implode(', ',$people['cpps']);
-        $edds = implode(', ',$people['edds']);
-        $ipl = implode(', ',$people['ipl']);
-        $water_supply = implode(', ',$people['water_supply']);
-        $senior_communication_master = implode(', ',$people['senior_communication_master']);
+        $dspt = implode(', ', $people['dspt']);
+        $cpps = implode(', ', $people['cpps']);
+        $edds = implode(', ', $people['edds']);
+        $ipl = implode(', ', $people['ipl']);
+        $water_supply = implode(', ', $people['water_supply']);
+        $senior_communication_master = implode(', ', $people['senior_communication_master']);
 
         $row = $table->addRow();
-        $row->addCell()->addText('ДСПТ: '.$dspt . ';', $headCellFontStyle, self::$noPaddingPS);
-        $row->addCell()->addText('ЕДДС: '.$edds. ';', $headCellFontStyle, self::$noPaddingPS);
-        $row->addCell()->addText('Ст. мастер связи: '.$senior_communication_master. ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ДСПТ: ' . $dspt . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ЕДДС: ' . $edds . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('Ст. мастер связи: ' . $senior_communication_master . ';', $headCellFontStyle, self::$noPaddingPS);
 
         $row = $table->addRow();
-        $row->addCell()->addText('ЦППС: '.$cpps. ';', $headCellFontStyle, self::$noPaddingPS);
-        $row->addCell()->addText('ИПЛ: '.$ipl. ';', $headCellFontStyle, self::$noPaddingPS);
-        $row->addCell()->addText('Водоканал: '.$water_supply. ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ЦППС: ' . $cpps . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ИПЛ: ' . $ipl . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('Водоканал: ' . $water_supply . ';', $headCellFontStyle, self::$noPaddingPS);
 
     }
 
