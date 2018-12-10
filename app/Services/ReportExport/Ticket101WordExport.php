@@ -273,7 +273,9 @@ class Ticket101WordExport
             );
         }
 
-        $date = Carbon::parse($this->formationReport->created_at)->format('d-m-Y') . 'г.';
+        $date = Carbon::parse($this->formationReport->created_at)
+                ->addDay()
+                ->format('d-m-Y') . 'г.';
 
         $section->addText(
             "Расстановка на {$date}: ",
@@ -600,7 +602,9 @@ class Ticket101WordExport
     {
         // заголовок
         $section->addText(
-            'Строевая записка на ' . Carbon::parse($this->formationReport->created_at)->format('d-m-Y') . 'г.',
+            'Строевая записка на ' . Carbon::parse($this->formationReport->created_at)
+                ->addDay()
+                ->format('d-m-Y') . 'г.',
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
