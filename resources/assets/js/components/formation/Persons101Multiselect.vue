@@ -77,7 +77,7 @@ export default {
             const dsptTypes = [
                 'dspt_vacation',
                 'dspt_business_trip',
-                'dspt_sick',
+                'dspt_sick'
             ];
 
             if (tulparTypes.indexOf(this.rank) !== -1) {
@@ -91,18 +91,18 @@ export default {
             }
         },
         options() {
+            console.log(this.$parent.odStaff, this.tableName);
             return this.$parent.odStaff && this.$parent.odStaff[this.tableName] ? this.$parent.odStaff[this.tableName] : [];
         }
     },
     data() {
         return {
             activated: false,
-            inactiveType_: this.inactiveType,
+            inactiveType_: this.inactiveType
         };
     },
     methods: {
         activateTrigger() {
-
             if (window.canEditOd === false) {
                 return;
             }
