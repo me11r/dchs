@@ -287,6 +287,8 @@ class Ticket101WordExport
         $people = $this->peopleByDept();
         $people = array_replace(array_flip(self::$sortedDepartmentNames), $people); // сортируем
 
+//        dd($people);
+
         $repairedTech = $this->getRepairedTech();
 
         $formationCard101Others = $this->data['formationCard101Others'];
@@ -300,10 +302,6 @@ class Ticket101WordExport
             'gdzs_base' => 'База ГДЗС: ',
             'doctor' => 'Врач: ',
             'just_title' => 'Посты ПЧ-13: ',
-            'post1_president_residence' => '1 пост: ',
-            'post2_president_archive' => '2 пост: ',
-            'post3_state_archive' => '3 пост: ',
-            'post4_national_bank' => '4 пост: ',
             'just_title2' => 'Оперативные дежурные автомашины: ',
             'tulpar1' => 'Тулпар-1: ',
             'tulpar2' => 'Тулпар-2: ',
@@ -328,25 +326,64 @@ class Ticket101WordExport
         );
 
         foreach ($sections as $array_key => $title) {
-            $section->addText(
-                $title,
-                $redFontStyle,
-                array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
-            );
+            if ($array_key === 'just_title'){
+                $posts = [
+                    'post1_president_residence' => '1 пост',
+                    'post2_president_archive' => '2 пост',
+                    'post3_state_archive' => '3 пост',
+                    'post4_national_bank' => '4 пост'
+                ];
+                $postNames= [
+                    'post1_president_residence' => 'Резиденция Президента РК',
+                    'post2_president_archive' => 'Архив Президента РК',
+                    'post3_state_archive' => 'Государственный архив РК',
+                    'post4_national_bank' => 'Национальный Банк РК'
+                ];
 
-            foreach ($people as $fireDept => $persons) {
-                if (isset($persons[$array_key]) && count($persons[$array_key])) {
-                    $textRun = $section->addTextRun(self::$noPaddingPS);
-                    $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
-                    $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+                $section->addText(
+                    $title,
+                    $redFontStyle,
+                    array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                );
+
+                foreach ($people as $fireDept => $persons) {
+                    foreach (['post1_president_residence', 'post2_president_archive', 'post3_state_archive', 'post4_national_bank'] as $subKey) {
+                        if (isset($persons[$subKey]) && \count($persons[$subKey])) {
+                            $textRun = $section->addTextRun(self::$noPaddingPS);
+                            $textRun->addText("$posts[$subKey]:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                            $textRun->addText("$postNames[$subKey] – ", $generalFontStyle, self::$noPaddingPS);
+                            $textRun->addText(implode(', ', array_unique($persons[$subKey])), $generalFontStyle, self::$noPaddingPS);
+                        }
+                    }
                 }
+
+                $section->addText(
+                    '',
+                    $generalFontStyle,
+                    self::$noPaddingPS
+                );
+            } else {
+                $section->addText(
+                    $title,
+                    $redFontStyle,
+                    array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                );
+
+                foreach ($people as $fireDept => $persons) {
+                    if (isset($persons[$array_key]) && count($persons[$array_key])) {
+                        $textRun = $section->addTextRun(self::$noPaddingPS);
+                        $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                        $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+                    }
+                }
+
+                $section->addText(
+                    '',
+                    $generalFontStyle,
+                    self::$noPaddingPS
+                );
             }
 
-            $section->addText(
-                '',
-                $generalFontStyle,
-                self::$noPaddingPS
-            );
         }
 
         $date = Carbon::parse($this->formationReport->created_at)
@@ -667,11 +704,11 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
 
         $table->addCell(null, $cellRowSpan)->addText('Тип осн. пожарного а/м', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Марка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Тип осн. а/м', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Марка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Тип осн. а/м', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Марка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
     }
 
     private function addFirstPageTopData(Section $section)
