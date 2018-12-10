@@ -38,9 +38,8 @@ class Report
     public function getReport(): array
     {
         $this->report = $this->ticket101->getDaily(
-            today()->addHours(8)->format('Y-m-d H:i:s'),
-
-            today()->addDay()->addHours(8)->format('Y-m-d H:i:s')
+            today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s'),
+            today()->addHours(7)->format('Y-m-d H:i:s')
         );
 
         $burntTransportCount = count($this->filterByObject(
@@ -278,9 +277,9 @@ class Report
                     $chronology = Chronology101::where('ticket101_id', $ticket->id)
                         ->whereNotNull('event_info_arrived_id')
                         ->get();
-                    
+
                     $chronology_str = '';
-                    
+
                     if($chronology->count()){
                         foreach ($chronology as $chrono) {
                             $chronology_str .= "$chrono->quantity " . ($chrono->event_info_arrived->name ?? null) . ', ';
@@ -335,10 +334,10 @@ class Report
     private function getDates()
     {
         return [
-            'hour' => '08',
+            'hour' => '07',
             'minutes' => '00',
-            'to' => date('d.m.Y', $this->time + 60 * 60 * 24),
-            'from' => date('d.m.Y', $this->time)
+            'to' => date('d.m.Y', $this->time),
+            'from' => date('d.m.Y', $this->time  - (60 * 60 * 24))
         ];
     }
 
