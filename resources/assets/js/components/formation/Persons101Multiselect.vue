@@ -91,7 +91,6 @@ export default {
             }
         },
         options() {
-            console.log(this.$parent.odStaff, this.tableName);
             return this.$parent.odStaff && this.$parent.odStaff[this.tableName] ? this.$parent.odStaff[this.tableName] : [];
         }
     },
