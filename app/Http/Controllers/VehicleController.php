@@ -35,7 +35,7 @@ class VehicleController extends Controller
             $items = Auth::user()->vehicles()->orderBy('fire_department_id')->paginate($per_page);
         }
 
-        return view('vehicle.index', compact('items'));
+        return view('vehicle.index', compact('items', 'per_page'));
     }
 
     /**
