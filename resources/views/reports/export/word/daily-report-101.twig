@@ -68,7 +68,7 @@
     {% for item in arrangement %}
         <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
     {% endfor %}
-    <br>
+    <br/>
 
     <p>Неисправная техника: </p>
     {% for item in tech %}
@@ -76,6 +76,7 @@
             <div style="margin-left: 40pt">{{ item.department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ vehicle_item.vehicle.name }} ({{ vehicle_item.vehicle.base }}) {{ vehicle_item.comment }}</div>
         {% endfor %}
     {% endfor %}
+    <p>Всего:___________________________{% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
 
 
     {% if fire.items | length > 0  %}
