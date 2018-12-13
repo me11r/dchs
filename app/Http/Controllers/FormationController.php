@@ -642,10 +642,18 @@ class FormationController extends AuthorizedController
         $tech = (new FormationTechReport)->with('formation_tech_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
         $people = (new FormationPersonsReport)->with('formation_person_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
 
-        $dispatchers = FormationPersonsItem::byRankAndForm('dispatchers', $form_id)->get()->sortBy('staff_id');
-        $vacation = FormationPersonsItem::byRankAndForm('vacation', $form_id)->get()->sortBy('staff_id');
-        $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id');
-        $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy('staff_id');
+        $dispatchers = FormationPersonsItem::byRankAndForm('dispatchers', $form_id)->get()->sortBy(function ($q){
+            return $q->staff->department_id;
+        });
+        $vacation = FormationPersonsItem::byRankAndForm('vacation', $form_id)->get()->sortBy(function ($q){
+            return $q->staff->department_id;
+        });
+        $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
+            return $q->staff->department_id;
+        });
+        $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy(function ($q){
+            return $q->staff->department_id;
+        });
 
         $inactive_tech = $rawPeople = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($form_id){
             $q->where('form_id', $form_id);

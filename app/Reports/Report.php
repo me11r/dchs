@@ -285,7 +285,11 @@ class Report
                 if($ticket->trip_result_id === $trip_result->id){
 
                     $analytics = Analytics101Item::where('ticket101_id', $ticket->id)
-                        ->where('trip_result_id', $trip_result->id)->first();
+                        ->where('trip_result_id', $trip_result->id)
+                        ->whereHas('analytics', function ($q){
+                            $q->whereDate('date', today()->subDay());
+                        })
+                        ->first();
 
                     $firstDeptArrived = $ticket->first_department_arrived();
                     $depts_out  = $ticket->results()->whereNotNull('arrive_time')->get();
