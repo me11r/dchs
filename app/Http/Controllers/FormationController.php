@@ -388,7 +388,7 @@ class FormationController extends AuthorizedController
     public function getAdd101Tech(Request $request, $form_id, $dept_id = 0)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
-        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION);
+        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION) && !Auth::user()->isAdmin();
 
         $belongsToDept = Auth::user()->fire_department_id;
         if($belongsToDept){
