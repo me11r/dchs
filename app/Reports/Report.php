@@ -5,8 +5,10 @@ namespace App\Reports;
 use App\Analytics101Item;
 use App\Chronology101;
 use App\Dictionary\TripResult;
+use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\FireDepartmentResult;
+use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
@@ -253,15 +255,20 @@ class Report
                 $q->where('status', 'repair');
             })->get();
 
+
+
         $inactive_tech_cnt = [];
-        foreach ($data['tech'] as $inactive_tech_item){
-            if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
-                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
-            }
-            else{
-                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
+        foreach ($data['tech'] as $inactive_tech) {
+            foreach ($inactive_tech->items as $inactive_tech_item){
+                if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
+                    $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
+                }
+                else{
+                    $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
+                }
             }
         }
+
         $data['inactive_tech_cnt'] = $inactive_tech_cnt;
         $data['arrangement'] = $this->getArrangement();
 
