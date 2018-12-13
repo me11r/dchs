@@ -71,7 +71,6 @@
                         {#Наименование пожарных подразделений#}
                         <td>{{ dept.title }}</td>
 
-                        {#{{ dump(people_fields) }}#}
                         {% for ppl in people_fields %}
                             <td>
                                 {{ people[dept.id][ppl]|default('-') }}{% if ppl == 'privates' and people[dept.id]['trainee']|default(null) is not empty %}/{{ people[dept.id]['trainee'] }}{% endif %}
@@ -83,7 +82,7 @@
                         {% endfor %}
 
                         <td>
-                            {% for action in dept.tech_action %}
+                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 1 %}
                                 {{ action.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
@@ -93,7 +92,7 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_reserve in dept.tech_reserve %}
+                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 1 %}
                                 {{ tech_reserve.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
@@ -103,7 +102,7 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_repair in dept.tech_repair %}
+                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 1 %}
                                 {{ tech_repair.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
@@ -338,7 +337,7 @@
                 {% for item in dispatchers %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.name }} ({{ item.staff.rank }})</td>
+                        <td>{{ item.staff.name }} ({{ item.staff.rank }}) {{ item.comment ? "(" ~item.comment~")" : '' }}</td>
                     </tr>
                 {% endfor %}
             </table>

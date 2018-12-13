@@ -260,11 +260,13 @@ class Report
         $inactive_tech_cnt = [];
         foreach ($data['tech'] as $inactive_tech) {
             foreach ($inactive_tech->items as $inactive_tech_item){
-                if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
-                    $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
-                }
-                else{
-                    $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
+                if($inactive_tech_item->status == 'repair'){
+                    if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
+                        $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
+                    }
+                    else{
+                        $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
+                    }
                 }
             }
         }
