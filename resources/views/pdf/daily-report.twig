@@ -476,7 +476,13 @@
         {% for tripItem in tripResult %}
             <div>
                 {{ loop.index }}. {{ tripItem.analytics|raw }}
+            <div>
         {% endfor %}
+    {% endfor %}
+
+    <div><b>Проверка частей:</b></div>
+    {% for title, check in fireDeptChecks %}
+        <div>{{ loop.index }}.{{ check.fire_dept }}: {{ check.note }}</div>
     {% endfor %}
 
 </div>

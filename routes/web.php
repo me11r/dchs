@@ -223,6 +223,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
+    Route::resource('/fire-department-checks', 'FireDepartmentCheckController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
     Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
     Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);

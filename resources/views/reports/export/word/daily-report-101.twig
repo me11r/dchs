@@ -455,3 +455,8 @@
         <br/>
     {% endfor %}
 
+    <div><b>Проверка частей:</b></div>
+    {% for title, check in fireDeptChecks %}
+        <div>{{ loop.index }}.{{ check.fire_dept }}: {{ check.note }}</div>
+    {% endfor %}
+

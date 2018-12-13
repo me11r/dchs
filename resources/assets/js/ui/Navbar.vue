@@ -155,6 +155,10 @@
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
                             Пожарные части</a>
+                        <a
+                            href="/fire-department-checks"
+                            class="dropdown-item is-small"><i class="fas fa-check fa-fw"></i>&nbsp;
+                            Проверка пожарных частей</a>
                     </div>
                 </div>
                 <div
