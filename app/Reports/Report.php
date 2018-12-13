@@ -252,6 +252,17 @@ class Report
             ->whereHas('items', function ($q){
                 $q->where('status', 'repair');
             })->get();
+
+        $inactive_tech_cnt = [];
+        foreach ($data['tech'] as $inactive_tech_item){
+            if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
+                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
+            }
+            else{
+                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
+            }
+        }
+        $data['inactive_tech_cnt'] = $inactive_tech_cnt;
         $data['arrangement'] = $this->getArrangement();
 
         return $data;
