@@ -5,6 +5,7 @@ namespace App\Reports;
 use App\Analytics101Item;
 use App\Chronology101;
 use App\Dictionary\TripResult;
+use App\FireDepartmentCheck;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\FireDepartmentResult;
@@ -273,6 +274,7 @@ class Report
 
         $data['inactive_tech_cnt'] = $inactive_tech_cnt;
         $data['arrangement'] = $this->getArrangement();
+        $data['fireDeptChecks'] = $this->getFireDeptChecks();
 
         return $data;
     }
@@ -385,6 +387,15 @@ class Report
         return (new FormationTechReport())
             ->with('formation_tech_items')
             ->whereBetween('created_at', [$from, $to]);
+    }
+
+    private function getFireDeptChecks()
+    {
+        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = today()->addHours(7)->format('Y-m-d H:i:s');
+
+//        return (new FireDepartmentCheck())->whereBetween('date', [$from, $to])->get();
+        return (new FireDepartmentCheck())->all();
     }
 
     private function getDates()
