@@ -40,10 +40,16 @@
                             </div>
                         </td>
                     </tr>
+
                 {% else %}
                     <li><h3 class="is-danger">Нет автотехники</h3></li>
                 {% endfor %}
+
+
             </table>
+
+            {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+
         </div>
     </div>
 {% endblock content %}
