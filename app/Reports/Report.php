@@ -5,11 +5,13 @@ namespace App\Reports;
 use App\Analytics101Item;
 use App\Chronology101;
 use App\Dictionary\TripResult;
+use App\FormationTechReport;
 use App\Models\FireDepartmentResult;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Repositories\Contracts\FireObjectInterface;
+use App\Ticket101Other;
 
 class Report
 {
@@ -246,6 +248,12 @@ class Report
 
         ];
         $data['tripResults'] = $this->tripResults();
+        $data['tech'] = $this->getTech()
+            ->whereHas('items', function ($q){
+                $q->where('status', 'repair');
+            })->get();
+        $data['arrangement'] = $this->getArrangement();
+
         return $data;
     }
 
@@ -329,6 +337,30 @@ class Report
         }
 
         return $results;
+    }
+
+    private function getArrangement()
+    {
+        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = today()->addHours(7)->format('Y-m-d H:i:s');
+
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to){
+            $q->where('name', 'Расстановка');
+        })
+            ->whereBetween('created_at', [$from, $to])
+            ->get();
+
+        return $formationCard101Others;
+    }
+
+    private function getTech()
+    {
+        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = today()->addHours(7)->format('Y-m-d H:i:s');
+
+        return (new FormationTechReport())
+            ->with('formation_tech_items')
+            ->whereBetween('created_at', [$from, $to]);
     }
 
     private function getDates()
