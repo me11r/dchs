@@ -72,7 +72,7 @@
 
     <p>Неисправная техника: </p>
     {% for item in tech %}
-        {% for vehicle_item in item.formation_tech_items %}
+        {% for vehicle_item in item.formation_tech_items if vehicle_item.status == 'repair' %}
             <div style="margin-left: 40pt">{{ item.department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ vehicle_item.vehicle.name }} ({{ vehicle_item.vehicle.base }}) {{ vehicle_item.comment }}</div>
         {% endfor %}
     {% endfor %}

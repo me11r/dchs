@@ -48,9 +48,9 @@
                 </div>
             </div>
             <div
-                v-if="block_type_ === 'business_trip' || block_type_ === 'sick'"
+                v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'dispatchers'"
                 class="field is-grouped">
-                <div class="control column">
+                <div class="control column is-half">
                     <label :for="getName('comment', item.id)">Комментарий</label>
                     <textarea
                         class="textarea"
@@ -60,7 +60,7 @@
                         cols="10"
                         rows="1"></textarea>
                 </div>
-                <div class="control column">
+                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick'">
                     <label :for="getName('date_from', item.id)">С</label><br>
                     <input
                         v-model="item.date_from"
@@ -69,7 +69,7 @@
                         class="control"
                         type="date">
                 </div>
-                <div class="control column">
+                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick'">
                     <label :for="getName('date_to', item.id)">По</label><br>
                     <input
                         v-model="item.date_to"
