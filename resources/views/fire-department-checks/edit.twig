@@ -1,35 +1,23 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container section">
+    <div class="container section" id="vue">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
-                <h4 class="title">Проверка ПЧ</h4>
+                <h4 class="title">Проверка части {{ record.created_at.format('d.m.Y')|default('') }}</h4>
                 <form action="{{ record is defined ? route('fire-department-checks.update', {'id':record.id}) : route('fire-department-checks.store')}}" method="post">
                     {% if record is defined %}
                         {{  method_field('PUT') }}
                     {% endif %}
                     {{ csrf_field() }}
-                    <div class="field">
-                        <label for="number">ПЧ</label>
-                        <textarea class="input" name="fire_dept" id="fire_dept">{{ attribute(record, 'fire_dept')|default('') }}</textarea>
-                    </div>
-                    <div class="field">
-                        <label for="number">Текст</label>
-                        <textarea class="input" name="note" id="note">{{ attribute(record, 'note')|default('') }}</textarea>
-                    </div>
-                    <div class="field">
-                        <label for="number">Дата</label>
-                        <input type="datetime-local" name="date">
-                    </div>
 
-                    {#<div class="field">#}
-                        {#<label for="name">ПЧ</label><br>#}
-                        {#<select name="fire_department_id" id="fire_department_id" required>#}
-                            {#{% for fire_department in fire_departments %}#}
-                                {#<option value="{{ fire_department.id }}" {% if fire_department.id == attribute(record, 'fire_department_id')|default('') %}selected{% endif %}>{{ fire_department.title }}</option>#}
-                            {#{% endfor %}#}
-                        {#</select>#}
-                    {#</div>#}
+                    <fire-dept-check-form
+                        :fire-depts="{{ fire_depts }}"
+                        :record="{{ record|default(null)|json_encode }}"
+                    ></fire-dept-check-form>
+
+                    <br>
+                    <hr>
+
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
                         <a href="{{ url('/fire-department-checks') }}" class="button is-light">Отменить</a>

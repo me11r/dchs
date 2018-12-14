@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\FireDepartment;
 use App\FireDepartmentCheck;
+use App\Models\Staff;
 use foo\bar;
 use Illuminate\Http\Request;
 
@@ -27,7 +29,8 @@ class FireDepartmentCheckController extends Controller
      */
     public function create()
     {
-        return view('fire-department-checks.edit');
+        $data['fire_depts'] = FireDepartment::all();
+        return view('fire-department-checks.edit', $data);
     }
 
     /**
@@ -61,7 +64,8 @@ class FireDepartmentCheckController extends Controller
      */
     public function edit($id)
     {
-        $data['record'] = FireDepartmentCheck::find($id);
+        $data['record'] = FireDepartmentCheck::with(['fire_department'])->find($id);
+        $data['fire_depts'] = FireDepartment::all();
         return view('fire-department-checks.edit',$data);
     }
 
@@ -74,10 +78,12 @@ class FireDepartmentCheckController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $f = $request->all();
         $data['record'] = FireDepartmentCheck::find($id);
-        $data['record']->date = $request->date;
-        $data['record']->user = $request->user;
-        $data['record']->fire_dept = $request->fire_dept;
+        $data['record']->fire_department_id = $request->fire_department_id;
+        $data['record']->time_begin = $request->time_begin;
+        $data['record']->time_end = $request->time_end;
+        $data['record']->responsible_person = $request->responsible_person;
         $data['record']->note = $request->note;
         $data['record']->save();
 
