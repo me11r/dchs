@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="level">
                 <div class="level-left">
-                    <h4 style="" class="title">Проверка ПЧ</h4>
+                    <h4 style="" class="title">Проверка части</h4>
                 </div>
                 <div class="level-right has-text-right">
                     <a href="{{ route('fire-department-checks.create') }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
@@ -14,14 +14,16 @@
                 <thead>
                 <tr>
                     <th>ПЧ</th>
+                    <th>Ответственное лицо</th>
                     <th>Дата</th>
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
                 {% for item in items %}
                     <tr>
-                        <td><i class="fas fa-list-ol"></i>&nbsp;{{ item.fire_dept }}</td>
-                        <td>{{ item.date }}</td>
+                        <td><i class="fas fa-list-ol"></i>&nbsp;{{ item.fire_department.title }}</td>
+                        <td>{{ item.responsible_person }}</td>
+                        <td>{{ item.created_at.format('d.m.Y') }}</td>
                         <td>
                             <div class="field is-grouped">
                             <a class="button is-basic is-small" href="{{ route('fire-department-checks.edit', {'id':item.id}) }}">

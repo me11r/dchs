@@ -151,6 +151,7 @@ class DictionaryController extends AuthorizedController
                     ->paginate($data['per_page']);
             }
 
+            $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные планы";
             $data['filter_department'] = $request->filter_department;
         }
