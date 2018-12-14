@@ -1,9 +1,23 @@
 <template>
     <b-timepicker
-        @keyup="test"
         :name="name_"
-        v-model="computedDate"
-        :readonly="readOnly"></b-timepicker>
+        @change="changeTime"
+        v-model="c_date"
+        icon="clock"
+        icon-pack="far"
+        type="text"
+        editable
+        :readonly="readOnly">
+        <div class="field is-grouped" style="justify-content: space-between">
+            <p class="control">
+                <a class="button is-primary is-small"
+                   @click="()=> {c_date = new Date();}">
+                    <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                    <span>Сейчас</span>
+                </a>
+            </p>
+        </div>
+    </b-timepicker>
 </template>
 
 <script>
@@ -19,7 +33,7 @@ export default {
     },
     props: {
         inputdate: {
-            type: String,
+            type: String | Date,
             default: '00:00'
         },
         name: {
@@ -45,9 +59,15 @@ export default {
             return dt;
         }
     },
+    watch: {
+        'c_date'(){
+            this.$emit('timeChanged', this.c_date);
+        }
+    },
     methods: {
-        test() {
-            console.dir(123);
+        changeTime() {
+            this.$emit('timeChanged', this.c_date);
+            console.dir(this.c_date);
         }
     }
 };

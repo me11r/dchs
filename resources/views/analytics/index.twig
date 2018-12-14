@@ -1,0 +1,45 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="level">
+            <div class="level-left">
+                <h4 style="" class="title">Аналитика</h4>
+            </div>
+        </div>
+        <div class="panel">
+            <table class="table is-striped is-narrow is-hoverable is-selectable">
+                <thead>
+                <tr>
+                    <th>Дата и время</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.date }}</td>
+                        <td>
+                            <div class="field is-grouped">
+                                <a class="button is-basic is-small" href="{{ route('reports.analytics101.edit', {'id':item.id}) }}">
+                                    <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+
+                                <form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">
+                                    {{ csrf_field() }}
+                                    {{  method_field('DELETE') }}
+                                    <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
+                                        <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><h3 class="is-danger">Нет данных в таблице</h3></tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+            {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+
+        </div>
+    </div>
+{% endblock content %}

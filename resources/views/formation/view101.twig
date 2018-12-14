@@ -4,6 +4,7 @@
         window.odStaff = {{ od_staff | json_encode() | raw }};
         window.people = {{ people | json_encode() | raw }};
         window.formId = '{{ form_id }}';
+        window.canEditOd = {{ canEditOd | json_encode() | raw }};
     </script>
     <div class="section container-fluid" id="view-101-app">
     <div class="panel">
@@ -23,36 +24,43 @@
             </div>
         </div>
         <div class="level">
-            <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
                         :name="'ДСПТ'"
                         :rank="'dspt'">
                 </persons101-multiselect>
             </p>
-            <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
                         :name="'ЦППС'"
                         :rank="'cpps'">
                 </persons101-multiselect>
             </p>
-            <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
                         :name="'ЕДДС'"
                         :rank="'edds'">
                 </persons101-multiselect>
             </p>
-            <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
                         :name="'ИПЛ'"
                         :rank="'ipl'">
                 </persons101-multiselect>
             </p>
-            <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
                         :name="'Водоканал'"
                         :rank="'water_supply'">
                 </persons101-multiselect>
             </p>
+            <p class="" style="width: 16%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'Ст. мастер связи'"
+                        :rank="'senior_communication_master'">
+                </persons101-multiselect>
+            </p>
+
         </div>
 
         <div class="tbl" style="overflow-x: scroll">
@@ -64,7 +72,9 @@
                         <td>{{ dept.title }}</td>
 
                         {% for ppl in people_fields %}
-                            <td>{{ people[dept.id][ppl]|default('-') }}</td>
+                            <td>
+                                {{ people[dept.id][ppl]|default('-') }}{% if ppl == 'privates' and people[dept.id]['trainee']|default(null) is not empty %}/{{ people[dept.id]['trainee'] }}{% endif %}
+                            </td>
                         {% endfor %}
 
                         {% for tch in tech_fields %}
@@ -72,33 +82,33 @@
                         {% endfor %}
 
                         <td>
-                            {% for action in dept.tech_action %}
+                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 1 %}
                                 {{ action.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
-                            {% for action in dept.tech_action %}
-                                {{ action.vehicle.base|default('-') }}<br>
+                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 2 %}
+                                {{ action.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_reserve in dept.tech_reserve %}
+                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 1 %}
                                 {{ tech_reserve.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_reserve in dept.tech_reserve %}
-                                {{ tech_reserve.vehicle.base|default('-') }}<br>
+                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_reserve.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_repair in dept.tech_repair %}
+                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 1 %}
                                 {{ tech_repair.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_repair in dept.tech_repair %}
-                                {{ tech_repair.vehicle.base|default('-') }}<br>
+                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_repair.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
 
@@ -183,8 +193,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for action in dept.tech_action %}
-                                {{ action.vehicle.base|default('-') }}<br>
+                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 2 %}
+                                {{ action.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -193,8 +203,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_reserve in dept.tech_reserve %}
-                                {{ tech_reserve.vehicle.base|default('-') }}<br>
+                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_reserve.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -203,8 +213,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_repair in dept.tech_repair %}
-                                {{ tech_repair.vehicle.base|default('-') }}<br>
+                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 2 %}
+                                {{ tech_repair.vehicle.name|default('-') }}<br>
                             {% endfor %}
                         </td>
 
@@ -320,6 +330,93 @@
                         :rank="'ipl_zhalyn'">
                 </persons101-multiselect>
             </p>
+        </div>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Диспетчера:</h3>
+            <table class="table">
+                {% for item in dispatchers %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }} ({{ item.staff.rank }}) {{ item.comment ? "(" ~item.comment~")" : '' }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Отпуск:</h3>
+            <table class="table">
+                {% for item in vacation %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <persons101-multiselect
+                    :name="'ДСПТ отпуск'"
+                    :rank="'dspt_vacation'">
+            </persons101-multiselect>
+        </p>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Больничный:</h3>
+            <table class="table">
+                {% for item in sick %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }} {{ item.date_from ? 'c '~ item.date_from }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <persons101-multiselect
+                    :name="'ДСПТ больничный'"
+                    :rank="'dspt_sick'">
+            </persons101-multiselect>
+        </p>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Командировка:</h3>
+            <table class="table">
+                {% for item in business_trip %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.name }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p class="" style="width: 20%; padding: 0 20px 0 0">
+            <persons101-multiselect
+                    :name="'ДСПТ командировка'"
+                    :rank="'dspt_business_trip'">
+            </persons101-multiselect>
+        </p>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Расстановка на {{ report.report_date|date('d-m-Y') }}:</h3>
+            <table class="table">
+                {% for item in formationCard101Others %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ loop.index }}. {{ item.staff.department.name }}</span></td>
+                        <td>начало в {{ item.time_begin }} {{ item.object_name }} {{ item.direction }} {{ item.note }} {{ item.date_from ? 'c '~ item.date_from }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНАЯ ТЕХНИКА:</h3>
+            <table class="table">
+                {% for item in inactive_tech %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ item.vehicle.fireDepartment.name }}</span></td>
+                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.name }}) {% endif %} {{ item.comment ? ' - '~item.comment }} {{ item.date_from ? ' с '~item.date_from }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="column">
+            <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
     </div>
     </div>

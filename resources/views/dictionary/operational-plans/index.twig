@@ -87,9 +87,9 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% if filter_department is not defined %}
-                {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
-            {% endif %}
+            {#{% if filter_department is not defined %}#}
+                {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_department':filter_department}} %}
+            {#{% endif %}#}
         </div>
     </div>
 {% endblock content %}

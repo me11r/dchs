@@ -2,9 +2,19 @@
 
 namespace App\Reports;
 
+use App\Analytics101Item;
+use App\Chronology101;
+use App\Dictionary\TripResult;
+use App\FireDepartmentCheck;
+use App\FormationReport;
+use App\FormationTechReport;
+use App\Models\FireDepartmentResult;
+use App\Models\FormationTechItem;
+use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Repositories\Contracts\FireObjectInterface;
+use App\Ticket101Other;
 
 class Report
 {
@@ -33,8 +43,8 @@ class Report
     public function getReport(): array
     {
         $this->report = $this->ticket101->getDaily(
-            date('Y-m-d H:i:s', $this->time - 60 * 60 * 24),
-            date('Y-m-d H:i:s', $this->time)
+            today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s'),
+            today()->addHours(7)->format('Y-m-d H:i:s')
         );
 
         $burntTransportCount = count($this->filterByObject(
@@ -240,16 +250,161 @@ class Report
 
 
         ];
+        $data['tripResults'] = $this->tripResults();
+        $data['tech'] = $this->getTech()
+            ->whereHas('items', function ($q){
+                $q->where('status', 'repair');
+            })->get();
+
+
+
+        $inactive_tech_cnt = [];
+        foreach ($data['tech'] as $inactive_tech) {
+            foreach ($inactive_tech->items as $inactive_tech_item){
+                if($inactive_tech_item->status == 'repair'){
+                    if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
+                        $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
+                    }
+                    else{
+                        $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
+                    }
+                }
+            }
+        }
+
+        $data['inactive_tech_cnt'] = $inactive_tech_cnt;
+        $data['arrangement'] = $this->getArrangement();
+        $data['fireDeptChecks'] = $this->getFireDeptChecks();
+
         return $data;
+    }
+
+    private function tripResults()
+    {
+        $results = [];
+        foreach (TripResult::all() as $trip_result) {
+            foreach ($this->report as $ticket) {
+                if($ticket->trip_result_id === $trip_result->id){
+
+                    $analytics = Analytics101Item::where('ticket101_id', $ticket->id)
+                        ->where('trip_result_id', $trip_result->id)
+                        ->whereHas('analytics', function ($q){
+                            $q->whereDate('date', today()->subDay());
+                        })
+                        ->first();
+
+                    $firstDeptArrived = $ticket->first_department_arrived();
+                    $depts_out  = $ticket->results()->whereNotNull('arrive_time')->get();
+                    $depts_out_str = '';
+                    foreach ($depts_out as $out) {
+                        $depts_out_str .= "{$out->department->title}({$out->tech->department}), ";
+                    }
+
+                    if($firstDeptArrived){
+                        $fireDeptResult = FireDepartmentResult::find($firstDeptArrived->id);
+                        $firstDeptArrived->name = $fireDeptResult->department->title;
+                        $firstDeptArrived->tech_dept = $fireDeptResult->tech->department;
+                        $firstDeptArrived->vehicle = $fireDeptResult->tech->vehicle->name;
+                    }
+
+
+                    $chronology = Chronology101::where('ticket101_id', $ticket->id)
+                        ->whereNotNull('event_info_arrived_id')
+                        ->get();
+
+                    $chronology_str = '';
+
+                    if($chronology->count()){
+                        foreach ($chronology as $chrono) {
+                            $chronology_str .= "$chrono->quantity " . ($chrono->event_info_arrived->name ?? null) . ', ';
+                        }
+                    }
+
+                    $service_plans_str = '';
+                    foreach ($ticket->service_plans()->whereNotNull('dispatched_time')->get() as $service_plan) {
+                        $service_plans_str .= $service_plan->service_type->name . ', ';
+                    }
+
+                    $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
+                        ->max('square');
+
+                    $result = [
+                        'result_title' => $trip_result->name,
+                        'date' => $ticket->created_at->format('d.m.Y H:i'),
+                        'date2' => $ticket->created_at->format('d.m.Y'),
+                        'city_area' => $ticket->city_area->name ?? null,
+                        'address' => $ticket->location,
+                        'caller_name' => $ticket->caller_name,
+                        'caller_phone' => $ticket->caller_phone,
+                        'pre_information' => $ticket->pre_information,
+                        'depts_out' => $depts_out_str,
+                        'first_dept_arrived' => $firstDeptArrived,
+                        'loc_time' => $ticket->loc_time,
+                        'liqv_time' => $ticket->liqv_time,
+                        'id' => $ticket->id,
+                        'trip_result_id' => $trip_result->id,
+                        'chronology_str' => $chronology_str,
+                        'square_max' => $max_square,
+                        'kui' => $ticket->kui,
+                        'ticket' => $ticket,
+                        'service_plans_str' => $service_plans_str,
+                    ];
+
+                    if($analytics && !$analytics->text){
+                        $analytics->text = view('_templates.report101-analytics', $result)->render();
+                        $analytics->save();
+                    }
+
+                    $result['analytics'] = $analytics->text ?? view('_templates.report101-analytics', $result)->render() ?? null;
+
+                    $results[$trip_result->name][] = $result;
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    private function getArrangement()
+    {
+        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = today()->addHours(7)->format('Y-m-d H:i:s');
+
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to){
+            $q->where('name', 'Расстановка');
+        })
+            ->whereBetween('created_at', [$from, $to])
+            ->get();
+
+        return $formationCard101Others;
+    }
+
+    private function getTech()
+    {
+        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = today()->addHours(7)->format('Y-m-d H:i:s');
+
+        return (new FormationTechReport())
+            ->with('formation_tech_items')
+            ->whereBetween('created_at', [$from, $to]);
+    }
+
+    private function getFireDeptChecks()
+    {
+        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = today()->addHours(7)->format('Y-m-d H:i:s');
+
+//        return (new FireDepartmentCheck())->whereBetween('date', [$from, $to])->get();
+        return (new FireDepartmentCheck())->all();
     }
 
     private function getDates()
     {
         return [
-            'hour' => date('H', $this->time),
-            'minutes' => date('i', $this->time),
-            'from' => date('d.m.Y', $this->time - 60 * 60 * 24),
-            'to' => date('d.m.Y', $this->time)
+            'hour' => '07',
+            'minutes' => '00',
+            'to' => date('d.m.Y', $this->time),
+            'from' => date('d.m.Y', $this->time  - (60 * 60 * 24))
         ];
     }
 

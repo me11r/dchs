@@ -1,28 +1,26 @@
-    <p style="margin: 0 auto;width: 65%">
+    <p style="margin: 0 auto;width: 50%; font-weight: bold; font-family: 'Times New Roman', Times, serif;">
         ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И
     </p>
-    <p style="margin: 0 auto;margin-bottom: 30pt;width: 65%;">
-        &nbsp;&nbsp;АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК
-    </p>
-    <p style="width: 200pt; float: right;margin-bottom: 50pt;margin-right: 20pt">
-        Начальнику ГУ «СП и АСР» ДЧС г. Алматы КЧС МВД РК полковнику гражданской защиты Касыбаеву Р.А.
+    <p style="margin: 0 auto;margin-bottom: 30pt;width: 50%; font-weight: bold;font-family: 'Times New Roman', Times, serif;">
+        АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК
     </p>
     <p style="clear: both"></p>
 
-    <p style="margin: 0 auto;width: 40%;">
-        &nbsp;&nbsp;&nbsp;ОПЕРАТИВНАЯ ИНФОРМАЦИЯ ОГ-1
+    <p style="margin: 0 auto;width: 50%; font-weight: bold;">
+        ОПЕРАТИВНАЯ ИНФОРМАЦИЯ
     </p>
-    <p style="margin: 0 auto;width: 40%;">
+    <p style="margin: 0 auto;width: 50%;">
         по пожарам, произошедшим на территории
     </p>
 
     <p style="margin: 0 auto;width: 50%;margin-bottom: 30pt;">
         г. Алматы с {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г. до {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.to }}г.
     </p>
+    <br/>
+    <br/>
 
-    <p>
-        За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:
-    </p>
+    <p>За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:</p>
+
     <p>1.Пожары – {{ fire.items | length }}</p>
     <p style="margin-left: 40pt">1.1. Транспорт – {{ burntTransportCount }}</p>
     <p style="margin-left: 40pt">1.2. Прочие объекты пожаров – {{ burntOtherCount }}</p>
@@ -64,6 +62,21 @@
     <p style="margin-left: 40pt">13.5. Гибель людей – {{ peopleDeathCount }}</p>
     <p style="margin-left: 40pt">13.6. Гибель детей – {{ childrenDeathCount }}</p>
     <p style="margin-left: 40pt">13.7. Госпитализировано – {{ hospitalizedCount }}</p>
+    <br/>
+    <br/>
+    <p>Расстановка на {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г:</p>
+    {% for item in arrangement %}
+        <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
+    {% endfor %}
+    <br/>
+
+    <p>Неисправная техника: </p>
+    {% for item in tech %}
+        {% for vehicle_item in item.formation_tech_items if vehicle_item.status == 'repair' %}
+            <div style="margin-left: 40pt">{{ item.department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ vehicle_item.vehicle.name }} ({{ vehicle_item.vehicle.base }}) {{ vehicle_item.comment }}</div>
+        {% endfor %}
+    {% endfor %}
+    <p>Всего:___________________________{% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
 
 
     {% if fire.items | length > 0  %}
@@ -430,21 +443,20 @@
         {% endfor %}
     {% endif %}
 
+    <br/>
+    <br/>
+    {% for title, tripResult in tripResults %}
+        <div style="padding-top: 50px; margin: 0 auto;width: 50%; font-weight: bold;">{{ title }}:</div>
+        {% for tripItem in tripResult %}
+            <div>
+                {{ loop.index }}. {{ tripItem.analytics|raw }}
+            </div>
+        {% endfor %}
+        <br/>
+    {% endfor %}
 
-    <br/><br/>
-    <table>
-        <tr>
-            <td width="50%">Старший инженер
-                <br/>ЦППС ЦОУСС ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК» ст.<br/>
-                лейтенант гражданской защиты
-            </td>
-            <td>Нышанкулов Г.С.
-            </td>
-        </tr>
-        <tr>
-            <td>Оперативный дежурный <br/>ДСПТ ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК»<br/>
-                подполковник гражданской защиты
-            </td>
-            <td>Даус В.А.</td>
-        </tr>
-    </table>
+    <div><b>Проверка частей:</b></div>
+    {% for title, check in fireDeptChecks %}
+        <div>{{ loop.index }}.{{ check.fire_department.title }}: {{ check.time_begin }} - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</div>
+    {% endfor %}
+

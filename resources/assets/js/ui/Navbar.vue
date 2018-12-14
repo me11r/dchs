@@ -29,7 +29,7 @@
                             Путевка 101
                         </a>
                         <a
-                            v-if="hasRight(2)"
+                            v-if="hasRight('CARD101_ACCESS_OTHERS_RIDES')"
                             @click.prevent="toggleOpenModal101"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
@@ -155,6 +155,10 @@
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
                             Пожарные части</a>
+                        <a
+                            href="/fire-department-checks"
+                            class="dropdown-item is-small"><i class="fas fa-check fa-fw"></i>&nbsp;
+                            Проверка пожарных частей</a>
                     </div>
                 </div>
                 <div
@@ -265,6 +269,12 @@
                             class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
                             &nbsp; Информация по звонкам
                         </a>
+                        <a
+                                v-if="hasRight('ANALYTICS101_SHOW')"
+                                href="/reports/analytics101/"
+                                class="dropdown-item is-small"><i class="fas fa-database"></i>
+                            &nbsp; Аналитика
+                        </a>
                     </div>
                 </div>
                 <div
@@ -362,7 +372,8 @@
                             <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-other-rides/">Прочие выезда</a>
                         </div>
                         <div class="level-right">
-                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>
+                            <!--<a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>-->
+                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-drill-rides/">Учения</a>
                         </div>
                     </div>
                 </section>

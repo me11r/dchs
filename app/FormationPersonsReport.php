@@ -107,6 +107,7 @@ class FormationPersonsReport extends Model
         'business_trip',
         'other',
         'gas_smoke_protection_service',
+        'trainee',
     ];
     
     public $od_staff = [
@@ -154,6 +155,10 @@ class FormationPersonsReport extends Model
                 $item->staff;
             }
         }
+
+        $result['dspt_vacation'] = StaffDspt::all();
+        $result['dspt_sick'] = StaffDspt::all();
+        $result['dspt_business_trip'] = StaffDspt::all();
 
         return $result;
     }

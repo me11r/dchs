@@ -148,9 +148,10 @@ class DictionaryController extends AuthorizedController
             if($request->filter_department){
                 $data['records'] = $specialPlan
                     ->where('fire_department_id', $request->filter_department)
-                    ->get();
+                    ->paginate($data['per_page']);
             }
 
+            $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные планы";
             $data['filter_department'] = $request->filter_department;
         }

@@ -71,7 +71,10 @@ export default {
             hydrantsClusterer: null,
 
             showHydrants: false,
-            showDepartments: false
+            showDepartments: false,
+            isAdmin: window.isAdmin,
+            canEditOwnHydrants: window.canEditOwnHydrants,
+            userDept: window.userDept
         };
     },
     methods: {
@@ -111,6 +114,15 @@ export default {
             this.displayHydrantPopup(model);
         },
         onSaveHydrant(model) {
+            if (this.canEditOwnHydrants === false && this.userDept !== model.fire_department_id) {
+                this.$snackbar.open({
+                    message: 'Недостаточно прав для редактирования',
+                    position: 'is-top',
+                    type: 'is-info',
+                });
+                return null;
+            }
+
             +model.id === 0 ? this.createHydrant(model) : this.updateHydrant(model);
         },
         createHydrant(model) {
@@ -123,6 +135,7 @@ export default {
         },
         updateHydrant(model) {
             const self = this;
+
             axios.post('/api/hydrant/' + model.id, {...model, '_method': 'PATCH'})
                 .then(() => {
                     self.closeHydrantPopup();

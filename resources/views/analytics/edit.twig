@@ -1,0 +1,24 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section" id="vue">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">Аналитика 101</h4>
+                <form action="/reports/analytics101/update/{{ record.id }}" method="post">
+                    {{ csrf_field() }}
+
+                    <analytics-edit
+                            :trip-results="{{ tripResults }}"
+                            :record="{{ record }}"
+                    ></analytics-edit>
+
+
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/reports/analytics101" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

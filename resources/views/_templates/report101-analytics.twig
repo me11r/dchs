@@ -1,0 +1,9 @@
+    {#{{ loop.index }}. #}<b style="text-decoration: underline;"> {{ date }}. {{ city_area }}, {{ address }}:</b> (заявитель: {{ caller_name }}, тел: {{ caller_phone }}).
+
+    <b style="text-decoration: underline; font-style: italic;">{{ pre_information }} S={{ square_max }} м2</b>
+
+    {% if first_dept_arrived %}
+        {{ first_dept_arrived.name }} ({{ first_dept_arrived.tech_dept }}) на {{ first_dept_arrived.vehicle }} прибыло в {{ first_dept_arrived.arrive_time ?? null }} ({{ first_dept_arrived.on_way_time }}).
+    {% endif %}
+
+    Пожар локализован в {{ loc_time }} и ликвидирован в {{ liqv_time }}, {{ chronology_str }}. На место пожара выезжал л/с: {{ depts_out }}. {% if service_plans_str %}На место ЧС выезжали службы заимодействия: {{ service_plans_str }}.{% endif %} Материал зарегистрирован в КУИ №{{ kui }} от {{ date2 }}.

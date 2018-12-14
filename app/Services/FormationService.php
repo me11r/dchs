@@ -4,6 +4,8 @@ namespace App\Services;
 
 
 use App\FireDepartment;
+use App\Models\FormationPersonsItem;
+use App\Models\FormationTechItem;
 use Illuminate\Support\Collection;
 
 class FormationService
@@ -43,6 +45,17 @@ class FormationService
                     $sumArray['people'][$peopleField] = 0;
                 }
                 $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? (float)$peopleReport[$department['id']]->{$peopleField} : 0;
+
+                if($peopleField == 'privates'){
+                    //добавляем к списку стажеров
+                    $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? $peopleReport[$department['id']]
+                        ->formation_person_items()
+                        ->whereHas('staff', function ($q) use ($department){
+                            $q->where('department_id', $department['id']);
+                        })
+                        ->where('rank', 'trainee')
+                        ->count() : 0;
+                }
             }
 
             foreach ($techFields as $techField) {

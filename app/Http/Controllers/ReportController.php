@@ -69,6 +69,9 @@ class ReportController extends AuthorizedController
             (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport()
         )->render();
 
+        //todo для теста
+//        return $html;
+
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
         $file_name = "Суточный отчет - $date.pdf";
@@ -178,12 +181,15 @@ class ReportController extends AuthorizedController
                         $data['departments'],
                         $data['people'],
                         $data['tech'],
-                        $data['sumArray']['people']
+                        $data['sumArray']['people'],
+                        $data
                     );
 
                     // @todo PDF не работает корректно (но вроде оно и не нужно)
                     $writer = $ticket101Export->getWriter($type === 'pdf' ? 'PDF' : 'Word2007');
-                    $fileName = Carbon::parse($formationReport->created_at)->format('d-m-Y') . " отчет.$type";
+                    $fileName = Carbon::parse($formationReport->created_at)
+                            ->addDay()
+                            ->format('d-m-Y') . " отчет.$type";
                     $writer->save(public_path($fileName));
 
                     return response()->download(public_path($fileName));
@@ -591,6 +597,9 @@ class ReportController extends AuthorizedController
     {
         $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
         $view = view('reports.export.word.daily-report-101', $report)->render();
+        /*TODO debug only*/
+        //return $view;
+
         $word = new PhpWord();
         $section = $word->addSection();
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);

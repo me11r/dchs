@@ -2,7 +2,17 @@
     <div>
         <b-tabs>
             <b-tab-item label="Боевой расчет" icon="fa fa-truck-moving">
-                <div class="level">
+                <div class="levels">
+                    <div class="level-left">
+                        <div class="control">
+                            <label for="">Время регистрации</label>
+                            <input type="text"
+                                   :value="formatDate(ticket_.created_at, 'HH:MM:SS DD-MM-YYYY')"
+                                   readonly="readonly"
+                                   class="input"
+                            >
+                        </div>
+                    </div>
                     <div class="level-right">
                         <a @click="sendAllTripPlans()"
                            class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
@@ -20,7 +30,6 @@
                         <th>Время прибытия</th>
                         <th>Время возвращения</th>
                         <th>Отправка</th>
-                        <th>Время регистрации</th>
                         <th>Время оповещения</th>
                     </tr>
                     </thead>
@@ -56,7 +65,7 @@
                             <p v-for="i in formActive[department.id]">
                                 <input :id="`accept_time_${i.id }`"
                                        type="text"
-                                       :value="i.accept_time"
+                                       :value="formatDate(i.accept_time, 'HH:MM:SS')"
                                        readonly
                                        class="input small-imput">
                             </p>
@@ -115,17 +124,6 @@
                                        class="button is-primary small is-outlined small-a">
                                     <i class="fas fa-bus"></i>&nbsp;Выслать
                                 </a>
-                            </p>
-                        </td>
-
-                        <!--Время регистрации-->
-                        <td>
-                            <p v-for="i in formActive[department.id]">
-                                <input
-                                       type="text"
-                                       readonly
-                                       :value="ticket_.created_at"
-                                       class="input small-imput">
                             </p>
                         </td>
 
@@ -294,6 +292,13 @@
             needToGetBack(department){
                 if(department.get_back === 1){
                     return 'blink5';
+                }
+
+                return '';
+            },
+            formatDate(date, format){
+                if(date){
+                    return moment(date).format(format);
                 }
 
                 return '';

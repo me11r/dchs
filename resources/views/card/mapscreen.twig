@@ -20,7 +20,9 @@
             fireDepartments: {{ fireDepartments | json_encode() | raw }},
             model: {{ model | json_encode() | raw }},
         };
-
+        window.isAdmin = {{ isAdmin | json_encode() | raw }};
+        window.canEditOwnHydrants = {{ canEditOwnHydrants | json_encode() | raw }};
+        window.userDept = {{ userDept|default(0) }};
         window.initCommonMapScreen();
     </script>
 {% endblock content %}

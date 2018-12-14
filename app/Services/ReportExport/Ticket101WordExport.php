@@ -4,7 +4,9 @@
 namespace App\Services\ReportExport;
 
 use App\FireDepartment;
+use App\FormationPersonsReport;
 use App\FormationReport;
+use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Row;
@@ -52,13 +54,41 @@ class Ticket101WordExport
      */
     private $sumPeople;
 
+    /**
+     * @var array
+     */
+    private $data;
+
+    public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+
+    public static $sortedDepartmentNames = [
+        'ПЧ-1',
+        'ПЧ-2',
+        'ПЧ-3',
+        'ПЧ-4',
+        'ПЧ-5',
+        'ПЧ-6',
+        'СПЧ-7',
+        'СПЧ-8',
+        'СПЧ-9',
+        'ПЧ-10',
+        'СПЧ-11',
+        'ПЧ-12',
+        'СПЧ-14',
+        'СПЧ-15',
+        'ПП-16',
+        'ПП-17',
+        'СО',
+        'ПЧ-13'
+    ];
 
     public function __construct(
         FormationReport $formationReport,
         Collection $departments,
         Collection $people,
         Collection $tech,
-        array $sumPeople
+        array $sumPeople,
+        array $data
     )
     {
         $this->defineDomPdfWriter();
@@ -69,6 +99,7 @@ class Ticket101WordExport
         $this->people = $people;
         $this->tech = $tech;
         $this->sumPeople = $sumPeople;
+        $this->data = $data;
 
         $this->prepareDocument();
     }
@@ -86,17 +117,381 @@ class Ticket101WordExport
 
         $this->addFirstPageTopData($section);
 
+        $section->addTextBreak(1, ['size' => 1]);
+
         $this->addFirstTable($section);
 
         $section->addPageBreak();
 
         $this->addSecondTable($section);
+
+        $this->addBottomText($section);
+
+    }
+
+    private function peopleByDept()
+    {
+        $people = $this->people;
+        $result = [];
+        foreach ($people as $dept_id => $personSummary) {
+
+            $fireDept = FireDepartment::find($dept_id);
+
+            $vacationPpl = $personSummary->formation_person_items()->rank('vacation')->get();
+            $dispatchersPpl = $personSummary->formation_person_items()->rank('dispatchers')->get();
+            $sickPpl = $personSummary->formation_person_items()->rank('sick')->get();
+            $businessPpl = $personSummary->formation_person_items()->rank('business_trip')->get();
+            $maternityPpl = $personSummary->formation_person_items()->rank('maternity')->get();
+
+            /*ОД*/
+            $gdzs_base = $personSummary->formation_person_items_od()->rank('gdzs_base')->get();
+            $crb = $personSummary->formation_person_items_od()->rank('crb')->get();
+            $tulpar1 = $personSummary->formation_person_items_od()->rank('tulpar1')->get();
+            $tulpar2 = $personSummary->formation_person_items_od()->rank('tulpar2')->get();
+            $tulpar3 = $personSummary->formation_person_items_od()->rank('tulpar3')->get();
+            $tulpar4 = $personSummary->formation_person_items_od()->rank('tulpar4')->get();
+            $tulpar5 = $personSummary->formation_person_items_od()->rank('tulpar5')->get();
+            $tulpar7 = $personSummary->formation_person_items_od()->rank('tulpar7')->get();
+            $tulpar8 = $personSummary->formation_person_items_od()->rank('tulpar8')->get();
+            $tulpar10 = $personSummary->formation_person_items_od()->rank('tulpar10')->get();
+            $kshm = $personSummary->formation_person_items_od()->rank('kshm')->get();
+            $ipl_zhalyn = $personSummary->formation_person_items_od()->rank('ipl_zhalyn')->get();
+            $doctor = $personSummary->formation_person_items_od()->rank('doctor')->get();
+            $dspt = $personSummary->formation_person_items_od()->rank('dspt')->get();
+            $cpps = $personSummary->formation_person_items_od()->rank('cpps')->get();
+            $edds = $personSummary->formation_person_items_od()->rank('edds')->get();
+            $ipl = $personSummary->formation_person_items_od()->rank('ipl')->get();
+            $water_supply = $personSummary->formation_person_items_od()->rank('water_supply')->get();
+            $senior_communication_master = $personSummary->formation_person_items_od()->rank('senior_communication_master')->get();
+
+            /*пч-13*/
+            $post1_president_residence = $personSummary->formation_person_items()->rank('post1_president_residence')->get();
+            $post2_president_archive = $personSummary->formation_person_items()->rank('post2_president_archive')->get();
+            $post3_state_archive = $personSummary->formation_person_items()->rank('post3_state_archive')->get();
+            $post4_national_bank = $personSummary->formation_person_items()->rank('post4_national_bank')->get();
+
+            $result[$fireDept->title] = [
+                'vacation' => $vacationPpl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'maternity' => $maternityPpl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'dispatchers' => $dispatchersPpl->map(function ($item) {
+                    return ($item->staff->name ?? null) . "({$item->staff->rank})";
+                })->toArray(),
+                'sick' => $sickPpl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'business_trip' => $businessPpl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+
+                'gdzs_base' => $gdzs_base->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+
+                'crb' => $crb->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post1_president_residence' => $post1_president_residence->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post2_president_archive' => $post2_president_archive->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post3_state_archive' => $post3_state_archive->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'post4_national_bank' => $post4_national_bank->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar1' => $tulpar1->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar2' => $tulpar2->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar3' => $tulpar3->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar4' => $tulpar4->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar5' => $tulpar5->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar7' => $tulpar7->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar8' => $tulpar8->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'tulpar10' => $tulpar10->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'kshm' => $kshm->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'ipl_zhalyn' => $ipl_zhalyn->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'doctor' => $doctor->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'dspt' => $dspt->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'cpps' => $cpps->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'edds' => $edds->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'ipl' => $ipl->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'water_supply' => $water_supply->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+                'senior_communication_master' => $senior_communication_master->map(function ($item) {
+                    return $item->staff->name ?? null;
+                })->toArray(),
+            ];
+
+
+        }
+
+        return $result;
+    }
+
+    private function getRepairedTech()
+    {
+        $repairedTech = $this->formationReport->tech_reports->map(function ($item) {
+            return $item->items()->status('repair')->get()->toArray();
+        });
+
+        $repairedTech = $repairedTech->filter(function ($item) {
+            return count($item);
+        });
+
+        $result = [];
+        foreach ($repairedTech as $arr) {
+            foreach ($arr as $item) {
+                $vehicle = Vehicle::find($item['vehicle_id']);
+                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . $item['comment'];
+            }
+        }
+
+        return $result;
+    }
+
+    private function addBottomText(Section $section)
+    {
+        $people = $this->peopleByDept();
+        $people = array_replace(array_flip(self::$sortedDepartmentNames), $people); // сортируем
+
+//        dd($people);
+
+        $repairedTech = $this->getRepairedTech();
+
+        $formationCard101Others = $this->data['formationCard101Others'];
+
+        $sections = [
+            'dispatchers' => 'Диспетчера: ',
+            'vacation' => 'Отпуск: ',
+            'maternity_title' => '',
+            'sick' => 'Больничный: ',
+            'business_trip' => 'Командировка: ',
+            'crb' => 'ЦРБ: ',
+            'gdzs_base' => 'База ГДЗС: ',
+            'doctor' => 'Врач: ',
+            'just_title' => 'Посты ПЧ-13: ',
+            'just_title2' => 'Оперативные дежурные автомашины: ',
+            'tulpar1' => 'Тулпар-1: ',
+            'tulpar2' => 'Тулпар-2: ',
+            'tulpar3' => 'Тулпар-3: ',
+            'tulpar4' => 'Тулпар-4: ',
+            'tulpar5' => 'Тулпар-5: ',
+            'tulpar7' => 'Тулпар-7: ',
+            'tulpar8' => 'Тулпар-8: ',
+            'tulpar10' => 'Тулпар-10: ',
+            'kshm' => 'КШМ: ',
+            'ipl_zhalyn' => 'ИПЛ «Жалын»: ',
+        ];
+
+        $generalFontStyle = ['name' => 'Times New Roman', 'size' => 8];
+        $generalBoldFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true];
+        $generalBoldItalicFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true, 'italic' => true];
+        $generalBoldItalicUnderlineFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true, 'italic' => true, 'underline' => 'single'];
+        $redFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true, 'color' => 'red', 'underline' => 'single'];
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($sections as $array_key => $title) {
+            if ($array_key === 'just_title'){
+                $posts = [
+                    'post1_president_residence' => '1 пост',
+                    'post2_president_archive' => '2 пост',
+                    'post3_state_archive' => '3 пост',
+                    'post4_national_bank' => '4 пост'
+                ];
+                $postNames= [
+                    'post1_president_residence' => 'Резиденция Президента РК',
+                    'post2_president_archive' => 'Архив Президента РК',
+                    'post3_state_archive' => 'Государственный архив РК',
+                    'post4_national_bank' => 'Национальный Банк РК'
+                ];
+
+                $section->addText(
+                    $title,
+                    $redFontStyle,
+                    array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                );
+
+                foreach ($people as $fireDept => $persons) {
+                    foreach (['post1_president_residence', 'post2_president_archive', 'post3_state_archive', 'post4_national_bank'] as $subKey) {
+                        if (isset($persons[$subKey]) && \count($persons[$subKey])) {
+                            $textRun = $section->addTextRun(self::$noPaddingPS);
+                            $textRun->addText("$posts[$subKey]:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                            $textRun->addText("$postNames[$subKey] – ", $generalFontStyle, self::$noPaddingPS);
+                            $textRun->addText(implode(', ', array_unique($persons[$subKey])), $generalFontStyle, self::$noPaddingPS);
+                        }
+                    }
+                }
+
+                $section->addText(
+                    '',
+                    $generalFontStyle,
+                    self::$noPaddingPS
+                );
+            } else {
+                $section->addText(
+                    $title,
+                    $redFontStyle,
+                    array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                );
+
+                foreach ($people as $fireDept => $persons) {
+                    if (isset($persons[$array_key]) && count($persons[$array_key])) {
+                        $textRun = $section->addTextRun(self::$noPaddingPS);
+                        if($fireDept != 'ОД'){
+                            $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                        }
+
+                        if($array_key == 'vacation'){
+                            $prefix = 'Трудовой-';
+                            $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
+                            $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+
+                            if(count($persons['maternity'])){
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+
+                                $prefix = 'Декрет-';
+                                $textRun->addText($prefix, $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
+                                $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                        else{
+                            $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+                        }
+
+                    }
+                }
+
+                $section->addText(
+                    '',
+                    $generalFontStyle,
+                    self::$noPaddingPS
+                );
+            }
+
+        }
+
+        $date = Carbon::parse($this->formationReport->created_at)
+                ->addDay()
+                ->format('d-m-Y') . 'г.';
+
+        $section->addText(
+            "Расстановка на {$date}: ",
+            $redFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($formationCard101Others as $key => $item) {
+            $index = ++$key;
+            $section->addText(
+                "{$index}. {$item->staff->department->name}",
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+
+            $section->addText(
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . $item->date_from ? " c {$item->date_from}" : '',
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+        }
+
+        $section->addText(
+            '',
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Неисправная техника',
+            $redFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($repairedTech as $fireDept => $tech) {
+            $section->addText(
+                "{$fireDept}:\t\t" . implode(', ', $tech),
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+        }
+
+        $section->addText(
+            '',
+            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        $inactive_tech_cnt = $this->data['inactive_tech_cnt'];
+        $inactive_tech_cnt_str = '';
+        foreach ($inactive_tech_cnt as $name => $count) {
+            $inactive_tech_cnt_str .= "{$name} - {$count}, ";
+        }
+        $section->addText(
+            "Всего:\t\t" . $inactive_tech_cnt_str,
+            $redFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        /*$section->addText(
+            '',
+            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Больничные',
+            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            ['align' => Jc::BOTH]
+        );*/
     }
 
     private function addSecondTable(Section $section)
     {
         $tableStyle = new Table;
-        $tableStyle->setBorderColor('cccccc');
+        $tableStyle->setBorderColor('black');
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
@@ -113,8 +508,30 @@ class Ticket101WordExport
         foreach ($this->departments as $department) {
             if ($department->id !== 13) { // суеверия
                 $row = $table->addRow();
-                foreach ($this->getSecondTableRowForDepartment($department) as $value) {
-                    $this->addDataCellToRow($row, $value);
+                $rowData = $this->getSecondTableRowForDepartment($department);
+                foreach ($rowData as $key => $value) {
+                    $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                    if ($key === 0 || $key === (\count(array_keys($rowData)) - 1)) {
+                        $fontStyle['bold'] = true;
+                    }
+
+                    $cellStyles = [];
+
+                    if($key > 18 && $key < 22){
+
+                        $fontStyle['bold'] = true;
+                    }
+
+                    if($key == 19){
+                        $cellStyles = ['borderLeftSize' => 10, 'borderColor' => '000000'];
+                    }
+
+                    if($key == 21){
+                        $cellStyles = ['borderRightSize' => 10, 'borderColor' => '000000'];
+                    }
+
+
+                    $this->addDataCellToRow($row, $value, $cellStyles, $fontStyle, self::$noPaddingPS);
                 }
             }
         }
@@ -122,26 +539,27 @@ class Ticket101WordExport
         // сумма
         $row = $table->addRow();
         foreach ($this->getSecondTableSumRow() as $value) {
-            $this->addDataCellToRow($row, $value, [], ['bold' => true]);
+            $this->addDataCellToRow($row, $value, ['borderSize' => 10, 'borderColor' => '000000'], ['name' => 'Times New Roman', 'size' => 8, 'bold' => true], self::$noPaddingPS);
         }
     }
 
     private function addSecondTableHeaders(\PhpOffice\PhpWord\Element\Table $table)
     {
         $cellRowSpanV = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
+        $cellRowSpanVThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'];
         $cellRowSpanH = ['vMerge' => 'restart', 'valign' => Jc::CENTER];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
         $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
-        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER];
+        $hcAlignStyle = array_merge(['align' => Jc::CENTER, 'valign' => Jc::CENTER], self::$noPaddingPS);
 
         $table->addRow(700);
-        $table->addCell(null, $cellRowSpanV)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 17, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Имеется на автомобилях в боевом расчете', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText('Пенообразователя на складе', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Количество неисправных водоисточников', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText("1 генератор\n2 дымосос\n3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
+        $table->addCell(1200, $cellRowSpanV)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(9000, ['gridSpan' => 17, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Имеется на автомобилях в боевом расчете', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText('Пенообразователя на складе', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(1400, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'])->addText('Количество неисправных водоисточников', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderLeftSize' => 10, 'borderColor' => '000000'])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText("1 генератор<w:br/>2 дымосос<w:br/>3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanH)->addText('Ф.И.О Начальника караула или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow(1250);
@@ -161,12 +579,12 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpanV)->addText('Спасательные веревки', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('Пенообразователя', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('ПГ', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText('ПВ', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'])->addText('ПГ', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanVThick)->addText('ПВ', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('бензин', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText('солярка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanV)->addText('дизель', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('бензин', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText('солярка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanV)->addText('дизель', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
 
@@ -190,8 +608,8 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowSpanV)->addText('уличный', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanV)->addText('объектовый', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanVThick)->addText('уличный', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanVThick)->addText('объектовый', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
@@ -204,7 +622,7 @@ class Ticket101WordExport
     private function addFirstTable(Section $section)
     {
         $tableStyle = new Table;
-        $tableStyle->setBorderColor('cccccc');
+        $tableStyle->setBorderColor('black');
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
@@ -216,21 +634,59 @@ class Ticket101WordExport
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
     {
+        $department13 = null;
         // все департаменты
         /** @var FireDepartment $department */
         foreach ($this->departments as $department) {
             if ($department->id !== 13) { // суеверия
                 $row = $table->addRow();
-                foreach ($this->getFirstTableRowForDepartment($department) as $value) {
-                    $this->addDataCellToRow($row, $value);
+                foreach ($this->getFirstTableRowForDepartment($department) as $key => $value) {
+                    $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                    if ($key <= 16) {
+                        $fontStyle['bold'] = true;
+                    }
+
+                    $cellStyles = [];
+                    if($key == 8){
+                        $cellStyles = ['borderLeftSize' => 10, 'borderColor' => '000000'];
+                    }
+
+                    if($key == 10 || $key == 13){
+                        $cellStyles = ['borderRightSize' => 10, 'borderColor' => '000000'];
+                    }
+
+                    $this->addDataCellToRow($row, $value, $cellStyles, $fontStyle, self::$noPaddingPS);
                 }
+            } else {
+                $department13 = $department;
             }
         }
 
         // сумма
         $row = $table->addRow();
         foreach ($this->getFirstTableSumRow() as $value) {
-            $this->addDataCellToRow($row, $value, [], ['bold' => true]);
+            $this->addDataCellToRow($row, $value, ['borderSize' => 10, 'borderColor' => '000000'], ['bold' => true, 'name' => 'Times New Roman', 'size' => 8], self::$noPaddingPS);
+        }
+
+        if ($department13) {
+            $row = $table->addRow();
+            foreach ($this->getFirstTableRowForDepartment($department13) as $key => $value) {
+                $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                if ($key <= 16) {
+                    $fontStyle['bold'] = true;
+                }
+
+                $cellStyles = [];
+                if($key == 8){
+                    $cellStyles = ['borderLeftSize' => 10, 'borderColor' => '000000'];
+                }
+
+                if($key == 10 || $key == 13){
+                    $cellStyles = ['borderRightSize' => 10, 'borderColor' => '000000'];
+                }
+
+                $this->addDataCellToRow($row, $value, $cellStyles, $fontStyle, self::$noPaddingPS);
+            }
         }
     }
 
@@ -248,20 +704,22 @@ class Ticket101WordExport
     private function addFirstTableHeaders(\PhpOffice\PhpWord\Element\Table $table)
     {
         $cellRowSpan = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
+        $cellRowSpanThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
         $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
-        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER];
+        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+        //'borderSize' => 8, 'borderColor' => '000000'
 
-        $table->addRow();
+        $table->addRow(700);
 
-        $table->addCell(null, $cellRowSpan)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('В карауле по списку л/с', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(900, $cellRowSpan)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(500, $cellRowSpan)->addText('В карауле по списку л/с', $hcFontStyle, $hcAlignStyle);
 
-        $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На лицо личного состава', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Мотопомпы', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На лицо личного состава', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(500, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(500, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(700, $cellRowSpan)->addText('Мотопомпы<w:br/>Водяная<w:br/>Грязевая', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Пожарная техника', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow();
@@ -275,12 +733,12 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpan)->addText('Шоферы', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Ряд.состав', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Ряд.Диспетчеров', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Отпуск', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Учебный', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Декрет', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Больные', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Командировка', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Др.причины', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanThick)->addText('Отпуск', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanThick)->addText('Учебный', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanThick)->addText('Декрет', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanThick)->addText('Больные', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanThick)->addText('Командировка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpanThick)->addText('Др.причины', $hcFontStyle, $hcAlignStyle);
 
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
@@ -290,7 +748,7 @@ class Ticket101WordExport
         $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На ремонте', $hcFontStyle, $hcAlignStyle);
 
-        $table->addRow(1000);
+        $table->addRow(1200);
 
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
@@ -311,18 +769,20 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
 
         $table->addCell(null, $cellRowSpan)->addText('Тип осн. пожарного а/м', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Марка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Тип осн. а/м', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Марка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Тип осн. а/м', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Марка', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
     }
 
     private function addFirstPageTopData(Section $section)
     {
         // заголовок
         $section->addText(
-            'Строевая записка на ' . Carbon::parse($this->formationReport->created_at)->format('d-m-Y') . 'г.',
+            'Строевая записка на ' . Carbon::parse($this->formationReport->created_at)
+                ->addDay()
+                ->format('d-m-Y') . 'г.',
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
@@ -335,16 +795,25 @@ class Ticket101WordExport
         $table = $section->addTable($tableStyle);
 
         $headCellFontStyle = ['name' => 'Times New Roman', 'size' => 9, 'bold' => true];
+//        $paragraphStyle = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+
+        $people = $this->peopleByDept()['ОД'];
+        $dspt = implode(', ', $people['dspt']);
+        $cpps = implode(', ', $people['cpps']);
+        $edds = implode(', ', $people['edds']);
+        $ipl = implode(', ', $people['ipl']);
+        $water_supply = implode(', ', $people['water_supply']);
+        $senior_communication_master = implode(', ', $people['senior_communication_master']);
 
         $row = $table->addRow();
-        $row->addCell()->addText('ДСПТ:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('ЕДДС:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('Ст. мастер связи:', $headCellFontStyle); // @TODO добавить значение
+        $row->addCell()->addText('ДСПТ: ' . $dspt . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ЕДДС: ' . $edds . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('Ст. мастер связи: ' . $senior_communication_master . ';', $headCellFontStyle, self::$noPaddingPS);
 
         $row = $table->addRow();
-        $row->addCell()->addText('ЦППС:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('ИПЛ:', $headCellFontStyle); // @TODO добавить значение
-        $row->addCell()->addText('Водоканал:', $headCellFontStyle); // @TODO добавить значение
+        $row->addCell()->addText('ЦППС: ' . $cpps . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ИПЛ: ' . $ipl . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('Водоканал: ' . $water_supply . ';', $headCellFontStyle, self::$noPaddingPS);
 
     }
 
