@@ -1,8 +1,16 @@
+{#{{ items.appends({'per_page': per_page}).links() | raw }}#}
+
 <nav class="pagination-template">
     <hr/>
     <div class="columns">
         <div class="column">
-            {{ items.appends({'per_page': per_page}).links() | raw }}
+            {% set data = items.appends({'per_page': per_page}) %}
+            {% if other is defined and other is not null %}
+                {% set data = data.appends(other) %}
+            {% endif %}
+
+            {{ data.links() | raw }}
+
         </div>
         <div class="column is-one-third">
             <form method="get" id="pagination_change_form">
@@ -22,6 +30,7 @@
                                 </select>
                             </div>
                             <script>
+
                                 document.addEventListener('DOMContentLoaded', ()=>{
                                     const perpageForm = document.getElementById('pagination_change_form');
                                     const select = perpageForm.querySelector('select[name=per_page]');
@@ -29,6 +38,7 @@
                                         select.classList.add('is-loading');
                                         perpageForm.submit();
                                     });
+
                                 });
                             </script>
                         </div>
