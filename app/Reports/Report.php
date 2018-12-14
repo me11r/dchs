@@ -325,7 +325,8 @@ class Report
                         $service_plans_str .= $service_plan->service_type->name . ', ';
                     }
 
-                    $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
+
+                    $max_square = $ticket->max_square ?? Ticket101OtherRecord::where('ticket101_id', $ticket->id)
                         ->max('square');
 
                     $result = [
