@@ -265,8 +265,13 @@ class CardController extends AuthorizedController
             $other_records_unique = [];
         }
 
-        $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
-            ->max('square');
+        if(!$ticket->max_square){
+            $max_square = Ticket101OtherRecord::where('ticket101_id', $ticket->id)
+                ->max('square');
+        }
+        else{
+            $max_square = $ticket->max_square;
+        }
 
         if($ticket->results()->where('get_back', true)->exists()){
             session(['notification.get_back' => 1]);
