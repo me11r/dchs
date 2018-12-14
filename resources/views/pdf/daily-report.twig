@@ -482,7 +482,7 @@
 
     <div><b>Проверка частей:</b></div>
     {% for title, check in fireDeptChecks %}
-        <div>{{ loop.index }}.{{ check.fire_department.title }}: {{ check.time_begin }} - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</div>
+        <div>{{ loop.index }}.{{ check.fire_department.title|default('') }}: {{ check.time_begin }} - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</div>
     {% endfor %}
 
 </div>
