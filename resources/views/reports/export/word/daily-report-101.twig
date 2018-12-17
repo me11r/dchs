@@ -1,20 +1,27 @@
-    <p style="margin: 0 auto;width: 50%; font-weight: bold; font-family: 'Times New Roman', Times, serif;">
-        ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И
-    </p>
-    <p style="margin: 0 auto;margin-bottom: 30pt;width: 50%; font-weight: bold;font-family: 'Times New Roman', Times, serif;">
+<div style="font-weight: bold; font-family: 'Times New Roman', Times, serif;">
+    <p style="font-size: 9pt;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК
     </p>
     <p style="clear: both"></p>
 
-    <p style="margin: 0 auto;width: 50%; font-weight: bold;">
+    <p style="margin: 0 auto;width: 50%; ">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         ОПЕРАТИВНАЯ ИНФОРМАЦИЯ
     </p>
     <p style="margin: 0 auto;width: 50%;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         по пожарам, произошедшим на территории
     </p>
 
-    <p style="margin: 0 auto;width: 50%;margin-bottom: 30pt;">
-        г. Алматы с {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г. до {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.to }}г.
+    <p style="margin: 0 auto;width: 50%;margin-bottom: 25pt;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        г. Алматы с {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г. до {{ dates.hour }}
+        час. {{ dates.minutes }} мин. {{ dates.to }}г.
     </p>
     <br/>
     <br/>
@@ -22,19 +29,20 @@
     <p>За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:</p>
 
     <p>1.Пожары – {{ fire.items | length }}</p>
-    <p style="margin-left: 40pt">1.1. Транспорт – {{ burntTransportCount }}</p>
-    <p style="margin-left: 40pt">1.2. Прочие объекты пожаров – {{ burntOtherCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.1. Транспорт – {{ burntTransportCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2. Прочие объекты пожаров – {{ burntOtherCount }}</p>
     <p>2. Случаи горения, не подлежащие учету как пожары –
-        {{
-        (electricFire.items | length) +
+        {{ (electricFire.items | length) +
         (kitchenFire.items | length) +
         (trashFireOther.items | length) +
-        (trashFireHouse.items | length)
-        }}</p>
-    <p style="margin-left: 40pt">2.1. Пища на газе и задымление при неиспр.быт.эл.приборов – {{ kitchenFire.items | length }}</p>
-    <p style="margin-left: 40pt">2.2. КЗ эл.сетей и эл.оборудования – {{ electricFire.items | length }}</p>
-    <p style="margin-left: 40pt">2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах – {{ trashFireOther.items | length }}</p>
-    <p style="margin-left: 40pt">2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд) – {{ trashFireHouse.items | length }}</p>
+        (trashFireHouse.items | length) }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.1. Пища на газе и задымление при неиспр.быт.эл.приборов
+        – {{ kitchenFire.items | length }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.2. КЗ эл.сетей и эл.оборудования – {{ electricFire.items | length }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах
+        – {{ trashFireOther.items | length }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд)
+        – {{ trashFireHouse.items | length }}</p>
     <p>3. Ложный – {{ falseCall.items | length }}</p>
     <p>4. АСР – {{ asr.items | length }}</p>
     <p>5. Кровельные, битумные, сварочные работы – {{ workFire.items | length }}</p>
@@ -50,41 +58,44 @@
     <p>Вспышки и разряды стат.электричества - {{ dischargesElectr.items | length }}</p>
 
     <p>12. Случаи отравления - {{ poisoningCount }}</p>
-    <p style="margin-left: 40pt">12.1. Отравление угарным газом – {{ carbonPoisoningCount }}</p>
-    <p style="margin-left: 40pt">12.2. Отравление природным газом – {{ naturalPoisoningCount }}</p>
-    <p>13. Сведенеия по людям /детям: {{
-        (suicide.items | length)+rescuedCount+evacCount+gptBurnsCount+peopleDeathCount+childrenDeathCount+hospitalizedCount }}</p>
-    <p style="margin-left: 40pt">13.1. Попытка суицида - {{ suicide.items | length }}</p>
-    <p style="margin-left: 40pt">13.2. Спасено людей – {{ rescuedCount }}</p>
-    <p style="margin-left: 40pt">13.3. Эвакуировано людей – {{ evacCount }}</p>
-    <p style="margin-left: 40pt">13.4. Получили ожоги – {{ gptBurnsCount }}</p>
-    {#<p style="margin-left: 40pt">13.5. Пострадало – 0</p>#}
-    <p style="margin-left: 40pt">13.5. Гибель людей – {{ peopleDeathCount }}</p>
-    <p style="margin-left: 40pt">13.6. Гибель детей – {{ childrenDeathCount }}</p>
-    <p style="margin-left: 40pt">13.7. Госпитализировано – {{ hospitalizedCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12.1. Отравление угарным газом – {{ carbonPoisoningCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12.2. Отравление природным газом – {{ naturalPoisoningCount }}</p>
+    <p>13. Сведенеия по людям
+        /детям: {{ (suicide.items | length)+rescuedCount+evacCount+gptBurnsCount+peopleDeathCount+childrenDeathCount+hospitalizedCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.1. Попытка суицида - {{ suicide.items | length }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.2. Спасено людей – {{ rescuedCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.3. Эвакуировано людей – {{ evacCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.4. Получили ожоги – {{ gptBurnsCount }}</p>
+    {#<p>13.5. Пострадало – 0</p>#}
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.5. Гибель людей – {{ peopleDeathCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.6. Гибель детей – {{ childrenDeathCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.7. Госпитализировано – {{ hospitalizedCount }}</p>
     <br/>
     <br/>
     <p>Расстановка на {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г:</p>
     {% for item in arrangement %}
-        <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
     {% endfor %}
     <br/>
 
     <p>Неисправная техника: </p>
     {% for item in tech %}
         {% for vehicle_item in item.formation_tech_items if vehicle_item.status == 'repair' %}
-            <div style="margin-left: 40pt">{{ item.department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ vehicle_item.vehicle.name }} ({{ vehicle_item.vehicle.base }}) {{ vehicle_item.comment }}</div>
+            <div style="margin-left: 40pt">{{ item.department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ vehicle_item.vehicle.name }}
+                ({{ vehicle_item.vehicle.base }}) {{ vehicle_item.comment }}</div>
         {% endfor %}
     {% endfor %}
-    <p>Всего:___________________________{% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+    <p>
+        Всего:___________________________{% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
 
 
-    {% if fire.items | length > 0  %}
+    {% if fire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ fire.name }}:</b></p>
         {% for item in fire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -99,12 +110,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if electricFire.items | length > 0  %}
+    {% if electricFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ electricFire.name }}:</b></p>
         {% for item in electricFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -120,12 +132,13 @@
     {% endif %}
 
 
-    {% if kitchenFire.items | length > 0  %}
+    {% if kitchenFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ kitchenFire.name }}:</b></p>
         {% for item in kitchenFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -141,12 +154,13 @@
     {% endif %}
 
 
-    {% if trashFireOther.items | length > 0  %}
+    {% if trashFireOther.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ trashFireOther.name }}:</b></p>
         {% for item in trashFireOther.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -161,12 +175,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if trashFireHouse.items | length > 0  %}
+    {% if trashFireHouse.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ trashFireHouse.name }}:</b></p>
         {% for item in trashFireHouse.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -181,12 +196,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if workFire.items | length > 0  %}
+    {% if workFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ workFire.name }}:</b></p>
         {% for item in workFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -201,12 +217,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if peopleCall.items | length > 0  %}
+    {% if peopleCall.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ peopleCall.name }}:</b></p>
         {% for item in peopleCall.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -221,12 +238,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if asr.items | length > 0  %}
+    {% if asr.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ asr.name }}:</b></p>
         {% for item in asr.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -242,12 +260,13 @@
     {% endif %}
 
 
-    {% if falseCall.items | length > 0  %}
+    {% if falseCall.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ falseCall.name }}:</b></p>
         {% for item in falseCall.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -262,12 +281,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if orphanFire.items | length > 0  %}
+    {% if orphanFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ orphanFire.name }}:</b></p>
         {% for item in orphanFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -282,12 +302,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if otherFire.items | length > 0  %}
+    {% if otherFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ otherFire.name }}:</b></p>
         {% for item in otherFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -302,12 +323,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if regionFire.items | length > 0  %}
+    {% if regionFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ regionFire.name }}:</b></p>
         {% for item in regionFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -322,12 +344,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if technologyFire.items | length > 0  %}
+    {% if technologyFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ technologyFire.name }}:</b></p>
         {% for item in technologyFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -342,12 +365,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if pyrophoricFire.items | length > 0  %}
+    {% if pyrophoricFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ pyrophoricFire.name }}:</b></p>
         {% for item in pyrophoricFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -363,12 +387,13 @@
     {% endif %}
 
 
-    {% if alarm.items | length > 0  %}
+    {% if alarm.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ alarm.name }}:</b></p>
         {% for item in alarm.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -383,12 +408,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if airFire.items | length > 0  %}
+    {% if airFire.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ airFire.name }}:</b></p>
         {% for item in airFire.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -403,12 +429,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if suicide.items | length > 0  %}
+    {% if suicide.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ suicide.name }}:</b></p>
         {% for item in suicide.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -423,12 +450,13 @@
         {% endfor %}
     {% endif %}
 
-    {% if dischargesElectr.items | length > 0  %}
+    {% if dischargesElectr.items | length > 0 %}
         <p style="margin: 0 auto;width: 50%"><b>{{ dischargesElectr.name }}:</b></p>
         {% for item in dischargesElectr.items %}
             <p>
-                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }} час. {{ item.created_at | date('i') }} мин.
-                    {{ item.city_area ? item.city_area.name : ''  }}, {{ item.location }}:</b>
+                <b>{{ loop.index }}. {{ item.created_at | date('d.m.Y') }}г. {{ item.created_at | date('H') }}
+                    час. {{ item.created_at | date('i') }} мин.
+                    {{ item.city_area ? item.city_area.name : '' }}, {{ item.location }}:</b>
             </p>
             <p>
                 (заявитель: {{ item.caller_name }}, тел: {{ item.caller_phone }}).
@@ -446,7 +474,7 @@
     <br/>
     <br/>
     {% for title, tripResult in tripResults %}
-        <div style="padding-top: 50px; margin: 0 auto;width: 50%; font-weight: bold;">{{ title }}:</div>
+        <div style="padding-top: 50px; margin: 0 auto;width: 50%; ">{{ title }}:</div>
         {% for tripItem in tripResult %}
             <div>
                 {{ loop.index }}. {{ tripItem.analytics|raw }}
@@ -457,6 +485,8 @@
 
     <div><b>Проверка частей:</b></div>
     {% for title, check in fireDeptChecks %}
-        <div>{{ loop.index }}.{{ check.fire_department.title|default('') }}: {{ check.time_begin }} - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</div>
+        <div>{{ loop.index }}.{{ check.fire_department.title }}: {{ check.time_begin }}
+            - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</div>
     {% endfor %}
 
+</div>
