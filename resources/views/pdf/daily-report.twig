@@ -471,8 +471,14 @@
         <div>{{ loop.index }}.{{ check.fire_department.title|default('') }}: {{ check.time_begin }} - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</div>
     {% endfor %}
 
-    <p>Расстановка на {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г:</p>
-    {% for item in arrangement %}
+    <p>Расстановка на {{ dates.from }}г: {{ arrangementYesterday | length == 0 ? 'нет' : '' }}</p>
+    {% for item in arrangementYesterday %}
+        <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
+    {% endfor %}
+    <br/>
+
+    <p>Расстановка на {{ dates.to }}г: {{ arrangementToday | length == 0 ? 'нет' : '' }}</p>
+    {% for item in arrangementToday %}
         <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
     {% endfor %}
     <br/>
