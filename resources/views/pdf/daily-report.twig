@@ -89,20 +89,6 @@
     <div style="padding-left: 40px">13.7. Госпитализировано – {{ hospitalizedCount }}</div>
     <br/>
     <br/>
-    <p>Расстановка на {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г:</p>
-    {% for item in arrangement %}
-        <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
-    {% endfor %}
-    <br/>
-
-    <p>Неисправная техника: </p>
-    {% for item in tech %}
-        {% for vehicle_item in item.formation_tech_items if vehicle_item.status == 'repair'%}
-            <div style="margin-left: 40pt">{{ item.department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ vehicle_item.vehicle.name }} ({{ vehicle_item.vehicle.base }}) {{ vehicle_item.comment }}</div>
-        {% endfor %}
-    {% endfor %}
-    <p>Всего:___________________________{% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
-
 
     {% if fire.items | length > 0  %}
         <div style="margin: 0 auto;width: 50%"><b>{{ fire.name }}:</b></div>
@@ -484,6 +470,20 @@
     {% for title, check in fireDeptChecks %}
         <div>{{ loop.index }}.{{ check.fire_department.title|default('') }}: {{ check.time_begin }} - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</div>
     {% endfor %}
+
+    <p>Расстановка на {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г:</p>
+    {% for item in arrangement %}
+        <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
+    {% endfor %}
+    <br/>
+
+    <p>Неисправная техника: </p>
+    {% for item in tech %}
+        {% for vehicle_item in item.formation_tech_items if vehicle_item.status == 'repair'%}
+            <div style="margin-left: 40pt">{{ item.department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ vehicle_item.vehicle.name }} ({{ vehicle_item.vehicle.base }}) {{ vehicle_item.comment }}</div>
+        {% endfor %}
+    {% endfor %}
+    <p>Всего:___________________________{% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
 
 </div>
 
