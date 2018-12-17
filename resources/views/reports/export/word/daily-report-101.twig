@@ -1,20 +1,25 @@
-<div style="font-weight: bold; font-family: 'Times New Roman', Times, serif;width: 100%;">
-    <p style="margin: 0 auto;width: 50%; font-size: 9pt">
-        ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И
-    </p>
-    <p style="margin: 0 auto;margin-bottom: 30pt;width: 50%; font-size: 9pt">
+<div style="font-weight: bold; font-family: 'Times New Roman', Times, serif;">
+    <p style="font-size: 9pt;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК
     </p>
     <p style="clear: both"></p>
 
     <p style="margin: 0 auto;width: 50%; ">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         ОПЕРАТИВНАЯ ИНФОРМАЦИЯ
     </p>
     <p style="margin: 0 auto;width: 50%;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         по пожарам, произошедшим на территории
     </p>
 
-    <p style="margin: 0 auto;width: 50%;margin-bottom: 30pt;">
+    <p style="margin: 0 auto;width: 50%;margin-bottom: 25pt;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         г. Алматы с {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г. до {{ dates.hour }}
         час. {{ dates.minutes }} мин. {{ dates.to }}г.
     </p>
@@ -24,19 +29,19 @@
     <p>За дежурные сутки зарегистрировано – {{ allCount }} выездов, из них:</p>
 
     <p>1.Пожары – {{ fire.items | length }}</p>
-    <p style="margin-left: 40pt">1.1. Транспорт – {{ burntTransportCount }}</p>
-    <p style="margin-left: 40pt">1.2. Прочие объекты пожаров – {{ burntOtherCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.1. Транспорт – {{ burntTransportCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.2. Прочие объекты пожаров – {{ burntOtherCount }}</p>
     <p>2. Случаи горения, не подлежащие учету как пожары –
         {{ (electricFire.items | length) +
         (kitchenFire.items | length) +
         (trashFireOther.items | length) +
         (trashFireHouse.items | length) }}</p>
-    <p style="margin-left: 40pt">2.1. Пища на газе и задымление при неиспр.быт.эл.приборов
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.1. Пища на газе и задымление при неиспр.быт.эл.приборов
         – {{ kitchenFire.items | length }}</p>
-    <p style="margin-left: 40pt">2.2. КЗ эл.сетей и эл.оборудования – {{ electricFire.items | length }}</p>
-    <p style="margin-left: 40pt">2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.2. КЗ эл.сетей и эл.оборудования – {{ electricFire.items | length }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах
         – {{ trashFireOther.items | length }}</p>
-    <p style="margin-left: 40pt">2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд)
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд)
         – {{ trashFireHouse.items | length }}</p>
     <p>3. Ложный – {{ falseCall.items | length }}</p>
     <p>4. АСР – {{ asr.items | length }}</p>
@@ -53,23 +58,23 @@
     <p>Вспышки и разряды стат.электричества - {{ dischargesElectr.items | length }}</p>
 
     <p>12. Случаи отравления - {{ poisoningCount }}</p>
-    <p style="margin-left: 40pt">12.1. Отравление угарным газом – {{ carbonPoisoningCount }}</p>
-    <p style="margin-left: 40pt">12.2. Отравление природным газом – {{ naturalPoisoningCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12.1. Отравление угарным газом – {{ carbonPoisoningCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12.2. Отравление природным газом – {{ naturalPoisoningCount }}</p>
     <p>13. Сведенеия по людям
         /детям: {{ (suicide.items | length)+rescuedCount+evacCount+gptBurnsCount+peopleDeathCount+childrenDeathCount+hospitalizedCount }}</p>
-    <p style="margin-left: 40pt">13.1. Попытка суицида - {{ suicide.items | length }}</p>
-    <p style="margin-left: 40pt">13.2. Спасено людей – {{ rescuedCount }}</p>
-    <p style="margin-left: 40pt">13.3. Эвакуировано людей – {{ evacCount }}</p>
-    <p style="margin-left: 40pt">13.4. Получили ожоги – {{ gptBurnsCount }}</p>
-    {#<p style="margin-left: 40pt">13.5. Пострадало – 0</p>#}
-    <p style="margin-left: 40pt">13.5. Гибель людей – {{ peopleDeathCount }}</p>
-    <p style="margin-left: 40pt">13.6. Гибель детей – {{ childrenDeathCount }}</p>
-    <p style="margin-left: 40pt">13.7. Госпитализировано – {{ hospitalizedCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.1. Попытка суицида - {{ suicide.items | length }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.2. Спасено людей – {{ rescuedCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.3. Эвакуировано людей – {{ evacCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.4. Получили ожоги – {{ gptBurnsCount }}</p>
+    {#<p>13.5. Пострадало – 0</p>#}
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.5. Гибель людей – {{ peopleDeathCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.6. Гибель детей – {{ childrenDeathCount }}</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13.7. Госпитализировано – {{ hospitalizedCount }}</p>
     <br/>
     <br/>
     <p>Расстановка на {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г:</p>
     {% for item in arrangement %}
-        <p style="margin-left: 40pt">{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.fire_department.title }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ item.note }}</p>
     {% endfor %}
     <br/>
 
