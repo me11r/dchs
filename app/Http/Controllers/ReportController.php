@@ -602,7 +602,21 @@ class ReportController extends AuthorizedController
 
         $word = new PhpWord();
 
-        $section = $word->addSection(['headerHeight' => 2, 'marginTop' => '2px']);
+        $section = $word->addSection([
+            'marginLeft'   => 800,
+            'marginRight'  => 700,
+            'marginTop'    => 400,
+            'marginBottom' => 400,
+            'headerHeight' => 50,
+            'footerHeight' => 50,
+        ]);
+
+        $word->setDefaultParagraphStyle([
+                'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0),
+                'spacing' => 120,
+                'lineHeight' => 1,
+            ]
+        );
 
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
         $file = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
