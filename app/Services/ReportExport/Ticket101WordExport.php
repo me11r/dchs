@@ -82,6 +82,22 @@ class Ticket101WordExport
         'ПЧ-13'
     ];
 
+    public static $exceptions = [
+        'crb',
+        'gdzs_base',
+        'doctor',
+        'tulpar1',
+        'tulpar2',
+        'tulpar3',
+        'tulpar4',
+        'tulpar5',
+        'tulpar7',
+        'tulpar8',
+        'tulpar10',
+        'kshm',
+        'ipl_zhalyn'
+    ];
+
     public function __construct(
         FormationReport $formationReport,
         Collection $departments,
@@ -370,15 +386,25 @@ class Ticket101WordExport
                     self::$noPaddingPS
                 );
             } else {
-                $section->addText(
-                    $title,
-                    $redFontStyle,
-                    array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
-                );
+
+                if(!in_array($array_key, self::$exceptions)) {
+                    $section->addText(
+                        $title,
+                        $redFontStyle,
+                        array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                    );
+                }
 
                 foreach ($people as $fireDept => $persons) {
                     if (isset($persons[$array_key]) && count($persons[$array_key])) {
                         $textRun = $section->addTextRun(self::$noPaddingPS);
+                        if(in_array($array_key, self::$exceptions)) {
+                            $textRun->addText(
+                                $title,
+                                $redFontStyle,
+                                array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                            );
+                        }
                         if($fireDept != 'ОД'){
                             $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                         }
