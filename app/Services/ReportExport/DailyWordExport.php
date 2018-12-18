@@ -1,0 +1,572 @@
+<?php
+
+
+namespace App\Services\ReportExport;
+
+use App\FireDepartment;
+use App\FormationPersonsReport;
+use App\FormationReport;
+use App\Models\Vehicle;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use PhpOffice\PhpWord\Element\Row;
+use PhpOffice\PhpWord\Element\Section;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\SimpleType\Jc;
+use PhpOffice\PhpWord\SimpleType\TblWidth;
+use PhpOffice\PhpWord\Style\Cell;
+use PhpOffice\PhpWord\Style\Table;
+use PhpOffice\PhpWord\Settings;
+
+class DailyWordExport
+{
+
+    use CommonExportTools;
+
+    /**
+     * @var PhpWord
+     */
+    private $phpWord;
+
+    /**
+     * @var array
+     */
+    private $data;
+
+    public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+
+    public function __construct(
+        array $data
+    )
+    {
+        $this->defineDomPdfWriter();
+
+        $this->phpWord = new PhpWord();
+        $this->data = $data;
+
+        $this->prepareDocument();
+    }
+
+    private function defineDomPdfWriter()
+    {
+        $domPdfPath = realpath(base_path() . '/vendor/dompdf/dompdf');
+        Settings::setPdfRendererPath($domPdfPath);
+        Settings::setPdfRendererName('DomPDF');
+    }
+
+    private function prepareDocument()
+    {
+        $this->defaultParagraph();
+        $section = $this->getNewSection();
+        $this->addData($section);
+    }
+
+    private function addData(Section $section)
+    {
+        $headerFontStyle = ['name' => 'Times New Roman', 'size' => 9, 'bold' => true];
+        $generalBoldFontStyle = ['name' => 'Times New Roman', 'size' => 10, 'bold' => true];
+        $generalBoldUnderlineFontStyle = ['name' => 'Times New Roman', 'size' => 10, 'bold' => true, 'underline' => 'single'];
+        $generalBoldItalicUnderlineFontStyle = ['name' => 'Times New Roman', 'size' => 10, 'bold' => true, 'italic' => true, 'underline' => 'single'];
+        $simpleFontStyle = ['name' => 'Times New Roman', 'size' => 10];
+
+        $generalBoldFontStyle8 = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true];
+        $generalBoldUnderlineFontStyle8 = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true, 'underline' => 'single'];
+
+        $section->addText(
+            'ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И',
+            $headerFontStyle,
+            ['align' => Jc::CENTER]
+        );
+        $section->addText(
+            'АВАРИЙНО-СПАСАТЕЛЬНЫХ РАБОТ» ДЧС г. АЛМАТЫ КЧС МВД РК',
+            $headerFontStyle,
+            ['align' => Jc::CENTER]
+        );
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Начальнику ГУ «СП и АСР»',
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 6540]]
+        );
+        $section->addText(
+            'ДЧС г. Алматы КЧС МВД РК',
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 6540]]
+        );
+        $section->addText(
+            'полковнику гражданской защиты',
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 6540]]
+        );
+        $section->addText(
+            'Касыбаеву Р.А.',
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 6540]]
+        );
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'ОПЕРАТИВНАЯ ИНФОРМАЦИЯ',
+            $generalBoldFontStyle,
+            ['align' => Jc::CENTER]
+        );
+
+        $section->addText(
+            'по пожарам, произошедшим на территории',
+            $generalBoldFontStyle,
+            ['align' => Jc::CENTER]
+        );
+
+        $section->addText(
+            'г. Алматы с ' . $this->data['dates']['hour'] . ' час. ' . $this->data['dates']['minutes'] . ' мин. ' . $this->data['dates']['from'] . 'г. до ' . $this->data['dates']['hour'] . ' час. ' . $this->data['dates']['minutes'] . ' мин. ' . $this->data['dates']['to'] . 'г.',
+            $generalBoldFontStyle,
+            ['align' => Jc::CENTER]
+        );
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'За дежурные сутки зарегистрировано – ' . $this->data['allCount'] . ' выездов, из них:',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            '1.Пожары – ' . count($this->data['fire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            '1.1. Транспорт – ' . $this->data['burntTransportCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $section->addText(
+            '1.2. Прочие объекты пожаров – ' . $this->data['burntOtherCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $section->addText(
+            '2. Случаи горения, не подлежащие учету как пожары – ' . (count($this->data['electricFire']['items']) +
+                count($this->data['kitchenFire']['items']) + count($this->data['trashFireOther']['items']) + count($this->data['trashFireHouse']['items'])),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            '2.1. Пища на газе и задымление при неиспр.быт.эл.приборов – ' . count($this->data['kitchenFire']['items']),
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '2.2. КЗ эл.сетей и эл.оборудования – ' . count($this->data['electricFire']['items']),
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах – ' . count($this->data['trashFireOther']['items']),
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд) – ' . count($this->data['trashFireHouse']['items']),
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+
+        $section->addText(
+            '3. Ложный – ' . count($this->data['falseCall']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '4. АСР – ' . count($this->data['asr']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '5. Кровельные, битумные, сварочные работы – ' . count($this->data['workFire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '6. Бдительность населения – ' . count($this->data['peopleCall']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '7. Загорание бесхозных зданий, бесхозных транспортных средств – ' . count($this->data['orphanFire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '8. Прочие случаи загорания – ' . count($this->data['otherFire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '9. Область – ' . count($this->data['regionFire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '10. Технологический процесс – ' . count($this->data['technologyFire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '11. Самовозгорание пирофорных соединений, без последствий и ущерба – ' . count($this->data['pyrophoricFire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Cрабатывание сигнализации - ' . count($this->data['alarm']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - ' . count($this->data['airFire']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Покушение на самоубийство - ' . count($this->data['suicide']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Вспышки и разряды стат.электричества - ' . count($this->data['dischargesElectr']['items']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            '12. Случаи отравления - ' . $this->data['poisoningCount'],
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '12.1. Отравление угарным газом – ' . $this->data['carbonPoisoningCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '12.2. Отравление природным газом – ' . $this->data['naturalPoisoningCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $section->addText(
+            '13. Сведенеия по людям/детям: ' . (count($this->data['suicide']['items']) + $this->data['rescuedCount'] +
+                $this->data['evacCount'] + $this->data['gptBurnsCount'] + $this->data['peopleDeathCount'] +
+                $this->data['childrenDeathCount'] + $this->data['hospitalizedCount']),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '13.1. Попытка суицида - ' . count($this->data['suicide']['items']),
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '13.2. Спасено людей – ' . $this->data['rescuedCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '13.3. Эвакуировано людей – ' . $this->data['evacCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '13.4. Получили ожоги – ' . $this->data['gptBurnsCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '13.5. Гибель людей – ' . $this->data['peopleDeathCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '13.6. Гибель детей – ' . $this->data['childrenDeathCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $section->addText(
+            '13.7. Госпитализировано – ' . $this->data['hospitalizedCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($this->data['tripResults'] as $title => $tripResult) {
+            $section->addText(
+                mb_strtoupper($title),
+                $generalBoldUnderlineFontStyle,
+                ['align' => Jc::CENTER]
+            );
+            foreach ($tripResult as $key => $item) {
+                $textRun = $section->addTextRun(self::$noPaddingPS);
+                $textRun->addText(($key + 1) . '. ' . $item['date'] . '. ' . $item['city_area'] . ', ' . $item['address'] . ':', $generalBoldUnderlineFontStyle, self::$noPaddingPS);
+                $textRun->addText(' (заявитель: ' . $item['caller_name'] . ', тел: ' . $item['caller_phone'] . '. ', $simpleFontStyle, self::$noPaddingPS);
+                $textRun->addText($item['pre_information'] . ' S=' . $item['square_max'] . ' м2. ', $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
+                if ($item['first_dept_arrived']) {
+                    $textRun->addText('(заявитель: ' . $item['first_dept_arrived']['name'] . ' (' . $item['first_dept_arrived']['tech_dept'] . ') на ' . $item['first_dept_arrived']['vehicle'] . ' прибыло в ' . $item['first_dept_arrived']['arrive_time'] . ' (' . $item['first_dept_arrived']['on_way_time'] . '). ', $simpleFontStyle, self::$noPaddingPS);
+                }
+                $textRun->addText('Пожар локализован в ' . $item['loc_time'] . ' и ликвидирован в ' . $item['liqv_time'] . ', ' . $item['chronology_str'] . '. На место пожара выезжал л/с: ' . $item['depts_out'], $simpleFontStyle, self::$noPaddingPS);
+                if ($item['service_plans_str']) {
+                    $textRun->addText('На место ЧС выезжали службы заимодействия: ' . $item['service_plans_str'] . '. ', $simpleFontStyle, self::$noPaddingPS);
+                }
+                $textRun->addText('Материал зарегистрирован в КУИ №' . $item['kui'] . ' от ' . $item['date2'], $simpleFontStyle, self::$noPaddingPS);
+            }
+            $section->addText(
+                '',
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+        }
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Проверка частей:',
+            $generalBoldUnderlineFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        foreach ($this->data['fireDeptChecks'] as $key => $check) {
+            $textRun = $section->addTextRun(self::$noPaddingPS);
+            $textRun->addText(
+                ($key + 1) . '. ' . ($check['fire_department'] ? $check['fire_department']['title'] : '') . ': ',
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+            $textRun->addText(
+                $check['time_begin'] . ' - ' . $check['time_end'] . ' ' . $check['responsible_person'] . ' ' . $check['note'],
+                $simpleFontStyle,
+                ['align' => Jc::BOTH]
+            );
+        }
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Расстановка на ' . $this->data['dates']['from'] . 'г: ' . (count($this->data['arrangementYesterday']) === 0 ? 'нет' : ''),
+            $generalBoldUnderlineFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        foreach ($this->data['arrangementYesterday'] as $key => $item) {
+            $textRun = $section->addTextRun(self::$noPaddingPS);
+            $textRun->addText(
+                ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+            $textRun->addText(
+                $item['note'],
+                $simpleFontStyle,
+                ['align' => Jc::BOTH]
+            );
+        }
+
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Расстановка на ' . $this->data['dates']['to'] . 'г: ' . (count($this->data['arrangementYesterday']) === 0 ? 'нет' : ''),
+            $generalBoldUnderlineFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        foreach ($this->data['arrangementToday'] as $key => $item) {
+            $textRun = $section->addTextRun(self::$noPaddingPS);
+            $textRun->addText(
+                ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+            $textRun->addText(
+                $item['note'],
+                $simpleFontStyle,
+                ['align' => Jc::BOTH]
+            );
+        }
+
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '',
+            $generalBoldFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Неисправная техника: ',
+            $generalBoldUnderlineFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+        foreach ($this->data['tech'] as $item) {
+            foreach ($item['formation_tech_items'] as $tech) {
+                if ($tech['status'] === 'repair') {
+                    $section->addText(
+                        $item['department']['title'] . ' ' . $tech['vehicle']['name'] . ' ' . $tech['vehicle']['base'] . ' ' . $tech['comment'],
+                        $generalBoldFontStyle8,
+                        ['align' => Jc::BOTH]
+                    );
+                }
+            }
+        }
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+        $text = '';
+        $count_tech = 0;
+        foreach ($this->data['inactive_tech_cnt'] as $name => $count) {
+            $count_tech++;
+            $text .= $name . '-' . $count . (count($this->data['inactive_tech_cnt']) !== $count_tech ? ', ' : '.');
+        }
+        $section->addText(
+            'Всего:___________________________' . $text,
+            $generalBoldUnderlineFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '',
+            $generalBoldFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '',
+            $generalBoldFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+
+
+        $section->addText(
+            'Ст. инженер ЦППС ЦОУСС',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК»',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'майор гражданской защиты',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Серик И. С.',
+            $generalBoldFontStyle,
+            ['align' => Jc::END]
+        );
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            '',
+            $generalBoldFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Оперативный дежурный ДСПТ',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК»',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'капитан гражданской защиты',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            'Ганиев П.М.',
+            $generalBoldFontStyle,
+            ['align' => Jc::END]
+        );
+    }
+
+    private function defaultParagraph()
+    {
+        $this->phpWord->setDefaultParagraphStyle([
+                'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0),
+                'spacing' => 120,
+                'lineHeight' => 1,
+            ]
+        );
+    }
+
+    private function getNewSection()
+    {
+        return $this->phpWord->addSection([
+            'marginLeft' => 800,
+            'marginRight' => 700,
+            'marginTop' => 400,
+            'marginBottom' => 400,
+            'headerHeight' => 50,
+            'footerHeight' => 50,
+        ]);
+    }
+
+    // @todo PDF не работает корректно
+    public function getWriter($name = 'Word2007')
+    {
+        return IOFactory::createWriter($this->phpWord, $name);
+    }
+}
