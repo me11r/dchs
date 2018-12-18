@@ -38,14 +38,14 @@ trait CommonExportTools
 
             '-', // Мотопомпы Водяная/Грязевая
 
-            $this->data['tech_items_count']['tech_action'], // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
-            $this->data['tech_items_count']['tech_action'], // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
+            $this->data['tech_items_count']['tech_action_type_1'], // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
+            $this->data['tech_items_count']['tech_action_type_2'], // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
 
-            $this->data['tech_items_count']['tech_reserve'], // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
-            $this->data['tech_items_count']['tech_reserve'], // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
+            $this->data['tech_items_count']['tech_reserve_type_1'], // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
+            $this->data['tech_items_count']['tech_reserve_type_2'], // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
 
-            $this->data['tech_items_count']['tech_repair'], // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
-            $this->data['tech_items_count']['tech_repair'], // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
+            $this->data['tech_items_count']['tech_repair_type_1'], // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
+            $this->data['tech_items_count']['tech_repair_type_2'], // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
         ];
     }
 

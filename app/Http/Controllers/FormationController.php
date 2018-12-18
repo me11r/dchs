@@ -473,9 +473,12 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $tech_items_count = [
-            'tech_action' => 0,
-            'tech_reserve' => 0,
-            'tech_repair' => 0,
+            'tech_action_type_1' => 0,
+            'tech_action_type_2' => 0,
+            'tech_reserve_type_1' => 0,
+            'tech_reserve_type_2' => 0,
+            'tech_repair_type_1' => 0,
+            'tech_repair_type_2' => 0,
         ];
 
         $report = (new FormationReport)->find($form_id);
@@ -740,11 +743,27 @@ class FormationController extends AuthorizedController
         $tech_fields_temp[] = 'iup';
         $tech_fields_temp[] = 'head_guard_id';
 
-
         foreach ($departments as $dep) {
-            $tech_items_count['tech_action'] += count($dep->tech_action);
-            $tech_items_count['tech_reserve'] += count($dep->tech_reserve);
-            $tech_items_count['tech_repair'] += count($dep->tech_repair);
+            if(isset($tech[$dep->id]) && $tech[$dep->id]->formation_tech_items->count()) {
+                $tech_items_count['tech_action_type_1'] += count($tech[$dep->id]->formation_tech_items()->status('action')->whereHas('vehicle', function ($query) {
+                    $query->where('vehicle_type_id', '=', 1);
+                })->get());
+                $tech_items_count['tech_action_type_2'] += count($tech[$dep->id]->formation_tech_items()->status('action')->whereHas('vehicle', function ($query) {
+                    $query->where('vehicle_type_id', '=', 2);
+                })->get());
+                $tech_items_count['tech_reserve_type_1'] += count($tech[$dep->id]->formation_tech_items()->status('reserve')->whereHas('vehicle', function ($query) {
+                    $query->where('vehicle_type_id', '=', 1);
+                })->get());
+                $tech_items_count['tech_reserve_type_2'] += count($tech[$dep->id]->formation_tech_items()->status('reserve')->whereHas('vehicle', function ($query) {
+                    $query->where('vehicle_type_id', '=', 2);
+                })->get());
+                $tech_items_count['tech_repair_type_1'] += count($tech[$dep->id]->formation_tech_items()->status('repair')->whereHas('vehicle', function ($query) {
+                    $query->where('vehicle_type_id', '=', 1);
+                })->get());
+                $tech_items_count['tech_repair_type_2'] += count($tech[$dep->id]->formation_tech_items()->status('repair')->whereHas('vehicle', function ($query) {
+                    $query->where('vehicle_type_id', '=', 2);
+                })->get());
+            }
 
 
             if(isset($tech[$dep->id])){
