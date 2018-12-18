@@ -23,6 +23,7 @@ use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
@@ -422,16 +423,16 @@ class ReportController extends AuthorizedController
             foreach ($report->items as $item_key => $tech_item) {
                 $report->items[$item_key]['departures_count'] = FireDepartmentResult::
 //                    where('fire_department_id', $report->dept_id)->
-                    whereDate('created_at', $today)->
-                    where('tech_id', $tech_item->id)->
-                    whereNotNull('out_time')->
-                    count()
+                whereDate('created_at', $today)->
+                where('tech_id', $tech_item->id)->
+                whereNotNull('out_time')->
+                count()
                 ;
                 $report->items[$item_key]['status'] = Ticket101::whereHas('results', function ($q) use ($today, $tech_item){
                     $q->whereDate('created_at', $today)->
-                        where('tech_id', $tech_item->id)->
-                        whereNull('ret_time')->
-                        whereNotNull('out_time');
+                    where('tech_id', $tech_item->id)->
+                    whereNull('ret_time')->
+                    whereNotNull('out_time');
                 })
                     ->with(['results', 'fire_level'])
                     ->first();
@@ -460,14 +461,14 @@ class ReportController extends AuthorizedController
 
                 }*/
 
-                    /*FireDepartmentResult::
+                /*FireDepartmentResult::
 //                    where('fire_department_id', $report->dept_id)->
-                    whereDate('created_at', $today)->
-                    where('tech_id', $tech_item->id)->
-                    with(['ticket'])->
-                    whereNotNull('out_time')->
-                    first()->ticket ?? null;
-                ;*/
+                whereDate('created_at', $today)->
+                where('tech_id', $tech_item->id)->
+                with(['ticket'])->
+                whereNotNull('out_time')->
+                first()->ticket ?? null;
+            ;*/
             }
         }
 
@@ -595,33 +596,18 @@ class ReportController extends AuthorizedController
      */
     public function getDaily101Formatted(Request $request, string $format = 'word')
     {
-        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
-        $view = view('reports.export.word.daily-report-101', $report)->render();
-        /*TODO debug only*/
-//        return $view;
+        $data = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
 
-        $word = new PhpWord();
-
-        $section = $word->addSection([
-            'marginLeft'   => 800,
-            'marginRight'  => 700,
-            'marginTop'    => 400,
-            'marginBottom' => 400,
-            'headerHeight' => 50,
-            'footerHeight' => 50,
-        ]);
-
-        $word->setDefaultParagraphStyle([
-                'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0),
-                'spacing' => 120,
-                'lineHeight' => 1,
-            ]
+        $dailyWordExport = new DailyWordExport(
+            $data
         );
 
-        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
-        $file = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
-        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
-        return $this->createWordFileDownload($writer, $file);
+        // @todo PDF не работает корректно (но вроде оно и не нужно)
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
     }
 
     /**
