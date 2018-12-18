@@ -141,6 +141,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'morainic_lakes',
                 'model' => \App\Models\MorainicLake::class
             ],
+            [
+                'title' => 'Персоны суточного отчета',
+                'table' => 'daily_report_persons',
+                'model' => \App\Models\DailyReportPerson::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

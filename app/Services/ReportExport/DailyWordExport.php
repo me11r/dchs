@@ -6,6 +6,7 @@ namespace App\Services\ReportExport;
 use App\FireDepartment;
 use App\FormationPersonsReport;
 use App\FormationReport;
+use App\Models\DailyReportPerson;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -91,24 +92,24 @@ class DailyWordExport
         );
 
         $section->addText(
-            'Начальнику ГУ «СП и АСР»',
+            $this->data['header_person']['position'],
             $generalBoldFontStyle,
-            ['indentation' => ['left' => 6540]]
+            ['indentation' => ['left' => 6400]]
         );
         $section->addText(
-            'ДЧС г. Алматы КЧС МВД РК',
+            $this->data['header_person']['city'],
             $generalBoldFontStyle,
-            ['indentation' => ['left' => 6540]]
+            ['indentation' => ['left' => 6400]]
         );
         $section->addText(
-            'полковнику гражданской защиты',
+            $this->data['header_person']['post'],
             $generalBoldFontStyle,
-            ['indentation' => ['left' => 6540]]
+            ['indentation' => ['left' => 6400]]
         );
         $section->addText(
-            'Касыбаеву Р.А.',
+            $this->data['header_person']['name'],
             $generalBoldFontStyle,
-            ['indentation' => ['left' => 6540]]
+            ['indentation' => ['left' => 6400]]
         );
 
         $section->addText(
@@ -449,7 +450,7 @@ class DailyWordExport
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'Расстановка на ' . $this->data['dates']['to'] . 'г: ' . (count($this->data['arrangementYesterday']) === 0 ? 'нет' : ''),
+            'Расстановка на ' . $this->data['dates']['to'] . 'г: ' . (count($this->data['arrangementToday']) === 0 ? 'нет' : ''),
             $generalBoldUnderlineFontStyle,
             ['align' => Jc::BOTH]
         );
@@ -529,24 +530,23 @@ class DailyWordExport
             ['align' => Jc::BOTH]
         );
 
-
         $section->addText(
-            'Ст. инженер ЦППС ЦОУСС',
+            $this->data['footer_first_person']['position'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК»',
+            $this->data['footer_first_person']['city'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'майор гражданской защиты',
+            $this->data['footer_first_person']['post'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'Серик И. С.',
+            $this->data['footer_first_person']['name'],
             $generalBoldFontStyle,
             ['align' => Jc::END]
         );
@@ -557,27 +557,27 @@ class DailyWordExport
         );
         $section->addText(
             '',
-            $generalBoldFontStyle8,
+            $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
 
         $section->addText(
-            'Оперативный дежурный ДСПТ',
+            $this->data['footer_second_person']['position'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'ГУ «СП и АСР ДЧС г. Алматы КЧС МВД РК»',
+            $this->data['footer_second_person']['city'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'капитан гражданской защиты',
+            $this->data['footer_second_person']['post'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'Ганиев П.М.',
+            $this->data['footer_second_person']['name'],
             $generalBoldFontStyle,
             ['align' => Jc::END]
         );
