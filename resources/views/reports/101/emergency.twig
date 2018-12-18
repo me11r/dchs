@@ -1,6 +1,10 @@
 {% extends "layout/html" %}
 {% block content %}
     <div id="vue" class="container section">
-        <report101-emergency :results="{{ reasons }}"></report101-emergency>
+        <report101-emergency
+                :results="{{ reasons }}"
+                :burnt_objects="{{ burntObjects }}"
+                :city_areas="{{ cityAreas }}">
+        </report101-emergency>
     </div>
 {% endblock content %}
