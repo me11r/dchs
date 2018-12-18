@@ -358,12 +358,13 @@ class DailyWordExport
         );
 
         $section->addText(
-            'Проверка частей:',
+            'ДСПТ:',
             $generalBoldUnderlineFontStyle,
             ['align' => Jc::BOTH]
         );
 
-        foreach ($this->data['fireDeptChecks'] as $key => $check) {
+        $fireDeptChecks = $this->data['fireDeptChecks']->where('is_dspt', '=', 1);
+        foreach ($fireDeptChecks->all() as $key => $check) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
                 ($key + 1) . '. ' . ($check['fire_department'] ? $check['fire_department']['title'] : '') . ': ',
@@ -376,6 +377,46 @@ class DailyWordExport
                 ['align' => Jc::BOTH]
             );
         }
+
+        $section->addText(
+            'Итого: ' . $fireDeptChecks->count(),
+            $generalBoldUnderlineFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+
+        $section->addText(
+            'Проверка частей:',
+            $generalBoldUnderlineFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $fireDeptChecks = $this->data['fireDeptChecks']->where('is_dspt', '=', 0);
+        foreach ($fireDeptChecks->all() as $key => $check) {
+            $textRun = $section->addTextRun(self::$noPaddingPS);
+            $textRun->addText(
+                ($key + 1) . '. ' . ($check['fire_department'] ? $check['fire_department']['title'] : '') . ': ',
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+            $textRun->addText(
+                $check['time_begin'] . ' - ' . $check['time_end'] . ' ' . $check['responsible_person'] . ' ' . $check['note'],
+                $simpleFontStyle,
+                ['align' => Jc::BOTH]
+            );
+        }
+
+        $section->addText(
+            'Итого: ' . $fireDeptChecks->count(),
+            $generalBoldUnderlineFontStyle,
+            ['align' => Jc::BOTH]
+        );
 
         $section->addText(
             '',

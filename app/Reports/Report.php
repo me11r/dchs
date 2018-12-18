@@ -408,7 +408,6 @@ class Report
     {
         $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = today()->addHours(7)->format('Y-m-d H:i:s');
-        $today = today();
 
         return (new FireDepartmentCheck())
             ->whereIn('date', [

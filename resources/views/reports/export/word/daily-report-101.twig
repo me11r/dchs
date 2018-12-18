@@ -87,13 +87,15 @@
         <p>{{ loop.index }}.{{ check.fire_department ? check.fire_department.title : '' }}: {{ check.time_begin }}
             - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</p>
     {% endfor %}
-    <br/>
+    <p><b>Итого: {{ fireDeptChecks.where('is_dspt','=',1).all().count() }}</b></p>
+    <br>
 
     <div><b>Проверка частей:</b></div>
     {% for title, check in fireDeptChecks.where('is_dspt','=',0).all() %}
         <p>{{ loop.index }}.{{ check.fire_department ? check.fire_department.title : '' }}: {{ check.time_begin }}
             - {{ check.time_end }} {{ check.responsible_person }} {{ check.note }}</p>
     {% endfor %}
+    <p><b>Итого: {{ fireDeptChecks.where('is_dspt','=',0).all().count() }}</b></p>
     <br/>
 
     <p>Расстановка на {{ dates.from }}г: {{ arrangementYesterday | length == 0 ? 'нет' : '' }}</p>
