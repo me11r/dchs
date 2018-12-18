@@ -13,6 +13,8 @@ class FireDepartmentCheck extends Model
         'time_end',
         'fire_department_id',
         'responsible_person',
+        'is_dspt',
+        'date'
     ];
 
     public function fire_department()

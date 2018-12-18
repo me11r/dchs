@@ -15,6 +15,7 @@ use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Ticket101Other;
+use Carbon\Carbon;
 
 class Report
 {
@@ -408,8 +409,20 @@ class Report
         $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = today()->addHours(7)->format('Y-m-d H:i:s');
 
-//        return (new FireDepartmentCheck())->whereBetween('date', [$from, $to])->get();
-        return (new FireDepartmentCheck())->all();
+        return (new FireDepartmentCheck())
+            ->whereIn('date', [
+                today()->format('Y-m-d'),
+                today()->addDay(-1)->format('Y-m-d')
+            ])
+            ->get()
+            ->filter(function ($item) use ($from, $to) {
+                /** @var FireDepartmentCheck $item */
+                if (Carbon::parse($to)->format('Y-m-d') === Carbon::parse($item->date)->format('Y-m-d')) {
+                    return (int)Carbon::parse($item->time_end)->format('H') <= (int)Carbon::parse($to)->format('H');
+                } else {
+                    return (int)Carbon::parse($item->time_begin)->format('H') >= (int)Carbon::parse($from)->format('H') ;
+                }
+            });
     }
 
     private function getDates()

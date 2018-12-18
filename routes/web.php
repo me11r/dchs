@@ -223,6 +223,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
+
+    Route::get('/fire-department-checks/{date}', 'FireDepartmentCheckController@editByDay')
+        ->name('fire-department-checks.edit-by-date')->where(['date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']);
+
+    Route::post('/fire-department-checks/{date}', 'FireDepartmentCheckController@updateByDay')
+        ->name('fire-department-checks.update-by-date')->where(['date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']);
+
     Route::resource('/fire-department-checks', 'FireDepartmentCheckController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
     Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
