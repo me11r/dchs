@@ -71,7 +71,7 @@ export default {
             hydrantsClusterer: null,
 
             showHydrants: false,
-            showDepartments: false,
+            showDepartments: true,
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
             userDept: window.userDept
