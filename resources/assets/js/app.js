@@ -99,6 +99,7 @@ Vue.component('delete-card-btn', require('./components/ticket101/DeleteCardButto
 Vue.component('siren-speech-tech', require('./views/reports/SirenSpeechTech/SirenSpeechTechCreate'));
 Vue.component('analytics-edit', require('./views/analytics/EditAnalytics'));
 Vue.component('fire-dept-check-form', require('./components/fire-department-checks/CreateEditCheck'));
+Vue.component('fire-dept-check-item', require('./components/fire-department-checks/CreateEditCheckItem'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
