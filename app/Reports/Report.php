@@ -252,20 +252,18 @@ class Report
         ];
         $data['tripResults'] = $this->tripResults();
         $data['tech'] = $this->getTech()
-            ->whereHas('items', function ($q){
+            ->whereHas('items', function ($q) {
                 $q->where('status', 'repair');
             })->get();
 
 
-
         $inactive_tech_cnt = [];
         foreach ($data['tech'] as $inactive_tech) {
-            foreach ($inactive_tech->items as $inactive_tech_item){
-                if($inactive_tech_item->status == 'repair'){
-                    if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
+            foreach ($inactive_tech->items as $inactive_tech_item) {
+                if ($inactive_tech_item->status == 'repair') {
+                    if (in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)) {
                         $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
-                    }
-                    else{
+                    } else {
                         $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
                     }
                 }
@@ -273,7 +271,8 @@ class Report
         }
 
         $data['inactive_tech_cnt'] = $inactive_tech_cnt;
-        $data['arrangement'] = $this->getArrangement();
+        $data['arrangementYesterday'] = $this->getArrangementYesterday();
+        $data['arrangementToday'] = $this->getArrangementToday();
         $data['fireDeptChecks'] = $this->getFireDeptChecks();
 
         return $data;
@@ -284,23 +283,23 @@ class Report
         $results = [];
         foreach (TripResult::all() as $trip_result) {
             foreach ($this->report as $ticket) {
-                if($ticket->trip_result_id === $trip_result->id){
+                if ($ticket->trip_result_id === $trip_result->id) {
 
                     $analytics = Analytics101Item::where('ticket101_id', $ticket->id)
                         ->where('trip_result_id', $trip_result->id)
-                        ->whereHas('analytics', function ($q){
+                        ->whereHas('analytics', function ($q) {
                             $q->whereDate('date', today()->subDay());
                         })
                         ->first();
 
                     $firstDeptArrived = $ticket->first_department_arrived();
-                    $depts_out  = $ticket->results()->whereNotNull('arrive_time')->get();
+                    $depts_out = $ticket->results()->whereNotNull('arrive_time')->get();
                     $depts_out_str = '';
                     foreach ($depts_out as $out) {
                         $depts_out_str .= "{$out->department->title}({$out->tech->department}), ";
                     }
 
-                    if($firstDeptArrived){
+                    if ($firstDeptArrived) {
                         $fireDeptResult = FireDepartmentResult::find($firstDeptArrived->id);
                         $firstDeptArrived->name = $fireDeptResult->department->title;
                         $firstDeptArrived->tech_dept = $fireDeptResult->tech->department;
@@ -314,7 +313,7 @@ class Report
 
                     $chronology_str = '';
 
-                    if($chronology->count()){
+                    if ($chronology->count()) {
                         foreach ($chronology as $chrono) {
                             $chronology_str .= "$chrono->quantity " . ($chrono->event_info_arrived->name ?? null) . ', ';
                         }
@@ -327,7 +326,7 @@ class Report
 
 
                     $max_square = $ticket->max_square ?? Ticket101OtherRecord::where('ticket101_id', $ticket->id)
-                        ->max('square');
+                            ->max('square');
 
                     $result = [
                         'result_title' => $trip_result->name,
@@ -351,7 +350,7 @@ class Report
                         'service_plans_str' => $service_plans_str,
                     ];
 
-                    if($analytics && !$analytics->text){
+                    if ($analytics && !$analytics->text) {
                         $analytics->text = view('_templates.report101-analytics', $result)->render();
                         $analytics->save();
                     }
@@ -366,12 +365,26 @@ class Report
         return $results;
     }
 
-    private function getArrangement()
+    private function getArrangementYesterday()
     {
-        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-        $to = today()->addHours(7)->format('Y-m-d H:i:s');
+        $from = today()->addDay(-1)->format('Y-m-d') . ' 00:00:00';
+        $to = today()->addDay(-1)->format('Y-m-d') . ' 23:59:59';
 
-        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to){
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to) {
+            $q->where('name', 'Расстановка');
+        })
+            ->whereBetween('created_at', [$from, $to])
+            ->get();
+
+        return $formationCard101Others;
+    }
+
+    private function getArrangementToday()
+    {
+        $from = today()->format('Y-m-d H:i:s') . ' 00:00:00';
+        $to = today()->format('Y-m-d H:i:s') . ' 23:59:59';
+
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to) {
             $q->where('name', 'Расстановка');
         })
             ->whereBetween('created_at', [$from, $to])
@@ -405,7 +418,7 @@ class Report
             'hour' => '07',
             'minutes' => '00',
             'to' => date('d.m.Y', $this->time),
-            'from' => date('d.m.Y', $this->time  - (60 * 60 * 24))
+            'from' => date('d.m.Y', $this->time - (60 * 60 * 24))
         ];
     }
 

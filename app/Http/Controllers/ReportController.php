@@ -70,7 +70,7 @@ class ReportController extends AuthorizedController
         )->render();
 
         //todo для теста
-//        return $html;
+        return $html;
 
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
@@ -601,7 +601,23 @@ class ReportController extends AuthorizedController
 //        return $view;
 
         $word = new PhpWord();
-        $section = $word->addSection();
+
+        $section = $word->addSection([
+            'marginLeft'   => 800,
+            'marginRight'  => 700,
+            'marginTop'    => 400,
+            'marginBottom' => 400,
+            'headerHeight' => 50,
+            'footerHeight' => 50,
+        ]);
+
+        $word->setDefaultParagraphStyle([
+                'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0),
+                'spacing' => 120,
+                'lineHeight' => 1,
+            ]
+        );
+
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
         $file = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
         $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
