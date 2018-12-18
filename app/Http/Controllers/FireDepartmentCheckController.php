@@ -50,7 +50,9 @@ class FireDepartmentCheckController extends Controller
      */
     public function store(Request $request)
     {
+        $date = date('Y-m-d');
         foreach ($request->get('items', []) as $item) {
+            $item['date'] = $date;
             FireDepartmentCheck::create($item);
         }
         return redirect('fire-department-checks');
