@@ -8,6 +8,7 @@ use App\Dictionary\TripResult;
 use App\FireDepartmentCheck;
 use App\FormationReport;
 use App\FormationTechReport;
+use App\Models\DailyReportPerson;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
@@ -248,7 +249,9 @@ class Report
             'peopleDeathCount' => $this->report->sum('people_death_count'),
             'childrenDeathCount' => $this->report->sum('children_death_count'),
             'hospitalizedCount' => $this->report->sum('hospitalized_count'),
-
+            'header_person' => DailyReportPerson::where('type', '=', 'header')->first(),
+            'footer_first_person' => DailyReportPerson::where('type', '=', 'footer_first')->first(),
+            'footer_second_person' => DailyReportPerson::where('type', '=', 'footer_second')->first()
 
         ];
         $data['tripResults'] = $this->tripResults();
@@ -368,13 +371,11 @@ class Report
 
     private function getArrangementYesterday()
     {
-        $from = today()->addDay(-1)->format('Y-m-d') . ' 00:00:00';
-        $to = today()->addDay(-1)->format('Y-m-d') . ' 23:59:59';
-
-        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to) {
+        $date = today()->addDay(-1)->format('Y-m-d');
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
-            ->whereBetween('created_at', [$from, $to])
+            ->whereDate('created_at', $date)
             ->get();
 
         return $formationCard101Others;
@@ -382,13 +383,12 @@ class Report
 
     private function getArrangementToday()
     {
-        $from = today()->format('Y-m-d H:i:s') . ' 00:00:00';
-        $to = today()->format('Y-m-d H:i:s') . ' 23:59:59';
+        $date = today()->format('Y-m-d');
 
-        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to) {
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
-            ->whereBetween('created_at', [$from, $to])
+            ->whereDate('created_at', $date)
             ->get();
 
         return $formationCard101Others;
