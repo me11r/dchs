@@ -82,6 +82,22 @@ class Ticket101WordExport
         'ПЧ-13'
     ];
 
+    public static $exceptions = [
+        'crb',
+        'gdzs_base',
+        'doctor',
+        'tulpar1',
+        'tulpar2',
+        'tulpar3',
+        'tulpar4',
+        'tulpar5',
+        'tulpar7',
+        'tulpar8',
+        'tulpar10',
+        'kshm',
+        'ipl_zhalyn'
+    ];
+
     public function __construct(
         FormationReport $formationReport,
         Collection $departments,
@@ -333,14 +349,14 @@ class Ticket101WordExport
         );
 
         foreach ($sections as $array_key => $title) {
-            if ($array_key === 'just_title'){
+            if ($array_key === 'just_title') {
                 $posts = [
                     'post1_president_residence' => '1 пост',
                     'post2_president_archive' => '2 пост',
                     'post3_state_archive' => '3 пост',
                     'post4_national_bank' => '4 пост'
                 ];
-                $postNames= [
+                $postNames = [
                     'post1_president_residence' => 'Резиденция Президента РК',
                     'post2_president_archive' => 'Архив Президента РК',
                     'post3_state_archive' => 'Государственный архив РК',
@@ -370,34 +386,43 @@ class Ticket101WordExport
                     self::$noPaddingPS
                 );
             } else {
-                $section->addText(
-                    $title,
-                    $redFontStyle,
-                    array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
-                );
+
+                if (!in_array($array_key, self::$exceptions)) {
+                    $section->addText(
+                        $title,
+                        $redFontStyle,
+                        array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                    );
+                }
 
                 foreach ($people as $fireDept => $persons) {
                     if (isset($persons[$array_key]) && count($persons[$array_key])) {
                         $textRun = $section->addTextRun(self::$noPaddingPS);
-                        if($fireDept != 'ОД'){
+                        if (in_array($array_key, self::$exceptions)) {
+                            $textRun->addText(
+                                $title,
+                                $redFontStyle,
+                                array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                            );
+                        }
+                        if ($fireDept != 'ОД') {
                             $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                         }
 
-                        if($array_key == 'vacation'){
+                        if ($array_key == 'vacation') {
                             $prefix = 'Трудовой-';
                             $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
                             $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
 
-                            if(count($persons['maternity'])){
+                            if (count($persons['maternity'])) {
                                 $textRun = $section->addTextRun(self::$noPaddingPS);
                                 $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
 
                                 $prefix = 'Декрет-';
                                 $textRun->addText($prefix, $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
-                                $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+                                $textRun->addText(implode(', ', array_unique($persons['maternity'])), $generalFontStyle, self::$noPaddingPS);
                             }
-                        }
-                        else{
+                        } else {
                             $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
                         }
 
@@ -517,16 +542,16 @@ class Ticket101WordExport
 
                     $cellStyles = [];
 
-                    if($key > 18 && $key < 22){
+                    if ($key > 18 && $key < 22) {
 
                         $fontStyle['bold'] = true;
                     }
 
-                    if($key == 19){
+                    if ($key == 19) {
                         $cellStyles = ['borderLeftSize' => 10, 'borderColor' => '000000'];
                     }
 
-                    if($key == 21){
+                    if ($key == 21) {
                         $cellStyles = ['borderRightSize' => 10, 'borderColor' => '000000'];
                     }
 
@@ -546,7 +571,7 @@ class Ticket101WordExport
     private function addSecondTableHeaders(\PhpOffice\PhpWord\Element\Table $table)
     {
         $cellRowSpanV = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
-        $cellRowSpanVThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'];
+        $cellRowSpanVThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
         $cellRowSpanH = ['vMerge' => 'restart', 'valign' => Jc::CENTER];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
         $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
@@ -556,7 +581,7 @@ class Ticket101WordExport
         $table->addCell(1200, $cellRowSpanV)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
         $table->addCell(9000, ['gridSpan' => 17, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Имеется на автомобилях в боевом расчете', $hcFontStyle, $hcAlignStyle);
         $table->addCell(600, $cellRowSpanV)->addText('Пенообразователя на складе', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(1400, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'])->addText('Количество неисправных водоисточников', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(1400, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'])->addText('Количество неисправных водоисточников', $hcFontStyle, $hcAlignStyle);
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderLeftSize' => 10, 'borderColor' => '000000'])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(600, $cellRowSpanV)->addText("1 генератор<w:br/>2 дымосос<w:br/>3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
@@ -579,7 +604,7 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpanV)->addText('Спасательные веревки', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('Пенообразователя', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'])->addText('ПГ', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'])->addText('ПГ', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanVThick)->addText('ПВ', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('бензин', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('дизель', $hcFontStyle, $hcAlignStyle);
@@ -647,11 +672,11 @@ class Ticket101WordExport
                     }
 
                     $cellStyles = [];
-                    if($key == 8){
+                    if ($key == 8) {
                         $cellStyles = ['borderLeftSize' => 10, 'borderColor' => '000000'];
                     }
 
-                    if($key == 10 || $key == 13){
+                    if ($key == 10 || $key == 13) {
                         $cellStyles = ['borderRightSize' => 10, 'borderColor' => '000000'];
                     }
 
@@ -677,11 +702,11 @@ class Ticket101WordExport
                 }
 
                 $cellStyles = [];
-                if($key == 8){
+                if ($key == 8) {
                     $cellStyles = ['borderLeftSize' => 10, 'borderColor' => '000000'];
                 }
 
-                if($key == 10 || $key == 13){
+                if ($key == 10 || $key == 13) {
                     $cellStyles = ['borderRightSize' => 10, 'borderColor' => '000000'];
                 }
 
@@ -716,7 +741,7 @@ class Ticket101WordExport
         $table->addCell(500, $cellRowSpan)->addText('В карауле по списку л/с', $hcFontStyle, $hcAlignStyle);
 
         $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На лицо личного состава', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER,'borderSize' => 10, 'borderColor' => '000000'])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
         $table->addCell(500, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
         $table->addCell(500, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
         $table->addCell(700, $cellRowSpan)->addText('Мотопомпы<w:br/>Водяная<w:br/>Грязевая', $hcFontStyle, $hcAlignStyle);

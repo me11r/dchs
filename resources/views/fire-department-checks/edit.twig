@@ -9,14 +9,24 @@
                         {{  method_field('PUT') }}
                     {% endif %}
                     {{ csrf_field() }}
+                    <h4 class="title">ПЧ</h4>
+                    {#<button class="button is-success"><i class="fa fa-plus"></i>&nbsp;Добавить</button>#}
 
                     <fire-dept-check-form
                         :fire-depts="{{ fire_depts }}"
                         :record="{{ record|default(null)|json_encode }}"
+                        :type="fire_dept"
                     ></fire-dept-check-form>
 
-                    <br>
-                    <hr>
+                    <h4 class="title">ДСПТ</h4>
+                    <button class="button is-success"><i class="fa fa-plus"></i>&nbsp;Добавить</button>
+
+                    <fire-dept-check-form
+                        :fire-depts="{{ fire_depts }}"
+                        :record="{{ record|default(null)|json_encode }}"
+                        :type="dspt"
+                    ></fire-dept-check-form>
+
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
