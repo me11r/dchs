@@ -20,7 +20,7 @@ export default class Tabs {
     }
 
     setTab (i) {
-        if (!this.isNext(i)) return false;
+        // if (!this.isNext(i)) return false;
 
         const form = document.getElementById('card-101-form');
         let valid = form.checkValidity();
@@ -79,10 +79,10 @@ export default class Tabs {
         this.setTab(nextTab);
     }
 
-    isNext(step) {
+    /*isNext(step) {
         if (step === 1) {
             if (!document.getElementById('location').value && !document.getElementById('fireplace').value) { return false; }
         }
         return true;
-    }
+    }*/
 };
