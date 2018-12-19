@@ -333,24 +333,25 @@ class DailyWordExport
                 ['align' => Jc::CENTER]
             );
             foreach ($tripResult as $key => $item) {
-                $textRun = $section->addTextRun(self::$noPaddingPS);
-                $textRun->addText(($key + 1) . '. ' . $item['date'] . '. ' . $item['city_area'] . ', ' . $item['address'] . ':', $generalBoldUnderlineFontStyle, self::$noPaddingPS);
-                $textRun->addText(' (заявитель: ' . $item['caller_name'] . ', тел: ' . $item['caller_phone'] . '. ', $simpleFontStyle, self::$noPaddingPS);
-                $textRun->addText($item['pre_information'] . ' S=' . $item['square_max'] . ' м2. ', $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
-                if ($item['first_dept_arrived']) {
-                    $textRun->addText('(заявитель: ' . $item['first_dept_arrived']['name'] . ' (' . $item['first_dept_arrived']['tech_dept'] . ') на ' . $item['first_dept_arrived']['vehicle'] . ' прибыло в ' . $item['first_dept_arrived']['arrive_time'] . ' (' . $item['first_dept_arrived']['on_way_time'] . '). ', $simpleFontStyle, self::$noPaddingPS);
-                }
-                $textRun->addText('Пожар локализован в ' . $item['loc_time'] . ' и ликвидирован в ' . $item['liqv_time'] . ', ' . $item['chronology_str'] . '. На место пожара выезжал л/с: ' . $item['depts_out'], $simpleFontStyle, self::$noPaddingPS);
-                if ($item['service_plans_str']) {
-                    $textRun->addText('На место ЧС выезжали службы заимодействия: ' . $item['service_plans_str'] . '. ', $simpleFontStyle, self::$noPaddingPS);
-                }
-                $textRun->addText('Материал зарегистрирован в КУИ №' . $item['kui'] . ' от ' . $item['date2'], $simpleFontStyle, self::$noPaddingPS);
+                $number = ($key + 1).".";
+                $item['analytics'] = "<span>{$number}</span>".$item['analytics'];
+                \PhpOffice\PhpWord\Shared\Html::addHtml($section, $item['analytics'], false, false);
+//                $textRun->addText(' (заявитель: ' . $item['caller_name'] . ', тел: ' . $item['caller_phone'] . '. ', $simpleFontStyle, self::$noPaddingPS);
+//                $textRun->addText($item['pre_information'] . ' S=' . $item['square_max'] . ' м2. ', $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
+//                if ($item['first_dept_arrived']) {
+//                    $textRun->addText('(заявитель: ' . $item['first_dept_arrived']['name'] . ' (' . $item['first_dept_arrived']['tech_dept'] . ') на ' . $item['first_dept_arrived']['vehicle'] . ' прибыло в ' . $item['first_dept_arrived']['arrive_time'] . ' (' . $item['first_dept_arrived']['on_way_time'] . '). ', $simpleFontStyle, self::$noPaddingPS);
+//                }
+//                $textRun->addText('Пожар локализован в ' . $item['loc_time'] . ' и ликвидирован в ' . $item['liqv_time'] . ', ' . $item['chronology_str'] . '. На место пожара выезжал л/с: ' . $item['depts_out'], $simpleFontStyle, self::$noPaddingPS);
+//                if ($item['service_plans_str']) {
+//                    $textRun->addText('На место ЧС выезжали службы заимодействия: ' . $item['service_plans_str'] . '. ', $simpleFontStyle, self::$noPaddingPS);
+//                }
+//                $textRun->addText('Материал зарегистрирован в КУИ №' . $item['kui'] . ' от ' . $item['date2'], $simpleFontStyle, self::$noPaddingPS);
             }
-            $section->addText(
-                '',
-                $generalBoldFontStyle,
-                ['align' => Jc::BOTH]
-            );
+//            $section->addText(
+//                '',
+//                $generalBoldFontStyle,
+//                ['align' => Jc::BOTH]
+//            );
         }
         $section->addText(
             '',
