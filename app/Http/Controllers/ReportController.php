@@ -71,7 +71,7 @@ class ReportController extends AuthorizedController
         )->render();
 
         //todo для теста
-        return $html;
+//        return $html;
 
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
