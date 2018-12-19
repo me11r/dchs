@@ -79,7 +79,28 @@ class Ticket101WordExport
         'ПП-16',
         'ПП-17',
         'СО',
-        'ПЧ-13'
+        'ПЧ-13',
+    ];
+
+    public static $sortedDepartmentNamesBottom = [
+        'ПЧ-1',
+        'ПЧ-2',
+        'ПЧ-3',
+        'ПЧ-4',
+        'ПЧ-5',
+        'ПЧ-6',
+        'СПЧ-7',
+        'СПЧ-8',
+        'СПЧ-9',
+        'ПЧ-10',
+        'СПЧ-11',
+        'ПЧ-12',
+        'ПЧ-13',
+        'СПЧ-14',
+        'СПЧ-15',
+        'ПП-16',
+        'ПП-17',
+        'СО',
     ];
 
     public static $exceptions = [
@@ -188,19 +209,19 @@ class Ticket101WordExport
 
             $result[$fireDept->title] = [
                 'vacation' => $vacationPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'maternity' => $maternityPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'dispatchers' => $dispatchersPpl->map(function ($item) {
                     return ($item->staff->name ?? null) . "({$item->staff->rank})";
                 })->toArray(),
                 'sick' => $sickPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
 
                 'gdzs_base' => $gdzs_base->map(function ($item) {
@@ -305,7 +326,7 @@ class Ticket101WordExport
     private function addBottomText(Section $section)
     {
         $people = $this->peopleByDept();
-        $people = array_replace(array_flip(self::$sortedDepartmentNames), $people); // сортируем
+        $people = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $people); // сортируем
 
 //        dd($people);
 
@@ -385,7 +406,8 @@ class Ticket101WordExport
                     $generalFontStyle,
                     self::$noPaddingPS
                 );
-            } else {
+            }
+            else {
 
                 if (!in_array($array_key, self::$exceptions)) {
                     $section->addText(
@@ -397,6 +419,9 @@ class Ticket101WordExport
 
                 foreach ($people as $fireDept => $persons) {
                     if (isset($persons[$array_key]) && count($persons[$array_key])) {
+
+                        $peopleByComma = count($persons[$array_key]) ? implode(', ', array_unique($persons[$array_key])) : '-';
+
                         $textRun = $section->addTextRun(self::$noPaddingPS);
                         if (in_array($array_key, self::$exceptions)) {
                             $textRun->addText(
@@ -412,7 +437,7 @@ class Ticket101WordExport
                         if ($array_key == 'vacation') {
                             $prefix = 'Трудовой-';
                             $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
-                            $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
 
                             if (count($persons['maternity'])) {
                                 $textRun = $section->addTextRun(self::$noPaddingPS);
@@ -420,10 +445,26 @@ class Ticket101WordExport
 
                                 $prefix = 'Декрет-';
                                 $textRun->addText($prefix, $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
-                                $textRun->addText(implode(', ', array_unique($persons['maternity'])), $generalFontStyle, self::$noPaddingPS);
+
+                                $peopleByCommaMaternity = count($persons['maternity']) ? implode(', ', array_unique($persons['maternity'])) : '-';
+                                $textRun->addText($peopleByCommaMaternity, $generalFontStyle, self::$noPaddingPS);
                             }
-                        } else {
-                            $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
+                        }
+                        else {
+                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                        }
+                    }
+                    elseif (isset($persons[$array_key]) && !count($persons[$array_key]) && $fireDept == 'ОД'){
+                        if (in_array($array_key, self::$exceptions)) {
+                            $textRun = $section->addTextRun(self::$noPaddingPS);
+                            $textRun->addText(
+                                $title,
+                                $redFontStyle,
+                                array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                            );
+                            $peopleByComma = count($persons[$array_key]) ? implode(', ', array_unique($persons[$array_key])) : '-';
+                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+
                         }
 
                     }
@@ -457,7 +498,7 @@ class Ticket101WordExport
             );
 
             $section->addText(
-                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . $item->date_from ? " c {$item->date_from}" : '',
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );

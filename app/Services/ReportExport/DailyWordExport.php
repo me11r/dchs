@@ -434,6 +434,7 @@ class DailyWordExport
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
                 ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
+//                ($key + 1) . '. ' . ($item->staff ? $item->staff->department->title : '') . ' ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
@@ -459,6 +460,7 @@ class DailyWordExport
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
                 ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
+//                ($key + 1) . '. ' . ($item->staff ? $item->staff->department->title : '') . ' ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
