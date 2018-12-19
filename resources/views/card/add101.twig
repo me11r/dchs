@@ -637,7 +637,7 @@
                     <div class="field">
                         <label for="detailed_address">Уточненный адрес</label>
                         <textarea name="detailed_address" id="detailed_address" cols="30" rows="3"
-                                  class="textarea"></textarea>
+                                  class="textarea">{{ ticket.detailed_address|default('') }}</textarea>
                     </div>
                     <div class="field">
                         <div class="control">
