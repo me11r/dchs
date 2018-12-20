@@ -117,6 +117,7 @@ class AjaxController extends AuthorizedController
             ->where('is_closed', false)
             ->where('department_id', $dept->id)
             ->where('is_accepted', false)
+            ->has('ticket')
             ->get();
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }

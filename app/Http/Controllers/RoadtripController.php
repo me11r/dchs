@@ -24,6 +24,7 @@ class RoadtripController extends AuthorizedController
         /** @var User $user */
         $user = Auth::user();
         $trips = RoadtripPlan::with(['ticket', 'department'])
+            ->has('ticket')
             ->where('is_closed', false);
 
         if ($user->fire_department_id) {
@@ -49,7 +50,15 @@ class RoadtripController extends AuthorizedController
         ])
             ->findOrFail($plan_id);
 
-        $results = $trip->ticket
+       if(!$trip->ticket){
+           return redirect('roadtrip')->with('_message', [
+               'type' => 'danger',
+               'text' => 'Невозможно открыть путевой лист. Карточка была удалена'
+           ]);
+       }
+
+        $results = $trip
+            ->ticket
             ->results()
             ->isDispatched()
             ->with(['tech'])

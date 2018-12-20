@@ -728,6 +728,7 @@
                         <div class="control">
                             <label for="square_max">Площадь пожара</label>
                             <input min=0 oninput="validity.valid||(value='');" class="input" type="number"
+                                   step=".01"
                                    id="square_max" name="max_square" value="{{ max_square }}">
                         </div>
                         <div class="control">
@@ -866,6 +867,7 @@
                             <label for="distance">Расстояние до места
                             </label>
                             <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                   step=".01"
                                    name="distance" id="distance"
                                    value="{{ ticket.distance|default('') }}"/>
                         </div>
