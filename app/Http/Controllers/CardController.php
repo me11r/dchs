@@ -282,7 +282,7 @@ class CardController extends AuthorizedController
 
         $fire_dep_results_info = '';
         foreach ($ticket->results()->where('dispatched', true)->get() as $item) {
-            $fire_dep_results_info .= "{$item->department->name}: {$item->departments}; ";
+            $fire_dep_results_info .= "{$item->department->name}: {$item->tech->department}; ";
         }
 
         $water_sources = WaterSupplySource::all();
