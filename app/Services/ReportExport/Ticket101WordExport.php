@@ -316,7 +316,7 @@ class Ticket101WordExport
         foreach ($repairedTech as $arr) {
             foreach ($arr as $item) {
                 $vehicle = Vehicle::find($item['vehicle_id']);
-                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . $item['comment'];
+                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . $item['comment']. ($item['date_from'] ? " c {$item['date_from']}" : '');
             }
         }
 
