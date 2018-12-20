@@ -3,10 +3,12 @@
 
 namespace App\Services\ReportExport;
 
+use App\Dictionary\TripResult;
 use App\FireDepartment;
 use App\FormationPersonsReport;
 use App\FormationReport;
 use App\Models\DailyReportPerson;
+use App\Models\FireDepartmentResult;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -149,53 +151,105 @@ class DailyWordExport
         );
 
         $section->addText(
-            '1.Пожары – ' . count($this->data['fire']['items']),
+            '1.Пожары – ' . $this->data['burntFireCount'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
 
         $section->addText(
-            '1.1. Транспорт – ' . $this->data['burntTransportCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $section->addText(
-            '1.2. Прочие объекты пожаров – ' . $this->data['burntOtherCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $section->addText(
-            '2. Случаи горения, не подлежащие учету как пожары – ' . (count($this->data['electricFire']['items']) +
-                count($this->data['kitchenFire']['items']) + count($this->data['trashFireOther']['items']) + count($this->data['trashFireHouse']['items'])),
+            '1.1. Жилой сектор – ' . $this->data['livingSectorCount'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
 
         $section->addText(
-            '2.1. Пища на газе и задымление при неиспр.быт.эл.приборов – ' . count($this->data['kitchenFire']['items']),
+            'а) жилой дом (квартира) – ' . $this->data['livingSectorHomeCount'] . "; " . "б) надворные постройки – ".$this->data['livingSectorOutdoorCount'].';',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            '1.2. Транспорт – ' . $this->data['burntTransportCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
+
         $section->addText(
-            '2.2. КЗ эл.сетей и эл.оборудования – ' . count($this->data['electricFire']['items']),
+            '1.3. Прочие объекты пожаров – ' . $this->data['burntOtherCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
+
         $section->addText(
-            '2.3. Загорание сухостоя, мусора на отк.территориях, в контейнерах – ' . count($this->data['trashFireOther']['items']),
+            '2. Случаи горения, не подлежащие учету как пожары – ' . (
+                $this->data['burntShortCircuitFireCount'] +
+                $this->data['burntRubbishFireCount'] +
+                $this->data['burntKitchenFireCount'] +
+                $this->data['burntDryThingsFireCount']
+            ),
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            '2.1. КЗ – ' . $this->data['burntShortCircuitFireCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
+
         $section->addText(
-            '2.4. Загорание мусора на тер.объекта,дома(лифт,мусоросб,л.клетка,подв,черд) – ' . count($this->data['trashFireHouse']['items']),
+            '2.2. Мусор – ' . $this->data['burntRubbishFireCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $section->addText(
+            '2.3. Пища на газе – ' . $this->data['burntKitchenFireCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
 
 
         $section->addText(
+            '2.4. Сухостой – ' . $this->data['burntDryThingsFireCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $reasons = TripResult::whereIn('name', [
+            'Ложный',
+            'АСР',
+            'Технологический процесс',
+            'Бдительность населения',
+            'Случаи пожаров трансп.средств в результате ДТП',
+            'Загорание бесхозных зданий, бесхозных транспортных средств',
+            'Кровельные, битумные, сварочные работы',
+            'срабатывание сигнализации',
+            'Область',
+        ])
+            ->get();
+
+
+        $iterator = 3;
+        foreach ($reasons as $reason) {
+
+            $cnt = $this->data['tickets']->filter(function ($event) use ($reason) {
+                return $event->trip_result_id == $reason->id;
+            })->count();
+
+            $upper = ucfirst($reason->name);
+
+            $section->addText(
+                $iterator.". {$upper} – " . $cnt,
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+
+            $iterator++;
+        }
+
+
+        /*$section->addText(
             '3. Ложный – ' . count($this->data['falseCall']['items']),
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
@@ -239,12 +293,15 @@ class DailyWordExport
             '11. Самовозгорание пирофорных соединений, без последствий и ущерба – ' . count($this->data['pyrophoricFire']['items']),
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
-        );
-        $section->addText(
+        );*/
+
+
+        /*$section->addText(
             'Cрабатывание сигнализации - ' . count($this->data['alarm']['items']),
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
-        );
+        );*/
+
         $section->addText(
             'Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - ' . count($this->data['airFire']['items']),
             $generalBoldFontStyle,
@@ -439,7 +496,8 @@ class DailyWordExport
                 ['align' => Jc::BOTH]
             );
             $textRun->addText(
-                $item['note'],
+//                $item['note'],
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );
@@ -465,7 +523,8 @@ class DailyWordExport
                 ['align' => Jc::BOTH]
             );
             $textRun->addText(
-                $item['note'],
+//                $item['note'],
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );

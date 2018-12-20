@@ -316,7 +316,7 @@ class Ticket101WordExport
         foreach ($repairedTech as $arr) {
             foreach ($arr as $item) {
                 $vehicle = Vehicle::find($item['vehicle_id']);
-                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . $item['comment'];
+                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . ($vehicle->base ? "($vehicle->base) " : '') . $item['comment']. ($item['date_from'] ? " c {$item['date_from']}" : '');
             }
         }
 
@@ -490,14 +490,15 @@ class Ticket101WordExport
         );
 
         foreach ($formationCard101Others as $key => $item) {
+            $textRun = $section->addTextRun(self::$noPaddingPS);
             $index = ++$key;
-            $section->addText(
-                "{$index}. {$item->staff->department->name}",
+            $textRun->addText(
+                "{$index}.". ($item->fire_department ? $item->fire_department->title : ''). ' ',
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
 
-            $section->addText(
+            $textRun->addText(
                 "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]

@@ -410,7 +410,7 @@
                 {% for item in inactive_tech %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ item.vehicle.fireDepartment.name }}</span></td>
-                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.name }}) {% endif %} {{ item.comment ? ' - '~item.comment }} {{ item.date_from ? ' с '~item.date_from }}</td>
+                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %} {{ item.comment ? ' - '~item.comment }} {{ item.date_from ? ' с '~item.date_from }}</td>
                     </tr>
                 {% endfor %}
             </table>

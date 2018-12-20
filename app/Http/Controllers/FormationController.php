@@ -802,6 +802,7 @@ class FormationController extends AuthorizedController
             'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
             'report' => $report,
             'inactive_tech_cnt' => $inactive_tech_cnt,
+            'inactive_tech' => $inactive_tech,
             'formationCard101Others' => $formationCard101Others,
         ];
 

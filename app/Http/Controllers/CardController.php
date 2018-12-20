@@ -17,6 +17,7 @@ use App\FormationReport;
 use App\FormationTechReport;
 use App\Http\Middleware\Rights\FormationRecord;
 use App\Http\Resources\HydrantResource;
+use App\LivingSectorType;
 use App\Models\FireDepartmentResult;
 use App\Models\Hydrant;
 use App\Models\Notification\NotificationGroup;
@@ -200,7 +201,8 @@ class CardController extends AuthorizedController
         $this->set('city_area', CityArea::with(['fire_departments'])->get());
         $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
-        $this->set('burn_object', BurntObject::all());
+        $this->set('living_sector_types', LivingSectorType::all());
+        $this->set('burn_object', FireObject::all());
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
         $this->set('fire_object_options', FireObject::all());
