@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\FormationPersonsReport;
+use App\GuardNumber;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -43,11 +44,17 @@ class FormationPersonsItem extends Model
         'comment',
         'date_from',
         'date_to',
+        'guard_number_id',
     ];
 
     public function staff()
     {
         return $this->belongsTo(Staff::class, 'staff_id');
+    }
+
+    public function guard_number()
+    {
+        return $this->belongsTo(GuardNumber::class, 'guard_number_id');
     }
 
     public function report()

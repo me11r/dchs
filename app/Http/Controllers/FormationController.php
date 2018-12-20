@@ -17,6 +17,7 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationSaversReport;
 use App\FormationTechReport;
+use App\GuardNumber;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationRecord;
 use App\Models\FormationTechItem;
@@ -239,6 +240,7 @@ class FormationController extends AuthorizedController
         $this->set('fieldlist', $fieldlist);
 
         $staff = Staff::where('department_id', $dept_id)->orderBy('name')->get();
+        $guardNumbers = GuardNumber::all();
 
         $this->set('staff', $staff);
 
@@ -273,6 +275,7 @@ class FormationController extends AuthorizedController
             ->set('od_staff', $od_staff)
             ->set('staff_table', $staff_table ?? null)
             ->set('read_only', $read_only)
+            ->set('guardNumbers', $guardNumbers)
             ->set('dept_id', $dept_id);
     }
 
@@ -359,7 +362,7 @@ class FormationController extends AuthorizedController
                 foreach ($request->staff as $type => $inputs) {
                     foreach ($inputs['staff_id'] as $input_key => $input) {
 
-                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'business_trip', 'other', 'trainee'])){
+                        if(!in_array($type, ['vacation', 'study', 'maternity', 'sick', 'sick_leave', 'business_trip', 'other', 'trainee'])){
                             $data['status'] = 'active';
                         }
                         else{
@@ -377,6 +380,7 @@ class FormationController extends AuthorizedController
                             'date_to' => $date_to,
                             'rank' => $type,
                             'status' => $data['status'],
+                            'guard_number_id' => $inputs['guard_number_id'][$input_key] ?? null,
                         ]);
                     }
                 }
@@ -586,7 +590,8 @@ class FormationController extends AuthorizedController
             'sick',
             'business_trip',
             'other',
-            'gas_smoke_protection_service'
+            'gas_smoke_protection_service',
+            'sick_leave',
         ];
         $tech_fields = [
 //            null,
@@ -652,6 +657,9 @@ class FormationController extends AuthorizedController
             return $q->staff->department_id;
         });
         $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
+            return $q->staff->department_id;
+        });
+        $sick_leave = FormationPersonsItem::byRankAndForm('sick_leave', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
             return $q->staff->department_id;
         });
         $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy(function ($q){
@@ -844,6 +852,8 @@ class FormationController extends AuthorizedController
             ->set('report', $report)
             ->set('vacation', $vacation)
             ->set('sick', $sick)
+            ->set('sick_leave', $sick_leave)
+            ->set('guard_numbers', GuardNumber::all())
             ->set('business_trip', $business_trip)
             ->set('inactive_tech', $inactive_tech)
             ->set('inactive_tech_cnt', $inactive_tech_cnt)

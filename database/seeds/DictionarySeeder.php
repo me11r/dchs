@@ -151,6 +151,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'living_sector_types',
                 'model' => \App\LivingSectorType::class
             ],
+            [
+                'title' => "Номер караула",
+                'table' => 'guard_numbers',
+                'model' => \App\GuardNumber::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();
