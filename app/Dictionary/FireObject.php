@@ -33,4 +33,9 @@ class FireObject extends Model
     protected $table = 'dict_fire_object';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public function scopeName($q, $title)
+    {
+        return $q->where('name', $title);
+    }
 }
