@@ -49,7 +49,7 @@ class Report
     {
         $this->report = $this->ticket101->getDaily(
             today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s'),
-            today()->addHours(7)->format('Y-m-d H:i:s')
+            today()->addHours(19)->format('Y-m-d H:i:s')
         );
 
         /*$burntTransportCount = count($this->filterByObject(
@@ -132,17 +132,34 @@ class Report
             return in_array($event->trip_result_id, $q);
         })->count();
 
-        $carbonPoisoningCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['carbonPoisoning']
-        ));
+        $carbonPoisoningCount =  $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Отравление угарным газом%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
 
-        $naturalPoisoningCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['naturalPoisoning']
-        ));
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $naturalPoisoningCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Отравление природным газом%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $suicideCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Покушение на самоубийство%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+
         $data = [
             'dates' => $this->getDates(),
             'allCount' => count($this->report),
@@ -329,6 +346,7 @@ class Report
             'poisoningCount' => ($carbonPoisoningCount + $naturalPoisoningCount),
             'carbonPoisoningCount' => $carbonPoisoningCount,
             'naturalPoisoningCount' => $naturalPoisoningCount,
+            'suicideCount' => $suicideCount,
             'rescuedCount' => $this->report->sum('rescued_count'),
             'evacCount' => $this->report->sum('evac_count'),
             'gptBurnsCount' => $this->report->sum('gpt_burns_count'),

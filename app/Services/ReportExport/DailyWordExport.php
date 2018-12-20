@@ -302,21 +302,42 @@ class DailyWordExport
             ['align' => Jc::BOTH]
         );*/
 
-        $section->addText(
-            'Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - ' . count($this->data['airFire']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            'Покушение на самоубийство - ' . count($this->data['suicide']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            'Вспышки и разряды стат.электричества - ' . count($this->data['dischargesElectr']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+        $reasons = TripResult::whereIn('name', [
+            'Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения',
+            'Покушение на самоубийство',
+            'Вспышки и разряды стат.электричества'
+        ])
+            ->get();
+
+        foreach ($reasons as $reason) {
+            $cnt = $this->data['tickets']->filter(function ($event) use ($reason) {
+                return $event->trip_result_id == $reason->id;
+            })->count();
+
+            $upper = ucfirst($reason->name);
+
+            $section->addText(
+                "{$upper} – " . $cnt,
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+        }
+
+//        $section->addText(
+//            'Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - ' . count($this->data['airFire']['items']),
+//            $generalBoldFontStyle,
+//            ['align' => Jc::BOTH]
+//        );
+//        $section->addText(
+//            'Покушение на самоубийство - ' . count($this->data['suicide']['items']),
+//            $generalBoldFontStyle,
+//            ['align' => Jc::BOTH]
+//        );
+//        $section->addText(
+//            'Вспышки и разряды стат.электричества - ' . count($this->data['dischargesElectr']['items']),
+//            $generalBoldFontStyle,
+//            ['align' => Jc::BOTH]
+//        );
 
         $section->addText(
             '12. Случаи отравления - ' . $this->data['poisoningCount'],
@@ -335,14 +356,14 @@ class DailyWordExport
         );
 
         $section->addText(
-            '13. Сведенеия по людям/детям: ' . (count($this->data['suicide']['items']) + $this->data['rescuedCount'] +
+            '13. Сведенеия по людям/детям: ' . ($this->data['suicideCount'] + $this->data['rescuedCount'] +
                 $this->data['evacCount'] + $this->data['gptBurnsCount'] + $this->data['peopleDeathCount'] +
                 $this->data['childrenDeathCount'] + $this->data['hospitalizedCount']),
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            '13.1. Попытка суицида - ' . count($this->data['suicide']['items']),
+            '13.1. Попытка суицида - ' . $this->data['suicideCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
