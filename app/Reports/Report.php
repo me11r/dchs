@@ -340,7 +340,7 @@ class Report
             'footer_second_person' => DailyReportPerson::where('type', '=', 'footer_second')->first()
 
         ];
-        dd($data);
+
         $data['tripResults'] = $this->tripResults();
         $data['tech'] = $this->getTech()
             ->whereHas('items', function ($q) {
