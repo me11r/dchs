@@ -492,7 +492,7 @@ class Ticket101WordExport
         foreach ($formationCard101Others as $key => $item) {
             $index = ++$key;
             $section->addText(
-                "{$index}. {$item->staff->department->name}",
+                "{$index}.". ($item->fire_department ? $item->fire_department->title : ''). ' ',
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
