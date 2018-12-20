@@ -108,6 +108,7 @@ class FormationPersonsReport extends Model
         'other',
         'gas_smoke_protection_service',
         'trainee',
+        'sick_leave',
     ];
     
     public $od_staff = [

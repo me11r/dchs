@@ -590,7 +590,8 @@ class FormationController extends AuthorizedController
             'sick',
             'business_trip',
             'other',
-            'gas_smoke_protection_service'
+            'gas_smoke_protection_service',
+            'sick_leave',
         ];
         $tech_fields = [
 //            null,
@@ -656,6 +657,9 @@ class FormationController extends AuthorizedController
             return $q->staff->department_id;
         });
         $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
+            return $q->staff->department_id;
+        });
+        $sick_leave = FormationPersonsItem::byRankAndForm('sick_leave', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
             return $q->staff->department_id;
         });
         $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy(function ($q){
@@ -848,6 +852,8 @@ class FormationController extends AuthorizedController
             ->set('report', $report)
             ->set('vacation', $vacation)
             ->set('sick', $sick)
+            ->set('sick_leave', $sick_leave)
+            ->set('guard_numbers', GuardNumber::all())
             ->set('business_trip', $business_trip)
             ->set('inactive_tech', $inactive_tech)
             ->set('inactive_tech_cnt', $inactive_tech_cnt)
