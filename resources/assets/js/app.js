@@ -161,10 +161,10 @@ if (document.getElementById('cardadd101')) {
             tabs.nextTab();
         }); */
 
-        document.getElementById('truck_tab_button').addEventListener('click', (e) => {
+        /*document.getElementById('truck_tab_button').addEventListener('click', (e) => {
             e.preventDefault();
             window.add101tabs.setTab(1);
-        });
+        });*/
     });
 }
 
