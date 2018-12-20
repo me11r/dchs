@@ -45,14 +45,19 @@ class Report
         $this->dictionaries = config('dictionaries');
     }
 
-    public function getReport(): array
+    public function getReport($date = null): array
     {
-        $yesterday = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-        $today = today()->addHours(7)->format('Y-m-d H:i:s');
-
+        $firstDate = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $secondDate = today()->addHours(7)->format('Y-m-d H:i:s');
+        if($date) {
+            $carbon = new Carbon($date);
+            $firstDate = $carbon->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+            $secondDate = $carbon->addDay(1)->format('Y-m-d H:i:s');
+            $this->time = strtotime($date);
+        }
         $this->report = $this->ticket101->getDaily(
-            today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s'),
-            today()->addHours(7)->format('Y-m-d H:i:s')
+            $firstDate,
+            $secondDate
         );
 
         /*$burntTransportCount = count($this->filterByObject(
