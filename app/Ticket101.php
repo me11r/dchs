@@ -342,6 +342,11 @@ class Ticket101 extends Model
         return $this->belongsTo(FireDepartment::class,'fire_department_id');
     }
 
+    public function living_sector_type()
+    {
+        return $this->belongsTo(LivingSectorType::class, 'living_sector_type_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

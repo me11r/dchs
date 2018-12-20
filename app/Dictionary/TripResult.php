@@ -41,4 +41,17 @@ class TripResult extends Model
         return $this->hasMany(Ticket101::class, 'trip_result_id');
     }
 
+    public function scopeName($q, $search)
+    {
+        return $q->where('name', $search);
+    }
+
+    public function scopeNonFires($q)
+    {
+        return $q->where('name', 'like', "%Загорание мусора%")
+            ->orWhere('name', 'like', "%пища на газе%")
+            ->orWhere('name', 'like', "%сухост%")
+            ->orWhere('name', 'like', "%КЗ эл.сетей%");
+    }
+
 }

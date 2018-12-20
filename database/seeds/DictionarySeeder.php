@@ -146,6 +146,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'daily_report_persons',
                 'model' => \App\Models\DailyReportPerson::class
             ],
+            [
+                'title' => "Тип жилого сектора",
+                'table' => 'living_sector_types',
+                'model' => \App\LivingSectorType::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

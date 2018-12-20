@@ -4,10 +4,13 @@ namespace App\Reports;
 
 use App\Analytics101Item;
 use App\Chronology101;
+use App\Dictionary\BurntObject;
+use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\FireDepartmentCheck;
 use App\FormationReport;
 use App\FormationTechReport;
+use App\LivingSectorType;
 use App\Models\DailyReportPerson;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationTechItem;
@@ -49,17 +52,85 @@ class Report
             today()->addHours(7)->format('Y-m-d H:i:s')
         );
 
-        $burntTransportCount = count($this->filterByObject(
+        /*$burntTransportCount = count($this->filterByObject(
             'burn_object_id',
             'burntObject',
             $this->dictionaries['burntObject']['transport']
-        ));
+        ));*/
 
-        $burntFireCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['fire']
-        ));
+        $burntFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::name('Пожар')->first();
+            return $event->trip_result_id == $q->id;
+        })->count();
+
+        $livingSectorCount = $this->report->filter(function ($event) {
+            return $event->living_sector_type_id !== null;
+        })->count();
+
+        $livingSectorHomeCount = $this->report->filter(function ($event) {
+            $q = LivingSectorType::name('Жилой дом(квартира)')->first();
+            return $event->living_sector_type_id == $q->id;
+        })->count();
+
+        $livingSectorOutdoorCount = $this->report->filter(function ($event) {
+            $q = LivingSectorType::name('надворные постройки')->first();
+            return $event->living_sector_type_id == $q->id;
+        })->count();
+
+        $burntTransportCount = $this->report->filter(function ($event) {
+            $q = FireObject::name('Транспорт')->first();
+            return $event->burn_object_id == $q->id;
+        })->count();
+
+        $burntOtherCount = $this->report->filter(function ($event) {
+            $q = FireObject::name('Прочие объекты пожаров')->first();
+            return $event->burn_object_id == $q->id;
+        })->count();
+
+        $burntKitchenFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%пища на газе%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burntRubbishFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Загорание мусора%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burntShortCircuitFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%КЗ эл.сетей%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burntDryThingsFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%сухост%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burnNonFiresCount = $this->report->filter(function ($event) {
+            $q = TripResult::nonFires()
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
 
         $carbonPoisoningCount = count($this->filterByObject(
             'fire_object_id',
@@ -76,6 +147,7 @@ class Report
         $data = [
             'dates' => $this->getDates(),
             'allCount' => count($this->report),
+            'tickets' => $this->report,
 
             // в разрезе
             'fire' => [
@@ -244,8 +316,17 @@ class Report
                 'name' => $this->dictionaries['fireObject']['dischargesElectr']
             ],
 
+            'burntFireCount' => $burntFireCount,
+            'livingSectorCount' => $livingSectorCount,
+            'livingSectorHomeCount' => $livingSectorHomeCount,
+            'livingSectorOutdoorCount' => $livingSectorOutdoorCount,
             'burntTransportCount' => $burntTransportCount,
-            'burntOtherCount' => count($this->report) - $burntTransportCount,
+            'burntOtherCount' => $burntOtherCount,
+            'burntNonFiresCount' => $burnNonFiresCount,
+            'burntKitchenFireCount' => $burntKitchenFireCount,
+            'burntRubbishFireCount' => $burntRubbishFireCount,
+            'burntShortCircuitFireCount' => $burntShortCircuitFireCount,
+            'burntDryThingsFireCount' => $burntDryThingsFireCount,
             'poisoningCount' => ($carbonPoisoningCount + $naturalPoisoningCount),
             'carbonPoisoningCount' => $carbonPoisoningCount,
             'naturalPoisoningCount' => $naturalPoisoningCount,
