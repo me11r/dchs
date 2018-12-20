@@ -33,30 +33,29 @@ export default function bindLocationInputApp() {
                 }
             }, 300),
             setData(items) {
-                if (items.special_plans !== undefined) {
+                if (items.special_plans) {
                     this.items = items.special_plans;
 
-                    //определение ранга пожара только при создании карточки
-                    //т.к. при редкатировании он может сбиться при вводе адреса
+                    // определение ранга пожара только при создании карточки
+                    // т.к. при редкатировании он может сбиться при вводе адреса
                     if (window.ticket101add.ticketId === '') {
-                        document.getElementById('fire_level_id1').value = this.items[0].fire_level_id;
+                        // document.getElementById('fire_level_id1').value = this.items[0].fire_level_id;
+                        document.getElementById('fire_level_id1').value = 1; // ARM-290
                     }
-                    // console.dir("special plan found:")
-                    // console.dir(this.items)
-
                 } else {
                     if (window.ticket101add.ticketId === '') {
-                        document.getElementById('fire_level_id1').value = 1;
+                        document.getElementById('fire_level_id1').value = 1; // ARM-290
                     }
                     this.items = items;
                 }
                 this.showList = this.items.length > 0;
-                if (this.items.length === 1 && this.items[0].location === this.location) {
+
+                if (this.items.length === 1 && (this.items[0] && this.items[0].location === this.location)) {
                     this.showList = false;
                 }
 
                 if (items.building) {
-                    document.getElementById('building_description').value = items.building.wall_material.name;
+                    document.getElementById('building_description').value = items.building.wall_material ? items.building.wall_material.name : '';
                     document.getElementById('square').value = items.building.square;
                     document.getElementById('year_of_development').value = items.building.year_of_development;
                     document.querySelector('[id="storey_count"]').value = items.building.number_of_storeys;
@@ -71,6 +70,9 @@ export default function bindLocationInputApp() {
             selectItem(item) {
                 this.location = item.location;
                 globalBus.$emit('specialPlanFound', item);
+
+                document.getElementById('fire_level_id1').value = item.fire_level_id;
+
                 this.showList = false;
                 if (item.is_card === true) {
                     // document.getElementById('fire_level_id1').value = 2;
@@ -83,7 +85,7 @@ export default function bindLocationInputApp() {
                 }, 500);
             },
             onFocus() {
-                this.setData([]);
+                // this.setData([]);
                 this.searchLocationPlans();
             },
             notifyMap() {
