@@ -7,7 +7,7 @@
                         <div class="control">
                             <label for="">Время регистрации</label>
                             <input type="text"
-                                   :value="formatDate(ticket_.created_at, 'HH:MM:SS DD-MM-YYYY')"
+                                   :value="formatDate(ticket_.created_at, 'HH:mm:SS DD-MM-YYYY')"
                                    readonly="readonly"
                                    class="input"
                             >
@@ -65,7 +65,7 @@
                             <p v-for="i in formActive[department.id]">
                                 <input :id="`accept_time_${i.id }`"
                                        type="text"
-                                       :value="formatDate(i.accept_time, 'HH:MM:SS')"
+                                       :value="formatDate(i.accept_time, 'HH:mm:SS')"
                                        readonly
                                        class="input small-imput">
                             </p>
