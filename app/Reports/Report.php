@@ -47,6 +47,9 @@ class Report
 
     public function getReport(): array
     {
+        $yesterday = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $today = today()->addHours(7)->format('Y-m-d H:i:s');
+
         $this->report = $this->ticket101->getDaily(
             today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s'),
             today()->addHours(7)->format('Y-m-d H:i:s')
