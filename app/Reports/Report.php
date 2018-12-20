@@ -143,7 +143,6 @@ class Report
             'fireObject',
             $this->dictionaries['fireObject']['naturalPoisoning']
         ));
-
         $data = [
             'dates' => $this->getDates(),
             'allCount' => count($this->report),
@@ -341,6 +340,7 @@ class Report
             'footer_second_person' => DailyReportPerson::where('type', '=', 'footer_second')->first()
 
         ];
+        dd($data);
         $data['tripResults'] = $this->tripResults();
         $data['tech'] = $this->getTech()
             ->whereHas('items', function ($q) {
@@ -532,7 +532,7 @@ class Report
 
     protected function getObjectId($object, $name): int
     {
-        return $this->{$object}->getByName($name)->id ?? 0;
+        return $this->{$object}->getByName($name)->id ?? -1;
     }
 
 }
