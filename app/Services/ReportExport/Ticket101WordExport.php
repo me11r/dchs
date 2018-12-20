@@ -178,6 +178,7 @@ class Ticket101WordExport
             $vacationPpl = $personSummary->formation_person_items()->rank('vacation')->get();
             $dispatchersPpl = $personSummary->formation_person_items()->rank('dispatchers')->get();
             $sickPpl = $personSummary->formation_person_items()->rank('sick')->get();
+            $sickLeavePpl = $personSummary->formation_person_items()->rank('sick_leave')->get();
             $businessPpl = $personSummary->formation_person_items()->rank('business_trip')->get();
             $maternityPpl = $personSummary->formation_person_items()->rank('maternity')->get();
 
@@ -219,6 +220,9 @@ class Ticket101WordExport
                     return ($item->staff->name ?? null) . "({$item->staff->rank})";
                 })->toArray(),
                 'sick' => $sickPpl->map(function ($item) {
+                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                })->toArray(),
+                'sick_leave' => $sickLeavePpl->map(function ($item) {
                     return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
@@ -295,6 +299,9 @@ class Ticket101WordExport
                 'senior_communication_master' => $senior_communication_master->map(function ($item) {
                     return $item->staff->name ?? null;
                 })->toArray(),
+                'guard_number_id' => $sickLeavePpl->map(function ($item) {
+                    return $item->guard_number_id;
+                })->toArray(),
             ];
 
 
@@ -356,6 +363,7 @@ class Ticket101WordExport
             'tulpar10' => 'Тулпар-10: ',
             'kshm' => 'КШМ: ',
             'ipl_zhalyn' => 'ИПЛ «Жалын»: ',
+            'sick_leave' => 'Больничные: ',
         ];
 
         $generalFontStyle = ['name' => 'Times New Roman', 'size' => 8];
@@ -402,6 +410,37 @@ class Ticket101WordExport
                     }
                 }
 
+                $section->addText(
+                    '',
+                    $generalFontStyle,
+                    self::$noPaddingPS
+                );
+            }
+            elseif($array_key === 'sick_leave'){
+                $section->addText(
+                    $title,
+                    $redFontStyle,
+                    array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                );
+                $guard_numbers = GuardNumber::all();
+                foreach ($guard_numbers as $guard_number) {
+                    $section->addText(
+                        $guard_number->name.':',
+                        $generalBoldFontStyle,
+                        array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                    );
+
+                    foreach ($people as $fireDept => $persons) {
+                        if (isset($persons[$array_key]) && count($persons[$array_key])) {
+                            if(in_array($guard_number->id, $persons['guard_number_id'])) {
+                                $peopleByComma = count($persons[$array_key]) ? implode(', ', array_unique($persons[$array_key])) : '-';
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                    }
+                }
                 $section->addText(
                     '',
                     $generalFontStyle,
