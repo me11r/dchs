@@ -439,7 +439,8 @@ class DailyWordExport
                 ['align' => Jc::BOTH]
             );
             $textRun->addText(
-                $item['note'],
+//                $item['note'],
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );
@@ -465,7 +466,8 @@ class DailyWordExport
                 ['align' => Jc::BOTH]
             );
             $textRun->addText(
-                $item['note'],
+//                $item['note'],
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );

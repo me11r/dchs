@@ -55,6 +55,12 @@ class Report
             $this->dictionaries['burntObject']['transport']
         ));
 
+        $burntFireCount = count($this->filterByObject(
+            'fire_object_id',
+            'fireObject',
+            $this->dictionaries['fireObject']['fire']
+        ));
+
         $carbonPoisoningCount = count($this->filterByObject(
             'fire_object_id',
             'fireObject',
