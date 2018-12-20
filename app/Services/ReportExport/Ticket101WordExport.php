@@ -6,6 +6,7 @@ namespace App\Services\ReportExport;
 use App\FireDepartment;
 use App\FormationPersonsReport;
 use App\FormationReport;
+use App\GuardNumber;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -542,17 +543,27 @@ class Ticket101WordExport
             ['align' => Jc::BOTH]
         );
 
-        /*$section->addText(
+        $section->addText(
             '',
             ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
             ['align' => Jc::BOTH]
         );
 
         $section->addText(
-            'Больничные',
-            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            'Больничные:',
+            $redFontStyle,
             ['align' => Jc::BOTH]
-        );*/
+        );
+
+
+        //todo продолжить караулы
+        /*foreach (GuardNumber::all() as $key => $item) {
+            $section->addText(
+                "{$fireDept}:\t\t" . implode(', ', $tech),
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+        }*/
     }
 
     private function addSecondTable(Section $section)

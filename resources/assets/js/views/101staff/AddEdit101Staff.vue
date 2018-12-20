@@ -15,7 +15,7 @@
             :key="item.id">
 
             <div class="field is-grouped">
-                <div class="control column is-four-fifths">
+                <div class="control column " :class="block_type_ !== 'sick_leave' ? 'is-four-fifths' : ''">
                     <label :for="getName('staff_id', item.id)">Ф.И.О.</label><br>
                     <div class="select">
                         <select
@@ -28,6 +28,24 @@
                             <option
                                 v-for="s in getStaffFilter(item.staff_id)"
                                 :key="'staff_' + s.id"
+                                :value="s.id">{{ s.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="control column" v-if="block_type_ === 'sick_leave'">
+                    <label :for="getName('guard_number_id', item.id)">Номер караула</label>
+                    <div class="select">
+                        <select
+                            required
+                            title=""
+                            :name="getName('guard_number_id', item.id)"
+                            :id="getName('guard_number_id', item.id)"
+                            v-model="item.guard_number_id">
+                            <option
+                                v-for="s in guardNumbers_"
+                                :key="'guard_number_id_' + s.id"
                                 :value="s.id">{{ s.name }}
                             </option>
                         </select>
@@ -48,7 +66,7 @@
                 </div>
             </div>
             <div
-                v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'dispatchers'"
+                v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'dispatchers' || block_type_ === 'sick_leave'"
                 class="field is-grouped">
                 <div class="control column is-half">
                     <label :for="getName('comment', item.id)">Комментарий</label>
@@ -60,7 +78,7 @@
                         cols="10"
                         rows="1"></textarea>
                 </div>
-                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick'">
+                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'sick_leave'">
                     <label :for="getName('date_from', item.id)">С</label><br>
                     <input
                         v-model="item.date_from"
@@ -69,7 +87,7 @@
                         class="control"
                         type="date">
                 </div>
-                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick'">
+                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'sick_leave'">
                     <label :for="getName('date_to', item.id)">По</label><br>
                     <input
                         v-model="item.date_to"
@@ -107,6 +125,10 @@ export default {
             type: Array,
             default: () => []
         },
+        guardNumbers: {
+            type: Array,
+            default: () => []
+        },
         records: {
             type: Array,
             default: () => []
@@ -118,6 +140,7 @@ export default {
             trunks: [],
             block_type_: this.block_type,
             staff_: this.staff,
+            guardNumbers_: this.guardNumbers,
             model_id_: this.modelId,
             total: 0,
             isActive_: this.active

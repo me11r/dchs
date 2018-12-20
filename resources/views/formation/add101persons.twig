@@ -225,6 +225,15 @@
                                    block_type="sick"></staff-101>
 
                     </div>
+                    <div class="field"><label for="field_2_4">Больничные</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}"
+                                   :active="false"
+                                   :staff="{{ staff }}"
+                                   :guard-numbers="{{ guardNumbers }}"
+                                   block_type="sick_leave">
+                        </staff-101>
+
+                    </div>
                     <div class="field"><label for="field_2_5">Командировка</label>
                         <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
                                    block_type="business_trip"></staff-101>
