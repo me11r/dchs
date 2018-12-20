@@ -323,6 +323,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{id}/edit', 'AnalyticsController@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
         Route::post('update/{id}', 'AnalyticsController@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
         Route::delete('delete/{id}', 'AnalyticsController@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
+        Route::get('word/{id}', 'AnalyticsController@word')->name('word')->middleware(['right:ANALYTICS101_EDIT']);
     });
 
 
