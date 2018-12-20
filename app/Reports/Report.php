@@ -49,7 +49,7 @@ class Report
     {
         $this->report = $this->ticket101->getDaily(
             today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s'),
-            today()->addHours(19)->format('Y-m-d H:i:s')
+            today()->addHours(7)->format('Y-m-d H:i:s')
         );
 
         /*$burntTransportCount = count($this->filterByObject(
