@@ -9,6 +9,7 @@ use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\DailyWordExport;
 use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
@@ -98,5 +99,20 @@ class AnalyticsController extends Controller
     {
         Analytics101::destroy($id);
         return back();
+    }
+
+    public function word($id)
+    {
+        $analytic = Analytics101::find($id);
+        $data = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport($analytic->date);
+
+        $dailyWordExport = new DailyWordExport(
+            $data
+        );
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Суточный отчет 101 - '.date('d-m-Y', strtotime($analytic->date)). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
     }
 }
