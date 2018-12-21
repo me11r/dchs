@@ -472,6 +472,8 @@ class Report
                         $analytics->save();
                     }
 
+                    $analytics->text = str_replace_last('<br>', '<br/>', $analytics->text);
+
                     $result['analytics'] = $analytics->text ?? view('_templates.report101-analytics', $result)->render() ?? null;
 
                     $results[$trip_result->name][] = $result;
