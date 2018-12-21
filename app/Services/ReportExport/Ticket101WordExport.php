@@ -656,16 +656,6 @@ class Ticket101WordExport
                 self::$noPaddingPS
             );
         }
-
-
-        //todo продолжить караулы
-        /*foreach (GuardNumber::all() as $key => $item) {
-            $section->addText(
-                "{$fireDept}:\t\t" . implode(', ', $tech),
-                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
-                ['align' => Jc::BOTH]
-            );
-        }*/
     }
 
     private function addSecondTable(Section $section)

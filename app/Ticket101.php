@@ -288,6 +288,11 @@ class Ticket101 extends Model
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
     }
 
+    public function analytics()
+    {
+        return $this->hasOne(Analytics101Item::class, 'ticket101_id');
+    }
+
     public function crossroad_2()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_2_id');
@@ -653,6 +658,15 @@ class Ticket101 extends Model
 
     public function file_4() {
         return $this->hasOne(UploadedFile::class, 'id', 'file_4_id');
+    }
+
+    public function scopeDailyRecords($q, $from = null, $to = null)
+    {
+        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
+
+        return $q->whereBetween('created_at', [$from, $to])
+            ->with('city_area', 'departments', 'trip_result', 'liquidation_method');
     }
 
 }
