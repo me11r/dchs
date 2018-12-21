@@ -13,6 +13,7 @@ trait CommonExportTools
      */
     private function getFirstTableSumRow()
     {
+        $f = $this;
         return [
             'Итого', // Наименование пожарных подразделений
 
@@ -34,9 +35,9 @@ trait CommonExportTools
 
             $this->sumPeople['gas_smoke_protection_service'], // ГДЗС
 
-            '-', // Аппараты
+            $this->data['sumArray']['tech']['device'], //'-', // Аппараты
 
-            '-', // Мотопомпы Водяная/Грязевая
+            $this->data['sumArray']['tech']['motor_water_pump'] + $this->data['sumArray']['tech']['motor_mud_pump'], //'-', // Мотопомпы Водяная/Грязевая
 
             $this->data['tech_items_count']['tech_action_type_1'], // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
             $this->data['tech_items_count']['tech_action_type_2'], // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы

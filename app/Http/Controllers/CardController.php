@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Analytics101;
+use App\Analytics101Item;
+use App\Chronology101;
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireLevel;
@@ -33,6 +36,7 @@ use App\Models\Trunk;
 use App\Models\WallMaterial;
 use App\OperationalCard;
 use App\RideType;
+use App\Services\AnalyticsService;
 use App\Services\FileUploadService;
 use App\Ticket101;
 use App\Ticket101Drill;
@@ -301,6 +305,17 @@ class CardController extends AuthorizedController
         $this->set('other_records_unique', $other_records_unique);
     }
 
+    private function saveAnalytics($ticket)
+    {
+        $analytics = new AnalyticsService();
+        try{
+            $analytics->fill($ticket);
+        }
+        catch (\Exception $exception){
+
+        }
+    }
+
     /**
      * создаем рекомендации к выезду на основе расписания выездов ПЧ
      */
@@ -511,6 +526,10 @@ class CardController extends AuthorizedController
 
             $ticket_other = Ticket101Other::updateOrCreate(['ticket_101_id' => $card->id], $other_ride);
         }*/
+
+        if($card->trip_result_id){
+            $this->saveAnalytics($card);
+        }
 
         $card_type = ($ticket_other->drill_type ?? null) ==  null ? ''  : '/drill';
         if ($comeback) {

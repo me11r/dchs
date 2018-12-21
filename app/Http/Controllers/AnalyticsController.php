@@ -48,14 +48,14 @@ class AnalyticsController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
+//        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
 
-        $data['record'] = Analytics101::with([
-            'items',
-            'items.trip_result',
-        ])->find($id);
+//        $data['record'] = Analytics101::with([
+//            'items',
+//            'items.trip_result',
+//        ])->find($id);
 
-        if(isset($report['tripResults']) && count($report['tripResults'])){
+        /*if(isset($report['tripResults']) && count($report['tripResults'])){
             foreach ($report['tripResults'] as $title => $items) {
                 foreach ($items as $reportItem) {
                     $data['record']->items()->firstOrCreate(
@@ -67,7 +67,7 @@ class AnalyticsController extends Controller
                     ]);
                 }
             }
-        }
+        }*/
 
         $data['record'] = Analytics101::with([
             'items',
