@@ -591,7 +591,7 @@ class FormationController extends AuthorizedController
             'business_trip',
             'other',
             'gas_smoke_protection_service',
-            'sick_leave',
+//            'sick_leave',
         ];
         $tech_fields = [
 //            null,
