@@ -468,11 +468,10 @@ class Report
                     ];
 
                     if ($analytics && !$analytics->text) {
+                        $analytics->text = str_replace_last('<br>', '<br/>', $analytics->text);
                         $analytics->text = view('_templates.report101-analytics', $result)->render();
                         $analytics->save();
                     }
-
-                    $analytics->text = str_replace_last('<br>', '<br/>', $analytics->text);
 
                     $result['analytics'] = $analytics->text ?? view('_templates.report101-analytics', $result)->render() ?? null;
 

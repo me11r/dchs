@@ -641,7 +641,6 @@ class Ticket101WordExport
                     foreach ($persons['sick_leave'] as $person) {
                         if($guard_number->id == $person['guard_number_id']) {
                             $peopleByComma = ($person->staff->name ?? null) . " $person->comment" . ($person->date_from ? " с $person->date_from" : '') . ($person->date_to ? " по $person->date_to" : '');
-//                            $peopleByComma = count($persons['sick_leave']) ? implode(', ', array_unique($persons['sick_leave'])) : '-';
                             $textRun = $section->addTextRun(self::$noPaddingPS);
                             $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                             $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
