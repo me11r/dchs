@@ -39,7 +39,7 @@ export default function bindLocationInputApp() {
                     // определение ранга пожара только при создании карточки
                     // т.к. при редкатировании он может сбиться при вводе адреса
                     if (window.ticket101add.ticketId === '') {
-                        // document.getElementById('fire_level_id1').value = this.items[0].fire_level_id;
+                        // document.getElementById('fire_level_id1').value = this.items[0].fire_level_id; //без этого сбивается
                         document.getElementById('fire_level_id1').value = 1; // ARM-290
                     }
                 } else {

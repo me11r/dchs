@@ -3,4 +3,16 @@
     {% if first_dept_arrived %}
         {{ first_dept_arrived.name }} ({{ first_dept_arrived.tech_dept }}) на {{ first_dept_arrived.vehicle }} прибыло в {{ first_dept_arrived.arrive_time ?? null }} ({{ first_dept_arrived.on_way_time }}).
     {% endif %}
+    <b>Итог выезда:</b> {{ ticket.ticket_result }}
+    <b>Дополнительная информация:</b> {{ ticket.more_info }}
+    <b>Ликвидация достигнута:</b> {{ ticket.liquidation_method.name|default('') }}
+    <b>Источник противопожарного водоснабжения:</b> {{ ticket.water_supply_source.name|default('') }}
+    <b>Расстояние до места:</b> {{ ticket.distance }}
+    <b>Владелец:</b> {{ ticket.owner }}
+    <b>Информация по использованным стволам:</b>
+    {% for item in ticket.chronologies %}
+        {% if item.event_info_arrived %}
+            {{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}
+        {% endif %}
+    {% endfor %}
     Пожар локализован в {{ loc_time }} и ликвидирован в {{ liqv_time }}, {{ chronology_str }}. На место пожара выезжал л/с: {{ depts_out }}. {% if service_plans_str %}На место ЧС выезжали службы заимодействия: {{ service_plans_str }}.{% endif %} Материал зарегистрирован в КУИ №{{ kui }} от {{ date2 }}.
