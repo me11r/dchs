@@ -73,7 +73,8 @@ class AnalyticsService
         $text = str_replace('<br>', '<br/>', $text);
 
         $dataToSave = [
-            'text' => $ticket->analytics ? $ticket->analytics->text : $text,
+//            'text' => $ticket->analytics ? $ticket->analytics->text : $text, оставил на случай если нужно будет вернуть
+            'text' => $text,
             'trip_result_id' => $ticket->trip_result_id,
             'ticket101_id' => $ticket->id,
         ];
