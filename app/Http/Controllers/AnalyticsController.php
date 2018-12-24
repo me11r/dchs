@@ -48,27 +48,6 @@ class AnalyticsController extends Controller
 
     public function edit(Request $request, $id)
     {
-//        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
-
-//        $data['record'] = Analytics101::with([
-//            'items',
-//            'items.trip_result',
-//        ])->find($id);
-
-        /*if(isset($report['tripResults']) && count($report['tripResults'])){
-            foreach ($report['tripResults'] as $title => $items) {
-                foreach ($items as $reportItem) {
-                    $data['record']->items()->firstOrCreate(
-                        ['ticket101_id' => $reportItem['id']],
-                        [
-                        'text' => $reportItem['analytics'],
-                        'trip_result_id' => $reportItem['trip_result_id'],
-                        'ticket101_id' => $reportItem['id'],
-                    ]);
-                }
-            }
-        }*/
-
         $data['record'] = Analytics101::with([
             'items',
             'items.trip_result',
@@ -81,13 +60,11 @@ class AnalyticsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $record = Analytics101::with(['items'])->find($id);
-
         $all = $request->all();
 
         foreach ($request->input('text', []) as $item_id => $text) {
             $analyticsItem = Analytics101Item::find($item_id);
-            $analyticsItem->text = $text;
+            $analyticsItem->text = str_replace('<br>', "<br/>", $text);
             $analyticsItem->save();
         }
 
