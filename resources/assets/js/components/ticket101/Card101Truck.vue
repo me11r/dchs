@@ -410,7 +410,7 @@
                                         accepted_name_item.value = item.name_accepted;
 
                                         if(message_time_item){
-                                            message_time_item.value = item.dispatched_time;
+                                            message_time_item.value = item.dispatch_time;
                                         }
                                         arrive_time_item.value = item.arrive_time;
 
