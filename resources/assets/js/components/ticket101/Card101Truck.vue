@@ -408,7 +408,10 @@
                                         let arrive_time_item = document.getElementById(arrive_time);
 
                                         accepted_name_item.value = item.name_accepted;
-                                        message_time_item.value = item.dispatched_time;
+
+                                        if(message_time_item){
+                                            message_time_item.value = item.dispatched_time;
+                                        }
                                         arrive_time_item.value = item.arrive_time;
 
                                     });
