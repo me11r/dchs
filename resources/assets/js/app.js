@@ -100,6 +100,7 @@ Vue.component('siren-speech-tech', require('./views/reports/SirenSpeechTech/Sire
 Vue.component('analytics-edit', require('./views/analytics/EditAnalytics'));
 Vue.component('fire-dept-check-form', require('./components/fire-department-checks/CreateEditCheck'));
 Vue.component('fire-dept-check-item', require('./components/fire-department-checks/CreateEditCheckItem'));
+Vue.component('ticket101-save-btn', require('./components/ticket101/SaveBtn'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
@@ -258,6 +259,12 @@ if (document.getElementById('tab-truck-vue')) {
 if (document.getElementById('card101_index_table')) {
     new Vue({
         el: '#card101_index_table',
+    });
+}
+
+if (document.getElementById('card101_save_btn')) {
+    new Vue({
+        el: '#card101_save_btn',
     });
 }
 
