@@ -303,7 +303,8 @@ class Ticket101 extends Model
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
     }
 
-    public function fire_level(){
+    public function fire_level()
+    {
         return $this->hasOne(FireLevel::class, 'id', 'fire_level_id');
     }
 
@@ -320,6 +321,11 @@ class Ticket101 extends Model
     public function trip_result()
     {
         return $this->hasOne(TripResult::class, 'id', 'trip_result_id');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(Ticket101Log::class, 'ticket101_id');
     }
 
     public function liquidation_method()
