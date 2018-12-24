@@ -51,6 +51,7 @@ class AnalyticsController extends Controller
         $data['record'] = Analytics101::with([
             'items',
             'items.trip_result',
+            'items.ticket101',
         ])->find($id);
 
         $data['tripResults'] = TripResult::all();

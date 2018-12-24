@@ -2,7 +2,7 @@
     <div>
         <div v-for="tripResult in tripResults_" class="">
             <div v-for="item in record_.items" class="">
-                <div v-if="item.trip_result_id === tripResult.id" class="field">
+                <div v-if="item.trip_result_id === tripResult.id && item.ticket101" class="field">
                     <h4 class="header"><b>{{ tripResult.name }}</b></h4>
                     <div>
                         <vue-editor name="text" v-model="item.text"></vue-editor>
