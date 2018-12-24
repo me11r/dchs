@@ -316,6 +316,64 @@ class CardController extends AuthorizedController
         }
     }
 
+    private function saveLog($id)
+    {
+        $ticket = Ticket101::with([
+            'crossroad_1',
+            'crossroad_2',
+            'other_records',
+            'chronologies',
+            'chronologies.event_info',
+            'chronologies.event_info_arrived',
+            'chronologies.fire_department_result.tech',
+            'chronologies.fire_department_result.department',
+            'results',
+            'results.tech',
+            'results.tech.formation_tech_report',
+            'results.department',
+            'notifications',
+            'notifications.service',
+            'popup_notifications',
+            'popup_notifications.user',
+            'popup_notifications.status',
+            'popup_notifications.group',
+            'notification_groups',
+            'notifications.service',
+            'operational_card',
+            'operational_plan.special_plans',
+            'service_plans',
+            'analytics',
+            'fire_level',
+            'fire_object',
+            'burn_object',
+            'trip_result',
+            'liquidation_method',
+            'road_trip_plans',
+            'operational_plan',
+            'fire_department',
+            'living_sector_type',
+            'other_records',
+            'popup_notifications',
+            'notification_groups',
+            'notifications',
+            'results',
+            'water_supply_source',
+            'wall_material',
+            'operational_card',
+            'service_plans',
+            'file_1',
+            'file_2',
+            'file_3',
+            'file_4',
+            'service_plans.service_type'
+        ])->find($id);
+
+        $ticket->logs()->create([
+            'user_id' => Auth::id(),
+            'body' => $ticket,
+        ]);
+    }
+
     /**
      * создаем рекомендации к выезду на основе расписания выездов ПЧ
      */
@@ -537,6 +595,12 @@ class CardController extends AuthorizedController
         }
         else{
             $back = "/card/add101/{$card->id}{$card_type}";
+        }
+
+        try{
+            $this->saveLog($card->id);
+        }
+        catch (\Exception $exception){
         }
 
         if ($request->ajax()) {
