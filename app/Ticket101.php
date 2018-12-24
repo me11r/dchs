@@ -537,7 +537,7 @@ class Ticket101 extends Model
         return $result;
     }
 
-    public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null)
+    public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null, $burnt_id = null, $city_area_id = null)
     {
         $result = [];
         $areas = CityArea::all();
@@ -576,6 +576,14 @@ class Ticket101 extends Model
         if($result_id){
             $reasons = TripResult::where('id', $result_id)->get();
             $tickets = $tickets->where('trip_result_id', $result_id);
+        }
+
+        if ($burnt_id) {
+            $tickets = $tickets->where('burn_object_id', $burnt_id);
+        }
+
+        if ($city_area_id) {
+            $tickets = $tickets->where('city_area_id', $city_area_id);
         }
 
         $result = $tickets->orderBy('id', 'desc')->get();

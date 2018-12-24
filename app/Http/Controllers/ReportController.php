@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\AirRescueReport;
 use App\CallInfo;
+use App\Dictionary\BurntObject;
+use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\FormationReport;
@@ -257,7 +259,10 @@ class ReportController extends AuthorizedController
     public function getReport101Emergency()
     {
         $reasons = TripResult::orderBy('name')->get();
-        return view('reports.101.emergency', compact('reasons'));
+        $burntObjects = BurntObject::orderBy('name')->get();
+        $cityAreas = CityArea::orderBy('name')->get();
+
+        return view('reports.101.emergency', compact('reasons', 'burntObjects', 'cityAreas'));
     }
 
     public function postReport101Emergency(Request $request)
@@ -265,8 +270,10 @@ class ReportController extends AuthorizedController
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
         $result_id = $request->result_id;
+        $burnt_id = $request->burnt_id;
+        $city_area_id = $request->city_area_id;
 
-        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
+        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
 
         return response()->json($result);
     }
@@ -519,8 +526,10 @@ class ReportController extends AuthorizedController
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
         $result_id = $request->result_id;
+        $burnt_id = $request->burnt_id;
+        $city_area_id = $request->city_area_id;
 
-        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
+        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
 
         $exportService = new Ticket101PeriodExcelExport($stat);
         $writer = $exportService->getXlsWriter();
