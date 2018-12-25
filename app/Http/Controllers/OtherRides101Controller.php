@@ -15,6 +15,7 @@ class OtherRides101Controller extends Controller
     {
         $data['per_page'] = $request->get('per_page', 10);
         $data['can_delete'] = false;
+        $data['card_type'] = 'other';
 
         if(Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_DELETE')){
             $data['can_delete'] = true;

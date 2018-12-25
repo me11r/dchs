@@ -42,6 +42,7 @@ import NotificationGroupsUsersMultiselect from './components/notification-groups
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
 import VueMessenger from './ui/messenger/Messenger';
+import PopupNotifier from './ui/PopupNotifier';
 import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
 
@@ -247,6 +248,13 @@ if (document.getElementById('emergency_messenger')) {
     new Vue({
         el: '#emergency_messenger',
         render: h => h(VueMessenger)
+    });
+}
+
+if (document.getElementById('popup_notification')) {
+    new Vue({
+        el: '#popup_notification',
+        render: h => h(PopupNotifier)
     });
 }
 

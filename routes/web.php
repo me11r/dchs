@@ -339,6 +339,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('word/{id}', 'AnalyticsController@word')->name('word')->middleware(['right:ANALYTICS101_EDIT']);
     });
 
+    Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
+
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

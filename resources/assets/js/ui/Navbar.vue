@@ -30,13 +30,13 @@
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_OTHERS_RIDES')"
-                            href="/card101-other-rides"
+                            href="/card101-other-rides/create"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Прочие выезда
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_DRILL_RIDES')"
-                            href="/card101-drill-rides"
+                            href="/card101-drill-rides/create"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Учения
                         </a>

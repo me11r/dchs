@@ -8,6 +8,7 @@ use App\FireDepartment;
 use App\Models\Building;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
+use App\PopupNotification;
 use App\Right;
 use App\RoadtripPlan;
 use App\RoadtripSubscription;
@@ -150,5 +151,21 @@ class AjaxController extends AuthorizedController
         $subscription = RoadtripSubscription::updateOrCreate(['token' => $request->get('token')], ['user_id' => $user->id]);
         $subscription->save();
         return response()->json($subscription);
+    }
+
+    public function checkPopupNotifications()
+    {
+        $user = Auth::user();
+        $notifications = PopupNotification::where('receiver_id', $user->id)
+            ->where('is_viewed', false)
+            ->get();
+        ;
+
+        foreach ($notifications as $notification) {
+            $notification->is_viewed = true;
+            $notification->save();
+        }
+
+        return response()->json(['notifications' => $notifications]);
     }
 }

@@ -30,7 +30,7 @@
         </script>
     {% else %}
         <script>
-          window._global_ajax_timers = {% verbatim %}{'check_service_plans':true, 'check_roadtrips': true}{% endverbatim %}
+          window._global_ajax_timers = {% verbatim %}{'check_service_plans':true, 'check_roadtrips': true, 'popup_notifications': true}{% endverbatim %}
         </script>
     {% endif %}
 </head>
@@ -45,6 +45,7 @@
 <div id="roadtrip_notifier"></div>
 <div id="service_plans_notifier"></div>
 <div id="emergency_messenger"></div>
+<div id="popup_notification"></div>
 <script src="{{ mix('assets/app.js') }}"></script>
 <script>
   window.addEventListener('load', () => {

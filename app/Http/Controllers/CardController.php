@@ -142,6 +142,7 @@ class CardController extends AuthorizedController
         $this->set('tickets', $tickets)
             ->set('city_areas', $city_areas)
             ->set('id', $id)
+            ->set('card_type', 'real')
             ->set('search', $search)
             ->set('can_delete', $can_delete ?? false)
             ->set('type', $card_type)
