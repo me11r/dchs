@@ -34,7 +34,7 @@
 
 <script>
 import axios from 'axios';
-import EventBus from './MessengerEventBus';
+import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 
 const evbus = EventBus();
 const api = axios.create({
@@ -126,7 +126,7 @@ export default {
         }
     },
     mounted: function() {
-        evbus.$on('messenger-selected-user', (user) => {
+        evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
             this.user = user;
         });
     }

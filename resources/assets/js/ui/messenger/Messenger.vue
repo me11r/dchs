@@ -108,6 +108,11 @@ export default {
         evbus.$on(EVENT_NAMES.messengerMultiselectUser, (user, checked) => {
             this.updateChecked(user, checked);
         });
+
+        evbus.$on(EVENT_NAMES.messengerClearMultiselect, ()=>{
+          this.checkedUsers = [];
+        });
+
         this.checkUnreadAny();
         setInterval(() => {
             this.checkUnreadAny();
