@@ -6,3 +6,9 @@ export default function() {
     }
     return instance;
 }
+
+export const EVENT_NAMES = {
+    messengerSelectedUser: 'messenger-selected-user',
+    messengerMultiselectUser: 'messenger-multi-user-check',
+    messengerClearMultiselect: 'messenger-multi-clear-all'
+};

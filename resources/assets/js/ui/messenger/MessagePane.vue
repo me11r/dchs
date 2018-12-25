@@ -2,7 +2,14 @@
     <div
         class="message-pane"
         :class="activeClass">
-        <v-messages-list :user="user"/>
+        <v-messages-list
+            :user="user"
+            v-if="selected && !multiselect"/>
+        <div
+            v-if="multiselect"
+            class="multiselect--message-pane">
+            Режим выбора нескольких получателей
+        </div>
         <v-reply-pane/>
     </div>
 </template>
@@ -10,10 +17,16 @@
 <script>
 import VMessagesList from './MessagesListPane';
 import VReplyPane from './MessageReplyPane';
-import EventBus from './MessengerEventBus';
+import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 const evbus = EventBus();
 export default {
     name: 'MessagePane',
+    props: {
+        multiselect: {
+            type: Boolean,
+            default: false
+        }
+    },
     data: function() {
         return {
             me: {},
@@ -26,14 +39,17 @@ export default {
         'v-reply-pane': VReplyPane
     },
     computed: {
+        visible: function() {
+            return (this.selected || this.multiselect);
+        },
         activeClass: function() {
-            return this.selected ? 'is-active' : '';
+            return this.visible ? 'is-active' : '';
         }
     },
     mounted: function() {
-        evbus.$on('messenger-selected-user', (user) => {
+        evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
             this.user = user;
-            this.selected = true;
+            this.selected = (user.id !== 0);
         });
     }
 };
@@ -48,6 +64,15 @@ export default {
             display: block;
             min-width: 600px;
             //border-right: 1px solid $primary;
+        }
+        .multiselect--message-pane{
+            max-height: 400px;
+            min-height: 400px;
+            height: 400px;
+            border-bottom: 1px solid cadetblue;
+            background-color: $blueish;
+            text-align: center;
+            justify-content: center;
         }
     }
 </style>

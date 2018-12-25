@@ -8,14 +8,20 @@
             v-if="isOpened">
             <div class="header">
                 <div class="header__title has-text-centered">{{ selectedUser.name }}</div>
-                <div class="header__closer has-text-right"><a
-                    class="closer"
-                    @click.prevent="openUp"><i class="fas fa-times"></i></a>
+                <div class="header__closer">
+                    <span
+                        @click="checked"
+                        class="multimode-label"><i
+                            class="fas"
+                            :class="multiselect?'fa-check':'fa-circle'"></i>&nbsp;<span>Массовая рассылка</span></span>
+                    <a
+                        class="closer"
+                        @click.prevent="openUp"><i class="fas fa-times"></i></a>
                 </div>
             </div>
             <div class="messenger-body">
-                <v-message-pane/>
-                <v-user-list/>
+                <v-message-pane :multiselect="multiselect"/>
+                <v-user-list :multiselect="multiselect"/>
             </div>
         </div>
         <div
@@ -36,9 +42,9 @@
 import axios from 'axios';
 import VueMessengerUserList from './UsersList';
 import VueMessagePane from './MessagePane';
-import EventBus from './MessengerEventBus';
+import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 const evbus = EventBus();
-const api = axios.create({ baseURL: '/api/messenger'});
+const api = axios.create({baseURL: '/api/messenger'});
 export default {
     name: 'Messenger',
     data: function() {
@@ -48,7 +54,9 @@ export default {
                 name: ''
             },
             unread: 0,
-            isOpened: false
+            isOpened: false,
+            multiselect: false,
+            checkedUsers: []
         };
     },
     components: {
@@ -63,7 +71,7 @@ export default {
     methods: {
         openUp: function() {
             if (this.isOpened) {
-                evbus.$emit('messenger-selected-user', {id: 0, name: ''});
+                evbus.$emit(EVENT_NAMES.messengerSelectedUser, {id: 0, name: ''});
             }
             this.isOpened = !this.isOpened;
         },
@@ -72,11 +80,31 @@ export default {
                 .then(response => {
                     this.unread = response.data.unread;
                 });
+        },
+        checked: function() {
+            this.multiselect = !this.multiselect;
+            if (!this.multiselect) {
+                evbus.$emit(EVENT_NAMES.messengerClearMultiselect);
+            } else {
+                evbus.$emit(EVENT_NAMES.messengerSelectedUser, {id: 0, name: ''});
+            }
+        },
+        updateChecked: function(user, checked) {
+            if (checked) {
+                this.checkedUsers.push(user.id);
+            } else {
+                this.checkedUsers.splice(this.checkedUsers.indexOf(user.id), 1);
+            }
         }
+
     },
     mounted: function() {
-        evbus.$on('messenger-selected-user', (user) => {
+        evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
             this.selectedUser = user;
+        });
+
+        evbus.$on(EVENT_NAMES.messengerMultiselectUser, (user, checked) => {
+            this.updateChecked(user, checked);
         });
         this.checkUnreadAny();
         setInterval(() => {
@@ -135,8 +163,28 @@ export default {
                 background-color: $primary;
                 display: flex;
                 .header__closer {
+                    display: flex;
                     width: 250px;
+                    .multimode-label {
+                        cursor: pointer;
+                        flex-grow: 1;
+                        text-shadow: none;
+                        margin: 0 5px;
+                        line-height: 1.8;
+                        font-size: 14px;
+                        span {
+                            text-decoration: underline;
+                            color: $white;
+                        }
+                        i.fa-check {
+                            color: $green;
+                        }
+                        i.fa-circle-notch {
+                            color: $red;
+                        }
+                    }
                     .closer {
+                        flex-grow: 0;
                         padding: 3px 5px;
                         color: $primary-invert;
 
