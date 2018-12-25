@@ -12,6 +12,15 @@
                     </ul>
                 </div>
             </div>
+            <div class="column">
+                <div class="tabs buttab">
+                    <ul class="">
+                        <li class="{% if card_type == 'real' %}is-active{% endif %}"><a href="/card/101">Боевые</a></li>
+                        <li class="{% if card_type == 'other' %}is-active{% endif %}"><a href="/card101-other-rides">Прочие</a></li>
+                        <li class="{% if card_type == 'drill' %}is-active{% endif %}"><a href="/card101-drill-rides">Учебные</a></li>
+                    </ul>
+                </div>
+            </div>
             <div class="column is-narrow">
                 <div>
                     <a href="/card101-other-rides/create" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
