@@ -22,7 +22,7 @@
 import moment from 'moment';
 import VMessage from './SingleMessage';
 import SvgPreloader from './SvgPreloader';
-import EventBus from './MessengerEventBus';
+import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 import axios from 'axios';
 const evbus = EventBus();
 const api = axios.create({
@@ -80,12 +80,12 @@ export default {
 
     },
     mounted: function() {
-        evbus.$on('messenger-selected-user', (user) => {
+        evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
             this.user = user;
             this.loaded = false;
             this.fetchMessages();
         });
-        evbus.$on('messenger-message-sent', (message, user) => {
+        evbus.$on(EVENT_NAMES.messageSent, (message, user) => {
             if (user.id === this.user.id) {
                 this.addMessage(message);
             }

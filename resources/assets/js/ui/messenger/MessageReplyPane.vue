@@ -34,7 +34,7 @@
 
 <script>
 import axios from 'axios';
-import EventBus from './MessengerEventBus';
+import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 
 const evbus = EventBus();
 const api = axios.create({
@@ -45,6 +45,16 @@ const fileUploadApi = axios.create({
 });
 export default {
     name: 'MessageReplyPane',
+    props: {
+        checkedUsers: {
+            type: Array,
+            default: () => { return []; }
+        },
+        multiselect: {
+            type: Boolean,
+            default: false
+        }
+    },
     data: function() {
         return {
             message: '',
@@ -79,6 +89,7 @@ export default {
         },
         doUpload: function(event) {
             this.uploading = true;
+            evbus.$emit(EVENT_NAMES.messageSending);
             const fileinput = event.srcElement;
             const file = fileinput.files[0];
             let formData = new FormData();
@@ -103,25 +114,32 @@ export default {
         },
         send: function() {
             this.sending = true;
-            return api.post('message/send', {message: this.message, to: this.user.id}).then(() => {
-                evbus.$emit('messenger-message-sent', this.message, this.user);
+            const to = this.multiselect ? this.checkedUsers : [this.user.id];
+            evbus.$emit(EVENT_NAMES.messageSending);
+            return api.post('message/send', {message: this.message, to: to}).then(() => {
+                evbus.$emit(EVENT_NAMES.messageSent, this.message, this.user);
                 this.sending = false;
                 this.message = '';
             });
         },
         sendFile: function(fileId) {
-            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: this.user.id});
+            const to = this.multiselect ? this.checkedUsers : [this.user.id];
+            this.sending = true;
+            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: to}).then(() => {
+                evbus.$emit(EVENT_NAMES.messageSent, this.message, this.user);
+                this.sending = false;
+            });
         }
     },
     mounted: function() {
-        evbus.$on('messenger-selected-user', (user) => {
+        evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
             this.user = user;
         });
     }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     @import "../../../sass/variables";
 
     #messenger-file-upload {
