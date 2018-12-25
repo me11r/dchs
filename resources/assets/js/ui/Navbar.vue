@@ -30,10 +30,15 @@
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_OTHERS_RIDES')"
-                            @click.prevent="toggleOpenModal101"
-                            class="dropdown-item is-small"><i
-                            class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Прочие 101
+                            href="/card101-other-rides"
+                            class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Прочие выезда
+                        </a>
+                        <a
+                            v-if="hasRight('CARD101_ACCESS_DRILL_RIDES')"
+                            href="/card101-drill-rides"
+                            class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Учения
                         </a>
                         <a
                                 v-if="hasRight(2)"
@@ -402,7 +407,6 @@ export default {
     data: function () {
         return {
             opened: false,
-            opened_modal101_: false,
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             rights: getLocalRights()
         };
@@ -418,9 +422,6 @@ export default {
     methods: {
         toggleOpen: function () {
             this.opened = !this.opened;
-        },
-        toggleOpenModal101: function () {
-            this.opened_modal101_ = !this.opened_modal101_;
         },
 
         logout: function () {

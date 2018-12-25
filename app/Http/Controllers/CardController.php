@@ -682,38 +682,6 @@ class CardController extends AuthorizedController
         return response()->json('ok');
     }
 
-    public function getAdd101OtherRide(Request $request)
-    {
-        if($request->isMethod('POST')){
-            $f = $request->all();
-            Ticket101Other::create($request->input('other_rides'));
-
-            return back()->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
-        }
-        else{
-            $data['fire_departments_vue'] = FireDepartment::all();
-            $data['ride_types'] = RideType::all();
-            $data['staff'] = Staff::all();
-            return view('card/101other_rides', $data);
-        }
-    }
-
-    public function getAdd101DrillRide(Request $request)
-    {
-        if($request->isMethod('POST')){
-            $f = $request->all();
-            Ticket101Drill::create($request->input('drill'));
-
-            return back()->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
-        }
-        else{
-            $data['fire_departments_vue'] = FireDepartment::all();
-            $data['ride_types'] = RideType::all();
-            $data['staff'] = Staff::all();
-            return view('card/101drill_rides', $data);
-        }
-    }
-
     public function postDelete(Request $request)
     {
         if(Auth::user()->hasRight('DELETE_CARD101')){
