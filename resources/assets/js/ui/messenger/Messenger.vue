@@ -109,8 +109,8 @@ export default {
             this.updateChecked(user, checked);
         });
 
-        evbus.$on(EVENT_NAMES.messengerClearMultiselect, ()=>{
-          this.checkedUsers = [];
+        evbus.$on(EVENT_NAMES.messengerClearMultiselect, () => {
+            this.checkedUsers = [];
         });
 
         this.checkUnreadAny();
@@ -212,5 +212,20 @@ export default {
                 height: 100%;
             }
         }
+    }
+    .slide-fade-enter-active {
+        transition: all .3s ease-in;
+    }
+    .slide-fade-leave-active {
+        transition: all 1.3s ease-out;
+    }
+    .slide-fade-enter
+        /* .slide-fade-leave-active below version 2.1.8 */ {
+        transform: translateX(-50px) translateY(50px);
+        opacity: 0;
+    }
+    .slide-fade-leave-to {
+        transform: translateX(50px) translateY(-50px);
+        opacity: 0;
     }
 </style>

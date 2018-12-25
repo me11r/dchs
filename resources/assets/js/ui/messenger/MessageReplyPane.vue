@@ -89,6 +89,7 @@ export default {
         },
         doUpload: function(event) {
             this.uploading = true;
+            evbus.$emit(EVENT_NAMES.messageSending);
             const fileinput = event.srcElement;
             const file = fileinput.files[0];
             let formData = new FormData();
@@ -114,15 +115,20 @@ export default {
         send: function() {
             this.sending = true;
             const to = this.multiselect ? this.checkedUsers : [this.user.id];
+            evbus.$emit(EVENT_NAMES.messageSending);
             return api.post('message/send', {message: this.message, to: to}).then(() => {
-                evbus.$emit('messenger-message-sent', this.message, this.user);
+                evbus.$emit(EVENT_NAMES.messageSent, this.message, this.user);
                 this.sending = false;
                 this.message = '';
             });
         },
         sendFile: function(fileId) {
             const to = this.multiselect ? this.checkedUsers : [this.user.id];
-            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: to});
+            this.sending = true;
+            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: to}).then(() => {
+                evbus.$emit(EVENT_NAMES.messageSent, this.message, this.user);
+                this.sending = false;
+            });
         }
     },
     mounted: function() {

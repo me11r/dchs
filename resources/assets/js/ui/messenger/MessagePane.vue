@@ -8,7 +8,11 @@
         <div
             v-if="multiselect"
             class="multiselect--message-pane">
-            Режим выбора нескольких получателей
+            <transition
+                name="slide-fade"
+                mode="in-out">
+                <v-svg-fly-plane v-if="sending"/>
+            </transition>
         </div>
         <v-reply-pane
             :multiselect="multiselect"
@@ -19,6 +23,7 @@
 <script>
 import VMessagesList from './MessagesListPane';
 import VReplyPane from './MessageReplyPane';
+import SvgFlyPlane from './SvgFlyPlane';
 import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 const evbus = EventBus();
 export default {
@@ -37,12 +42,14 @@ export default {
         return {
             me: {},
             user: {},
-            selected: false
+            selected: false,
+            sending: false
         };
     },
     components: {
         'v-messages-list': VMessagesList,
-        'v-reply-pane': VReplyPane
+        'v-reply-pane': VReplyPane,
+        'v-svg-fly-plane': SvgFlyPlane
     },
     computed: {
         visible: function() {
@@ -57,6 +64,8 @@ export default {
             this.user = user;
             this.selected = (user.id !== 0);
         });
+        evbus.$on(EVENT_NAMES.messageSending, () => { this.sending = true; });
+        evbus.$on(EVENT_NAMES.messageSent, () => { this.sending = false; });
     }
 };
 </script>
@@ -71,7 +80,7 @@ export default {
             min-width: 600px;
             //border-right: 1px solid $primary;
         }
-        .multiselect--message-pane{
+        .multiselect--message-pane {
             max-height: 400px;
             min-height: 400px;
             height: 400px;
@@ -79,6 +88,8 @@ export default {
             background-color: $blueish;
             text-align: center;
             justify-content: center;
+            display: flex;
+            align-items: center;
         }
     }
 </style>
