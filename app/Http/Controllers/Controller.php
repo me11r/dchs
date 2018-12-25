@@ -28,7 +28,11 @@ abstract class Controller extends BaseController
 
     public function before()
     {
-        $params = ['check_roadtrips' => false, 'check_service_plans' => false];
+        $params = [
+            'check_roadtrips' => false,
+            'check_service_plans' => false,
+            'popup_notifications' => false,
+        ];
         $user = \Auth::user();
         if ($user !== null) {
             $dept = $user->department;
@@ -43,6 +47,12 @@ abstract class Controller extends BaseController
 
             $user->last_connect_at = Carbon::now();
             $user->save();
+
+            $user->hasRight('CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD');
+
+            if($user->hasRight('CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD', false)){
+                $params['popup_notifications'] = true;
+            }
         }
 
         $this->set('_global_ajax_timers', json_encode($params));
