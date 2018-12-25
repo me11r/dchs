@@ -516,8 +516,7 @@ class DailyWordExport
         foreach ($this->data['arrangementYesterday'] as $key => $item) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
-                ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
-//                ($key + 1) . '. ' . ($item->staff ? $item->staff->department->title : '') . ' ',
+                ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') .($item['department'] ? "({$item['department']})" : '') . ' ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
