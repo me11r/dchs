@@ -48,8 +48,6 @@ abstract class Controller extends BaseController
             $user->last_connect_at = Carbon::now();
             $user->save();
 
-            $user->hasRight('CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD');
-
             if($user->hasRight('CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD', false)){
                 $params['popup_notifications'] = true;
             }
