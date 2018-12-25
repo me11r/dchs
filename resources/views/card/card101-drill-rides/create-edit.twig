@@ -2,13 +2,14 @@
 {% block content %}
     <div class="section container">
         <h4 class="title">Карточка 101</h4>
-        <form action="" method="post">
+        <form action="/card101-drill-rides/{% if record is defined %}{{ record.id }}/edit{% else %}create{% endif %}" method="post">
             {{ csrf_field() }}
             <div id="vue">
                 <drill-rides
                         :ride-types="{{ ride_types }}"
                         :fire-departments="{{ fire_departments_vue }}"
                         :staff="{{ staff }}"
+                        :drill="{{ record|default([])|json_encode }}"
                 ></drill-rides>
             </div>
             <br>

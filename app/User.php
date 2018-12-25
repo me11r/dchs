@@ -167,13 +167,13 @@ class User extends Authenticatable
         return false;
     }
 
-    public function hasRight($right_id)
+    public function hasRight($right_id, $includeAdmin = true)
     {
         if(!$this->role){
             return false;
         }
 
-        if($this->role->name == 'admin'){
+        if($this->role->name == 'admin' && $includeAdmin){
             return true;
         }
 

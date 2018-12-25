@@ -43,8 +43,21 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/card/101/{card_type?}', 'CardController@get101')->name('card101');
     Route::get('/card/add101/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+', 'card_type' => '[A-Za-z]+']);
-    Route::match(['get', 'post'],'/card/add101-other-rides/', 'CardController@getAdd101OtherRide')->name('card101addOtherRide')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
-    Route::match(['get', 'post'],'/card/add101-drill-rides/', 'CardController@getAdd101DrillRide')->name('card101addDrillRide')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+
+    Route::group(['prefix' => 'card101-other-rides', 'as' => 'card101-other-rides'], function (){
+        Route::get('/', 'OtherRides101Controller@index')->name('index')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::match(['get', 'post'], '/create', 'OtherRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::match(['get', 'post'], '{id}/edit', 'OtherRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::delete('delete/{id}', 'OtherRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHERS_RIDES_CAN_DELETE']);
+    });
+
+    Route::group(['prefix' => 'card101-drill-rides', 'as' => 'card101-drill-rides'], function (){
+        Route::get('/', 'DrillRides101Controller@index')->name('card101-other-rides.index')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
+        Route::match(['get', 'post'], '/create', 'DrillRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
+        Route::match(['get', 'post'], '{id}/edit', 'DrillRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
+        Route::delete('delete/{id}', 'DrillRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_DRILL_RIDES,CARD101_DRILL_RIDES_CAN_DELETE']);
+    });
+
     #Route::get('/card/add101-other/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}/{card_type?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+','card_type' => '[A-Za-z]+']);
     Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
