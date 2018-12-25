@@ -20,7 +20,9 @@
                 </div>
             </div>
             <div class="messenger-body">
-                <v-message-pane :multiselect="multiselect"/>
+                <v-message-pane
+                    :multiselect="multiselect"
+                    :checked-users="checkedUsers"/>
                 <v-user-list :multiselect="multiselect"/>
             </div>
         </div>

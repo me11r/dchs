@@ -10,7 +10,9 @@
             class="multiselect--message-pane">
             Режим выбора нескольких получателей
         </div>
-        <v-reply-pane/>
+        <v-reply-pane
+            :multiselect="multiselect"
+            :checked-users="checkedUsers"/>
     </div>
 </template>
 
@@ -25,6 +27,10 @@ export default {
         multiselect: {
             type: Boolean,
             default: false
+        },
+        checkedUsers: {
+            type: Array,
+            default: () => []
         }
     },
     data: function() {

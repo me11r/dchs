@@ -45,6 +45,16 @@ const fileUploadApi = axios.create({
 });
 export default {
     name: 'MessageReplyPane',
+    props: {
+        checkedUsers: {
+            type: Array,
+            default: () => { return []; }
+        },
+        multiselect: {
+            type: Boolean,
+            default: false
+        }
+    },
     data: function() {
         return {
             message: '',
@@ -103,14 +113,16 @@ export default {
         },
         send: function() {
             this.sending = true;
-            return api.post('message/send', {message: this.message, to: this.user.id}).then(() => {
+            const to = this.multiselect ? this.checkedUsers : [this.user.id];
+            return api.post('message/send', {message: this.message, to: to}).then(() => {
                 evbus.$emit('messenger-message-sent', this.message, this.user);
                 this.sending = false;
                 this.message = '';
             });
         },
         sendFile: function(fileId) {
-            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: this.user.id});
+            const to = this.multiselect ? this.checkedUsers : [this.user.id];
+            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: to});
         }
     },
     mounted: function() {
