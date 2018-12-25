@@ -59,6 +59,9 @@ class RightsSeeder extends Seeder
             ['title' => 'Может утверждать Журнал строевых записок ДЧС г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_RECORD'],
             ['title' => 'Может редактировать Журнал строевых записок ДЧС г.Алматы после утверждения', 'right_group_id' => 5, 'name' => 'CAN_EDIT_APPROVED_FORMATION_RECORD'],
 
+            ['title' => 'Получать уведомления о заполнении строевой / оперативной информации', 'right_group_id' => 5, 'name' => 'CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD'],
+            ['title' => 'Отправлять уведомления о заполнении строевой / оперативной информации', 'right_group_id' => 5, 'name' => 'CAN_SEND_NOTIFICATION_FORMATION_RECORD'],
+
             ['right_group_id' => 6, 'title' => 'Может смотреть информацию', 'name' => 'CAN_ACCESS_INFO'],
             ['right_group_id' => 6, 'title' => 'Может смотреть оперативную информацию', 'name' => 'CAN_ACCESS_OPER_INFO'],
             ['right_group_id' => 6, 'title' => 'Может смотреть отчет по ЛС', 'name' => 'CAN_ACCESS_PERORT_PERSONS'],
@@ -123,7 +126,12 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 6, 'title' => 'РГП Казгидромет (заполнение данных)', 'name' => 'KAZGIDROMET_FILLING'];
 
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: редактирование после закрытия', 'name' => 'CARD101_EDIT_CLOSED'];
+
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101', 'name' => 'CARD101_ACCESS_OTHERS_RIDES'];
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101: удаление', 'name' => 'CARD101_OTHERS_RIDES_CAN_DELETE'];
+
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Учебные 101', 'name' => 'CARD101_ACCESS_DRILL_RIDES'];
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Учебные 101: удаление', 'name' => 'CARD101_DRILL_RIDES_CAN_DELETE'];
 
 
         $rights[] = ['right_group_id' => 9, 'title' => 'Сводная информация по мореным озерам: просмотр', 'name' => 'CAN_VIEW_MORAINIC_LAKE_SUMMARIES'];
