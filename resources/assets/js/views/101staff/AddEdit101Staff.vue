@@ -161,7 +161,11 @@ export default {
         },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
-            this.$parent.$emit('totalChange', 1);
+
+            if(this.block_type_ !== 'sick_leave'){
+                this.$parent.$emit('totalChange', 1);
+            }
+
             if (this.isActive_ === true) {
                 this.$parent.$emit('activeChange', 1);
             }
