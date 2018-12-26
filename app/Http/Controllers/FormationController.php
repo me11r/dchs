@@ -488,7 +488,8 @@ class FormationController extends AuthorizedController
 
         $report = (new FormationReport)->find($form_id);
 
-        $searchDate = now();//Carbon::parse($report->created_at)->addHours(6);
+        $latest = FormationReport::latest()->first();
+        $searchDate = $searchDate = ($latest && $latest->id === $report->id) ? now() : Carbon::parse($report->created_at)->addHours(6);
         $operGroupSchedule = OperationalGroupSchedule::date($searchDate)->first();
         $operGroup = $operGroupSchedule ? $operGroupSchedule->group->name : '';
 
