@@ -320,53 +320,53 @@ class CardController extends AuthorizedController
     private function saveLog($id)
     {
         $ticket = Ticket101::with([
-            'crossroad_1',
+            /*'crossroad_1',
             'crossroad_2',
             'other_records',
             'chronologies',
             'chronologies.event_info',
             'chronologies.event_info_arrived',
             'chronologies.fire_department_result.tech',
-            'chronologies.fire_department_result.department',
+            'chronologies.fire_department_result.department',*/
             'results',
             'results.tech',
             'results.tech.formation_tech_report',
             'results.department',
-            'notifications',
-            'notifications.service',
-            'popup_notifications',
-            'popup_notifications.user',
-            'popup_notifications.status',
-            'popup_notifications.group',
-            'notification_groups',
-            'notifications.service',
-            'operational_card',
-            'operational_plan.special_plans',
-            'service_plans',
-            'analytics',
-            'fire_level',
-            'fire_object',
-            'burn_object',
-            'trip_result',
-            'liquidation_method',
-            'road_trip_plans',
-            'operational_plan',
-            'fire_department',
-            'living_sector_type',
-            'other_records',
-            'popup_notifications',
-            'notification_groups',
-            'notifications',
-            'results',
-            'water_supply_source',
-            'wall_material',
-            'operational_card',
-            'service_plans',
-            'file_1',
-            'file_2',
-            'file_3',
-            'file_4',
-            'service_plans.service_type'
+//            'notifications',
+//            'notifications.service',
+//            'popup_notifications',
+//            'popup_notifications.user',
+//            'popup_notifications.status',
+//            'popup_notifications.group',
+//            'notification_groups',
+//            'notifications.service',
+//            'operational_card',
+//            'operational_plan.special_plans',
+//            'service_plans',
+//            'analytics',
+//            'fire_level',
+//            'fire_object',
+//            'burn_object',
+//            'trip_result',
+//            'liquidation_method',
+//            'road_trip_plans',
+//            'operational_plan',
+//            'fire_department',
+//            'living_sector_type',
+//            'other_records',
+//            'popup_notifications',
+//            'notification_groups',
+//            'notifications',
+//            'results',
+//            'water_supply_source',
+//            'wall_material',
+//            'operational_card',
+//            'service_plans',
+//            'file_1',
+//            'file_2',
+//            'file_3',
+//            'file_4',
+//            'service_plans.service_type'
         ])->find($id);
 
         $ticket->logs()->create([
@@ -388,8 +388,8 @@ class CardController extends AuthorizedController
             ->where('dict_fire_level_id', $card->fire_level_id)
             ->get();
 
-        /* последняя заполненная строевка*/
-        $report_id = FormationReport::approved()->max('id');
+        /*последняя заполненная строевка, к который моы привязались при создании карточки*/
+        $report_id = $card->formation_report_id;
         $formationTech = FormationTechReport::where('form_id', $report_id)
             ->has('items')
             ->get();
@@ -511,6 +511,11 @@ class CardController extends AuthorizedController
 
         /** @var Ticket101 $card */
         $card = Ticket101::findOrNew($card_id);
+
+        /*при создании карточки единожды привязываемся к строевой записке, во избежание дублей высылки*/
+        if(!$card->id){
+            $data['formation_report_id'] = FormationReport::approved()->max('id');
+        }
 
         $canEditTicket = $card->canEditTicket();
         if (!$canEditTicket && !Auth::user()->hasRight('CARD101_EDIT_CLOSED')) {
