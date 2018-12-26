@@ -23,6 +23,7 @@ use App\Models\FormationRecord;
 use App\Models\FormationTechItem;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\OperationalGroupSchedule;
 use App\Reports\Report;
 use App\Right;
 use App\Services\FormationService;
@@ -487,6 +488,10 @@ class FormationController extends AuthorizedController
 
         $report = (new FormationReport)->find($form_id);
 
+        $searchDate = now();//Carbon::parse($report->created_at)->addHours(6);
+        $operGroupSchedule = OperationalGroupSchedule::date($searchDate)->first();
+        $operGroup = $operGroupSchedule ? $operGroupSchedule->group->name : '';
+
         $dept13_people = [];
         $dept_od_people = [];
 
@@ -840,6 +845,7 @@ class FormationController extends AuthorizedController
             ->set('dept13_people', $dept13_people)
             ->set('dept_od_people', $dept_od_people)
             ->set('user', $user)
+            ->set('operGroup', $operGroup)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)
             ->set('tech_fields2', $tech_fields2)
