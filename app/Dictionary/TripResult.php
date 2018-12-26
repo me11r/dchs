@@ -34,7 +34,10 @@ class TripResult extends Model
 
     protected $table = 'dict_trip_result';
     protected $guarded = ['id'];
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'show_in_daily_report101',
+    ];
 
     public function cards101()
     {
@@ -44,6 +47,11 @@ class TripResult extends Model
     public function scopeName($q, $search)
     {
         return $q->where('name', $search);
+    }
+
+    public function scopeDailyReportConst($q)
+    {
+        return $q->where('show_in_daily_report101', true);
     }
 
     public function scopeNonFires($q)

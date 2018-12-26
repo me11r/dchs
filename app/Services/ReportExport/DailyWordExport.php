@@ -3,6 +3,7 @@
 
 namespace App\Services\ReportExport;
 
+use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\FireDepartment;
 use App\FormationPersonsReport;
@@ -157,81 +158,27 @@ class DailyWordExport
             ['align' => Jc::BOTH]
         );
 
-        $section->addText(
-            '1.1. Жилой сектор – ' . $this->data['livingSectorCount'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+        $fireObjectCounter = 1;
+        foreach (FireObject::all() as $fireObject) {
 
-        $section->addText(
-            'а) жилой дом (квартира) – ' . $this->data['livingSectorHomeCount'] . "; " . "б) надворные постройки – ".$this->data['livingSectorOutdoorCount'].';',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+            $burntFireCount = $this->data['tickets']->filter(function ($event) use($fireObject) {
+                return $event->burn_object_id == $fireObject->id;
+            })->count();
 
-        $section->addText(
-            '1.2. Транспорт – ' . $this->data['burntTransportCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+            if($burntFireCount){
+                $section->addText(
+                    "1.{$fireObjectCounter}. {$fireObject->name} – " . $burntFireCount,
+                    $generalBoldFontStyle,
+                    ['indentation' => ['left' => 540]]
+                );
 
-        $section->addText(
-            '1.3. Прочие объекты пожаров – ' . $this->data['burntOtherCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+                $fireObjectCounter++;
+            }
+        }
 
-        $section->addText(
-            '2. Случаи горения, не подлежащие учету как пожары – ' . (
-                $this->data['burntShortCircuitFireCount'] +
-                $this->data['burntRubbishFireCount'] +
-                $this->data['burntKitchenFireCount'] +
-                $this->data['burntDryThingsFireCount']
-            ),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+        $reasons = TripResult::dailyReportConst()->get();
 
-        $section->addText(
-            '2.1. КЗ – ' . $this->data['burntShortCircuitFireCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $section->addText(
-            '2.2. Мусор – ' . $this->data['burntRubbishFireCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $section->addText(
-            '2.3. Пища на газе – ' . $this->data['burntKitchenFireCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-
-        $section->addText(
-            '2.4. Сухостой – ' . $this->data['burntDryThingsFireCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $reasons = TripResult::whereIn('name', [
-            'Ложный',
-            'АСР',
-            'Технологический процесс',
-            'Бдительность населения',
-            'Случаи пожаров трансп.средств в результате ДТП',
-            'Загорание бесхозных зданий, бесхозных транспортных средств',
-            'Кровельные, битумные, сварочные работы',
-            'срабатывание сигнализации',
-            'Область',
-        ])
-            ->get();
-
-
-        $iterator = 3;
+        $iterator = 2;
         foreach ($reasons as $reason) {
 
             $cnt = $this->data['tickets']->filter(function ($event) use ($reason) {
@@ -249,152 +196,61 @@ class DailyWordExport
             $iterator++;
         }
 
-
-        /*$section->addText(
-            '3. Ложный – ' . count($this->data['falseCall']['items']),
+        $section->addText(
+            '20. Случаи отравления - ' . $this->data['poisoningCount'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            '4. АСР – ' . count($this->data['asr']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '5. Кровельные, битумные, сварочные работы – ' . count($this->data['workFire']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '6. Бдительность населения – ' . count($this->data['peopleCall']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '7. Загорание бесхозных зданий, бесхозных транспортных средств – ' . count($this->data['orphanFire']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '8. Прочие случаи загорания – ' . count($this->data['otherFire']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '9. Область – ' . count($this->data['regionFire']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '10. Технологический процесс – ' . count($this->data['technologyFire']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '11. Самовозгорание пирофорных соединений, без последствий и ущерба – ' . count($this->data['pyrophoricFire']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );*/
-
-
-        /*$section->addText(
-            'Cрабатывание сигнализации - ' . count($this->data['alarm']['items']),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );*/
-
-        $reasons = TripResult::whereIn('name', [
-            'Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения',
-            'Покушение на самоубийство',
-            'Вспышки и разряды стат.электричества'
-        ])
-            ->get();
-
-        foreach ($reasons as $reason) {
-            $cnt = $this->data['tickets']->filter(function ($event) use ($reason) {
-                return $event->trip_result_id == $reason->id;
-            })->count();
-
-            $upper = ucfirst($reason->name);
-
-            $section->addText(
-                "{$upper} – " . $cnt,
-                $generalBoldFontStyle,
-                ['align' => Jc::BOTH]
-            );
-        }
-
-//        $section->addText(
-//            'Пожары, в рез-те авиа, ж/д аварии, тер.актов и пр., землетрясения - ' . count($this->data['airFire']['items']),
-//            $generalBoldFontStyle,
-//            ['align' => Jc::BOTH]
-//        );
-//        $section->addText(
-//            'Покушение на самоубийство - ' . count($this->data['suicide']['items']),
-//            $generalBoldFontStyle,
-//            ['align' => Jc::BOTH]
-//        );
-//        $section->addText(
-//            'Вспышки и разряды стат.электричества - ' . count($this->data['dischargesElectr']['items']),
-//            $generalBoldFontStyle,
-//            ['align' => Jc::BOTH]
-//        );
-
-        $section->addText(
-            '12. Случаи отравления - ' . $this->data['poisoningCount'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            '12.1. Отравление угарным газом – ' . $this->data['carbonPoisoningCount'],
+            '20.1. Отравление угарным газом – ' . $this->data['carbonPoisoningCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
         $section->addText(
-            '12.2. Отравление природным газом – ' . $this->data['naturalPoisoningCount'],
+            '20.2. Отравление природным газом – ' . $this->data['naturalPoisoningCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
 
         $section->addText(
-            '13. Сведенеия по людям/детям: ' . ($this->data['suicideCount'] + $this->data['rescuedCount'] +
+            '21. Сведенеия по людям/детям: ' . ($this->data['suicideCount'] + $this->data['rescuedCount'] +
                 $this->data['evacCount'] + $this->data['gptBurnsCount'] + $this->data['peopleDeathCount'] +
                 $this->data['childrenDeathCount'] + $this->data['hospitalizedCount']),
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            '13.1. Попытка суицида - ' . $this->data['suicideCount'],
+            '21.1. Попытка суицида - ' . $this->data['suicideCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
         $section->addText(
-            '13.2. Спасено людей – ' . $this->data['rescuedCount'],
+            '21.2. Спасено людей – ' . $this->data['rescuedCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
         $section->addText(
-            '13.3. Эвакуировано людей – ' . $this->data['evacCount'],
+            '21.3. Эвакуировано людей – ' . $this->data['evacCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
         $section->addText(
-            '13.4. Получили ожоги – ' . $this->data['gptBurnsCount'],
+            '21.4. Получили ожоги – ' . $this->data['gptBurnsCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
         $section->addText(
-            '13.5. Гибель людей – ' . $this->data['peopleDeathCount'],
+            '21.5. Гибель людей – ' . $this->data['peopleDeathCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
         $section->addText(
-            '13.6. Гибель детей – ' . $this->data['childrenDeathCount'],
+            '21.6. Гибель детей – ' . $this->data['childrenDeathCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );
         $section->addText(
-            '13.7. Госпитализировано – ' . $this->data['hospitalizedCount'],
+            '21.7. Госпитализировано – ' . $this->data['hospitalizedCount'],
             $generalBoldFontStyle,
             ['indentation' => ['left' => 540]]
         );

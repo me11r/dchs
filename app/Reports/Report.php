@@ -60,15 +60,9 @@ class Report
             $secondDate
         );
 
-        /*$burntTransportCount = count($this->filterByObject(
-            'burn_object_id',
-            'burntObject',
-            $this->dictionaries['burntObject']['transport']
-        ));*/
-
         $burntFireCount = $this->report->filter(function ($event) {
             $q = TripResult::name('Пожар')->first();
-            return $event->trip_result_id == $q->id;
+            return $event->trip_result_id == ($q->id ?? 0);
         })->count();
 
         $livingSectorCount = $this->report->filter(function ($event) {
@@ -77,22 +71,22 @@ class Report
 
         $livingSectorHomeCount = $this->report->filter(function ($event) {
             $q = LivingSectorType::name('Жилой дом(квартира)')->first();
-            return $event->living_sector_type_id == $q->id;
+            return $event->living_sector_type_id == ($q->id ?? 0);
         })->count();
 
         $livingSectorOutdoorCount = $this->report->filter(function ($event) {
             $q = LivingSectorType::name('надворные постройки')->first();
-            return $event->living_sector_type_id == $q->id;
+            return $event->living_sector_type_id == ($q->id ?? 0);
         })->count();
 
         $burntTransportCount = $this->report->filter(function ($event) {
             $q = FireObject::name('Транспорт')->first();
-            return $event->burn_object_id ?? 0 == $q->id;
+            return $event->burn_object_id == ($q->id ?? 0);
         })->count();
 
         $burntOtherCount = $this->report->filter(function ($event) {
             $q = FireObject::name('Прочие объекты пожаров')->first();
-            return $event->burn_object_id ?? 0 == $q->id;
+            return $event->burn_object_id == ($q->id ?? 0);
         })->count();
 
         $burntKitchenFireCount = $this->report->filter(function ($event) {
