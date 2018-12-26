@@ -913,11 +913,21 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
     }
 
-    private function addFirstPageTopData(Section $section)
+    private function getOperGroupName()
     {
-        $searchDate = now();//Carbon::parse($this->formationReport->created_at)->addHours(6);
+        $latest = FormationReport::latest()->first();
+        //если отчет последний актуальный - берем текущую дату и забираем актуальную ОГ за эту дату
+        //если отчет не свежий, берем его дату и по этой дате ищем ОГ за то время
+        $searchDate = ($latest && $latest->id === $this->formationReport->id) ? now() : Carbon::parse($this->formationReport->created_at)->addHours(6);
         $operGroupSchedule = OperationalGroupSchedule::date($searchDate)->first();
         $operGroup = $operGroupSchedule ? $operGroupSchedule->group->name : '';
+
+        return $operGroup;
+    }
+
+    private function addFirstPageTopData(Section $section)
+    {
+        $operGroup = $this->getOperGroupName();
         // заголовок
         $section->addText(
             'Строевая записка на ' . Carbon::parse($this->formationReport->created_at)
