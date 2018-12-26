@@ -915,8 +915,7 @@ class Ticket101WordExport
 
     private function addFirstPageTopData(Section $section)
     {
-        $searchDate = Carbon::parse($this->formationReport->created_at)->addHours(6);
-//        $searchDate = $this->formationReport->created_at;
+        $searchDate = now();//Carbon::parse($this->formationReport->created_at)->addHours(6);
         $operGroupSchedule = OperationalGroupSchedule::date($searchDate)->first();
         $operGroup = $operGroupSchedule ? $operGroupSchedule->group->name : '';
         // заголовок
