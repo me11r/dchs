@@ -11,6 +11,7 @@
             v-for="user in users"
             :user="user"
             :key="user.id"
+            :multiselect.sync="multiselect"
         />
     </div>
 </template>
@@ -25,12 +26,18 @@ const api = axios.create({
 });
 export default {
     name: 'UsersList',
+    props: {
+        multiselect: {
+            type: Boolean,
+            default: false
+        }
+    },
     components: {VUserListRow, SvgPreloader},
     data: function() {
         return {
             isLoadedList: false,
             users: [],
-            lastCheckTime: null
+            lastCheckTime: null,
         };
     },
     methods: {

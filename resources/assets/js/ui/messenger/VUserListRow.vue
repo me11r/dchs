@@ -3,11 +3,19 @@
         class="user-list__row"
         :class="selectedClass"
         @click="select"
-    ><div class="user-list__row__section">
-        <i
-            class="status-icon fas fa-circle"
-            :class="userOnlineClass"></i>&nbsp;{{ user.name }}
-    </div>
+    >
+        <label :for="'user-check-id-' + user.id">
+            <input
+                v-if="multiselect"
+                :id="'user-check-id-' + user.id"
+                type="checkbox"
+                :checked="is_checked">&nbsp;
+        </label>
+        <div class="user-list__row__section">
+            <i
+                class="status-icon fas fa-circle"
+                :class="userOnlineClass"></i>&nbsp;{{ user.name }}
+        </div>
         <div
             class="user-list__row__aside"
             v-if="hasUnread">{{ user.unread_count }}</div>
@@ -15,7 +23,7 @@
 </template>
 <script>
 import moment from 'moment';
-import EventBus from './MessengerEventBus';
+import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 
 const evbus = EventBus();
 
@@ -33,11 +41,20 @@ export default {
                     last_connect_at: null
                 };
             }
+        },
+        multiselect: {
+            type: Boolean,
+            default: false
+        },
+        checked: {
+            type: Boolean,
+            default: false
         }
     },
     data: function() {
         return {
-            selected: false
+            selected: false,
+            is_checked: this.checked
         };
     },
     computed: {
@@ -60,15 +77,26 @@ export default {
     },
     methods: {
         select: function() {
-            this.selected = true;
-            evbus.$emit('messenger-selected-user', this.user);
+            if (this.multiselect) {
+                this.selectInMultimode();
+            } else {
+                this.selected = true;
+                evbus.$emit(EVENT_NAMES.messengerSelectedUser, this.user);
+            }
+        },
+        selectInMultimode: function() {
+            this.is_checked = !this.is_checked;
+            evbus.$emit(EVENT_NAMES.messengerMultiselectUser, this.user, this.is_checked);
         }
     },
     mounted: function() {
-        evbus.$on('messenger-selected-user', (user) => {
+        evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
             if (user.id !== this.user.id) {
                 this.selected = false;
             }
+        });
+        evbus.$on(EVENT_NAMES.messengerClearMultiselect, () => {
+            this.is_checked = false;
         });
     }
 };
