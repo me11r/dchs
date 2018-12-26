@@ -87,12 +87,12 @@ class Report
 
         $burntTransportCount = $this->report->filter(function ($event) {
             $q = FireObject::name('Транспорт')->first();
-            return $event->burn_object_id == $q->id;
+            return $event->burn_object_id ?? 0 == $q->id;
         })->count();
 
         $burntOtherCount = $this->report->filter(function ($event) {
             $q = FireObject::name('Прочие объекты пожаров')->first();
-            return $event->burn_object_id == $q->id;
+            return $event->burn_object_id ?? 0 == $q->id;
         })->count();
 
         $burntKitchenFireCount = $this->report->filter(function ($event) {

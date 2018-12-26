@@ -156,6 +156,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'guard_numbers',
                 'model' => \App\GuardNumber::class
             ],
+            [
+                'title' => "Оперативные группы (ОГ)",
+                'table' => 'operational_groups',
+                'model' => \App\OperationalGroup::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

@@ -8,6 +8,7 @@ use App\FormationPersonsReport;
 use App\FormationReport;
 use App\GuardNumber;
 use App\Models\Vehicle;
+use App\OperationalGroupSchedule;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Row;
@@ -914,11 +915,15 @@ class Ticket101WordExport
 
     private function addFirstPageTopData(Section $section)
     {
+        $searchDate = Carbon::parse($this->formationReport->created_at)->addHours(6);
+//        $searchDate = $this->formationReport->created_at;
+        $operGroupSchedule = OperationalGroupSchedule::date($searchDate)->first();
+        $operGroup = $operGroupSchedule ? $operGroupSchedule->group->name : '';
         // заголовок
         $section->addText(
             'Строевая записка на ' . Carbon::parse($this->formationReport->created_at)
                 ->addDay()
-                ->format('d-m-Y') . 'г.',
+                ->format('d-m-Y') . 'г. '.$operGroup,
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
