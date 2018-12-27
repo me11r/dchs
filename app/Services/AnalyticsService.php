@@ -34,6 +34,7 @@ class AnalyticsService
             $deptsNumbers = implode(',', $deptsNumbers);
 
             $depts_out_str .= "{$item->title}($deptsNumbers), ";
+
         }
 
         $max_square = $ticket->max_square ?? Ticket101OtherRecord::where('ticket101_id', $ticket->id)
