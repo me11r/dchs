@@ -179,19 +179,40 @@ class DailyWordExport
         $reasons = TripResult::dailyReportConst()->get();
 
         $iterator = 2;
+        $innerIterator = 1;
         foreach ($reasons as $reason) {
 
             $cnt = $this->data['tickets']->filter(function ($event) use ($reason) {
                 return $event->trip_result_id == $reason->id;
-            })->count();
+            });
 
             $upper = ucfirst($reason->name);
 
             $section->addText(
-                $iterator.". {$upper} – " . $cnt,
+                $iterator.". {$upper} – " . $cnt->count(),
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
+
+            $reasonsArr = array_unique($cnt->pluck('burn_object_id')->toArray());
+
+            /*рисуем подпункты*/
+            if($cnt->count() != 0 && count($reasonsArr)){
+                foreach (FireObject::whereIn('id', $reasonsArr)->get() as $fireObject) {
+
+                    $burntFireCount = $this->data['tickets']->filter(function ($event) use($fireObject, $reason) {
+                        return $event->burn_object_id == $fireObject->id && $event->trip_result_id == $reason->id;
+                    })->count();
+
+                    $section->addText(
+                        "{$iterator}.{$innerIterator}. {$fireObject->name} – " . $burntFireCount,
+                        $generalBoldFontStyle,
+                        ['indentation' => ['left' => 540]]
+                    );
+
+                    $innerIterator++;
+                }
+            }
 
             $iterator++;
         }
@@ -213,7 +234,7 @@ class DailyWordExport
         );
 
         $section->addText(
-            '21. Сведенеия по людям/детям: ' . ($this->data['suicideCount'] + $this->data['rescuedCount'] +
+            '21. Сведения по людям/детям: ' . ($this->data['suicideCount'] + $this->data['rescuedCount'] +
                 $this->data['evacCount'] + $this->data['gptBurnsCount'] + $this->data['peopleDeathCount'] +
                 $this->data['childrenDeathCount'] + $this->data['hospitalizedCount']),
             $generalBoldFontStyle,
