@@ -169,7 +169,8 @@ class ReportController extends AuthorizedController
                         $data['departments'],
                         $data['people'],
                         $data['tech'],
-                        $data['sumArray']['people']
+                        $data['sumArray']['people'],
+                        $data
                     );
 
                     $writer = $ticket101Export->getXlsWriter();
