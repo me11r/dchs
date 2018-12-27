@@ -179,19 +179,40 @@ class DailyWordExport
         $reasons = TripResult::dailyReportConst()->get();
 
         $iterator = 2;
+        $innerIterator = 1;
         foreach ($reasons as $reason) {
 
             $cnt = $this->data['tickets']->filter(function ($event) use ($reason) {
                 return $event->trip_result_id == $reason->id;
-            })->count();
+            });
 
             $upper = ucfirst($reason->name);
 
             $section->addText(
-                $iterator.". {$upper} – " . $cnt,
+                $iterator.". {$upper} – " . $cnt->count(),
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
+
+            $reasonsArr = array_unique($cnt->pluck('burn_object_id')->toArray());
+
+            /*рисуем подпункты*/
+            if($cnt->count() != 0 && count($reasonsArr)){
+                foreach (FireObject::whereIn('id', $reasonsArr)->get() as $fireObject) {
+
+                    $burntFireCount = $this->data['tickets']->filter(function ($event) use($fireObject, $reason) {
+                        return $event->burn_object_id == $fireObject->id && $event->trip_result_id == $reason->id;
+                    })->count();
+
+                    $section->addText(
+                        "{$iterator}.{$innerIterator}. {$fireObject->name} – " . $burntFireCount,
+                        $generalBoldFontStyle,
+                        ['indentation' => ['left' => 540]]
+                    );
+
+                    $innerIterator++;
+                }
+            }
 
             $iterator++;
         }
@@ -213,7 +234,7 @@ class DailyWordExport
         );
 
         $section->addText(
-            '21. Сведенеия по людям/детям: ' . ($this->data['suicideCount'] + $this->data['rescuedCount'] +
+            '21. Сведения по людям/детям: ' . ($this->data['suicideCount'] + $this->data['rescuedCount'] +
                 $this->data['evacCount'] + $this->data['gptBurnsCount'] + $this->data['peopleDeathCount'] +
                 $this->data['childrenDeathCount'] + $this->data['hospitalizedCount']),
             $generalBoldFontStyle,
@@ -272,7 +293,8 @@ class DailyWordExport
                 /**
                  * TODO временное решение
                  */
-                $item['analytics'] = "<div><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number}</span>".$item['analytics']."</div> <br/>";
+                $item['analytics'] = preg_replace('~</?p[^>]*>~', '', $item['analytics']);
+                $item['analytics'] = "<div><p><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number} &nbsp;</span>".$item['analytics']."</p></div> <br/>";
                 $item['analytics'] = str_replace('<br>', "<br/>", $item['analytics']);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($section, $item['analytics'], false, false);
 //                $textRun->addText(' (заявитель: ' . $item['caller_name'] . ', тел: ' . $item['caller_phone'] . '. ', $simpleFontStyle, self::$noPaddingPS);
