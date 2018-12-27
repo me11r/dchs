@@ -4,7 +4,9 @@ namespace App\Services\ReportExport;
 
 
 use App\FireDepartment;
+use App\FormationReport;
 use App\FormationTechReport;
+use App\OperationalGroupSchedule;
 
 trait CommonExportTools
 {
@@ -72,7 +74,7 @@ trait CommonExportTools
             array_get($peopleData, 'head_guards', 0), // На лицо личного состава -> Нач. караулов
             array_get($peopleData, 'commander_squads', 0), // На лицо личного состава -> Ком. отделений
             array_get($peopleData, 'drivers', 0), // На лицо личного состава -> Шоферы
-            array_get($peopleData, 'privates', 0), // На лицо личного состава -> Ряд. состав
+            array_get($peopleData, 'privates', 0) .'/'.array_get($peopleData, 'trainee', 0), // На лицо личного состава -> Ряд. состав
             array_get($peopleData, 'dispatchers', 0), // На лицо личного состава -> Диспетчеров
 
             array_get($peopleData, 'vacation', 0), // Отсутствуют -> Отпуск
@@ -214,6 +216,18 @@ trait CommonExportTools
 
             '-' // Ф.И.О Начальника караула или лица его подменяющего
         ];
+    }
+
+    private function getOperGroupName()
+    {
+        $latest = FormationReport::latest()->first();
+        //если отчет последний актуальный - берем текущую дату и забираем актуальную ОГ за эту дату
+        //если отчет не свежий, берем его дату и по этой дате ищем ОГ за то время
+        $searchDate = ($latest && $latest->id === $this->formationReport->id) ? now() : Carbon::parse($this->formationReport->created_at)->addHours(6);
+        $operGroupSchedule = OperationalGroupSchedule::date($searchDate)->first();
+        $operGroup = $operGroupSchedule ? $operGroupSchedule->group->name : '';
+
+        return $operGroup;
     }
 
 
