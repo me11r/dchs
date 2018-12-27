@@ -272,7 +272,8 @@ class DailyWordExport
                 /**
                  * TODO временное решение
                  */
-                $item['analytics'] = "<div><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number}</span>".$item['analytics']."</div> <br/>";
+                $item['analytics'] = preg_replace('~</?p[^>]*>~', '', $item['analytics']);
+                $item['analytics'] = "<div><p><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number} &nbsp;</span>".$item['analytics']."</p></div> <br/>";
                 $item['analytics'] = str_replace('<br>', "<br/>", $item['analytics']);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($section, $item['analytics'], false, false);
 //                $textRun->addText(' (заявитель: ' . $item['caller_name'] . ', тел: ' . $item['caller_phone'] . '. ', $simpleFontStyle, self::$noPaddingPS);
