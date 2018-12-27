@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Analytics101;
 use App\Analytics101Item;
 use App\Chronology101;
+use App\FireDepartment;
 use App\Models\FireDepartmentResult;
 use App\Models\Ticket101\Ticket101OtherRecord;
 
@@ -22,9 +23,17 @@ class AnalyticsService
         }
 
         $depts_out = $ticket->results()->whereNotNull('arrive_time')->get();
+        $deptsArr = array_unique($depts_out->pluck('fire_department_id')->toArray());
         $depts_out_str = '';
-        foreach ($depts_out as $out) {
-            $depts_out_str .= "{$out->department->title}({$out->tech->department}), ";
+
+        foreach (FireDepartment::whereIn('id', $deptsArr)->get() as $item) {
+            $deptsNumbers = $depts_out->filter(function ($q) use ($item){
+                return $q->fire_department_id === $item->id;
+            })->pluck('tech.department')->toArray();
+
+            $deptsNumbers = implode(',', $deptsNumbers);
+
+            $depts_out_str .= "{$item->title}($deptsNumbers), ";
         }
 
         $max_square = $ticket->max_square ?? Ticket101OtherRecord::where('ticket101_id', $ticket->id)
