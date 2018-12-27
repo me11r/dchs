@@ -162,7 +162,7 @@ export default {
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
 
-            if(this.block_type_ !== 'sick_leave'){
+            if (this.block_type_ !== 'sick_leave') {
                 this.$parent.$emit('totalChange', 1);
             }
 
@@ -226,7 +226,9 @@ export default {
                 }
             }).then((resp) => {
                 self.records_ = resp.data;
-                self.$parent.$emit('totalSet', resp.data.length);
+                if (this.block_type_ !== 'sick_leave') {
+                    self.$parent.$emit('totalSet', resp.data.length);
+                }
 
                 if (self.isActive_ === true) {
                     self.$parent.$emit('totalActiveSet', resp.data.length);

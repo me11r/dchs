@@ -53,6 +53,11 @@ class Ticket101ExcelExport
      */
     private $sumPeople;
 
+    /**
+     * @var array
+     */
+    private $data;
+
     const HStyle = [
         'alignment' => [
             'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -87,6 +92,7 @@ class Ticket101ExcelExport
      * @param Collection $people
      * @param Collection $tech
      * @param array $sumPeople
+     * @param array $data
      * @throws Exception
      */
     public function __construct(
@@ -94,7 +100,8 @@ class Ticket101ExcelExport
         Collection $departments,
         Collection $people,
         Collection $tech,
-        array $sumPeople
+        array $sumPeople,
+        array $data
     )
     {
         $this->spreadsheet = new Spreadsheet();
@@ -103,6 +110,7 @@ class Ticket101ExcelExport
         $this->people = $people;
         $this->tech = $tech;
         $this->sumPeople = $sumPeople;
+        $this->data = $data;
 
         $this->prepareSpreadsheet();
     }
@@ -234,10 +242,11 @@ class Ticket101ExcelExport
      */
     private function addFirstTableTopRows(Worksheet $sheet)
     {
+        $operGroup = $this->getOperGroupName();
         // заголовок первого листа
         $sheet
             ->getCell('G1')
-            ->setValue('Строевая записка на ' . Carbon::parse($this->formationReport->created_at)->format('d-m-Y') . 'г.');
+            ->setValue('Строевая записка на ' . Carbon::parse($this->formationReport->created_at)->format('d.m.Y') . 'г. '.$operGroup);
         $sheet->mergeCells('G1:J1');
 
         // аббревиатуры
