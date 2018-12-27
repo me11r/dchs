@@ -247,6 +247,7 @@ export default {
             this.lastGeoData = {lat, long, name};
             this.setMapData();
             let deptId = this.yandexMapsBus.fireDepartmentArea(lat, long, this.fireDepartmentAreas, this.map);
+            window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, 0);
             window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, deptId);
         },
         resetAllObjects() {

@@ -114,11 +114,15 @@ export default function bindLocationInputApp() {
         },
         mounted() {
             window.addEventListener('storage', (event) => {
+
                 if (event.key === MAP_LOCATION_EXCHANGE_KEY) {
                     this.location = event.newValue;
                 } else if (event.key === YANDEX_FIRE_DEPT_FOUND) {
                     this.fire_department_id = event.newValue;
                     // this.fire_department();
+                    if(!document.getElementById('fire_level_id1').value){
+                        document.getElementById('fire_level_id1').value = 1;
+                    }
                     globalBus.$emit('is_common_house', event.newValue);
                 }
             });
