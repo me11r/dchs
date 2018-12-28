@@ -234,22 +234,22 @@ class Ticket101WordExport
 
             $result[$fireDept->title] = [
                 'vacation' => $vacationPpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'maternity' => $maternityPpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'dispatchers' => $dispatchersPpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . "({$item->staff->rank})";
+                    return ($item->staff->initials ?? null) . "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick' => $sickPpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'sick_leave' => $sickLeavePpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
                 })->toArray(),
 
                 'gdzs_base' => $gdzs_base->map(function ($item) {
@@ -608,7 +608,7 @@ class Ticket101WordExport
                 if ($persons['sick_leave'] && $persons['sick_leave']->count()) {
                     foreach ($persons['sick_leave'] as $person) {
                         if($guard_number->id == $person['guard_number_id']) {
-                            $peopleByComma = ($person->staff->name ?? null) . " $person->comment" . ($person->date_from ? " с $person->date_from" : '') . ($person->date_to ? " по $person->date_to" : '');
+                            $peopleByComma = ($person->staff->initials ?? null) . " $person->comment" . ($person->date_from ? " с $person->date_from" : '') . ($person->date_to ? " по $person->date_to" : '');
                             $textRun = $section->addTextRun(self::$noPaddingPS);
                             $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                             $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);

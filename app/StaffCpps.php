@@ -22,5 +22,7 @@ class StaffCpps extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }

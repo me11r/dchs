@@ -22,5 +22,7 @@ class StaffIpl extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }

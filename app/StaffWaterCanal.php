@@ -22,5 +22,7 @@ class StaffWaterCanal extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }

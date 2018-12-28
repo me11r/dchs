@@ -115,7 +115,7 @@
                         {% for tch in tech_fields2 %}
                             <td>{{ tech[dept.id][tch]|default('-') }}</td>
                         {% endfor %}
-                        <td>{{ tech[dept.id].head_guard.name|default('-') }}</td>
+                        <td>{{ tech[dept.id].head_guard.initials|default('-') }}</td>
                     </tr>
                 {% endfor %}
 
@@ -337,7 +337,7 @@
                 {% for item in dispatchers %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.name }} ({{ item.staff.rank }}) {{ item.comment ? "(" ~item.comment~")" : '' }}</td>
+                        <td>{{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }}) {{ item.comment ? "(" ~item.comment~")" : '' }}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -348,7 +348,7 @@
                 {% for item in vacation %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.name }}</td>
+                        <td>{{ item.staff.initials }}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -365,7 +365,7 @@
                 {% for item in sick %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.name }} {{ item.date_from ? 'c '~ item.date_from }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
+                        <td>{{ item.staff.initials }} {{ item.date_from ? 'c '~ item.date_from }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -382,7 +382,7 @@
                 {% for item in business_trip %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.name }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
+                        <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -427,7 +427,7 @@
                         {% if(guard_number.id == item.guard_number_id) %}
                             <tr>
                                 <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                                <td>{{ item.staff.name }} {{ item.date_from ? 'c '~ item.date_from }} {% if item.date_to %} - {{ item.date_to  }} {% endif %} {% if item.comment %} ({{ item.comment }}) {% endif %}</td>
+                                <td>{{ item.staff.initials }} {{ item.date_from ? 'c '~ item.date_from }} {% if item.date_to %} - {{ item.date_to  }} {% endif %} {% if item.comment %} ({{ item.comment }}) {% endif %}</td>
                             </tr>
                         {% endif %}
                     {% endfor %}
