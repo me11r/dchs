@@ -50,7 +50,7 @@ class FireDepartmentCheckController extends Controller
      */
     public function store(Request $request)
     {
-        $date = date('Y-m-d');
+        $date = $request->date ? $request->date : date('Y-m-d');
         foreach ($request->get('items', []) as $item) {
             $item['date'] = $date;
             FireDepartmentCheck::create($item);
@@ -92,15 +92,12 @@ class FireDepartmentCheckController extends Controller
         $data['fire_depts'] = FireDepartment::all();
         $data['date'] = $date;
 
-//        dd($data);
-
         return view('fire-department-checks.edit',$data);
     }
 
     public function updateByDay(Request $request, $date)
     {
         $items = $request->get('items', []);
-
         $ids = array_map(function($item) {
             return $item['id'];
         }, $items);

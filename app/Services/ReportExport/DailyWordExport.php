@@ -295,6 +295,8 @@ class DailyWordExport
                  */
 //                $item['analytics'] = preg_replace('~</?p[^>]*>~', '', $item['analytics']);
 //                $item['analytics'] = "<div><p><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number} &nbsp;</span>".$item['analytics']."</p></div> <br/>";
+                /*todo добавлено на всякий случай, если появится необходимость*/
+                //$item['analytics'] = str_replace('{index}', $number." ", $item['analytics']);
 
                 $item['analytics'] = "<div><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number}</span>".$item['analytics']."</div> <br/>";
                 $item['analytics'] = str_replace('<br>', "<br/>", $item['analytics']);
