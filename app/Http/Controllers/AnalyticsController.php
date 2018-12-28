@@ -10,6 +10,7 @@ use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Services\ReportExport\DailyWordExport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
@@ -53,6 +54,9 @@ class AnalyticsController extends Controller
             'items.trip_result',
             'items.ticket101',
         ])->find($id);
+
+        $data['firstDate'] = Carbon::parse($data['record']->date)->addHours(7)->format('d.m.Y H:i');
+        $data['secondDate'] = Carbon::parse($data['firstDate'])->addDay()->format('d.m.Y H:i');
 
         $data['tripResults'] = TripResult::all();
 

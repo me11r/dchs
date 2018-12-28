@@ -7,6 +7,15 @@
                 <form action="{{ date is defined ? route('fire-department-checks.update-by-date', {'date':date}) : route('fire-department-checks.store') }}"
                       method="post">
                     {{ csrf_field() }}
+
+                    {% if date is not defined %}
+
+                        <div class="box">
+                            <input type="date" class="input" name="date">
+                        </div>
+
+                    {% endif %}
+
                     <h4 class="title">ПЧ</h4>
 
                     <fire-dept-check-form
