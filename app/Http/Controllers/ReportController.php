@@ -22,9 +22,11 @@ use App\Models\Vehicle;
 use App\Models\Weather;
 use App\OperationalCard;
 use App\Reports\Report;
+use App\Reports\Report112;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\Daily112WordExport;
 use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
@@ -629,6 +631,20 @@ class ReportController extends AuthorizedController
      */
     public function getDaily112Formatted(Request $request, string $format = 'word')
     {
+        $data = (new Report112())->getReport();
+
+        $dailyWordExport = new Daily112WordExport(
+            $data
+        );
+
+        // @todo PDF не работает корректно (но вроде оно и не нужно)
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
+
+
         $data['yesterday'] = now()->subHours(24);
         $data['today'] = now();
 
