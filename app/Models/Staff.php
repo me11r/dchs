@@ -34,7 +34,7 @@ class Staff extends Model
 {
     protected $table = 'staff';
 
-    protected $appends = ['unique'];
+    protected $appends = ['unique', 'initials'];
 
     protected $fillable = [
         'department_id',
@@ -43,11 +43,35 @@ class Staff extends Model
         'rank',
         'position',
         'status',
+        'surname',
+        'patronymic',
     ];
 
     public function getUniqueAttribute()
     {
         return $this->unique();
+    }
+
+    public function getInitialsAttribute()
+    {
+        $fullName = explode(' ', $this->name);
+
+        $surname = $fullName[0] ?? null;
+        $name = $fullName[1] ?? null;
+        $patronymic = $fullName[2] ?? null;
+
+        $resultStr = $this->surname.' ';
+
+        if($name){
+            $resultStr .= mb_substr($name, 0, 1, 'utf-8').'.';
+        }
+
+        if($this->patronymic){
+            $resultStr .= mb_substr($this->patronymic, 0, 1, 'utf-8').'.';
+        }
+
+        return $resultStr;
+
     }
 
     public function unique()

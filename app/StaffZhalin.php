@@ -22,5 +22,7 @@ class StaffZhalin extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }

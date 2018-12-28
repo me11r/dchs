@@ -22,5 +22,7 @@ class StaffCrb extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }

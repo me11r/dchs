@@ -22,5 +22,7 @@ class StaffDoctor extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }
