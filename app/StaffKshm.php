@@ -22,5 +22,7 @@ class StaffKshm extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }

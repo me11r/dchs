@@ -22,5 +22,7 @@ class StaffEdds extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
     ];
 }

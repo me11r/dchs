@@ -7,6 +7,7 @@ use App\FireDepartment;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\OperationalGroupSchedule;
+use Carbon\Carbon;
 
 trait CommonExportTools
 {
@@ -152,7 +153,7 @@ trait CommonExportTools
             (int)array_get($techData, 'girs', 0) . '/' .
             (int)array_get($techData, 'iup', 0), // 1 генератор 2 дымосос 3 гирсы
 
-            $headGuard ? $headGuard->name : '' // Ф.И.О Начальника караула или лица его подменяющего
+            $headGuard ? $headGuard->initials : '' // Ф.И.О Начальника караула или лица его подменяющего
         ];
     }
 
