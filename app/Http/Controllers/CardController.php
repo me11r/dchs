@@ -603,11 +603,12 @@ class CardController extends AuthorizedController
             $back = "/card/add101/{$card->id}{$card_type}";
         }
 
-        try{
+        /*todo: отключил, слишком много места сжирает*/
+        /*try{
             $this->saveLog($card->id);
         }
         catch (\Exception $exception){
-        }
+        }*/
 
         if ($request->ajax()) {
             return response()->json('ok', 200);

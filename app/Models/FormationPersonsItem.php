@@ -45,6 +45,7 @@ class FormationPersonsItem extends Model
         'date_from',
         'date_to',
         'guard_number_id',
+        'trainee_type', //head_guards|commander_squads|drivers|dispatchers|privates
     ];
 
     public function staff()
@@ -79,5 +80,10 @@ class FormationPersonsItem extends Model
         return $q->whereHas('report', function ($q) use ($form_id){
             $q->where('form_id', $form_id);
         })->where('rank', $rank);
+    }
+
+    public function scopeTraineeType($q, $rank)
+    {
+        return $q->where('trainee_type', $rank);
     }
 }

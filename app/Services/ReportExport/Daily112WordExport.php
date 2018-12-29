@@ -39,6 +39,8 @@ class Daily112WordExport
     private $data;
 
     public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+    private $generalBoldFontStyle = ['name' => 'Times New Roman', 'size' => 10, 'bold' => true];
+    private $simpleFontStyle = ['name' => 'Times New Roman', 'size' => 10];
 
     public function __construct(
         array $data
@@ -156,10 +158,7 @@ class Daily112WordExport
             });
 
             if($cnt->count()){
-
                 $resultString .= "{$reason->name} – " . $cnt->count().', ';
-
-
             }
         }
 
@@ -171,15 +170,11 @@ class Daily112WordExport
 
         $section->addText(
             $resultString,
-            $generalBoldFontStyle,
+            $simpleFontStyle,
             ['align' => Jc::BOTH]
         );
 
-        $section->addText(
-            '1. Системы связи и оповещения: в исправном состоянии и в рабочем режиме.',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+        $this->addParagraph($section, '1. Системы связи и оповещения: ', 'в исправном состоянии и в рабочем режиме.');
 
         $section->addText(
             '2. Мониторинг окружающей среды и происшествий природного характера:',
@@ -187,54 +182,14 @@ class Daily112WordExport
             ['align' => Jc::BOTH]
         );
 
-
-        $section->addText(
-            "- ГУ «СОМЭ КН МОН РК»: ".($this->data['SOME']->epicenter ?? null),
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $section->addText(
-            "- РГП «Казгидромет»: ".$this->data['weather_forecast']->forecast_city1,
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $section->addText(
-            "- АГЭУ ГУ «Казселезащита: ",
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-
-        $section->addText(
-            '3. Системы жизнеобеспечения города: не зарегистрировано',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '4. Подтопления: '.$this->data['flooding_count'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '5. ЦМК: '.$this->data['cmk_count'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '6. РОСО: '.($this->data['roso_count'] ?? 'без выездов'),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '7. По основной деятельности «112»: ',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+        $this->addParagraph($section, '- ГУ «СОМЭ КН МОН РК»: ', ($this->data['SOME']->epicenter ?? null).($this->data['SOME']->mpv ? (' магнитуда: '.$this->data['SOME']->mpv ?? null) : ''), ['indentation' => ['left' => 540]]);
+        $this->addParagraph($section, '- РГП «Казгидромет»: ', $this->data['weather_forecast']->forecast_city1, ['indentation' => ['left' => 540]]);
+        $this->addParagraph($section, '- АГЭУ ГУ «Казселезащита: ', $this->data['mudflow_emergency_count'] ? $this->data['mudflow_emergency_count'] : 'не зарегистрировано', ['indentation' => ['left' => 540]]);
+        $this->addParagraph($section, '3. Системы жизнеобеспечения города: ', 'не зарегистрировано');
+        $this->addParagraph($section, '4. Подтопления: ', $this->data['flooding_count']);
+        $this->addParagraph($section, '5. ЦМК: ', $this->data['cmk_count']);
+        $this->addParagraph($section, '6. РОСО: ', ($this->data['roso_count'] ? $this->data['roso_count'] : 'без выездов'));
+        $this->addParagraph($section, '7. По основной деятельности «112»: ', (!$this->data['cards112']->count() ? 'не зарегистрировано': ''));
 
         foreach ($this->data['cards112'] as $card) {
             $section->addText(
@@ -245,17 +200,8 @@ class Daily112WordExport
             );
         }
 
-        $section->addText(
-            '8. ГУ «СП и АСР» '.$this->data['cards101']->count(),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '9. ЕДДС: Всего поступивших звонков на «112» - '.($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0),
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+        $this->addParagraph($section, '8. ГУ «СП и АСР» ', $this->data['cards101']->count());
+        $this->addParagraph($section, '9. ЕДДС: Всего поступивших звонков на «112» - ', ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
 
         $strAircraft = '';
 
@@ -263,29 +209,10 @@ class Daily112WordExport
             $strAircraft .= $air_rescue_report_tech->name.', ';
         }
 
-        $section->addText(
-            '10. Казавиаспас: в аэропорту Боролдай в режиме дежурства: '.$strAircraft,
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '11. Отработано всего выездов Службой Спасения г. Алматы – ',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '12. Данные по СРУ: ',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-
-        $section->addText(
-            '13. Мониторинг интернет пространства – негативная информация не зарегистрирована.',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+        $this->addParagraph($section, '10. Казавиаспас: в аэропорту Боролдай в режиме дежурства: ', $strAircraft);
+        $this->addParagraph($section, '11. Отработано всего выездов Службой Спасения г. Алматы – ', $this->data['cards112']->count());
+        $this->addParagraph($section, '12. Данные по СРУ: ', $this->data['siren_speech_tech']->total .":". "С-40 (моторные) – {$this->data['siren_speech_tech']->motor}, СРУ-{$this->data['siren_speech_tech']->sst}:  из них  в нерабочем – {$this->data['siren_speech_tech']->broken}");
+        $this->addParagraph($section, '13. Мониторинг интернет пространства – ', 'негативная информация не зарегистрирована.');
 
         $section->addText(
             '',
@@ -320,6 +247,22 @@ class Daily112WordExport
             ['align' => Jc::BOTH]
         );
 
+    }
+
+    private function addParagraph(&$section, $header, $data, $style = ['align' => Jc::BOTH])
+    {
+        $sectionRun = $section->addTextRun($style);
+        $sectionRun->addText(
+            $header,
+            $this->generalBoldFontStyle,
+            $style
+        );
+
+        $sectionRun->addText(
+            $data,
+            $this->simpleFontStyle,
+            $style
+        );
     }
 
     private function defaultParagraph()
