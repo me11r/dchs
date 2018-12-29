@@ -73,7 +73,7 @@
 
                         {% for ppl in people_fields %}
                             <td>
-                                {{ people[dept.id][ppl]|default('-') }}{% if ppl == 'privates' and people[dept.id]['trainee']|default(null) is not empty %}/{{ people[dept.id]['trainee'] }}{% endif %}
+                                {{ people[dept.id][ppl]|default('-') }}{% if people[dept.id]['trainee']|default(null) is not empty and people[dept.id].getTraineeCount(ppl) %}/{{ people[dept.id]['trainee'] }}{% endif %}
                             </td>
                         {% endfor %}
 

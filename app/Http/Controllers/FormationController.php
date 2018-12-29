@@ -354,6 +354,7 @@ class FormationController extends AuthorizedController
                             'rank' => $type,
                             'table_name' => $type,
                             'status' => $data['status'],
+                            'trainee_type' => $inputs['trainee_type'][$input_key] ?? null,
                         ]);
                     }
                 }
@@ -373,6 +374,8 @@ class FormationController extends AuthorizedController
                         $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
                         $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
 
+                        $f = $inputs;
+
                         FormationPersonsItem::create([
                             'staff_id' => $input,
                             'report_id' => $model->id,
@@ -382,6 +385,7 @@ class FormationController extends AuthorizedController
                             'rank' => $type,
                             'status' => $data['status'],
                             'guard_number_id' => $inputs['guard_number_id'][$input_key] ?? null,
+                            'trainee_type' => $inputs['trainee_type'][$input_key] ?? null,
                         ]);
                     }
                 }
@@ -821,23 +825,6 @@ class FormationController extends AuthorizedController
         ];
 
         Cache::put('report101_data', $dataToReport, 3600);
-
-//        $html = view('pdf/formation-report', $dataToReport);
-
-//        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
-//        $date = date('d-m-Y');
-//        $file_name = "Суточный отчет - $date.pdf";
-
-//        $dompdf = new Dompdf();
-//        $dompdf->loadHTML($html, 'UTF-8');
-//        $dompdf->setPaper('A4', 'landscape');
-//        $dompdf->render();
-//        $dompdf->stream($file_name);
-
-//        $html2pdf = new Html2Pdf('L');
-//        $html2pdf->writeHTML($html);
-//        $html2pdf->output('fff.pdf');
-
 
         $this->set('people', $people)
             ->set('form_id', $form_id)

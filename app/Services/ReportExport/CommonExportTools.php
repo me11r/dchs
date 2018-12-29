@@ -16,7 +16,6 @@ trait CommonExportTools
      */
     private function getFirstTableSumRow()
     {
-        $f = $this;
         return [
             'Итого', // Наименование пожарных подразделений
 
@@ -72,11 +71,11 @@ trait CommonExportTools
             array_get($peopleData, 'total', 0), // В карауле по списку л/с
 
             array_get($peopleData, 'active', 0), // На лицо личного состава -> Всего
-            array_get($peopleData, 'head_guards', 0), // На лицо личного состава -> Нач. караулов
-            array_get($peopleData, 'commander_squads', 0), // На лицо личного состава -> Ком. отделений
-            array_get($peopleData, 'drivers', 0), // На лицо личного состава -> Шоферы
-            array_get($peopleData, 'privates', 0) .'/'.array_get($peopleData, 'trainee', 0), // На лицо личного состава -> Ряд. состав
-            array_get($peopleData, 'dispatchers', 0), // На лицо личного состава -> Диспетчеров
+            array_get($peopleData, 'head_guards', 0) .($peopleData->getTraineeCount('head_guards') ? '/'.$peopleData->getTraineeCount('head_guards') : ''), // На лицо личного состава -> Нач. караулов
+            array_get($peopleData, 'commander_squads', 0).($peopleData->getTraineeCount('commander_squads') ? '/'.$peopleData->getTraineeCount('commander_squads') : ''), // На лицо личного состава -> Ком. отделений
+            array_get($peopleData, 'drivers', 0).($peopleData->getTraineeCount('drivers') ? '/'.$peopleData->getTraineeCount('drivers') : ''), // На лицо личного состава -> Шоферы
+            array_get($peopleData, 'privates', 0) .($peopleData->getTraineeCount('privates') ? '/'.$peopleData->getTraineeCount('privates') : ''), // На лицо личного состава -> Ряд. состав
+            array_get($peopleData, 'dispatchers', 0).($peopleData->getTraineeCount('dispatchers') ? '/'.$peopleData->getTraineeCount('dispatchers') : ''), // На лицо личного состава -> Диспетчеров
 
             array_get($peopleData, 'vacation', 0), // Отсутствуют -> Отпуск
             array_get($peopleData, 'study', 0), // Отсутствуют -> Учебный
