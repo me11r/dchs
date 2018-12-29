@@ -141,6 +141,11 @@ class FormationPersonsReport extends Model
         return $this->hasMany(FormationPersonsItem::class, 'report_id');
     }
 
+    public function getTraineeCount($position)
+    {
+        return $this->formation_person_items()->where('trainee_type', $position)->count();
+    }
+
     public function formation_person_items_od()
     {
         return $this->hasMany(FormationOdPersonItem::class, 'report_id');

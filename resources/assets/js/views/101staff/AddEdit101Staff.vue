@@ -32,7 +32,23 @@
                             </option>
                         </select>
                     </div>
-
+                </div>
+                <div class="control column " v-if="block_type_ === 'trainee'">
+                    <label :for="getName('trainee_type', item.id)">Должность</label><br>
+                    <div class="select">
+                        <select
+                            required
+                            title=""
+                            :name="getName('trainee_type', item.id)"
+                            :id="getName('trainee_type', item.id)"
+                            v-model="item.trainee_type">
+                            <option
+                                v-for="type in traineeTypes()"
+                                :key="'type_' + type.type"
+                                :value="type.type">{{ type.title }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
                 <div class="control column" v-if="block_type_ === 'sick_leave'">
                     <label :for="getName('guard_number_id', item.id)">Номер караула</label>
@@ -181,6 +197,15 @@ export default {
                 return false;
             }
         },
+        traineeTypes(){
+            return [
+                {type:'head_guards', title:'Нач. караулов'},
+                {type:'commander_squads', title:'Ком. отделений'},
+                {type:'drivers', title:'Водители'},
+                {type:'dispatchers', title:'Диспетчера'},
+                {type:'privates', title:'Ряд. состав'},
+            ];
+        },
         getEmptyItem() {
             return {
                 id: moment().valueOf(),
@@ -188,7 +213,8 @@ export default {
                 name: '',
                 count: 0,
                 square: 0,
-                staff_id: 0
+                staff_id: 0,
+                trainee_type: '',
             };
         },
         prepareRecords(records) {
