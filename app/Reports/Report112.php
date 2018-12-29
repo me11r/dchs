@@ -62,12 +62,11 @@ class Report112
         $cards101 = $this->tickets101->get();
 
         $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
-            ->whereDate('created_at', '>=', $data['yesterday'])
-            ->whereDate('created_at', '<=', $data['today'])
-            ->whereNotNull('card112_id')->get();
+            ->dailyRecords()
+            ->whereNotNull('card112_id')
+            ->get();
 
-        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
-            ->whereDate('created_at', '<=', $data['today']);
+        $air_rescue_report = AirRescueReport::dailyRecords();
 
         $callInfo = CallInfo::latest()->first();
 
@@ -86,7 +85,7 @@ class Report112
         $data['flooding_count'] = $this->tickets112->filterByIncidentType('Подтопления')->count();
         $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
         $data['weather_forecast'] = Weather::latest()->first();
-        $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+        $data['emergency_situations'] = EmergencySituation::dailyRecords()->get();
         $data['call_info'] = $callInfo;
 
         $data['trip_results101'] = [];
