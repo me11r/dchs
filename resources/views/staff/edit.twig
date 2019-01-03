@@ -41,6 +41,14 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <div class="field">
+                        <label for="name">Номер караула</label><br>
+                        <select class="select" name="guard_number_id" id="guard_number_id" required>
+                            {% for number in guardNumbers %}
+                                <option value="{{ number.id }}" {% if number.id == attribute(record, 'guard_number_id')|default('') %}selected{% endif %}>{{ number.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
                         <a href="{{ url('/staff') }}" class="button is-light">Отменить</a>
