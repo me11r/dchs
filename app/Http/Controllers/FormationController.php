@@ -301,11 +301,32 @@ class FormationController extends AuthorizedController
             $model = new FormationPersonsReport();
         }
 
+        $total = count($request->input('staff.head_guards.staff_id', [])) +
+            count($request->input('staff.trainee.staff_id', [])) +
+            count($request->input('staff.commander_squads.staff_id', [])) +
+            count($request->input('staff.drivers.staff_id', [])) +
+            count($request->input('staff.privates.staff_id', [])) +
+            count($request->input('staff.dispatchers.staff_id', [])) +
+            count($request->input('staff.vacation.staff_id', [])) +
+            count($request->input('staff.study.staff_id', [])) +
+            count($request->input('staff.maternity.staff_id', [])) +
+            count($request->input('staff.sick.staff_id', [])) +
+            count($request->input('staff.business_trip.staff_id', [])) +
+            count($request->input('staff.other.staff_id', []));
+
+        $active = $total - (count($request->input('staff.vacation.staff_id', [])) +
+                count($request->input('staff.study.staff_id', [])) +
+                count($request->input('staff.maternity.staff_id', [])) +
+                count($request->input('staff.sick.staff_id', [])) +
+                count($request->input('staff.business_trip.staff_id', [])) +
+                count($request->input('staff.other.staff_id', []))
+            );
+
         $all = [
-            'total' => $request->total,
+            'total' => $total,//$request->total,
             'form_id' => $form_id,
             'dept_id' => $dept_id,
-            'active' => $request->total_active,
+            'active' => $active, //$request->total_active,
             'head_guards' => count($request->input('staff.head_guards.staff_id', [])),
             'trainee' => count($request->input('staff.trainee.staff_id', [])),
             'commander_squads' => count($request->input('staff.commander_squads.staff_id', [])),

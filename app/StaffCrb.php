@@ -24,5 +24,6 @@ class StaffCrb extends StaffOd
         'name',
         'surname',
         'patronymic',
+        'guard_number_id',
     ];
 }

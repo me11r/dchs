@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\FireDepartment;
+use App\GuardNumber;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
@@ -59,8 +60,9 @@ class StaffController extends Controller
 
         $title = 'Создать запись';
         $statuses = (new Staff())->statuses();
+        $guardNumbers = GuardNumber::all();
 
-        return view("$this->table.edit", compact('items', 'fire_departments','title', 'statuses'));
+        return view("$this->table.edit", compact('items', 'fire_departments','title', 'statuses', 'guardNumbers'));
     }
 
     /**
@@ -103,7 +105,9 @@ class StaffController extends Controller
         $title = 'Редактировать запись';
         $record = $this->repository::find($id);
         $statuses = $record->statuses();
-        return view("$this->table.edit", compact('items', 'fire_departments','title', 'record', 'statuses'));
+        $guardNumbers = GuardNumber::all();
+
+        return view("$this->table.edit", compact('items', 'fire_departments','title', 'record', 'statuses', 'guardNumbers'));
     }
 
     /**

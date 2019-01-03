@@ -119,7 +119,10 @@ class AjaxController extends AuthorizedController
         $trips = $trips
             ->where('is_closed', false)
             ->where('department_id', $dept->id)
-            ->where('is_accepted', false)
+            ->whereHas('results', function ($q){
+                $q->whereNull('accept_time')
+                    ->whereNotNull('dispatch_time');
+            })
             ->has('ticket')
             ->get();
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);

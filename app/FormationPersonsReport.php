@@ -143,7 +143,11 @@ class FormationPersonsReport extends Model
 
     public function getTraineeCount($position)
     {
-        return $this->formation_person_items()->where('trainee_type', $position)->count();
+        if($position && $position !== 'active'){
+            return $this->formation_person_items()->where('trainee_type', $position)->count();
+        }
+
+        return $this->formation_person_items()->whereNotNull('trainee_type')->count();
     }
 
     public function formation_person_items_od()
