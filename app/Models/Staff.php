@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\FireDepartment;
+use App\GuardNumber;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -45,6 +46,7 @@ class Staff extends Model
         'status',
         'surname',
         'patronymic',
+        'guard_number_id',
     ];
 
     public function getUniqueAttribute()
@@ -82,6 +84,11 @@ class Staff extends Model
     public function department()
     {
         return $this->belongsTo(FireDepartment::class, 'department_id');
+    }
+
+    public function guard_number()
+    {
+        return $this->belongsTo(GuardNumber::class, 'guard_number_id');
     }
 
     public function statuses($status = null)
