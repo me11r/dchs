@@ -1,6 +1,7 @@
 import {AREA_ID_FOUND, YANDEX_HOUSE_FOUND} from '../config/storage-keys';
 import {globalBus} from '../scripts/global-bus';
 import * as _ from 'lodash';
+import axios from 'axios';
 import YMapsService from '../services/yandex-maps-service';
 
 let instance = null;
@@ -109,6 +110,58 @@ export default class YandexMapsBus {
         return 'no fd dound';
     }
 
+    cityAreas(map) {
+        // 1. Запрашиваем через геокодер район (у Яндекса этой возможности пока нет, придется пользоваться OSM)
+        let url = "https://nominatim.openstreetmap.org/search";
+        let regions = [
+            // 'Алатауский',
+            // 'Алмалинский',
+            // 'Ауэзовский',
+            // 'Бостандыкский',
+            // 'Жетысуский',
+            'Медеуский', //*
+            // 'Турксибский', //*
+            // 'Наурызбайский'
+        ];
+
+        for (let region in regions){
+            let regionName = `Казахстан, Алматы, ${regions[region]} район`;
+            let self = this;
+
+            axios.get(url, { params: {q: regionName, format: "json", polygon_geojson: 1}})
+                .then(function (data) {
+                    _.each(data.data, function(place) {
+
+                        console.dir(place)
+                        if (place.osm_type === "relation") {
+                            // 2. Создаем полигон с нужными координатами
+
+                            let rightCoordinates = [];
+                            for(let i in place.geojson.coordinates[0]){
+                                rightCoordinates[i] = [place.geojson.coordinates[0][i][1], place.geojson.coordinates[0][i][0]];
+                            }
+
+                            let p = new self.ymaps.Polygon([rightCoordinates], {
+                                hintContent: `${regions[region]} район`
+                            }, {
+                                strokeColor: 'rgba(10,34,120,1)',
+                                fillColor: 'rgba(255,255,255,0.5)',
+                                strokeWidth: 2,
+                                opacity: 0.5
+                            });
+                            map.geoObjects.add(p);
+                            // localStorage.setItem('test_area', JSON.stringify(rightCoordinates));
+                            // 3. Добавляем полигон на карту
+                            // self.getInstance().geoObjects.add(p);
+                        }
+                    });
+                }, function (err) {
+                    console.log(err);
+                });
+        }
+    }
+
+    //Зоны ответственности ПЧ по городу (полигоны)
     polygons() {
         var polygons = [];
         polygons[1] = new this.ymaps.Polygon([
