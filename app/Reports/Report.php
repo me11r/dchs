@@ -58,8 +58,8 @@ class Report
             $secondDate = $carbon->addDay(1)->format('Y-m-d H:i:s');
             $this->time = strtotime($date);
 
-            $this->firstDate = (new Carbon($firstDate))->format('d-m-Y');
-            $this->secondDate = (new Carbon($secondDate))->format('d-m-Y');
+            $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
+            $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
         }
 
         $this->report = $this->ticket101->getDaily(
