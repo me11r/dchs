@@ -21,12 +21,12 @@ trait CommonExportTools
 
             $this->sumPeople['total'], // В карауле по списку л/с
 
-            $this->sumPeople['active'], // На лицо личного состава -> Всего
-            $this->sumPeople['head_guards'], // На лицо личного состава -> Нач. караулов
-            $this->sumPeople['commander_squads'], // На лицо личного состава -> Ком. отделений
-            $this->sumPeople['drivers'], // На лицо личного состава -> Шоферы
-            $this->sumPeople['privates'], // На лицо личного состава -> Ряд. состав
-            $this->sumPeople['dispatchers'], // На лицо личного состава -> Диспетчеров
+            $this->sumPeople['active'] . ($this->data['totalTraineeCount']['active'] ? "/".$this->data['totalTraineeCount']['active'] : ''), // На лицо личного состава -> Всего
+            $this->sumPeople['head_guards'].($this->data['totalTraineeCount']['head_guards'] ? "/".$this->data['totalTraineeCount']['head_guards'] : ''), // На лицо личного состава -> Нач. караулов
+            $this->sumPeople['commander_squads'].($this->data['totalTraineeCount']['commander_squads'] ? "/".$this->data['totalTraineeCount']['commander_squads'] : ''), // На лицо личного состава -> Ком. отделений
+            $this->sumPeople['drivers'].($this->data['totalTraineeCount']['drivers'] ? "/".$this->data['totalTraineeCount']['drivers'] : ''), // На лицо личного состава -> Шоферы
+            $this->sumPeople['privates'].($this->data['totalTraineeCount']['privates'] ? "/".$this->data['totalTraineeCount']['privates'] : ''), // На лицо личного состава -> Ряд. состав
+            $this->sumPeople['dispatchers'].($this->data['totalTraineeCount']['dispatchers'] ? "/".$this->data['totalTraineeCount']['dispatchers'] : ''), // На лицо личного состава -> Диспетчеров
 
             $this->sumPeople['vacation'], // Отсутствуют -> Отпуск
             $this->sumPeople['study'], // Отсутствуют -> Учебный
