@@ -523,21 +523,20 @@ class Report
     {
         $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = today()->addHours(7)->format('Y-m-d H:i:s');
-
         return (new FireDepartmentCheck())
             ->whereIn('date', [
                 today()->format('Y-m-d'),
                 today()->addDay(-1)->format('Y-m-d')
             ])
-            ->get()
-            ->filter(function ($item) use ($from, $to) {
-                /** @var FireDepartmentCheck $item */
-                if (Carbon::parse($to)->format('Y-m-d') === Carbon::parse($item->date)->format('Y-m-d')) {
-                    return (int)Carbon::parse($item->time_end)->format('H') <= (int)Carbon::parse($to)->format('H');
-                } else {
-                    return (int)Carbon::parse($item->time_begin)->format('H') >= (int)Carbon::parse($from)->format('H') ;
-                }
-            });
+            ->get();
+//            ->filter(function ($item) use ($from, $to) {
+//                /** @var FireDepartmentCheck $item */
+//                if (Carbon::parse($to)->format('Y-m-d') === Carbon::parse($item->date)->format('Y-m-d')) {
+//                    return (int)Carbon::parse($item->time_end)->format('H') <= (int)Carbon::parse($to)->format('H');
+//                } else {
+//                    return (int)Carbon::parse($item->time_begin)->format('H') >= (int)Carbon::parse($from)->format('H') ;
+//                }
+//            });
     }
 
     private function getDates()
