@@ -119,8 +119,8 @@ export default class YandexMapsBus {
             'Ауэзовский',
             'Бостандыкский',
             'Жетысуский',
-            'Медеуский', //*
-            'Турксибский', //*
+            'Медеуский', //два полигона
+            'Турксибский',
             'Наурызбайский'
         ];
 
@@ -146,11 +146,12 @@ export default class YandexMapsBus {
                                     hintContent: `${regions[region]} район`
                                 }, {
                                     strokeColor: 'rgba(10,34,120,1)',
-                                    fillColor: 'rgba(255,255,255,0.5)',
+                                    fillColor: 'rgba(255,255,255,0)',
                                     strokeWidth: 2,
                                     opacity: 0.5
                                 });
                                 map.geoObjects.add(p);
+
                             } else {
 
                                 for (let index in place.geojson.coordinates) {
@@ -158,15 +159,14 @@ export default class YandexMapsBus {
 
                                     let coordinates = place.geojson.coordinates[index][0];
 
-                                    for (let i in coordinates){
+                                    for (let i in coordinates) {
                                         rightCoordinates1[i] = [coordinates[i][1], coordinates[i][0]];
                                     }
-                                    console.dir(rightCoordinates1)
-                                    let p = new self.ymaps.Polygon(rightCoordinates1, {
+                                    let p = new self.ymaps.Polygon([rightCoordinates1], {
                                         hintContent: `${regions[region]} район`
                                     }, {
                                         strokeColor: 'rgba(10,34,120,1)',
-                                        fillColor: 'rgba(255,255,255,0.5)',
+                                        fillColor: 'rgba(255,255,255,0)',
                                         strokeWidth: 2,
                                         opacity: 0.5
                                     });
