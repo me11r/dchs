@@ -150,6 +150,12 @@ class FormationPersonsReport extends Model
         return $this->formation_person_items()->whereNotNull('trainee_type')->count();
     }
 
+    /*TODO: если понадобится пересчет поля "Всего" без стажеров*/
+    public function getActiveCount()
+    {
+        return $this->active - $this->getTraineeCount('active');
+    }
+
     public function formation_person_items_od()
     {
         return $this->hasMany(FormationOdPersonItem::class, 'report_id');

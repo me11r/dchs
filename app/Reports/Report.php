@@ -32,6 +32,8 @@ class Report
     protected $burntObject;
 
     protected $dictionaries;
+    protected $firstDate;
+    protected $secondDate;
 
     public function __construct(
         Ticket101Interface $ticket101,
@@ -49,13 +51,17 @@ class Report
     {
         $firstDate = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $secondDate = today()->addHours(7)->format('Y-m-d H:i:s');
+
         if($date) {
             $carbon = new Carbon($date);
-//            $firstDate = $carbon->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
             $firstDate = $carbon->addHours(7)->format('Y-m-d H:i:s');
             $secondDate = $carbon->addDay(1)->format('Y-m-d H:i:s');
             $this->time = strtotime($date);
+
+            $this->firstDate = (new Carbon($firstDate))->format('d-m-Y');
+            $this->secondDate = (new Carbon($secondDate))->format('d-m-Y');
         }
+
         $this->report = $this->ticket101->getDaily(
             $firstDate,
             $secondDate
@@ -539,8 +545,8 @@ class Report
         return [
             'hour' => '07',
             'minutes' => '00',
-            'to' => date('d.m.Y', $this->time),
-            'from' => date('d.m.Y', $this->time - (60 * 60 * 24))
+            'to' => !$this->secondDate ? date('d.m.Y', $this->time) : $this->secondDate,
+            'from' => !$this->firstDate ? date('d.m.Y', $this->time - (60 * 60 * 24)) : $this->firstDate
         ];
     }
 
