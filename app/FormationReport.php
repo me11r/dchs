@@ -4,6 +4,7 @@
 namespace App;
 
 
+use App\Models\FormationPersonsItem;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -59,8 +60,53 @@ class FormationReport extends Model
         return $this->hasMany(FormationTechReport::class, 'form_id');
     }
 
+    public function people_reports()
+    {
+        return $this->hasMany(FormationPersonsReport::class, 'form_id');
+    }
+
     public function scopeApproved($q, $search = true)
     {
         return $q->where('is_approved', $search);
+    }
+
+    public function scopeSumTrainee($q, $types = [])
+    {
+        $reports = $this->people_reports;
+        $data = [];
+        if(!$types){
+            $types = [
+                'commander_squads',
+                'head_guards',
+                'drivers',
+                'dispatchers',
+                'privates',
+            ];
+        }
+        foreach ($reports as $report) {
+            foreach ($types as $type) {
+                if(!isset($data[$type])){
+                    $data[$type] = FormationPersonsItem::whereHas('report', function ($qq) use($report, $type){
+                        $qq->where('report_id', $report->id)
+                            ->where('trainee_type', $type);
+                    })->count();
+                }
+                else{
+                    $data[$type] += FormationPersonsItem::whereHas('report', function ($qq) use($report, $type){
+                        $qq->where('report_id', $report->id)
+                            ->where('trainee_type', $type);
+                    })->count();
+                }
+            }
+
+            $data['active'] = 0;
+            $data['total'] = 0;
+
+            foreach ($data as $key => $datum) {
+                $data['active'] += $datum;
+            }
+        }
+
+        return $data;
     }
 }

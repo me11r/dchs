@@ -126,6 +126,11 @@ class FormationPersonsReport extends Model
         'zhalin' => StaffZhalin::class,
     ];
 
+    public function report()
+    {
+        return $this->belongsTo(FormationReport::class, 'form_id');
+    }
+
     public function scopeTodayRecords($q)
     {
         return $q->whereDate('created_at', date('Y-m-d'));
