@@ -16,6 +16,12 @@
                             v-model="showDepartments">Отображать микроучастки
                         </b-checkbox>
                     </div>
+
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showDistricts">Отображать границы районов
+                        </b-checkbox>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,6 +78,7 @@ export default {
 
             showHydrants: false,
             showDepartments: true,
+            showDistricts: true,
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
             userDept: window.userDept
@@ -217,6 +224,10 @@ export default {
             if (this.showHydrants) {
                 this.setHydrants();
             }
+
+            if (this.showDistricts) {
+                this.initCityAreas();
+            }
         },
 
         doubleClickOnTheMap(event) {
@@ -301,6 +312,9 @@ export default {
 
             this.setMapData();
         },
+        initCityAreas(){
+            this.yandexMapsBus.cityAreas(this.map);
+        },
         initFireDepartmentAreas() {
             var polygons = this.yandexMapsBus.polygons();
             if (this.fireDepartmentAreas.length === 0) {
@@ -317,7 +331,10 @@ export default {
         },
         'showDepartments'() {
             this.setMapData();
-        }
+        },
+        'showDistricts'() {
+            this.setMapData();
+        },
     },
     mounted() {
         (new YandexMapsBus())
