@@ -825,6 +825,7 @@ class FormationController extends AuthorizedController
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech);
         $user = Auth::user();
+        $totalTraineeCount = $report->sumTrainee(); // $people->sum('trainee');
 
         $dataToReport = [
             'people' => $people,
@@ -837,6 +838,7 @@ class FormationController extends AuthorizedController
             'tech_items_count' => $tech_items_count,
             'ttl_count' => $ttl_count,
             'sumArray' => $sumArray,
+            'totalTraineeCount' => $totalTraineeCount,
             'departments' => $departments,
             'excluded_departments' => FireDepartment::whereIn('id', $excludedIds)->get(),
             'report' => $report,
@@ -861,6 +863,7 @@ class FormationController extends AuthorizedController
             ->set('people_fl', $people_fieldlist)
             ->set('tech_fl', $tech_fieldlist)
             ->set('tech_items_count', $tech_items_count)
+            ->set('totalTraineeCount', $totalTraineeCount)
             ->set('ttl_count', $ttl_count)
             ->set('dispatchers', $dispatchers)
             ->set('formationCard101Others', $formationCard101Others)
