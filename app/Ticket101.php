@@ -283,6 +283,11 @@ class Ticket101 extends Model
         return $this->hasMany(Chronology101::class, 'ticket101_id');
     }
 
+    public function chronologiesFromFd()
+    {
+        return $this->hasMany(Chronology101FromFd::class, 'ticket101_id');
+    }
+
     public function crossroad_1()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
@@ -683,4 +688,8 @@ class Ticket101 extends Model
             ->with('city_area', 'departments', 'trip_result', 'liquidation_method');
     }
 
+    public function fireDepartmentsInfo()
+    {
+        return $this->hasMany(Ticket101InfoFromFd::class, 'ticket_id');
+    }
 }
