@@ -91,6 +91,20 @@ export default class Tabs {
         this.setTab(nextTab);
     }
 
+    openInnerTab(evt, tabName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName('content-tab');
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = 'none';
+        }
+        tablinks = document.getElementsByClassName('main-tab-inner');
+        for (i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace('is-active', '');
+        }
+        document.getElementById(tabName).style.display = 'block';
+        evt.currentTarget.className += ' is-active';
+    }
+
     /*isNext(step) {
         if (step === 1) {
             if (!document.getElementById('location').value && !document.getElementById('fireplace').value) { return false; }

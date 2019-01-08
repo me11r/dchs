@@ -234,6 +234,11 @@ class CardController extends AuthorizedController
                 'chronologies.event_info_arrived',
                 'chronologies.fire_department_result.tech',
                 'chronologies.fire_department_result.department',
+                'chronologiesFromFd',
+                'chronologiesFromFd.event_info',
+                'chronologiesFromFd.event_info_arrived',
+                'chronologiesFromFd.fire_department_result.tech',
+                'chronologiesFromFd.fire_department_result.department',
                 'results',
                 'results.tech',
                 'results.tech.formation_tech_report',
@@ -249,7 +254,15 @@ class CardController extends AuthorizedController
                 'operational_card',
                 'operational_plan.special_plans',
                 'service_plans',
-                'service_plans.service_type'
+                'service_plans.service_type',
+                'fireDepartmentsInfo',
+                'fireDepartmentsInfo.fire_level',
+                'fireDepartmentsInfo.burn_object',
+                'fireDepartmentsInfo.trip_result',
+                'fireDepartmentsInfo.fire_department',
+                'fireDepartmentsInfo.living_sector_type',
+                'fireDepartmentsInfo.liquidation_method',
+                'fireDepartmentsInfo.water_supply_source',
             ])
             ->findOrNew($card_id);
 
