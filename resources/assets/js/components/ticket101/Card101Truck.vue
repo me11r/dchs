@@ -229,6 +229,7 @@
     import axios from 'axios';
     import moment from 'moment';
     import _ from 'lodash';
+    import {globalBus} from '../../scripts/global-bus';
 
     export default {
         name: "Card101Truck",
@@ -260,6 +261,7 @@
                 ticket_: this.ticket,
                 active: [],
                 reserve: [],
+                time: 1000 * 10,
             };
         },
         methods: {
@@ -327,6 +329,15 @@
                 let is_checked = object.checked;
                 object.checked = !is_checked;
 
+                //todo временно отключено, возможно вообще не пригодится в дальнейшем
+                /*globalBus.$emit('departmentHasSent',{
+                    event: event,
+                    dept_id: dept_id,
+                    dept_number: dept_number,
+                    res_id: res_id,
+                    result: _.find(this.results_, {id: res_id})
+                });*/
+
                 axios.get('/roadtrip/send/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number).then((response) => {
                     alert(`Подразделение отправлено`);
                     event.target.disabled = true;
@@ -360,71 +371,72 @@
                 let ticket_id = window.ticket101add.ticketId;
                 let self = this;
                 if (ticket_id !== 0) {
-                    var timerId = setInterval(() => {
-                        axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
-                            if (response.data.recommendations !== undefined) {
-                                // self.results_ = response.data.recommendations;
-                                response.data.recommendations.forEach((item) => {
-                                    let accepted_time = 'accept_time_' + item.id;
-                                    let out_time = 'out_time_' + item.id;
-                                    let ret_time = 'ret_time_' + item.id;
-                                    let send_time = 'send_time_' + item.id;
+                    axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
+                        if (response.data.recommendations !== undefined) {
+                            // self.results_ = response.data.recommendations;
+                            response.data.recommendations.forEach((item) => {
+                                let accepted_time = 'accept_time_' + item.id;
+                                let out_time = 'out_time_' + item.id;
+                                let ret_time = 'ret_time_' + item.id;
+                                let send_time = 'send_time_' + item.id;
 
-                                    let accepted_time_item = document.getElementById(accepted_time);
+                                let accepted_time_item = document.getElementById(accepted_time);
 
-                                    let out_time_item = document.getElementById(out_time);
+                                let out_time_item = document.getElementById(out_time);
 
-                                    let ret_time_item = document.getElementById(ret_time);
+                                let ret_time_item = document.getElementById(ret_time);
 
-                                    let send_time_item = document.getElementById(send_time);
+                                let send_time_item = document.getElementById(send_time);
 
-                                    if (item.dispatched === 1) {
-                                        send_time_item.value = item.dispatch_time;
-                                    }
-
-                                    if (accepted_time_item && out_time_item) {
-                                        accepted_time_item.value = item.accept_time;
-                                        out_time_item.value = item.out_time;
-                                    }
-
-                                    if (ret_time_item) {
-                                        ret_time_item.value = item.ret_time;
-                                    }
-
-                                    let index = _.findIndex(self.results_, {id: item.id});
-
-                                    // Replace item at index using native splice
-                                    self.results_.splice(index, 1, item);
-                                });
-
-                                if (response.data.service_plans !== undefined) {
-                                    response.data.service_plans.forEach((item) => {
-                                        let accepted_name = item.id + '_name';
-                                        let message_time = item.id + '_message_time';
-                                        let arrive_time = item.id + '_arrive_time';
-
-                                        let accepted_name_item = document.getElementById(accepted_name);
-                                        let message_time_item = document.getElementById(message_time);
-                                        let arrive_time_item = document.getElementById(arrive_time);
-
-                                        accepted_name_item.value = item.name_accepted;
-
-                                        if(message_time_item){
-                                            message_time_item.value = item.dispatch_time;
-                                        }
-                                        arrive_time_item.value = item.arrive_time;
-
-                                    });
+                                if (item.dispatched === 1) {
+                                    send_time_item.value = item.dispatch_time;
                                 }
 
+                                if (accepted_time_item && out_time_item) {
+                                    accepted_time_item.value = item.accept_time;
+                                    out_time_item.value = item.out_time;
+                                }
+
+                                if (ret_time_item) {
+                                    ret_time_item.value = item.ret_time;
+                                }
+
+                                let index = _.findIndex(self.results_, {id: item.id});
+
+                                // Replace item at index using native splice
+                                self.results_.splice(index, 1, item);
+                            });
+
+                            if (response.data.service_plans !== undefined) {
+                                response.data.service_plans.forEach((item) => {
+                                    let accepted_name = item.id + '_name';
+                                    let message_time = item.id + '_message_time';
+                                    let arrive_time = item.id + '_arrive_time';
+
+                                    let accepted_name_item = document.getElementById(accepted_name);
+                                    let message_time_item = document.getElementById(message_time);
+                                    let arrive_time_item = document.getElementById(arrive_time);
+
+                                    accepted_name_item.value = item.name_accepted;
+
+                                    if(message_time_item){
+                                        message_time_item.value = item.dispatch_time;
+                                    }
+                                    arrive_time_item.value = item.arrive_time;
+
+                                });
                             }
-                        });
-                    // }, 10000);
-                    }, 3000);
+
+                            if(response.data.departmentsOnWay) {
+                                globalBus.$emit('checkDepartmentsOnWay', response.data.departmentsOnWay);
+                            }
+
+                        }
+
+                        setTimeout(this.checkRoadtrips, this.time);
+                    });
                 }
             }
-
-
         },
         computed: {
             formActive() {
@@ -448,8 +460,7 @@
             }
         },
         mounted(){
-            this.checkRoadtrips();
-            // console.dir(this.results_);
+            setTimeout(this.checkRoadtrips, this.time);
         }
     }
 </script>

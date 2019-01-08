@@ -541,6 +541,7 @@ import axios from 'axios';
 import moment from 'moment';
 import Timepicker from '../../components/Timepicker';
 import _ from 'lodash';
+import {globalBus} from '../../scripts/global-bus';
 export default {
     name: 'Card101Chronology',
     components: {
@@ -782,6 +783,21 @@ export default {
         });
 
         this.sortByTime();
+
+        globalBus.$on('checkDepartmentsOnWay', (departments) => {
+            _.each(departments, (item) => {
+                if(!_.find(this.departments_, {id: item.id})){
+                    this.departments_.push(item);
+                }
+            })
+        });
+
+        //todo временно отключено, возможно вообще не пригодится в дальнейшем
+        /*globalBus.$on('departmentHasSent', (data) => {
+            this.departments_.push(data.result);
+        });*/
+
+        // console.dir(this.departments_)
     }
 };
 </script>
