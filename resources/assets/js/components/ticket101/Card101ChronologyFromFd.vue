@@ -16,7 +16,7 @@
                     <tbody>
                         <tr
                             v-for="dept in departments_"
-                            :key="`dept__idx__${dept.id}`">
+                            :key="`dept_${dept.id}`">
                             <td>{{ dept.department.title }}</td>
                             <td>{{ dept.tech.department }}</td>
                             <td>
@@ -258,154 +258,16 @@
                 </table>
 
             </b-tab-item>
-            <b-tab-item
-                label="Хоронология от ПЧ"
-                icon="fa fa-truck">
-                <table class="table is-fullwidth is-hoverable">
-                    <thead>
-                        <tr>
-                            <th>ПЧ</th>
-                            <th>Отделение</th>
-                            <th>Время</th>
-                            <th>Количество</th>
-                            <th>Время работы</th>
-                            <th>Ситуация</th>
-                            <th>Информация</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="record in chronologiesFromFd"
-                            :key="record.id">
-                            <td>{{ record.fire_department_result.department.title }}</td>
-                            <td>{{ record.fire_department_result.tech.department }}</td>
-                            <td>
-                                <timepicker
-                                    v-if="canEdit(record.id) === true"
-                                    :inputdate="record.time"
-                                    v-model="record.time"
-                                    @timeChanged="record.time = $event"
-                                />
-                                <span v-else>{{ record.time }}</span>
-                            </td>
-                            <td>
-                                <input
-                                    v-if="canEdit(record.id) === true"
-                                    class="input"
-                                    type="number"
-                                    v-model="record.quantity">
-                                <span v-else>{{ record.quantity }}</span>
-                            </td>
-                            <td>
-                                <input
-                                    v-if="canEdit(record.id) === true"
-                                    class="input"
-                                    type="number"
-                                    v-model="record.working_time">
-                                <span v-else>{{ record.working_time }}</span>
-
-                            </td>
-                            <td v-if="record.event_info !== null">
-                                <div
-                                    v-if="canEdit(record.id) === true"
-                                    class="select">
-                                    <select
-                                        required
-                                        title="Ситуация"
-                                        v-model="record.event_info_id">
-                                        <option
-                                            v-for="e in eventInfo_"
-                                            :key="'event_' + e.id"
-                                            :value="e.id">{{ e.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <span v-else>{{ record.event_info.name }}</span>
-
-                            </td>
-                            <td v-else >
-                                <div
-                                    v-if="canEdit(record.id) === true"
-                                    class="select">
-                                    <select
-                                        required
-                                        title="Ситуация"
-                                        v-model="record.event_info_arrived_id">
-                                        <option
-                                            v-for="e in eventInfoArrived_"
-                                            :key="'event_' + e.id"
-                                            :value="e.id">{{ e.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <span v-else>{{ record.event_info_arrived.name }}</span>
-                            </td>
-                            <td>
-                                <textarea
-                                    v-if="canEdit(record.id) === true"
-                                    v-model="record.information"
-                                    class="textarea"
-                                    cols="30"
-                                    rows="3"></textarea>
-                                <p v-else>{{ record.information }}</p>
-                            </td>
-                            <td>
-                                <!--<div class="control is-narrow">-->
-                                <!--<button-->
-                                <!--class="button is-small is-outlined is-danger square-button-36"-->
-                                <!--@click.prevent="removeItemFromTable(record.id)"-->
-                                <!--type="button"-->
-                                <!--title="Удалить">-->
-                                <!--<i class="fa fa-trash"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
-                                <!--<div class="control is-narrow">-->
-                                <!--<button-->
-                                <!--class="button is-small is-outlined is-info square-button-36"-->
-                                <!--@click.prevent="editData(record.id)"-->
-                                <!--type="button"-->
-                                <!--title="Удалить">-->
-                                <!--<i class="fa fa-pen"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
-                                <!--<div-->
-                                <!--v-if="canEdit(record.id) === true"-->
-                                <!--class="control is-narrow">-->
-                                <!--<button-->
-                                <!--class="button is-small is-outlined is-success square-button-36"-->
-                                <!--@click.prevent="updateItem(record)"-->
-                                <!--type="button"-->
-                                <!--title="Обновить">-->
-                                <!--<i class="fa fa-anchor"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
-                                <div
-                                    class="control is-narrow">
-                                    <button
-                                        @click="copyToChronology(record)"
-                                        class="button is-small is-outlined is-success square-button-36"
-                                        type="button"
-                                        title="Скопировать">
-                                        <i class="fa fa-copy"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </b-tab-item>
             <br>
             <br>
             <br>
         </b-tabs>
 
-        <div class="field">
-            <a
-                class="button is-small is-info"
-                :href="'/xls/card101/chronology/'+card_.id">Скачать в Excel</a>
-        </div>
+        <!--<div class="field">-->
+        <!--<a-->
+        <!--class="button is-small is-info"-->
+        <!--:href="'/xls/card101/chronology/'+card_.id">Скачать в Excel</a>-->
+        <!--</div>-->
 
         <div class="field">
             <table class="table is-fullwidth is-hoverable">
@@ -576,6 +438,10 @@ export default {
             default: () => {
                 return {};
             }
+        },
+        fire_department_id: {
+            type: Number,
+            default: null
         }
     },
     data() {
@@ -584,7 +450,7 @@ export default {
             records_onway: [],
             departments_: this.departments,
             time: '',
-            tableRecords: this.records,
+            tableRecords: this.records.filter(i => i.fire_department_result.fire_department_id === this.fire_department_id),
             eventInfo_: this.eventInfo,
             eventInfoArrived_: this.eventInfoArrived,
             card_: this.card,
@@ -609,7 +475,7 @@ export default {
             let token = document.head.querySelector('meta[name="csrf-token"]');
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-            let card_data = window.ticket101add;
+            // let card_data = window.ticket101add;
 
             this.records_onway.push({
                 id: moment().valueOf(),
@@ -628,7 +494,7 @@ export default {
             let token = document.head.querySelector('meta[name="csrf-token"]');
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-            let card_data = window.ticket101add;
+            // let card_data = window.ticket101add;
 
             this.records_arrived.push({
                 id: moment().valueOf(),
@@ -659,9 +525,9 @@ export default {
             });
         },
         postItem(record) {
-            let card_data = window.ticket101add;
+            let card_data = window.ticket101fd;
 
-            axios.post('/api/101card/save-chronology', {
+            axios.post('/api/101card/save-chronology-from-fd', {
                 ticket_id: card_data.ticketId,
                 record: record
             }).then((resp) => {
@@ -675,30 +541,14 @@ export default {
             });
         },
         updateItem(record) {
-            let card_data = window.ticket101add;
+            let card_data = window.ticket101fd;
 
-            axios.post('/api/101card/save-chronology', {
+            axios.post('/api/101card/save-chronology-from-fd', {
                 ticket_id: card_data.ticketId,
                 record: record
             });
 
             this.editData(record.id);
-        },
-        copyToChronology(record) {
-            let card_data = window.ticket101add;
-            record.event_info_id = record.event_info_id || 1;
-            axios.post('/api/101card/copy-chronology-from-fd', {
-                ticket_id: card_data.ticketId,
-                record: record
-            }).then((resp) => {
-                let data = resp.data;
-                this.tableEdits.push({
-                    id: data.id,
-                    edit: false
-                });
-                this.tableRecords.push(data);
-                this.tableRecords = this.sortByTime();
-            });
         },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
@@ -747,7 +597,7 @@ export default {
         },
         removeItemFromTable(id) {
             if (confirm('Вы действительно хотите удалить эту запись?')) {
-                axios.post('/api/101card/delete-chronology', {id: id});
+                axios.post('/api/101card/delete-chronology-from-fd', {id: id});
                 this.tableRecords = this.tableRecords.filter(function (item) {
                     return item.id !== id;
                 });
@@ -768,11 +618,6 @@ export default {
         }
     },
 
-    computed: {
-        chronologiesFromFd() {
-            return this.card_.chronologies_from_fd;
-        }
-    },
     created() {
         this.tableRecords.forEach((item) => {
             this.tableEdits.push({
