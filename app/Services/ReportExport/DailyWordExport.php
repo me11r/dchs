@@ -162,7 +162,7 @@ class DailyWordExport
         foreach (FireObject::all() as $fireObject) {
 
             $burntFireCount = $this->data['tickets']->filter(function ($event) use($fireObject) {
-                return $event->burn_object_id == $fireObject->id;
+                return $event->burn_object_id == $fireObject->id && $event->trip_result_id == 1; //1 = пожар
             })->count();
 
             if($burntFireCount){
