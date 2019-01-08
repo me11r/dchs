@@ -43,6 +43,7 @@
                         <select v-model="otherRide_.fire_department_id"
                                 name="other_rides[fire_department_id]"
                                 id="other_rides[fire_department_id]"
+                                required
                                 style="width: 100%;">
                             <option value="">-</option>
                             <option v-for="dept in fireDepartments_"
@@ -69,6 +70,7 @@
                         <label for="other_rides[object_name]">Наименование объекта</label>
                         <input type="text"
                                class="input"
+                               required
                                name="other_rides[object_name]"
                                v-model="otherRide_.object_name"
                                id="other_rides[object_name]">
@@ -111,6 +113,7 @@
                         <select v-model="otherRide_.staff_id"
                                 name="other_rides[staff_id]"
                                 id="other_rides[staff_id]"
+                                required
                                 style="width: 100%;">
                             <option value="">-</option>
                             <option v-for="item in staff_"

@@ -43,6 +43,7 @@
                         <select v-model="drill_.fire_department_id"
                                 name="drill[fire_department_id]"
                                 id="drill[fire_department_id]"
+                                required
                                 style="width: 100%;">
                             <option value="">-</option>
                             <option v-for="dept in fireDepartments_"
@@ -111,6 +112,7 @@
                         <select v-model="drill_.staff_id"
                                 name="drill[staff_id]"
                                 id="drill[staff_id]"
+                                required
                                 style="width: 100%;">
                             <option value="">-</option>
                             <option v-for="item in staff_"
