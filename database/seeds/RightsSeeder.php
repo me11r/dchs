@@ -22,6 +22,7 @@ class RightsSeeder extends Seeder
             ['title' => 'Ввод данных'],         //7
             ['title' => 'Справочники'],         //8
             ['title' => 'Информация'],          //9
+            ['title' => 'Messenger'],          //10
         ];
 
         foreach ($groups as $group) {
@@ -145,6 +146,8 @@ class RightsSeeder extends Seeder
 
         $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": просмотр', 'name' => 'CAN_VIEW_MUDFLOW_PROTECTION'];
         $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": редактирование', 'name' => 'CAN_EDIT_MUDFLOW_PROTECTION'];
+
+        $rights[] = ['right_group_id' => 10, 'title' => 'Может инициировать массовую рассылку', 'name' => 'CAN_DO_MASS_SENDING'];
 
 
 

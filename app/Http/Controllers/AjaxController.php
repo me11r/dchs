@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Dictionary\Street;
 use App\FireDepartment;
 use App\Models\Building;
+use App\Models\OperationalPlan;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
 use App\PopupNotification;
@@ -44,6 +45,21 @@ class AjaxController extends AuthorizedController
             'fireDept' => $fireDept,
         ];
         return response()->json($result, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function findSpecialPlanById(Request $request)
+    {
+        $data = OperationalPlan::with([
+            'special_plan',
+        ])
+            ->find($request->id);
+        return response()->json(['specialPlan' => $data]);
+    }
+
+    public function findOperationalCardById(Request $request)
+    {
+        $data = OperationalCard::find($request->id);
+        return response()->json(['operCard' => $data]);
     }
 
     public function findSpecialPlan(Request $request)

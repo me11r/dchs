@@ -41,4 +41,9 @@ class OperationalPlan extends Model
     {
         return $this->hasMany(SpecialPlan::class, 'operational_plan_id', 'id');
     }
+
+    public function special_plan()
+    {
+        return $this->hasOne(SpecialPlan::class, 'operational_plan_id', 'id');
+    }
 }
