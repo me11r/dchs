@@ -108,7 +108,7 @@ export default {
             report_summary: {},
             reason_id: null,
             card112_results_: this.card112_results,
-            time: 1000 * 3,
+            time: 1000 * 30,
             card101_results_: this.card101_results
         };
     },
