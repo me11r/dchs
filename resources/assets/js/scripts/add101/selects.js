@@ -16,6 +16,11 @@ export default function bindSelects() {
                 methods: {
                     onSpecialPlanFound(specialPlan) {
                         this.selectedId = parseInt(specialPlan[this.name]);
+                    },
+                    onChange(){
+                        if (element.dataset.name === 'operational_cards') {
+                            globalBus.$emit('operCardChanged', this.selectedId);
+                        }
                     }
                 },
                 mounted() {

@@ -199,9 +199,7 @@
                             </div>
                             <div class="column is-3">
                                 <div class="bd-notification is-primary">
-                                    <label for="operational_card_id">
-                                        Оперативная карточка
-                                    </label>
+                                    <label for="operational_card_id">Оперативная карточка</label>
                                     <div class="select"
                                          data-component="simple-select"
                                          data-special="specialPlan"
@@ -229,6 +227,7 @@
                                         </span>
                                         <select name="operational_card_id" id="operational_card_id"
                                                 style="width: 100%;"
+                                                @change="onChange()"
                                                 v-model="selectedId">
                                             <option value="">-</option>
                                             {% for object in operational_cards %}

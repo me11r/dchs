@@ -11,6 +11,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'ajax'], function () {
         Route::get('street/{area_id?}', 'AjaxController@findStreet')->where('area_id', '[0-9]+');
         Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
+        Route::get('find_special_plan_by_id', 'AjaxController@findSpecialPlanById');
+        Route::get('find_operational_card_by_id', 'AjaxController@findOperationalCardById');
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
         Route::get('service-plans', 'AjaxController@getServicePlans');

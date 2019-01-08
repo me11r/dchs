@@ -78,6 +78,8 @@ export default function bindLocationInputApp() {
                 if (item.is_card === true) {
                     // document.getElementById('fire_level_id1').value = 2;
                     document.getElementById('operational_card_id').value = item.id;
+                } else{
+                    document.getElementById('operational_card_id').value = '';
                 }
             },
             onBlur() {
@@ -128,8 +130,30 @@ export default function bindLocationInputApp() {
             });
 
             globalBus.$on('operPlanChanged', (q) => {
-                //todo: продолжить
-                // this.location = 123;
+                axios.get('/ajax/find_special_plan_by_id', {params: {
+                    id: q
+                }}).then((resp) => {
+                    let data = resp.data.specialPlan;
+                    if(data && data.special_plan){
+                        globalBus.$emit('specialPlanFound', data.special_plan);
+                        this.location = data.special_plan.location;
+                        document.getElementById('fire_level_id1').value = data.special_plan.fire_level_id;
+                    }
+                });
+            });
+
+            globalBus.$on('operCardChanged', (q) => {
+                axios.get('/ajax/find_operational_card_by_id', {params: {
+                    id: q
+                }}).then((resp) => {
+                    let data = resp.data.operCard;
+                    if (data) {
+                        this.location = data.location;
+                        document.getElementById('fire_level_id1').value = data.fire_level_id;
+                        this.fire_department_id = data.fire_department_id;
+                        document.getElementById('object_name').value = data.object_name;
+                    }
+                });
             });
 
             (new YandexMapsBus())
