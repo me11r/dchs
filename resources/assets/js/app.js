@@ -17,6 +17,7 @@ import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
 // import Ticket101OnWay from './components/ticket101/OnWayInfo';
 
+import AdditionalData from './views/fire-departments/AdditionalData';
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
 import TPicker from './components/Timepicker';
@@ -89,6 +90,8 @@ Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
+Vue.component('ticket101-chronology-from-fd', require('./components/ticket101/Card101ChronologyFromFd'));
+Vue.component('ticket101-summary-from-fd', require('./components/ticket101/Card101SummaryFromFd.vue'));
 
 Vue.component('notification', require('./components/Notification'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
@@ -163,10 +166,10 @@ if (document.getElementById('cardadd101')) {
             tabs.nextTab();
         }); */
 
-        /*document.getElementById('truck_tab_button').addEventListener('click', (e) => {
+        /* document.getElementById('truck_tab_button').addEventListener('click', (e) => {
             e.preventDefault();
             window.add101tabs.setTab(1);
-        });*/
+        }); */
     });
 }
 
@@ -260,25 +263,32 @@ if (document.getElementById('popup_notification')) {
 
 if (document.getElementById('tab-truck-vue')) {
     new Vue({
-        el: '#tab-truck-vue',
+        el: '#tab-truck-vue'
     });
 }
 
 if (document.getElementById('card101_index_table')) {
     new Vue({
-        el: '#card101_index_table',
+        el: '#card101_index_table'
     });
 }
 
 if (document.getElementById('card101_save_btn')) {
     new Vue({
-        el: '#card101_save_btn',
+        el: '#card101_save_btn'
     });
 }
 
 const View101AppElement = document.getElementById('view-101-app');
 if (View101AppElement) {
     window.View101App = (new View101App()).createApp(View101AppElement, window.people, window.odStaff, window.formId);
+}
+
+if (document.getElementById('fire-department-data')) {
+    new Vue({
+        el: '#fire-department-data',
+        render: h => h(AdditionalData)
+    });
 }
 
 require('./scripts/emergency-situation/edit-form');

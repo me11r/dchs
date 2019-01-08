@@ -178,6 +178,10 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('departments', '[0-9]+');
         Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
         Route::post('recommend', 'RoadtripController@postRecommend');
+
+        Route::get('/additional/{id}', 'RoadtripController@getAdditional')
+            ->name('roadtrip.additional')
+            ->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'service-plans'], function (){

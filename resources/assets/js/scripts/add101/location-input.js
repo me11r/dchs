@@ -127,6 +127,11 @@ export default function bindLocationInputApp() {
                 }
             });
 
+            globalBus.$on('operPlanChanged', (q) => {
+                //todo: продолжить
+                // this.location = 123;
+            });
+
             (new YandexMapsBus())
                 .getInstance()
                 .then((yandexMapsBus) => {
