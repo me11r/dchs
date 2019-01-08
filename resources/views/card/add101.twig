@@ -191,6 +191,7 @@
                                                 :options='{{ operational_plans | json_encode() | raw }}'
                                                 :min-length="1"
                                                 tabindex="12"
+                                                @input="onInput"
                                                 v-model="selectedId">
                                         </buefy-common-select>
                                     </p>

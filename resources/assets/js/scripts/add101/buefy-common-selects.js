@@ -19,6 +19,11 @@ export default function bindBuefyCommonSelects() {
                 methods: {
                     onSpecialPlanFound(specialPlan) {
                         this.selectedId = parseInt(specialPlan[this.name]);
+                    },
+                    onInput(){
+                        if (element.dataset.name === 'operational_plan_id') {
+                            globalBus.$emit('operPlanChanged', this.selectedId);
+                        }
                     }
                 },
                 mounted() {
