@@ -343,6 +343,9 @@ class CardController extends Controller
         ])->get();
 
         $data['service_plans'] = $ticket->service_plans;
+        $data['departmentsOnWay'] = FireDepartmentResult::with(['department', 'tech'])
+            ->onWay($id)
+            ->get();
 
         return response()->json($data);
     }

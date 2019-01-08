@@ -108,6 +108,7 @@ export default {
             report_summary: {},
             reason_id: null,
             card112_results_: this.card112_results,
+            time: 1000 * 3,
             card101_results_: this.card101_results
         };
     },
@@ -118,7 +119,8 @@ export default {
             axios.get('/').then((resp) => {
                 self.results = resp.data.results;
                 self.card112_results_ = resp.data.card112_results;
-                // console.dir(resp);
+
+                setTimeout(this.get_data,this.time)
             });
         }
 
@@ -129,9 +131,7 @@ export default {
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
-        setInterval(() => {
-            this.get_data();
-        }, 5000);
+        setTimeout(this.get_data, this.time);
     }
 };
 </script>

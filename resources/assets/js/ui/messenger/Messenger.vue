@@ -46,8 +46,10 @@ import axios from 'axios';
 import VueMessengerUserList from './UsersList';
 import VueMessagePane from './MessagePane';
 import EventBus, {EVENT_NAMES} from './MessengerEventBus';
+import rights from '../../scripts/rights';
 const evbus = EventBus();
 const api = axios.create({baseURL: '/api/messenger'});
+
 export default {
     name: 'Messenger',
     data: function() {
@@ -100,8 +102,7 @@ export default {
             }
         },
         hasRight: function (id) {
-            let rights = JSON.parse(window.localStorage.getItem('preloaded_rights'));
-            return rights.indexOf(id) !== -1;
+            return rights.hasRight(id);
         }
 
     },
