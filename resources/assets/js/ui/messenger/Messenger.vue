@@ -11,6 +11,7 @@
                 <div class="header__closer">
                     <span
                         @click="checked"
+                        v-if="hasRight('CAN_DO_MASS_SENDING')"
                         class="multimode-label"><i
                             class="fas"
                             :class="multiselect?'fa-check':'fa-circle'"></i>&nbsp;<span>Массовая рассылка</span></span>
@@ -97,6 +98,10 @@ export default {
             } else {
                 this.checkedUsers.splice(this.checkedUsers.indexOf(user.id), 1);
             }
+        },
+        hasRight: function (id) {
+            let rights = JSON.parse(window.localStorage.getItem('preloaded_rights'));
+            return rights.indexOf(id) !== -1;
         }
 
     },
