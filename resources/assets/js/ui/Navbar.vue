@@ -393,14 +393,19 @@
 
 <script>
 import axios from 'axios';
+import rights from '../scripts/rights';
 function getLocalRights() {
-    let rights = window.localStorage.getItem('preloaded_rights');
+
+    return rights.rightsList();
+
+    //todo: depricated: moved to rights.js
+    /*let rights = window.localStorage.getItem('preloaded_rights');
     if (rights !== undefined) {
         rights = JSON.parse(rights);
     } else {
         rights = [];
     }
-    return rights;
+    return rights;*/
 }
 export default {
     name: 'Navbar',
@@ -443,10 +448,19 @@ export default {
 
     },
     mounted: function () {
-        axios.get('/ajax/rights/list').then((response) => {
+
+        // тащим права из базы
+        let rightsPromise = rights.getRights();
+        rightsPromise.then((list) => {
+            this.rights = list;
+        });
+
+        //todo: depricated: moved to rights.js
+        /*axios.get('/ajax/rights/list').then((response) => {
             this.rights = response.data;
             window.localStorage.setItem('preloaded_rights', JSON.stringify(this.rights));
-        });
+        });*/
+
     }
 
 };
