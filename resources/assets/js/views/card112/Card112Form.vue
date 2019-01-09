@@ -17,6 +17,13 @@
                 type="hidden"
                 name="_token"
                 :value="csrf">
+            <input
+                type="hidden"
+                name="currentTabIndex"
+                id="currentTabIndex"
+                v-model="currentTabIndex"
+            >
+
             <div class="tabs buttab is-boxed">
                 <ul>
                     <li :class="{'is-active': currentTabIndex === 0}">
@@ -856,11 +863,13 @@ export default {
             }
         },
         setTab(tabIndex) {
-            if (window.card112FormData.model.id === 0 && tabIndex === 1) {
+
+            if (window.card112FormData.model.id === 0) {
                 let form = document.getElementById('card112_form');
                 let valid = form.checkValidity();
 
                 if (valid) {
+                    document.getElementById('currentTabIndex').value = tabIndex;
                     form.submit();
                 } else {
                     return false;
@@ -868,6 +877,8 @@ export default {
             }
 
             this.currentTabIndex = tabIndex;
+            window.location.hash = '#return=' + tabIndex;
+
         },
         nextTab() {
             let inx = this.currentTabIndex;
@@ -940,11 +951,11 @@ export default {
         // }
     },
     mounted() {
+        this.currentTabIndex = window.card112FormData.currentTabIndex;
         (new YandexMapsBus())
             .getInstance()
             .then((yandexMapsBus) => {
                 this.yandexMapsBus = yandexMapsBus;
-
                 this.streets = window.card112FormData.streets;
                 this.cityAreas = window.card112FormData.cityAreas;
                 this.incidentTypes = window.card112FormData.incidentTypes;
