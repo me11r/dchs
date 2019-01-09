@@ -316,10 +316,11 @@ class DailyWordExport
         );
 
         $fireDeptChecks = $this->data['fireDeptChecks']->where('is_dspt', '=', 1);
+        $counterDepts = 1;
         foreach ($fireDeptChecks->all() as $key => $check) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
-                ($key + 1) . '. ' . ($check['fire_department'] ? $check['fire_department']['title'] : '') . ': ',
+                ($counterDepts) . '. ' . ($check['fire_department'] ? $check['fire_department']['title'] : '') . ': ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
@@ -328,6 +329,7 @@ class DailyWordExport
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );
+            $counterDepts++;
         }
 
         $section->addText(
@@ -349,11 +351,12 @@ class DailyWordExport
             ['align' => Jc::BOTH]
         );
 
+        $counterDepts = 1;
         $fireDeptChecks = $this->data['fireDeptChecks']->where('is_dspt', '=', 0);
         foreach ($fireDeptChecks->all() as $key => $check) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
-                ($key + 1) . '. ' . ($check['fire_department'] ? $check['fire_department']['title'] : '') . ': ',
+                ($counterDepts) . '. ' . ($check['fire_department'] ? $check['fire_department']['title'] : '') . ': ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
@@ -362,6 +365,8 @@ class DailyWordExport
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );
+
+            $counterDepts++;
         }
 
         $section->addText(
@@ -380,10 +385,12 @@ class DailyWordExport
             $generalBoldUnderlineFontStyle,
             ['align' => Jc::BOTH]
         );
+
+        $counterDepts = 1;
         foreach ($this->data['arrangementYesterday'] as $key => $item) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
-                ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') .($item['department'] ? "({$item['department']})" : '') . ' ',
+                ($counterDepts) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') .($item['department'] ? "({$item['department']})" : '') . ' ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
@@ -393,6 +400,7 @@ class DailyWordExport
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );
+            $counterDepts++;
         }
 
 
@@ -406,10 +414,11 @@ class DailyWordExport
             $generalBoldUnderlineFontStyle,
             ['align' => Jc::BOTH]
         );
+        $counterDepts = 1;
         foreach ($this->data['arrangementToday'] as $key => $item) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
-                ($key + 1) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
+                ($counterDepts) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
 //                ($key + 1) . '. ' . ($item->staff ? $item->staff->department->title : '') . ' ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
@@ -420,6 +429,7 @@ class DailyWordExport
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );
+            $counterDepts++;
         }
 
 
