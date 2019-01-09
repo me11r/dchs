@@ -139,6 +139,7 @@ class FormationController extends AuthorizedController
         $report->staff_total = $request->staff_total;
         $report->staff_action = $request->staff_action;
         $report->staff_duty_shift = $request->staff_duty_shift;
+        $report->staff_duty_shift_8hours = $request->staff_duty_shift_8hours;
         $report->staff_head = $request->staff_head;
 
         $report->save();

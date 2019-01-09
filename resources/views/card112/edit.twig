@@ -2,6 +2,7 @@
 
 {% block content %}
     {% include "layout/yandex-maps-bus.twig" with {areas: cityAreas} %}
+    {#{{ dump(session('currentTabIndex')) }}#}
     <script>
         window.card112FormData = {
             streets: {{ streets | json_encode() | raw }},
@@ -11,6 +12,7 @@
             model: {{ model | json_encode() | raw }},
             servicePlans: {{ service_plans | json_encode() | raw }},
             method: 'PATCH',
+            currentTabIndex: {{ session('currentTabIndex') != null ? session('currentTabIndex') : currentTabIndex }},
             notificationGroups: {{ notificationGroups | json_encode() | raw }},
             formRoute: '{{ route('card112.update', model.id) }}'
         };

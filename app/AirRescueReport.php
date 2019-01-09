@@ -51,6 +51,7 @@ class AirRescueReport extends Model
         'staff_total',
         'staff_action',
         'staff_duty_shift',
+        'staff_duty_shift_8hours',
     ];
 
     public function tech()

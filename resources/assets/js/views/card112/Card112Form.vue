@@ -17,6 +17,13 @@
                 type="hidden"
                 name="_token"
                 :value="csrf">
+            <input
+                type="hidden"
+                name="currentTabIndex"
+                id="currentTabIndex"
+                v-model="currentTabIndex"
+            >
+
             <div class="tabs buttab is-boxed">
                 <ul>
                     <li :class="{'is-active': currentTabIndex === 0}">
@@ -55,6 +62,7 @@
                             </label>
                             <input
                                 name="location"
+                                required
                                 id="location"
                                 class="input"
                                 v-model="model.location">
@@ -137,8 +145,9 @@
                                     <select
                                         id="incident_type_id"
                                         name="incident_type_id"
+                                        required
                                         v-model="model.incident_type_id"
-                                        required>
+                                    >
                                         <option
                                             v-for="incidentType in incidentTypes"
                                             :key="incidentType.id"
@@ -685,7 +694,7 @@
                     <p
                         class="level-left"
                         v-if="currentTabIndex !== lastTabIndex"
-                        @click.prevent="currentTabIndex++">
+                        @click.prevent="nextTab">
                         <button
                             id="nexttab"
                             type="button"
@@ -854,11 +863,13 @@ export default {
             }
         },
         setTab(tabIndex) {
-            if (window.card112FormData.model.id === 0 && tabIndex === 1) {
+
+            if (window.card112FormData.model.id === 0) {
                 let form = document.getElementById('card112_form');
                 let valid = form.checkValidity();
 
                 if (valid) {
+                    document.getElementById('currentTabIndex').value = tabIndex;
                     form.submit();
                 } else {
                     return false;
@@ -866,6 +877,12 @@ export default {
             }
 
             this.currentTabIndex = tabIndex;
+            window.location.hash = '#return=' + tabIndex;
+
+        },
+        nextTab() {
+            let inx = this.currentTabIndex;
+            this.setTab(++inx);
         },
         getServiceTypeNameById(id) {
             return _.where(this.serviceTypes, {id: id})[0].name;
@@ -934,11 +951,11 @@ export default {
         // }
     },
     mounted() {
+        this.currentTabIndex = window.card112FormData.currentTabIndex;
         (new YandexMapsBus())
             .getInstance()
             .then((yandexMapsBus) => {
                 this.yandexMapsBus = yandexMapsBus;
-
                 this.streets = window.card112FormData.streets;
                 this.cityAreas = window.card112FormData.cityAreas;
                 this.incidentTypes = window.card112FormData.incidentTypes;
