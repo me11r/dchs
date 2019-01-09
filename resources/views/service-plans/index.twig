@@ -17,10 +17,10 @@
             <tr>
                 <td>{{ record.id }}</td>
                 <td>{{ record.service_type.name|default('-') }}</td>
-                <td>{{ record.ticket.location|default('-') }} {% if record.ticket.crossroad_1_id is defined %}({{ record.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>
+                <td>{{ record.anyCard.location|default('-') }} {% if record.anyCard.crossroad_1_id is defined %}({{ record.anyCard.crossroad_1.name|default('-') }} &times; {{ record.anyCard.crossroad_2.name|default('-') }}){% endif %}</td>
                 <td>{{ record.created_at|date('d.m.Y H:i') }}</td>
                 <td class="has-text-right">
-                    <a href="/service-plans/{{ record.service_type.id }}/{{ record.id }}/show" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Просмотр</a>
+                    <a href="/service-plans/{{ record.service_type.id ?? '' }}/{{ record.id }}/show" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Просмотр</a>
                 </td>
             </tr>
         {% else %}

@@ -63,6 +63,15 @@ class Ticket101ServicePlan extends Model
         'printed',
     ];
 
+    public function anyCard()
+    {
+        if($this->ticket){
+            return $this->belongsTo(Ticket101::class, 'card_id');
+        }
+
+        return $this->belongsTo(Card112::class, 'card112_id');
+    }
+
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'card_id');
