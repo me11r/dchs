@@ -685,7 +685,7 @@
                     <p
                         class="level-left"
                         v-if="currentTabIndex !== lastTabIndex"
-                        @click.prevent="currentTabIndex++">
+                        @click.prevent="nextTab">
                         <button
                             id="nexttab"
                             type="button"
@@ -866,6 +866,10 @@ export default {
             }
 
             this.currentTabIndex = tabIndex;
+        },
+        nextTab() {
+            let inx = this.currentTabIndex;
+            this.setTab(++inx);
         },
         getServiceTypeNameById(id) {
             return _.where(this.serviceTypes, {id: id})[0].name;
