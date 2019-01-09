@@ -100,6 +100,7 @@ class FormationRecordController extends Controller
                 $item->staff_total = $airRescueReport->staff_total;
                 $item->staff_action = $airRescueReport->staff_action;
                 $item->staff_duty_shift = $airRescueReport->staff_duty_shift;
+                $item->staff_duty_shift_8hours = $airRescueReport->staff_duty_shift_8hours;
                 $item->tech_main_action = $airRescueReport->tech()->where('status', 'action')->count();
                 $item->tech_main_reserve = $airRescueReport->tech()->where('status', 'reserve')->count();
                 $item->tech_special_action = 0;
@@ -142,6 +143,7 @@ class FormationRecordController extends Controller
 
     public function totalUpdate($id, Request $request)
     {
+        $f = $request->all();
         foreach ($request->get('items', []) as $itemId => $item) {
             $itemModel = (new FormationRecord())->find($itemId);
             $itemModel->update($item);

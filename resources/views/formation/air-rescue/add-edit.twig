@@ -12,17 +12,11 @@
 
             <input type="hidden" name="id" value="{{ model.id ?? '' }}">
 
-            {#<div class="field"><label for="field_0">Руководящий состав</label>#}
-                {#<div class="control">#}
-                    {#<input v-model="total" type="number" readonly="readonly" step="1" data-value="" name="total"#}
-                           {#id="field_0" value="" class="input add101persons-input">#}
-                {#</div>#}
-            {#</div>#}
             <fieldset>
                 <legend>Руководящий состав</legend>
                 <div class="field">
                     <div class="field">
-                        <input type="number" value="{{ model.staff_head ?? '' }}" name="staff_head" min=0 oninput="validity.valid||(value='');" class="input">
+                        <input type="text" value="{{ model.staff_head ?? '' }}" name="staff_head" class="input">
                     </div>
 
                     {#<staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
@@ -56,14 +50,21 @@
 
             </fieldset>
             <fieldset>
-                <legend>На оперативном дежурстве</legend>
+                <legend>На оперативном дежурстве (суточном)</legend>
                 <div class="field">
                     <div class="field">
-                        <input type="number" value="{{ model.staff_action ?? '' }}" name="staff_duty_shift" min=0 oninput="validity.valid||(value='');" class="input">
+                        <input type="number" value="{{ model.staff_duty_shift ?? '' }}" name="staff_duty_shift" min=0 oninput="validity.valid||(value='');" class="input">
                     </div>
-                    {#<label for="field_2_1">ЛС</label>
-                    <staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
-                               block_type="oper"></staff-air-rescue>#}
+                </div>
+
+            </fieldset>
+
+            <fieldset>
+                <legend>На оперативном дежурстве (8-ми часовом рабочем дне)</legend>
+                <div class="field">
+                    <div class="field">
+                        <input type="number" value="{{ model.staff_duty_shift_8hours ?? '' }}" name="staff_duty_shift_8hours" min=0 oninput="validity.valid||(value='');" class="input">
+                    </div>
                 </div>
 
             </fieldset>
