@@ -402,6 +402,7 @@ class DictionaryController extends AuthorizedController
             $record->fire_department_id = $request->fire_department_id;
             $record->location = $request->location;
             $record->note = $request->note;
+            $record->oc_number = $request->oc_number;
 
             $record->save();
 
