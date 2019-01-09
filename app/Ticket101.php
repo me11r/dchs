@@ -308,6 +308,11 @@ class Ticket101 extends Model
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
     }
 
+    public function cityArea()
+    {
+        return $this->hasOne(CityArea::class, 'id', 'city_area_id');
+    }
+
     public function fire_level()
     {
         return $this->hasOne(FireLevel::class, 'id', 'fire_level_id');
