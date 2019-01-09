@@ -55,6 +55,7 @@
                             </label>
                             <input
                                 name="location"
+                                required
                                 id="location"
                                 class="input"
                                 v-model="model.location">
@@ -137,8 +138,9 @@
                                     <select
                                         id="incident_type_id"
                                         name="incident_type_id"
+                                        required
                                         v-model="model.incident_type_id"
-                                        required>
+                                    >
                                         <option
                                             v-for="incidentType in incidentTypes"
                                             :key="incidentType.id"
