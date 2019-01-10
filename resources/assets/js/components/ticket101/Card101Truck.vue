@@ -220,6 +220,222 @@
                     </tbody>
                 </table>
             </b-tab-item>
+            <b-tab-item label="Штаб" icon="fa fa-truck-moving">
+                <div class="levels">
+                    <div class="level-left">
+                        <div class="control">
+                            <label for="">Время регистрации</label>
+                            <input type="text"
+                                   :value="formatDate(ticket_.created_at, 'HH:mm:SS DD-MM-YYYY')"
+                                   readonly="readonly"
+                                   class="input"
+                            >
+                        </div>
+                    </div>
+                    <!--<div class="level-right">
+                        <a @click="sendAllTripPlans()"
+                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
+                        </a>
+                    </div>-->
+                </div>
+
+                <table class="table is-hoverable is-fullwidth">
+                    <thead>
+                    <tr>
+                        <th>Подразделение</th>
+                        <th>Отделения</th>
+                        <th>Принято в работу</th>
+                        <th>Время выезда</th>
+                        <th>Время прибытия</th>
+                        <th>Время возвращения</th>
+                        <th>Отправка</th>
+                        <th>Время оповещения</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="hq_dept in hq">
+                            <!--Подразделение-->
+                            <td>{{ hq_dept.name }}</td>
+
+                            <!--Отделения-->
+                            <td>
+                                <p>
+                                    <input
+                                            :name="`hq[dept][${hq_dept.name}][]`"
+                                            v-model="hq_dept.department"
+                                            type="text"
+                                            class="input">
+                                </p>
+                            </td>
+
+                            <!--{#Принято в работу#}-->
+                            <td>
+                                <!--<b-timepicker
+                                        v-model="hq_dept.accept_time"
+                                        :value="hq_dept.accept_time"
+                                        icon="clock"
+                                        icon-pack="far"
+                                        type="text"
+                                        :name="`hq[accept_time][${hq_dept.name}][]`"
+                                        editable
+                                        >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.accept_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>-->
+                                <!--todo Timepicker не работает-->
+                                <!--<t-picker
+                                        :key="`h${hq_dept.name}`"
+                                        :isReadOnly="false"
+                                        :name="`hq[accept_time][${hq_dept.name}][]`"
+                                        :inputdate="hq_dept.accept_time"
+                                >
+                                </t-picker>-->
+                                <timepicker-input
+                                        :value="hq_dept.accept_time"
+                                        v-model="hq_dept.accept_time"
+                                        :name="`hq[accept_time][${hq_dept.name}][]`"
+                                        :unique="`${hq_dept.name}_accept_time`"
+                                >
+                                </timepicker-input>
+                            </td>
+
+                            <!--{#Время выезда#}-->
+                            <td>
+                                <!--<b-timepicker
+                                        v-model="hq_dept.out_time"
+                                        icon="clock"
+                                        icon-pack="far"
+                                        type="text"
+                                        :name="`hq[out_time][${hq_dept.name}][]`"
+                                        editable
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.out_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>-->
+                                <timepicker-input
+                                        :value="hq_dept.out_time"
+                                        v-model="hq_dept.out_time"
+                                        :name="`hq[out_time][${hq_dept.name}][]`"
+                                        :unique="`${hq_dept.name}_out_time`"
+                                >
+                                </timepicker-input>
+                            </td>
+
+                            <!--{#Время прибытия#}-->
+                            <td>
+                                <!--<b-timepicker
+                                        v-model="hq_dept.arrive_time"
+                                        icon="clock"
+                                        icon-pack="far"
+                                        type="text"
+                                        :name="`hq[arrive_time][${hq_dept.name}][]`"
+                                        editable
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.arrive_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>-->
+                                <timepicker-input
+                                        :value="hq_dept.arrive_time"
+                                        v-model="hq_dept.arrive_time"
+                                        :name="`hq[arrive_time][${hq_dept.name}][]`"
+                                        :unique="`${hq_dept.name}_arrive_time`"
+                                >
+                                </timepicker-input>
+                            </td>
+
+                            <!--{#Время возвращения#}-->
+                            <td>
+                                <!--<b-timepicker
+                                        v-model="hq_dept.ret_time"
+                                        icon="clock"
+                                        icon-pack="far"
+                                        type="text"
+                                        :name="`hq[ret_time][${hq_dept.name}][]`"
+                                        editable
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.ret_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>-->
+                                <timepicker-input
+                                        :value="hq_dept.ret_time"
+                                        v-model="hq_dept.ret_time"
+                                        :name="`hq[ret_time][${hq_dept.name}][]`"
+                                        :unique="`${hq_dept.name}_ret_time`"
+                                >
+                                </timepicker-input>
+                            </td>
+
+                            <!--{#Отправка#}-->
+                            <td>
+                                <a v-if="hq_dept.dispatch_time === null || hq_dept.dispatch_time === ''"
+                                    @click.prevent="sendHqDept(hq_dept)"
+                                   class="button is-primary is-outlined">
+                                    <i class="fas fa-bus"></i>&nbsp;Выслать
+                                </a>
+                            </td>
+
+                            <!--{#Время оповещения#}-->
+                            <td class="is-expanded">
+                                <!--<b-timepicker
+                                        v-model="hq_dept.dispatch_time"
+                                        icon="clock"
+                                        icon-pack="far"
+                                        type="text"
+                                        :name="`hq[dispatch_time][${hq_dept.name}][]`"
+                                        editable
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.dispatch_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>-->
+                                <timepicker-input
+                                        :value="hq_dept.dispatch_time"
+                                        v-model="hq_dept.dispatch_time"
+                                        :name="`hq[dispatch_time][${hq_dept.name}][]`"
+                                        :unique="`${hq_dept.name}_dispatch_time`"
+                                >
+                                </timepicker-input>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br><br><br>
+
+            </b-tab-item>
         </b-tabs>
 
     </div>
@@ -233,6 +449,8 @@
 
     export default {
         name: "Card101Truck",
+        components: {
+        },
         props: {
             departments: {
                 type: Array,
@@ -262,6 +480,12 @@
                 active: [],
                 reserve: [],
                 time: 1000 * 10,
+                hq: this.ticket.hq_rides,
+                hq1: [
+                    {name: 'ДСПТ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: ''},
+                    {name: 'КШМ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: ''},
+                    {name: 'ИПЛ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: ''},
+                ],
             };
         },
         methods: {
@@ -358,7 +582,7 @@
             },
 
             isSelected(item){
-                if(item.recommended === 1 || item.dispatched === 1){
+                if(item.recommended === 1 || item.dispatched === 1) {
                     return true;
                 }
 
@@ -366,6 +590,12 @@
             },
             findActive(id){
                 return _.findIndex(this.results_, {id:id});
+            },
+            sendHqDept(dept) {
+                dept.ticket101_id = this.ticket_.id;
+                dept.dispatch_time = moment().format('HH:mm');
+                axios.post('/api/101card/send-hq-ride',{ride: dept});
+                globalBus.$emit('hqDeptSent', dept);
             },
             checkRoadtrips() {
                 let ticket_id = window.ticket101add.ticketId;
@@ -461,6 +691,15 @@
         },
         mounted(){
             setTimeout(this.checkRoadtrips, this.time);
+
+            if(!this.hq) {
+                this.hq = this.hq1;
+            }
+            /*globalBus.$on('timeChangedUnique', (event) => {
+                this.hq[0].accept_time = event.value;
+                // document.getElementById('tpicker_123').value = event.value;
+                // console.dir(event);
+            });*/
         }
     }
 </script>
