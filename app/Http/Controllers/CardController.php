@@ -493,21 +493,23 @@ class CardController extends AuthorizedController
     {
         $data = $request->hq;
 
-        foreach ($data as $fieldName => $departments) {
-            foreach ($departments as $deptName => $inputName) {
-                Ticket101HqRide::updateOrCreate([
-                    'name' => $deptName,
-                    'ticket101_id' => $card->id,
-                ],[
-                    'ticket101_id' => $card->id,
-                    'name' => $deptName,
-                    'department' => $request->input("hq.dept.{$deptName}.0", null),
-                    'accept_time' => $request->input("hq.accept_time.{$deptName}.0", null),
-                    'out_time' => $request->input("hq.out_time.{$deptName}.0", null),
-                    'arrive_time' => $request->input("hq.arrive_time.{$deptName}.0", null),
-                    'ret_time' => $request->input("hq.ret_time.{$deptName}.0", null),
-                    'dispatch_time' => $request->input("hq.dispatch_time.{$deptName}.0", null),
-                ]);
+        if($data){
+            foreach ($data as $fieldName => $departments) {
+                foreach ($departments as $deptName => $inputName) {
+                    Ticket101HqRide::updateOrCreate([
+                        'name' => $deptName,
+                        'ticket101_id' => $card->id,
+                    ],[
+                        'ticket101_id' => $card->id,
+                        'name' => $deptName,
+                        'department' => $request->input("hq.dept.{$deptName}.0", null),
+                        'accept_time' => $request->input("hq.accept_time.{$deptName}.0", null),
+                        'out_time' => $request->input("hq.out_time.{$deptName}.0", null),
+                        'arrive_time' => $request->input("hq.arrive_time.{$deptName}.0", null),
+                        'ret_time' => $request->input("hq.ret_time.{$deptName}.0", null),
+                        'dispatch_time' => $request->input("hq.dispatch_time.{$deptName}.0", null),
+                    ]);
+                }
             }
         }
     }
