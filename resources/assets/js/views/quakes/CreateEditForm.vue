@@ -54,8 +54,8 @@
                 //[42.30, 76.33]
                 this.map.geoObjects.remove(this.placemark);
                 this.placemark = new this.ymaps.Placemark(this.parsedCoordinates, {
-                    hintContent: 'Собственный значок метки',
-                    balloonContent: 'Это красивая метка'
+                    hintContent: this.parsedCoordinates,
+                    balloonContent: this.parsedCoordinates
                 }, {
                     // Опции.
                     // Необходимо указать данный тип макета.
