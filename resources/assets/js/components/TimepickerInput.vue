@@ -9,11 +9,13 @@
 </template>
 
 <script>
+import {globalBus} from '../scripts/global-bus';
 export default {
     name: 'TimepickerInput',
     data: function () {
         return {
-            value_: this.valueData
+            value_: this.valueData,
+            unique_: this.unique,
         };
     },
     props: {
@@ -23,6 +25,11 @@ export default {
         },
 
         valueTime: {
+            type: String,
+            default: ''
+        },
+
+        unique: {
             type: String,
             default: ''
         }
@@ -39,6 +46,8 @@ export default {
                 this.value_ = minutes + ':' + seconds;
 
                 this.$emit('timeChanged', this.value_);
+                this.$emit('timeChangedUnique', {value: this.value_, unique: this.unique_});
+                globalBus.$emit('timeChangedUnique', {value: this.value_, unique: this.unique_});
             }
         },
         setEmpty() {
