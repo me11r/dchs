@@ -221,22 +221,17 @@ class Daily112WordExport
         );
 
         $section->addText(
-            $this->data['footer_second_person']['position'],
+            $this->data['footer_first_person']['position'].' '.$this->data['footer_first_person']['city'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            $this->data['footer_second_person']['city'],
+            $this->data['footer_first_person']['post'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            $this->data['footer_second_person']['post'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            $this->data['footer_second_person']['name'],
+            $this->data['footer_first_person']['name'],
             $generalBoldFontStyle,
             ['align' => Jc::END]
         );
