@@ -1,7 +1,7 @@
 {% extends "layout/html" %}
-
 {% block content %}
-    <div class="container section">
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <div class="container section" id="vue">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">Добавить</h4>
@@ -23,18 +23,18 @@
                         <label for="epicenter">Эпицентр землетрясения</label>
                         <input type="text" class="input" name="epicenter" id="epicenter" value="" required/>
                     </div>
-                    <div class="field">
-                        <label for="energy_class">Энергетический класс землетрясения</label>
-                        <input type="number" step="0.01" class="input" name="energy_class" id="energy_class" value="" required/>
-                    </div>
+                    {#<div class="field">#}
+                        {#<label for="energy_class">Энергетический класс землетрясения</label>#}
+                        {#<input type="number" step="0.01" class="input" name="energy_class" id="energy_class" value="" required/>#}
+                    {#</div>#}
                     <div class="field">
                         <label for="mpv">Магнитуда MPV</label>
                         <input type="number" step="0.01" class="input" name="mpv" id="mpv" value="" required/>
                     </div>
-                    <div class="field">
-                        <label for="coordinates">Координаты эпицентра</label>
-                        <input type="text" class="input" name="coordinates" id="coordinates" value="" required/>
-                    </div>
+                    {#<div class="field">#}
+                        {#<label for="coordinates">Координаты эпицентра</label>#}
+                        {#<input type="text" class="input" name="coordinates" id="coordinates" value="" required/>#}
+                    {#</div>#}
                     <div class="field">
                         <label for="deep">Глубина</label>
                         <input type="number" step="0.01" class="input" name="deep" id="deep" value="" required/>
@@ -43,6 +43,7 @@
                         <label for="information">Сведения об ощутимости</label>
                         <input type="text" class="input" name="information" id="information" value="" required/>
                     </div>
+                    <quakes-form></quakes-form>
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
