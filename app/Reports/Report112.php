@@ -103,9 +103,9 @@ class Report112
             'gptBurnsCount' => $cards101->sum('gpt_burns_count'),
             'childrenDeathCount' => $cards101->sum('children_death_count'),
             'hospitalizedCount' => $cards101->sum('hospitalized_count'),
-            'header_person' => DailyReportPerson::where('type', '=', 'header')->first(),
-            'footer_first_person' => DailyReportPerson::where('type', '=', 'footer_first')->first(),
-            'footer_second_person' => DailyReportPerson::where('type', '=', 'footer_second')->first()
+            'header_person' => DailyReportPerson::where('type', 'header')->where('report_type', '112_daily')->first(),
+            'footer_first_person' => DailyReportPerson::where('type', 'footer_first')->where('report_type', '112_daily')->first(),
+            'footer_second_person' => DailyReportPerson::where('type', 'footer_second')->where('report_type', '112_daily')->first()
 
         ]);
 
