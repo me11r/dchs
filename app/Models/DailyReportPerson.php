@@ -11,5 +11,12 @@ class DailyReportPerson extends Model
 {
     public $table = 'daily_report_persons';
 
-    public $fillable = ['position', 'city', 'post', 'name', 'type'];
+    public $fillable = [
+        'position',
+        'city',
+        'post',
+        'name',
+        'type',
+        'report_type',
+    ];
 }

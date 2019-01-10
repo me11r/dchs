@@ -362,9 +362,9 @@ class Report
             'peopleDeathCount' => $this->report->sum('people_death_count'),
             'childrenDeathCount' => $this->report->sum('children_death_count'),
             'hospitalizedCount' => $this->report->sum('hospitalized_count'),
-            'header_person' => DailyReportPerson::where('type', '=', 'header')->first(),
-            'footer_first_person' => DailyReportPerson::where('type', '=', 'footer_first')->first(),
-            'footer_second_person' => DailyReportPerson::where('type', '=', 'footer_second')->first()
+            'header_person' => DailyReportPerson::where('type', 'header')->where('report_type', '101_daily')->first(),
+            'footer_first_person' => DailyReportPerson::where('type', 'footer_first')->where('report_type', '101_daily')->first(),
+            'footer_second_person' => DailyReportPerson::where('type', 'footer_second')->where('report_type', '101_daily')->first()
 
         ];
 
