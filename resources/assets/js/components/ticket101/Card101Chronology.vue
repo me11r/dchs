@@ -60,10 +60,6 @@
                                             @timeChanged="item.time = $event"
                                             :value="item.time"
                                         />
-                                    <!--<timepicker-input
-                                            v-model="item.time"
-                                            @timeChanged="item.time = $event"
-                                            :value-data="item.time"/>-->
                                     </div>
 
                                     <div class="column">
@@ -117,6 +113,23 @@
                                     </div>
 
                                 </div>
+                            </td>
+                        </tr>
+                        <tr
+                            v-for="dept in departmentsHq_"
+                            :key="`dept_hq__idx__${dept.id}`">
+                            <td>{{ dept.name }}</td>
+                            <td>{{ dept.department }}</td>
+                            <td>
+                                <div class="add_button">
+                                    <button
+                                        class="button is-small is-outlined is-success"
+                                        type="button"
+                                        @click.prevent="createNewItemOnWay(dept)">
+                                        <i class="fa fa-plus"></i>&nbsp;Добавить
+                                    </button>
+                                </div>
+
                             </td>
                         </tr>
                     </tbody>
@@ -254,12 +267,29 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr
+                                v-for="dept in departmentsHq_"
+                                :key="`dept_hq__idx__${dept.id}`">
+                            <td>{{ dept.name }}</td>
+                            <td>{{ dept.department }}</td>
+                            <td>
+                                <div class="add_button">
+                                    <button
+                                            class="button is-small is-outlined is-success"
+                                            type="button"
+                                            @click.prevent="createNewItemOnWay(dept)">
+                                        <i class="fa fa-plus"></i>&nbsp;Добавить
+                                    </button>
+                                </div>
+
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
             </b-tab-item>
             <b-tab-item
-                label="Хоронология от ПЧ"
+                label="Хронология от ПЧ"
                 icon="fa fa-truck">
                 <table class="table is-fullwidth is-hoverable">
                     <thead>
@@ -584,6 +614,7 @@ export default {
             records_arrived: [],
             records_onway: [],
             departments_: this.departments,
+            departmentsHq_: [],
             time: '',
             tableRecords: this.records,
             eventInfo_: this.eventInfo,
@@ -782,6 +813,12 @@ export default {
             });
         });
 
+        if (this.card_.hq_rides) {
+            this.departmentsHq_ = _.filter(this.card_.hq_rides, (item) => {
+                return item.dispatch_time !== null;
+            });
+        }
+
         this.sortByTime();
 
         globalBus.$on('checkDepartmentsOnWay', (departments) => {
@@ -789,7 +826,11 @@ export default {
                 if(!_.find(this.departments_, {id: item.id})){
                     this.departments_.push(item);
                 }
-            })
+            });
+        });
+
+        globalBus.$on('hqDeptSent', (department) => {
+            this.departmentsHq_.push(department);
         });
 
         //todo временно отключено, возможно вообще не пригодится в дальнейшем

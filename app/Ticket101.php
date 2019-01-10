@@ -333,6 +333,11 @@ class Ticket101 extends Model
         return $this->hasOne(TripResult::class, 'id', 'trip_result_id');
     }
 
+    public function hqRides()
+    {
+        return $this->hasMany(Ticket101HqRide::class, 'ticket101_id');
+    }
+
     public function logs()
     {
         return $this->hasMany(Ticket101Log::class, 'ticket101_id');

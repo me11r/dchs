@@ -40,6 +40,7 @@ use App\Services\AnalyticsService;
 use App\Services\FileUploadService;
 use App\Ticket101;
 use App\Ticket101Drill;
+use App\Ticket101HqRide;
 use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use App\User;
@@ -263,6 +264,7 @@ class CardController extends AuthorizedController
                 'fireDepartmentsInfo.living_sector_type',
                 'fireDepartmentsInfo.liquidation_method',
                 'fireDepartmentsInfo.water_supply_source',
+                'hqRides',
             ])
             ->findOrNew($card_id);
 
@@ -297,18 +299,18 @@ class CardController extends AuthorizedController
             session(['notification.get_back' => 1]);
         }
 
-
         $fire_dep_results_info = '';
         foreach ($ticket->results()->where('dispatched', true)->get() as $item) {
             $fire_dep_results_info .= "{$item->department->name}: {$item->tech->department}; ";
         }
 
-        $water_sources = WaterSupplySource::all();
+        foreach ($ticket->hqRides as $hqRide) {
+            if($hqRide->dispatch_time){
+                $fire_dep_results_info .= "{$hqRide->name}: {$hqRide->department}; ";
+            }
+        }
 
-//        if (!\count($ticket->notifications) && $ticket->id){
-//            $this->createNotificationServices($ticket);
-//            $ticket->notifications()->get();
-//        }
+        $water_sources = WaterSupplySource::all();
 
         $this->set('notificationGroups', (new NotificationGroup())->get());
         $this->set('recommendedDispatched', $recommendedDispatched);
@@ -487,6 +489,29 @@ class CardController extends AuthorizedController
         }
     }
 
+    private function saveHqRides(Request $request, $card)
+    {
+        $data = $request->hq;
+
+        foreach ($data as $fieldName => $departments) {
+            foreach ($departments as $deptName => $inputName) {
+                Ticket101HqRide::updateOrCreate([
+                    'name' => $deptName,
+                    'ticket101_id' => $card->id,
+                ],[
+                    'ticket101_id' => $card->id,
+                    'name' => $deptName,
+                    'department' => $request->input("hq.dept.{$deptName}.0", null),
+                    'accept_time' => $request->input("hq.accept_time.{$deptName}.0", null),
+                    'out_time' => $request->input("hq.out_time.{$deptName}.0", null),
+                    'arrive_time' => $request->input("hq.arrive_time.{$deptName}.0", null),
+                    'ret_time' => $request->input("hq.ret_time.{$deptName}.0", null),
+                    'dispatch_time' => $request->input("hq.dispatch_time.{$deptName}.0", null),
+                ]);
+            }
+        }
+    }
+
     public function postAdd101(Request $request, $card_id = 0)
     {
         $data = $request->except([
@@ -497,7 +522,8 @@ class CardController extends AuthorizedController
             'file_1',
             'file_2',
             'file_3',
-            'file_4'
+            'file_4',
+            'hq',
         ]);
 
         $deptsToGetBack = collect([]);
@@ -577,8 +603,9 @@ class CardController extends AuthorizedController
 
         $this->createServicePlans($card);
 
-
         $this->recommend($request, $card);
+
+        $this->saveHqRides($request, $card);
 
         //если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
         // надо вернуть
@@ -596,13 +623,6 @@ class CardController extends AuthorizedController
         $this->saveArriveTimes($request);
 
         $this->saveFiles($card, $request);
-
-        /*if($request->input('other_rides', []) && $request->input('drill_type', '')){
-            $other_ride = $request->input('other_rides', []);
-            $other_ride['ticket_101_id'] = $card->id;
-
-            $ticket_other = Ticket101Other::updateOrCreate(['ticket_101_id' => $card->id], $other_ride);
-        }*/
 
         if($card->trip_result_id){
             $this->saveAnalytics($card);

@@ -13,6 +13,7 @@ use App\Models\Ticket101\Ticket101OtherRecord;
 use App\OnWay101;
 use App\Services\Ticket101\NotificationService;
 use App\Ticket101;
+use App\Ticket101HqRide;
 use App\Ticket101InfoFromFd;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -112,6 +113,18 @@ class CardController extends Controller
         }
 
         return response()->json($resp);
+    }
+
+    public function sendHqRide(Request $request)
+    {
+        $ride = $request->ride;
+        $ride['dispatch_time'] = now()->format('H:i');
+        $ride = Ticket101HqRide::updateOrCreate([
+            'ticket101_id' => $ride['ticket101_id'],
+            'name' => $ride['name'],
+        ],$ride);
+
+        return response()->json($ride, 200);
     }
 
     public function createChronologyRecord101card(Request $request)
