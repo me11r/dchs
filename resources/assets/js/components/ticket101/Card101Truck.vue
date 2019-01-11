@@ -691,8 +691,8 @@
         },
         mounted(){
             setTimeout(this.checkRoadtrips, this.time);
-
-            if(!this.hq) {
+            console.dir(this.hq)
+            if(this.hq.length === 0) {
                 this.hq = this.hq1;
             }
             /*globalBus.$on('timeChangedUnique', (event) => {
