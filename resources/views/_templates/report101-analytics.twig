@@ -3,9 +3,16 @@
         <b>Уточненный адрес:</b> {{ detailed_address }}
     {% endif %}
     <b style="text-decoration: underline; font-style: italic;">{{ pre_information }} S={{ square_max }} м2</b>
-    {% if first_dept_arrived %}
-        {{ first_dept_arrived.name }} ({{ first_dept_arrived.tech_dept }}) на {{ first_dept_arrived.vehicle }} прибыло в {{ first_dept_arrived.arrive_time ?? null }} ({{ first_dept_arrived.on_way_time }}).
-    {% endif %}
+    {#{% if first_dept_arrived %}#}
+        {#{{ first_dept_arrived.name }} ({{ first_dept_arrived.tech_dept }}) на {{ first_dept_arrived.vehicle }} прибыло в {{ first_dept_arrived.arrive_time ?? null }} ({{ first_dept_arrived.on_way_time }}).#}
+    {#{% endif %}#}
+    <b>На место прибыли: </b>
+    {% for item in deptsArrived %}
+        {{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }};
+    {% endfor %}
+    {% for item in deptsArrivedHq %}
+        {{ item.name }} ({{ item.department }}) прибыло в {{ item.arrive_time }};
+    {% endfor %}
     <b>Итог выезда:</b> {{ ticket.ticket_result }}
     <b>Дополнительная информация:</b> {{ ticket.more_info }}
     <b>Ликвидация достигнута:</b> {{ ticket.liquidation_method.name|default('') }}
