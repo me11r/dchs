@@ -168,7 +168,7 @@
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(11,21,22,23,24)">
+                    v-if="hasAnyRight(11,23,24,'SIREN_SPEECH_TECH_SHOW','CALL_INFO_SHOW','ANALYTICS101_SHOW')">
                     <a class="navbar-link is-small"><i class="fas fa-receipt fa-fw"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown">
                         <div
