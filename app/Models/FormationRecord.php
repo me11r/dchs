@@ -102,7 +102,9 @@ class FormationRecord extends Model
         'organisation',
         'date',
 
+        'head_count',
         'head',
+        'head_phone',
         'staff_total',
         'staff_action',
         'staff_duty_shift',

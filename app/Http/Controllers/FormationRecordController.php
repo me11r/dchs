@@ -85,7 +85,6 @@ class FormationRecordController extends Controller
         $items = (new FormationRecord())->where('date', '=', $item->date)
             ->whereNotIn('organisation', [
                 FormationOrganisation::DCHS_ALMATY,
-//                FormationOrganisation::AIR_RESCUE,
                 FormationOrganisation::DISTRICT_MANAGERS,
             ])
             ->get();
@@ -97,6 +96,8 @@ class FormationRecordController extends Controller
         foreach ($items as $item){
             if($item->organisation == 'air_rescue' && $airRescueReport){
                 $item->head = $airRescueReport->staff_head;
+                $item->head_count = $airRescueReport->staff_head_count;
+                $item->head_phone = $airRescueReport->staff_head_phone;
                 $item->staff_total = $airRescueReport->staff_total;
                 $item->staff_action = $airRescueReport->staff_action;
                 $item->staff_duty_shift = $airRescueReport->staff_duty_shift;

@@ -20,7 +20,7 @@
                 <thead>
                 <tr>
                     <th rowspan="3">Наименование подразеления</th>
-                    <th rowspan="3">Руководящий состав</th>
+                    <th colspan="3">Руководящий состав</th>
                     <th colspan="4">Личный состав</th>
                     <th colspan="8">Техника</th>
                     <th colspan="2">ГСМ</th>
@@ -31,6 +31,10 @@
                 </tr>
                 <tr>
                     {#Личный состав#}
+                    <th rowspan="2">Количество</th>
+                    <th rowspan="2">Ф.И.О.</th>
+                    <th rowspan="2">Телефон</th>
+
                     <th rowspan="2">По штату</th>
                     <th rowspan="2">В наличии</th>
                     <th colspan="2">На оперативном дежурстве</th>
@@ -176,15 +180,17 @@
                 if (!totals[fieldName] && fieldName) {
                     totals[fieldName] = 0;
                 }
+
                 if (!isNaN(value) && fieldName) {
                     totals[fieldName] += value;
                 }
 
                 if (isNaN(value) && value !== null) {
-                    totals[fieldName] += 1;
+                    totals[fieldName] += 0;
                 }
             });
             fillTotals(totals);
+            console.dir(totals)
         }
 
         function fillTotals(totals) {

@@ -4,7 +4,16 @@
     </td>
     {% for row in fields %}
         <td>
-            <input autocomplete="off" class="calc-field" type="text" min=0 {% if row != 'head' %} oninput="validity.valid||(value='');" {% endif %} data-field="{{ row }}" value="{{ item.attribute(row)|default(0) }}"
+            <input autocomplete="off"
+                   type="text"
+                   min=0
+                    {% if row not in ['head','head_phone'] %}
+                        oninput="validity.valid||(value='');"
+                        class="calc-field"
+                        data-field="{{ row }}"
+                    {% endif %}
+
+                   value="{{ item.attribute(row)|default(0) }}"
                    name="items[{{ item.id }}][{{ row }}]">
         </td>
     {% endfor %}
