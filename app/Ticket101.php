@@ -390,6 +390,22 @@ class Ticket101 extends Model
             ->first();
     }
 
+    public function departments_arrived()
+    {
+        return $this->results()
+            ->whereNotNull('arrive_time')
+            ->orderBy('arrive_time')
+            ->get();
+    }
+
+    public function departments_arrived_hq()
+    {
+        return $this->hqRides()
+            ->whereNotNull('arrive_time')
+            ->orderBy('arrive_time')
+            ->get();
+    }
+
     public function getLocTimeTotalAttribute()
     {
         try{
@@ -429,11 +445,6 @@ class Ticket101 extends Model
             return null;
         }
     }
-
-    /*public function other_ride()
-    {
-        return $this->hasOne(Ticket101Other::class,'ticket_101_id');
-    }*/
 
     public function popup_notifications()
     {
