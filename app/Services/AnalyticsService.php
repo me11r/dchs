@@ -14,6 +14,8 @@ class AnalyticsService
 {
     public function fill($ticket)
     {
+        $deptsArrived = $ticket->departments_arrived();
+        $deptsArrivedHq = $ticket->departments_arrived_hq();
         $firstDeptArrived = $ticket->first_department_arrived();
         if ($firstDeptArrived) {
             $fireDeptResult = FireDepartmentResult::find($firstDeptArrived->id);
@@ -64,6 +66,8 @@ class AnalyticsService
             'date2' => $ticket->created_at->format('d.m.Y'),
             'city_area' => $ticket->city_area->name ?? null,
             'address' => $ticket->location,
+            'deptsArrived' => $deptsArrived,
+            'deptsArrivedHq' => $deptsArrivedHq,
             'caller_name' => $ticket->caller_name,
             'caller_phone' => $ticket->caller_phone,
             'pre_information' => $ticket->pre_information,
