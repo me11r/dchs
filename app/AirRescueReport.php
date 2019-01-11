@@ -48,6 +48,8 @@ class AirRescueReport extends Model
         'other_protection',
 
         'staff_head',
+        'staff_head_count',
+        'staff_head_phone',
         'staff_total',
         'staff_action',
         'staff_duty_shift',

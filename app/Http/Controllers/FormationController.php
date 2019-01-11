@@ -92,10 +92,13 @@ class FormationController extends AuthorizedController
     {
         $data['report'] = AirRescueReport::find($id);
         $data['total_persons_count'] = $data['report']->staff_total;
-        $data['total_persons_head_count'] = $data['report']->staff_head;
+        $data['total_persons_head_count'] = $data['report']->staff_head_count;
+        $data['head_name'] = $data['report']->staff_head;
+        $data['head_phone'] = $data['report']->staff_head_phone;
         $data['total_persons_active_count'] = $data['report']->staff_total;
         $data['total_persons_available_count'] = $data['report']->staff_action;
         $data['total_persons_oper_count'] = $data['report']->staff_duty_shift;
+        $data['total_persons_oper_8hours_count'] = $data['report']->staff_duty_shift_8hours;
 
         $data['tech_active'] = $data['report']->tech()->status('action')->get();
         $data['tech_reserve'] = $data['report']->tech()->status('reserve')->get();
@@ -129,6 +132,8 @@ class FormationController extends AuthorizedController
     {
         $id = $request->id;
 
+        $f = $request->all();
+
         $report = AirRescueReport::firstOrNew(['id' => $id]);
         $report->jet_fuel_action = $request->jet_fuel_action;
         $report->jet_fuel_reserved = $request->jet_fuel_reserved;
@@ -141,15 +146,14 @@ class FormationController extends AuthorizedController
         $report->staff_duty_shift = $request->staff_duty_shift;
         $report->staff_duty_shift_8hours = $request->staff_duty_shift_8hours;
         $report->staff_head = $request->staff_head;
+        $report->staff_head_count = $request->staff_head_count;
+        $report->staff_head_phone = $request->staff_head_phone;
 
         $report->save();
-
-        $f = $request->all();
 
         if($request->tech){
             AirRescueReportTechItem::where('report_id', $report->id)
                 ->delete();
-            $f = $request->all();
             foreach ($request->tech as $type => $inputs) {
                 foreach ($inputs as $input_key => $input) {
                     if($input_key != 'aircraft_id'){
