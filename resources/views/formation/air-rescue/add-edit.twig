@@ -13,10 +13,34 @@
             <input type="hidden" name="id" value="{{ model.id ?? '' }}">
 
             <fieldset>
-                <legend>Руководящий состав</legend>
+                <legend>Руководящий состав (Ф.И.О.)</legend>
                 <div class="field">
                     <div class="field">
                         <input type="text" value="{{ model.staff_head ?? '' }}" name="staff_head" class="input">
+                    </div>
+
+                    {#<staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                      block_type="head"></staff-air-rescue>#}
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>Руководящий состав (Количество)</legend>
+                <div class="field">
+                    <div class="field">
+                        <input type="text" value="{{ model.staff_head_count ?? '' }}" name="staff_head_count" class="input">
+                    </div>
+
+                    {#<staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
+                                      block_type="head"></staff-air-rescue>#}
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>Руководящий состав (Телефон)</legend>
+                <div class="field">
+                    <div class="field">
+                        <input type="text" value="{{ model.staff_head_phone ?? '' }}" name="staff_head_phone" class="input">
                     </div>
 
                     {#<staff-air-rescue :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
