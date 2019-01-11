@@ -59,6 +59,7 @@ class AnalyticsService
 
         $result = [
             'result_title' => $ticket->trip_result->name,
+            'detailed_address' => $ticket->detailed_address,
             'date' => $ticket->created_at->format('d.m.Y H:i'),
             'date2' => $ticket->created_at->format('d.m.Y'),
             'city_area' => $ticket->city_area->name ?? null,
