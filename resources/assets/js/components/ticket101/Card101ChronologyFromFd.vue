@@ -294,7 +294,7 @@
                                 v-if="canEdit(record.id) === true"
                                 :inputdate="record.time"
                                 v-model="record.time"
-                                @timeChanged="record.time = $event"
+                                @timeChanged="record.time = parsedTime($event)"
                             />
                             <span v-else>{{ record.time }}</span>
                         </td>
@@ -458,6 +458,13 @@ export default {
         };
     },
     methods: {
+        parsedTime(timestamp) {
+            if (moment(timestamp).isValid()) {
+                return moment(timestamp).format('HH:mm');
+            } else {
+                return timestamp;
+            }
+        },
         editData(id) {
             if (_.find(this.tableEdits, {id: id})) {
                 _.find(this.tableEdits, {id: id}).edit = !_.find(this.tableEdits, {id: id}).edit;

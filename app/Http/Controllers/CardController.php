@@ -526,6 +526,7 @@ class CardController extends AuthorizedController
             'file_3',
             'file_4',
             'hq',
+            '00:00', // дефолтное названия инпута из компонента timepicker
         ]);
 
         $deptsToGetBack = collect([]);
