@@ -268,8 +268,6 @@ class CardController extends AuthorizedController
             ])
             ->findOrNew($card_id);
 
-//        dd($ticket->service_plans->first());
-
         $recommendedDispatched = $ticket->results()
             ->isDispatched()
             ->recommended()
@@ -305,7 +303,7 @@ class CardController extends AuthorizedController
         }
 
         foreach ($ticket->hqRides as $hqRide) {
-            if($hqRide->dispatch_time){
+            if($hqRide->dispatched){
                 $fire_dep_results_info .= "{$hqRide->name}: {$hqRide->department}; ";
             }
         }

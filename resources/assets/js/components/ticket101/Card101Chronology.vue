@@ -815,7 +815,7 @@ export default {
 
         if (this.card_.hq_rides) {
             this.departmentsHq_ = _.filter(this.card_.hq_rides, (item) => {
-                return item.dispatch_time !== null;
+                return item.dispatched !== 0 && item.dispatched !== null;
             });
         }
 

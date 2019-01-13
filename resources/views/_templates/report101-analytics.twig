@@ -11,7 +11,7 @@
         {{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }};
     {% endfor %}
     {% for item in deptsArrivedHq %}
-        {{ item.name }} ({{ item.department }}) прибыло в {{ item.arrive_time }};
+        {{ item.name }} прибыло в {{ item.arrive_time }};
     {% endfor %}
     <b>Итог выезда:</b> {{ ticket.ticket_result }}
     <b>Дополнительная информация:</b> {{ ticket.more_info }}

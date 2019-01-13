@@ -119,6 +119,7 @@ class CardController extends Controller
     {
         $ride = $request->ride;
         $ride['dispatch_time'] = now()->format('H:i');
+        $ride['dispatched'] = true;
         $ride = Ticket101HqRide::updateOrCreate([
             'ticket101_id' => $ride['ticket101_id'],
             'name' => $ride['name'],
