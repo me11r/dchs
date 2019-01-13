@@ -15,6 +15,7 @@ class Ticket101HqRide extends Model
         'arrive_time',
         'ret_time',
         'dispatch_time',
+        'dispatched',
     ];
 
     public function getDeptNames()
