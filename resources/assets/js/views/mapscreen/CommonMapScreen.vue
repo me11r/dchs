@@ -66,6 +66,7 @@ export default {
             yandexMapsBus: {},
             zoom: 16,
             fireDepartmentAreas: [],
+            cityAreas: [],
 
             lastGeoObject: null,
             lastGeoData: null,
@@ -230,6 +231,19 @@ export default {
             }
         },
 
+        detectCityAreaOsm(lat, long) {
+            let area = this.yandexMapsBus.detectCityAreaOsm(lat, long, this.cityAreas, this.map);
+
+            if (area.title) {
+                let districtModel = _.find(this.yandexMapsBus.areas, {'name': area.title.toLowerCase()});
+                if (districtModel) {
+                    window.localStorage.setItem('AREA_ID_FOUND', districtModel.id);
+                    globalBus.$emit('AREA_ID_FOUND', districtModel.id);
+                    globalBus.$emit('city_area_selected', districtModel);
+                }
+            }
+        },
+
         doubleClickOnTheMap(event) {
             const coords = event.get('coords');
             this.lastGeoObject = null;
@@ -248,6 +262,18 @@ export default {
                         this.setMapData();
 
                         let deptId = this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.fireDepartmentAreas, this.map);
+
+                        let area = this.yandexMapsBus.detectCityAreaOsm(coords[0], coords[1], this.cityAreas, this.map);
+
+                        if (area.title) {
+                            let districtModel = _.find(this.yandexMapsBus.areas, {'name': area.title.toLowerCase()});
+                            if (districtModel) {
+                                window.localStorage.setItem('AREA_ID_FOUND', districtModel.id);
+                                globalBus.$emit('AREA_ID_FOUND', districtModel.id);
+                                globalBus.$emit('city_area_selected', districtModel);
+                            }
+                        }
+
                         window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, deptId);
                         globalBus.$emit('is_common_house', deptId);
                     }
@@ -312,8 +338,9 @@ export default {
 
             this.setMapData();
         },
-        initCityAreas(){
+        initCityAreas() {
             this.yandexMapsBus.cityAreas(this.map);
+            this.cityAreas = this.yandexMapsBus.cityAreasPolygons;
         },
         initFireDepartmentAreas() {
             var polygons = this.yandexMapsBus.polygons();
@@ -356,6 +383,11 @@ export default {
                     if (event.key === YANDEX_HOUSE_FOUND) {
                         let data = JSON.parse(event.newValue);
                         this.houseFound(data['lat'], data['long'], data['name']);
+                    }
+
+                    if (event.key === 'findAreaOsm') {
+                        let coords = JSON.parse(event.newValue);
+                        this.detectCityAreaOsm(coords[0], coords[1]);
                     }
                 });
             });

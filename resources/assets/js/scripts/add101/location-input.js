@@ -94,6 +94,7 @@ export default function bindLocationInputApp() {
             notifyMap() {
                 // window.localStorage.setItem(LOCATION_EXCHANGE_KEY, this.location);
                 if (this.location.length > 0) {
+                    //todo: перебивает поиск района города по OSM
                     this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.location);
                 }
             }
