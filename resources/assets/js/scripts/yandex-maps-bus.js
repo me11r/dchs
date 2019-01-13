@@ -12,6 +12,7 @@ export default class YandexMapsBus {
         this.debouncedFindHouse = _.debounce(function (location) {
             self.findHouse(location);
         }, 500);
+        this.cityAreasPolygons = [];
     }
 
     getYmaps() {
@@ -86,6 +87,9 @@ export default class YandexMapsBus {
                                     window.localStorage.setItem(AREA_ID_FOUND, districtModel.id);
                                     globalBus.$emit(AREA_ID_FOUND, districtModel.id);
                                     globalBus.$emit('city_area_selected', districtModel);
+
+                                    //уточняем район по OpenStreetMap (работает только со включенной картой)
+                                    window.localStorage.setItem('findAreaOsm', JSON.stringify([lat, long]));
                                 }
                             }
                         });
@@ -110,6 +114,21 @@ export default class YandexMapsBus {
         return 'no fd dound';
     }
 
+    detectCityAreaOsm(lat, long, polygons, map) {
+        for (let polygon in polygons) {
+            let area = polygons[polygon];
+
+            map.geoObjects.add(area.polygon);
+
+            if (area.polygon.geometry.contains([lat, long])) {
+                map.geoObjects.remove(area.polygon);
+                return area;
+            }
+            map.geoObjects.remove(area.polygon);
+        }
+        return 'no area dound';
+    }
+
     cityAreas(map) {
         // 1. Запрашиваем через геокодер район (у Яндекса этой возможности пока нет, придется пользоваться OSM)
         let url = "https://nominatim.openstreetmap.org/search";
@@ -124,7 +143,7 @@ export default class YandexMapsBus {
             'Наурызбайский'
         ];
 
-        for (let region in regions){
+        for (let region in regions) {
             let regionName = `Казахстан, Алматы, ${regions[region]} район`;
             let self = this;
 
@@ -151,6 +170,11 @@ export default class YandexMapsBus {
                                     opacity: 0.5
                                 });
                                 map.geoObjects.add(p);
+                                let element = {
+                                    title: regions[region],
+                                    polygon: p,
+                                };
+                                self.cityAreasPolygons.push(element);
 
                             } else {
 
@@ -171,6 +195,11 @@ export default class YandexMapsBus {
                                         opacity: 0.5
                                     });
                                     map.geoObjects.add(p);
+                                    let element = {
+                                        title: regions[region],
+                                        polygon: p,
+                                    };
+                                    self.cityAreasPolygons.push(element);
                                 }
                             }
                             // localStorage.setItem('test_area', JSON.stringify(rightCoordinates));
