@@ -30,6 +30,7 @@ use App\Services\FormationService;
 use App\StaffCpps;
 use App\Ticket101Other;
 use App\User;
+use App\VehicleStatus;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
@@ -449,6 +450,7 @@ class FormationController extends AuthorizedController
         $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
+            ->set('vehicle_statuses', VehicleStatus::all())
             ->set('read_only', $read_only)
             ->set('tech_table', $tech_table ?? null)
             ->set('staff', $staff)
@@ -495,6 +497,7 @@ class FormationController extends AuthorizedController
                         'comment' => $inputs['comment'][$input_key] ?? null,
                         'date_from' => $date_from,
                         'date_to' => $date_to,
+                        'vehicle_status_id' => $inputs['vehicle_status_id'][$input_key] ?? null,
                     ]);
                 }
 
