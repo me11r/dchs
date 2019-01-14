@@ -554,7 +554,9 @@ class CardController extends AuthorizedController
 
         /*при создании карточки единожды привязываемся к строевой записке, во избежание дублей высылки*/
         if(!$card->id){
-            $data['formation_report_id'] = FormationReport::approved()->max('id');
+            $data['formation_report_id'] = FormationReport::approved()
+                ->has('people_reports')
+                ->max('id');
         }
 
         $canEditTicket = $card->canEditTicket();
