@@ -345,11 +345,26 @@
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Отпуск:</h3>
             <table class="table">
+                {% set previous = false %}
                 {% for item in vacation %}
-                    <tr>
-                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.initials }}</td>
-                    </tr>
+                    {% if (previous == false) %}
+                        <tr>
+                            <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                            <td>{{ item.staff.initials }}
+                    {% elseif (previous.staff.department.name != item.staff.department.name) %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                            <td>{{ item.staff.initials }}
+                    {% else %}
+                        , {{ item.staff.initials }}
+                    {% endif %}
+                    {% if (loop.last) %}
+                        </td>
+                        </tr>
+                    {% endif %}
+                    {% set previous = item %}
                 {% endfor %}
             </table>
         </div>
@@ -379,11 +394,26 @@
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Командировка:</h3>
             <table class="table">
+                {% set previous = false %}
                 {% for item in business_trip %}
-                    <tr>
-                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %}</td>
-                    </tr>
+                    {% if (previous == false) %}
+                        <tr>
+                            <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                            <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %}
+                    {% elseif (previous.staff.department.name != item.staff.department.name) %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                            <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %}
+                    {% else %}
+                           , {{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %}
+                    {% endif %}
+                    {% if (loop.last) %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% set previous = item %}
                 {% endfor %}
             </table>
         </div>

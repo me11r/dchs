@@ -122,16 +122,23 @@ class DictionaryController extends AuthorizedController
 
             $specialPlan = SpecialPlan::orderBy($sort);
 
-            if($request->search){
+            if ($request->search) {
                 $specialPlan = $specialPlan
-                    ->where('object_name', 'like',"%$request->search%")
-                    ->orWhere('location', 'like',"%$request->search%")
-                    ->orWhereHas('city_area', function ($q) use ($request){
-                        $q->where('name', $request->search);
-                    })
-                    ->orWhereHas('fire_department', function ($q) use ($request){
-                        $q->where('title', $request->search);
+                    ->where(function ($query) use ($request) {
+                        $query->where('object_name', 'like', "%$request->search%");
+                        $query->orWhere('location', 'like', "%$request->search%");
+                        $query->orWhereHas('city_area', function ($q) use ($request) {
+                            $q->where('name', $request->search);
+                        });
+                        $query->orWhereHas('fire_department', function ($q) use ($request) {
+                            $q->where('title', $request->search);
+                        });
                     });
+            }
+
+            if ($request->filter_department) {
+                $specialPlan = $specialPlan
+                    ->where('fire_department_id', '=', $request->filter_department);
             }
 
             if(!Auth::user()->department){
@@ -145,27 +152,28 @@ class DictionaryController extends AuthorizedController
                     ->paginate($data['per_page']);
             }
 
-            if($request->filter_department){
-                $data['records'] = $specialPlan
-                    ->where('fire_department_id', $request->filter_department)
-                    ->paginate($data['per_page']);
-            }
-
             $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные планы";
-            $data['filter_department'] = $request->filter_department;
         }
         elseif($name == 'operational-cards'){
 
             $operCard = OperationalCard::orderBy('id');
 
-            if($request->search){
-                $operCard = $operCard->where('object_name', 'like', "%$request->search%")
-                    ->orWhere('location', 'like', "%$request->search%")
-                    ->orWhere('oc_number', $request->search)
-                    ->orWhereHas('fire_department', function ($q) use ($request){
-                        $q->where('title', $request->search);
+            if ($request->search) {
+                $operCard = $operCard
+                    ->where(function ($query) use ($request) {
+                        $query->where('object_name', 'like', "%$request->search%");
+                        $query->orWhere('location', 'like', "%$request->search%");
+                        $query->orWhere('oc_number', $request->search);
+                        $query->orWhereHas('fire_department', function ($q) use ($request) {
+                            $q->where('title', $request->search);
+                        });
                     });
+            }
+
+            if ($request->filter_department) {
+                $operCard = $operCard
+                    ->where('fire_department_id', '=', $request->filter_department);
             }
 
             if(!Auth::user()->department){
@@ -176,6 +184,7 @@ class DictionaryController extends AuthorizedController
                     ->paginate($data['per_page']);
             }
 
+            $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные карточки";
         }
         elseif($name == 'aircraft-types'){
