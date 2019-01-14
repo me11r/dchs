@@ -80,12 +80,34 @@ export default {
                 'dspt_sick'
             ];
 
+            const iplTypes = [
+                'ipl_vacation',
+                'ipl_other',
+                'ipl_study',
+                'ipl_maternity',
+                'ipl_business_trip',
+                'ipl_sick'
+            ];
+
+            const kshmTypes = [
+                'kshm_vacation',
+                'kshm_other',
+                'kshm_study',
+                'kshm_maternity',
+                'kshm_business_trip',
+                'kshm_sick'
+            ];
+
             if (tulparTypes.indexOf(this.rank) !== -1) {
                 return 'duty_vehicle';
             } else if (zhalynTypes.indexOf(this.rank) !== -1) {
                 return 'zhalin';
             } else if (dsptTypes.indexOf(this.rank) !== -1) {
                 return 'dspt';
+            } else if (iplTypes.indexOf(this.rank) !== -1) {
+                return 'ipl';
+            } else if (kshmTypes.indexOf(this.rank) !== -1) {
+                return 'kshm';
             } else {
                 return this.rank;
             }
@@ -102,7 +124,7 @@ export default {
     },
     methods: {
         activateTrigger() {
-            if (window.canEditOd === false) {
+            if (window.canEditOd === false || window.approved === true) {
                 return;
             }
 
