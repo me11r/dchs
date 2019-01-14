@@ -5,6 +5,7 @@
         window.people = {{ people | json_encode() | raw }};
         window.formId = '{{ form_id }}';
         window.canEditOd = {{ canEditOd | json_encode() | raw }};
+        window.approved = {{ approved | json_encode() | raw }};
     </script>
     <div class="section container-fluid" id="view-101-app">
     <div class="panel">
@@ -359,6 +360,30 @@
                     :rank="'dspt_vacation'">
             </persons101-multiselect>
         </p>
+        {% for key, item in depts_od_ppl_inactive %}
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'{{ item }} отпуск'"
+                        :rank="'{{ key }}_vacation'">
+                </persons101-multiselect>
+            </p>
+        {% endfor %}
+        {% for key, item in depts_od_ppl_inactive %}
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'{{ item }} учебный'"
+                        :rank="'{{ key }}_study'">
+                </persons101-multiselect>
+            </p>
+        {% endfor %}
+        {% for key, item in depts_od_ppl_inactive %}
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'{{ item }} декрет'"
+                        :rank="'{{ key }}_maternity'">
+                </persons101-multiselect>
+            </p>
+        {% endfor %}
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Больничный:</h3>
             <table class="table">
@@ -376,6 +401,22 @@
                     :rank="'dspt_sick'">
             </persons101-multiselect>
         </p>
+        {% for key, item in depts_od_ppl_inactive %}
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'{{ item }} другое'"
+                        :rank="'{{ key }}_other'">
+                </persons101-multiselect>
+            </p>
+        {% endfor %}
+        {% for key, item in depts_od_ppl_inactive %}
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'{{ item }} больничный'"
+                        :rank="'{{ key }}_sick'">
+                </persons101-multiselect>
+            </p>
+        {% endfor %}
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Командировка:</h3>
             <table class="table">
@@ -393,6 +434,14 @@
                     :rank="'dspt_business_trip'">
             </persons101-multiselect>
         </p>
+        {% for key, item in depts_od_ppl_inactive %}
+            <p class="" style="width: 20%; padding: 0 20px 0 0">
+                <persons101-multiselect
+                        :name="'{{ item }} командировка'"
+                        :rank="'{{ key }}_business_trip'">
+                </persons101-multiselect>
+            </p>
+        {% endfor %}
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Расстановка на {{ report.report_date|date('d-m-Y') }}:</h3>
             <table class="table">
