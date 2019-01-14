@@ -519,6 +519,11 @@ class FormationController extends AuthorizedController
             'tech_repair_type_2' => 0,
         ];
 
+        $depts_od_ppl_inactive = [
+            'ipl' => 'ИПЛ',
+            'kshm' => 'КШМ',
+        ];
+
         $report = (new FormationReport)->find($form_id);
 
         $latest = FormationReport::latest()->first();
@@ -836,6 +841,7 @@ class FormationController extends AuthorizedController
         $totalTraineeCount = $report->sumTrainee(); // $people->sum('trainee');
 
         $dataToReport = [
+            'depts_od_ppl_inactive' => $depts_od_ppl_inactive,
             'people' => $people,
             'tech' => $tech,
             'people_fields' => $people_fields,
@@ -859,11 +865,13 @@ class FormationController extends AuthorizedController
 
         $this->set('people', $people)
             ->set('form_id', $form_id)
+            ->set('depts_od_ppl_inactive', $depts_od_ppl_inactive)
             ->set('od_staff', (new FormationPersonsReport())->getODStaff())
             ->set('tech', $tech)
             ->set('dept13_people', $dept13_people)
             ->set('dept_od_people', $dept_od_people)
             ->set('user', $user)
+            ->set('approved', $report->is_approved)
             ->set('operGroup', $operGroup)
             ->set('people_fields', $people_fields)
             ->set('tech_fields', $tech_fields)
