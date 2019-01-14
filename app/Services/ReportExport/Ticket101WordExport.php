@@ -386,7 +386,7 @@ class Ticket101WordExport
             'tulpar8' => 'Тулпар-8: ',
             'tulpar10' => 'Тулпар-10: ',
             'kshm' => 'КШМ: ',
-            'ipl_zhalyn' => 'ИПЛ «Жалын»: ',
+            'ipl_zhalyn' => 'ИПЛ «Жалын»: '
 //            'sick_leave' => 'Больничные: ',
         ];
 
@@ -451,7 +451,7 @@ class Ticket101WordExport
                 }
 
                 foreach ($people as $fireDept => $persons) {
-                    if (isset($persons[$array_key]) && count($persons[$array_key])) {
+                    if ((isset($persons[$array_key]) && count($persons[$array_key])) || ($array_key == 'vacation' && count($persons['maternity']))) {
 
                         $peopleByComma = count($persons[$array_key]) ? implode(', ', array_unique($persons[$array_key])) : '-';
 
@@ -468,14 +468,15 @@ class Ticket101WordExport
                         }
 
                         if ($array_key == 'vacation') {
-                            $prefix = 'Трудовой-';
-                            $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
-                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
-
+                            if (count($persons['vacation'])) {
+                                $prefix = 'Трудовой-';
+                                $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
                             if (count($persons['maternity'])) {
-                                $textRun = $section->addTextRun(['indentation' => ['left' => 1430]]);
-//                                $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
-
+                                if (count($persons['vacation'])) {
+                                    $textRun = $section->addTextRun(['indentation' => ['left' => 1430]]);
+                                }
                                 $prefix = 'Декрет-';
                                 $textRun->addText($prefix, $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
 
