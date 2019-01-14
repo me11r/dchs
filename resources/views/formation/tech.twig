@@ -3,17 +3,33 @@
         <legend>Пожарная техника</legend>
         <fieldset class="">
             <legend>В боевом расчете</legend>
-            <add-edit-tech fire_dep_id="{{ dept_id }}" report_id="{{ model.id }}" block_type="action" :vehicles="{{ vehicles }}"></add-edit-tech>
+            <add-edit-tech
+                    fire_dep_id="{{ dept_id }}"
+                    report_id="{{ model.id }}"
+                    block_type="action"
+                    :vehicles="{{ vehicles }}"
+                    :vehicle_statuses="{{ vehicle_statuses }}"
+            ></add-edit-tech>
         </fieldset>
         <fieldset class="">
             <legend>В резерве</legend>
-            <add-edit-tech fire_dep_id="{{ dept_id }}" report_id="{{ model.id }}" block_type="reserve" :vehicles="{{ vehicles }}"></add-edit-tech>
+            <add-edit-tech
+                    fire_dep_id="{{ dept_id }}"
+                    report_id="{{ model.id }}"
+                    block_type="reserve"
+                    :vehicles="{{ vehicles }}"
+                    :vehicle_statuses="{{ vehicle_statuses }}"
+            ></add-edit-tech>
         </fieldset>
         <fieldset class="">
             <legend>На ремонте</legend>
-            <add-edit-tech fire_dep_id="{{ dept_id }}" report_id="{{ model.id }}" block_type="repair" :vehicles="{{ vehicles }}"></add-edit-tech>
+            <add-edit-tech
+                    fire_dep_id="{{ dept_id }}"
+                    report_id="{{ model.id }}"
+                    block_type="repair"
+                    :vehicles="{{ vehicles }}"
+            ></add-edit-tech>
         </fieldset>
-
     </fieldset>
 </div>
 

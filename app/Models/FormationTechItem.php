@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\FormationTechReport;
+use App\VehicleStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +44,7 @@ class FormationTechItem extends Model
 {
     protected $fillable = [
         'vehicle_id',
+        'vehicle_status_id',
         'formation_tech_report_id',
         'department',
         'status',
@@ -50,6 +52,10 @@ class FormationTechItem extends Model
         'comment',
         'date_from',
         'date_to',
+    ];
+
+    protected $appends = [
+        'vehicle_name_status'
     ];
 
     public function scopeStatus($q, $status)
@@ -60,6 +66,11 @@ class FormationTechItem extends Model
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
+    public function vehicle_status()
+    {
+        return $this->belongsTo(VehicleStatus::class, 'vehicle_status_id');
     }
 
     public function formation_tech_report()
@@ -82,6 +93,14 @@ class FormationTechItem extends Model
     public function getDateToAttribute($value)
     {
         return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
+    }
+
+    public function getVehicleNameStatusAttribute()
+    {
+        $vehicle = $this->vehicle->name ?? null;
+        $status = $this->vehicle_status->name ?? null;
+        $result = $vehicle . ' '.($status ? "($status)" : '');
+        return $result;
     }
 
     public function scopeAvailable($q, $department = null)

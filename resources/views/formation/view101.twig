@@ -83,22 +83,22 @@
 
                         <td>
                             {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 1 %}
-                                {{ action.vehicle.name|default('-') }}<br>
+                                {{ action.vehicle.name|default('-') }} {{ action.vehicle_status ? '('~action.vehicle_status.name~')' : '' }}<br>
                             {% endfor %}
                         </td>
                         <td>
                             {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 2 %}
-                                {{ action.vehicle.name|default('-') }}<br>
+                                {{ action.vehicle.name|default('-') }} {{ action.vehicle_status ? '('~action.vehicle_status.name~')' : '' }}<br>
                             {% endfor %}
                         </td>
                         <td>
                             {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 1 %}
-                                {{ tech_reserve.vehicle.name|default('-') }}<br>
+                                {{ tech_reserve.vehicle.name|default('-') }} {{ tech_reserve.vehicle_status ? '('~tech_reserve.vehicle_status.name~')' : '' }}<br>
                             {% endfor %}
                         </td>
                         <td>
                             {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 2 %}
-                                {{ tech_reserve.vehicle.name|default('-') }}<br>
+                                {{ tech_reserve.vehicle.name|default('-') }} {{ tech_reserve.vehicle_status ? '('~tech_reserve.vehicle_status.name~')' : '' }}<br>
                             {% endfor %}
                         </td>
                         <td>
