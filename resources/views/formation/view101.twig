@@ -351,13 +351,17 @@
                     {% if (previous == false) %}
                         <tr>
                             <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                            <td>{{ item.staff.initials }}
-                    {% elseif (previous.staff.department.name != item.staff.department.name) %}
+                            <td><b>{{ item.rank == 'vacation' ? 'Трудовой' : 'Декрет' }} - </b>{{ item.staff.initials }}
+                    {% elseif (previous.staff.department.name != item.staff.department.name) or (item.rank != previous.rank) %}
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                            <td>{{ item.staff.initials }}
+                            <td>
+                                <span class="has-text-weight-bold">
+                                    {{ previous.staff.department.name == item.staff.department.name ? '' : item.staff.department.name }}
+                                </span>
+                            </td>
+                            <td><b>{{ item.rank == 'vacation' ? 'Трудовой' : 'Декрет' }} - </b>{{ item.staff.initials }}
                     {% else %}
                         , {{ item.staff.initials }}
                     {% endif %}
