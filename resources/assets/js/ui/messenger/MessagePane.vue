@@ -4,7 +4,7 @@
         :class="activeClass">
         <v-messages-list
             :user="user"
-            v-if="selected && !multiselect"/>
+            v-show="selected && !multiselect"/>
         <div
             v-if="multiselect"
             class="multiselect--message-pane">
