@@ -473,8 +473,8 @@ class Ticket101WordExport
                             $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
 
                             if (count($persons['maternity'])) {
-                                $textRun = $section->addTextRun(self::$noPaddingPS);
-                                $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun = $section->addTextRun(['indentation' => ['left' => 1430]]);
+//                                $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
 
                                 $prefix = 'Декрет-';
                                 $textRun->addText($prefix, $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
