@@ -90,11 +90,11 @@ trait CommonExportTools
 
             isset($this->tech[$id]) ? (int)array_get($techData, 'motor_water_pump', 0) . '/' . (int)array_get($techData, 'motor_mud_pump', 0) : '0/0', // Мотопомпы Водяная/Грязевая
 
-            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
-            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
+            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
+            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
 
-            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
-            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
+            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
+            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
 
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
