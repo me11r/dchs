@@ -268,16 +268,16 @@
                             </td>
                         </tr>
                         <tr
-                                v-for="dept in departmentsHq_"
-                                :key="`dept_hq__idx__${dept.id}`">
+                            v-for="dept in departmentsHq_"
+                            :key="`dept_hq__idx__${dept.id}`">
                             <td>{{ dept.name }}</td>
                             <td>{{ dept.department }}</td>
                             <td>
                                 <div class="add_button">
                                     <button
-                                            class="button is-small is-outlined is-success"
-                                            type="button"
-                                            @click.prevent="createNewItemOnWay(dept)">
+                                        class="button is-small is-outlined is-success"
+                                        type="button"
+                                        @click.prevent="createNewItemOnWay(dept)">
                                         <i class="fa fa-plus"></i>&nbsp;Добавить
                                     </button>
                                 </div>
@@ -462,7 +462,7 @@
                                 v-if="canEdit(record.id) === true"
                                 :inputdate="record.time"
                                 v-model="record.time"
-                                @timeChanged="record.time = $event"
+                                @timeChanged="record.time = parsedTime($event)"
                             />
                             <span v-else>{{ record.time }}</span>
                         </td>
@@ -624,6 +624,13 @@ export default {
         };
     },
     methods: {
+        parsedTime(timestamp) {
+            if (moment(timestamp).isValid()) {
+                return moment(timestamp).format('HH:mm');
+            } else {
+                return timestamp;
+            }
+        },
         editData(id) {
             if (_.find(this.tableEdits, {id: id})) {
                 _.find(this.tableEdits, {id: id}).edit = !_.find(this.tableEdits, {id: id}).edit;
@@ -823,7 +830,7 @@ export default {
 
         globalBus.$on('checkDepartmentsOnWay', (departments) => {
             _.each(departments, (item) => {
-                if(!_.find(this.departments_, {id: item.id})){
+                if (!_.find(this.departments_, {id: item.id})) {
                     this.departments_.push(item);
                 }
             });
@@ -833,10 +840,10 @@ export default {
             this.departmentsHq_.push(department);
         });
 
-        //todo временно отключено, возможно вообще не пригодится в дальнейшем
-        /*globalBus.$on('departmentHasSent', (data) => {
+        // todo временно отключено, возможно вообще не пригодится в дальнейшем
+        /* globalBus.$on('departmentHasSent', (data) => {
             this.departments_.push(data.result);
-        });*/
+        }); */
 
         // console.dir(this.departments_)
     }
