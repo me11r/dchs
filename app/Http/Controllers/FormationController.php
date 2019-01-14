@@ -697,7 +697,7 @@ class FormationController extends AuthorizedController
         $dispatchers = FormationPersonsItem::byRankAndForm('dispatchers', $form_id)->get()->sortBy(function ($q){
             return $q->staff->department_id;
         });
-        $vacation = FormationPersonsItem::byRankAndForm('vacation', $form_id)->get()->sortBy(function ($q){
+        $vacation = FormationPersonsItem::byRanksAndForm(['vacation', 'maternity'], $form_id)->get()->sortBy(function ($q){
             return $q->staff->department_id;
         });
         $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){

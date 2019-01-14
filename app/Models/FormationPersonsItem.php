@@ -86,4 +86,11 @@ class FormationPersonsItem extends Model
     {
         return $q->where('trainee_type', $rank);
     }
+
+    public function scopeByRanksAndForm($q, $rank, $form_id)
+    {
+        return $q->whereHas('report', function ($q) use ($form_id){
+            $q->where('form_id', $form_id);
+        })->whereIn('rank', $rank);
+    }
 }
