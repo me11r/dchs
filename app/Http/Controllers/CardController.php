@@ -328,7 +328,7 @@ class CardController extends AuthorizedController
 
         foreach ($ticket->hqRides as $hqRide) {
             if($hqRide->dispatched){
-                $fire_dep_results_info .= "{$hqRide->name}: {$hqRide->department}; ";
+                $fire_dep_results_info .= "{$hqRide->name}";
             }
         }
 
