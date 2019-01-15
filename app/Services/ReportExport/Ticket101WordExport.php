@@ -708,6 +708,8 @@ class Ticket101WordExport
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
 
+        $tableStyle->setCellMargin(10);
+
         $table = $section->addTable($tableStyle);
         $this->addSecondTableHeaders($table);
         $this->addSecondTableData($table);
@@ -838,6 +840,8 @@ class Ticket101WordExport
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
+
+        $tableStyle->setCellMargin(10);
 
         $table = $section->addTable($tableStyle);
         $this->addFirstTableHeaders($table);
@@ -1042,10 +1046,10 @@ class Ticket101WordExport
     {
         return $this->phpWord->addSection([
             'orientation' => 'landscape',
-            'marginLeft' => 200,
-            'marginRight' => 200,
-            'marginTop' => 200,
-            'marginBottom' => 200
+            'marginLeft' => 500,
+            'marginRight' => 500,
+            'marginTop' => 500,
+            'marginBottom' => 500
         ]);
     }
 
