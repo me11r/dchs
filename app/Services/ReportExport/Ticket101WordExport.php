@@ -496,8 +496,7 @@ class Ticket101WordExport
                 }
 
                 foreach ($people as $fireDept => $persons) {
-                    if (isset($persons[$sectionName]) && count($persons[$sectionName])) {
-                    if ((isset($persons[$array_key]) && count($persons[$array_key])) || ($array_key == 'vacation' && count($persons['maternity']))) {
+                    if ((isset($persons[$sectionName]) && count($persons[$sectionName])) || ($sectionName == 'vacation' && count($persons['maternity']))) {
 
                         $peopleByComma = count($persons[$sectionName]) ? implode(', ', array_unique($persons[$sectionName])) : '-';
 
