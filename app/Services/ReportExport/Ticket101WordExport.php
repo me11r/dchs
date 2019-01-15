@@ -180,10 +180,6 @@ class Ticket101WordExport
 
             $result[$fireDept->title] = [
                 'sick_leave' => $sickLeavePpl,
-
-                /*'sick_leave' => $sickLeavePpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
-                })->toArray(),*/
             ];
         }
 
@@ -326,8 +322,6 @@ class Ticket101WordExport
                     return $item->guard_number_id;
                 })->toArray(),
             ];
-
-
         }
 
         return $result;
@@ -502,14 +496,6 @@ class Ticket101WordExport
 
                     }
                 }
-
-//                if(!str_contains($array_key, 'tulpar')){
-//                    $section->addText(
-//                        '',
-//                        $generalFontStyle,
-//                        self::$noPaddingPS
-//                    );
-//                }
             }
 
         }
