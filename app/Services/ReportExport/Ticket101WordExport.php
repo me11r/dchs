@@ -402,6 +402,12 @@ class Ticket101WordExport
         $people = $this->peopleByDept();
         $people = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $people); // сортируем
 
+        foreach ($people as $key => $persons) {
+            if(!is_array($persons)){
+                unset($people[$key]);
+            }
+        }
+
         $sickPeople = $this->getSickLeavePeople();
         $sickPeople = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $sickPeople); // сортируем
 
@@ -708,6 +714,8 @@ class Ticket101WordExport
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
 
+        $tableStyle->setCellMargin(10);
+
         $table = $section->addTable($tableStyle);
         $this->addSecondTableHeaders($table);
         $this->addSecondTableData($table);
@@ -838,6 +846,8 @@ class Ticket101WordExport
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
+
+        $tableStyle->setCellMargin(10);
 
         $table = $section->addTable($tableStyle);
         $this->addFirstTableHeaders($table);
@@ -1012,13 +1022,13 @@ class Ticket101WordExport
         $headCellFontStyle = ['name' => 'Times New Roman', 'size' => 9, 'bold' => true];
 //        $paragraphStyle = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
-        $people = $this->peopleByDept()['ОД'];
-        $dspt = implode(', ', $people['dspt']);
-        $cpps = implode(', ', $people['cpps']);
-        $edds = implode(', ', $people['edds']);
-        $ipl = implode(', ', $people['ipl']);
-        $water_supply = implode(', ', $people['water_supply']);
-        $senior_communication_master = implode(', ', $people['senior_communication_master']);
+        $people = $this->peopleByDept()['ОД'] ?? [];
+        $dspt = implode(', ', $people['dspt'] ?? []);
+        $cpps = implode(', ', $people['cpps'] ?? []);
+        $edds = implode(', ', $people['edds'] ?? []);
+        $ipl = implode(', ', $people['ipl'] ?? []);
+        $water_supply = implode(', ', $people['water_supply'] ?? []);
+        $senior_communication_master = implode(', ', $people['senior_communication_master'] ?? []);
 
         $row = $table->addRow();
         $row->addCell()->addText('ДСПТ: ' . $dspt . ';', $headCellFontStyle, self::$noPaddingPS);
@@ -1042,10 +1052,10 @@ class Ticket101WordExport
     {
         return $this->phpWord->addSection([
             'orientation' => 'landscape',
-            'marginLeft' => 200,
-            'marginRight' => 200,
-            'marginTop' => 200,
-            'marginBottom' => 200
+            'marginLeft' => 500,
+            'marginRight' => 500,
+            'marginTop' => 500,
+            'marginBottom' => 500
         ]);
     }
 
