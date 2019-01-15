@@ -402,6 +402,7 @@ class Ticket101 extends Model
     {
         return $this->hqRides()
             ->whereNotNull('arrive_time')
+            ->where('dispatched', true)
             ->orderBy('arrive_time')
             ->get();
     }
