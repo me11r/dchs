@@ -23,6 +23,7 @@
         window.isAdmin = {{ isAdmin | json_encode() | raw }};
         window.showHydrants = {{ showHydrants|default(false) | json_encode() | raw }};
         window.canEditOwnHydrants = {{ canEditOwnHydrants | json_encode() | raw }};
+        window.canEditAllHydrants = {{ canEditAllHydrants | json_encode() | raw }};
         window.userDept = {{ userDept|default(0) }};
         window.initCommonMapScreen();
     </script>

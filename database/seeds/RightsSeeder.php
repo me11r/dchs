@@ -43,7 +43,6 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],
 
             ['right_group_id' => 4, 'title' => 'Получение путевых листов ПЧ', 'name' => 'CAN_SEE_TRIP_PLAN'],
-            ['right_group_id' => 4, 'title' => 'Может изменять список гидрантов', 'name' => 'CAN_EDIT_HYDRANT_LOCATIONS'],
             ['right_group_id' => 4, 'title' => 'Может смотреть суточный отчет', 'name' => 'CAN_SEE_DAILY_REPORT'],
 
             ['title' => 'СП и АСР', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_101'],
@@ -89,6 +88,7 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Пожарные части', 'name' => 'CAN_ACCESS_FIRE_DEPTS'],
             ['right_group_id' => 7, 'title' => 'Моренные озера', 'name' => 'CAN_ACCESS_FIRE_LAKES'],
             ['right_group_id' => 7, 'title' => 'Редактировать данные по гидрантам в рамках своей ПЧ', 'name' => 'CAN_EDIT_MAP_HYDRANTS'],
+            ['right_group_id' => 7, 'title' => 'Может изменять список гидрантов', 'name' => 'CAN_EDIT_HYDRANT_LOCATIONS'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 
