@@ -63,7 +63,7 @@
                             :id="getName('reserve', item.id)"
                             v-model="item.reserve">
                             <option
-                                v-for="x in 5"
+                                v-for="x in 15"
                                 :key="'vehicle_reserve' + x"
                                 :value="x">Резерв{{ x }}
                             </option>

@@ -279,22 +279,22 @@ class Ticket101WordExport
 
             $result[$fireDept->title] = [
                 'vacation' => $vacationPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'maternity' => $maternityPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'dispatchers' => $dispatchersPpl->map(function ($item) {
                     return ($item->staff->initials ?? null) . "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick' => $sickPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick_leave' => $sickLeavePpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : '');
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
 
                 'gdzs_base' => $gdzs_base->map(function ($item) {
@@ -431,7 +431,7 @@ class Ticket101WordExport
             'tulpar8' => 'Тулпар-8: ',
             'tulpar10' => 'Тулпар-10: ',
             'kshm' => 'КШМ: ',
-            'ipl_zhalyn' => 'ИПЛ «Жалын»: ',
+            'ipl_zhalyn' => 'ИПЛ «Жалын»: '
 //            'sick_leave' => 'Больничные: ',
         ];
 
@@ -497,6 +497,7 @@ class Ticket101WordExport
 
                 foreach ($people as $fireDept => $persons) {
                     if (isset($persons[$sectionName]) && count($persons[$sectionName])) {
+                    if ((isset($persons[$array_key]) && count($persons[$array_key])) || ($array_key == 'vacation' && count($persons['maternity']))) {
 
                         $peopleByComma = count($persons[$sectionName]) ? implode(', ', array_unique($persons[$sectionName])) : '-';
 
@@ -513,14 +514,15 @@ class Ticket101WordExport
                         }
 
                         if ($sectionName == 'vacation') {
-                            $prefix = 'Трудовой-';
-                            $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
-                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
-
+                            if (count($persons['vacation'])) {
+                                $prefix = 'Трудовой-';
+                                $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
                             if (count($persons['maternity'])) {
-                                $textRun = $section->addTextRun(self::$noPaddingPS);
-                                $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
-
+                                if (count($persons['vacation'])) {
+                                    $textRun = $section->addTextRun(['indentation' => ['left' => 1430]]);
+                                }
                                 $prefix = 'Декрет-';
                                 $textRun->addText($prefix, $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
 
@@ -682,7 +684,7 @@ class Ticket101WordExport
                 if ($persons['sick_leave'] && $persons['sick_leave']->count()) {
                     foreach ($persons['sick_leave'] as $person) {
                         if($guard_number->id == $person['guard_number_id']) {
-                            $peopleByComma = ($person->staff->initials ?? null) . " $person->comment" . ($person->date_from ? " с $person->date_from" : '') . ($person->date_to ? " по $person->date_to" : '');
+                            $peopleByComma = ($person->staff->initials ?? null) . " $person->comment" . ($person->date_from ? " с $person->date_from" : '') . ($person->date_to ? " по $person->date_to" : ''). "({$person->staff->rank} {$person->staff->position})";
                             $textRun = $section->addTextRun(self::$noPaddingPS);
                             $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                             $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
