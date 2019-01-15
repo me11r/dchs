@@ -56,6 +56,8 @@ class CardController extends AuthorizedController
     {
         $isAdmin = Auth::user()->isAdmin();
         $canEditOwnHydrants = Auth::user()->hasRight('CAN_EDIT_MAP_HYDRANTS');
+        $canEditAllHydrants = Auth::user()->hasRight('CAN_EDIT_HYDRANT_LOCATIONS');
+
         $userDept = Auth::user()->fire_department_id;
 
         $this->set('areas', (new CityArea())->get()->toArray());
@@ -63,6 +65,7 @@ class CardController extends AuthorizedController
         $this->set('model', new HydrantResource(new Hydrant()));
 
         $this->set('isAdmin', $isAdmin);
+        $this->set('canEditAllHydrants', $canEditAllHydrants);
         $this->set('canEditOwnHydrants', $canEditOwnHydrants);
         $this->set('userDept', $userDept);
     }
@@ -71,6 +74,7 @@ class CardController extends AuthorizedController
     {
         $isAdmin = Auth::user()->isAdmin();
         $canEditOwnHydrants = Auth::user()->hasRight('CAN_EDIT_MAP_HYDRANTS');
+        $canEditAllHydrants = Auth::user()->hasRight('CAN_EDIT_HYDRANT_LOCATIONS');
         $userDept = Auth::user()->fire_department_id;
 
         $data['showHydrants'] = true;
@@ -82,6 +86,7 @@ class CardController extends AuthorizedController
         $data['isAdmin'] = $isAdmin;
         $data['canEditOwnHydrants'] = $canEditOwnHydrants;
         $data['userDept'] = $userDept;
+        $data['canEditAllHydrants'] = $canEditAllHydrants;
 
         return view('card.mapscreen', $data);
     }

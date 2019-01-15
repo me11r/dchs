@@ -82,6 +82,7 @@ export default {
             showDistricts: true,
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
+            canEditAllHydrants: window.canEditAllHydrants,
             userDept: window.userDept
         };
     },
@@ -138,6 +139,10 @@ export default {
             this.displayHydrantPopup(model);
         },
         canSaveOrUpdateHydrant(model) {
+            if (this.canEditAllHydrants) {
+                return true;
+            }
+
             if ((this.canEditOwnHydrants === false && this.isAdmin === false) || (this.canEditOwnHydrants === true && this.userDept !== model.fire_department_id && this.isAdmin === false)) {
                 this.$snackbar.open({
                     message: 'Недостаточно прав для редактирования',
@@ -146,6 +151,7 @@ export default {
                 });
                 return false;
             }
+
             return true;
         },
         onSaveHydrant(model) {
@@ -390,7 +396,7 @@ export default {
             .then((yandexMapsBus) => {
                 this.yandexMapsBus = yandexMapsBus;
                 this.ymaps = this.yandexMapsBus.getYmaps();
-                this.initHydrantList();
+                // this.initHydrantList();
 
                 this.initMap();
                 this.addHydrantClickListener();
