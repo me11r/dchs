@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 <div
-                    v-if="hasAnyRight(25,26,27,28,29,30)"
+                    v-if="hasAnyRight(25,26,27,28,29,30,'CAN_ACCESS_HYDRANT')"
                     class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox fa-fw"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
@@ -164,6 +164,12 @@
                             href="/fire-department-checks"
                             class="dropdown-item is-small"><i class="fas fa-check fa-fw"></i>&nbsp;
                             Проверка пожарных частей</a>
+                        <a
+                            v-if="hasRight('CAN_ACCESS_HYDRANT')"
+                            href="/hydrants"
+                            target="_blank"
+                            class="dropdown-item is-small"><i class="fas fa-eye-dropper fa-fw"></i>&nbsp;
+                            Карта гидрантов</a>
                     </div>
                 </div>
                 <div

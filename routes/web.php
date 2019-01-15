@@ -66,9 +66,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/card/101/delete', 'CardController@postDelete')->name('card101.delete');
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
+    Route::get('/hydrants', 'CardController@hydrants')->name('hydrants')->middleware(['right:CAN_ACCESS_HYDRANT']);
 
     Route::resource('/card112', 'Card112Controller');
-    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
+//    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
 
