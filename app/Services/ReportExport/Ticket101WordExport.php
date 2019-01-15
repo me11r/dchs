@@ -4,6 +4,7 @@
 namespace App\Services\ReportExport;
 
 use App\FireDepartment;
+use App\FormationOdPersonItem;
 use App\FormationPersonsReport;
 use App\FormationReport;
 use App\GuardNumber;
@@ -186,6 +187,54 @@ class Ticket101WordExport
         return $result;
     }
 
+    private function peopleOdInactive()
+    {
+        $od_people_inactive = [
+            'vacation' => 'отпуск',
+            'other' => 'другое',
+            'study' => 'учебный',
+            'maternity' => 'декрет',
+            'business_trip' => 'командировка',
+            'sick' => 'больничный'
+        ];
+
+        $od_depts_names = [
+            'ipl' => 'ИПЛ',
+            'kshm' => 'КШМ',
+        ];
+
+        $queryArr = [];
+
+        foreach ($od_depts_names as $name => $title) {
+            foreach ($od_people_inactive as $inactive_item_name => $inactive_item) {
+                $combineName = "{$name}_{$inactive_item_name}";
+                $queryArr[] = $combineName;
+            }
+        }
+
+        $reportId = $this->formationReport->id;
+        $result = FormationOdPersonItem::whereHas('report.report', function($q) use ($reportId){
+            $q->where('id', $reportId);
+        })
+            ->whereIn('rank', $queryArr)
+            ->get();
+
+        $res = [];
+
+        foreach ($od_depts_names as $name => $title) {
+            foreach ($od_people_inactive as $inactive_item_name => $inactive_item) {
+                $combineName = "{$name}_{$inactive_item_name}";
+                $res[$title][$inactive_item] = $result->filter(function ($q) use ($combineName){
+                    return $q->rank === $combineName;
+                })->map(function ($qq) {
+                    return $qq->staff->name ?? null;
+                })->toArray();
+            }
+        }
+
+        return $res;
+    }
+
     private function peopleByDept()
     {
         $people = $this->people;
@@ -358,6 +407,8 @@ class Ticket101WordExport
 
         $repairedTech = $this->getRepairedTech();
 
+        $odInactivePeople = $this->peopleOdInactive();
+
         $formationCard101Others = $this->data['formationCard101Others'];
 
         $sections = [
@@ -396,8 +447,8 @@ class Ticket101WordExport
             ['align' => Jc::BOTH]
         );
 
-        foreach ($sections as $array_key => $title) {
-            if ($array_key === 'just_title') {
+        foreach ($sections as $sectionName => $title) {
+            if ($sectionName === 'just_title') {
                 $posts = [
                     'post1_president_residence' => '1 пост',
                     'post2_president_archive' => '2 пост',
@@ -436,7 +487,7 @@ class Ticket101WordExport
             }
             else {
 
-                if (!in_array($array_key, self::$exceptions)) {
+                if (!in_array($sectionName, self::$exceptions)) {
                     $section->addText(
                         $title,
                         $redFontStyle,
@@ -445,12 +496,12 @@ class Ticket101WordExport
                 }
 
                 foreach ($people as $fireDept => $persons) {
-                    if (isset($persons[$array_key]) && count($persons[$array_key])) {
+                    if (isset($persons[$sectionName]) && count($persons[$sectionName])) {
 
-                        $peopleByComma = count($persons[$array_key]) ? implode(', ', array_unique($persons[$array_key])) : '-';
+                        $peopleByComma = count($persons[$sectionName]) ? implode(', ', array_unique($persons[$sectionName])) : '-';
 
                         $textRun = $section->addTextRun(self::$noPaddingPS);
-                        if (in_array($array_key, self::$exceptions)) {
+                        if (in_array($sectionName, self::$exceptions)) {
                             $textRun->addText(
                                 $title,
                                 $redFontStyle,
@@ -461,7 +512,7 @@ class Ticket101WordExport
                             $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                         }
 
-                        if ($array_key == 'vacation') {
+                        if ($sectionName == 'vacation') {
                             $prefix = 'Трудовой-';
                             $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
                             $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
@@ -481,23 +532,60 @@ class Ticket101WordExport
                             $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
                         }
                     }
-                    elseif (isset($persons[$array_key]) && !count($persons[$array_key]) && $fireDept == 'ОД'){
-                        if (in_array($array_key, self::$exceptions)) {
+                    elseif (isset($persons[$sectionName]) && !count($persons[$sectionName]) && $fireDept == 'ОД'){
+                        if (in_array($sectionName, self::$exceptions)) {
                             $textRun = $section->addTextRun(self::$noPaddingPS);
                             $textRun->addText(
                                 $title,
                                 $redFontStyle,
                                 array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
                             );
-                            $peopleByComma = count($persons[$array_key]) ? implode(', ', array_unique($persons[$array_key])) : '-';
+                            $peopleByComma = count($persons[$sectionName]) ? implode(', ', array_unique($persons[$sectionName])) : '-';
                             $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
 
                         }
+                    }
+                }
 
+                if($sectionName === 'vacation') {
+                    foreach ($odInactivePeople as $depTitle => $odInactivePersons) {
+                        foreach ($odInactivePersons as $inactiveType => $odInactivePerson) {
+                            if(count($odInactivePerson) && $inactiveType == 'отпуск'){
+                                $peopleByComma = implode(', ', $odInactivePerson);
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$depTitle $inactiveType:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                    }
+                }
+
+                if($sectionName === 'business_trip') {
+                    foreach ($odInactivePeople as $depTitle => $odInactivePersons) {
+                        foreach ($odInactivePersons as $inactiveType => $odInactivePerson) {
+                            if(count($odInactivePerson) && $inactiveType == 'командировка'){
+                                $peopleByComma = implode(', ', $odInactivePerson);
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$depTitle $inactiveType:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                    }
+                }
+
+                if($sectionName === 'sick') {
+                    foreach ($odInactivePeople as $depTitle => $odInactivePersons) {
+                        foreach ($odInactivePersons as $inactiveType => $odInactivePerson) {
+                            if(count($odInactivePerson) && $inactiveType == 'больничный'){
+                                $peopleByComma = implode(', ', $odInactivePerson);
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$depTitle $inactiveType:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
                     }
                 }
             }
-
         }
 
         $date = Carbon::parse($this->formationReport->created_at)
