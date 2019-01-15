@@ -77,7 +77,7 @@ export default {
             hydrantPopupShow: false,
             hydrantsClusterer: null,
 
-            showHydrants: false,
+            showHydrants: window.showHydrants,
             showDepartments: true,
             showDistricts: true,
             isAdmin: window.isAdmin,
@@ -96,7 +96,20 @@ export default {
                 });
         },
         setHydrants() {
-            this.map.geoObjects.add(this.hydrantsClusterer);
+            if (this.hydrantsClusterer) {
+                this.map.geoObjects.add(this.hydrantsClusterer);
+            }
+            else{
+                axios.get('/api/hydrant')
+                    .then((response) => {
+                        this.hydrantList = response['data']['data'];
+                        this.hydrantsClusterer = this.getHydrantsClusterer(this.hydrantList.map((item) => {
+                            return this.getHydrantPlaceMarkFromItem(item, this.onMarkClick, this.onMarkDragEnd);
+                        }));
+
+                        this.map.geoObjects.add(this.hydrantsClusterer);
+                    });
+            }
         },
         closeHydrantPopup() {
             this.hydrantPopupShow = false;
@@ -109,10 +122,13 @@ export default {
             this.displayHydrantPopup(model);
         },
         onMarkDragEnd(event, model) {
-            const coords = event.originalEvent.target.geometry['getCoordinates']();
-            model.lat = coords[0];
-            model.long = coords[1];
-            this.updateHydrant(model);
+            if (this.canSaveOrUpdateHydrant(model)) {
+                const coords = event.originalEvent.target.geometry['getCoordinates']();
+                model.lat = coords[0];
+                model.long = coords[1];
+
+                this.updateHydrant(model);
+            }
         },
         onMapDoubleClick(event) {
             const coords = event.get('coords');
@@ -121,17 +137,22 @@ export default {
             model.long = coords[1];
             this.displayHydrantPopup(model);
         },
-        onSaveHydrant(model) {
-            if (this.canEditOwnHydrants === false && this.userDept !== model.fire_department_id) {
+        canSaveOrUpdateHydrant(model) {
+            if ((this.canEditOwnHydrants === false && this.isAdmin === false) || (this.canEditOwnHydrants === true && this.userDept !== model.fire_department_id && this.isAdmin === false)) {
                 this.$snackbar.open({
                     message: 'Недостаточно прав для редактирования',
                     position: 'is-top',
                     type: 'is-info',
                 });
-                return null;
+                return false;
             }
-
-            +model.id === 0 ? this.createHydrant(model) : this.updateHydrant(model);
+            return true;
+        },
+        onSaveHydrant(model) {
+            if (this.canSaveOrUpdateHydrant(model)) {
+                let isNewModel = +model.id === 0 || model.id === undefined;
+                isNewModel ? this.createHydrant(model) : this.updateHydrant(model);
+            }
         },
         createHydrant(model) {
             const self = this;

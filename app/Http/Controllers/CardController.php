@@ -67,6 +67,25 @@ class CardController extends AuthorizedController
         $this->set('userDept', $userDept);
     }
 
+    public function hydrants(Request $request)
+    {
+        $isAdmin = Auth::user()->isAdmin();
+        $canEditOwnHydrants = Auth::user()->hasRight('CAN_EDIT_MAP_HYDRANTS');
+        $userDept = Auth::user()->fire_department_id;
+
+        $data['showHydrants'] = true;
+
+        $data['areas'] = (new CityArea())->get()->toArray();
+        $data['fireDepartments'] = collect(FireDepartment::all(['id', 'title']))->toArray();
+        $data['model'] = new HydrantResource(new Hydrant());
+
+        $data['isAdmin'] = $isAdmin;
+        $data['canEditOwnHydrants'] = $canEditOwnHydrants;
+        $data['userDept'] = $userDept;
+
+        return view('card.mapscreen', $data);
+    }
+
     public function get101(Request $request, $card_type = null)
     {
         $perPage = $request->get('per_page', 10);
