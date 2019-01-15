@@ -21,7 +21,7 @@ trait CommonExportTools
 
             $this->sumPeople['total'], // В карауле по списку л/с
 
-            $this->sumPeople['active'] . ($this->data['totalTraineeCount']['active'] ? "/".$this->data['totalTraineeCount']['active'] : ''), // На лицо личного состава -> Всего
+            $this->sumPeople['active'] , // На лицо личного состава -> Всего  . ($this->data['totalTraineeCount']['active'] ? "/".$this->data['totalTraineeCount']['active'] : '')
             $this->sumPeople['head_guards'].($this->data['totalTraineeCount']['head_guards'] ? "/".$this->data['totalTraineeCount']['head_guards'] : ''), // На лицо личного состава -> Нач. караулов
             $this->sumPeople['commander_squads'].($this->data['totalTraineeCount']['commander_squads'] ? "/".$this->data['totalTraineeCount']['commander_squads'] : ''), // На лицо личного состава -> Ком. отделений
             $this->sumPeople['drivers'].($this->data['totalTraineeCount']['drivers'] ? "/".$this->data['totalTraineeCount']['drivers'] : ''), // На лицо личного состава -> Шоферы
@@ -70,7 +70,7 @@ trait CommonExportTools
 
             array_get($peopleData, 'total', 0), // В карауле по списку л/с
 
-            array_get($peopleData, 'active', 0).($peopleData && $peopleData->getTraineeCount('active') ? '/'.$peopleData->getTraineeCount('active') : ''), // На лицо личного состава -> Всего
+            array_get($peopleData, 'active', 0), // На лицо личного состава -> Всего  .($peopleData && $peopleData->getTraineeCount('active') ? '/'.$peopleData->getTraineeCount('active') : '')
             array_get($peopleData, 'head_guards', 0) .($peopleData && $peopleData->getTraineeCount('head_guards') ? '/'.$peopleData->getTraineeCount('head_guards') : ''), // На лицо личного состава -> Нач. караулов
             array_get($peopleData, 'commander_squads', 0).($peopleData && $peopleData->getTraineeCount('commander_squads') ? '/'.$peopleData->getTraineeCount('commander_squads') : ''), // На лицо личного состава -> Ком. отделений
             array_get($peopleData, 'drivers', 0).($peopleData && $peopleData->getTraineeCount('drivers') ? '/'.$peopleData->getTraineeCount('drivers') : ''), // На лицо личного состава -> Шоферы
