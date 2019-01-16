@@ -120,7 +120,10 @@ class DictionaryController extends AuthorizedController
         }
         elseif($name == 'operational-plans'){
 
-            $specialPlan = SpecialPlan::orderBy($sort);
+            $specialPlan = SpecialPlan::orderBy($sort)
+//                ->orderBy('operational_plan_id')
+                ->orderBy('fire_department_id')
+            ;
 
             if ($request->search) {
                 $specialPlan = $specialPlan
@@ -148,7 +151,6 @@ class DictionaryController extends AuthorizedController
             else{
                 $data['records'] = $specialPlan
                     ->where('fire_department_id', Auth::user()->fire_department_id)
-                    ->orderBy($sort)
                     ->paginate($data['per_page']);
             }
 
@@ -157,7 +159,9 @@ class DictionaryController extends AuthorizedController
         }
         elseif($name == 'operational-cards'){
 
-            $operCard = OperationalCard::orderBy('id');
+            $operCard = OperationalCard::orderBy('fire_department_id')
+                ->orderBy('id')
+                ->orderBy('oc_number');
 
             if ($request->search) {
                 $operCard = $operCard
