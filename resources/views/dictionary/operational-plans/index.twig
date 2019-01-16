@@ -24,6 +24,7 @@
                         </div>
                         <div class="control">
                             <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                            <a href="/dictionaries/operational-plans" class="button is-danger is-outlined" type="submit"><span><i class="fa fa-times"></i><span class="hidden-sm-down">&nbsp; Сбросить фильтр</span></span></a>
                         </div>
                     </div>
                 </form>
@@ -57,7 +58,8 @@
                 <tbody>
                 {% for record in records %}
                     <tr>
-                        <td>{{ record.operational_plan.name|default('') }}</td>
+                        {#<td>{{ record.operational_plan.name|default('') }}</td>#}
+                        <td>{{ record.id }}</td>
                         <td class="max-width: 20%">{{ record.fire_level.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.city_area.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.object_name|default('') }}</td>
@@ -91,7 +93,7 @@
                 </tbody>
             </table>
             {#{% if filter_department is not defined %}#}
-                {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_department':filter_department}} %}
+                {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_department':filter_department, 'search':search}} %}
             {#{% endif %}#}
         </div>
     </div>
