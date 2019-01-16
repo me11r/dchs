@@ -1,24 +1,19 @@
-    {#{{ loop.index }}. #}<b style="text-decoration: underline;"> {{ date }}. {{ city_area }}, {{ address }}:</b> (заявитель: {{ caller_name }}, тел: {{ caller_phone }}).
-    {% if detailed_address %}
-        <b>Уточненный адрес:</b> {{ detailed_address }}
-    {% endif %}
+    <b style="text-decoration: underline;"> {{ date }}. {{ city_area }}, {{ address }}:</b> (заявитель: {{ caller_name }}, тел: {{ caller_phone }}).
+    {% if detailed_address %}<b>Уточненный адрес:</b> <span>{{ detailed_address }}</span>{% endif %}
     <b style="text-decoration: underline; font-style: italic;">{{ pre_information }} S={{ square_max }} м2</b>
-    {#{% if first_dept_arrived %}#}
-        {#{{ first_dept_arrived.name }} ({{ first_dept_arrived.tech_dept }}) на {{ first_dept_arrived.vehicle }} прибыло в {{ first_dept_arrived.arrive_time ?? null }} ({{ first_dept_arrived.on_way_time }}).#}
-    {#{% endif %}#}
     <b>На место прибыли: </b>
     {% for item in deptsArrived %}
-        {{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }};
+        <span>{{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }};</span>
     {% endfor %}
     {% for item in deptsArrivedHq %}
-        {{ item.name }} прибыло в {{ item.arrive_time }};
+        <span>{{ item.name }} прибыло в {{ item.arrive_time }};</span>
     {% endfor %}
-    <b>Итог выезда:</b> {{ ticket.ticket_result }}
-    <b>Дополнительная информация:</b> {{ ticket.more_info }}
-    <b>Ликвидация достигнута:</b> {{ ticket.liquidation_method.name|default('') }}
-    <b>Источник противопожарного водоснабжения:</b> {{ ticket.water_supply_source.name|default('') }}
-    <b>Расстояние до места:</b> {{ ticket.distance }}
-    <b>Владелец:</b> {{ ticket.owner }}
+    <b>Итог выезда:</b> <span>{{ ticket.ticket_result }}</span>
+    <b>Дополнительная информация:</b> <span>{{ ticket.more_info }}</span>
+    <b>Ликвидация достигнута:</b> <span>{{ ticket.liquidation_method.name|default('') }}</span>
+    <b>Источник противопожарного водоснабжения:</b> <span>{{ ticket.water_supply_source.name|default('') }}</span>
+    <b>Расстояние до места:</b> <span>{{ ticket.distance }}</span>
+    <b>Владелец:</b> <span>{{ ticket.owner }}</span>
     <b>Информация по использованным стволам:</b>
     {% if ticket.vu_found %}
         <b>Обнаружено ВУ</b>
@@ -31,7 +26,7 @@
     {% endif %}
     {% for item in ticket.chronologies %}
         {% if item.event_info_arrived %}
-            {{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}
+            <span>{{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}</span>
         {% endif %}
     {% endfor %}
-    Пожар локализован в {{ loc_time }} и ликвидирован в {{ liqv_time }}, {{ chronology_str }}. На место пожара выезжал л/с: {{ depts_out }}. {% if service_plans_str %}На место ЧС выезжали службы взаимодействия: {{ service_plans_str }}.{% endif %} Материал зарегистрирован в КУИ №{{ kui }} от {{ date2 }}.
+    <span>Пожар локализован в {{ loc_time }} и ликвидирован в {{ liqv_time }}, {{ chronology_str }}. На место пожара выезжал л/с: {{ depts_out }}. {% if service_plans_str %}На место ЧС выезжали службы взаимодействия: {{ service_plans_str }}.{% endif %} Материал зарегистрирован в КУИ №{{ kui }} от {{ date2 }}.</span>

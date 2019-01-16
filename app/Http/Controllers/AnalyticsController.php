@@ -69,8 +69,11 @@ class AnalyticsController extends Controller
 
         foreach ($request->input('text', []) as $item_id => $text) {
             $analyticsItem = Analytics101Item::find($item_id);
+
+            $text = preg_replace("/<p[^>]*>[\s|&nbsp;]*<\/p>/", '', $text); //убираем пустые параграфы
             $analyticsItem->text = str_replace('<br>', "<br/>", $text);
             $analyticsItem->save();
+
         }
 
         return redirect()->route('reports.analytics101.index');
