@@ -20,6 +20,15 @@
     <b>Расстояние до места:</b> {{ ticket.distance }}
     <b>Владелец:</b> {{ ticket.owner }}
     <b>Информация по использованным стволам:</b>
+    {% if ticket.vu_found %}
+        <b>Обнаружено ВУ</b>
+    {% endif %}
+    {% if ticket.animal_death %}
+        <b>Гибель животных</b>
+    {% endif %}
+    {% if ticket.car_crash %}
+        <b>Авария А/М при следовании на пожар</b>
+    {% endif %}
     {% for item in ticket.chronologies %}
         {% if item.event_info_arrived %}
             {{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}
