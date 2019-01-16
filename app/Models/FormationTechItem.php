@@ -55,7 +55,9 @@ class FormationTechItem extends Model
     ];
 
     protected $appends = [
-        'vehicle_name_status'
+        'vehicle_name_status',
+        'date_from_formatted',
+        'date_to_formatted',
     ];
 
     public function scopeStatus($q, $status)
@@ -85,14 +87,14 @@ class FormationTechItem extends Model
             ->whereBetween('updated_at',[$date_begin, $date_end]);
     }
 
-    public function getDateFromAttribute($value)
+    public function getDateFromFormattedAttribute()
     {
-        return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
+        return $this->date_from ? Carbon::parse($this->date_from)->format('d-m-Y') : $this->date_from;
     }
 
-    public function getDateToAttribute($value)
+    public function getDateToFormattedAttribute()
     {
-        return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
+        return $this->date_to ? Carbon::parse($this->date_to)->format('d-m-Y') : $this->date_to;
     }
 
     public function getVehicleNameStatusAttribute()
