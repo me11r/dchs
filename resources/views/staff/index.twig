@@ -9,42 +9,65 @@
                 </div>
             </div>
 
-
-            <table class="table is-narrow is-hoverable is-selectable is-striped">
-                <thead>
-                <tr>
-                    <th>Ф.И.О.</th>
-                    <th>Звание</th>
-                    <th>Должность</th>
-                    <th>ПЧ</th>
-                    <th></th>
-                </tr>
-                </thead>
-                {% for item in items %}
+            <form>
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input type="text" class="input" name="search" value="{{ search ?? null }}" id="search-input">
+                    </div>
+                    <div class="control">
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                        <a href="{{ route('staff.index') }}" class="button is-danger is-outlined" type="submit"><span><i class="fa fa-times"></i><span class="hidden-sm-down">&nbsp; Сбросить фильтр</span></span></a>
+                    </div>
+                </div>
+                <table class="table is-narrow is-hoverable is-selectable is-striped">
+                    <thead>
                     <tr>
-                        <td><i class="fas fa-list-ol"></i>&nbsp;{{ item.name }}</td>
-                        <td>{{ item.rank }}</td>
-                        <td>{{ item.position }}</td>
-                        <td>{{ item.department.name ?? '' }}</td>
-                        <td>
-                            <div class="field is-grouped">
-                            <a class="button is-basic is-small" href="{{ route('staff.edit', {'id':item.id}) }}">
-                                <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
-
-                            <form method="post" action="{{ route('staff.destroy', {'id':item.id}) }}">
-                                {{ csrf_field() }}
-                                {{  method_field('DELETE') }}
-                                <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
-                                    <i class="fas fa-trash"></i>&nbsp;Удалить</button>
-                            </form>
-                            </div>
-                        </td>
+                        <th>Ф.И.О.</th>
+                        <th>Звание</th>
+                        <th>Должность</th>
+                        <th>
+                            <p>ПЧ</p>
+                            {% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101', 'Диспетчер ОД 101']) %}
+                                    <select name="filter_department" class="select control" onchange="this.form.submit()">
+                                        <option value="">Все ПЧ</option>
+                                        {% for f in fire_departments %}
+                                            <option {% if filter_department is defined and filter_department == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                            {% endif %}
+                        </th>
+                        <th></th>
                     </tr>
-                {% else %}
-                    <li><h3 class="is-danger">Нет ЛС</h3></li>
-                {% endfor %}
-            </table>
-            {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+                    </thead>
+                    {% for item in items %}
+                        <tr>
+                            <td><i class="fas fa-list-ol"></i>&nbsp;{{ item.name }}</td>
+                            <td>{{ item.rank }}</td>
+                            <td>{{ item.position }}</td>
+                            <td>{{ item.department.name ?? '' }}</td>
+                            <td>
+                                <div class="field is-grouped">
+                                    <a class="button is-basic is-small" href="{{ route('staff.edit', {'id':item.id}) }}">
+                                        <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+
+                                    <form method="post" action="{{ route('staff.destroy', {'id':item.id}) }}">
+                                        {{ csrf_field() }}
+                                        {{  method_field('DELETE') }}
+                                        <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
+                                            <i class="fas fa-trash"></i>&nbsp;Удалить</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <li><h3 class="is-danger">Нет ЛС</h3></li>
+                    {% endfor %}
+                </table>
+            </form>
+            {% include "_templates/pagination" with {'items': items, 'per_page': per_page,'other': {'filter_department':filter_department, 'search':search}} %}
+
 
         </div>
     </div>

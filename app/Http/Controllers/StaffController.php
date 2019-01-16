@@ -27,21 +27,61 @@ class StaffController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $per_page = 20;
+        $search = $request->search;
+        $filter_department = $request->filter_department;
 
-        if(Auth::id() == 1){
+        $items = Auth::id() == 1 ? $this->repository : Auth::user()->staff();
+
+        if($search) {
+            $items = $items
+                ->whereHas('department', function ($q) use ($search) {
+                    $q->where('title', "like", "$search%");
+                })
+                ->orWhere(function ($qq) use ($search) {
+                    $qq->where('name', 'like', "%$search%")
+                        ->orWhere('position', 'like', "$search%")
+                        ->orWhere('surname', 'like', "$search%")
+                        ->orWhere('patronymic', 'like', "$search%")
+                        ->orWhere('rank', 'like', "$search%");
+                });
+        }
+
+        if($filter_department) {
+            $items = $items->where('department_id', $filter_department);
+        }
+
+        $items = $items->orderBy('department_id')
+            ->orderBy('name')
+            ->paginate($per_page);
+
+
+        /*if(Auth::id() == 1){
             $items = $this->repository
                 ->orderBy('department_id')
                 ->orderBy('name')
                 ->paginate($per_page);
         }
         else{
-            $items = Auth::user()->staff()->orderBy('department_id')->paginate($per_page);
-        }
+            $items = Auth::user()
+                ->staff()
+                ->orderBy('department_id')
+                ->orderBy('name')
+                ->paginate($per_page);
+        }*/
 
-        return view("$this->table.index", compact('items', 'per_page'));
+        $user = Auth::user();
+        $fire_departments = FireDepartment::all();
+
+        return view("$this->table.index", compact(
+            'items',
+            'per_page',
+            'user',
+            'search',
+            'filter_department',
+            'fire_departments'));
     }
 
     /**

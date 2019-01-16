@@ -523,14 +523,29 @@ class DictionaryController extends AuthorizedController
 
         $fields = $this->getEditableFields($dict);
 
+        if(array_search('name',$fields) !== false) {
+            $orderBy = 'name';
+        }
+        else {
+            $orderBy = 'id';
+        }
+
         if(in_array('title', $fields) && $search){
-            $this->set('dictionary', $dict->where('title', 'like', "%$search%")->get());
+            $this->set('dictionary', $dict
+                ->where('title', 'like', "%$search%")
+                ->orderBy($orderBy)
+                ->get());
         }
         elseif(in_array('name', $fields) && $search){
-            $this->set('dictionary', $dict->where('name', 'like', "%$search%")->get());
+            $this->set('dictionary', $dict
+                ->where('name', 'like', "%$search%")
+                ->orderBy($orderBy)
+                ->get());
         }
         else{
-            $this->set('dictionary', $dict->get());
+            $this->set('dictionary', $dict
+                ->orderBy($orderBy)
+                ->get());
         }
 
         $this->set('fields', $fields);
