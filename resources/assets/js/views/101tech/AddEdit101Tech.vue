@@ -233,8 +233,8 @@ export default {
         prepareRecords(records) {
             records.map((item) => {
                 this.addItem({
-                    date_begin: moment(item.date_begin),
-                    date_end: moment(item.date_end)
+                    date_begin: moment(item.date_from),
+                    date_end: moment(item.date_to)
                 });
             });
         },
