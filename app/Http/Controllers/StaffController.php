@@ -32,8 +32,9 @@ class StaffController extends Controller
         $per_page = 20;
         $search = $request->search;
         $filter_department = $request->filter_department;
+        $fullAccess = Auth::user()->hasRight('STAFF_FULL_VIEW_ACCESS');
 
-        $items = Auth::id() == 1 ? $this->repository : Auth::user()->staff();
+        $items = $fullAccess ? $this->repository : Auth::user()->staff();
 
         if($search) {
             $items = $items
@@ -56,21 +57,6 @@ class StaffController extends Controller
         $items = $items->orderBy('department_id')
             ->orderBy('name')
             ->paginate($per_page);
-
-
-        /*if(Auth::id() == 1){
-            $items = $this->repository
-                ->orderBy('department_id')
-                ->orderBy('name')
-                ->paginate($per_page);
-        }
-        else{
-            $items = Auth::user()
-                ->staff()
-                ->orderBy('department_id')
-                ->orderBy('name')
-                ->paginate($per_page);
-        }*/
 
         $user = Auth::user();
         $fire_departments = FireDepartment::all();

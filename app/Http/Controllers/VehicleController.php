@@ -24,18 +24,46 @@ class VehicleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $per_page = 20;
+        $search = $request->search;
+        $filter_department = $request->filter_department;
+        $fullAccess = Auth::user()->hasRight('VEHICLES_FULL_VIEW_ACCESS');
+        $fire_departments = FireDepartment::all();
+        $user = Auth::user();
 
-        if(Auth::id() == 1){
-            $items = $this->repository->orderBy('fire_department_id')->paginate($per_page);
-        }
-        else{
-            $items = Auth::user()->vehicles()->orderBy('fire_department_id')->paginate($per_page);
+
+        $items = $fullAccess ? $this->repository : Auth::user()->vehicles();
+
+        if($search) {
+            $items = $items
+                ->whereHas('fireDepartment', function ($q) use ($search) {
+                    $q->where('title', "like", "$search%");
+                })
+                ->orWhere(function ($qq) use ($search) {
+                    $qq->where('name', 'like', "%$search%")
+                        ->orWhere('number_old', 'like', "$search%")
+                        ->orWhere('number', 'like', "$search%")
+                        ->orWhere('base', 'like', "$search%");
+                });
         }
 
-        return view('vehicle.index', compact('items', 'per_page'));
+        if($filter_department) {
+            $items = $items->where('fire_department_id', $filter_department);
+        }
+
+        $items = $items->orderBy('fire_department_id')
+            ->paginate($per_page);
+
+        return view('vehicle.index', compact(
+            'items',
+            'search',
+            'user',
+            'fire_departments',
+            'filter_department',
+            'per_page'
+        ));
     }
 
     /**
