@@ -24,6 +24,7 @@
                         </div>
                         <div class="control">
                             <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                            <a href="/dictionaries/operational-cards" class="button is-danger is-outlined" type="submit"><span><i class="fa fa-times"></i><span class="hidden-sm-down">&nbsp; Сбросить фильтр</span></span></a>
                         </div>
                     </div>
                 </form>
@@ -88,7 +89,7 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_department':filter_department}} %}
+            {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_department':filter_department, 'search':search}} %}
         </div>
     </div>
 {% endblock content %}
