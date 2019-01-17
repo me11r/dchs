@@ -298,7 +298,7 @@ class Ticket101WordExport
                 })->toArray(),
 
                 'gdzs_base' => $gdzs_base->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return $item->staff->name;
                 })->toArray(),
 
                 'crb' => $crb->map(function ($item) {
@@ -317,35 +317,36 @@ class Ticket101WordExport
                     return $item->staff->name ?? null;
                 })->toArray(),
                 'tulpar1' => $tulpar1->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar2' => $tulpar2->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar3' => $tulpar3->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar4' => $tulpar4->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar5' => $tulpar5->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar7' => $tulpar7->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar8' => $tulpar8->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar10' => $tulpar10->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'kshm' => $kshm->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'ipl_zhalyn' => $ipl_zhalyn->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
+
                 'doctor' => $doctor->map(function ($item) {
                     return $item->staff->name ?? null;
                 })->toArray(),

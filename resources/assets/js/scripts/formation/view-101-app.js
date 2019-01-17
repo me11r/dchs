@@ -23,6 +23,7 @@ export default class View101App {
                                 selectedStaff[item['rank']] = [];
                             }
                             if (item['staff']) {
+                                item['staff']['gsm_count'] = item['gsm_count'];
                                 selectedStaff[item['rank']].push(item['staff']);
                             }
                         });
