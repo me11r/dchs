@@ -45,6 +45,7 @@ class FormationOdPersonItem extends Model
         'date_from',
         'comment',
         'table_name',
+        'gsm_count',
     ];
 
     protected $appends = ['staff'];

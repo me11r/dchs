@@ -40,6 +40,7 @@ class FormationStaffController extends Controller
 
     public function syncFormationOdPersons(Request $request)
     {
+        $f = $request->all();
         $formId = $request->get('formId', []);
         $selectedStaff = $request->get('selectedStaff', []);
         $type = $request->get('type');
@@ -66,6 +67,7 @@ class FormationStaffController extends Controller
                 'date_to' => null,
                 'rank' => $type,
                 'table_name' => $tableName,
+                'gsm_count' => $staff['gsm_count'] ?? null,
 //                'status' => 'inactive',
                 'status' => $request->inactiveType ? $request->inactiveType : 'active',
             ]);
