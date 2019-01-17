@@ -232,7 +232,8 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
-        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION) && !Auth::user()->isAdmin();
+        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION, false);
+//        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION) && !Auth::user()->isAdmin();
 
         $belongsToDept = Auth::user()->fire_department_id;
 
@@ -308,26 +309,48 @@ class FormationController extends AuthorizedController
             $model = new FormationPersonsReport();
         }
 
-        $total = count($request->input('staff.head_guards.staff_id', [])) +
-            count($request->input('staff.trainee.staff_id', [])) +
-            count($request->input('staff.commander_squads.staff_id', [])) +
-            count($request->input('staff.drivers.staff_id', [])) +
-            count($request->input('staff.privates.staff_id', [])) +
-            count($request->input('staff.dispatchers.staff_id', [])) +
-            count($request->input('staff.vacation.staff_id', [])) +
-            count($request->input('staff.study.staff_id', [])) +
-            count($request->input('staff.maternity.staff_id', [])) +
-            count($request->input('staff.sick.staff_id', [])) +
-            count($request->input('staff.business_trip.staff_id', [])) +
-            count($request->input('staff.other.staff_id', []));
+        $f = $request->all();
 
-        $active = $total - (count($request->input('staff.vacation.staff_id', [])) +
+
+        if($request->dept_id == 13) {
+            $active = count($request->input('staff.post1_president_residence.staff_id', [])) +
+                count($request->input('staff.post2_president_archive.staff_id', [])) +
+                count($request->input('staff.post3_state_archive.staff_id', [])) +
+                count($request->input('staff.post4_national_bank.staff_id', []))
+            ;
+
+            $total = $active + (count($request->input('staff.vacation.staff_id', [])) +
+                    count($request->input('staff.study.staff_id', [])) +
+                    count($request->input('staff.maternity.staff_id', [])) +
+                    count($request->input('staff.sick.staff_id', [])) +
+                    count($request->input('staff.sick_leave.staff_id', [])) +
+                    count($request->input('staff.business_trip.staff_id', [])) +
+                    count($request->input('staff.other.staff_id', []))
+                );
+        }
+        else {
+            $total = count($request->input('staff.head_guards.staff_id', [])) +
+                count($request->input('staff.trainee.staff_id', [])) +
+                count($request->input('staff.commander_squads.staff_id', [])) +
+                count($request->input('staff.drivers.staff_id', [])) +
+                count($request->input('staff.privates.staff_id', [])) +
+                count($request->input('staff.dispatchers.staff_id', [])) +
+                count($request->input('staff.vacation.staff_id', [])) +
                 count($request->input('staff.study.staff_id', [])) +
                 count($request->input('staff.maternity.staff_id', [])) +
                 count($request->input('staff.sick.staff_id', [])) +
                 count($request->input('staff.business_trip.staff_id', [])) +
-                count($request->input('staff.other.staff_id', []))
-            );
+                count($request->input('staff.other.staff_id', []));
+
+            $active = $total - (count($request->input('staff.vacation.staff_id', [])) +
+                    count($request->input('staff.study.staff_id', [])) +
+                    count($request->input('staff.maternity.staff_id', [])) +
+                    count($request->input('staff.sick.staff_id', [])) +
+                    count($request->input('staff.business_trip.staff_id', [])) +
+                    count($request->input('staff.other.staff_id', []))
+                );
+        }
+
 
         $all = [
             'total' => $total,//$request->total,
@@ -350,7 +373,6 @@ class FormationController extends AuthorizedController
         ];
         $model->fill($all)->save();
 
-        $f = $request->all();
 
         if($request->staff){
             FormationOdPersonItem::where('report_id', $model->id)
