@@ -33,7 +33,6 @@ class VehicleController extends Controller
         $fire_departments = FireDepartment::all();
         $user = Auth::user();
 
-
         $items = $fullAccess ? $this->repository : Auth::user()->vehicles();
 
         if($search) {

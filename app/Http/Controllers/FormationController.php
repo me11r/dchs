@@ -23,6 +23,7 @@ use App\Models\FormationRecord;
 use App\Models\FormationTechItem;
 use App\Models\Staff;
 use App\Models\Vehicle;
+use App\OperationalGroup;
 use App\OperationalGroupSchedule;
 use App\Reports\Report;
 use App\Right;
@@ -401,7 +402,10 @@ class FormationController extends AuthorizedController
                         $date_from = ($inputs['date_from'][$input_key] ?? null) ? Carbon::parse($inputs['date_from'][$input_key]) : null;
                         $date_to = ($inputs['date_to'][$input_key] ?? null) ? Carbon::parse($inputs['date_to'][$input_key]) : null;
 
-                        $f = $inputs;
+                        if($type == 'sick') {
+                            $operGroupId = OperationalGroup::currentGroup();
+                            $inputs['guard_number_id'][$input_key] = $operGroupId->id ?? null;
+                        }
 
                         FormationPersonsItem::create([
                             'staff_id' => $input,
@@ -703,7 +707,7 @@ class FormationController extends AuthorizedController
         $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
             return $q->staff->department_id;
         });
-        $sick_leave = FormationPersonsItem::byRankAndForm('sick_leave', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
+        $sick_leave = FormationPersonsItem::byRanksAndForm(['sick_leave','sick'], $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
             return $q->staff->department_id;
         });
         $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy(function ($q){
@@ -838,7 +842,7 @@ class FormationController extends AuthorizedController
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech);
         $user = Auth::user();
-        $totalTraineeCount = $report->sumTrainee(); // $people->sum('trainee');
+        $totalTraineeCount = $report->sumTrainee();
 
         $dataToReport = [
             'depts_od_ppl_inactive' => $depts_od_ppl_inactive,

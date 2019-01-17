@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\FormationPersonsReport;
 use App\GuardNumber;
+use App\OperationalGroup;
 use Illuminate\Database\Eloquent\Model;
 
 /**
