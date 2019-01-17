@@ -177,7 +177,7 @@ class Ticket101WordExport
 
             $fireDept = FireDepartment::find($dept_id);
 
-            $sickLeavePpl = $personSummary->formation_person_items()->rank('sick_leave')->get();
+            $sickLeavePpl = $personSummary->formation_person_items()->rank(['sick_leave','sick'])->get();
 
             $result[$fireDept->title] = [
                 'sick_leave' => $sickLeavePpl,
