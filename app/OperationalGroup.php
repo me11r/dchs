@@ -16,6 +16,12 @@ class OperationalGroup extends Model
         return $this->hasMany(OperationalGroupSchedule::class, 'group_id');
     }
 
+    public function scopeCurrentGroup($q)
+    {
+        $operSchedule = OperationalGroupSchedule::latest()->first();
+        return $operSchedule->group ?? null;
+    }
+
     public function scopeFindOperGroup($q, $search)
     {
         return $q->where('id', $search)

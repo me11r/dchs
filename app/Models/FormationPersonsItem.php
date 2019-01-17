@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\FormationPersonsReport;
 use App\GuardNumber;
+use App\OperationalGroup;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -65,7 +66,12 @@ class FormationPersonsItem extends Model
 
     public function scopeRank($q, $rank)
     {
-        return $q->where('rank', $rank);
+        if(is_array($rank)){
+            return $q->whereIn('rank', $rank);
+        }
+        else{
+            return $q->where('rank', $rank);
+        }
     }
 
     public function scopeGetStat($q, $staff_id, $date_begin, $date_end, $status = 'active')

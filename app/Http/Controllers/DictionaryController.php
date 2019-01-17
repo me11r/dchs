@@ -120,10 +120,11 @@ class DictionaryController extends AuthorizedController
         }
         elseif($name == 'operational-plans'){
 
-            $specialPlan = SpecialPlan::orderBy($sort)
-//                ->orderBy('operational_plan_id')
-                ->orderBy('fire_department_id')
+            $specialPlan = SpecialPlan::orderBy('fire_department_id')
+                ->orderBy($sort)
             ;
+
+            $page = $request->page ?? 1;
 
             if ($request->search) {
                 $specialPlan = $specialPlan
@@ -146,16 +147,17 @@ class DictionaryController extends AuthorizedController
 
             if(!Auth::user()->department){
 
-                $data['records'] = $specialPlan->paginate($data['per_page']);
+                $data['records'] = $specialPlan
+                    ->paginate($data['per_page']);
             }
             else{
                 $data['records'] = $specialPlan
                     ->where('fire_department_id', Auth::user()->fire_department_id)
                     ->paginate($data['per_page']);
             }
-
             $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные планы";
+            $data['page'] = $page;
         }
         elseif($name == 'operational-cards'){
 

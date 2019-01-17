@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 <div
-                    v-if="hasAnyRight(25,26,27,28,29,30,'CAN_ACCESS_HYDRANT')"
+                    v-if="hasAnyRight(25,26,'CAN_ACCESS_TECH','CAN_ACCESS_PERSONS',29,30,'CAN_ACCESS_HYDRANT')"
                     class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox fa-fw"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
@@ -146,12 +146,12 @@
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Ручной ввод хронометража</a>
                         <a
-                            v-if="hasRight(27)"
+                            v-if="hasRight('CAN_ACCESS_TECH')"
                             href="/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-car fa-fw"></i>&nbsp;
                             Транспортные средства</a>
                         <a
-                            v-if="hasRight(28)"
+                            v-if="hasRight('CAN_ACCESS_PERSONS')"
                             href="/staff"
                             class="dropdown-item is-small"><i class="fas fa-child fa-fw"></i>&nbsp;
                             Личный состав</a>
