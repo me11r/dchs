@@ -616,6 +616,15 @@ class DictionaryController extends AuthorizedController
             case 'district-managers':
                 $dict = DistrictManager::class;
                 break;
+            case 'fire-departments':
+                $dict = FireDepartment::class;
+                break;
+            case 'aircraft-types':
+                $dict = AircraftType::class;
+                break;
+            case 'aircrafts':
+                $dict = Aircraft::class;
+                break;
         }
 
         $dict = new $dict;
