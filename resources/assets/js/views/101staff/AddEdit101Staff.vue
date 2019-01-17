@@ -185,8 +185,6 @@ export default {
             if (this.isActive_ === true) {
                 this.$parent.$emit('activeChange', 1);
             }
-            // this.staff_ = _.filter(this.staff_, {id: 123});
-            // console.dir(_.filter(this.staff_, {id: 123}))
         },
         addItem(item) {
             this.records_.push(item);
