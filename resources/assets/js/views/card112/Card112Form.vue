@@ -924,6 +924,14 @@ export default {
         },
         notifyMap() {
             this.yandexMapsBus.debouncedFindHouse(this.currentCity + ' ' + this.model.location);
+        },
+        getTabIndex() {
+            const ret = window.location.hash.match(/#return=(\d+)/);
+            if (ret !== null) {
+                this.setTab(parseInt(ret[1]));
+            } else {
+                this.setTab(0);
+            }
         }
     },
     watch: {
@@ -951,7 +959,7 @@ export default {
         // }
     },
     mounted() {
-        this.currentTabIndex = window.card112FormData.currentTabIndex;
+        this.getTabIndex();
         (new YandexMapsBus())
             .getInstance()
             .then((yandexMapsBus) => {
