@@ -13,17 +13,6 @@ class RoleController extends Controller
 {
     private $view = 'roles';
 
-    public function before()
-    {
-        parent::before();
-        $user = \Auth::user();
-        if (!isset($user) || (!$user->hasRight('CAN_MANAGE_USERS'))) {
-            throw new AccessDeniedException();
-        }
-
-        return true;
-    }
-
     public function index(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 20);

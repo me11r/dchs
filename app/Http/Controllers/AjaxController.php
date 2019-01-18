@@ -124,6 +124,13 @@ class AjaxController extends AuthorizedController
         return response()->json($rightsArr, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
+    public function getMessengerPermissions()
+    {
+        $user = Auth::user();
+        $rightsArr = $user->messenger_rights;
+        return response()->json($rightsArr, 200);
+    }
+
     public function getRoadtripPlans(Request $request)
     {
         $dept = (Auth::user())->department;
