@@ -34,6 +34,7 @@
 
 <script>
 import axios from 'axios';
+import rights from '../../scripts/rights';
 import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 
 const evbus = EventBus();
@@ -83,9 +84,16 @@ export default {
             }
         },
         sendMessage: function() {
-            if (!this.sending && (this.message !== '') && (this.user)) {
+            let userId = this.user.id;
+            if (!this.sending && (this.message !== '') && (this.user) && this.canSendMessage(userId)) {
                 this.send();
             }
+            else {
+                alert('Нет прав для отправки сообщенения этому пользователю');
+            }
+        },
+        canSendMessage: function(id) {
+            return rights.canSendMessage(id);
         },
         doUpload: function(event) {
             this.uploading = true;

@@ -123,6 +123,16 @@ class User extends Authenticatable
         return $this->belongsToMany(\App\Right::class, 'user_rights');
     }
 
+    public function messenger_rights()
+    {
+        return $this->hasMany(MessengerRight::class, 'user_id');
+    }
+
+    public function messenger_rights_reverse()
+    {
+        return $this->hasMany(MessengerRight::class, 'can_send_id');
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');

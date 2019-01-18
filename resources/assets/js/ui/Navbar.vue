@@ -344,6 +344,10 @@
                             class="dropdown-item"><i class="fas fa-user fa-fw"></i>&nbsp;Пользователи</a>
                         <a
                             v-if="hasRight(7)"
+                            href="/admin/messenger-permissions"
+                            class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Разрешения мессенджера</a>
+                        <a
+                            v-if="hasRight(7)"
                             href="/admin/roles"
                             class="dropdown-item"><i class="fas fa-balance-scale fa-fw"></i>&nbsp;Роли</a>
                         <a
