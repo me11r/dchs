@@ -1,6 +1,8 @@
 import axios from 'axios';
+import _ from 'lodash';
 export default {
     rights: [],
+    messengerPermissions: [],
     rightsList: function() {
         let rights = window.localStorage.getItem('preloaded_rights');
         if (rights !== undefined) {
@@ -10,13 +12,27 @@ export default {
         }
         return rights;
     },
+    permissionsList: function() {
+        let rights = window.localStorage.getItem('messengerPermissions');
+        if (rights !== undefined) {
+            rights = JSON.parse(rights);
+        } else {
+            rights = [];
+        }
+        return rights;
+    },
+    canSendMessage: function (receiverId) {
+        if (_.find(this.permissionsList(), {'can_send_id': receiverId})) {
+            return true;
+        }
+
+        return false;
+    },
     hasRight: function(id) {
         let rights = this.rightsList();
         return rights.indexOf(id) !== -1;
     },
     hasAnyRight: function(ids) {
-        // const ids = Array.from(arguments);
-        // console.dir(arguments)
 
         let hasRight = false;
 
@@ -39,5 +55,17 @@ export default {
     setRights(rights) {
         this.rights = rights;
         window.localStorage.setItem('preloaded_rights', JSON.stringify(rights));
+    },
+    setMessengerPermissions(permissions) {
+        this.messengerPermissions = permissions;
+        window.localStorage.setItem('messengerPermissions', JSON.stringify(permissions));
+    },
+    getMessengerPermissions() {
+        return new Promise((resolve) => {
+            axios.get('/ajax/messenger-rights').then((response) => {
+                this.setMessengerPermissions(response.data);
+                resolve(response.data);
+            });
+        });
     }
-}
+};

@@ -107,6 +107,9 @@ export default {
 
     },
     mounted: function() {
+
+        rights.getMessengerPermissions();
+
         evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
             this.selectedUser = user;
         });
