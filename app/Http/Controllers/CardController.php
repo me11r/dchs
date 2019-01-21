@@ -548,6 +548,7 @@ class CardController extends AuthorizedController
             'file_3',
             'file_4',
             'hq',
+            'notification_services',
             '00:00', // дефолтное названия инпута из компонента timepicker
         ]);
 
@@ -615,12 +616,14 @@ class CardController extends AuthorizedController
             }
         }
 
-        unset($data['notification_services']);
+//        unset($data['notification_services']);
 
         $card->fill($data);
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
+
+        $f = $request->input('notification_services', []);
 
         if ($card_id) {
             $this->updateNotificationServices($request->input('notification_services', []));
@@ -629,6 +632,7 @@ class CardController extends AuthorizedController
         }
 
         $this->createServicePlans($card);
+        $this->updateServicePlans($request->input('notification_services', []));
 
         $this->recommend($request, $card);
 
@@ -718,11 +722,24 @@ class CardController extends AuthorizedController
         }
     }
 
+    private function updateServicePlans($servicePlans): void
+    {
+        foreach ($servicePlans as $id => $data) {
+            $record = Ticket101ServicePlan::find($id);
+            $record->name_accepted = $data['name'] ?? null;
+            $record->dispatched_time = $data['message_time'] ?? null;
+            $record->arrive_time = $data['arrive_time'] ?? null;
+            $record->save();
+        }
+    }
+
     private function updateNotificationServices(array $notificationServices)
     {
         foreach ($notificationServices as $id => $data) {
             $record = Ticket101Notification::find($id);
             $record->name = $data['name'] ?? null;
+            $record->message_time = $data['message_time'] ?? null;
+            $record->arrive_time = $data['arrive_time'] ?? null;
             $record->save();
         }
     }

@@ -25,11 +25,7 @@ class SchedulesSeeder extends Seeder
 
         $raw_data_less = [];
 
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('schedules')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-//        \App\Models\Schedule::where('id', '>', 0)->delete();
+        \App\Models\Schedule::select('*')->delete();
 
         foreach ($raw_data as $raw_datum) {
 

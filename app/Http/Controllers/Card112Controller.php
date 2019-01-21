@@ -135,7 +135,11 @@ class Card112Controller extends Controller
     {
         $index = $request->currentTabIndex;
 
-        $data = $this->repository->createFilledWithRelations($request->all());
+        $req = $request->except([
+            'notification_services'
+        ]);
+
+        $data = $this->repository->createFilledWithRelations($req);
 
         if ($index) {
             $back = "/card112/{$data->id}/edit/#return={$index}";
@@ -182,7 +186,11 @@ class Card112Controller extends Controller
     public function update(Request $request, $id)
     {
         $index = $request->currentTabIndex;
-        $this->repository->updateFilledWithRelations($request->all(), $id);
+        $data = $request->except([
+            'notification_services'
+        ]);
+        $this->repository->updateFilledWithRelations($data, $id);
+        $this->repository->updateServicePlans($request->input('notification_services', []), $id);
         return redirect(route('card112.edit', $id))->with('currentTabIndex', $index);
     }
 
