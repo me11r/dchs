@@ -31,7 +31,6 @@
                 {% for item in ticket.notifications %}
                     {% if item.notification_service_id == notification.service_type.id %}
                         <input type="text"
-                               readonly
                                value="{{ item.message_time }}"
                                id="{{ notification.id }}_message_time"
                                name="notification_services[{{ notification.id }}][message_time]"
@@ -53,7 +52,6 @@
                        id="{{ notification.id }}_arrive_time"
                        name="notification_services[{{ notification.id }}][arrive_time]"
                        value="{{ notification.arrive_time }}"
-                       readonly
                        class="input">
             </td>
             <td>

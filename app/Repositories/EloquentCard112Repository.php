@@ -101,4 +101,20 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
             return !$validator->fails();
         });
     }
+
+    public function updateServicePlans($servicePlans, $cardId) :void
+    {
+        foreach ($servicePlans as $id => $data) {
+            $record = Ticket101ServicePlan::updateOrCreate([
+                'service_type_id' => $id,
+                'card112_id' => $cardId,
+            ],[
+                'service_type_id' => $id,
+                'card112_id' => $cardId,
+                'name_accepted' => $data['name'] ?? null,
+                'dispatched_time' => $data['dispatched_time'] ?? null,
+                'arrive_time' => $data['arrive_time'] ?? null,
+            ]);
+        }
+    }
 }
