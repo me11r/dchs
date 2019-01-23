@@ -1,0 +1,104 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="section container">
+        <div class="level">
+            <div class="level-left">
+            <h4 class="title"
+                style="padding: 3px 15px">Карточка 112
+            </h4>
+            </div>
+            <div class="level-right">
+                <a href="{{ route('card103.create') }}" class="button is-basic is-main"
+                   style="margin: 2px 10px 2px">
+                    <i class="fas fa-plus"></i>&nbsp;Новая карточка
+                </a>
+            </div>
+        </div>
+        <div>
+            <form action="" method="get">
+                <div class="field   has-addons">
+                    <div class="control is-expanded">
+                        <input type="search" class="input" name="search" value="{{ search ?? '' }}" id="search-input">
+                    </div>
+                    <div class="control">
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel">
+            <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+                <thead>
+                <tr>
+                    <th>№ КУИ</th>
+                    <th>
+                        <a href="?sort=location">Адрес</a>
+                        <form>
+                            <select name="filter[id]" class="select control" onchange="this.form.submit()">
+                                {% for f in items %}
+                                    <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.location }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </th>
+                    <th>
+                        <a href="?sort=city_area_id">Район</a>
+                        <form>
+                            <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
+                                {% for f in city_areas %}
+                                    <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </th>
+                    <th class="has-text-right">
+                        <a href="?sort=created_at">Дата и время</a>
+                        <form>
+                            <select name="filter[id]" class="select control" onchange="this.form.submit()">
+                                {% for f in items %}
+                                    <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.created_at|date('H:i d.m.Y') }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                {% for item in items %}
+                    <tr>
+                        <td class="has-text-right">{{ item.id }}</td>
+                        <td>{{ item.location }}</td>
+                        <td>{{ item.cityArea.name|default('-') }}</td>
+                        <td class="has-text-right">{{ item.created_at|date('H:i d.m.Y') }}</td>
+                        <td class="has-text-right">
+                            <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                                  method="POST"
+                                  action="{{ route('card103.destroy', item.id) }}">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="_method" value="DELETE">
+
+                                <a href="{{ route('card103.edit', item.id) }}"
+                                   class="button is-small is-basic">
+                                    <i class="fas fa-pencil-alt"></i>&nbsp;
+                                    Редактировать
+                                </a>
+
+                                <button title="Удалить"
+                                        class="button is-small is-danger">
+                                    <i class="fas fa-trash"></i>&nbsp;
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="is-centered"><h1 class="title">Нет выбранных заявок</h1></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+        </div>
+    </div>
+{% endblock content %}

@@ -65,6 +65,12 @@
                                 class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточки 112
                         </a>
+                        <a
+                                href="/card103"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 103
+                        </a>
                     </div>
                 </div>
                 <div
@@ -321,6 +327,12 @@
                             class="dropdown-item">
                             <i class="fas fa-archway fa-fw"></i>&nbsp;
                             Путевые листы служб взаимодействия
+                        </a>
+                        <a
+                            href="/roadtrip-103/"
+                            class="dropdown-item">
+                            <i class="fas fa-archway fa-fw"></i>&nbsp;
+                            Путевые листы 103
                         </a>
 
                     </div>

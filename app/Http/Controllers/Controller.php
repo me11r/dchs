@@ -36,7 +36,7 @@ abstract class Controller extends BaseController
         $user = \Auth::user();
         if ($user !== null) {
             $dept = $user->department;
-            if ($dept !== null) {
+            if ($dept !== null || $user->isRole('dispatcher_103')) {
                 $params['check_roadtrips'] = true;
             }
             $service = $user->service_type;

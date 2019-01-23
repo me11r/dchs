@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Card103;
+use App\Card103RoadtripPlan;
 use App\Dictionary\Street;
 use App\FireDepartment;
 use App\Models\Building;
@@ -14,8 +16,8 @@ use App\Right;
 use App\RoadtripPlan;
 use App\RoadtripSubscription;
 use App\Ticket101ServicePlan;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AjaxController extends AuthorizedController
 {
@@ -149,6 +151,20 @@ class AjaxController extends AuthorizedController
             ->has('ticket')
             ->get();
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getRoadtrip103Plans(Request $request)
+    {
+        if (Auth::user() && Auth::user()->role && Auth::user()->role->name === 'dispatcher_103') {
+
+            $trips = Card103::whereHas('roadtrips', function ($q) {
+                $q->whereNull('accept_time');
+            })->get();
+
+            return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        }
+
+        return response()->json([], 200);
     }
 
     public function getServicePlans(Request $request)

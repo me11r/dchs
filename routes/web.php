@@ -16,6 +16,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('messenger-rights', 'AjaxController@getMessengerPermissions');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
+        Route::get('roadtrips-103', 'AjaxController@getRoadtrip103Plans');
         Route::get('service-plans', 'AjaxController@getServicePlans');
         Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
     });
@@ -75,6 +76,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hydrants', 'CardController@hydrants')->name('hydrants')->middleware(['right:CAN_ACCESS_HYDRANT']);
 
     Route::resource('/card112', 'Card112Controller');
+
+    Route::resource('/card103', 'Card103Controller');
+    Route::post('/card103/send-department', 'Card103Controller@sendDepartment');
+    Route::post('/card103/service-plans/check', 'Card103Controller@checkServicePlans');
+    Route::group(['prefix' => 'roadtrip-103'], function () {
+        Route::get('/', 'Roadtrip103Controller@index');
+        Route::get('{id}', 'Roadtrip103Controller@show');
+        Route::post('/accept/{id}', 'Roadtrip103Controller@accept')->where('id', '[0-9]+');
+        Route::post('/dispatch', 'Roadtrip103Controller@postDispatch');
+        Route::post('/arrived', 'Roadtrip103Controller@postArrived');
+        Route::post('/return', 'Roadtrip103Controller@postReturn');
+    });
 //    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');

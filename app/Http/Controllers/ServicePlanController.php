@@ -71,6 +71,16 @@ class ServicePlanController extends Controller
                 'dispatched_time' => now(),
             ]);
         }
+        elseif($request->cardType == 103) {
+            $servicePlan = Ticket101ServicePlan::updateOrCreate([
+                'service_type_id' => $request->service_id,
+                'card103_id' => $request->card_id,
+            ],[
+                'service_type_id' => $request->service_id,
+                'card103_id' => $request->card_id,
+                'dispatched_time' => now(),
+            ]);
+        }
         else{
             $servicePlan = Ticket101ServicePlan::updateOrCreate([
                 'service_type_id' => $request->service_id,
