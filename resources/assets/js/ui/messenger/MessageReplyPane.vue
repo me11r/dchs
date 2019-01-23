@@ -85,7 +85,8 @@ export default {
         },
         sendMessage: function() {
             let userId = this.user.id;
-            if (!this.sending && (this.message !== '') && (this.user) && this.canSendMessage(userId)) {
+            let canSendMass = this.multiselect ? true : this.canSendMessage(userId);
+            if (!this.sending && (this.message !== '') && (this.user) && canSendMass) {
                 this.send();
             }
             else {

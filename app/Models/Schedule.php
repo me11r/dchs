@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Schedule
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Schedule extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'fire_department_main_id',
         'fire_department_id',

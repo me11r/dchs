@@ -68,19 +68,6 @@
                                 v-model="model.location">
                         </div>
 
-                        <!--<div class="control is-expanded">-->
-                        <!--<p class="control">-->
-                        <!--<label for="street_id">Адрес</label>-->
-                        <!--</p>-->
-                        <!--<buefy-common-select-->
-                        <!--id="street_id"-->
-                        <!--:options="streetsOptions"-->
-                        <!--v-model="model.street_id"/>-->
-                        <!--<input-->
-                        <!--type="hidden"-->
-                        <!--name="street_id"-->
-                        <!--v-model="model.street_id">-->
-                        <!--</div>-->
                         <!--РАЙОН-->
                         <div class="control is-expanded">
                             <p class="control">
@@ -283,7 +270,7 @@
                                         <td>
                                             <input
                                                 type="text"
-                                                readonly
+                                                :name="`notification_services[${service.id}][message_time]`"
                                                 v-model="services[service.id].created_at"
                                                 :id="service.id + '_created_at'"
                                                 class="input">
@@ -291,6 +278,7 @@
                                         <td>
                                             <input
                                                 type="text"
+                                                :name="`notification_services[${service.id}][name]`"
                                                 class="input"
                                                 :id="service.id + '_name'"
                                                 v-model="services[service.id].name_accepted">
@@ -298,19 +286,19 @@
                                         <td>
                                             <input
                                                 type="text"
+                                                :name="`notification_services[${service.id}][arrive_time]`"
                                                 v-model="services[service.id].arrive_time"
                                                 :id="service.id + '_arrived_at'"
-                                                readonly
                                                 class="input">
                                         </td>
                                         <td>
 
                                             <input
                                                 type="text"
+                                                :name="`notification_services[${service.id}][dispatched_time]`"
                                                 class="input"
-                                                v-model="services[service.id].sent_at"
-                                                :id="service.id + '_sent_at'"
-
+                                                v-model="services[service.id].dispatched_time"
+                                                :id="service.id + '_dispatched_time'"
                                             >
 
                                         </td>
@@ -795,20 +783,31 @@ export default {
                                     self.serviceTypes.forEach((serviceType) => {
                                         if (plan.service_type_id === serviceType.id) {
                                             self.services[serviceType.id] = {
-                                                sent_at: plan.created_at || moment().format('d-m-Y'),
-                                                created_at: plan.created_at || moment().format('d-m-Y'),
+                                                dispatched_time: plan.dispatched_time, //|| moment().format('d-m-Y'),
+                                                created_at: plan.dispatched_time,// || moment().format('d-m-Y'),
                                                 name_accepted: plan.name_accepted || '',
                                                 arrive_time: plan.arrive_time || ''
                                             };
                                             let name = document.getElementById(serviceType.id + '_name');
                                             let created_at = document.getElementById(serviceType.id + '_created_at');
                                             let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
-                                            let sent_at = document.getElementById(serviceType.id + '_sent_at');
-                                            name.value = plan.name_accepted || '';
-                                            created_at.value = plan.created_at || '';
-                                            arrived_at.value = plan.arrive_time || '';
-                                            sent_at.value = plan.created_at || '';
-                                            // console.dir(plan);
+                                            let dispatched_time = document.getElementById(serviceType.id + '_dispatched_time');
+
+                                            if (name.value === '') {
+                                                name.value = plan.name_accepted || '';
+                                            }
+
+                                            if (created_at.value === '') {
+                                                created_at.value = plan.dispatched_time || '';
+                                            }
+
+                                            if (arrived_at.value === '') {
+                                                arrived_at.value = plan.arrive_time || '';
+                                            }
+
+                                            if (dispatched_time.value === '') {
+                                                dispatched_time.value = plan.dispatched_time || '';
+                                            }
                                         }
                                     });
                                 });
@@ -828,9 +827,7 @@ export default {
                         cardType: 112
                     })
                     .then((response) => {
-                        // console.dir(response)
-                        this.services[service].sent_at = response.data.created_at;
-                        // console.dir(this.services[service].sent_at)
+                        this.services[service].dispatched_time = response.data.dispatched_time;
                     })
                     .catch(() => {
                     });
@@ -935,15 +932,9 @@ export default {
         }
     },
     watch: {
-        // 'model.crossroad_1_id'(newValue) {
-        //     this.setCityAreaIdByStreetId(newValue);
-        // },
         'model.location'() {
             this.notifyMap();
         }
-        /* 'currentTabIndex'() {
-
-        } */
     },
     beforeMount() {
         // if (window.card112FormData) {
@@ -976,7 +967,7 @@ export default {
 
                 this.serviceTypes.forEach((item) => {
                     this.services[item.id] = {
-                        sent_at: '',
+                        dispatched_time: '',
                         created_at: '',
                         name_accepted: '',
                         arrive_time: ''
@@ -988,8 +979,8 @@ export default {
                         this.serviceTypes.forEach((item) => {
                             if (plan.service_type_id === item.id) {
                                 this.services[item.id] = {
-                                    sent_at: plan.created_at || moment().format('d-m-Y'),
-                                    created_at: plan.created_at || moment().format('d-m-Y'),
+                                    dispatched_time: plan.dispatched_time, //|| moment().format('d-m-Y'),
+                                    created_at: plan.dispatched_time,// || moment().format('d-m-Y'),
                                     name_accepted: plan.name_accepted || '',
                                     arrive_time: plan.arrive_time || ''
                                 };

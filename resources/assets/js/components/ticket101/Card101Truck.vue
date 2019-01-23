@@ -37,7 +37,6 @@
                     <tr v-for="department in departments_">
 
                         <!--Подразделение-->
-
                         <td class=""
                             :id="`ph_${department.id}_text`"
                             :class="[isRecommended(department), needToGetBack(department)]">
@@ -55,7 +54,6 @@
                                            v-model="i.recommended"
                                            type="checkbox"> {{ i.tech.department ? i.tech.department : i.promoted_department }}
                                 </label>
-                                <!--<br>-->
                             </p>
 
                         </td>
@@ -576,12 +574,17 @@
                                     let message_time_item = document.getElementById(message_time);
                                     let arrive_time_item = document.getElementById(arrive_time);
 
-                                    accepted_name_item.value = item.name_accepted;
+                                    if (accepted_name_item.value === '') {
+                                        accepted_name_item.value = item.name_accepted;
+                                    }
 
-                                    if(message_time_item){
+                                    if (message_time_item && item.dispatched_time && message_time_item.value === '') {
                                         message_time_item.value = item.dispatched_time;
                                     }
-                                    arrive_time_item.value = item.arrive_time;
+
+                                    if (item.arrive_time && arrive_time_item.value === '') {
+                                        arrive_time_item.value = item.arrive_time;
+                                    }
 
                                 });
                             }
