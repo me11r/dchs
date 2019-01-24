@@ -21,7 +21,7 @@ class SchedulesSeeder extends Seeder
 
     public function getData()
     {
-        $raw_data = $this->parseItems(database_path('seeds/sources/schedules1.xlsx'));
+        $raw_data = $this->parseItems(database_path('seeds/sources/schedules2.xlsx'));
 
         $raw_data_less = [];
 
