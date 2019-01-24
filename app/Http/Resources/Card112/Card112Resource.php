@@ -59,7 +59,9 @@ class Card112Resource extends JsonResource
             'chronology_end_time' => Carbon::parse($this->chronology_end_time)->format('Y-m-d H:i:s'),
             'popup_notifications' => $this->resource->relationLoaded('popupNotifications') ? Resource::collection($this->popupNotifications) : [],
             'notifications_sent' => (bool) $this->notifications_sent,
-            'notification_message' => (string) $this->notification_message
+            'notification_message' => (string) $this->notification_message,
+            'emergency_type_id' => (int) $this->emergency_type_id,
+            'emergency_feature' => (string) $this->emergency_feature,
         ];
     }
 }

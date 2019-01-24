@@ -24,6 +24,60 @@
                     </div>
                 </div>
             </div>
+            <div class="field"
+                 id="hydrant-table"
+                 :class="isOpen ? 'hydrant-table-open' : 'hydrant-table-collapsed'"
+                 v-if="showHydrantTable && showHydrants"
+            >
+                <b-collapse class="panel" :open.sync="isOpen">
+                    <div slot="trigger" class="panel-heading">
+                        <strong>Гидранты</strong>
+                    </div>
+                    <table class="table is-bordered is-expanded">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    <b-autocomplete
+                                            rounded
+                                            v-model="fireDeptName"
+                                            :data="filteredHydrants"
+                                            placeholder="ПЧ"
+                                            icon="magnify"
+                                            @select="option => selectedHydrant = option">
+                                        <template slot="empty">ПЧ не найдена</template>
+                                        <template slot="header">
+                                            <a @click="resetHydrantsFilter">
+                                                <span>Сбросить фильтр</span>
+                                            </a>
+                                        </template>
+                                    </b-autocomplete>
+                                </th>
+                                <th>Адрес</th>
+                                <th>Спецификация</th>
+                                <th>Широта</th>
+                                <th>Долгота</th>
+                                <th>Активен</th>
+                                <th>Имя оператора</th>
+                                <th>Дата корректировки</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(hydrant, key) in hydrantFireDepts" @click="zoomToObject(hydrant.lat,hydrant.long)">
+                                <td>{{ ++key }}</td>
+                                <td>{{ hydrant.fire_department.title }}</td>
+                                <td>{{ hydrant.address }}</td>
+                                <td>{{ hydrant.specification }}</td>
+                                <td>{{ hydrant.lat }}</td>
+                                <td>{{ hydrant.long }}</td>
+                                <td>{{ hydrant.active }}</td>
+                                <td>{{ hydrant.operator_name }}</td>
+                                <td>{{ hydrant.correction_date }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </b-collapse>
+            </div>
         </div>
 
         <div class="map-block">
@@ -60,6 +114,7 @@ export default {
     data: function () {
         return {
             location: '',
+            isOpen: true,
             ymaps: null,
             map: {},
             currentCity: 'Алматы',
@@ -76,6 +131,14 @@ export default {
             hydrantList: [],
             hydrantPopupShow: false,
             hydrantsClusterer: null,
+            currentHydrantMark: null,
+
+            fireDeptName: '',
+            selectedHydrant: null,
+            fireDepartments: [],
+            fireDepartmentNames: [],
+
+            showHydrantTable: false,
 
             showHydrants: window.showHydrants,
             showDepartments: true,
@@ -90,7 +153,7 @@ export default {
         initHydrantList() {
             axios.get('/api/hydrant')
                 .then((response) => {
-                    this.hydrantList = response['data']['data'];
+                    this.hydrantList = response['data']['hydrants'];
                     this.hydrantsClusterer = this.getHydrantsClusterer(this.hydrantList.map((item) => {
                         return this.getHydrantPlaceMarkFromItem(item, this.onMarkClick, this.onMarkDragEnd);
                     }));
@@ -99,18 +162,25 @@ export default {
         setHydrants() {
             if (this.hydrantsClusterer) {
                 this.map.geoObjects.add(this.hydrantsClusterer);
-            }
-            else{
+            } else {
                 axios.get('/api/hydrant')
                     .then((response) => {
-                        this.hydrantList = response['data']['data'];
+                        this.hydrantList = response['data']['hydrants'];
+                        this.fireDepartments = response['data']['fireDepartments'];
+                        this.mapFireDepts();
                         this.hydrantsClusterer = this.getHydrantsClusterer(this.hydrantList.map((item) => {
                             return this.getHydrantPlaceMarkFromItem(item, this.onMarkClick, this.onMarkDragEnd);
                         }));
 
                         this.map.geoObjects.add(this.hydrantsClusterer);
+                        this.showHydrantTable = true;
                     });
             }
+        },
+        mapFireDepts() {
+            this.fireDepartmentNames = this.fireDepartments.map((item) => {
+                return item.title;
+            });
         },
         closeHydrantPopup() {
             this.hydrantPopupShow = false;
@@ -222,6 +292,11 @@ export default {
             this.emptyModel = {...window.hydrantListData.model};
 
             this.setHydrantsList();
+        },
+        resetHydrantsFilter() {
+            this.selectedHydrant = null;
+            this.hydrantsClusterer = null;
+            this.setMapData();
         },
 
         setMapData() {
@@ -377,6 +452,43 @@ export default {
             for (let polygon in polygons) {
                 this.map.geoObjects.add(polygons[polygon]);
             }
+        },
+        zoomToObject(lat, long) {
+            window.scrollTo(0,document.body.scrollHeight);
+            this.map.setZoom(18);
+            this.map.panTo([lat, long]);
+
+            if (this.currentHydrantMark) {
+                this.currentHydrantMark.geometry.setCoordinates([lat, long]);
+            }
+            else {
+                this.currentHydrantMark = new this.ymaps.Placemark([lat, long], {
+                    iconCaption: [lat, long].join(', ')
+                }, {
+                    preset: 'islands#violetDotIconWithCaption',
+                    draggable: true
+                });
+
+                this.map.geoObjects.add(this.currentHydrantMark);
+                // Слушаем событие окончания перетаскивания на метке.
+                // this.currentHydrantMark.events.add('dragend', function () {
+                //     getAddress(myPlacemark.geometry.getCoordinates());
+                // });
+            }
+        }
+    },
+    computed: {
+        hydrantFireDepts() {
+                return this.hydrantList.filter((option) => {
+                    return option.fire_department.title === this.selectedHydrant;
+                });
+        },
+        filteredHydrants() {
+            return this.fireDepartmentNames.filter((option) => {
+                return option.toString()
+                    .toLowerCase()
+                    .indexOf(this.fireDeptName.toLowerCase()) >= 0;
+            });
         }
     },
     watch: {
@@ -389,6 +501,18 @@ export default {
         'showDistricts'() {
             this.setMapData();
         },
+        'selectedHydrant'() {
+            this.resetAllObjects();
+            // this.map.geoObjects.remove(this.hydrantsClusterer);
+
+            this.hydrantsClusterer = this.getHydrantsClusterer(this.hydrantFireDepts.map((item) => {
+                return this.getHydrantPlaceMarkFromItem(item, this.onMarkClick, this.onMarkDragEnd);
+            }));
+
+            this.setMapData();
+
+            // this.map.geoObjects.add(this.hydrantsClusterer);
+        }
     },
     mounted() {
         (new YandexMapsBus())
@@ -397,7 +521,6 @@ export default {
                 this.yandexMapsBus = yandexMapsBus;
                 this.ymaps = this.yandexMapsBus.getYmaps();
                 // this.initHydrantList();
-
                 this.initMap();
                 this.addHydrantClickListener();
                 let initHouseData = window.localStorage.getItem(YANDEX_HOUSE_FOUND);
@@ -433,5 +556,17 @@ export default {
     #common-map-screen-yandex-map {
         width: 100%;
         height: 100%;
+    }
+
+    #hydrant-table {
+        overflow-y: scroll;
+        background: ivory;
+        max-height: 300px;
+    }
+    .hydrant-table-open {
+        height: 300px;
+    }
+    .hydrant-table-collapsed {
+        height: 50px;
     }
 </style>

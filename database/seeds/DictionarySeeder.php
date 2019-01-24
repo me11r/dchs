@@ -161,6 +161,16 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'operational_groups',
                 'model' => \App\OperationalGroup::class
             ],
+            [
+                'title' => "Статус а/м",
+                'table' => 'vehicle_statuses',
+                'model' => \App\VehicleStatus::class
+            ],
+            [
+                'title' => "Тип происшествия",
+                'table' => 'emergency_types',
+                'model' => \App\EmergencyType::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

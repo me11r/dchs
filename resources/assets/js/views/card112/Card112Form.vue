@@ -367,6 +367,26 @@
                                     v-model="model.additional_street_id">
                             </div>
                         </div>
+
+                        <!--ТИП ПРОИСШЕСТВИЯ-->
+                        <div class="field">
+                            <p class="control">
+                                <label for="emergency_type_id">Тип происшествия</label>
+                            </p>
+                            <div class="select">
+                                <select
+                                        id="emergency_type_id"
+                                        name="emergency_type_id"
+                                        v-model="model.emergency_type_id">
+                                    <option value="">-</option>
+                                    <option
+                                            v-for="i in emergencyTypes"
+                                            :key="i.id"
+                                            :value="i.id">{{ i.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="field is-grouped">
                             <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
                             <div
@@ -400,6 +420,18 @@
                                     id="additional_incident_place"
                                     v-model="model.additional_incident_place">
                             </div>
+                        </div>
+
+                        <!--ХАРАКТЕРИСТИКА ПРОИСШЕСТВИЯ-->
+                        <div class="field">
+                            <label for="emergency_feature">Характеристика происшествия</label>
+                            <textarea
+                                name="emergency_feature"
+                                id="emergency_feature"
+                                class="textarea"
+                                cols="30"
+                                rows="3"
+                                v-model="model.emergency_feature"></textarea>
                         </div>
 
                         <!--ПРИЧИНА-->
@@ -723,6 +755,7 @@ export default {
             incidentTypes: [],
             serviceTypes: [],
             cityAreas: [],
+            emergencyTypes: [],
             model: {
                 location: '',
                 city_area_id: ''
@@ -752,6 +785,9 @@ export default {
         },
         streetsOptions() {
             return this.commonOptionsMapping(this.streets);
+        },
+        emergencyTypesOptions() {
+            return this.commonOptionsMapping(this.emergencyTypes);
         },
         cityAreasOptions() {
             return this.commonOptionsMapping(this.cityAreas);
@@ -957,6 +993,7 @@ export default {
                 this.yandexMapsBus = yandexMapsBus;
                 this.streets = window.card112FormData.streets;
                 this.cityAreas = window.card112FormData.cityAreas;
+                this.emergencyTypes = window.card112FormData.emergencyTypes;
                 this.incidentTypes = window.card112FormData.incidentTypes;
                 this.serviceTypes = window.card112FormData.serviceTypes;
                 this.method = window.card112FormData.method;
