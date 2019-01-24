@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\EmergencyType;
 use App\Http\Resources\Card112\Card112Resource;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
@@ -119,6 +120,7 @@ class Card112Controller extends Controller
             $ticket101_service_plans[] = new Ticket101ServicePlan();
         }
 
+
         return View::make('card112.create')
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
@@ -127,6 +129,7 @@ class Card112Controller extends Controller
             ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('model', new Card112Resource(new Card112()))
             ->with('service_plans', $ticket101_service_plans)
+            ->with('emergencyTypes', EmergencyType::all())
             ->with('currentTabIndex', 0)
             ->render();
     }
@@ -170,6 +173,7 @@ class Card112Controller extends Controller
             ->with('service_plans', $ticket101_service_plans)
             ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('currentTabIndex', $request->input('currentTabIndex', 0))
+            ->with('emergencyTypes', EmergencyType::all())
             ->with('model', new Card112Resource($this->repository->where('id', '=', $id)
                 ->with([
                     'serviceReactions',
