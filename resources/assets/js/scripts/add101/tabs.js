@@ -1,6 +1,10 @@
+import {YANDEX_HOUSE_FOUND} from "../../config/storage-keys";
+import {globalBus} from '../global-bus';
+
 export default class Tabs {
     constructor () {
         this.activeTab = 0;
+        this.canSave = true;
         this.notificationActiveTab = 0;
         this.tabsCount = 0;
         this.isNewForm = (document.getElementById('card-101-form-id').getAttribute('data-id') === '0');
@@ -20,7 +24,7 @@ export default class Tabs {
     }
 
     setTab (i) {
-        if (!this.isNext(i)) return false;
+        // if (!this.isNext(i)) return false;
 
         const form = document.getElementById('card-101-form');
         let valid = form.checkValidity();
@@ -29,12 +33,20 @@ export default class Tabs {
         if ((this.activeTab === 0) && (this.isNewForm === true) && (i !== 0)) {
             if (valid) {
                 form.action += ('?comeback=' + i);
-                return form.submit();
+                if (this.canSave){
+                    globalBus.$emit('SAVING_CARD101');
+                    this.canSave = false;
+                    return form.submit();
+                }
             } else {
                 if (fire_department_id.value === undefined || fire_department_id.value == false) {
                     return false;
                 }
-                form.querySelector('button[type=submit]').click();
+                if (this.canSave){
+                    globalBus.$emit('SAVING_CARD101');
+                    this.canSave = false;
+                    form.querySelector('button[type=submit]').click();
+                }
             }
             return false;
         } else {
@@ -79,10 +91,24 @@ export default class Tabs {
         this.setTab(nextTab);
     }
 
-    isNext(step) {
+    openInnerTab(evt, tabName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName('content-tab');
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = 'none';
+        }
+        tablinks = document.getElementsByClassName('main-tab-inner');
+        for (i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace('is-active', '');
+        }
+        document.getElementById(tabName).style.display = 'block';
+        evt.currentTarget.className += ' is-active';
+    }
+
+    /*isNext(step) {
         if (step === 1) {
             if (!document.getElementById('location').value && !document.getElementById('fireplace').value) { return false; }
         }
         return true;
-    }
+    }*/
 };

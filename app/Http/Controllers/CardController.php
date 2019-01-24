@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Analytics101;
+use App\Analytics101Item;
+use App\Chronology101;
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireLevel;
@@ -17,6 +20,7 @@ use App\FormationReport;
 use App\FormationTechReport;
 use App\Http\Middleware\Rights\FormationRecord;
 use App\Http\Resources\HydrantResource;
+use App\LivingSectorType;
 use App\Models\FireDepartmentResult;
 use App\Models\Hydrant;
 use App\Models\Notification\NotificationGroup;
@@ -32,9 +36,11 @@ use App\Models\Trunk;
 use App\Models\WallMaterial;
 use App\OperationalCard;
 use App\RideType;
+use App\Services\AnalyticsService;
 use App\Services\FileUploadService;
 use App\Ticket101;
 use App\Ticket101Drill;
+use App\Ticket101HqRide;
 use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use App\User;
@@ -50,6 +56,8 @@ class CardController extends AuthorizedController
     {
         $isAdmin = Auth::user()->isAdmin();
         $canEditOwnHydrants = Auth::user()->hasRight('CAN_EDIT_MAP_HYDRANTS');
+        $canEditAllHydrants = Auth::user()->hasRight('CAN_EDIT_HYDRANT_LOCATIONS');
+
         $userDept = Auth::user()->fire_department_id;
 
         $this->set('areas', (new CityArea())->get()->toArray());
@@ -57,8 +65,30 @@ class CardController extends AuthorizedController
         $this->set('model', new HydrantResource(new Hydrant()));
 
         $this->set('isAdmin', $isAdmin);
+        $this->set('canEditAllHydrants', $canEditAllHydrants);
         $this->set('canEditOwnHydrants', $canEditOwnHydrants);
         $this->set('userDept', $userDept);
+    }
+
+    public function hydrants(Request $request)
+    {
+        $isAdmin = Auth::user()->isAdmin();
+        $canEditOwnHydrants = Auth::user()->hasRight('CAN_EDIT_MAP_HYDRANTS');
+        $canEditAllHydrants = Auth::user()->hasRight('CAN_EDIT_HYDRANT_LOCATIONS');
+        $userDept = Auth::user()->fire_department_id;
+
+        $data['showHydrants'] = true;
+
+        $data['areas'] = (new CityArea())->get()->toArray();
+        $data['fireDepartments'] = collect(FireDepartment::all(['id', 'title']))->toArray();
+        $data['model'] = new HydrantResource(new Hydrant());
+
+        $data['isAdmin'] = $isAdmin;
+        $data['canEditOwnHydrants'] = $canEditOwnHydrants;
+        $data['userDept'] = $userDept;
+        $data['canEditAllHydrants'] = $canEditAllHydrants;
+
+        return view('card.mapscreen', $data);
     }
 
     public function get101(Request $request, $card_type = null)
@@ -137,6 +167,7 @@ class CardController extends AuthorizedController
         $this->set('tickets', $tickets)
             ->set('city_areas', $city_areas)
             ->set('id', $id)
+            ->set('card_type', 'real')
             ->set('search', $search)
             ->set('can_delete', $can_delete ?? false)
             ->set('type', $card_type)
@@ -200,7 +231,8 @@ class CardController extends AuthorizedController
         $this->set('city_area', CityArea::with(['fire_departments'])->get());
         $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
-        $this->set('burn_object', BurntObject::all());
+        $this->set('living_sector_types', LivingSectorType::all());
+        $this->set('burn_object', FireObject::all());
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
         $this->set('fire_object_options', FireObject::all());
@@ -227,6 +259,11 @@ class CardController extends AuthorizedController
                 'chronologies.event_info_arrived',
                 'chronologies.fire_department_result.tech',
                 'chronologies.fire_department_result.department',
+                'chronologiesFromFd',
+                'chronologiesFromFd.event_info',
+                'chronologiesFromFd.event_info_arrived',
+                'chronologiesFromFd.fire_department_result.tech',
+                'chronologiesFromFd.fire_department_result.department',
                 'results',
                 'results.tech',
                 'results.tech.formation_tech_report',
@@ -242,11 +279,18 @@ class CardController extends AuthorizedController
                 'operational_card',
                 'operational_plan.special_plans',
                 'service_plans',
-                'service_plans.service_type'
+                'service_plans.service_type',
+                'fireDepartmentsInfo',
+                'fireDepartmentsInfo.fire_level',
+                'fireDepartmentsInfo.burn_object',
+                'fireDepartmentsInfo.trip_result',
+                'fireDepartmentsInfo.fire_department',
+                'fireDepartmentsInfo.living_sector_type',
+                'fireDepartmentsInfo.liquidation_method',
+                'fireDepartmentsInfo.water_supply_source',
+                'hqRides',
             ])
             ->findOrNew($card_id);
-
-//        dd($ticket->service_plans->first());
 
         $recommendedDispatched = $ticket->results()
             ->isDispatched()
@@ -277,18 +321,18 @@ class CardController extends AuthorizedController
             session(['notification.get_back' => 1]);
         }
 
-
         $fire_dep_results_info = '';
         foreach ($ticket->results()->where('dispatched', true)->get() as $item) {
-            $fire_dep_results_info .= "{$item->department->name}: {$item->departments}; ";
+            $fire_dep_results_info .= "{$item->department->name}: {$item->tech->department}; ";
+        }
+
+        foreach ($ticket->hqRides as $hqRide) {
+            if($hqRide->dispatched){
+                $fire_dep_results_info .= "{$hqRide->name}";
+            }
         }
 
         $water_sources = WaterSupplySource::all();
-
-//        if (!\count($ticket->notifications) && $ticket->id){
-//            $this->createNotificationServices($ticket);
-//            $ticket->notifications()->get();
-//        }
 
         $this->set('notificationGroups', (new NotificationGroup())->get());
         $this->set('recommendedDispatched', $recommendedDispatched);
@@ -297,6 +341,75 @@ class CardController extends AuthorizedController
         $this->set('max_square', $max_square);
         $this->set('ticket', $ticket);
         $this->set('other_records_unique', $other_records_unique);
+    }
+
+    private function saveAnalytics($ticket)
+    {
+        $analytics = new AnalyticsService();
+        try{
+            $analytics->fill($ticket);
+        }
+        catch (\Exception $exception){
+
+        }
+    }
+
+    private function saveLog($id)
+    {
+        $ticket = Ticket101::with([
+            /*'crossroad_1',
+            'crossroad_2',
+            'other_records',
+            'chronologies',
+            'chronologies.event_info',
+            'chronologies.event_info_arrived',
+            'chronologies.fire_department_result.tech',
+            'chronologies.fire_department_result.department',*/
+            'results',
+            'results.tech',
+            'results.tech.formation_tech_report',
+            'results.department',
+//            'notifications',
+//            'notifications.service',
+//            'popup_notifications',
+//            'popup_notifications.user',
+//            'popup_notifications.status',
+//            'popup_notifications.group',
+//            'notification_groups',
+//            'notifications.service',
+//            'operational_card',
+//            'operational_plan.special_plans',
+//            'service_plans',
+//            'analytics',
+//            'fire_level',
+//            'fire_object',
+//            'burn_object',
+//            'trip_result',
+//            'liquidation_method',
+//            'road_trip_plans',
+//            'operational_plan',
+//            'fire_department',
+//            'living_sector_type',
+//            'other_records',
+//            'popup_notifications',
+//            'notification_groups',
+//            'notifications',
+//            'results',
+//            'water_supply_source',
+//            'wall_material',
+//            'operational_card',
+//            'service_plans',
+//            'file_1',
+//            'file_2',
+//            'file_3',
+//            'file_4',
+//            'service_plans.service_type'
+        ])->find($id);
+
+        $ticket->logs()->create([
+            'user_id' => Auth::id(),
+            'body' => $ticket,
+        ]);
     }
 
     /**
@@ -312,8 +425,8 @@ class CardController extends AuthorizedController
             ->where('dict_fire_level_id', $card->fire_level_id)
             ->get();
 
-        /* последняя заполненная строевка*/
-        $report_id = FormationReport::approved()->max('id');
+        /*последняя заполненная строевка, к который моы привязались при создании карточки*/
+        $report_id = $card->formation_report_id;
         $formationTech = FormationTechReport::where('form_id', $report_id)
             ->has('items')
             ->get();
@@ -341,7 +454,7 @@ class CardController extends AuthorizedController
                 /*если подразделение еще не вернулось с прошлого происшествия*/
                 /*и прошлое происшествие не является учебным*/
                 $notAvailable = FireDepartmentResult::where('tech_id', $tech_item->id)
-                    ->whereNotNull('out_time')
+                    ->whereNotNull('accept_time')
                     ->whereHas('ticket', function ($q){
                         $q->real();
                     })
@@ -398,6 +511,31 @@ class CardController extends AuthorizedController
         }
     }
 
+    private function saveHqRides(Request $request, $card)
+    {
+        $data = $request->hq;
+
+        if($data){
+            foreach ($data as $fieldName => $departments) {
+                foreach ($departments as $deptName => $inputName) {
+                    Ticket101HqRide::updateOrCreate([
+                        'name' => $deptName,
+                        'ticket101_id' => $card->id,
+                    ],[
+                        'ticket101_id' => $card->id,
+                        'name' => $deptName,
+                        'department' => $request->input("hq.dept.{$deptName}.0", null),
+                        'accept_time' => $request->input("hq.accept_time.{$deptName}.0", null),
+                        'out_time' => $request->input("hq.out_time.{$deptName}.0", null),
+                        'arrive_time' => $request->input("hq.arrive_time.{$deptName}.0", null),
+                        'ret_time' => $request->input("hq.ret_time.{$deptName}.0", null),
+                        'dispatch_time' => $request->input("hq.dispatch_time.{$deptName}.0", null),
+                    ]);
+                }
+            }
+        }
+    }
+
     public function postAdd101(Request $request, $card_id = 0)
     {
         $data = $request->except([
@@ -408,7 +546,10 @@ class CardController extends AuthorizedController
             'file_1',
             'file_2',
             'file_3',
-            'file_4'
+            'file_4',
+            'hq',
+            'notification_services',
+            '00:00', // дефолтное названия инпута из компонента timepicker
         ]);
 
         $deptsToGetBack = collect([]);
@@ -435,6 +576,13 @@ class CardController extends AuthorizedController
 
         /** @var Ticket101 $card */
         $card = Ticket101::findOrNew($card_id);
+
+        /*при создании карточки единожды привязываемся к строевой записке, во избежание дублей высылки*/
+        if(!$card->id){
+            $data['formation_report_id'] = FormationReport::approved()
+                ->has('people_reports')
+                ->max('id');
+        }
 
         $canEditTicket = $card->canEditTicket();
         if (!$canEditTicket && !Auth::user()->hasRight('CARD101_EDIT_CLOSED')) {
@@ -468,12 +616,14 @@ class CardController extends AuthorizedController
             }
         }
 
-        unset($data['notification_services']);
+//        unset($data['notification_services']);
 
         $card->fill($data);
         $card->save();
 
         $this->saveOtherRecords($card, $otherRecords);
+
+        $f = $request->input('notification_services', []);
 
         if ($card_id) {
             $this->updateNotificationServices($request->input('notification_services', []));
@@ -482,9 +632,11 @@ class CardController extends AuthorizedController
         }
 
         $this->createServicePlans($card);
-
+        $this->updateServicePlans($request->input('notification_services', []));
 
         $this->recommend($request, $card);
+
+        $this->saveHqRides($request, $card);
 
         //если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
         // надо вернуть
@@ -503,12 +655,9 @@ class CardController extends AuthorizedController
 
         $this->saveFiles($card, $request);
 
-        /*if($request->input('other_rides', []) && $request->input('drill_type', '')){
-            $other_ride = $request->input('other_rides', []);
-            $other_ride['ticket_101_id'] = $card->id;
-
-            $ticket_other = Ticket101Other::updateOrCreate(['ticket_101_id' => $card->id], $other_ride);
-        }*/
+        if($card->trip_result_id){
+            $this->saveAnalytics($card);
+        }
 
         $card_type = ($ticket_other->drill_type ?? null) ==  null ? ''  : '/drill';
         if ($comeback) {
@@ -517,6 +666,13 @@ class CardController extends AuthorizedController
         else{
             $back = "/card/add101/{$card->id}{$card_type}";
         }
+
+        /*todo: отключил, слишком много места сжирает*/
+        /*try{
+            $this->saveLog($card->id);
+        }
+        catch (\Exception $exception){
+        }*/
 
         if ($request->ajax()) {
             return response()->json('ok', 200);
@@ -566,11 +722,24 @@ class CardController extends AuthorizedController
         }
     }
 
+    private function updateServicePlans($servicePlans): void
+    {
+        foreach ($servicePlans as $id => $data) {
+            $record = Ticket101ServicePlan::find($id);
+            $record->name_accepted = $data['name'] ?? null;
+            $record->dispatched_time = $data['message_time'] ?? null;
+            $record->arrive_time = $data['arrive_time'] ?? null;
+            $record->save();
+        }
+    }
+
     private function updateNotificationServices(array $notificationServices)
     {
         foreach ($notificationServices as $id => $data) {
             $record = Ticket101Notification::find($id);
             $record->name = $data['name'] ?? null;
+            $record->message_time = $data['message_time'] ?? null;
+            $record->arrive_time = $data['arrive_time'] ?? null;
             $record->save();
         }
     }
@@ -595,38 +764,6 @@ class CardController extends AuthorizedController
         $card->save();
 
         return response()->json('ok');
-    }
-
-    public function getAdd101OtherRide(Request $request)
-    {
-        if($request->isMethod('POST')){
-            $f = $request->all();
-            Ticket101Other::create($request->input('other_rides'));
-
-            return back()->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
-        }
-        else{
-            $data['fire_departments_vue'] = FireDepartment::all();
-            $data['ride_types'] = RideType::all();
-            $data['staff'] = Staff::all();
-            return view('card/101other_rides', $data);
-        }
-    }
-
-    public function getAdd101DrillRide(Request $request)
-    {
-        if($request->isMethod('POST')){
-            $f = $request->all();
-            Ticket101Drill::create($request->input('drill'));
-
-            return back()->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
-        }
-        else{
-            $data['fire_departments_vue'] = FireDepartment::all();
-            $data['ride_types'] = RideType::all();
-            $data['staff'] = Staff::all();
-            return view('card/101drill_rides', $data);
-        }
     }
 
     public function postDelete(Request $request)

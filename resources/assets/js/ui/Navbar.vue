@@ -30,10 +30,15 @@
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_OTHERS_RIDES')"
-                            @click.prevent="toggleOpenModal101"
-                            class="dropdown-item is-small"><i
-                            class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Прочие 101
+                            href="/card101-other-rides/create"
+                            class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Прочие выезда
+                        </a>
+                        <a
+                            v-if="hasRight('CARD101_ACCESS_DRILL_RIDES')"
+                            href="/card101-drill-rides/create"
+                            class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Учения
                         </a>
                         <a
                                 v-if="hasRight(2)"
@@ -131,7 +136,7 @@
                     </div>
                 </div>
                 <div
-                    v-if="hasAnyRight(25,26,27,28,29,30)"
+                    v-if="hasAnyRight(25,26,'CAN_ACCESS_TECH','CAN_ACCESS_PERSONS',29,30,'CAN_ACCESS_HYDRANT')"
                     class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox fa-fw"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
@@ -141,12 +146,12 @@
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Ручной ввод хронометража</a>
                         <a
-                            v-if="hasRight(27)"
+                            v-if="hasRight('CAN_ACCESS_TECH')"
                             href="/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-car fa-fw"></i>&nbsp;
                             Транспортные средства</a>
                         <a
-                            v-if="hasRight(28)"
+                            v-if="hasRight('CAN_ACCESS_PERSONS')"
                             href="/staff"
                             class="dropdown-item is-small"><i class="fas fa-child fa-fw"></i>&nbsp;
                             Личный состав</a>
@@ -159,11 +164,17 @@
                             href="/fire-department-checks"
                             class="dropdown-item is-small"><i class="fas fa-check fa-fw"></i>&nbsp;
                             Проверка пожарных частей</a>
+                        <a
+                            v-if="hasRight('CAN_ACCESS_HYDRANT')"
+                            href="/hydrants"
+                            target="_blank"
+                            class="dropdown-item is-small"><i class="fas fa-eye-dropper fa-fw"></i>&nbsp;
+                            Карта гидрантов</a>
                     </div>
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(11,21,22,23,24)">
+                    v-if="hasAnyRight(11,23,24,'SIREN_SPEECH_TECH_SHOW','CALL_INFO_SHOW','ANALYTICS101_SHOW')">
                     <a class="navbar-link is-small"><i class="fas fa-receipt fa-fw"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown">
                         <div
@@ -333,6 +344,10 @@
                             class="dropdown-item"><i class="fas fa-user fa-fw"></i>&nbsp;Пользователи</a>
                         <a
                             v-if="hasRight(7)"
+                            href="/admin/messenger-permissions"
+                            class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Разрешения мессенджера</a>
+                        <a
+                            v-if="hasRight(7)"
                             href="/admin/roles"
                             class="dropdown-item"><i class="fas fa-balance-scale fa-fw"></i>&nbsp;Роли</a>
                         <a
@@ -388,21 +403,25 @@
 
 <script>
 import axios from 'axios';
+import rights from '../scripts/rights';
 function getLocalRights() {
-    let rights = window.localStorage.getItem('preloaded_rights');
+
+    return rights.rightsList();
+
+    //todo: depricated: moved to rights.js
+    /*let rights = window.localStorage.getItem('preloaded_rights');
     if (rights !== undefined) {
         rights = JSON.parse(rights);
     } else {
         rights = [];
     }
-    return rights;
+    return rights;*/
 }
 export default {
     name: 'Navbar',
     data: function () {
         return {
             opened: false,
-            opened_modal101_: false,
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             rights: getLocalRights()
         };
@@ -418,9 +437,6 @@ export default {
     methods: {
         toggleOpen: function () {
             this.opened = !this.opened;
-        },
-        toggleOpenModal101: function () {
-            this.opened_modal101_ = !this.opened_modal101_;
         },
 
         logout: function () {
@@ -442,10 +458,19 @@ export default {
 
     },
     mounted: function () {
-        axios.get('/ajax/rights/list').then((response) => {
+
+        // тащим права из базы
+        let rightsPromise = rights.getRights();
+        rightsPromise.then((list) => {
+            this.rights = list;
+        });
+
+        //todo: depricated: moved to rights.js
+        /*axios.get('/ajax/rights/list').then((response) => {
             this.rights = response.data;
             window.localStorage.setItem('preloaded_rights', JSON.stringify(this.rights));
-        });
+        });*/
+
     }
 
 };

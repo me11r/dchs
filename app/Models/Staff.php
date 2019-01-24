@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\FireDepartment;
+use App\GuardNumber;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -34,7 +35,7 @@ class Staff extends Model
 {
     protected $table = 'staff';
 
-    protected $appends = ['unique'];
+    protected $appends = ['unique', 'initials'];
 
     protected $fillable = [
         'department_id',
@@ -43,11 +44,36 @@ class Staff extends Model
         'rank',
         'position',
         'status',
+        'surname',
+        'patronymic',
+        'guard_number_id',
     ];
 
     public function getUniqueAttribute()
     {
         return $this->unique();
+    }
+
+    public function getInitialsAttribute()
+    {
+        $fullName = explode(' ', $this->name);
+
+        $surname = $fullName[0] ?? null;
+        $name = $fullName[1] ?? null;
+        $patronymic = $fullName[2] ?? null;
+
+        $resultStr = $this->surname.' ';
+
+        if($name){
+            $resultStr .= mb_substr($name, 0, 1, 'utf-8').'.';
+        }
+
+        if($this->patronymic){
+            $resultStr .= mb_substr($this->patronymic, 0, 1, 'utf-8').'.';
+        }
+
+        return $resultStr;
+
     }
 
     public function unique()
@@ -58,6 +84,11 @@ class Staff extends Model
     public function department()
     {
         return $this->belongsTo(FireDepartment::class, 'department_id');
+    }
+
+    public function guard_number()
+    {
+        return $this->belongsTo(GuardNumber::class, 'guard_number_id');
     }
 
     public function statuses($status = null)

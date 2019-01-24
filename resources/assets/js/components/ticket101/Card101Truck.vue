@@ -7,7 +7,7 @@
                         <div class="control">
                             <label for="">Время регистрации</label>
                             <input type="text"
-                                   :value="formatDate(ticket_.created_at, 'HH:MM:SS DD-MM-YYYY')"
+                                   :value="formatDate(ticket_.created_at, 'HH:mm:SS DD-MM-YYYY')"
                                    readonly="readonly"
                                    class="input"
                             >
@@ -37,7 +37,6 @@
                     <tr v-for="department in departments_">
 
                         <!--Подразделение-->
-
                         <td class=""
                             :id="`ph_${department.id}_text`"
                             :class="[isRecommended(department), needToGetBack(department)]">
@@ -55,7 +54,6 @@
                                            v-model="i.recommended"
                                            type="checkbox"> {{ i.tech.department ? i.tech.department : i.promoted_department }}
                                 </label>
-                                <!--<br>-->
                             </p>
 
                         </td>
@@ -65,7 +63,7 @@
                             <p v-for="i in formActive[department.id]">
                                 <input :id="`accept_time_${i.id }`"
                                        type="text"
-                                       :value="formatDate(i.accept_time, 'HH:MM:SS')"
+                                       :value="formatDate(i.accept_time, 'HH:mm:SS')"
                                        readonly
                                        class="input small-imput">
                             </p>
@@ -220,6 +218,139 @@
                     </tbody>
                 </table>
             </b-tab-item>
+            <b-tab-item label="Штаб" icon="fa fa-truck-moving">
+                <div class="levels">
+                    <div class="level-left">
+                        <div class="control">
+                            <label for="">Время регистрации</label>
+                            <input type="text"
+                                   :value="formatDate(ticket_.created_at, 'HH:mm:SS DD-MM-YYYY')"
+                                   readonly="readonly"
+                                   class="input"
+                            >
+                        </div>
+                    </div>
+                    <!--<div class="level-right">
+                        <a @click="sendAllTripPlans()"
+                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
+                        </a>
+                    </div>-->
+                </div>
+
+                <table class="table is-hoverable is-fullwidth">
+                    <thead>
+                    <tr>
+                        <th>Подразделение</th>
+                        <!--<th>Отделения</th>-->
+                        <!--<th>Принято в работу</th>-->
+                        <th>Время выезда</th>
+                        <th>Время прибытия</th>
+                        <th>Время возвращения</th>
+                        <th>Отправка</th>
+                        <th>Время оповещения</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="hq_dept in hq">
+                            <!--Подразделение-->
+                            <td>{{ hq_dept.name }}</td>
+
+                            <!--{#Время выезда#}-->
+                            <td>
+                                <b-timepicker style="max-width: 6rem;"
+                                        v-model="hq_dept.out_time"
+                                        editable
+                                        :name="`hq[out_time][${hq_dept.name}][]`"
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.out_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                        <!--todo: как закрыть виджет?-->
+                                        <!--<p class="control">
+                                            <a class="button is-outlined is-small" @click.prevent="close($event, $refs)">
+                                                <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                                            </a>
+                                        </p>-->
+                                    </div>
+                                </b-timepicker>
+                            </td>
+
+                            <!--{#Время прибытия#}-->
+                            <td>
+                                <b-timepicker style="max-width: 6rem;"
+                                              editable
+                                              v-model="hq_dept.arrive_time"
+                                              :name="`hq[arrive_time][${hq_dept.name}][]`"
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.arrive_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>
+                            </td>
+
+                            <!--{#Время возвращения#}-->
+                            <td>
+                                <b-timepicker style="max-width: 6rem;"
+                                              editable
+                                              v-model="hq_dept.ret_time"
+                                              :name="`hq[ret_time][${hq_dept.name}][]`"
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.ret_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>
+                            </td>
+
+                            <!--{#Отправка HQ (Штаб)#}-->
+                            <td>
+                                <a v-if="!hq_dept.dispatched"
+                                    @click.prevent="sendHqDept(hq_dept)"
+                                   class="button is-primary is-outlined">
+                                    <i class="fas fa-bus"></i>&nbsp;Выслать
+                                </a>
+                            </td>
+
+                            <!--{#Время оповещения#}-->
+                            <td class="is-expanded">
+                                <b-timepicker style="max-width: 6rem;"
+                                              v-model="hq_dept.dispatch_time"
+                                              editable
+                                              :name="`hq[dispatch_time][${hq_dept.name}][]`"
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.dispatch_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br><br><br>
+
+            </b-tab-item>
         </b-tabs>
 
     </div>
@@ -229,9 +360,12 @@
     import axios from 'axios';
     import moment from 'moment';
     import _ from 'lodash';
+    import {globalBus} from '../../scripts/global-bus';
 
     export default {
         name: "Card101Truck",
+        components: {
+        },
         props: {
             departments: {
                 type: Array,
@@ -260,6 +394,9 @@
                 ticket_: this.ticket,
                 active: [],
                 reserve: [],
+                time1: new Date(),
+                time: 1000 * 10,
+                hq: this.formatHq(),
             };
         },
         methods: {
@@ -283,6 +420,9 @@
 
                 return '';
             },
+            close: function ($event) {
+
+            },
             sendAllTripPlans() {
                 axios.get('/roadtrip/send-all/' + window.ticket101add.ticketId).then((response) => {
                     alert('Силы отправлены');
@@ -302,6 +442,18 @@
                 }
 
                 return '';
+            },
+            formatTime(time) {
+                let dt = new Date('01-01-1970 00:00');
+                if (time !== '' && time !== null) {
+                    const tm = time.split(':');
+                    if (tm.length > 1) {
+                        dt.setHours(tm[0]);
+                        dt.setMinutes(tm[1]);
+                    }
+                }
+
+                return dt;
             },
             addToActive(result){
                 if(result.promoted_at === null && result.promoted_department !== null){
@@ -327,6 +479,15 @@
                 let is_checked = object.checked;
                 object.checked = !is_checked;
 
+                //todo временно отключено, возможно вообще не пригодится в дальнейшем
+                /*globalBus.$emit('departmentHasSent',{
+                    event: event,
+                    dept_id: dept_id,
+                    dept_number: dept_number,
+                    res_id: res_id,
+                    result: _.find(this.results_, {id: res_id})
+                });*/
+
                 axios.get('/roadtrip/send/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number).then((response) => {
                     alert(`Подразделение отправлено`);
                     event.target.disabled = true;
@@ -347,7 +508,7 @@
             },
 
             isSelected(item){
-                if(item.recommended === 1 || item.dispatched === 1){
+                if(item.recommended === 1 || item.dispatched === 1) {
                     return true;
                 }
 
@@ -356,72 +517,109 @@
             findActive(id){
                 return _.findIndex(this.results_, {id:id});
             },
+            sendHqDept(dept) {
+                dept.ticket101_id = this.ticket_.id;
+                dept.dispatch_time = this.formatTime(moment().format('HH:mm'));
+                dept.dispatched = true;
+                axios.post('/api/101card/send-hq-ride',{ride: dept});
+                globalBus.$emit('hqDeptSent', dept);
+            },
             checkRoadtrips() {
                 let ticket_id = window.ticket101add.ticketId;
                 let self = this;
                 if (ticket_id !== 0) {
-                    var timerId = setInterval(() => {
-                        axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
-                            if (response.data.recommendations !== undefined) {
-                                // self.results_ = response.data.recommendations;
-                                response.data.recommendations.forEach((item) => {
-                                    let accepted_time = 'accept_time_' + item.id;
-                                    let out_time = 'out_time_' + item.id;
-                                    let ret_time = 'ret_time_' + item.id;
-                                    let send_time = 'send_time_' + item.id;
+                    axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
+                        if (response.data.recommendations !== undefined) {
+                            // self.results_ = response.data.recommendations;
+                            response.data.recommendations.forEach((item) => {
+                                let accepted_time = 'accept_time_' + item.id;
+                                let out_time = 'out_time_' + item.id;
+                                let ret_time = 'ret_time_' + item.id;
+                                let send_time = 'send_time_' + item.id;
 
-                                    let accepted_time_item = document.getElementById(accepted_time);
+                                let accepted_time_item = document.getElementById(accepted_time);
 
-                                    let out_time_item = document.getElementById(out_time);
+                                let out_time_item = document.getElementById(out_time);
 
-                                    let ret_time_item = document.getElementById(ret_time);
+                                let ret_time_item = document.getElementById(ret_time);
 
-                                    let send_time_item = document.getElementById(send_time);
+                                let send_time_item = document.getElementById(send_time);
 
-                                    if (item.dispatched === 1) {
-                                        send_time_item.value = item.dispatch_time;
-                                    }
-
-                                    if (accepted_time_item && out_time_item) {
-                                        accepted_time_item.value = item.accept_time;
-                                        out_time_item.value = item.out_time;
-                                    }
-
-                                    if (ret_time_item) {
-                                        ret_time_item.value = item.ret_time;
-                                    }
-
-                                    let index = _.findIndex(self.results_, {id: item.id});
-
-                                    // Replace item at index using native splice
-                                    self.results_.splice(index, 1, item);
-                                });
-
-                                if (response.data.service_plans !== undefined) {
-                                    response.data.service_plans.forEach((item) => {
-                                        let accepted_name = item.id + '_name';
-                                        let message_time = item.id + '_message_time';
-                                        let arrive_time = item.id + '_arrive_time';
-
-                                        let accepted_name_item = document.getElementById(accepted_name);
-                                        let message_time_item = document.getElementById(message_time);
-                                        let arrive_time_item = document.getElementById(arrive_time);
-
-                                        accepted_name_item.value = item.name_accepted;
-                                        message_time_item.value = item.dispatched_time;
-                                        arrive_time_item.value = item.arrive_time;
-
-                                    });
+                                if (item.dispatched === 1) {
+                                    send_time_item.value = item.dispatch_time;
                                 }
 
+                                if (accepted_time_item && out_time_item) {
+                                    accepted_time_item.value = item.accept_time;
+                                    out_time_item.value = item.out_time;
+                                }
+
+                                if (ret_time_item) {
+                                    ret_time_item.value = item.ret_time;
+                                }
+
+                                let index = _.findIndex(self.results_, {id: item.id});
+
+                                // Replace item at index using native splice
+                                self.results_.splice(index, 1, item);
+                            });
+
+                            if (response.data.service_plans !== undefined) {
+                                response.data.service_plans.forEach((item) => {
+                                    let accepted_name = item.id + '_name';
+                                    let message_time = item.id + '_message_time';
+                                    let arrive_time = item.id + '_arrive_time';
+
+                                    let accepted_name_item = document.getElementById(accepted_name);
+                                    let message_time_item = document.getElementById(message_time);
+                                    let arrive_time_item = document.getElementById(arrive_time);
+
+                                    if (accepted_name_item.value === '') {
+                                        accepted_name_item.value = item.name_accepted;
+                                    }
+
+                                    if (message_time_item && item.dispatched_time && message_time_item.value === '') {
+                                        message_time_item.value = item.dispatched_time;
+                                    }
+
+                                    if (item.arrive_time && arrive_time_item.value === '') {
+                                        arrive_time_item.value = item.arrive_time;
+                                    }
+
+                                });
                             }
-                        });
-                    // }, 10000);
-                    }, 3000);
+
+                            if(response.data.departmentsOnWay) {
+                                globalBus.$emit('checkDepartmentsOnWay', response.data.departmentsOnWay);
+                            }
+
+                        }
+
+                        setTimeout(this.checkRoadtrips, this.time);
+                    });
                 }
+            },
+            formatHq() {
+                let hq = this.ticket.hq_rides;
+
+                if(hq.length === 0) {
+                    hq = [
+                        {name: 'ДСПТ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: '',dispatched: false},
+                        {name: 'КШМ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: '',dispatched: false},
+                        {name: 'ИПЛ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: '',dispatched: false}
+                    ];
+                }
+
+                hq.forEach((item) => {
+                    item.accept_time = this.formatTime(item.accept_time);
+                    item.out_time = this.formatTime(item.out_time);
+                    item.arrive_time = this.formatTime(item.arrive_time);
+                    item.ret_time = this.formatTime(item.ret_time);
+                    item.dispatch_time = this.formatTime(item.dispatch_time);
+                });
+
+                return hq;
             }
-
-
         },
         computed: {
             formActive() {
@@ -434,7 +632,7 @@
 
                 return this.active;
             },
-            formReserve(){
+            formReserve() {
                 this.departments_.forEach((dept) => {
                     this.reserve[dept.id] = _.filter(this.results_, function (result) {
                         return result.tech.formation_tech_report.dept_id === dept.id && result.tech.status === 'reserve';
@@ -442,11 +640,17 @@
                 });
 
                 return this.reserve;
-            }
+            },
         },
-        mounted(){
-            this.checkRoadtrips();
-            // console.dir(this.results_);
+        mounted() {
+            setTimeout(this.checkRoadtrips, this.time);
+            // this.formatHq();
+
+            /*globalBus.$on('timeChangedUnique', (event) => {
+                this.hq[0].accept_time = event.value;
+                // document.getElementById('tpicker_123').value = event.value;
+                // console.dir(event);
+            });*/
         }
     }
 </script>

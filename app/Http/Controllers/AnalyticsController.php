@@ -9,6 +9,8 @@ use App\Reports\Report;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\DailyWordExport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
@@ -47,31 +49,14 @@ class AnalyticsController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
-
         $data['record'] = Analytics101::with([
             'items',
             'items.trip_result',
+            'items.ticket101',
         ])->find($id);
 
-        if(isset($report['tripResults']) && count($report['tripResults'])){
-            foreach ($report['tripResults'] as $title => $items) {
-                foreach ($items as $reportItem) {
-                    $data['record']->items()->firstOrCreate(
-                        ['ticket101_id' => $reportItem['id']],
-                        [
-                        'text' => $reportItem['analytics'],
-                        'trip_result_id' => $reportItem['trip_result_id'],
-                        'ticket101_id' => $reportItem['id'],
-                    ]);
-                }
-            }
-        }
-
-        $data['record'] = Analytics101::with([
-            'items',
-            'items.trip_result',
-        ])->find($id);
+        $data['firstDate'] = Carbon::parse($data['record']->date)->addHours(7)->format('d.m.Y H:i');
+        $data['secondDate'] = Carbon::parse($data['firstDate'])->addDay()->format('d.m.Y H:i');
 
         $data['tripResults'] = TripResult::all();
 
@@ -80,14 +65,15 @@ class AnalyticsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $record = Analytics101::with(['items'])->find($id);
-
         $all = $request->all();
 
         foreach ($request->input('text', []) as $item_id => $text) {
             $analyticsItem = Analytics101Item::find($item_id);
-            $analyticsItem->text = $text;
+
+            $text = preg_replace("/<p[^>]*>[\s|&nbsp;]*<\/p>/", '', $text); //убираем пустые параграфы
+            $analyticsItem->text = str_replace('<br>', "<br/>", $text);
             $analyticsItem->save();
+
         }
 
         return redirect()->route('reports.analytics101.index');
@@ -98,5 +84,20 @@ class AnalyticsController extends Controller
     {
         Analytics101::destroy($id);
         return back();
+    }
+
+    public function word($id)
+    {
+        $analytic = Analytics101::find($id);
+        $data = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport($analytic->date);
+
+        $dailyWordExport = new DailyWordExport(
+            $data
+        );
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Суточный отчет 101 - '.date('d-m-Y', strtotime($analytic->date)). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
     }
 }

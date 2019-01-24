@@ -11,7 +11,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'ajax'], function () {
         Route::get('street/{area_id?}', 'AjaxController@findStreet')->where('area_id', '[0-9]+');
         Route::get('find_special_plan', 'AjaxController@findSpecialPlan');
+        Route::get('find_special_plan_by_id', 'AjaxController@findSpecialPlanById');
+        Route::get('find_operational_card_by_id', 'AjaxController@findOperationalCardById');
         Route::get('rights/list', 'AjaxController@getRightIds');
+        Route::get('messenger-rights', 'AjaxController@getMessengerPermissions');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
         Route::get('service-plans', 'AjaxController@getServicePlans');
         Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
@@ -31,7 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('users/passwd/{user_id}', 'AdminController@getPassword')->where(['user_id' => '[0-9]+'])->name('admin-users-password');
         Route::post('users/passwd/{user_id}', 'AdminController@postPassword')->where(['user_id' => '[0-9]+'])->name('post-admin-users-password');
 
-        Route::group(['prefix' => 'roles', 'as' => 'roles.'], function (){
+        Route::group(['prefix' => 'roles', 'as' => 'roles.', 'middleware' => ['right:CAN_MANAGE_USERS']], function (){
             Route::get('/', 'RoleController@index')->name('index');
             Route::get('create', 'RoleController@create')->name('create');
             Route::get('edit/{id}', 'RoleController@edit')->name('edit');
@@ -39,21 +42,40 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('delete/{id}', 'RoleController@delete')->name('delete');
         });
 
+        Route::group(['prefix' => 'messenger-permissions', 'as' => 'messenger-permissions.'], function (){
+            Route::get('/', 'MessengerRightController@edit')->name('edit');
+            Route::post('store', 'MessengerRightController@store')->name('store');
+        });
+
     });
 
     Route::get('/card/101/{card_type?}', 'CardController@get101')->name('card101');
     Route::get('/card/add101/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+', 'card_type' => '[A-Za-z]+']);
-    Route::match(['get', 'post'],'/card/add101-other-rides/', 'CardController@getAdd101OtherRide')->name('card101addOtherRide')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
-    Route::match(['get', 'post'],'/card/add101-drill-rides/', 'CardController@getAdd101DrillRide')->name('card101addDrillRide')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+
+    Route::group(['prefix' => 'card101-other-rides', 'as' => 'card101-other-rides'], function (){
+        Route::get('/', 'OtherRides101Controller@index')->name('index')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::match(['get', 'post'], '/create', 'OtherRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::match(['get', 'post'], '{id}/edit', 'OtherRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::delete('delete/{id}', 'OtherRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHERS_RIDES_CAN_DELETE']);
+    });
+
+    Route::group(['prefix' => 'card101-drill-rides', 'as' => 'card101-drill-rides'], function (){
+        Route::get('/', 'DrillRides101Controller@index')->name('card101-other-rides.index')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
+        Route::match(['get', 'post'], '/create', 'DrillRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
+        Route::match(['get', 'post'], '{id}/edit', 'DrillRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
+        Route::delete('delete/{id}', 'DrillRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_DRILL_RIDES,CARD101_DRILL_RIDES_CAN_DELETE']);
+    });
+
     #Route::get('/card/add101-other/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}/{card_type?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+','card_type' => '[A-Za-z]+']);
     Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
     Route::post('/card/101/delete', 'CardController@postDelete')->name('card101.delete');
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
+    Route::get('/hydrants', 'CardController@hydrants')->name('hydrants')->middleware(['right:CAN_ACCESS_HYDRANT']);
 
     Route::resource('/card112', 'Card112Controller');
-    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
+//    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
 
@@ -165,6 +187,10 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('departments', '[0-9]+');
         Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
         Route::post('recommend', 'RoadtripController@postRecommend');
+
+        Route::get('/additional/{id}', 'RoadtripController@getAdditional')
+            ->name('roadtrip.additional')
+            ->where('id', '[0-9]+');
     });
 
     Route::group(['prefix' => 'service-plans'], function (){
@@ -223,6 +249,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/messages', 'MessageController');
     Route::resource('/nicknames', 'NicknameController');
     Route::resource('/information', 'InformationController');
+
+    Route::get('/fire-department-checks/{date}', 'FireDepartmentCheckController@editByDay')
+        ->name('fire-department-checks.edit-by-date')->where(['date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']);
+
+    Route::post('/fire-department-checks/{date}', 'FireDepartmentCheckController@updateByDay')
+        ->name('fire-department-checks.update-by-date')->where(['date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']);
+
     Route::resource('/fire-department-checks', 'FireDepartmentCheckController');
     Route::resource('/mudflowProtection', 'MudflowProtectionController');
     Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
@@ -276,12 +309,12 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'reports/call-infos', 'as' => 'reports-call-infos.'], function () {
-        Route::get('/', 'CallInfoController@index')->name('index')->middleware(['right:CALL_INFO_SHOW_SHOW']);
-        Route::get('/create', 'CallInfoController@create')->name('create')->middleware(['right:CALL_INFO_SHOW_CREATE']);
-        Route::get('/edit/{id}', 'CallInfoController@edit')->name('edit')->middleware(['right:CALL_INFO_SHOW_SHOW']);
-        Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:CALL_INFO_SHOW_EDIT']);
-        Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_SHOW_CREATE']);
-        Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_SHOW_DELETE']);
+        Route::get('/', 'CallInfoController@index')->name('index')->middleware(['right:CALL_INFO_SHOW']);
+        Route::get('/create', 'CallInfoController@create')->name('create')->middleware(['right:CALL_INFO_CREATE']);
+        Route::get('/edit/{id}', 'CallInfoController@edit')->name('edit')->middleware(['right:CALL_INFO_SHOW']);
+        Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:CALL_INFO_EDIT']);
+        Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_CREATE']);
+        Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_DELETE']);
     });
 
     /** Суточные отчеты в формате Ворд */
@@ -316,7 +349,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{id}/edit', 'AnalyticsController@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
         Route::post('update/{id}', 'AnalyticsController@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
         Route::delete('delete/{id}', 'AnalyticsController@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
+        Route::get('word/{id}', 'AnalyticsController@word')->name('word')->middleware(['right:ANALYTICS101_EDIT']);
     });
+
+    Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

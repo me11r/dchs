@@ -20,6 +20,9 @@ Route::group(
         Route::apiResource('hydrant', 'HydrantController');
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
         Route::post('101card/save-chronology', 'CardController@createChronologyRecord101card');
+        Route::post('101card/save-chronology-from-fd', 'CardController@createChronologyRecord101cardFromFd');
+        Route::post('101card/copy-chronology-from-fd', 'CardController@copyChronologyRecord101cardFromFd');
+        Route::post('101card/save-info-from-fd', 'CardController@createInfo101cardFromFd');
         Route::post('101card/update-chronology', 'CardController@updateChronologyRecord101card');
         Route::post('101card/save-on-way', 'CardController@createOnWayRecord101card');
         Route::post('101card/save-arrived', 'CardController@createArrivedRecord101card');
@@ -29,6 +32,7 @@ Route::group(
         Route::post('101card/promote-to-action', 'CardController@postPromoteToAction');
         Route::get('101card/get_ticket101', 'CardController@getTicket101');
         Route::post('101card/send_notifications', 'CardController@sendNotifications');
+        Route::post('101card/send-hq-ride', 'CardController@sendHqRide');
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
             Route::post('fcm/register', 'FcmController@register');
             Route::get('fcm/send_test', 'FcmController@sendTest');

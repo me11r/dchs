@@ -11,6 +11,7 @@
             <th>Дата и время</th>
             <th>Режим</th>
             <th>&nbsp;</th>
+            <th>&nbsp;</th>
         </tr>
         </thead>
         <tbody>
@@ -23,6 +24,14 @@
                 <td>{{ trip.ticket.is_real|default(1) ? 'Боевой' : 'Учебный' }}</td>
                 <td class="has-text-right"><a href="{{ url('/roadtrip/view/' ~ trip.id) }}" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой
                         лист</a></td>
+                {% if user.role_id == 3 %}
+                <td class="has-text-right">
+                    <a href="{{ url('/roadtrip/additional/' ~ trip.id) }}" class="button is-outlined is-primary">
+                        <i class="far fa-list-alt"></i>
+                        &nbsp;Дополнительно
+                    </a>
+                </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>

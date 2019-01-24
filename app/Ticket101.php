@@ -283,9 +283,19 @@ class Ticket101 extends Model
         return $this->hasMany(Chronology101::class, 'ticket101_id');
     }
 
+    public function chronologiesFromFd()
+    {
+        return $this->hasMany(Chronology101FromFd::class, 'ticket101_id');
+    }
+
     public function crossroad_1()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
+    }
+
+    public function analytics()
+    {
+        return $this->hasOne(Analytics101Item::class, 'ticket101_id');
     }
 
     public function crossroad_2()
@@ -298,7 +308,13 @@ class Ticket101 extends Model
         return $this->hasOne(CityArea::class, 'id', 'city_area_id');
     }
 
-    public function fire_level(){
+    public function cityArea()
+    {
+        return $this->hasOne(CityArea::class, 'id', 'city_area_id');
+    }
+
+    public function fire_level()
+    {
         return $this->hasOne(FireLevel::class, 'id', 'fire_level_id');
     }
 
@@ -315,6 +331,16 @@ class Ticket101 extends Model
     public function trip_result()
     {
         return $this->hasOne(TripResult::class, 'id', 'trip_result_id');
+    }
+
+    public function hqRides()
+    {
+        return $this->hasMany(Ticket101HqRide::class, 'ticket101_id');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(Ticket101Log::class, 'ticket101_id');
     }
 
     public function liquidation_method()
@@ -342,6 +368,11 @@ class Ticket101 extends Model
         return $this->belongsTo(FireDepartment::class,'fire_department_id');
     }
 
+    public function living_sector_type()
+    {
+        return $this->belongsTo(LivingSectorType::class, 'living_sector_type_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -357,6 +388,23 @@ class Ticket101 extends Model
             ->groupBy('id')
             ->havingRaw('min(arrive_time)')
             ->first();
+    }
+
+    public function departments_arrived()
+    {
+        return $this->results()
+            ->whereNotNull('arrive_time')
+            ->orderBy('arrive_time')
+            ->get();
+    }
+
+    public function departments_arrived_hq()
+    {
+        return $this->hqRides()
+            ->whereNotNull('arrive_time')
+            ->where('dispatched', true)
+            ->orderBy('arrive_time')
+            ->get();
     }
 
     public function getLocTimeTotalAttribute()
@@ -398,11 +446,6 @@ class Ticket101 extends Model
             return null;
         }
     }
-
-    /*public function other_ride()
-    {
-        return $this->hasOne(Ticket101Other::class,'ticket_101_id');
-    }*/
 
     public function popup_notifications()
     {
@@ -527,7 +570,7 @@ class Ticket101 extends Model
         return $result;
     }
 
-    public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null)
+    public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null, $burnt_id = null, $city_area_id = null)
     {
         $result = [];
         $areas = CityArea::all();
@@ -566,6 +609,14 @@ class Ticket101 extends Model
         if($result_id){
             $reasons = TripResult::where('id', $result_id)->get();
             $tickets = $tickets->where('trip_result_id', $result_id);
+        }
+
+        if ($burnt_id) {
+            $tickets = $tickets->where('burn_object_id', $burnt_id);
+        }
+
+        if ($city_area_id) {
+            $tickets = $tickets->where('city_area_id', $city_area_id);
         }
 
         $result = $tickets->orderBy('id', 'desc')->get();
@@ -650,4 +701,17 @@ class Ticket101 extends Model
         return $this->hasOne(UploadedFile::class, 'id', 'file_4_id');
     }
 
+    public function scopeDailyRecords($q, $from = null, $to = null)
+    {
+        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
+
+        return $q->whereBetween('created_at', [$from, $to])
+            ->with('city_area', 'departments', 'trip_result', 'liquidation_method');
+    }
+
+    public function fireDepartmentsInfo()
+    {
+        return $this->hasMany(Ticket101InfoFromFd::class, 'ticket_id');
+    }
 }

@@ -18,7 +18,10 @@ class FireDepartmentCheckController extends Controller
     public function index(Request $request)
     {
         $data['per_page'] = $request->per_page ?? 15;
-        $data['items'] = FireDepartmentCheck::paginate($data['per_page']);
+
+        $items = (new FireDepartmentCheck())->groupBy('date')->orderBy('date', 'DESC');
+
+        $data['items'] = $items->paginate($data['per_page']);
         return view('fire-department-checks.index',$data);
     }
 
@@ -29,6 +32,12 @@ class FireDepartmentCheckController extends Controller
      */
     public function create()
     {
+        $date = date('Y-m-d');
+        $count = FireDepartmentCheck::with(['fire_department'])->where('date', '=', $date)->count();
+        if ($count > 0) {
+            return redirect(route('fire-department-checks.update-by-date', $date));
+        }
+
         $data['fire_depts'] = FireDepartment::all();
         return view('fire-department-checks.edit', $data);
     }
@@ -41,7 +50,11 @@ class FireDepartmentCheckController extends Controller
      */
     public function store(Request $request)
     {
-        FireDepartmentCheck::create($request->all());
+        $date = $request->date ? $request->date : date('Y-m-d');
+        foreach ($request->get('items', []) as $item) {
+            $item['date'] = $date;
+            FireDepartmentCheck::create($item);
+        }
         return redirect('fire-department-checks');
     }
 
@@ -67,6 +80,56 @@ class FireDepartmentCheckController extends Controller
         $data['record'] = FireDepartmentCheck::with(['fire_department'])->find($id);
         $data['fire_depts'] = FireDepartment::all();
         return view('fire-department-checks.edit',$data);
+    }
+
+    public function editByDay ($date)
+    {
+        $items = FireDepartmentCheck::with(['fire_department'])->where('date', '=', $date)->get()->keyBy('id');
+
+        $data['dspt'] = $items->where('is_dspt', '=', true)->all();
+        $data['not_dspt'] = $items->where('is_dspt', '=', false)->all();
+
+        $data['fire_depts'] = FireDepartment::all();
+        $data['date'] = $date;
+
+        return view('fire-department-checks.edit',$data);
+    }
+
+    public function updateByDay(Request $request, $date)
+    {
+        $items = $request->get('items', []);
+        $ids = array_map(function($item) {
+            return $item['id'];
+        }, $items);
+
+        $existsItems = FireDepartmentCheck::with(['fire_department'])->where('date', '=', $date)->get();
+        foreach ($existsItems as $existsItem) {
+            if (!\in_array($existsItem->id, $ids, false)){
+                $existsItem->delete();
+            }
+        }
+
+        foreach ($items as $item) {
+            $item['date'] = $date;
+
+            $model = FireDepartmentCheck::where('id', '=', $item['id'])->first();
+            if (!$model){
+                $model = new FireDepartmentCheck();
+            }
+
+            $model->fill($item);
+            $model->save();
+        }
+//        $f = $request->all();
+//        $data['record'] = FireDepartmentCheck::find($id);
+//        $data['record']->fire_department_id = $request->fire_department_id;
+//        $data['record']->time_begin = $request->time_begin;
+//        $data['record']->time_end = $request->time_end;
+//        $data['record']->responsible_person = $request->responsible_person;
+//        $data['record']->note = $request->note;
+//        $data['record']->save();
+
+        return redirect('fire-department-checks');
     }
 
     /**

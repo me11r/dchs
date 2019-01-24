@@ -31,6 +31,13 @@ class ServicePlanController extends Controller
         $records = Ticket101ServicePlan::department($service)
             ->orderBy('id', 'desc')
             ->whereNotNull('dispatched_time')
+            ->where(function ($q){
+                $q->has('service_type');
+            })
+            ->where(function ($qq){
+                $qq->has('ticket')
+                    ->orHas('ticket112');
+            })
             ->paginate($per_page);
 
         return view('service-plans.index', compact('records', 'per_page'));

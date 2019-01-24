@@ -15,7 +15,7 @@
             :key="item.id">
 
             <div class="field is-grouped">
-                <div class="control column is-four-fifths">
+                <div class="control column " :class="block_type_ !== 'sick_leave' ? 'is-four-fifths' : ''">
                     <label :for="getName('staff_id', item.id)">Ф.И.О.</label><br>
                     <div class="select">
                         <select
@@ -28,6 +28,40 @@
                             <option
                                 v-for="s in getStaffFilter(item.staff_id)"
                                 :key="'staff_' + s.id"
+                                :value="s.id">{{ s.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control column " v-if="block_type_ === 'trainee'">
+                    <label :for="getName('trainee_type', item.id)">Должность</label><br>
+                    <div class="select">
+                        <select
+                            required
+                            title=""
+                            :name="getName('trainee_type', item.id)"
+                            :id="getName('trainee_type', item.id)"
+                            v-model="item.trainee_type">
+                            <option
+                                v-for="type in traineeTypes()"
+                                :key="'type_' + type.type"
+                                :value="type.type">{{ type.title }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control column" v-if="block_type_ === 'sick_leave'">
+                    <label :for="getName('guard_number_id', item.id)">Номер караула</label>
+                    <div class="select">
+                        <select
+                            required
+                            title=""
+                            :name="getName('guard_number_id', item.id)"
+                            :id="getName('guard_number_id', item.id)"
+                            v-model="item.guard_number_id">
+                            <option
+                                v-for="s in guardNumbers_"
+                                :key="'guard_number_id_' + s.id"
                                 :value="s.id">{{ s.name }}
                             </option>
                         </select>
@@ -48,7 +82,7 @@
                 </div>
             </div>
             <div
-                v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'dispatchers'"
+                v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'dispatchers' || block_type_ === 'sick_leave'"
                 class="field is-grouped">
                 <div class="control column is-half">
                     <label :for="getName('comment', item.id)">Комментарий</label>
@@ -60,7 +94,7 @@
                         cols="10"
                         rows="1"></textarea>
                 </div>
-                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick'">
+                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'sick_leave'">
                     <label :for="getName('date_from', item.id)">С</label><br>
                     <input
                         v-model="item.date_from"
@@ -69,7 +103,7 @@
                         class="control"
                         type="date">
                 </div>
-                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick'">
+                <div class="control column" v-if="block_type_ === 'business_trip' || block_type_ === 'sick' || block_type_ === 'sick_leave'">
                     <label :for="getName('date_to', item.id)">По</label><br>
                     <input
                         v-model="item.date_to"
@@ -107,6 +141,10 @@ export default {
             type: Array,
             default: () => []
         },
+        guardNumbers: {
+            type: Array,
+            default: () => []
+        },
         records: {
             type: Array,
             default: () => []
@@ -118,6 +156,7 @@ export default {
             trunks: [],
             block_type_: this.block_type,
             staff_: this.staff,
+            guardNumbers_: this.guardNumbers,
             model_id_: this.modelId,
             total: 0,
             isActive_: this.active
@@ -138,12 +177,14 @@ export default {
         },
         addEmptyItem() {
             this.addItem(this.getEmptyItem());
-            this.$parent.$emit('totalChange', 1);
+
+            if (this.block_type_ !== 'sick_leave') {
+                this.$parent.$emit('totalChange', 1);
+            }
+
             if (this.isActive_ === true) {
                 this.$parent.$emit('activeChange', 1);
             }
-            // this.staff_ = _.filter(this.staff_, {id: 123});
-            // console.dir(_.filter(this.staff_, {id: 123}))
         },
         addItem(item) {
             this.records_.push(item);
@@ -154,6 +195,15 @@ export default {
                 return false;
             }
         },
+        traineeTypes(){
+            return [
+                {type:'head_guards', title:'Нач. караулов'},
+                {type:'commander_squads', title:'Ком. отделений'},
+                {type:'drivers', title:'Водители'},
+                {type:'dispatchers', title:'Диспетчера'},
+                {type:'privates', title:'Ряд. состав'},
+            ];
+        },
         getEmptyItem() {
             return {
                 id: moment().valueOf(),
@@ -161,7 +211,8 @@ export default {
                 name: '',
                 count: 0,
                 square: 0,
-                staff_id: 0
+                staff_id: 0,
+                trainee_type: '',
             };
         },
         prepareRecords(records) {
@@ -199,7 +250,9 @@ export default {
                 }
             }).then((resp) => {
                 self.records_ = resp.data;
-                self.$parent.$emit('totalSet', resp.data.length);
+                if (this.block_type_ !== 'sick_leave') {
+                    self.$parent.$emit('totalSet', resp.data.length);
+                }
 
                 if (self.isActive_ === true) {
                     self.$parent.$emit('totalActiveSet', resp.data.length);

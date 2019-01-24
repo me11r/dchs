@@ -22,5 +22,13 @@ class StaffSeniorCommunicationMaster extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
+        'guard_number_id',
     ];
+
+    public function guard_number()
+    {
+        return $this->belongsTo(GuardNumber::class, 'guard_number_id');
+    }
 }

@@ -4,7 +4,10 @@ namespace App\Services\ReportExport;
 
 
 use App\FireDepartment;
+use App\FormationReport;
 use App\FormationTechReport;
+use App\OperationalGroupSchedule;
+use Carbon\Carbon;
 
 trait CommonExportTools
 {
@@ -18,12 +21,12 @@ trait CommonExportTools
 
             $this->sumPeople['total'], // В карауле по списку л/с
 
-            $this->sumPeople['active'], // На лицо личного состава -> Всего
-            $this->sumPeople['head_guards'], // На лицо личного состава -> Нач. караулов
-            $this->sumPeople['commander_squads'], // На лицо личного состава -> Ком. отделений
-            $this->sumPeople['drivers'], // На лицо личного состава -> Шоферы
-            $this->sumPeople['privates'], // На лицо личного состава -> Ряд. состав
-            $this->sumPeople['dispatchers'], // На лицо личного состава -> Диспетчеров
+            $this->sumPeople['active'] , // На лицо личного состава -> Всего  . ($this->data['totalTraineeCount']['active'] ? "/".$this->data['totalTraineeCount']['active'] : '')
+            $this->sumPeople['head_guards'].($this->data['totalTraineeCount']['head_guards'] ? "/".$this->data['totalTraineeCount']['head_guards'] : ''), // На лицо личного состава -> Нач. караулов
+            $this->sumPeople['commander_squads'].($this->data['totalTraineeCount']['commander_squads'] ? "/".$this->data['totalTraineeCount']['commander_squads'] : ''), // На лицо личного состава -> Ком. отделений
+            $this->sumPeople['drivers'].($this->data['totalTraineeCount']['drivers'] ? "/".$this->data['totalTraineeCount']['drivers'] : ''), // На лицо личного состава -> Шоферы
+            $this->sumPeople['privates'].($this->data['totalTraineeCount']['privates'] ? "/".$this->data['totalTraineeCount']['privates'] : ''), // На лицо личного состава -> Ряд. состав
+            $this->sumPeople['dispatchers'].($this->data['totalTraineeCount']['dispatchers'] ? "/".$this->data['totalTraineeCount']['dispatchers'] : ''), // На лицо личного состава -> Диспетчеров
 
             $this->sumPeople['vacation'], // Отсутствуют -> Отпуск
             $this->sumPeople['study'], // Отсутствуют -> Учебный
@@ -34,18 +37,18 @@ trait CommonExportTools
 
             $this->sumPeople['gas_smoke_protection_service'], // ГДЗС
 
-            '-', // Аппараты
+            $this->data['sumArray']['tech']['device'], //'-', // Аппараты
 
-            '-', // Мотопомпы Водяная/Грязевая
+            $this->data['sumArray']['tech']['motor_water_pump'] + $this->data['sumArray']['tech']['motor_mud_pump'], //'-', // Мотопомпы Водяная/Грязевая
 
-            $this->data['tech_items_count']['tech_action'], // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
-            $this->data['tech_items_count']['tech_action'], // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
+            $this->data['tech_items_count']['tech_action_type_1'], // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
+            $this->data['tech_items_count']['tech_action_type_2'], // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
 
-            $this->data['tech_items_count']['tech_reserve'], // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
-            $this->data['tech_items_count']['tech_reserve'], // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
+            $this->data['tech_items_count']['tech_reserve_type_1'], // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
+            $this->data['tech_items_count']['tech_reserve_type_2'], // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
 
-            $this->data['tech_items_count']['tech_repair'], // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
-            $this->data['tech_items_count']['tech_repair'], // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
+            $this->data['tech_items_count']['tech_repair_type_1'], // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
+            $this->data['tech_items_count']['tech_repair_type_2'], // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
         ];
     }
 
@@ -67,12 +70,12 @@ trait CommonExportTools
 
             array_get($peopleData, 'total', 0), // В карауле по списку л/с
 
-            array_get($peopleData, 'active', 0), // На лицо личного состава -> Всего
-            array_get($peopleData, 'head_guards', 0), // На лицо личного состава -> Нач. караулов
-            array_get($peopleData, 'commander_squads', 0), // На лицо личного состава -> Ком. отделений
-            array_get($peopleData, 'drivers', 0), // На лицо личного состава -> Шоферы
-            array_get($peopleData, 'privates', 0), // На лицо личного состава -> Ряд. состав
-            array_get($peopleData, 'dispatchers', 0), // На лицо личного состава -> Диспетчеров
+            array_get($peopleData, 'active', 0), // На лицо личного состава -> Всего  .($peopleData && $peopleData->getTraineeCount('active') ? '/'.$peopleData->getTraineeCount('active') : '')
+            array_get($peopleData, 'head_guards', 0) .($peopleData && $peopleData->getTraineeCount('head_guards') ? '/'.$peopleData->getTraineeCount('head_guards') : ''), // На лицо личного состава -> Нач. караулов
+            array_get($peopleData, 'commander_squads', 0).($peopleData && $peopleData->getTraineeCount('commander_squads') ? '/'.$peopleData->getTraineeCount('commander_squads') : ''), // На лицо личного состава -> Ком. отделений
+            array_get($peopleData, 'drivers', 0).($peopleData && $peopleData->getTraineeCount('drivers') ? '/'.$peopleData->getTraineeCount('drivers') : ''), // На лицо личного состава -> Шоферы
+            array_get($peopleData, 'privates', 0) .($peopleData && $peopleData->getTraineeCount('privates') ? '/'.$peopleData->getTraineeCount('privates') : ''), // На лицо личного состава -> Ряд. состав
+            array_get($peopleData, 'dispatchers', 0).($peopleData && $peopleData->getTraineeCount('dispatchers') ? '/'.$peopleData->getTraineeCount('dispatchers') : ''), // На лицо личного состава -> Диспетчеров
 
             array_get($peopleData, 'vacation', 0), // Отсутствуют -> Отпуск
             array_get($peopleData, 'study', 0), // Отсутствуют -> Учебный
@@ -87,11 +90,11 @@ trait CommonExportTools
 
             isset($this->tech[$id]) ? (int)array_get($techData, 'motor_water_pump', 0) . '/' . (int)array_get($techData, 'motor_mud_pump', 0) : '0/0', // Мотопомпы Водяная/Грязевая
 
-            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
-            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
+            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
+            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
 
-            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
-            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
+            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
+            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
 
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
@@ -149,7 +152,7 @@ trait CommonExportTools
             (int)array_get($techData, 'girs', 0) . '/' .
             (int)array_get($techData, 'iup', 0), // 1 генератор 2 дымосос 3 гирсы
 
-            $headGuard ? $headGuard->name : '' // Ф.И.О Начальника караула или лица его подменяющего
+            $headGuard ? $headGuard->initials : '' // Ф.И.О Начальника караула или лица его подменяющего
         ];
     }
 
@@ -213,6 +216,18 @@ trait CommonExportTools
 
             '-' // Ф.И.О Начальника караула или лица его подменяющего
         ];
+    }
+
+    private function getOperGroupName()
+    {
+        $latest = FormationReport::latest()->first();
+        //если отчет последний актуальный - берем текущую дату и забираем актуальную ОГ за эту дату
+        //если отчет не свежий, берем его дату и по этой дате ищем ОГ за то время
+        $searchDate = ($latest && $latest->id === $this->formationReport->id) ? now() : Carbon::parse($this->formationReport->created_at)->addHours(6);
+        $operGroupSchedule = OperationalGroupSchedule::date($searchDate)->first();
+        $operGroup = $operGroupSchedule ? $operGroupSchedule->group->name : '';
+
+        return $operGroup;
     }
 
 

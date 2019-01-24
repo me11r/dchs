@@ -19,7 +19,22 @@
                 required
             />
         </template>
-        <template v-else>{{ staffToShow }}</template>
+        <template v-else>
+            <span v-for="(item, index) in staffToShow" :key="rank+item.id+'_block'">
+                <a v-if="machineBlock" @click.prevent="staffEdit(item.id)">{{ item.name }}</a>
+                <span v-if="!machineBlock">{{ item.name }}</span>
+
+                <input style="width: inherit"
+                       v-model="item.gsm_count"
+                       class="input is-small"
+                       type="text"
+                       :key="rank+item.id+'_input'"
+                       v-if="checkEdit(item.id)">
+
+                <span v-if="!checkEdit(item.id)"> {{ item.gsm_count }}</span>
+                <span v-if="((index + 1) !== staffToShow.length)">, </span>
+            </span>
+        </template>
     </div>
 </template>
 
@@ -35,6 +50,10 @@ export default {
         name: {
             'type': String,
             'default': ''
+        },
+        machineBlock: {
+            'type': Boolean,
+            'default': false
         },
         rank: {
             'type': String,
@@ -53,11 +72,12 @@ export default {
         staffToShow() {
             const data = [];
             _.each(this.$parent.selectedStaff[this.rank], (item) => {
-                data.push(item['name']);
+                data.push(item);
             });
 
-            return data.join(', ');
+            return data;
         },
+
         tableName() {
             const tulparTypes = [
                 'tulpar1',
@@ -80,12 +100,34 @@ export default {
                 'dspt_sick'
             ];
 
+            const iplTypes = [
+                'ipl_vacation',
+                'ipl_other',
+                'ipl_study',
+                'ipl_maternity',
+                'ipl_business_trip',
+                'ipl_sick'
+            ];
+
+            const kshmTypes = [
+                'kshm_vacation',
+                'kshm_other',
+                'kshm_study',
+                'kshm_maternity',
+                'kshm_business_trip',
+                'kshm_sick'
+            ];
+
             if (tulparTypes.indexOf(this.rank) !== -1) {
                 return 'duty_vehicle';
             } else if (zhalynTypes.indexOf(this.rank) !== -1) {
                 return 'zhalin';
             } else if (dsptTypes.indexOf(this.rank) !== -1) {
                 return 'dspt';
+            } else if (iplTypes.indexOf(this.rank) !== -1) {
+                return 'ipl';
+            } else if (kshmTypes.indexOf(this.rank) !== -1) {
+                return 'kshm';
             } else {
                 return this.rank;
             }
@@ -97,12 +139,13 @@ export default {
     data() {
         return {
             activated: false,
+            activatedInput: [],
             inactiveType_: this.inactiveType
         };
     },
     methods: {
         activateTrigger() {
-            if (window.canEditOd === false) {
+            if (window.canEditOd === false || window.approved === true) {
                 return;
             }
 
@@ -113,15 +156,56 @@ export default {
                 this.activated = true;
             }
         },
+        checkEdit(id) {
+            let record = _.find(this.activatedInput, {id: id});
+            if (record) {
+                return !record.edit;
+            }
+            return false;
+        },
+        staffEdit(id) {
+            let record = _.find(this.activatedInput, {id: id});
+            if (record) {
+                record.edit = !record.edit;
+                if (record.edit) {
+                    this.save();
+                }
+                return record.edit;
+            } else {
+                this.activatedInput.push({id: id, edit: true});
+            }
+            return true;
+        },
         save() {
             axios.post('/api/101/sync-formation-od-persons', {
                 formId: this.$parent.formId,
                 inactiveType: this.inactiveType_,
                 type: this.rank,
+                gsm_count: this.rank,
                 selectedStaff: this.$parent.selectedStaff[this.rank],
                 tableName: this.tableName
             });
         }
+    },
+    watch: {
+        /*'this.$parent.selectedStaff' (newValue, oldValue) {
+            _.each(newValue, (value, key) => {
+                if (oldValue[key]) {
+                    this.activatedInput = _.reject(this.activatedInput, function(staffId){ return staffId.id === oldValue.id; });
+                    this.activatedInput.push(newValue);
+                }
+            });
+            _.each(oldValue, (value, key) => {
+                if (!newValue[key]) {
+                    this.activatedInput = _.reject(this.activatedInput, function(staffId){ return staffId.id === oldValue.id; });
+                }
+            });
+        }*/
+    },
+    created () {
+        _.each(this.$parent.selectedStaff[this.rank], (item) => {
+            this.activatedInput.push({id: item.id, edit: true});
+        });
     },
     components: {
         Multiselect

@@ -18,11 +18,13 @@
                     <div class="field   has-addons">
                         <div class="control is-expanded">
                             <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
+                            <input type="hidden" name="filter_department" value="{{ filter_department }}">
                         </div>
                         <div class="control">
                         </div>
                         <div class="control">
                             <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                            <a href="/dictionaries/operational-plans" class="button is-danger is-outlined" type="submit"><span><i class="fa fa-times"></i><span class="hidden-sm-down">&nbsp; Сбросить фильтр</span></span></a>
                         </div>
                     </div>
                 </form>
@@ -39,10 +41,12 @@
                         {% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101', 'Диспетчер ОД 101']) %}
                             <form>
                                 <select name="filter_department" class="select control" onchange="this.form.submit()">
+                                    <option value="0">Все ПЧ</option>
                                     {% for f in fire_departments %}
                                         <option {% if filter_department is defined and filter_department == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.title }}</option>
                                     {% endfor %}
                                 </select>
+                                <input type="hidden" name="search" value="{{ search ?? null }}">
                             </form>
                         {% endif %}
                     </th>
@@ -54,7 +58,8 @@
                 <tbody>
                 {% for record in records %}
                     <tr>
-                        <td>{{ record.operational_plan.name|default('') }}</td>
+                        {#<td>{{ record.id }}</td>#}
+                        <td>{{ per_page * page - per_page + loop.index}}</td> {#нумерация 1,2,3 и т.д., т.к. мин. id = 2671 #}
                         <td class="max-width: 20%">{{ record.fire_level.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.city_area.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.object_name|default('') }}</td>
@@ -88,7 +93,7 @@
                 </tbody>
             </table>
             {#{% if filter_department is not defined %}#}
-                {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_department':filter_department}} %}
+                {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_department':filter_department, 'search':search}} %}
             {#{% endif %}#}
         </div>
     </div>

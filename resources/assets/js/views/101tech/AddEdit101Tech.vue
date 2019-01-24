@@ -15,7 +15,7 @@
             :key="item.id">
 
             <div class="field is-grouped">
-                <div class="control column is-four-fifths">
+                <div class="control column">
                     <label :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
                     <div class="select">
                         <select
@@ -49,6 +49,8 @@
                         :name="getName('department', item.id)">
                 </div>
 
+
+
                 <div
                     v-if="block_type === 'reserve'"
                     class="control column">
@@ -61,12 +63,32 @@
                             :id="getName('reserve', item.id)"
                             v-model="item.reserve">
                             <option
-                                v-for="x in 5"
+                                v-for="x in 15"
                                 :key="'vehicle_reserve' + x"
                                 :value="x">Резерв{{ x }}
                             </option>
                         </select>
                     </div>
+                </div>
+
+                <div v-if="block_type === 'reserve' || block_type === 'action'"
+                     class="control column">
+                    <label :for="getName('vehicle_status_id', item.id)">Статус а/м</label><br>
+                    <div class="select">
+                        <select
+                                title=""
+                                :name="getName('vehicle_status_id', item.id)"
+                                :id="getName('vehicle_status_id', item.id)"
+                                v-model="item.vehicle_status_id">
+                            <option value="">-</option>
+                            <option
+                                    v-for="vehicle_status in vehicle_statuses"
+                                    :key="'vehicle_status_' + vehicle_status.id"
+                                    :value="vehicle_status.id">{{ vehicle_status.name }}
+                            </option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div class="control column">
@@ -153,6 +175,10 @@ export default {
             type: Array,
             default: () => []
         },
+        vehicle_statuses: {
+            type: Array,
+            default: () => []
+        },
         records: {
             type: Array,
             default: () => []
@@ -207,8 +233,8 @@ export default {
         prepareRecords(records) {
             records.map((item) => {
                 this.addItem({
-                    date_begin: moment(item.date_begin),
-                    date_end: moment(item.date_end)
+                    date_begin: moment(item.date_from),
+                    date_end: moment(item.date_to)
                 });
             });
         },
@@ -229,18 +255,12 @@ export default {
                     fire_dep_id: self.fire_dep_id_
                 }
             }).then((resp) => {
-                // for (let item in resp.data) {
-                //     resp.data[item].date_begin = resp.data[item].date_begin ? new Date(resp.data[item].date_begin) : null;
-                //     resp.data[item].date_end = resp.data[item].date_end ? new Date(resp.data[item].date_end) : null;
-                // }
 
                 self.records_ = resp.data;
 
                 _.each(self.records_, (value) => {
                     self.$parent.$emit('addSelectedTech', value.vehicle_id);
                 });
-
-                console.dir(self.records_);
             });
         }
     },
@@ -270,10 +290,6 @@ export default {
     },
     beforeMount() {
         this.getStaff();
-        // this.prepareRecords(window.ticket101add.records);
-        // this.vehicles = window.vehicles.records;
-        // this.vehicles = this.test;
-        // console.dir(this.vehicles);
     }
 };
 </script>

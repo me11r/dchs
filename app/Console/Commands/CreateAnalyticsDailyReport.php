@@ -51,22 +51,5 @@ class CreateAnalyticsDailyReport extends Command
         $data['record'] = Analytics101::firstOrCreate([
             'date' => today(),
         ]);
-
-        $report = (new Report(new EloquentTicket101Repository(), new EloquentFireObjectRepository(), new EloquentBurntObjectRepository()))->getReport();
-
-
-        if(isset($report['tripResults']) && count($report['tripResults'])){
-            foreach ($report['tripResults'] as $title => $items) {
-                foreach ($items as $reportItem) {
-                    $data['record']->items()->firstOrCreate(
-                        ['ticket101_id' => $reportItem['id']],
-                        [
-                            'text' => $reportItem['analytics'],
-                            'trip_result_id' => $reportItem['trip_result_id'],
-                            'ticket101_id' => $reportItem['id'],
-                        ]);
-                }
-            }
-        }
     }
 }

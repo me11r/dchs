@@ -22,6 +22,7 @@ class RightsSeeder extends Seeder
             ['title' => 'Ввод данных'],         //7
             ['title' => 'Справочники'],         //8
             ['title' => 'Информация'],          //9
+            ['title' => 'Messenger'],          //10
         ];
 
         foreach ($groups as $group) {
@@ -42,7 +43,6 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],
 
             ['right_group_id' => 4, 'title' => 'Получение путевых листов ПЧ', 'name' => 'CAN_SEE_TRIP_PLAN'],
-            ['right_group_id' => 4, 'title' => 'Может изменять список гидрантов', 'name' => 'CAN_EDIT_HYDRANT_LOCATIONS'],
             ['right_group_id' => 4, 'title' => 'Может смотреть суточный отчет', 'name' => 'CAN_SEE_DAILY_REPORT'],
 
             ['title' => 'СП и АСР', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_101'],
@@ -58,6 +58,9 @@ class RightsSeeder extends Seeder
             ['title' => 'Может одобрять суточный отчет', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_REPORT_101'],
             ['title' => 'Может утверждать Журнал строевых записок ДЧС г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_RECORD'],
             ['title' => 'Может редактировать Журнал строевых записок ДЧС г.Алматы после утверждения', 'right_group_id' => 5, 'name' => 'CAN_EDIT_APPROVED_FORMATION_RECORD'],
+
+            ['title' => 'Получать уведомления о заполнении строевой / оперативной информации', 'right_group_id' => 5, 'name' => 'CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD'],
+            ['title' => 'Отправлять уведомления о заполнении строевой / оперативной информации', 'right_group_id' => 5, 'name' => 'CAN_SEND_NOTIFICATION_FORMATION_RECORD'],
 
             ['right_group_id' => 6, 'title' => 'Может смотреть информацию', 'name' => 'CAN_ACCESS_INFO'],
             ['right_group_id' => 6, 'title' => 'Может смотреть оперативную информацию', 'name' => 'CAN_ACCESS_OPER_INFO'],
@@ -85,6 +88,9 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Пожарные части', 'name' => 'CAN_ACCESS_FIRE_DEPTS'],
             ['right_group_id' => 7, 'title' => 'Моренные озера', 'name' => 'CAN_ACCESS_FIRE_LAKES'],
             ['right_group_id' => 7, 'title' => 'Редактировать данные по гидрантам в рамках своей ПЧ', 'name' => 'CAN_EDIT_MAP_HYDRANTS'],
+            ['right_group_id' => 7, 'title' => 'Может изменять список гидрантов', 'name' => 'CAN_EDIT_HYDRANT_LOCATIONS'],
+            ['right_group_id' => 7, 'title' => 'Личный состав: полный просмотр', 'name' => 'STAFF_FULL_VIEW_ACCESS'],
+            ['right_group_id' => 7, 'title' => 'Транспортные средства: полный просмотр', 'name' => 'VEHICLES_FULL_VIEW_ACCESS'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 
@@ -123,7 +129,12 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 6, 'title' => 'РГП Казгидромет (заполнение данных)', 'name' => 'KAZGIDROMET_FILLING'];
 
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: редактирование после закрытия', 'name' => 'CARD101_EDIT_CLOSED'];
+
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101', 'name' => 'CARD101_ACCESS_OTHERS_RIDES'];
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101: удаление', 'name' => 'CARD101_OTHERS_RIDES_CAN_DELETE'];
+
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Учебные 101', 'name' => 'CARD101_ACCESS_DRILL_RIDES'];
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Учебные 101: удаление', 'name' => 'CARD101_DRILL_RIDES_CAN_DELETE'];
 
 
         $rights[] = ['right_group_id' => 9, 'title' => 'Сводная информация по мореным озерам: просмотр', 'name' => 'CAN_VIEW_MORAINIC_LAKE_SUMMARIES'];
@@ -137,6 +148,8 @@ class RightsSeeder extends Seeder
 
         $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": просмотр', 'name' => 'CAN_VIEW_MUDFLOW_PROTECTION'];
         $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": редактирование', 'name' => 'CAN_EDIT_MUDFLOW_PROTECTION'];
+
+        $rights[] = ['right_group_id' => 10, 'title' => 'Может инициировать массовую рассылку', 'name' => 'CAN_DO_MASS_SENDING'];
 
 
 

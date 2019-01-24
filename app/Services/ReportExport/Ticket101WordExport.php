@@ -4,9 +4,12 @@
 namespace App\Services\ReportExport;
 
 use App\FireDepartment;
+use App\FormationOdPersonItem;
 use App\FormationPersonsReport;
 use App\FormationReport;
+use App\GuardNumber;
 use App\Models\Vehicle;
+use App\OperationalGroupSchedule;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Row;
@@ -79,7 +82,28 @@ class Ticket101WordExport
         'ПП-16',
         'ПП-17',
         'СО',
-        'ПЧ-13'
+        'ПЧ-13',
+    ];
+
+    public static $sortedDepartmentNamesBottom = [
+        'ПЧ-1',
+        'ПЧ-2',
+        'ПЧ-3',
+        'ПЧ-4',
+        'ПЧ-5',
+        'ПЧ-6',
+        'СПЧ-7',
+        'СПЧ-8',
+        'СПЧ-9',
+        'ПЧ-10',
+        'СПЧ-11',
+        'ПЧ-12',
+        'ПЧ-13',
+        'СПЧ-14',
+        'СПЧ-15',
+        'ПП-16',
+        'ПП-17',
+        'СО',
     ];
 
     public static $exceptions = [
@@ -145,6 +169,72 @@ class Ticket101WordExport
 
     }
 
+    private function getSickLeavePeople()
+    {
+        $people = $this->people;
+        $result = [];
+        foreach ($people as $dept_id => $personSummary) {
+
+            $fireDept = FireDepartment::find($dept_id);
+
+            $sickLeavePpl = $personSummary->formation_person_items()->rank(['sick_leave','sick'])->get();
+
+            $result[$fireDept->title] = [
+                'sick_leave' => $sickLeavePpl,
+            ];
+        }
+
+        return $result;
+    }
+
+    private function peopleOdInactive()
+    {
+        $od_people_inactive = [
+            'vacation' => 'отпуск',
+            'other' => 'другое',
+            'study' => 'учебный',
+            'maternity' => 'декрет',
+            'business_trip' => 'командировка',
+            'sick' => 'больничный'
+        ];
+
+        $od_depts_names = [
+            'ipl' => 'ИПЛ',
+            'kshm' => 'КШМ',
+        ];
+
+        $queryArr = [];
+
+        foreach ($od_depts_names as $name => $title) {
+            foreach ($od_people_inactive as $inactive_item_name => $inactive_item) {
+                $combineName = "{$name}_{$inactive_item_name}";
+                $queryArr[] = $combineName;
+            }
+        }
+
+        $reportId = $this->formationReport->id;
+        $result = FormationOdPersonItem::whereHas('report.report', function($q) use ($reportId){
+            $q->where('id', $reportId);
+        })
+            ->whereIn('rank', $queryArr)
+            ->get();
+
+        $res = [];
+
+        foreach ($od_depts_names as $name => $title) {
+            foreach ($od_people_inactive as $inactive_item_name => $inactive_item) {
+                $combineName = "{$name}_{$inactive_item_name}";
+                $res[$title][$inactive_item] = $result->filter(function ($q) use ($combineName){
+                    return $q->rank === $combineName;
+                })->map(function ($qq) {
+                    return $qq->staff->name ?? null;
+                })->toArray();
+            }
+        }
+
+        return $res;
+    }
+
     private function peopleByDept()
     {
         $people = $this->people;
@@ -156,6 +246,7 @@ class Ticket101WordExport
             $vacationPpl = $personSummary->formation_person_items()->rank('vacation')->get();
             $dispatchersPpl = $personSummary->formation_person_items()->rank('dispatchers')->get();
             $sickPpl = $personSummary->formation_person_items()->rank('sick')->get();
+            $sickLeavePpl = $personSummary->formation_person_items()->rank('sick_leave')->get();
             $businessPpl = $personSummary->formation_person_items()->rank('business_trip')->get();
             $maternityPpl = $personSummary->formation_person_items()->rank('maternity')->get();
 
@@ -188,23 +279,26 @@ class Ticket101WordExport
 
             $result[$fireDept->title] = [
                 'vacation' => $vacationPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'maternity' => $maternityPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'dispatchers' => $dispatchersPpl->map(function ($item) {
-                    return ($item->staff->name ?? null) . "({$item->staff->rank})";
+                    return ($item->staff->initials ?? null) . "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick' => $sickPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                })->toArray(),
+                'sick_leave' => $sickLeavePpl->map(function ($item) {
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
 
                 'gdzs_base' => $gdzs_base->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return $item->staff->name;
                 })->toArray(),
 
                 'crb' => $crb->map(function ($item) {
@@ -223,35 +317,36 @@ class Ticket101WordExport
                     return $item->staff->name ?? null;
                 })->toArray(),
                 'tulpar1' => $tulpar1->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar2' => $tulpar2->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar3' => $tulpar3->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar4' => $tulpar4->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar5' => $tulpar5->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar7' => $tulpar7->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar8' => $tulpar8->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar10' => $tulpar10->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'kshm' => $kshm->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'ipl_zhalyn' => $ipl_zhalyn->map(function ($item) {
-                    return $item->staff->name ?? null;
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
+
                 'doctor' => $doctor->map(function ($item) {
                     return $item->staff->name ?? null;
                 })->toArray(),
@@ -273,9 +368,10 @@ class Ticket101WordExport
                 'senior_communication_master' => $senior_communication_master->map(function ($item) {
                     return $item->staff->name ?? null;
                 })->toArray(),
+                'guard_number_id' => $sickLeavePpl->map(function ($item) {
+                    return $item->guard_number_id;
+                })->toArray(),
             ];
-
-
         }
 
         return $result;
@@ -295,7 +391,7 @@ class Ticket101WordExport
         foreach ($repairedTech as $arr) {
             foreach ($arr as $item) {
                 $vehicle = Vehicle::find($item['vehicle_id']);
-                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . $item['comment'];
+                $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . ($vehicle->base ? "($vehicle->base) " : '') . $item['comment']. ($item['date_from_formatted'] ? " c {$item['date_from_formatted']}" : '');
             }
         }
 
@@ -305,11 +401,20 @@ class Ticket101WordExport
     private function addBottomText(Section $section)
     {
         $people = $this->peopleByDept();
-        $people = array_replace(array_flip(self::$sortedDepartmentNames), $people); // сортируем
+        $people = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $people); // сортируем
 
-//        dd($people);
+        foreach ($people as $key => $persons) {
+            if(!is_array($persons)){
+                unset($people[$key]);
+            }
+        }
+
+        $sickPeople = $this->getSickLeavePeople();
+        $sickPeople = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $sickPeople); // сортируем
 
         $repairedTech = $this->getRepairedTech();
+
+        $odInactivePeople = $this->peopleOdInactive();
 
         $formationCard101Others = $this->data['formationCard101Others'];
 
@@ -333,7 +438,8 @@ class Ticket101WordExport
             'tulpar8' => 'Тулпар-8: ',
             'tulpar10' => 'Тулпар-10: ',
             'kshm' => 'КШМ: ',
-            'ipl_zhalyn' => 'ИПЛ «Жалын»: ',
+            'ipl_zhalyn' => 'ИПЛ «Жалын»: '
+//            'sick_leave' => 'Больничные: ',
         ];
 
         $generalFontStyle = ['name' => 'Times New Roman', 'size' => 8];
@@ -348,8 +454,8 @@ class Ticket101WordExport
             ['align' => Jc::BOTH]
         );
 
-        foreach ($sections as $array_key => $title) {
-            if ($array_key === 'just_title') {
+        foreach ($sections as $sectionName => $title) {
+            if ($sectionName === 'just_title') {
                 $posts = [
                     'post1_president_residence' => '1 пост',
                     'post2_president_archive' => '2 пост',
@@ -380,14 +486,15 @@ class Ticket101WordExport
                     }
                 }
 
-                $section->addText(
+                /*$section->addText(
                     '',
                     $generalFontStyle,
                     self::$noPaddingPS
-                );
-            } else {
+                );*/
+            }
+            else {
 
-                if (!in_array($array_key, self::$exceptions)) {
+                if (!in_array($sectionName, self::$exceptions)) {
                     $section->addText(
                         $title,
                         $redFontStyle,
@@ -396,9 +503,12 @@ class Ticket101WordExport
                 }
 
                 foreach ($people as $fireDept => $persons) {
-                    if (isset($persons[$array_key]) && count($persons[$array_key])) {
+                    if ((isset($persons[$sectionName]) && count($persons[$sectionName])) || ($sectionName == 'vacation' && count($persons['maternity']))) {
+
+                        $peopleByComma = count($persons[$sectionName]) ? implode(', ', array_unique($persons[$sectionName])) : '-';
+
                         $textRun = $section->addTextRun(self::$noPaddingPS);
-                        if (in_array($array_key, self::$exceptions)) {
+                        if (in_array($sectionName, self::$exceptions)) {
                             $textRun->addText(
                                 $title,
                                 $redFontStyle,
@@ -409,33 +519,81 @@ class Ticket101WordExport
                             $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
                         }
 
-                        if ($array_key == 'vacation') {
-                            $prefix = 'Трудовой-';
-                            $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
-                            $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
-
+                        if ($sectionName == 'vacation') {
+                            if (count($persons['vacation'])) {
+                                $prefix = 'Трудовой-';
+                                $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
                             if (count($persons['maternity'])) {
-                                $textRun = $section->addTextRun(self::$noPaddingPS);
-                                $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
-
+                                if (count($persons['vacation'])) {
+                                    $textRun = $section->addTextRun(['indentation' => ['left' => 1430]]);
+                                }
                                 $prefix = 'Декрет-';
                                 $textRun->addText($prefix, $generalBoldItalicUnderlineFontStyle, self::$noPaddingPS);
-                                $textRun->addText(implode(', ', array_unique($persons['maternity'])), $generalFontStyle, self::$noPaddingPS);
-                            }
-                        } else {
-                            $textRun->addText(implode(', ', array_unique($persons[$array_key])), $generalFontStyle, self::$noPaddingPS);
-                        }
 
+                                $peopleByCommaMaternity = count($persons['maternity']) ? implode(', ', array_unique($persons['maternity'])) : '-';
+                                $textRun->addText($peopleByCommaMaternity, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                        else {
+                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                        }
+                    }
+                    elseif (isset($persons[$sectionName]) && !count($persons[$sectionName]) && $fireDept == 'ОД'){
+                        if (in_array($sectionName, self::$exceptions)) {
+                            $textRun = $section->addTextRun(self::$noPaddingPS);
+                            $textRun->addText(
+                                $title,
+                                $redFontStyle,
+                                array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+                            );
+                            $peopleByComma = count($persons[$sectionName]) ? implode(', ', array_unique($persons[$sectionName])) : '-';
+                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+
+                        }
                     }
                 }
 
-                $section->addText(
-                    '',
-                    $generalFontStyle,
-                    self::$noPaddingPS
-                );
-            }
+                if($sectionName === 'vacation') {
+                    foreach ($odInactivePeople as $depTitle => $odInactivePersons) {
+                        foreach ($odInactivePersons as $inactiveType => $odInactivePerson) {
+                            if(count($odInactivePerson) && $inactiveType == 'отпуск'){
+                                $peopleByComma = implode(', ', $odInactivePerson);
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$depTitle $inactiveType:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                    }
+                }
 
+                if($sectionName === 'business_trip') {
+                    foreach ($odInactivePeople as $depTitle => $odInactivePersons) {
+                        foreach ($odInactivePersons as $inactiveType => $odInactivePerson) {
+                            if(count($odInactivePerson) && $inactiveType == 'командировка'){
+                                $peopleByComma = implode(', ', $odInactivePerson);
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$depTitle $inactiveType:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                    }
+                }
+
+                if($sectionName === 'sick') {
+                    foreach ($odInactivePeople as $depTitle => $odInactivePersons) {
+                        foreach ($odInactivePersons as $inactiveType => $odInactivePerson) {
+                            if(count($odInactivePerson) && $inactiveType == 'больничный'){
+                                $peopleByComma = implode(', ', $odInactivePerson);
+                                $textRun = $section->addTextRun(self::$noPaddingPS);
+                                $textRun->addText("$depTitle $inactiveType:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         $date = Carbon::parse($this->formationReport->created_at)
@@ -449,25 +607,26 @@ class Ticket101WordExport
         );
 
         foreach ($formationCard101Others as $key => $item) {
+            $textRun = $section->addTextRun(self::$noPaddingPS);
             $index = ++$key;
-            $section->addText(
-                "{$index}. {$item->staff->department->name}",
+            $textRun->addText(
+                "{$index}.". ($item->fire_department ? $item->fire_department->title : ''). ' ',
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
 
-            $section->addText(
-                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . $item->date_from ? " c {$item->date_from}" : '',
+            $textRun->addText(
+                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
         }
 
-        $section->addText(
+        /*$section->addText(
             '',
             ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
             ['align' => Jc::BOTH]
-        );
+        );*/
 
         $section->addText(
             'Неисправная техника',
@@ -483,11 +642,11 @@ class Ticket101WordExport
             );
         }
 
-        $section->addText(
+        /*$section->addText(
             '',
             ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
             ['align' => Jc::BOTH]
-        );
+        );*/
 
         $inactive_tech_cnt = $this->data['inactive_tech_cnt'];
         $inactive_tech_cnt_str = '';
@@ -504,13 +663,48 @@ class Ticket101WordExport
             '',
             ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
             ['align' => Jc::BOTH]
-        );
+        );*/
 
         $section->addText(
-            'Больничные',
-            ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
+            'Больничные:',
+            $redFontStyle,
             ['align' => Jc::BOTH]
-        );*/
+        );
+
+
+
+//        $section->addText(
+//            $title,
+//            $redFontStyle,
+//            array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+//        );
+        $guard_numbers = GuardNumber::all();
+        foreach ($guard_numbers as $guard_number) {
+            $section->addText(
+                $guard_number->name.':',
+                $generalBoldFontStyle,
+                array_merge(['align' => Jc::BOTH], self::$noPaddingPS)
+            );
+
+            foreach ($sickPeople as $fireDept => $persons) {
+                if ($persons['sick_leave'] && $persons['sick_leave']->count()) {
+                    foreach ($persons['sick_leave'] as $person) {
+                        if($guard_number->id == $person['guard_number_id']) {
+                            $peopleByComma = ($person->staff->initials ?? null) . " $person->comment" . ($person->date_from ? " с $person->date_from" : '') . ($person->date_to ? " по $person->date_to" : ''). "({$person->staff->rank} {$person->staff->position})";
+                            $textRun = $section->addTextRun(self::$noPaddingPS);
+                            $textRun->addText("$fireDept:\t\t", $generalBoldFontStyle, self::$noPaddingPS);
+                            $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                        }
+                    }
+                }
+            }
+
+            /*$section->addText(
+                '',
+                $generalFontStyle,
+                self::$noPaddingPS
+            );*/
+        }
     }
 
     private function addSecondTable(Section $section)
@@ -520,6 +714,8 @@ class Ticket101WordExport
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
+
+        $tableStyle->setCellMargin(10);
 
         $table = $section->addTable($tableStyle);
         $this->addSecondTableHeaders($table);
@@ -651,6 +847,8 @@ class Ticket101WordExport
         $tableStyle->setBorderSize(1);
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
+
+        $tableStyle->setCellMargin(10);
 
         $table = $section->addTable($tableStyle);
         $this->addFirstTableHeaders($table);
@@ -801,13 +999,16 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpan)->addText('Марка спец. а/м', $hcFontStyle, $hcAlignStyle);
     }
 
+
+
     private function addFirstPageTopData(Section $section)
     {
+        $operGroup = $this->getOperGroupName();
         // заголовок
         $section->addText(
             'Строевая записка на ' . Carbon::parse($this->formationReport->created_at)
                 ->addDay()
-                ->format('d-m-Y') . 'г.',
+                ->format('d.m.Y') . 'г. '.$operGroup,
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
@@ -822,13 +1023,13 @@ class Ticket101WordExport
         $headCellFontStyle = ['name' => 'Times New Roman', 'size' => 9, 'bold' => true];
 //        $paragraphStyle = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
-        $people = $this->peopleByDept()['ОД'];
-        $dspt = implode(', ', $people['dspt']);
-        $cpps = implode(', ', $people['cpps']);
-        $edds = implode(', ', $people['edds']);
-        $ipl = implode(', ', $people['ipl']);
-        $water_supply = implode(', ', $people['water_supply']);
-        $senior_communication_master = implode(', ', $people['senior_communication_master']);
+        $people = $this->peopleByDept()['ОД'] ?? [];
+        $dspt = implode(', ', $people['dspt'] ?? []);
+        $cpps = implode(', ', $people['cpps'] ?? []);
+        $edds = implode(', ', $people['edds'] ?? []);
+        $ipl = implode(', ', $people['ipl'] ?? []);
+        $water_supply = implode(', ', $people['water_supply'] ?? []);
+        $senior_communication_master = implode(', ', $people['senior_communication_master'] ?? []);
 
         $row = $table->addRow();
         $row->addCell()->addText('ДСПТ: ' . $dspt . ';', $headCellFontStyle, self::$noPaddingPS);
@@ -852,10 +1053,10 @@ class Ticket101WordExport
     {
         return $this->phpWord->addSection([
             'orientation' => 'landscape',
-            'marginLeft' => 200,
-            'marginRight' => 200,
-            'marginTop' => 200,
-            'marginBottom' => 200
+            'marginLeft' => 500,
+            'marginRight' => 500,
+            'marginTop' => 500,
+            'marginBottom' => 500
         ]);
     }
 

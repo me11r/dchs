@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\FormationTechReport;
+use App\VehicleStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +44,7 @@ class FormationTechItem extends Model
 {
     protected $fillable = [
         'vehicle_id',
+        'vehicle_status_id',
         'formation_tech_report_id',
         'department',
         'status',
@@ -50,6 +52,12 @@ class FormationTechItem extends Model
         'comment',
         'date_from',
         'date_to',
+    ];
+
+    protected $appends = [
+        'vehicle_name_status',
+        'date_from_formatted',
+        'date_to_formatted',
     ];
 
     public function scopeStatus($q, $status)
@@ -60,6 +68,11 @@ class FormationTechItem extends Model
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
+    public function vehicle_status()
+    {
+        return $this->belongsTo(VehicleStatus::class, 'vehicle_status_id');
     }
 
     public function formation_tech_report()
@@ -74,14 +87,22 @@ class FormationTechItem extends Model
             ->whereBetween('updated_at',[$date_begin, $date_end]);
     }
 
-    public function getDateFromAttribute($value)
+    public function getDateFromFormattedAttribute()
     {
-        return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
+        return $this->date_from ? Carbon::parse($this->date_from)->format('d-m-Y') : $this->date_from;
     }
 
-    public function getDateToAttribute($value)
+    public function getDateToFormattedAttribute()
     {
-        return $value ? Carbon::parse($value)->format('d-m-Y') : $value;
+        return $this->date_to ? Carbon::parse($this->date_to)->format('d-m-Y') : $this->date_to;
+    }
+
+    public function getVehicleNameStatusAttribute()
+    {
+        $vehicle = $this->vehicle->name ?? null;
+        $status = $this->vehicle_status->name ?? null;
+        $result = $vehicle . ' '.($status ? "($status)" : '');
+        return $result;
     }
 
     public function scopeAvailable($q, $department = null)

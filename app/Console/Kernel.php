@@ -28,9 +28,15 @@ class Kernel extends ConsoleKernel
              ->daily()
              ->at('18:00');
 
+        //создание записи аналитики
          $schedule->command('create:analytics101report')
              ->daily()
-             ->at('08:00');
+             ->at('07:00');
+
+         //создание опергруппы (смены) ОГ-1, ОГ-2 и т.д.
+         $schedule->command('create:operational_group')
+            ->daily()
+            ->at('18:00');
     }
 
     /**

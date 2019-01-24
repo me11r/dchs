@@ -4,17 +4,36 @@
 namespace App\Http\Controllers;
 
 
+use App\Dictionary\BurntObject;
+use App\Dictionary\CityArea;
+use App\Dictionary\FireLevel;
+use App\Dictionary\FireObject;
+use App\Dictionary\LiquidationMethod;
+use App\Dictionary\TripResult;
+use App\Dictionary\WaterSupplySource;
+use App\EventInfo;
+use App\EventInfoArrived;
 use App\FireDepartment;
+use App\LivingSectorType;
 use App\Models\FireDepartmentResult;
+use App\Models\Notification\NotificationGroup;
+use App\Models\OperationalPlan;
+use App\Models\ServiceType;
+use App\Models\SpecialPlan;
+use App\Models\Ticket101\Ticket101OtherRecord;
+use App\Models\Trunk;
+use App\OperationalCard;
 use App\RoadtripPlan;
 use App\RoadtripSubscription;
 use App\Ticket101;
+use App\Ticket101InfoFromFd;
 use App\User;
 use Auth;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoadtripController extends AuthorizedController
 {
@@ -24,6 +43,7 @@ class RoadtripController extends AuthorizedController
         /** @var User $user */
         $user = Auth::user();
         $trips = RoadtripPlan::with(['ticket', 'department'])
+            ->has('ticket')
             ->where('is_closed', false);
 
         if ($user->fire_department_id) {
@@ -49,7 +69,15 @@ class RoadtripController extends AuthorizedController
         ])
             ->findOrFail($plan_id);
 
-        $results = $trip->ticket
+       if(!$trip->ticket){
+           return redirect('roadtrip')->with('_message', [
+               'type' => 'danger',
+               'text' => 'Невозможно открыть путевой лист. Карточка была удалена'
+           ]);
+       }
+
+        $results = $trip
+            ->ticket
             ->results()
             ->isDispatched()
             ->with(['tech'])
@@ -259,5 +287,100 @@ class RoadtripController extends AuthorizedController
         $result->save();
 
         return response()->json(['ok'], 200);
+    }
+
+    public function getAdditional($id)
+    {
+        $trip = RoadtripPlan::with([
+            'ticket',
+            'ticket.chronologiesFromFd',
+            'ticket.chronologiesFromFd.event_info',
+            'ticket.chronologiesFromFd.event_info_arrived',
+            'ticket.chronologiesFromFd.fire_department_result.department',
+            'ticket.chronologiesFromFd.fire_department_result.tech',
+//            'ticket.operational_card',
+//            'ticket.operational_plan.special_plans',
+            'department',
+            'results'
+        ])
+            ->findOrFail($id);
+
+        if(!$trip->ticket){
+            return redirect('roadtrip')->with('_message', [
+                'type' => 'danger',
+                'text' => 'Невозможно открыть путевой лист. Карточка была удалена'
+            ]);
+        }
+//        $service_notify = ServiceType::all();
+        $eventInfos = EventInfo::all();
+        $eventInfosArrived = EventInfoArrived::all();
+        $departmentsOnWay = FireDepartmentResult::with(['department', 'tech'])
+            ->onWay($trip->ticket->id)
+            ->where('fire_department_id', Auth::user()->fire_department_id)
+            ->get();
+
+        $departmentsArrived = FireDepartmentResult::with(['department', 'tech'])
+            ->arrived($trip->ticket->id)
+            ->where('fire_department_id', Auth::user()->fire_department_id)
+            ->get();
+
+        $this->set('eventInfos', $eventInfos);
+        $this->set('eventInfosArrived', $eventInfosArrived);
+        $this->set('departmentsOnWay', $departmentsOnWay);
+        $this->set('departmentsArrived', $departmentsArrived);
+        $this->set('trip', $trip);
+        $this->set('ticket', $trip->ticket);
+//        $this->set('city_area', CityArea::with(['fire_departments'])->get());
+        $this->set('fire_object', BurntObject::all());
+        $this->set('fire_levels', FireLevel::all());
+        $this->set('living_sector_types', LivingSectorType::all());
+        $this->set('burn_object', FireObject::all());
+        $this->set('trip_result', TripResult::all());
+        $this->set('fire_object_options', FireObject::all());
+        $this->set('liquidation_methods', LiquidationMethod::all());
+//        $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
+//            return [
+//                'id' => $item->id,
+//                'text' => $item->name
+//            ];
+//        })->toArray());
+        $this->set('fire_departments', collect(FireDepartment::recommend(true)->get())->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'text' => $item->name
+            ];
+        })->toArray());
+        $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
+
+        if(!$trip->ticket->max_square){
+            $max_square = Ticket101OtherRecord::where('ticket101_id', $trip->ticket->id)
+                ->max('square');
+        }
+        else{
+            $max_square = $trip->ticket->max_square;
+        }
+
+        $ticketInfo = Ticket101InfoFromFd::where('fire_department_id', Auth::user()->fire_department_id)
+            ->where('ticket_id', $trip->ticket->id)
+            ->first();
+
+        if (!$ticketInfo) {
+            $ticketInfo = new Ticket101InfoFromFd([
+                'ticket_id' => $trip->ticket->id,
+                'fire_department_id' => Auth::user()->fire_department_id
+            ]);
+            $ticketInfo->save();
+        }
+
+//        $operational_cards = OperationalCard::all();
+//        $special_plans = SpecialPlan::all();
+        $this->set('notificationGroups', (new NotificationGroup())->get());
+        $this->set('water_sources', WaterSupplySource::all());
+        $this->set('max_square', $max_square);
+//        $this->set('special_plans', $special_plans);
+//        $this->set('operational_cards', $operational_cards);
+        $this->set('ticketInfo', $ticketInfo);
+        $this->set('departmentId', Auth::user()->fire_department_id);
+
     }
 }

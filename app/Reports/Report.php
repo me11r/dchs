@@ -4,10 +4,14 @@ namespace App\Reports;
 
 use App\Analytics101Item;
 use App\Chronology101;
+use App\Dictionary\BurntObject;
+use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\FireDepartmentCheck;
 use App\FormationReport;
 use App\FormationTechReport;
+use App\LivingSectorType;
+use App\Models\DailyReportPerson;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
@@ -15,6 +19,7 @@ use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Ticket101Other;
+use Carbon\Carbon;
 
 class Report
 {
@@ -27,6 +32,8 @@ class Report
     protected $burntObject;
 
     protected $dictionaries;
+    protected $firstDate;
+    protected $secondDate;
 
     public function __construct(
         Ticket101Interface $ticket101,
@@ -40,34 +47,132 @@ class Report
         $this->dictionaries = config('dictionaries');
     }
 
-    public function getReport(): array
+    public function getReport($date = null): array
     {
+        $firstDate = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $secondDate = today()->addHours(7)->format('Y-m-d H:i:s');
+
+        if($date) {
+            $carbon = new Carbon($date);
+            $firstDate = $carbon->addHours(7)->format('Y-m-d H:i:s');
+            $secondDate = $carbon->addDay(1)->format('Y-m-d H:i:s');
+            $this->time = strtotime($date);
+
+            $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
+            $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
+        }
+
         $this->report = $this->ticket101->getDaily(
-            today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s'),
-            today()->addHours(7)->format('Y-m-d H:i:s')
+            $firstDate,
+            $secondDate
         );
 
-        $burntTransportCount = count($this->filterByObject(
-            'burn_object_id',
-            'burntObject',
-            $this->dictionaries['burntObject']['transport']
-        ));
+        $burntFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::name('Пожар')->first();
+            return $event->trip_result_id == ($q->id ?? 0);
+        })->count();
 
-        $carbonPoisoningCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['carbonPoisoning']
-        ));
+        $livingSectorCount = $this->report->filter(function ($event) {
+            return $event->living_sector_type_id !== null;
+        })->count();
 
-        $naturalPoisoningCount = count($this->filterByObject(
-            'fire_object_id',
-            'fireObject',
-            $this->dictionaries['fireObject']['naturalPoisoning']
-        ));
+        $livingSectorHomeCount = $this->report->filter(function ($event) {
+            $q = LivingSectorType::name('Жилой дом(квартира)')->first();
+            return $event->living_sector_type_id == ($q->id ?? 0);
+        })->count();
+
+        $livingSectorOutdoorCount = $this->report->filter(function ($event) {
+            $q = LivingSectorType::name('надворные постройки')->first();
+            return $event->living_sector_type_id == ($q->id ?? 0);
+        })->count();
+
+        $burntTransportCount = $this->report->filter(function ($event) {
+            $q = FireObject::name('Транспорт')->first();
+            return $event->burn_object_id == ($q->id ?? 0);
+        })->count();
+
+        $burntOtherCount = $this->report->filter(function ($event) {
+            $q = FireObject::name('Прочие объекты пожаров')->first();
+            return $event->burn_object_id == ($q->id ?? 0);
+        })->count();
+
+        $burntKitchenFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%пища на газе%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burntRubbishFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Загорание мусора%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burntShortCircuitFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%КЗ эл.сетей%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burntDryThingsFireCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%сухост%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $burnNonFiresCount = $this->report->filter(function ($event) {
+            $q = TripResult::nonFires()
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $carbonPoisoningCount =  $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Отравление угарным газом%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $naturalPoisoningCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Отравление природным газом%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $suicideCount = $this->report->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Покушение на самоубийство%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
 
         $data = [
             'dates' => $this->getDates(),
             'allCount' => count($this->report),
+            'tickets' => $this->report,
 
             // в разрезе
             'fire' => [
@@ -236,20 +341,33 @@ class Report
                 'name' => $this->dictionaries['fireObject']['dischargesElectr']
             ],
 
+            'burntFireCount' => $burntFireCount,
+            'livingSectorCount' => $livingSectorCount,
+            'livingSectorHomeCount' => $livingSectorHomeCount,
+            'livingSectorOutdoorCount' => $livingSectorOutdoorCount,
             'burntTransportCount' => $burntTransportCount,
-            'burntOtherCount' => count($this->report) - $burntTransportCount,
+            'burntOtherCount' => $burntOtherCount,
+            'burntNonFiresCount' => $burnNonFiresCount,
+            'burntKitchenFireCount' => $burntKitchenFireCount,
+            'burntRubbishFireCount' => $burntRubbishFireCount,
+            'burntShortCircuitFireCount' => $burntShortCircuitFireCount,
+            'burntDryThingsFireCount' => $burntDryThingsFireCount,
             'poisoningCount' => ($carbonPoisoningCount + $naturalPoisoningCount),
             'carbonPoisoningCount' => $carbonPoisoningCount,
             'naturalPoisoningCount' => $naturalPoisoningCount,
+            'suicideCount' => $suicideCount,
             'rescuedCount' => $this->report->sum('rescued_count'),
             'evacCount' => $this->report->sum('evac_count'),
             'gptBurnsCount' => $this->report->sum('gpt_burns_count'),
             'peopleDeathCount' => $this->report->sum('people_death_count'),
             'childrenDeathCount' => $this->report->sum('children_death_count'),
             'hospitalizedCount' => $this->report->sum('hospitalized_count'),
-
+            'header_person' => DailyReportPerson::where('type', 'header')->where('report_type', '101_daily')->first(),
+            'footer_first_person' => DailyReportPerson::where('type', 'footer_first')->where('report_type', '101_daily')->first(),
+            'footer_second_person' => DailyReportPerson::where('type', 'footer_second')->where('report_type', '101_daily')->first()
 
         ];
+
         $data['tripResults'] = $this->tripResults();
         $data['tech'] = $this->getTech()
             ->whereHas('items', function ($q) {
@@ -285,12 +403,14 @@ class Report
             foreach ($this->report as $ticket) {
                 if ($ticket->trip_result_id === $trip_result->id) {
 
-                    $analytics = Analytics101Item::where('ticket101_id', $ticket->id)
+                    /*$analytics = Analytics101Item::where('ticket101_id', $ticket->id)
                         ->where('trip_result_id', $trip_result->id)
                         ->whereHas('analytics', function ($q) {
                             $q->whereDate('date', today()->subDay());
                         })
-                        ->first();
+                        ->first();*/
+
+                    $analytics = $ticket->analytics;
 
                     $firstDeptArrived = $ticket->first_department_arrived();
                     $depts_out = $ticket->results()->whereNotNull('arrive_time')->get();
@@ -350,13 +470,12 @@ class Report
                         'service_plans_str' => $service_plans_str,
                     ];
 
-                    if ($analytics && !$analytics->text) {
+                    /*if ($analytics && !$analytics->text) {
                         $analytics->text = view('_templates.report101-analytics', $result)->render();
                         $analytics->save();
-                    }
+                    }*/
 
-                    $result['analytics'] = $analytics->text ?? view('_templates.report101-analytics', $result)->render() ?? null;
-
+                    $result['analytics'] = $analytics->text ?? null;
                     $results[$trip_result->name][] = $result;
                 }
             }
@@ -367,13 +486,11 @@ class Report
 
     private function getArrangementYesterday()
     {
-        $from = today()->addDay(-1)->format('Y-m-d') . ' 00:00:00';
-        $to = today()->addDay(-1)->format('Y-m-d') . ' 23:59:59';
-
-        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to) {
+        $date = today()->addDay(-1)->format('Y-m-d');
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
-            ->whereBetween('created_at', [$from, $to])
+            ->whereDate('created_at', $date)
             ->get();
 
         return $formationCard101Others;
@@ -381,13 +498,12 @@ class Report
 
     private function getArrangementToday()
     {
-        $from = today()->format('Y-m-d H:i:s') . ' 00:00:00';
-        $to = today()->format('Y-m-d H:i:s') . ' 23:59:59';
+        $date = today()->format('Y-m-d');
 
-        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($from, $to) {
+        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
-            ->whereBetween('created_at', [$from, $to])
+            ->whereDate('created_at', $date)
             ->get();
 
         return $formationCard101Others;
@@ -407,9 +523,20 @@ class Report
     {
         $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = today()->addHours(7)->format('Y-m-d H:i:s');
-
-//        return (new FireDepartmentCheck())->whereBetween('date', [$from, $to])->get();
-        return (new FireDepartmentCheck())->all();
+        return (new FireDepartmentCheck())
+            ->whereIn('date', [
+                today()->format('Y-m-d'),
+                today()->addDay(-1)->format('Y-m-d')
+            ])
+            ->get();
+//            ->filter(function ($item) use ($from, $to) {
+//                /** @var FireDepartmentCheck $item */
+//                if (Carbon::parse($to)->format('Y-m-d') === Carbon::parse($item->date)->format('Y-m-d')) {
+//                    return (int)Carbon::parse($item->time_end)->format('H') <= (int)Carbon::parse($to)->format('H');
+//                } else {
+//                    return (int)Carbon::parse($item->time_begin)->format('H') >= (int)Carbon::parse($from)->format('H') ;
+//                }
+//            });
     }
 
     private function getDates()
@@ -417,8 +544,8 @@ class Report
         return [
             'hour' => '07',
             'minutes' => '00',
-            'to' => date('d.m.Y', $this->time),
-            'from' => date('d.m.Y', $this->time - (60 * 60 * 24))
+            'to' => !$this->secondDate ? date('d.m.Y', $this->time) : $this->secondDate,
+            'from' => !$this->firstDate ? date('d.m.Y', $this->time - (60 * 60 * 24)) : $this->firstDate
         ];
     }
 
@@ -432,7 +559,7 @@ class Report
 
     protected function getObjectId($object, $name): int
     {
-        return $this->{$object}->getByName($name)->id ?? 0;
+        return $this->{$object}->getByName($name)->id ?? -1;
     }
 
 }

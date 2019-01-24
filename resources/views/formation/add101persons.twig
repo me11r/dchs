@@ -45,7 +45,7 @@
                 </div>
                 <fieldset>
                     <legend>На лицо личного состава</legend>
-                    {% if dept_id == 13%}
+                    {% if dept_id == 13 %}
                         <div class="field">
                             <label for="field_2_1">1 пост: Резиденция Президента РК</label>
                             <staff-101 :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
@@ -223,6 +223,15 @@
                     <div class="field"><label for="field_2_4">Больные</label>
                         <staff-101 :model-id="{{ model.id ?? 0 }}" :active="false" :staff="{{ staff }}"
                                    block_type="sick"></staff-101>
+
+                    </div>
+                    <div class="field"><label for="field_2_4">Больничные</label>
+                        <staff-101 :model-id="{{ model.id ?? 0 }}"
+                                   :active="false"
+                                   :staff="{{ staff }}"
+                                   :guard-numbers="{{ guardNumbers }}"
+                                   block_type="sick_leave">
+                        </staff-101>
 
                     </div>
                     <div class="field"><label for="field_2_5">Командировка</label>

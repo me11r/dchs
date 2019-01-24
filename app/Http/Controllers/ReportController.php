@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\AirRescueReport;
 use App\CallInfo;
+use App\Dictionary\BurntObject;
+use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\FormationReport;
@@ -20,9 +22,12 @@ use App\Models\Vehicle;
 use App\Models\Weather;
 use App\OperationalCard;
 use App\Reports\Report;
+use App\Reports\Report112;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\Services\ReportExport\Daily112WordExport;
+use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
@@ -70,7 +75,7 @@ class ReportController extends AuthorizedController
         )->render();
 
         //todo для теста
-        return $html;
+//        return $html;
 
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
@@ -166,7 +171,8 @@ class ReportController extends AuthorizedController
                         $data['departments'],
                         $data['people'],
                         $data['tech'],
-                        $data['sumArray']['people']
+                        $data['sumArray']['people'],
+                        $data
                     );
 
                     $writer = $ticket101Export->getXlsWriter();
@@ -256,7 +262,10 @@ class ReportController extends AuthorizedController
     public function getReport101Emergency()
     {
         $reasons = TripResult::orderBy('name')->get();
-        return view('reports.101.emergency', compact('reasons'));
+        $burntObjects = BurntObject::orderBy('name')->get();
+        $cityAreas = CityArea::orderBy('name')->get();
+
+        return view('reports.101.emergency', compact('reasons', 'burntObjects', 'cityAreas'));
     }
 
     public function postReport101Emergency(Request $request)
@@ -264,8 +273,10 @@ class ReportController extends AuthorizedController
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
         $result_id = $request->result_id;
+        $burnt_id = $request->burnt_id;
+        $city_area_id = $request->city_area_id;
 
-        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
+        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
 
         return response()->json($result);
     }
@@ -422,16 +433,16 @@ class ReportController extends AuthorizedController
             foreach ($report->items as $item_key => $tech_item) {
                 $report->items[$item_key]['departures_count'] = FireDepartmentResult::
 //                    where('fire_department_id', $report->dept_id)->
-                    whereDate('created_at', $today)->
-                    where('tech_id', $tech_item->id)->
-                    whereNotNull('out_time')->
-                    count()
+                whereDate('created_at', $today)->
+                where('tech_id', $tech_item->id)->
+                whereNotNull('out_time')->
+                count()
                 ;
                 $report->items[$item_key]['status'] = Ticket101::whereHas('results', function ($q) use ($today, $tech_item){
                     $q->whereDate('created_at', $today)->
-                        where('tech_id', $tech_item->id)->
-                        whereNull('ret_time')->
-                        whereNotNull('out_time');
+                    where('tech_id', $tech_item->id)->
+                    whereNull('ret_time')->
+                    whereNotNull('out_time');
                 })
                     ->with(['results', 'fire_level'])
                     ->first();
@@ -460,14 +471,14 @@ class ReportController extends AuthorizedController
 
                 }*/
 
-                    /*FireDepartmentResult::
+                /*FireDepartmentResult::
 //                    where('fire_department_id', $report->dept_id)->
-                    whereDate('created_at', $today)->
-                    where('tech_id', $tech_item->id)->
-                    with(['ticket'])->
-                    whereNotNull('out_time')->
-                    first()->ticket ?? null;
-                ;*/
+                whereDate('created_at', $today)->
+                where('tech_id', $tech_item->id)->
+                with(['ticket'])->
+                whereNotNull('out_time')->
+                first()->ticket ?? null;
+            ;*/
             }
         }
 
@@ -518,8 +529,10 @@ class ReportController extends AuthorizedController
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
         $result_id = $request->result_id;
+        $burnt_id = $request->burnt_id;
+        $city_area_id = $request->city_area_id;
 
-        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id);
+        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
 
         $exportService = new Ticket101PeriodExcelExport($stat);
         $writer = $exportService->getXlsWriter();
@@ -595,33 +608,18 @@ class ReportController extends AuthorizedController
      */
     public function getDaily101Formatted(Request $request, string $format = 'word')
     {
-        $report = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
-        $view = view('reports.export.word.daily-report-101', $report)->render();
-        /*TODO debug only*/
-//        return $view;
+        $data = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport();
 
-        $word = new PhpWord();
-
-        $section = $word->addSection([
-            'marginLeft'   => 800,
-            'marginRight'  => 700,
-            'marginTop'    => 400,
-            'marginBottom' => 400,
-            'headerHeight' => 50,
-            'footerHeight' => 50,
-        ]);
-
-        $word->setDefaultParagraphStyle([
-                'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0),
-                'spacing' => 120,
-                'lineHeight' => 1,
-            ]
+        $dailyWordExport = new DailyWordExport(
+            $data
         );
 
-        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
-        $file = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
-        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
-        return $this->createWordFileDownload($writer, $file);
+        // @todo PDF не работает корректно (но вроде оно и не нужно)
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Суточный отчет 101 - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
     }
 
     /**
@@ -633,65 +631,79 @@ class ReportController extends AuthorizedController
      */
     public function getDaily112Formatted(Request $request, string $format = 'word')
     {
-        $data['yesterday'] = now()->subHours(24);
-        $data['today'] = now();
+        $data = (new Report112())->getReport();
 
-        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
-            ->whereDate('created_at', '<=', $data['today']);
-        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
-            ->whereDate('created_at', '<=', $data['today']);
+        $dailyWordExport = new Daily112WordExport(
+            $data
+        );
 
-        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
-            ->whereDate('created_at', '>=', $data['yesterday'])
-            ->whereDate('created_at', '<=', $data['today'])
-            ->whereNotNull('card112_id');
+        // @todo PDF не работает корректно (но вроде оно и не нужно)
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
 
-        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
-            ->whereDate('created_at', '<=', $data['today']);
+        return response()->download(public_path($fileName));
 
-        $callInfo = CallInfo::latest()->first();
 
-        $data['emergencies'] = $card112_day->count();
-        $data['cards112'] = $card112_day->get();
-        $data['card112_count'] = $card112_day->count();
-        $data['card112_count_finished'] = $card112_day->count();
-        $data['card101_count'] = $card101_day->count();
-        $data['emergencies_human_in_danger'] = Card112::all();
-        $data['emergencies_human_not_in_danger'] = Card112::all();
-        $data['fires_count'] = $card101_day->count();
-        $data['dead_count'] = $card112_day->sum('dead');
-        $data['evacuated_count'] = $card112_day->sum('evacuated');
-        $data['poisoned_by_gas_count'] = $card112_day->sum('poisoned');
-        $data['hurt_count'] = $card112_day->sum('injured_hard');
-        $data['saved_count'] = $card112_day->sum('saved');
-        $data['card112_roadtrips'] = $card112_roadtrips->get();
-        $data['mudflow_emergency_count'] = $card112_day->filterByServiceType('ГУ Казселезащита')->count();
-        $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
-        $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
-        $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
-        $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
-        $data['weather_forecast'] = Weather::latest()->first();
-        $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
-        $data['call_info'] = $callInfo;
-
-        $data['trip_results101'] = [];
-
-        foreach (TripResult::all() as $tripResult) {
-            $data['trip_results101'][$tripResult->name] = $card101_day->where('trip_result_id', $tripResult->id)->count();
-        }
-        /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
-            $q->status('action');
-        })->first();*/
-
-        $data['air_rescue_report_tech'] = $air_rescue_report->first() ? $air_rescue_report->first()->tech()->status('action')->get() : [];
-
-        $view = view('reports.export.word.daily-report-112', $data)->render();
-        $word = new PhpWord();
-        $section = $word->addSection();
-        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
-        $file = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
-        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
-        return $this->createWordFileDownload($writer, $file);
+//        $data['yesterday'] = now()->subHours(24);
+//        $data['today'] = now();
+//
+//        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
+//            ->whereDate('created_at', '<=', $data['today']);
+//        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
+//            ->whereDate('created_at', '<=', $data['today']);
+//
+//        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
+//            ->whereDate('created_at', '>=', $data['yesterday'])
+//            ->whereDate('created_at', '<=', $data['today'])
+//            ->whereNotNull('card112_id');
+//
+//        $air_rescue_report = AirRescueReport::whereDate('created_at', '>=', $data['yesterday'])
+//            ->whereDate('created_at', '<=', $data['today']);
+//
+//        $callInfo = CallInfo::latest()->first();
+//
+//        $data['emergencies'] = $card112_day->count();
+//        $data['cards112'] = $card112_day->get();
+//        $data['card112_count'] = $card112_day->count();
+//        $data['card112_count_finished'] = $card112_day->count();
+//        $data['card101_count'] = $card101_day->count();
+//        $data['emergencies_human_in_danger'] = Card112::all();
+//        $data['emergencies_human_not_in_danger'] = Card112::all();
+//        $data['fires_count'] = $card101_day->count();
+//        $data['dead_count'] = $card112_day->sum('dead');
+//        $data['evacuated_count'] = $card112_day->sum('evacuated');
+//        $data['poisoned_by_gas_count'] = $card112_day->sum('poisoned');
+//        $data['hurt_count'] = $card112_day->sum('injured_hard');
+//        $data['saved_count'] = $card112_day->sum('saved');
+//        $data['card112_roadtrips'] = $card112_roadtrips->get();
+//        $data['mudflow_emergency_count'] = $card112_day->filterByServiceType('ГУ Казселезащита')->count();
+//        $data['roso_count'] = $card112_day->filterByServiceType('ГУ РОСО')->count();
+//        $data['cmk_count'] = $card112_day->filterByServiceType('ЦМК')->count();
+//        $data['flooding_count'] = $card112_day->filterByIncidentType('Подтопления')->count();
+//        $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
+//        $data['weather_forecast'] = Weather::latest()->first();
+//        $data['emergency_situations'] = EmergencySituation::whereDate('created_at', '=', $data['today'])->get();
+//        $data['call_info'] = $callInfo;
+//
+//        $data['trip_results101'] = [];
+//
+//        foreach (TripResult::all() as $tripResult) {
+//            $data['trip_results101'][$tripResult->name] = $card101_day->where('trip_result_id', $tripResult->id)->count();
+//        }
+//        /*$data['air_rescue_report'] = $air_rescue_report->whereHas('tech', function ($q){
+//            $q->status('action');
+//        })->first();*/
+//
+//        $data['air_rescue_report_tech'] = $air_rescue_report->first() ? $air_rescue_report->first()->tech()->status('action')->get() : [];
+//
+//        $view = view('reports.export.word.daily-report-112', $data)->render();
+//        $word = new PhpWord();
+//        $section = $word->addSection();
+//        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $view, false, false);
+//        $file = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
+//        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($word);
+//        return $this->createWordFileDownload($writer, $file);
 
     }
 

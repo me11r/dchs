@@ -17,6 +17,7 @@ import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
 // import Ticket101OnWay from './components/ticket101/OnWayInfo';
 
+import AdditionalData from './views/fire-departments/AdditionalData';
 import Add101Functions from './scripts/add101/add101';
 import Tabs from './scripts/add101/tabs';
 import TPicker from './components/Timepicker';
@@ -42,6 +43,7 @@ import NotificationGroupsUsersMultiselect from './components/notification-groups
 import FormationRecord112Staff from './views/formation-record/CreateEditStaff';
 import FormationRecord112StaffPageSelector from './views/formation-record/PageSelector';
 import VueMessenger from './ui/messenger/Messenger';
+import PopupNotifier from './ui/PopupNotifier';
 import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
 
@@ -88,6 +90,8 @@ Vue.component('ticket101-onway', require('./components/ticket101/OnWayInfo'));
 Vue.component('ticket101-arrived', require('./components/ticket101/ArrivedInfo'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
 Vue.component('ticket101-chronology', require('./components/ticket101/Card101Chronology'));
+Vue.component('ticket101-chronology-from-fd', require('./components/ticket101/Card101ChronologyFromFd'));
+Vue.component('ticket101-summary-from-fd', require('./components/ticket101/Card101SummaryFromFd.vue'));
 
 Vue.component('notification', require('./components/Notification'));
 Vue.component('notifications-groups-users-multiselect', NotificationGroupsUsersMultiselect);
@@ -99,6 +103,10 @@ Vue.component('delete-card-btn', require('./components/ticket101/DeleteCardButto
 Vue.component('siren-speech-tech', require('./views/reports/SirenSpeechTech/SirenSpeechTechCreate'));
 Vue.component('analytics-edit', require('./views/analytics/EditAnalytics'));
 Vue.component('fire-dept-check-form', require('./components/fire-department-checks/CreateEditCheck'));
+Vue.component('fire-dept-check-item', require('./components/fire-department-checks/CreateEditCheckItem'));
+Vue.component('ticket101-save-btn', require('./components/ticket101/SaveBtn'));
+Vue.component('quakes-form', require('./views/quakes/CreateEditForm'));
+Vue.component('messenger-permissions', require('./views/messenger-permissions/MessengerPermissions'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
@@ -150,6 +158,7 @@ if (document.getElementById('cardadd101')) {
         document.getElementById('preload_pane').style.display = 'none';
         const ret = window.location.hash.match(/#return=(\d+)/);
         if (ret !== null) {
+            // console.dir(parseInt(ret[1]))
             window.add101tabs.setTab(parseInt(ret[1]));
         } else {
             window.add101tabs.setTab(0);
@@ -159,10 +168,10 @@ if (document.getElementById('cardadd101')) {
             tabs.nextTab();
         }); */
 
-        document.getElementById('truck_tab_button').addEventListener('click', (e) => {
+        /* document.getElementById('truck_tab_button').addEventListener('click', (e) => {
             e.preventDefault();
-            tabs.nextTab(1);
-        });
+            window.add101tabs.setTab(1);
+        }); */
     });
 }
 
@@ -247,21 +256,41 @@ if (document.getElementById('emergency_messenger')) {
     });
 }
 
+if (document.getElementById('popup_notification')) {
+    new Vue({
+        el: '#popup_notification',
+        render: h => h(PopupNotifier)
+    });
+}
+
 if (document.getElementById('tab-truck-vue')) {
     new Vue({
-        el: '#tab-truck-vue',
+        el: '#tab-truck-vue'
     });
 }
 
 if (document.getElementById('card101_index_table')) {
     new Vue({
-        el: '#card101_index_table',
+        el: '#card101_index_table'
+    });
+}
+
+if (document.getElementById('card101_save_btn')) {
+    new Vue({
+        el: '#card101_save_btn'
     });
 }
 
 const View101AppElement = document.getElementById('view-101-app');
 if (View101AppElement) {
     window.View101App = (new View101App()).createApp(View101AppElement, window.people, window.odStaff, window.formId);
+}
+
+if (document.getElementById('fire-department-data')) {
+    new Vue({
+        el: '#fire-department-data',
+        render: h => h(AdditionalData)
+    });
 }
 
 require('./scripts/emergency-situation/edit-form');

@@ -170,11 +170,13 @@
         },
         computed: {
             total(){
-                let total = (!isNaN(this.record_.motor) && this.record_.motor !== null) ? parseInt(this.record_.motor) : 0;
-                total += (!isNaN(this.record_.sst) && this.record_.sst !== null) ? parseInt(this.record_.sst) : 0;
-                total += (!isNaN(this.record_.demounted) && this.record_.demounted !== null) ? parseInt(this.record_.demounted) : 0;
-                total += (!isNaN(this.record_.broken) && this.record_.broken !== null) ? parseInt(this.record_.broken) : 0;
-                total += (!isNaN(this.record_.inactive) && this.record_.inactive !== null) ? parseInt(this.record_.inactive): 0;
+                let total = (!isNaN(this.record_.motor) && this.record_.motor !== null && this.record_.motor !== '') ? parseInt(this.record_.motor) : 0;
+                total += (!isNaN(this.record_.sst) && this.record_.sst !== null && this.record_.sst !== '') ? parseInt(this.record_.sst) : 0;
+
+                //todo: неактивные не учитываем АРМ-336
+                // total -= (!isNaN(this.record_.demounted) && this.record_.demounted !== null && this.record_.demounted !== '') ? parseInt(this.record_.demounted) : 0;
+                // total -= (!isNaN(this.record_.broken) && this.record_.broken !== null && this.record_.broken !== '') ? parseInt(this.record_.broken) : 0;
+                // total -= (!isNaN(this.record_.inactive) && this.record_.inactive !== null && this.record_.inactive !== '') ? parseInt(this.record_.inactive) : 0;
                 return total;
             },
 

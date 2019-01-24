@@ -73,143 +73,124 @@
                     </tr>
                 {% endif %}
             {% endif %}
-            {#{% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}#}
-                {#<tr class="printing-invisible">#}
-                    {#<td class="has-text-right is-bold">Выезд сил</td>#}
-                    {#<td>#}
-                        {#<form method="post" action="{{ url('/roadtrip/force-out/' ~ trip.id) }}">{{ csrf_field() }}#}
-                            {#<button type="submit" class="button is-info"><i class="far fa-bell"></i>&nbsp;Назначить</button>#}
-                        {#</form>#}
-                    {#</td>#}
-                {#</tr>#}
-            {#{% endif %}#}
             <tr>
                 <td class="has-text-right is-bold">Место ЧС (адрес)</td>
-
                 <td>
-                    {% if record.ticket %}
+                    {{ record.anyCard.location|default('-') }}
+                    {#{% if record.ticket %}
                         {{  record.ticket.location|default('-') }}
                     {% else %}
                         {{  record.ticket112.location|default('-') }}
-                    {% endif %}
+                    {% endif %}#}
                 </td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">Наименование объекта</td>
-                <td>{{ record.ticket.object_name|default('-') }}</td>
+                <td class="has-text-right is-bold">Район города</td>
+                <td>{{ record.anyCard.cityArea.name|default('-') }}</td>
             </tr>
-            {#<tr>#}
-                {#<td class="has-text-right is-bold">Состав высылаемых сил и средств</td>#}
-                {#<td>#}
-                    {#{% if not record.is_accepted %}#}
-                        {#{% for i in record.results %}#}
-                            {#<p>{{ i.departments }}</p>#}
-                        {#{% endfor %}#}
-                    {#{% else %}#}
-                        {#<div id="vue">#}
-                            {#{% for dep in results %}#}
-                                {#{% if ((record.result is defined) or (record.result is null)) and record.result.out_time|default(null) is null and record.is_accepted %}#}
-                                    {#<roadtrip-dept-btn :trip="{{ record }}" :dep="{{ dep }}"></roadtrip-dept-btn>#}
-                                {#{% else %}#}
-                                    {#<form action="#" method="post">#}
-                                        {#{{ csrf_field() }}#}
-                                        {#<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение: отделение -  {{ dep.departments }}</button>#}
-                                    {#</form>#}
-                                {#{% endif %}#}
 
-                            {#{% endfor %}#}
-                        {#</div>#}
-                    {#{% endif %}#}
-
-                {#</td>#}
-            {#</tr>#}
-            <tr>
-                <td class="has-text-right is-bold">Подразделения</td>
-                <td>{{ record.ticket['ph_' ~ record.department ~'_ot']|default('-') }}</td>
-            </tr>
             <tr>
                 <td class="has-text-right is-bold">Пересечение улиц</td>
-                <td>{% if record.ticket.crossroad_1_id is defined %}({{ record.ticket.crossroad_1.name|default('-') }} &times; {{ record.ticket.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
+                <td>{% if record.anyCard.crossroad_1_id is defined %}({{ record.anyCard.crossroad_1.name|default('-') }} &times; {{ record.anyCard.crossroad_2.name|default('-') }}){% else %}--{% endif %}</td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">Ранг пожара
-                </td>
-                <td>{{ record.ticket.fire_level.name|default('?') }}</td>
+                <td class="has-text-right is-bold">Происшествие</td>
+                <td>{{ record.anyCard.incident.name ?? record.anyCard.trip_result.name ?? '' }}</td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">Объект горения</td>
-                <td>{{ record.ticket.fire_object.name|default('?') }}</td>
+                <td class="has-text-right is-bold">Место происшествия</td>
+                <td>{{ record.anyCard.incident_place ?? record.anyCard.fireplace }}</td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">
-                    Этажность
-                </td>
-                <td>{{ record.ticket.storey_count|default('-') }}</td>
+                <td class="has-text-right is-bold">Описание происшествия</td>
+                <td>{{ record.anyCard.description ?? record.anyCard.pre_information|default('') }}</td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">На каком этаже горит
-                </td>
-                <td>{{ record.ticket.floor|default('-') }}</td>
-            </tr>
-            {% if record.ticket.operational_plan_id is defined %}
-                <tr>
-                    <td class="has-text-right is-bold">№ оперативного плана</td>
-                    <td>{{ record.ticket.operational_plan.name|default('') }}</td>
-                </tr>
-            {% endif %}
-            {% if record.ticket.operational_card_id is defined %}
-                <tr>
-                    <td class="has-text-right is-bold">№ оперативного плана</td>
-                    <td>{{ record.ticket.operational_card.oc_number|default('') }}</td>
-                </tr>
-            {% endif %}
-            <tr>
-                <td class="has-text-right is-bold">Конструктивные особенности</td>
-                <td>{{ record.ticket.building_description|default('') }}</td>
-            </tr>
-            <tr>
-                <td class="has-text-right is-bold">Материал стен</td>
-                <td>{{ record.ticket.wall_material.name|default('') }}</td>
-            </tr>
-            <tr>
-                <td class="has-text-right is-bold">Год постройки</td>
-                <td>{{ record.ticket.year_of_development|default('') }}</td>
-            </tr>
-            <tr>
-                <td class="has-text-right is-bold">Площадь объекта</td>
-                <td>{{ record.ticket.building_square|default('') }}</td>
-            </tr>
-            <tr>
-                <td class="has-text-right is-bold">Наличие угрозы людям</td>
-                <td>{% if record.ticket.people_in_danger|default('') == 1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
-            </tr>
-            <tr>
-                <td class="has-text-right is-bold">ФИО заявителя</td>
-                <td>{{ record.ticket.caller_name|default('-') }}</td>
+                <td class="has-text-right is-bold">ФИО Заявителя</td>
+                <td>{{ record.anyCard.caller_name|default('') }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Телефон заявителя</td>
-                <td>{{ record.ticket.caller_phone|default('-') }}</td>
+                <td>{{ record.anyCard.caller_phone|default('') }}</td>
             </tr>
             <tr>
-                <td class="has-text-right is-bold">Время получения сообщения о ЧС</td>
-                <td>{{ record.ticket.created_at|default('')|date('d.m.Y H:i') }}</td>
+                <td class="has-text-right is-bold">Время получения сообщения</td>
+                <td>{{ record.anyCard.call_time ?? record.anyCard.created_at|date('H:i:s') }}</td>
             </tr>
-            {#<tr>#}
-                {#<td class="has-text-right is-bold">Время возвращение в ПЧ</td>#}
-                {#<td>#}
-                    {#{% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}#}
-                        {#<div class="printing-invisible">#}
-                            {#<form action="{{ url('/roadtrip/save/' ~ trip.id) }}" method="post">{{ csrf_field() }}#}
-                                {#<button type="submit" class="button is-success is-outlined"><i class="fas fa-retweet"></i>&nbsp; Отметить возвращение</button>#}
-                            {#</form>#}
-                        {#</div>#}
-                        {#<div class="printing-visible">#}
-                            {#&ndash;#}
-                        {#</div>#}
-                    {#{% endif %}#}
-                {#</td>#}
-            {#</tr>#}
+            {% if record.ticket %}
+                <tr>
+                    <td class="has-text-right is-bold">Наименование объекта</td>
+                    <td>{{ record.ticket.object_name|default('-') }}</td>
+                </tr>
+                {#<tr>
+                    <td class="has-text-right is-bold">Подразделения</td>
+                    <td>{{ record.ticket['ph_' ~ record.department ~'_ot']|default('-') }}</td>
+                </tr>#}
+                <tr>
+                    <td class="has-text-right is-bold">Ранг пожара
+                    </td>
+                    <td>{{ record.ticket.fire_level.name|default('?') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Объект горения</td>
+                    <td>{{ record.ticket.fire_object.name|default('?') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">
+                        Этажность
+                    </td>
+                    <td>{{ record.ticket.storey_count|default('-') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">На каком этаже горит
+                    </td>
+                    <td>{{ record.ticket.floor|default('-') }}</td>
+                </tr>
+                {% if record.ticket.operational_plan_id is defined and record.ticket.operational_plan_id %}
+                    <tr>
+                        <td class="has-text-right is-bold">№ оперативного плана</td>
+                        <td>{{ record.ticket.operational_plan.name|default('') }}</td>
+                    </tr>
+                {% endif %}
+                {% if record.ticket.operational_card_id is defined and record.ticket.operational_card_id  %}
+                    <tr>
+                        <td class="has-text-right is-bold">№ оперативного плана</td>
+                        <td>{{ record.ticket.operational_card.oc_number|default('') }}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td class="has-text-right is-bold">Конструктивные особенности</td>
+                    <td>{{ record.ticket.building_description|default('') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Материал стен</td>
+                    <td>{{ record.ticket.wall_material.name|default('') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Год постройки</td>
+                    <td>{{ record.ticket.year_of_development|default('') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Площадь объекта</td>
+                    <td>{{ record.ticket.building_square|default('') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Наличие угрозы людям</td>
+                    <td>{% if record.ticket.people_in_danger|default('') == 1 %} <span class="has-text-danger is-bold">Да</span> {% else %} <span class="is-warning is-bold">Нет</span>{% endif %}</td>
+                </tr>
+                {#<tr>
+                    <td class="has-text-right is-bold">ФИО заявителя</td>
+                    <td>{{ record.ticket.caller_name|default('-') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Телефон заявителя</td>
+                    <td>{{ record.ticket.caller_phone|default('-') }}</td>
+                </tr>
+                <tr>
+                    <td class="has-text-right is-bold">Время получения сообщения о ЧС</td>
+                    <td>{{ record.ticket.created_at|default('')|date('d.m.Y H:i') }}</td>
+                </tr>#}
+            {% endif %}
             <tr>
                 <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
                 <td>{{ record.created_at|date('d.m.Y') }}</td>

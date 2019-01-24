@@ -108,6 +108,7 @@ class FormationPersonsReport extends Model
         'other',
         'gas_smoke_protection_service',
         'trainee',
+        'sick_leave',
     ];
     
     public $od_staff = [
@@ -125,6 +126,11 @@ class FormationPersonsReport extends Model
         'zhalin' => StaffZhalin::class,
     ];
 
+    public function report()
+    {
+        return $this->belongsTo(FormationReport::class, 'form_id');
+    }
+
     public function scopeTodayRecords($q)
     {
         return $q->whereDate('created_at', date('Y-m-d'));
@@ -138,6 +144,21 @@ class FormationPersonsReport extends Model
     public function formation_person_items()
     {
         return $this->hasMany(FormationPersonsItem::class, 'report_id');
+    }
+
+    public function getTraineeCount($position)
+    {
+        if($position && $position !== 'active'){
+            return $this->formation_person_items()->where('trainee_type', $position)->count();
+        }
+
+        return $this->formation_person_items()->whereNotNull('trainee_type')->count();
+    }
+
+    /*TODO: если понадобится пересчет поля "Всего" без стажеров*/
+    public function getActiveCount()
+    {
+        return $this->active - $this->getTraineeCount('active');
     }
 
     public function formation_person_items_od()
@@ -159,6 +180,20 @@ class FormationPersonsReport extends Model
         $result['dspt_vacation'] = StaffDspt::all();
         $result['dspt_sick'] = StaffDspt::all();
         $result['dspt_business_trip'] = StaffDspt::all();
+
+        $result['ipl_vacation'] = StaffIpl::all();
+        $result['ipl_other'] = StaffIpl::all();
+        $result['ipl_study'] = StaffIpl::all();
+        $result['ipl_maternity'] = StaffIpl::all();
+        $result['ipl_business_trip'] = StaffIpl::all();
+        $result['ipl_sick'] = StaffIpl::all();
+
+        $result['kshm_vacation'] = StaffKshm::all();
+        $result['kshm_other'] = StaffKshm::all();
+        $result['kshm_study'] = StaffKshm::all();
+        $result['kshm_maternity'] = StaffKshm::all();
+        $result['kshm_business_trip'] = StaffKshm::all();
+        $result['kshm_sick'] = StaffKshm::all();
 
         return $result;
     }

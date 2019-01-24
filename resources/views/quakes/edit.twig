@@ -1,13 +1,13 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container section">
+    {#{% include "layout/yandex-maps-bus.twig" %}#}
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    <div class="container section" id="vue">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">Редактирование записи</h4>
                 <form action="{{ route('quakes.update', model.id) }}" method="post">
-                    <input type="hidden"
-                           name="_method"
-                           value="PATCH">
+                    <input type="hidden" name="_method" value="PATCH">
                     {{ csrf_field() }}
                     <div class="field">
                         <label for="description">Описание</label>
@@ -25,18 +25,15 @@
                         <label for="epicenter">Эпицентр землетрясения</label>
                         <input type="text" class="input" name="epicenter" id="epicenter" value="{{ model.epicenter }}" required/>
                     </div>
-                    <div class="field">
-                        <label for="energy_class">Энергетический класс землетрясения</label>
-                        <input type="number" step="0.01" class="input" name="energy_class" id="energy_class" value="{{ model.energy_class }}" required/>
-                    </div>
+
                     <div class="field">
                         <label for="mpv">Магнитуда MPV</label>
                         <input type="number" step="0.01" class="input" name="mpv" id="mpv" value="{{ model.mpv }}" required/>
                     </div>
-                    <div class="field">
+                    {#<div class="field">
                         <label for="coordinates">Координаты эпицентра</label>
                         <input type="text" class="input" name="coordinates" id="coordinates" value="{{ model.coordinates }}" required/>
-                    </div>
+                    </div>#}
                     <div class="field">
                         <label for="deep">Глубина</label>
                         <input type="number" step="0.01" class="input" name="deep" id="deep" value="{{ model.deep }}" required/>
@@ -45,12 +42,21 @@
                         <label for="information">Сведения об ощутимости</label>
                         <input type="text" class="input" name="information" id="information" value="{{ model.information }}" required/>
                     </div>
+
+                    <quakes-form
+                        input-coordinates="{{ model.coordinates }}"
+                        :input-energy-class="{{ model.energy_class }}"
+                    ></quakes-form>
+
+
                     <div class="buttons has-text-right is-grouped is-right" style="">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
-                        </button>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
                         <a href="{{ route('quakes.index') }}" class="button is-light">Отменить</a>
 
                     </div>
+
+
+
                 </form>
             </div>
         </div>

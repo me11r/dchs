@@ -4,8 +4,18 @@
     </td>
     {% for row in fields %}
         <td>
-            <input readonly autocomplete="off" type="text" min=0 oninput="validity.valid||(value='');" data-total="{{ row }}" value="{{ item.attribute(row) }}"
-                   name="items[{{ item.id }}][{{ row }}]">
+            <input
+                    readonly
+                    autocomplete="off"
+                    type="text"
+                    min=0
+                    oninput="validity.valid||(value='');"
+                    {% if row not in ['head','head_phone'] %}
+                        data-total="{{ row }}"
+                        value="{{ item.attribute(row) }}"
+                    {% endif %}
+                    {#data-total="{{ row }}"#}
+            >
         </td>
     {% endfor %}
 </tr>

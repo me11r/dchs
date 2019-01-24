@@ -127,14 +127,29 @@ class Card112Controller extends Controller
             ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('model', new Card112Resource(new Card112()))
             ->with('service_plans', $ticket101_service_plans)
+            ->with('currentTabIndex', 0)
             ->render();
     }
 
     public function store(Request $request)
     {
-        $data = $this->repository->createFilledWithRelations($request->all());
-        return redirect('/card112/' . $data->id . '/edit');
-        #return redirect(route('card112.index'));
+        $index = $request->currentTabIndex;
+
+        $req = $request->except([
+            'notification_services'
+        ]);
+
+        $data = $this->repository->createFilledWithRelations($req);
+
+        if ($index) {
+            $back = "/card112/{$data->id}/edit/#return={$index}";
+        }
+        else{
+            $back = "/card112/{$data->id}/edit/";
+        }
+
+        return redirect($back)
+            ->with('currentTabIndex', $index);
     }
 
     public function show($id)
@@ -142,7 +157,7 @@ class Card112Controller extends Controller
         // there is no task for this
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $ticket101_service_plans = Ticket101ServicePlan::where('card112_id', $id)->get();
         $serviceTypes = ServiceType::orderBy('name')->get(['id', 'name']);
@@ -154,6 +169,7 @@ class Card112Controller extends Controller
             ->with('serviceTypes', collect($serviceTypes->toArray()))
             ->with('service_plans', $ticket101_service_plans)
             ->with('notificationGroups', (new NotificationGroup())->get())
+            ->with('currentTabIndex', $request->input('currentTabIndex', 0))
             ->with('model', new Card112Resource($this->repository->where('id', '=', $id)
                 ->with([
                     'serviceReactions',
@@ -169,8 +185,13 @@ class Card112Controller extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->repository->updateFilledWithRelations($request->all(), $id);
-        return redirect(route('card112.edit', $id));
+        $index = $request->currentTabIndex;
+        $data = $request->except([
+            'notification_services'
+        ]);
+        $this->repository->updateFilledWithRelations($data, $id);
+        $this->repository->updateServicePlans($request->input('notification_services', []), $id);
+        return redirect(route('card112.edit', $id))->with('currentTabIndex', $index);
     }
 
     public function destroy($id)

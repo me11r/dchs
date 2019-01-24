@@ -3,8 +3,10 @@
 namespace App\Messenger;
 
 use App\Models\Messenger\Message;
+use App\PopupNotification;
 use App\Role;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 trait MessengerTrait
 {
@@ -13,7 +15,7 @@ trait MessengerTrait
      */
     public function sendMessageAboutFormationAction($message = null): void
     {
-        if (\Auth::user() && $this->isUserHaveToSendMessageAboutFormationAction()) {
+        if (Auth::user() && $this->isUserHaveToSendMessageAboutFormationAction()) {
             $users = $this->getUsersToNoticeAboutFormationAction();
 
             if ($users->count() > 0) {
@@ -28,6 +30,13 @@ trait MessengerTrait
                         'sender_id' => \Auth::user()->id,
                         'reciever_id' => $user->id
                     ]))->save();
+
+                    PopupNotification::create([
+                        'sender_id' => \Auth::user()->id,
+                        'receiver_id' => $user->id,
+                        'message' => $message,
+                        'is_viewed' => false,
+                    ]);
                 }
             }
         }
@@ -38,7 +47,7 @@ trait MessengerTrait
      */
     private function isUserHaveToSendMessageAboutFormationAction(): bool
     {
-        return Role::whereName('emergency_service')->first()->id === \Auth::user()->role_id;
+        return Auth::user()->hasRight('CAN_SEND_NOTIFICATION_FORMATION_RECORD', false);
     }
 
     /**
@@ -46,7 +55,9 @@ trait MessengerTrait
      */
     private function getUsersToNoticeAboutFormationAction()
     {
-        return User::whereRoleId(Role::whereName('dispatcher_od112')->first()->id)->get();
+        return User::whereHas('role.rights', function ($q){
+            $q->where('name', 'CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD');
+        })->get();
     }
 
 }

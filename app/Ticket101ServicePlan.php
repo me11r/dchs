@@ -63,6 +63,15 @@ class Ticket101ServicePlan extends Model
         'printed',
     ];
 
+    public function anyCard()
+    {
+        if($this->ticket){
+            return $this->belongsTo(Ticket101::class, 'card_id');
+        }
+
+        return $this->belongsTo(Card112::class, 'card112_id');
+    }
+
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'card_id');
@@ -91,5 +100,13 @@ class Ticket101ServicePlan extends Model
     public function scopeDispatched($q, $search)
     {
         return $q->whereNotNull('dispatched');
+    }
+
+    public function scopeDailyRecords($q, $from = null, $to = null)
+    {
+        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
+
+        return $q->whereBetween('created_at', [$from, $to]);
     }
 }

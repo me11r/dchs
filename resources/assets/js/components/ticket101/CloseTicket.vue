@@ -24,7 +24,7 @@
         computed: {
             closedText(){
                 return this.ticket_.closed ? 'Открыть карточку' : 'Закрыть карточку';
-            }
+            },
         },
         methods: {
             closeTicket() {

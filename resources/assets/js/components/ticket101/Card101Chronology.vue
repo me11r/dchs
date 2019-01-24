@@ -1,7 +1,9 @@
 <template>
     <div>
         <b-tabs>
-            <b-tab-item label="В пути" icon="fa fa-truck-moving">
+            <b-tab-item
+                label="В пути"
+                icon="fa fa-truck-moving">
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
@@ -12,15 +14,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="dept in departments_">
+                        <tr
+                            v-for="dept in departments_"
+                            :key="`dept__idx__${dept.id}`">
                             <td>{{ dept.department.title }}</td>
                             <td>{{ dept.tech.department }}</td>
                             <td>
                                 <div class="add_button">
                                     <button
-                                            class="button is-small is-outlined is-success"
-                                            type="button"
-                                            @click.prevent="createNewItemOnWay(dept)">
+                                        class="button is-small is-outlined is-success"
+                                        type="button"
+                                        @click.prevent="createNewItemOnWay(dept)">
                                         <i class="fa fa-plus"></i>&nbsp;Добавить
                                     </button>
                                 </div>
@@ -28,50 +32,47 @@
                             </td>
                             <td>
                                 <div
-                                        class="columns"
-                                        v-for="item in records_onway"
-                                        v-if="item.fire_department_result.id === dept.id"
-                                        :key="item.id">
+                                    class="columns"
+                                    v-for="item in records_onway"
+                                    v-if="item.fire_department_result.id === dept.id"
+                                    :key="item.id">
                                     <div class="column">
                                         <input
-                                                type="hidden"
-                                                v-model="item.id"
+                                            type="hidden"
+                                            v-model="item.id"
                                         >
                                     </div>
 
                                     <div class="column">
                                         <label>ПЧ, отделение</label>
                                         <input
-                                                disabled
-                                                class="input"
-                                                type="text"
-                                                :value="`${item.fire_department_result.department.title}: ${item.fire_department_result.tech.department}`"
+                                            disabled
+                                            class="input"
+                                            type="text"
+                                            :value="`${item.fire_department_result.department.title}: ${item.fire_department_result.tech.department}`"
                                         >
                                     </div>
                                     <div class="column">
                                         <label>Время</label>
-                                        <timepicker :inputdate="item.time"
-                                                    v-model="item.time"
-                                                    @timeChanged="item.time = $event"
-                                                    :value="item.time"
-                                        ></timepicker>
-                                        <!--<timepicker-input
-                                                v-model="item.time"
-                                                @timeChanged="item.time = $event"
-                                                :value-data="item.time"/>-->
+                                        <timepicker
+                                            :inputdate="item.time"
+                                            v-model="item.time"
+                                            @timeChanged="item.time = $event"
+                                            :value="item.time"
+                                        />
                                     </div>
 
                                     <div class="column">
                                         <label>Ситуация</label>
                                         <div class="select">
                                             <select
-                                                    required
-                                                    title="Ситуация"
-                                                    v-model="item.event_info_id">
+                                                required
+                                                title="Ситуация"
+                                                v-model="item.event_info_id">
                                                 <option
-                                                        v-for="e in eventInfo_"
-                                                        :key="'event_' + e.id"
-                                                        :value="e.id">{{ e.name }}
+                                                    v-for="e in eventInfo_"
+                                                    :key="'event_' + e.id"
+                                                    :value="e.id">{{ e.name }}
                                                 </option>
                                             </select>
                                         </div>
@@ -80,31 +81,31 @@
                                     <div class="column">
                                         <label>Информация</label>
                                         <textarea
-                                                v-model="item.information"
-                                                :id="'on_way['+item.id+'][information]'"
-                                                class="textarea"
-                                                cols="1"
-                                                rows="1"></textarea>
+                                            v-model="item.information"
+                                            :id="'on_way['+item.id+'][information]'"
+                                            class="textarea"
+                                            cols="1"
+                                            rows="1"></textarea>
                                     </div>
 
                                     <div class="column">
 
                                         <div class="control is-narrow">
                                             <button
-                                                    class="button is-small is-outlined is-success square-button-36"
-                                                    @click.prevent="addToTableOnWay(item)"
-                                                    type="button"
-                                                    title="Добавить">
+                                                class="button is-small is-outlined is-success square-button-36"
+                                                @click.prevent="addToTableOnWay(item)"
+                                                type="button"
+                                                title="Добавить">
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                         <br>
                                         <div class="control is-narrow">
                                             <button
-                                                    class="button is-small is-outlined is-danger square-button-36"
-                                                    @click.prevent="removeItemOnWay(item.id)"
-                                                    type="button"
-                                                    title="Удалить">
+                                                class="button is-small is-outlined is-danger square-button-36"
+                                                @click.prevent="removeItemOnWay(item.id)"
+                                                type="button"
+                                                title="Удалить">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </div>
@@ -114,85 +115,104 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr
+                            v-for="dept in departmentsHq_"
+                            :key="`dept_hq__idx__${dept.id}`">
+                            <td>{{ dept.name }}</td>
+                            <td>{{ dept.department }}</td>
+                            <td>
+                                <div class="add_button">
+                                    <button
+                                        class="button is-small is-outlined is-success"
+                                        type="button"
+                                        @click.prevent="createNewItemOnWay(dept)">
+                                        <i class="fa fa-plus"></i>&nbsp;Добавить
+                                    </button>
+                                </div>
+
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
-
             </b-tab-item>
-            <b-tab-item label="На месте" icon="fa fa-truck">
+            <b-tab-item
+                label="На месте"
+                icon="fa fa-truck">
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
-                    <tr>
-                        <th>ПЧ</th>
-                        <th>Отделение</th>
-                        <th>Хронология</th>
-                        <th></th>
-                    </tr>
+                        <tr>
+                            <th>ПЧ</th>
+                            <th>Отделение</th>
+                            <th>Хронология</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr
+                        <tr
                             v-for="dept in departments_"
                             :key="dept.id">
-                        <td>{{ dept.department.title }}</td>
-                        <td>{{ dept.tech.department }}</td>
-                        <td>
-                            <div class="add_button">
-                                <button
+                            <td>{{ dept.department.title }}</td>
+                            <td>{{ dept.tech.department }}</td>
+                            <td>
+                                <div class="add_button">
+                                    <button
                                         class="button is-small is-outlined is-success"
                                         type="button"
                                         @click.prevent="createNewItemArrived(dept)">
-                                    <i class="fa fa-plus"></i>&nbsp;Добавить
-                                </button>
-                            </div>
-                        </td>
-                        <td>
-                            <div
+                                        <i class="fa fa-plus"></i>&nbsp;Добавить
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <div
                                     class="columns"
                                     v-for="item in records_arrived"
                                     v-if="item.fire_department_result.id === dept.id"
                                     :key="item.id">
 
-                                <div class="column">
-                                    <label>ПЧ, отделение</label>
-                                    <input
+                                    <div class="column">
+                                        <label>ПЧ, отделение</label>
+                                        <input
                                             disabled
                                             class="input"
                                             type="text"
                                             :value="`${item.fire_department_result.department.title}: ${item.fire_department_result.tech.department}`"
-                                    >
-                                </div>
+                                        >
+                                    </div>
 
-                                <div class="column">
-                                    <label :for="'on_way['+item.id+'][event_info_id]'">Событие</label>
-                                    <div class="select">
-                                        <select
+                                    <div class="column">
+                                        <label :for="'on_way['+item.id+'][event_info_id]'">Событие</label>
+                                        <div class="select">
+                                            <select
                                                 required
                                                 title="Ситуация"
                                                 v-model="item.event_info_arrived_id">
-                                            <option
+                                                <option
                                                     v-for="e in eventInfoArrived_"
                                                     :key="'event_' + e.id"
                                                     :value="e.id">{{ e.name }}
-                                            </option>
-                                        </select>
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="column">
-                                    <label>Количество</label>
-                                    <input
+                                    <div class="column">
+                                        <label>Количество</label>
+                                        <input
                                             class="input"
                                             type="number"
                                             v-model="item.quantity">
-                                </div>
+                                    </div>
 
-                                <div class="column">
-                                    <label>Время</label>
-                                    <timepicker :inputdate="item.time"
-                                                v-model="item.time"
-                                                @timeChanged="item.time = $event"
-                                                :value="item.time"
-                                    ></timepicker>
+                                    <div class="column">
+                                        <label>Время</label>
+                                        <timepicker
+                                            :inputdate="item.time"
+                                            v-model="item.time"
+                                            @timeChanged="item.time = $event"
+                                            :value="item.time"
+                                        />
                                     <!--<timepicker-input
                                             @timeChanged="item.time = $event"
                                             :value-data="item.time"/>-->
@@ -200,56 +220,210 @@
                                             class="input"
                                             type="number"
                                             v-model="item.time">-->
-                                </div>
-                                <div class="column">
-                                    <label>Время работы</label>
-                                    <input
+                                    </div>
+                                    <div class="column">
+                                        <label>Время работы</label>
+                                        <input
                                             class="input"
                                             type="number"
                                             v-model="item.working_time">
-                                </div>
+                                    </div>
 
-                                <div class="column">
-                                    <label>Информация</label>
-                                    <textarea
+                                    <div class="column">
+                                        <label>Информация</label>
+                                        <textarea
                                             v-model="item.information"
                                             :name="'on_way['+item.id+'][time]'"
                                             :id="'on_way['+item.id+'][information]'"
                                             class="textarea"
                                             cols="30"
                                             rows="3"></textarea>
-                                </div>
+                                    </div>
 
-                                <div class="column">
+                                    <div class="column">
 
-                                    <div class="control is-narrow">
-                                        <button
+                                        <div class="control is-narrow">
+                                            <button
                                                 class="button is-small is-outlined is-success square-button-36"
                                                 @click.prevent="addToTableArrived(item)"
                                                 type="button"
                                                 title="Добавить">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                    <br>
-                                    <div class="control is-narrow">
-                                        <button
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <br>
+                                        <div class="control is-narrow">
+                                            <button
                                                 class="button is-small is-outlined is-danger square-button-36"
                                                 @click.prevent="removeItemArrived(item.id)"
                                                 type="button"
                                                 title="Удалить">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+
                                     </div>
 
                                 </div>
+                            </td>
+                        </tr>
+                        <tr
+                            v-for="dept in departmentsHq_"
+                            :key="`dept_hq__idx__${dept.id}`">
+                            <td>{{ dept.name }}</td>
+                            <td>{{ dept.department }}</td>
+                            <td>
+                                <div class="add_button">
+                                    <button
+                                        class="button is-small is-outlined is-success"
+                                        type="button"
+                                        @click.prevent="createNewItemOnWay(dept)">
+                                        <i class="fa fa-plus"></i>&nbsp;Добавить
+                                    </button>
+                                </div>
 
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
+            </b-tab-item>
+            <b-tab-item
+                label="Хронология от ПЧ"
+                icon="fa fa-truck">
+                <table class="table is-fullwidth is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>ПЧ</th>
+                            <th>Отделение</th>
+                            <th>Время</th>
+                            <th>Количество</th>
+                            <th>Время работы</th>
+                            <th>Ситуация</th>
+                            <th>Информация</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="record in chronologiesFromFd"
+                            :key="record.id">
+                            <td>{{ record.fire_department_result.department.title }}</td>
+                            <td>{{ record.fire_department_result.tech.department }}</td>
+                            <td>
+                                <timepicker
+                                    v-if="canEdit(record.id) === true"
+                                    :inputdate="record.time"
+                                    v-model="record.time"
+                                    @timeChanged="record.time = $event"
+                                />
+                                <span v-else>{{ record.time }}</span>
+                            </td>
+                            <td>
+                                <input
+                                    v-if="canEdit(record.id) === true"
+                                    class="input"
+                                    type="number"
+                                    v-model="record.quantity">
+                                <span v-else>{{ record.quantity }}</span>
+                            </td>
+                            <td>
+                                <input
+                                    v-if="canEdit(record.id) === true"
+                                    class="input"
+                                    type="number"
+                                    v-model="record.working_time">
+                                <span v-else>{{ record.working_time }}</span>
+
+                            </td>
+                            <td v-if="record.event_info !== null">
+                                <div
+                                    v-if="canEdit(record.id) === true"
+                                    class="select">
+                                    <select
+                                        required
+                                        title="Ситуация"
+                                        v-model="record.event_info_id">
+                                        <option
+                                            v-for="e in eventInfo_"
+                                            :key="'event_' + e.id"
+                                            :value="e.id">{{ e.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <span v-else>{{ record.event_info.name }}</span>
+
+                            </td>
+                            <td v-else >
+                                <div
+                                    v-if="canEdit(record.id) === true"
+                                    class="select">
+                                    <select
+                                        required
+                                        title="Ситуация"
+                                        v-model="record.event_info_arrived_id">
+                                        <option
+                                            v-for="e in eventInfoArrived_"
+                                            :key="'event_' + e.id"
+                                            :value="e.id">{{ e.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <span v-else>{{ record.event_info_arrived.name }}</span>
+                            </td>
+                            <td>
+                                <textarea
+                                    v-if="canEdit(record.id) === true"
+                                    v-model="record.information"
+                                    class="textarea"
+                                    cols="30"
+                                    rows="3"></textarea>
+                                <p v-else>{{ record.information }}</p>
+                            </td>
+                            <td>
+                                <!--<div class="control is-narrow">-->
+                                <!--<button-->
+                                <!--class="button is-small is-outlined is-danger square-button-36"-->
+                                <!--@click.prevent="removeItemFromTable(record.id)"-->
+                                <!--type="button"-->
+                                <!--title="Удалить">-->
+                                <!--<i class="fa fa-trash"></i>-->
+                                <!--</button>-->
+                                <!--</div>-->
+                                <!--<div class="control is-narrow">-->
+                                <!--<button-->
+                                <!--class="button is-small is-outlined is-info square-button-36"-->
+                                <!--@click.prevent="editData(record.id)"-->
+                                <!--type="button"-->
+                                <!--title="Удалить">-->
+                                <!--<i class="fa fa-pen"></i>-->
+                                <!--</button>-->
+                                <!--</div>-->
+                                <!--<div-->
+                                <!--v-if="canEdit(record.id) === true"-->
+                                <!--class="control is-narrow">-->
+                                <!--<button-->
+                                <!--class="button is-small is-outlined is-success square-button-36"-->
+                                <!--@click.prevent="updateItem(record)"-->
+                                <!--type="button"-->
+                                <!--title="Обновить">-->
+                                <!--<i class="fa fa-anchor"></i>-->
+                                <!--</button>-->
+                                <!--</div>-->
+                                <div
+                                    class="control is-narrow">
+                                    <button
+                                        @click="copyToChronology(record)"
+                                        class="button is-small is-outlined is-success square-button-36"
+                                        type="button"
+                                        title="Скопировать">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </b-tab-item>
             <br>
@@ -258,7 +432,9 @@
         </b-tabs>
 
         <div class="field">
-            <a class="button is-small is-info" :href="'/xls/card101/chronology/'+card_.id">Скачать в Excel</a>
+            <a
+                class="button is-small is-info"
+                :href="'/xls/card101/chronology/'+card_.id">Скачать в Excel</a>
         </div>
 
         <div class="field">
@@ -276,101 +452,113 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="record in tableRecords" :key="record.id">
-                    <td>{{ record.fire_department_result.department.title }}</td>
-                    <td>{{ record.fire_department_result.tech.department }}</td>
-                    <td>
-                        <timepicker v-if="canEdit(record.id) === true"
-                                    :inputdate="record.time"
-                                    v-model="record.time"
-                                    @timeChanged="record.time = $event"
-                        ></timepicker>
-                        <span v-else>{{ record.time }}</span>
-                    </td>
-                    <td>
-                        <input v-if="canEdit(record.id) === true"
+                    <tr
+                        v-for="record in tableRecords"
+                        :key="record.id">
+                        <td>{{ record.fire_department_result.department.title }}</td>
+                        <td>{{ record.fire_department_result.tech.department }}</td>
+                        <td>
+                            <timepicker
+                                v-if="canEdit(record.id) === true"
+                                :inputdate="record.time"
+                                v-model="record.time"
+                                @timeChanged="record.time = parsedTime($event)"
+                            />
+                            <span v-else>{{ record.time }}</span>
+                        </td>
+                        <td>
+                            <input
+                                v-if="canEdit(record.id) === true"
                                 class="input"
                                 type="number"
                                 v-model="record.quantity">
-                        <span v-else>{{ record.quantity }}</span>
-                    </td>
-                    <td>
-                        <input v-if="canEdit(record.id) === true"
-                            class="input"
-                            type="number"
-                            v-model="record.working_time">
-                        <span v-else>{{ record.working_time }}</span>
+                            <span v-else>{{ record.quantity }}</span>
+                        </td>
+                        <td>
+                            <input
+                                v-if="canEdit(record.id) === true"
+                                class="input"
+                                type="number"
+                                v-model="record.working_time">
+                            <span v-else>{{ record.working_time }}</span>
 
-                    </td>
-                    <td v-if="record.event_info !== null">
-                        <div v-if="canEdit(record.id) === true" class="select">
-                            <select
+                        </td>
+                        <td v-if="record.event_info !== null">
+                            <div
+                                v-if="canEdit(record.id) === true"
+                                class="select">
+                                <select
                                     required
                                     title="Ситуация"
                                     v-model="record.event_info_id">
-                                <option
+                                    <option
                                         v-for="e in eventInfo_"
                                         :key="'event_' + e.id"
                                         :value="e.id">{{ e.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <span v-else>{{ record.event_info.name }}</span>
+                                    </option>
+                                </select>
+                            </div>
+                            <span v-else>{{ record.event_info.name }}</span>
 
-                    </td>
-                    <td v-else >
-                        <div v-if="canEdit(record.id) === true" class="select">
-                            <select
+                        </td>
+                        <td v-else >
+                            <div
+                                v-if="canEdit(record.id) === true"
+                                class="select">
+                                <select
                                     required
                                     title="Ситуация"
                                     v-model="record.event_info_arrived_id">
-                                <option
+                                    <option
                                         v-for="e in eventInfoArrived_"
                                         :key="'event_' + e.id"
                                         :value="e.id">{{ e.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <span v-else>{{ record.event_info_arrived.name }}</span>
-                    </td>
-                    <td>
-                        <textarea v-if="canEdit(record.id) === true"
+                                    </option>
+                                </select>
+                            </div>
+                            <span v-else>{{ record.event_info_arrived.name }}</span>
+                        </td>
+                        <td>
+                            <textarea
+                                v-if="canEdit(record.id) === true"
                                 v-model="record.information"
                                 class="textarea"
                                 cols="30"
                                 rows="3"></textarea>
-                        <p v-else>{{ record.information }}</p>
-                    </td>
-                    <td>
-                        <div class="control is-narrow">
-                            <button
+                            <p v-else>{{ record.information }}</p>
+                        </td>
+                        <td>
+                            <div class="control is-narrow">
+                                <button
                                     class="button is-small is-outlined is-danger square-button-36"
                                     @click.prevent="removeItemFromTable(record.id)"
                                     type="button"
                                     title="Удалить">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                        <div class="control is-narrow">
-                            <button
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <div class="control is-narrow">
+                                <button
                                     class="button is-small is-outlined is-info square-button-36"
                                     @click.prevent="editData(record.id)"
                                     type="button"
                                     title="Удалить">
-                                <i class="fa fa-pen"></i>
-                            </button>
-                        </div>
-                        <div v-if="canEdit(record.id) === true" class="control is-narrow">
-                            <button
+                                    <i class="fa fa-pen"></i>
+                                </button>
+                            </div>
+                            <div
+                                v-if="canEdit(record.id) === true"
+                                class="control is-narrow">
+                                <button
                                     class="button is-small is-outlined is-success square-button-36"
                                     @click.prevent="updateItem(record)"
                                     type="button"
                                     title="Обновить">
-                                <i class="fa fa-anchor"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                                    <i class="fa fa-anchor"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -379,234 +567,287 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import moment from 'moment';
-    import Timepicker from '../../components/Timepicker';
-    import _ from 'lodash';
-    export default {
-        name: "Card101Chronology",
-        components: {
-            Timepicker
-        },
-        props: {
-            departments: {
-                type: Array,
-                default: () => {
-                    return [];
-                }
-            },
-            eventInfo: {
-                type: Array,
-                default: () => {
-                    return [];
-                }
-            },
-            eventInfoArrived: {
-                type: Array,
-                default: () => {
-                    return [];
-                }
-            },
-            records: {
-                type: Array,
-                default: () => {
-                    return [];
-                }
-            },
-            card: {
-                type: Object,
-                default: () => {
-                    return {};
-                }
+import axios from 'axios';
+import moment from 'moment';
+import Timepicker from '../../components/Timepicker';
+import _ from 'lodash';
+import {globalBus} from '../../scripts/global-bus';
+export default {
+    name: 'Card101Chronology',
+    components: {
+        Timepicker
+    },
+    props: {
+        departments: {
+            type: Array,
+            default: () => {
+                return [];
             }
         },
-        data() {
-            return {
-                records_arrived: [],
-                records_onway: [],
-                departments_: this.departments,
-                time: '',
-                tableRecords: this.records,
-                eventInfo_: this.eventInfo,
-                eventInfoArrived_: this.eventInfoArrived,
-                card_: this.card,
-                tableEdits: [],
-            };
+        eventInfo: {
+            type: Array,
+            default: () => {
+                return [];
+            }
         },
-        methods: {
-            editData(id){
-                if(_.find(this.tableEdits, {id: id})){
-                    _.find(this.tableEdits, {id: id}).edit = !_.find(this.tableEdits, {id: id}).edit;
+        eventInfoArrived: {
+            type: Array,
+            default: () => {
+                return [];
+            }
+        },
+        records: {
+            type: Array,
+            default: () => {
+                return [];
+            }
+        },
+        card: {
+            type: Object,
+            default: () => {
+                return {};
+            }
+        }
+    },
+    data() {
+        return {
+            records_arrived: [],
+            records_onway: [],
+            departments_: this.departments,
+            departmentsHq_: [],
+            time: '',
+            tableRecords: this.records,
+            eventInfo_: this.eventInfo,
+            eventInfoArrived_: this.eventInfoArrived,
+            card_: this.card,
+            tableEdits: []
+        };
+    },
+    methods: {
+        parsedTime(timestamp) {
+            if (moment(timestamp).isValid()) {
+                return moment(timestamp).format('HH:mm');
+            } else {
+                return timestamp;
+            }
+        },
+        editData(id) {
+            if (_.find(this.tableEdits, {id: id})) {
+                _.find(this.tableEdits, {id: id}).edit = !_.find(this.tableEdits, {id: id}).edit;
+            }
+            console.dir(this.tableEdits);
+        },
+        canEdit(id) {
+            if (_.find(this.tableEdits, {id: id})) {
+                return _.find(this.tableEdits, {id: id}).edit;
+            } else {
+                return false;
+            }
+        },
+        createNewItemOnWay(dept) {
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+            let card_data = window.ticket101add;
+
+            this.records_onway.push({
+                id: moment().valueOf(),
+                time: '00:00',
+                information: '',
+                event_info_id: 1,
+                fire_department_result: dept,
+                editable: false,
+                event_info: {
+                    name: 'светофор'
                 }
-                console.dir(this.tableEdits)
-            },
-            canEdit(id){
-                if(_.find(this.tableEdits, {id: id})){
-                    return _.find(this.tableEdits, {id: id}).edit;
-                }
-                else{
-                    return false;
-                }
-            },
-            createNewItemOnWay(dept) {
-                let token = document.head.querySelector('meta[name="csrf-token"]');
-                axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-                axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-                let card_data = window.ticket101add;
-
-                this.records_onway.push({
-                    id: moment().valueOf(),
-                    time: '00:00',
-                    information: '',
-                    event_info_id: 1,
-                    fire_department_result: dept,
-                    editable: false,
-                    event_info: {
-                        name: 'светофор'
-                    }
-                });
-            },
-
-            createNewItemArrived(dept) {
-                let token = document.head.querySelector('meta[name="csrf-token"]');
-                axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-                axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-                let card_data = window.ticket101add;
-
-                this.records_arrived.push({
-                    id: moment().valueOf(),
-                    working_time: 0,
-                    time: '00:00',
-                    information: '',
-                    event_info_arrived_id: 1,
-                    quantity: 1,
-                    fire_department_result: dept,
-                    event_info: {
-                        name: 'ствол'
-                    }
-                });
-            },
-            getTime(value) {
-                this.time = value;
-            },
-            addToTableOnWay(item) {
-                this.postItem(item);
-                this.records_onway = this.records_onway.filter(function (i) {
-                    return i.id !== item.id;
-                });
-            },
-            addToTableArrived(item) {
-                this.postItem(item);
-                this.records_arrived = this.records_arrived.filter(function (i) {
-                    return i.id !== item.id;
-                });
-            },
-            postItem(record) {
-                let card_data = window.ticket101add;
-
-                axios.post('/api/101card/save-chronology', {
-                    ticket_id: card_data.ticketId,
-                    record: record
-                }).then((resp) => {
-                    let data = resp.data;
-                    this.tableEdits.push({
-                        id: data.id,
-                        edit: false
-                    });
-                    this.tableRecords.push(data);
-                    this.tableRecords = this.sortByTime();
-                });
-
-            },
-            updateItem(record){
-                let card_data = window.ticket101add;
-
-                axios.post('/api/101card/save-chronology', {
-                    ticket_id: card_data.ticketId,
-                    record: record
-                });
-
-                this.editData(record.id);
-            },
-            addEmptyItem() {
-                this.addItem(this.getEmptyItem());
-            },
-            addItem(item) {
-                this.records_.push(item);
-            },
-            getEmptyItem() {
-                return {
-                    id: moment().valueOf(),
-                    time: '00:00',
-                    information: '',
-                    event_info_id: 1,
-                    event_info: {
-                        name: 'светофор'
-                    }
-                };
-            },
-            closeTimePickerByRefName(refName) {
-                if (this.$refs[refName].close) {
-                    this.$refs[refName].close();
-                } else {
-                    this.$refs[refName][0].close();
-                }
-            },
-            removeItem(id) {
-                if (confirm('Вы действительно хотите удалить эту запись?')) {
-                    this.records_ = this.records_.filter(function (item) {
-                        return item.id !== id;
-                    });
-                }
-            },
-            removeItemOnWay(id) {
-                if (confirm('Вы действительно хотите удалить эту запись?')) {
-                    this.records_onway = this.records_onway.filter(function (item) {
-                        return item.id !== id;
-                    });
-                }
-            },
-            removeItemArrived(id) {
-                if (confirm('Вы действительно хотите удалить эту запись?')) {
-                    this.records_arrived = this.records_arrived.filter(function (item) {
-                        return item.id !== id;
-                    });
-                }
-            },
-            removeItemFromTable(id) {
-                if (confirm('Вы действительно хотите удалить эту запись?')) {
-                    axios.post('/api/101card/delete-chronology', {id: id});
-                    this.tableRecords = this.tableRecords.filter(function (item) {
-                        return item.id !== id;
-                    });
-
-                    this.tableEdits = this.tableEdits.filter(function (item) {
-                        return item.id !== id;
-                    });
-                }
-            },
-            setCurrentTimeForItem(id) {
-                _.where(this.records_, {id: id})[0]['time'] = moment().toDate();
-                this.closeTimePickerByRefName('onway_time_picker_' + id);
-            },
-            sortByTime(){
-                this.tableRecords = _.sortBy(this.tableRecords, ['time']);
-
-                return this.tableRecords;
-            },
+            });
         },
 
-        created(){
-            this.tableRecords.forEach((item) => {
+        createNewItemArrived(dept) {
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+            let card_data = window.ticket101add;
+
+            this.records_arrived.push({
+                id: moment().valueOf(),
+                working_time: 0,
+                time: '00:00',
+                information: '',
+                event_info_arrived_id: 1,
+                quantity: 1,
+                fire_department_result: dept,
+                event_info: {
+                    name: 'ствол'
+                }
+            });
+        },
+        getTime(value) {
+            this.time = value;
+        },
+        addToTableOnWay(item) {
+            this.postItem(item);
+            this.records_onway = this.records_onway.filter(function (i) {
+                return i.id !== item.id;
+            });
+        },
+        addToTableArrived(item) {
+            this.postItem(item);
+            this.records_arrived = this.records_arrived.filter(function (i) {
+                return i.id !== item.id;
+            });
+        },
+        postItem(record) {
+            let card_data = window.ticket101add;
+
+            axios.post('/api/101card/save-chronology', {
+                ticket_id: card_data.ticketId,
+                record: record
+            }).then((resp) => {
+                let data = resp.data;
                 this.tableEdits.push({
-                    id: item.id,
+                    id: data.id,
                     edit: false
                 });
+                this.tableRecords.push(data);
+                this.tableRecords = this.sortByTime();
+            });
+        },
+        updateItem(record) {
+            let card_data = window.ticket101add;
+
+            axios.post('/api/101card/save-chronology', {
+                ticket_id: card_data.ticketId,
+                record: record
             });
 
-            this.sortByTime();
+            this.editData(record.id);
         },
+        copyToChronology(record) {
+            let card_data = window.ticket101add;
+            record.event_info_id = record.event_info_id || 1;
+            axios.post('/api/101card/copy-chronology-from-fd', {
+                ticket_id: card_data.ticketId,
+                record: record
+            }).then((resp) => {
+                let data = resp.data;
+                this.tableEdits.push({
+                    id: data.id,
+                    edit: false
+                });
+                this.tableRecords.push(data);
+                this.tableRecords = this.sortByTime();
+            });
+        },
+        addEmptyItem() {
+            this.addItem(this.getEmptyItem());
+        },
+        addItem(item) {
+            this.records_.push(item);
+        },
+        getEmptyItem() {
+            return {
+                id: moment().valueOf(),
+                time: '00:00',
+                information: '',
+                event_info_id: 1,
+                event_info: {
+                    name: 'светофор'
+                }
+            };
+        },
+        closeTimePickerByRefName(refName) {
+            if (this.$refs[refName].close) {
+                this.$refs[refName].close();
+            } else {
+                this.$refs[refName][0].close();
+            }
+        },
+        removeItem(id) {
+            if (confirm('Вы действительно хотите удалить эту запись?')) {
+                this.records_ = this.records_.filter(function (item) {
+                    return item.id !== id;
+                });
+            }
+        },
+        removeItemOnWay(id) {
+            if (confirm('Вы действительно хотите удалить эту запись?')) {
+                this.records_onway = this.records_onway.filter(function (item) {
+                    return item.id !== id;
+                });
+            }
+        },
+        removeItemArrived(id) {
+            if (confirm('Вы действительно хотите удалить эту запись?')) {
+                this.records_arrived = this.records_arrived.filter(function (item) {
+                    return item.id !== id;
+                });
+            }
+        },
+        removeItemFromTable(id) {
+            if (confirm('Вы действительно хотите удалить эту запись?')) {
+                axios.post('/api/101card/delete-chronology', {id: id});
+                this.tableRecords = this.tableRecords.filter(function (item) {
+                    return item.id !== id;
+                });
+
+                this.tableEdits = this.tableEdits.filter(function (item) {
+                    return item.id !== id;
+                });
+            }
+        },
+        setCurrentTimeForItem(id) {
+            _.where(this.records_, {id: id})[0]['time'] = moment().toDate();
+            this.closeTimePickerByRefName('onway_time_picker_' + id);
+        },
+        sortByTime() {
+            this.tableRecords = _.sortBy(this.tableRecords, ['time']);
+
+            return this.tableRecords;
+        }
+    },
+
+    computed: {
+        chronologiesFromFd() {
+            return this.card_.chronologies_from_fd;
+        }
+    },
+    created() {
+        this.tableRecords.forEach((item) => {
+            this.tableEdits.push({
+                id: item.id,
+                edit: false
+            });
+        });
+
+        if (this.card_.hq_rides) {
+            this.departmentsHq_ = _.filter(this.card_.hq_rides, (item) => {
+                return item.dispatched !== 0 && item.dispatched !== null;
+            });
+        }
+
+        this.sortByTime();
+
+        globalBus.$on('checkDepartmentsOnWay', (departments) => {
+            _.each(departments, (item) => {
+                if (!_.find(this.departments_, {id: item.id})) {
+                    this.departments_.push(item);
+                }
+            });
+        });
+
+        globalBus.$on('hqDeptSent', (department) => {
+            this.departmentsHq_.push(department);
+        });
+
+        // todo временно отключено, возможно вообще не пригодится в дальнейшем
+        /* globalBus.$on('departmentHasSent', (data) => {
+            this.departments_.push(data.result);
+        }); */
+
+        // console.dir(this.departments_)
     }
+};
 </script>
 
 <style scoped>

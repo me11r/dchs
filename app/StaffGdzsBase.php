@@ -22,5 +22,8 @@ class StaffGdzsBase extends StaffOd
 {
     protected $fillable = [
         'name',
+        'surname',
+        'patronymic',
+        'guard_number_id',
     ];
 }

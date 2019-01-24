@@ -102,10 +102,14 @@ class FormationRecord extends Model
         'organisation',
         'date',
 
+        'head_count',
         'head',
+        'head_phone',
         'staff_total',
         'staff_action',
         'staff_duty_shift',
+        'staff_duty_shift_8hours',
+
         'tech_main_action',
         'tech_main_reserve',
         'tech_special_action',
@@ -128,7 +132,8 @@ class FormationRecord extends Model
         $fillable = $this->getFillable();
         $unset1 = array_search('organisation', $fillable);
         $unset2 = array_search('date', $fillable);
-        unset($fillable[$unset1], $fillable[$unset2]);
+        $unset3 = array_search('approved', $fillable);
+        unset($fillable[$unset1], $fillable[$unset2], $fillable[$unset3]);
 
         return $fillable;
     }

@@ -1,7 +1,7 @@
 {% extends "layout/html" %}
 
 {% block content %}
-    <div class="section container">
+    <div class="section {#container#}">
     <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }}</h4>
 
     <form action="{{ route('formation-record.update', item.id) }}" method="POST">
@@ -12,8 +12,8 @@
                 <thead>
                 <tr>
                     <th rowspan="3">Наименование подразеления</th>
-                    <th rowspan="3">Руководящий состав</th>
-                    <th colspan="3">Личный состав</th>
+                    <th colspan="3">Руководящий состав</th>
+                    <th colspan="4">Личный состав</th>
                     <th colspan="8">Техника</th>
                     <th colspan="2">ГСМ</th>
                     <th rowspan="3">Радиостанции</th>
@@ -23,9 +23,13 @@
                 </tr>
                 <tr>
                     {#Личный состав#}
+                    <th rowspan="2">Количество</th>
+                    <th rowspan="2">Ф.И.О.</th>
+                    <th rowspan="2">Телефон</th>
+
                     <th rowspan="2">По штату</th>
                     <th rowspan="2">В наличии</th>
-                    <th rowspan="2">На оперативном дежурстве</th>
+                    <th colspan="2">На оперативном дежурстве</th>
                     {#Техника#}
                     <th colspan="2">Основная</th>
                     <th colspan="2">Специальная</th>
@@ -36,6 +40,9 @@
                     <th rowspan="2">Дизтопливо</th>
                 </tr>
                 <tr>
+                    {#Личный состав(подраздел)#}
+                    <th>суточном</th>
+                    <th>8-ми часовом рабочем дне</th>
                     {# Техника #}
                     <th>На дежурстве(в боевом рассчете)</th>
                     <th>В резерве</th>

@@ -48,13 +48,24 @@ class AirRescueReport extends Model
         'other_protection',
 
         'staff_head',
+        'staff_head_count',
+        'staff_head_phone',
         'staff_total',
         'staff_action',
         'staff_duty_shift',
+        'staff_duty_shift_8hours',
     ];
 
     public function tech()
     {
         return $this->hasMany(AirRescueReportTechItem::class, 'report_id');
+    }
+
+    public function scopeDailyRecords($q, $from = null, $to = null)
+    {
+        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
+
+        return $q->whereBetween('created_at', [$from, $to]);
     }
 }

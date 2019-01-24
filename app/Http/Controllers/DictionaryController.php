@@ -120,52 +120,66 @@ class DictionaryController extends AuthorizedController
         }
         elseif($name == 'operational-plans'){
 
-            $specialPlan = SpecialPlan::orderBy($sort);
+            $specialPlan = SpecialPlan::orderBy('fire_department_id')
+                ->orderBy($sort)
+            ;
 
-            if($request->search){
+            $page = $request->page ?? 1;
+
+            if ($request->search) {
                 $specialPlan = $specialPlan
-                    ->where('object_name', 'like',"%$request->search%")
-                    ->orWhere('location', 'like',"%$request->search%")
-                    ->orWhereHas('city_area', function ($q) use ($request){
-                        $q->where('name', $request->search);
-                    })
-                    ->orWhereHas('fire_department', function ($q) use ($request){
-                        $q->where('title', $request->search);
+                    ->where(function ($query) use ($request) {
+                        $query->where('object_name', 'like', "%$request->search%");
+                        $query->orWhere('location', 'like', "%$request->search%");
+                        $query->orWhereHas('city_area', function ($q) use ($request) {
+                            $q->where('name', $request->search);
+                        });
+                        $query->orWhereHas('fire_department', function ($q) use ($request) {
+                            $q->where('title', $request->search);
+                        });
                     });
+            }
+
+            if ($request->filter_department) {
+                $specialPlan = $specialPlan
+                    ->where('fire_department_id', '=', $request->filter_department);
             }
 
             if(!Auth::user()->department){
 
-                $data['records'] = $specialPlan->paginate($data['per_page']);
+                $data['records'] = $specialPlan
+                    ->paginate($data['per_page']);
             }
             else{
                 $data['records'] = $specialPlan
                     ->where('fire_department_id', Auth::user()->fire_department_id)
-                    ->orderBy($sort)
                     ->paginate($data['per_page']);
             }
-
-            if($request->filter_department){
-                $data['records'] = $specialPlan
-                    ->where('fire_department_id', $request->filter_department)
-                    ->paginate($data['per_page']);
-            }
-
             $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные планы";
-            $data['filter_department'] = $request->filter_department;
+            $data['page'] = $page;
         }
         elseif($name == 'operational-cards'){
 
-            $operCard = OperationalCard::orderBy('id');
+            $operCard = OperationalCard::orderBy('fire_department_id')
+                ->orderBy('id')
+                ->orderBy('oc_number');
 
-            if($request->search){
-                $operCard = $operCard->where('object_name', 'like', "%$request->search%")
-                    ->orWhere('location', 'like', "%$request->search%")
-                    ->orWhere('oc_number', $request->search)
-                    ->orWhereHas('fire_department', function ($q) use ($request){
-                        $q->where('title', $request->search);
+            if ($request->search) {
+                $operCard = $operCard
+                    ->where(function ($query) use ($request) {
+                        $query->where('object_name', 'like', "%$request->search%");
+                        $query->orWhere('location', 'like', "%$request->search%");
+                        $query->orWhere('oc_number', $request->search);
+                        $query->orWhereHas('fire_department', function ($q) use ($request) {
+                            $q->where('title', $request->search);
+                        });
                     });
+            }
+
+            if ($request->filter_department) {
+                $operCard = $operCard
+                    ->where('fire_department_id', '=', $request->filter_department);
             }
 
             if(!Auth::user()->department){
@@ -176,6 +190,7 @@ class DictionaryController extends AuthorizedController
                     ->paginate($data['per_page']);
             }
 
+            $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные карточки";
         }
         elseif($name == 'aircraft-types'){
@@ -402,6 +417,7 @@ class DictionaryController extends AuthorizedController
             $record->fire_department_id = $request->fire_department_id;
             $record->location = $request->location;
             $record->note = $request->note;
+            $record->oc_number = $request->oc_number;
 
             $record->save();
 
@@ -513,14 +529,29 @@ class DictionaryController extends AuthorizedController
 
         $fields = $this->getEditableFields($dict);
 
+        if(array_search('name',$fields) !== false) {
+            $orderBy = 'name';
+        }
+        else {
+            $orderBy = 'id';
+        }
+
         if(in_array('title', $fields) && $search){
-            $this->set('dictionary', $dict->where('title', 'like', "%$search%")->get());
+            $this->set('dictionary', $dict
+                ->where('title', 'like', "%$search%")
+                ->orderBy($orderBy)
+                ->get());
         }
         elseif(in_array('name', $fields) && $search){
-            $this->set('dictionary', $dict->where('name', 'like', "%$search%")->get());
+            $this->set('dictionary', $dict
+                ->where('name', 'like', "%$search%")
+                ->orderBy($orderBy)
+                ->get());
         }
         else{
-            $this->set('dictionary', $dict->get());
+            $this->set('dictionary', $dict
+                ->orderBy($orderBy)
+                ->get());
         }
 
         $this->set('fields', $fields);
@@ -584,6 +615,15 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'district-managers':
                 $dict = DistrictManager::class;
+                break;
+            case 'fire-departments':
+                $dict = FireDepartment::class;
+                break;
+            case 'aircraft-types':
+                $dict = AircraftType::class;
+                break;
+            case 'aircrafts':
+                $dict = Aircraft::class;
                 break;
         }
 

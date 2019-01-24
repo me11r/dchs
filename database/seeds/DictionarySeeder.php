@@ -141,6 +141,26 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'morainic_lakes',
                 'model' => \App\Models\MorainicLake::class
             ],
+            [
+                'title' => 'Персоны суточного отчета',
+                'table' => 'daily_report_persons',
+                'model' => \App\Models\DailyReportPerson::class
+            ],
+            [
+                'title' => "Тип жилого сектора",
+                'table' => 'living_sector_types',
+                'model' => \App\LivingSectorType::class
+            ],
+            [
+                'title' => "Номер караула",
+                'table' => 'guard_numbers',
+                'model' => \App\GuardNumber::class
+            ],
+            [
+                'title' => "Оперативные группы (ОГ)",
+                'table' => 'operational_groups',
+                'model' => \App\OperationalGroup::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

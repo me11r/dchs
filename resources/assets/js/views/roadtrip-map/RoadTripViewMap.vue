@@ -49,7 +49,7 @@ export default {
             route: null,
             firstPoint: null,
             secondPoint: null,
-            distance: 1000,
+            distance: 500,
             hydrantsGeoObjects: null,
             hydrants: [],
             emergencyCoordinates: [],
@@ -287,7 +287,7 @@ export default {
         }
     },
     beforeMount() {
-        this.distance = parseInt(this.$localStorage.get('road_trip_hydrants_distance', 1000));
+        this.distance = parseInt(this.$localStorage.get('road_trip_hydrants_distance', 500));
         this.fromString = window.roadTripViewData.fromString;
         this.emergencyString = window.roadTripViewData.emergencyString;
     },

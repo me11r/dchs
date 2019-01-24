@@ -17,7 +17,7 @@
                 <tbody>
                 {% for item in items %}
                     <tr>
-                        <td>{{ item.date }}</td>
+                        <td>{{ item.date|date('d.m.Y') }}</td>
                         <td>
                             <div class="field is-grouped">
                                 <a class="button is-basic is-small" href="{{ route('reports.analytics101.edit', {'id':item.id}) }}">
@@ -29,6 +29,10 @@
                                     <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
                                         <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
                                 </form>
+                                <a class="button is-info is-small"
+                                   target="_blank"
+                                   href="{{ route('reports.analytics101.word', {'id':item.id}) }}">
+                                    <i class="fas fa-file-word"></i>.doc</a>
                             </div>
                         </td>
                     </tr>

@@ -3,7 +3,7 @@
     <div class="container section">
         <div class="level">
             <div class="level-left">
-        <h4 class="title">Техника строевой записки от {{ report.report_date }}</h4>
+        <h4 class="title">Техника строевой записки от {{ report.report_date|date('d.m.Y')|default('') }}</h4>
             </div>
             <div class="level-right">
                 <a href="{{ url('/formation/add101persons/' ~ form_id ~ '/' ~ dept_id) }}" class="button is-basic is-main"><i class="fas fa-user"></i>&nbsp;Данные личного состава</a>

@@ -47,7 +47,8 @@ export default {
     },
     computed: {
         computedDate() {
-            const cdate = this.inputdate;
+            const cdate = this.time;
+            console.dir(cdate)
             let dt = new Date('01-01-1970 00:00');
             if (cdate !== '') {
                 const tm = cdate.split(':');
@@ -67,7 +68,6 @@ export default {
     methods: {
         changeTime() {
             this.$emit('timeChanged', this.c_date);
-            console.dir(this.c_date);
         }
     }
 };

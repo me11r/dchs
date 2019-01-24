@@ -34,11 +34,32 @@ class TripResult extends Model
 
     protected $table = 'dict_trip_result';
     protected $guarded = ['id'];
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'show_in_daily_report101',
+    ];
 
     public function cards101()
     {
         return $this->hasMany(Ticket101::class, 'trip_result_id');
+    }
+
+    public function scopeName($q, $search)
+    {
+        return $q->where('name', $search);
+    }
+
+    public function scopeDailyReportConst($q)
+    {
+        return $q->where('show_in_daily_report101', true);
+    }
+
+    public function scopeNonFires($q)
+    {
+        return $q->where('name', 'like', "%Загорание мусора%")
+            ->orWhere('name', 'like', "%пища на газе%")
+            ->orWhere('name', 'like', "%сухост%")
+            ->orWhere('name', 'like', "%КЗ эл.сетей%");
     }
 
 }

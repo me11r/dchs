@@ -3,33 +3,39 @@
     <div class="container section" id="vue">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
-                <h4 class="title">Проверка части {{ record.created_at.format('d.m.Y')|default('') }}</h4>
-                <form action="{{ record is defined ? route('fire-department-checks.update', {'id':record.id}) : route('fire-department-checks.store')}}" method="post">
-                    {% if record is defined %}
-                        {{  method_field('PUT') }}
-                    {% endif %}
+                <h4 class="title">Проверка пожарных частей {{ date|default('') }}</h4>
+                <form action="{{ date is defined ? route('fire-department-checks.update-by-date', {'date':date}) : route('fire-department-checks.store') }}"
+                      method="post">
                     {{ csrf_field() }}
+
+                    {% if date is not defined %}
+
+                        <div class="box">
+                            <input type="date" class="input" name="date">
+                        </div>
+
+                    {% endif %}
+
                     <h4 class="title">ПЧ</h4>
-                    {#<button class="button is-success"><i class="fa fa-plus"></i>&nbsp;Добавить</button>#}
 
                     <fire-dept-check-form
-                        :fire-depts="{{ fire_depts }}"
-                        :record="{{ record|default(null)|json_encode }}"
-                        :type="fire_dept"
+                            :fire-depts="{{ fire_depts }}"
+                            :records="{{ not_dspt|default([])|json_encode }}"
+                            :type="'fire_dept'"
                     ></fire-dept-check-form>
 
                     <h4 class="title">ДСПТ</h4>
-                    <button class="button is-success"><i class="fa fa-plus"></i>&nbsp;Добавить</button>
 
                     <fire-dept-check-form
-                        :fire-depts="{{ fire_depts }}"
-                        :record="{{ record|default(null)|json_encode }}"
-                        :type="dspt"
+                            :fire-depts="{{ fire_depts }}"
+                            :records="{{ dspt|default([])|json_encode }}"
+                            :type="'dspt'"
                     ></fire-dept-check-form>
 
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        </button>
                         <a href="{{ url('/fire-department-checks') }}" class="button is-light">Отменить</a>
                     </div>
                 </form>

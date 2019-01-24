@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\FireDepartment;
+use App\GuardNumber;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
@@ -26,21 +27,47 @@ class StaffController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $per_page = 20;
+        $search = $request->search;
+        $filter_department = $request->filter_department;
+        $fullAccess = Auth::user()->hasRight('STAFF_FULL_VIEW_ACCESS');
 
-        if(Auth::id() == 1){
-            $items = $this->repository
-                ->orderBy('department_id')
-                ->orderBy('name')
-                ->paginate($per_page);
-        }
-        else{
-            $items = Auth::user()->staff()->orderBy('department_id')->paginate($per_page);
+        $items = $fullAccess ? $this->repository : Auth::user()->staff();
+
+        if($search) {
+            $items = $items
+                ->whereHas('department', function ($q) use ($search) {
+                    $q->where('title', "like", "$search%");
+                })
+                ->orWhere(function ($qq) use ($search) {
+                    $qq->where('name', 'like', "%$search%")
+                        ->orWhere('position', 'like', "$search%")
+                        ->orWhere('surname', 'like', "$search%")
+                        ->orWhere('patronymic', 'like', "$search%")
+                        ->orWhere('rank', 'like', "$search%");
+                });
         }
 
-        return view("$this->table.index", compact('items', 'per_page'));
+        if($filter_department) {
+            $items = $items->where('department_id', $filter_department);
+        }
+
+        $items = $items->orderBy('department_id')
+            ->orderBy('name')
+            ->paginate($per_page);
+
+        $user = Auth::user();
+        $fire_departments = FireDepartment::all();
+
+        return view("$this->table.index", compact(
+            'items',
+            'per_page',
+            'user',
+            'search',
+            'filter_department',
+            'fire_departments'));
     }
 
     /**
@@ -59,8 +86,9 @@ class StaffController extends Controller
 
         $title = 'Создать запись';
         $statuses = (new Staff())->statuses();
+        $guardNumbers = GuardNumber::all();
 
-        return view("$this->table.edit", compact('items', 'fire_departments','title', 'statuses'));
+        return view("$this->table.edit", compact('items', 'fire_departments','title', 'statuses', 'guardNumbers'));
     }
 
     /**
@@ -103,7 +131,9 @@ class StaffController extends Controller
         $title = 'Редактировать запись';
         $record = $this->repository::find($id);
         $statuses = $record->statuses();
-        return view("$this->table.edit", compact('items', 'fire_departments','title', 'record', 'statuses'));
+        $guardNumbers = GuardNumber::all();
+
+        return view("$this->table.edit", compact('items', 'fire_departments','title', 'record', 'statuses', 'guardNumbers'));
     }
 
     /**

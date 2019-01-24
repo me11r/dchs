@@ -6,8 +6,10 @@ namespace App\Http\Controllers;
 use App\Dictionary\Street;
 use App\FireDepartment;
 use App\Models\Building;
+use App\Models\OperationalPlan;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
+use App\PopupNotification;
 use App\Right;
 use App\RoadtripPlan;
 use App\RoadtripSubscription;
@@ -45,6 +47,21 @@ class AjaxController extends AuthorizedController
         return response()->json($result, 200, ['Content-type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
+    public function findSpecialPlanById(Request $request)
+    {
+        $data = OperationalPlan::with([
+            'special_plan',
+        ])
+            ->find($request->id);
+        return response()->json(['specialPlan' => $data]);
+    }
+
+    public function findOperationalCardById(Request $request)
+    {
+        $data = OperationalCard::find($request->id);
+        return response()->json(['operCard' => $data]);
+    }
+
     public function findSpecialPlan(Request $request)
     {
         $result = [];
@@ -54,10 +71,10 @@ class AjaxController extends AuthorizedController
 
         /*не используем elasticsearch на локалке*/
         if(env('IS_LOCAL', false)){
-            $specialPlansQuery = SpecialPlan::where('object_name', 'like', "%$location%")
-                ->orWhere('location', 'like', "%$location%");
-            $operationalCardsQuery = OperationalCard::where('object_name', 'like', "%$location%")
-                ->orWhere('location', 'like', "%$location%");
+            $specialPlans = SpecialPlan::where('object_name', 'like', "%$location%")
+                ->orWhere('location', 'like', "%$location%")->take(5)->get();
+            $operational_cards = OperationalCard::where('object_name', 'like', "%$location%")
+                ->orWhere('location', 'like', "%$location%")->take(5)->get();
         }
         else{
             //экранируем спец. символы
@@ -65,12 +82,14 @@ class AjaxController extends AuthorizedController
 
             $specialPlansQuery = SpecialPlan::search($location);
             $operationalCardsQuery = OperationalCard::search($location);
-        }
-        $specialPlansQuery->limit = 5;
-        $specialPlans = $specialPlansQuery->get();
 
-        $operationalCardsQuery->limit = 5;
-        $operational_cards = $operationalCardsQuery->get();
+            $specialPlansQuery->limit = 5;
+            $specialPlans = $specialPlansQuery->get();
+
+            $operationalCardsQuery->limit = 5;
+            $operational_cards = $operationalCardsQuery->get();
+        }
+
 
         foreach ($operational_cards as $key => $operational_card) {
             $operational_card->is_card = true;
@@ -105,6 +124,13 @@ class AjaxController extends AuthorizedController
         return response()->json($rightsArr, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
+    public function getMessengerPermissions()
+    {
+        $user = Auth::user();
+        $rightsArr = $user->messenger_rights;
+        return response()->json($rightsArr, 200);
+    }
+
     public function getRoadtripPlans(Request $request)
     {
         $dept = (Auth::user())->department;
@@ -116,7 +142,11 @@ class AjaxController extends AuthorizedController
         $trips = $trips
             ->where('is_closed', false)
             ->where('department_id', $dept->id)
-            ->where('is_accepted', false)
+            ->whereHas('results', function ($q){
+                $q->whereNull('accept_time')
+                    ->whereNotNull('dispatch_time');
+            })
+            ->has('ticket')
             ->get();
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
@@ -147,5 +177,21 @@ class AjaxController extends AuthorizedController
         $subscription = RoadtripSubscription::updateOrCreate(['token' => $request->get('token')], ['user_id' => $user->id]);
         $subscription->save();
         return response()->json($subscription);
+    }
+
+    public function checkPopupNotifications()
+    {
+        $user = Auth::user();
+        $notifications = PopupNotification::where('receiver_id', $user->id)
+            ->where('is_viewed', false)
+            ->get();
+        ;
+
+        foreach ($notifications as $notification) {
+            $notification->is_viewed = true;
+            $notification->save();
+        }
+
+        return response()->json(['notifications' => $notifications]);
     }
 }

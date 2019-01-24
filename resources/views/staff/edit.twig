@@ -11,7 +11,15 @@
                     {{ csrf_field() }}
                     <div class="field">
                         <label for="name">Ф.И.О.</label>
-                        <input type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                        <input type="text" class="input" name="name" required id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Фамилия</label>
+                        <input type="text" class="input" name="surname" required id="surname" value="{{ attribute(record, 'surname')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Отчество</label>
+                        <input type="text" class="input" name="patronymic" id="patronymic" value="{{ attribute(record, 'patronymic')|default('') }}"/>
                     </div>
                     <div class="field">
                         <label for="number">Дата рождения (дд.мм.гггг)</label>
@@ -38,6 +46,14 @@
                         <select class="select" name="status" id="status" required>
                             {% for key, status in statuses %}
                                 <option value="{{ key }}" {% if key == attribute(record, 'status')|default('') %}selected{% endif %}>{{ status }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="name">Номер караула</label><br>
+                        <select class="select" name="guard_number_id" id="guard_number_id" required>
+                            {% for number in guardNumbers %}
+                                <option value="{{ number.id }}" {% if number.id == attribute(record, 'guard_number_id')|default('') %}selected{% endif %}>{{ number.name }}</option>
                             {% endfor %}
                         </select>
                     </div>

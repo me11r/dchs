@@ -16,6 +16,12 @@
                             v-model="showDepartments">Отображать микроучастки
                         </b-checkbox>
                     </div>
+
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showDistricts">Отображать границы районов
+                        </b-checkbox>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,6 +66,7 @@ export default {
             yandexMapsBus: {},
             zoom: 16,
             fireDepartmentAreas: [],
+            cityAreas: [],
 
             lastGeoObject: null,
             lastGeoData: null,
@@ -70,10 +77,12 @@ export default {
             hydrantPopupShow: false,
             hydrantsClusterer: null,
 
-            showHydrants: false,
-            showDepartments: false,
+            showHydrants: window.showHydrants,
+            showDepartments: true,
+            showDistricts: true,
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
+            canEditAllHydrants: window.canEditAllHydrants,
             userDept: window.userDept
         };
     },
@@ -88,7 +97,20 @@ export default {
                 });
         },
         setHydrants() {
-            this.map.geoObjects.add(this.hydrantsClusterer);
+            if (this.hydrantsClusterer) {
+                this.map.geoObjects.add(this.hydrantsClusterer);
+            }
+            else{
+                axios.get('/api/hydrant')
+                    .then((response) => {
+                        this.hydrantList = response['data']['data'];
+                        this.hydrantsClusterer = this.getHydrantsClusterer(this.hydrantList.map((item) => {
+                            return this.getHydrantPlaceMarkFromItem(item, this.onMarkClick, this.onMarkDragEnd);
+                        }));
+
+                        this.map.geoObjects.add(this.hydrantsClusterer);
+                    });
+            }
         },
         closeHydrantPopup() {
             this.hydrantPopupShow = false;
@@ -101,10 +123,13 @@ export default {
             this.displayHydrantPopup(model);
         },
         onMarkDragEnd(event, model) {
-            const coords = event.originalEvent.target.geometry['getCoordinates']();
-            model.lat = coords[0];
-            model.long = coords[1];
-            this.updateHydrant(model);
+            if (this.canSaveOrUpdateHydrant(model)) {
+                const coords = event.originalEvent.target.geometry['getCoordinates']();
+                model.lat = coords[0];
+                model.long = coords[1];
+
+                this.updateHydrant(model);
+            }
         },
         onMapDoubleClick(event) {
             const coords = event.get('coords');
@@ -113,17 +138,27 @@ export default {
             model.long = coords[1];
             this.displayHydrantPopup(model);
         },
-        onSaveHydrant(model) {
-            if (this.canEditOwnHydrants === false && this.userDept !== model.fire_department_id) {
+        canSaveOrUpdateHydrant(model) {
+            if (this.canEditAllHydrants) {
+                return true;
+            }
+
+            if ((this.canEditOwnHydrants === false && this.isAdmin === false) || (this.canEditOwnHydrants === true && this.userDept !== model.fire_department_id && this.isAdmin === false)) {
                 this.$snackbar.open({
                     message: 'Недостаточно прав для редактирования',
                     position: 'is-top',
                     type: 'is-info',
                 });
-                return null;
+                return false;
             }
 
-            +model.id === 0 ? this.createHydrant(model) : this.updateHydrant(model);
+            return true;
+        },
+        onSaveHydrant(model) {
+            if (this.canSaveOrUpdateHydrant(model)) {
+                let isNewModel = +model.id === 0 || model.id === undefined;
+                isNewModel ? this.createHydrant(model) : this.updateHydrant(model);
+            }
         },
         createHydrant(model) {
             const self = this;
@@ -217,6 +252,23 @@ export default {
             if (this.showHydrants) {
                 this.setHydrants();
             }
+
+            if (this.showDistricts) {
+                this.initCityAreas();
+            }
+        },
+
+        detectCityAreaOsm(lat, long) {
+            let area = this.yandexMapsBus.detectCityAreaOsm(lat, long, this.cityAreas, this.map);
+
+            if (area.title) {
+                let districtModel = _.find(this.yandexMapsBus.areas, {'name': area.title.toLowerCase()});
+                if (districtModel) {
+                    window.localStorage.setItem('AREA_ID_FOUND', districtModel.id);
+                    globalBus.$emit('AREA_ID_FOUND', districtModel.id);
+                    globalBus.$emit('city_area_selected', districtModel);
+                }
+            }
         },
 
         doubleClickOnTheMap(event) {
@@ -237,6 +289,18 @@ export default {
                         this.setMapData();
 
                         let deptId = this.yandexMapsBus.fireDepartmentArea(coords[0], coords[1], this.fireDepartmentAreas, this.map);
+
+                        let area = this.yandexMapsBus.detectCityAreaOsm(coords[0], coords[1], this.cityAreas, this.map);
+
+                        if (area.title) {
+                            let districtModel = _.find(this.yandexMapsBus.areas, {'name': area.title.toLowerCase()});
+                            if (districtModel) {
+                                window.localStorage.setItem('AREA_ID_FOUND', districtModel.id);
+                                globalBus.$emit('AREA_ID_FOUND', districtModel.id);
+                                globalBus.$emit('city_area_selected', districtModel);
+                            }
+                        }
+
                         window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, deptId);
                         globalBus.$emit('is_common_house', deptId);
                     }
@@ -247,6 +311,7 @@ export default {
             this.lastGeoData = {lat, long, name};
             this.setMapData();
             let deptId = this.yandexMapsBus.fireDepartmentArea(lat, long, this.fireDepartmentAreas, this.map);
+            window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, 0);
             window.localStorage.setItem(YANDEX_FIRE_DEPT_FOUND, deptId);
         },
         resetAllObjects() {
@@ -300,6 +365,10 @@ export default {
 
             this.setMapData();
         },
+        initCityAreas() {
+            this.yandexMapsBus.cityAreas(this.map);
+            this.cityAreas = this.yandexMapsBus.cityAreasPolygons;
+        },
         initFireDepartmentAreas() {
             var polygons = this.yandexMapsBus.polygons();
             if (this.fireDepartmentAreas.length === 0) {
@@ -316,7 +385,10 @@ export default {
         },
         'showDepartments'() {
             this.setMapData();
-        }
+        },
+        'showDistricts'() {
+            this.setMapData();
+        },
     },
     mounted() {
         (new YandexMapsBus())
@@ -324,7 +396,7 @@ export default {
             .then((yandexMapsBus) => {
                 this.yandexMapsBus = yandexMapsBus;
                 this.ymaps = this.yandexMapsBus.getYmaps();
-                this.initHydrantList();
+                // this.initHydrantList();
 
                 this.initMap();
                 this.addHydrantClickListener();
@@ -338,6 +410,11 @@ export default {
                     if (event.key === YANDEX_HOUSE_FOUND) {
                         let data = JSON.parse(event.newValue);
                         this.houseFound(data['lat'], data['long'], data['name']);
+                    }
+
+                    if (event.key === 'findAreaOsm') {
+                        let coords = JSON.parse(event.newValue);
+                        this.detectCityAreaOsm(coords[0], coords[1]);
                     }
                 });
             });
