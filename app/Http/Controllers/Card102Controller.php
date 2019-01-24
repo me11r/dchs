@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Card103;
-use App\Card103RoadtripPlan;
+use App\Card102;
+use App\Card102RoadtripPlan;
 use App\Dictionary\CityArea;
 use App\Models\IncidentType;
 use App\Models\ServiceType;
@@ -11,16 +11,16 @@ use App\Ticket101ServicePlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
-class Card103Controller extends Controller
+class Card102Controller extends Controller
 {
     public function index(Request $request)
     {
         $perPage = $request->per_page ?? 15;
-        $items = Card103::select('*')
+        $items = Card102::select('*')
             ->orderBy('id', 'desc')
             ->paginate($perPage);
 
-        return View::make('card103.index')
+        return View::make('card102.index')
             ->with('items', $items)
             ->with('per_page', $perPage)
             ->with('city_areas', CityArea::all())
@@ -35,10 +35,10 @@ class Card103Controller extends Controller
             $ticket_service_plans[] = new Ticket101ServicePlan();
         }
 
-        return View::make('card103.create')
+        return View::make('card102.create')
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect($serviceTypes)->toArray())
-            ->with('model', (new Card103()))
+            ->with('model', (new Card102()))
             ->with('service_plans', $ticket_service_plans)
             ->with('currentTabIndex', 0)
             ->render();
@@ -52,15 +52,13 @@ class Card103Controller extends Controller
             'notification_services'
         ]);
 
-        $f = $request->all();
-
-        $data = Card103::create($req);
+        $data = Card102::create($req);
 
         if ($index) {
-            $back = "/card103/{$data->id}/edit/#return={$index}";
+            $back = "/card102/{$data->id}/edit/#return={$index}";
         }
         else{
-            $back = "/card103/{$data->id}/edit/";
+            $back = "/card102/{$data->id}/edit/";
         }
 
         return redirect($back)
@@ -76,12 +74,12 @@ class Card103Controller extends Controller
     {
         $serviceTypes = ServiceType::orderBy('name')->get(['id', 'name']);
 
-        return View::make('card103.edit')
+        return View::make('card102.edit')
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect($serviceTypes->toArray()))
             ->with('currentTabIndex', $request->input('currentTabIndex', 0))
-            ->with('model', (new Card103())->where('id', '=', $id)
+            ->with('model', (new Card102())->where('id', '=', $id)
                 ->with([
                     'cityArea',
                 ])
@@ -94,25 +92,25 @@ class Card103Controller extends Controller
         $data = $request->except([
             'notification_services'
         ]);
-        $card = Card103::find($id);
+        $card = Card102::find($id);
         $card->fill($data);
         $card->save();
-        return redirect(route('card103.edit', $id))->with('currentTabIndex', $index);
+        return redirect(route('card102.edit', $id))->with('currentTabIndex', $index);
     }
 
     public function destroy($id)
     {
-        Card103::destroy($id);
-        return redirect(route('card103.index'));
+        Card102::destroy($id);
+        return redirect(route('card102.index'));
     }
 
     public function sendDepartment(Request $request)
     {
-        $roadTrip = Card103RoadtripPlan::firstOrCreate([
-            'card103_id' => $request->cardId,
+        $roadTrip = Card102RoadtripPlan::firstOrCreate([
+            'card102_id' => $request->cardId,
             'department_id' => $request->department,
         ],[
-            'card103_id' => $request->cardId,
+            'card102_id' => $request->cardId,
             'department_id' => $request->department,
             'dispatch_time' => now(),
             'dispatched' => true,
@@ -123,9 +121,8 @@ class Card103Controller extends Controller
 
     public function checkServicePlans(Request $request)
     {
-        $f = $request->all();
         $id = $request->card_id;
-        $ticket = Card103::find($id);
+        $ticket = Card102::find($id);
 
         if(!$ticket){
             return response()->json(['servicePlans' => []], 200);

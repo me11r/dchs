@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Card102;
 use App\Card103;
 use App\Card103RoadtripPlan;
 use App\Dictionary\Street;
@@ -158,6 +159,20 @@ class AjaxController extends AuthorizedController
         if (Auth::user() && Auth::user()->role && Auth::user()->role->name === 'dispatcher_103') {
 
             $trips = Card103::whereHas('roadtrips', function ($q) {
+                $q->whereNull('accept_time');
+            })->get();
+
+            return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        }
+
+        return response()->json([], 200);
+    }
+
+    public function getRoadtrip102Plans(Request $request)
+    {
+        if (Auth::user() && Auth::user()->role && Auth::user()->role->name === 'dispatcher_102') {
+
+            $trips = Card102::whereHas('roadtrips', function ($q) {
                 $q->whereNull('accept_time');
             })->get();
 

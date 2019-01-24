@@ -15,8 +15,10 @@ export default {
             alarming: false,
             shown: false,
             shown103: false,
+            shown102: false,
             plans: [],
             plans103: [],
+            plans102: [],
         };
     },
     components: {},
@@ -77,6 +79,34 @@ export default {
                 }
             }
         },
+        notify102: function () {
+            if (!this.shown102) {
+                this.shown102 = true;
+                this.$snackbar.open({
+                    message: 'Новый путевой лист 102!',
+                    indefinite: true,
+                    type: 'is-danger',
+                    position: 'is-top',
+                    onAction: () => {
+                        this.shown102 = false;
+                        window.location.href = '/roadtrip-102/' + this.plans102[0].id;
+                    }
+                });
+                const notify = window.Notification;
+                if (notify !== undefined) {
+                    if (notify.permission === 'granted') {
+                        this.showSystemToast();
+                    }
+                    if (notify.permission !== 'denied') {
+                        notify.requestPermission().then((permission) => {
+                            if (permission === 'granted') {
+                                this.showSystemToast();
+                            }
+                        });
+                    }
+                }
+            }
+        },
         showSystemToast: () => {
             // eslint-disable-next-line no-new
             new Notification('Новый путевой лист!!', {
@@ -107,6 +137,24 @@ export default {
                 this.plans103 = response.data;
                 if (this.plans103.length > 0) {
                     this.notify103();
+                    this.alertSound(true);
+                } else {
+                    this.alertSound(false);
+                }
+                this.checking = false;
+            }).catch(reason => {
+                this.$snackbar.open({
+                    message: 'Произошла ошибка получения данных : ' + reason,
+                    type: 'is-danger',
+                    duration: 3000
+                });
+                this.checking = false;
+            });
+
+            axios.get('/ajax/roadtrips-102').then(response => {
+                this.plans102 = response.data;
+                if (this.plans102.length > 0) {
+                    this.notify102();
                     this.alertSound(true);
                 } else {
                     this.alertSound(false);
