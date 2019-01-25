@@ -317,6 +317,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_DELETE']);
     });
 
+    Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
+
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
         Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');
