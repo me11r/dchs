@@ -718,4 +718,16 @@ class ReportController extends AuthorizedController
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0'
         ]);
     }
+
+    public function getReport112EmergencyType()
+    {
+        $currentYear = now()->year;
+        $data['records'] = Card112::whereYear('created_at', $currentYear)
+            ->whereHas('emergency_type', function ($q) {
+                $q->where('name', 'ЧС');
+            })
+            ->get();
+        $data['year'] = $currentYear;
+        return view('reports.112.emergency_type', $data);
+    }
 }
