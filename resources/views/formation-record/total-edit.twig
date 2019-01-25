@@ -4,14 +4,13 @@
     <div class="section container-fluid">
     <div class="level">
         <div class="level-left">
-            <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }} ({{ item.date|date('Y-m-d') }})</h4>
+            <h4 class="title" style="padding: 3px 15px">Журнал строевых записок ДЧС г.Алматы {{ item.date|date('d.m.Y') }}</h4>
         </div>
         <div class="level-right printing-invisible">
             <a onclick="window.print();" class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
+            <a href="/formation-record/total-edit/word" class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-glasses"></i>&nbsp;Сохранить в .DOCX</a>
         </div>
     </div>
-
-
 
     <form action="{{ route('formation-record.total-update', item.id) }}" method="POST">
         {{ csrf_field() }}

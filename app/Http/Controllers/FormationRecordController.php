@@ -14,9 +14,11 @@ use App\Models\Staff;
 use App\OperDutyShift;
 use App\OperDutyShiftStaff;
 use App\OperDutyShiftStaffItem;
+use App\Services\ReportExport\FormationRecordWordExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 
 class FormationRecordController extends Controller
@@ -119,6 +121,17 @@ class FormationRecordController extends Controller
                 $item->save();
             }
         }
+
+        $data = [
+            'formationMainRecord' => $item,
+            'fields' => $fields,
+            'cityAreas' => $cityAreas,
+            'formationDistrictManager' => $formationDistrictManager,
+            'dutyShiftItems' => $dutyShiftItems,
+            'formationRecords' => $items,
+        ];
+
+        Cache::put('formation_record_journal_data', $data, 3600);
 
         return View::make('formation-record.total-edit')
             ->with('item', $item)
@@ -268,5 +281,20 @@ class FormationRecordController extends Controller
         }
 
         return true;
+    }
+
+    public function saveTotalAsDocx()
+    {
+        if ($data = Cache::get('formation_record_journal_data')){
+            $exportService = new FormationRecordWordExport($data);
+            $writer = $exportService->getWriter();
+            $date = $data['formationMainRecord']->created_at->addDay()->format('d.m.Y');
+            $fileName = 'Журнал строевых записок ДЧС г.Алматы (' . $date . ').docx';
+
+            $writer->save(public_path($fileName));
+            return response()->download(public_path($fileName));
+        }
+
+        return dd('Кеш не заполнен');
     }
 }
