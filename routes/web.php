@@ -163,6 +163,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');
             Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
+            Route::get('formation-record/total-edit/word', 'FormationRecordController@saveTotalAsDocx');
         }
     );
 

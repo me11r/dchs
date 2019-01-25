@@ -52,6 +52,28 @@ trait CommonExportTools
         ];
     }
 
+    private function getTableSumRow($rows)
+    {
+        $result = [];
+        foreach ($rows as $row_index => $cells) {
+            foreach ($cells as $index => $cell) {
+
+                if(!isset($result[$index])) {
+                    $result[$index] = 0;
+                }
+
+                if(is_numeric($cell)) {
+                    $result[$index] += $cell;
+                }
+                else {
+                    $result[$index] += 0;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * @param FireDepartment $department
      * @return array
@@ -99,6 +121,19 @@ trait CommonExportTools
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
         ];
+    }
+
+    private function getFirstTableRowForOrganization($formationRecord, $fields)
+    {
+        $delimiter = ', ';
+
+        $result = [];
+        $result[] = $formationRecord->organisationName();
+        foreach ($fields as $field) {
+            $result[] = $formationRecord[$field] ?? 0;
+        }
+
+        return $result;
     }
 
 
