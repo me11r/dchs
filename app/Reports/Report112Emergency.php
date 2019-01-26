@@ -62,7 +62,7 @@ class Report112Emergency
             $data['values'][] = [
                 ++$index, //'№ п/п ЧС',
                 $card112->created_at->format('d.m.Y H:i'), //'Дата и время происшествия',
-                $card112->additionalAddress ? $card112->additionalAddress->name : $card112->location, //'Адрес',
+                $card112->detailed_address ? $card112->detailed_address : $card112->location, //'Адрес',
                 $card112->emergency_feature, //'Краткая характеристика происшествия',
                 $card112->dead, // 'Кол-во погибших',
                 $card112->injured, //'Кол-во пострадавших',
