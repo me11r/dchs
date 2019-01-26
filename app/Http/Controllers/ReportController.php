@@ -23,6 +23,7 @@ use App\Models\Weather;
 use App\OperationalCard;
 use App\Reports\Report;
 use App\Reports\Report112;
+use App\Reports\Report112Emergency;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
@@ -33,6 +34,8 @@ use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
+use App\Services\ReportExport\Ticket112EmergencyExcelExport;
+use App\Services\ReportExport\Ticket112EmergencyWordExport;
 use App\Services\ReportExport\Ticket112PeriodExcelExport;
 use App\SirenSpeechTech;
 use App\Ticket101;
@@ -732,6 +735,9 @@ class ReportController extends AuthorizedController
             ->with(['emergency_type','additionalAddress','additionalIncident'])
             ->get();
         $data['year'] = $currentYear;
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+        Cache::put('report112_emergency_data', $data, 3600);
 
         if($request->ajax()) {
             return response()->json($data);
@@ -742,19 +748,31 @@ class ReportController extends AuthorizedController
 
     public function exportReport112Emergency($type)
     {
-//        if ($data = Cache::get('report112_emergency_data')) {
-//
-//        }
-//        $data = (new Report112())->getReport();
-//
-//        $dailyWordExport = new Daily112WordExport(
-//            $data
-//        );
-//
-//        $writer = $dailyWordExport->getWriter('Word2007');
-//        $fileName = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
-//        $writer->save(public_path($fileName));
-//
-//        return response()->download(public_path($fileName));
+        if ($data = Cache::get('report112_emergency_data')) {
+            $data = (new Report112Emergency($data))->getReport();
+
+            if($type === 'docx') {
+
+                $dailyWordExport = new Ticket112EmergencyWordExport($data);
+
+                $writer = $dailyWordExport->getWriter('Word2007');
+                $fileName = 'Чрезвычайные ситуации природного и техногенного характера  - '.date('d-m-Y'). '.docx';
+                $writer->save(public_path($fileName));
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket112EmergencyExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Отчет по карточке 112 (ЧС) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
     }
 }
