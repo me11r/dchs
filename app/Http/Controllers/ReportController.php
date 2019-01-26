@@ -724,11 +724,16 @@ class ReportController extends AuthorizedController
 
     public function getReport112EmergencyType(Request $request)
     {
-        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateFrom = $request->input('dateFrom', (new Carbon('01/01/2019'))->format('Y-m-d'));
         $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $incidentTypeId = $request->incidentTypeId;
 
         $currentYear = now()->year;
-        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo]);
+        if($incidentTypeId) {
+            $data['records'] = $data['records']->where('additional_incident_type_id', $incidentTypeId);
+        }
+        $data['records'] = $data['records']
             ->whereHas('emergency_type', function ($q) {
                 $q->where('name', 'ЧС');
             })
@@ -737,6 +742,7 @@ class ReportController extends AuthorizedController
         $data['year'] = $currentYear;
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
+        $data['incidentTypes'] = IncidentType::all();
         Cache::put('report112_emergency_data', $data, 3600);
 
         if($request->ajax()) {
