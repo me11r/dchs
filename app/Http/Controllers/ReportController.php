@@ -719,15 +719,42 @@ class ReportController extends AuthorizedController
         ]);
     }
 
-    public function getReport112EmergencyType()
+    public function getReport112EmergencyType(Request $request)
     {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+
         $currentYear = now()->year;
-        $data['records'] = Card112::whereYear('created_at', $currentYear)
+        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
             ->whereHas('emergency_type', function ($q) {
                 $q->where('name', 'ЧС');
             })
+            ->with(['emergency_type','additionalAddress','additionalIncident'])
             ->get();
         $data['year'] = $currentYear;
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+
         return view('reports.112.emergency_type', $data);
+    }
+
+    public function exportReport112Emergency($type)
+    {
+//        if ($data = Cache::get('report112_emergency_data')) {
+//
+//        }
+//        $data = (new Report112())->getReport();
+//
+//        $dailyWordExport = new Daily112WordExport(
+//            $data
+//        );
+//
+//        $writer = $dailyWordExport->getWriter('Word2007');
+//        $fileName = 'Суточный отчет 112 - '.date('d-m-Y'). '.docx';
+//        $writer->save(public_path($fileName));
+//
+//        return response()->download(public_path($fileName));
     }
 }

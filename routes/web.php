@@ -319,6 +319,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
+    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){

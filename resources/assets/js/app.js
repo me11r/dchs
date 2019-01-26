@@ -107,6 +107,7 @@ Vue.component('fire-dept-check-item', require('./components/fire-department-chec
 Vue.component('ticket101-save-btn', require('./components/ticket101/SaveBtn'));
 Vue.component('quakes-form', require('./views/quakes/CreateEditForm'));
 Vue.component('messenger-permissions', require('./views/messenger-permissions/MessengerPermissions'));
+Vue.component('report-emergency-type-period', require('./views/reports/emergency/ReportEmergencyTypePeriod'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({

@@ -1,50 +1,10 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container">
-        <h4
-                class="title"
-                style="padding: 3px 15px">Чрезвычайные ситуации природного и техногенного характера
-            зарегистрированные по г. Алматы
-            за  {{ year }}г.
-        </h4>
-        <!--<div class="panel">
-            <label for="month">Месяц</label>
-            <select class="select" name="month" id="month">
-                <option value="">август</option>
-            </select>
-        </div>
+    <div class="container" id="vue">
+        <report-emergency-type-period
+            :records="{{ records }}"
+        >
+        </report-emergency-type-period>
 
-        2018 года-->
-        <div class="panel">
-            <table class="formation-record-table">
-                <thead>
-                <tr>
-                    <th>№ п/п ЧС</th>
-                    <th>Дата и время происшествия</th>
-                    <th>Адрес</th>
-                    <th>Краткая характеристика происшествия</th>
-                    <th>Кол-во погибших</th>
-                    <th>Кол-во пострадавших</th>
-                    <th>Вид ЧС</th>
-                    <th>Примечание</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {% for record in records %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ record.created_at|date('d.m.Y H:i') }}</td>
-                            <td>{{ record.additionalAddress ? record.additionalAddress.name : record.location }}</td>
-                            <td>{{ record.emergency_feature }}</td>
-                            <td>{{ record.dead }}</td>
-                            <td>{{ record.injured }}</td>
-                            <td>{{ record.additionalIncident ? record.additionalIncident.name }}</td>
-                            <td></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <br>
     </div>
 {% endblock content %}
