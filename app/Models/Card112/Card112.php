@@ -121,6 +121,7 @@ class Card112 extends Model
         'additional_comment',
         'city_area_id',
         'location',
+        'detailed_address',
         'injured_hard',
         'poisoned',
         'saved',
@@ -341,5 +342,15 @@ class Card112 extends Model
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
         return $q->whereBetween('created_at', [$from, $to]);
+    }
+
+    public function setDetailedAddressAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['detailed_address'] = $this->attributes['location'];
+        }
+        else {
+            $this->attributes['detailed_address'] = $value;
+        }
     }
 }

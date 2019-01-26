@@ -354,9 +354,14 @@
                         <!--УТОЧНЕННЫЙ АДРЕС-->
                         <div class="field">
                             <p class="control">
-                                <label for="additional_street_id">Уточненный адрес</label>
+                                <label for="detailed_address">Уточненный адрес</label>
+                                <input type="text"
+                                       class="input"
+                                       id="detailed_address"
+                                       name="detailed_address"
+                                       v-model="model.detailed_address">
                             </p>
-                            <div class="select">
+                            <!--<div class="select">
                                 <buefy-common-select
                                     id="additional_street_id"
                                     :options="streetsOptions"
@@ -365,7 +370,7 @@
                                     type="hidden"
                                     name="additional_street_id"
                                     v-model="model.additional_street_id">
-                            </div>
+                            </div>-->
                         </div>
 
                         <!--ТИП ПРОИСШЕСТВИЯ-->
