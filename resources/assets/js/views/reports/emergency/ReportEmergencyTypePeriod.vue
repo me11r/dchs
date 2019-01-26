@@ -73,7 +73,7 @@
                 <tr v-for="(record, key) in records_">
                     <td>{{ ++key }}</td>
                     <td>{{ record.created_at|dateFilter('DD.MM.YYYY H:m') }}</td>
-                    <td>{{ record.additional_address ? record.additional_address.name : record.location }}</td>
+                    <td>{{ record.detailed_address ? record.detailed_address : record.location }}</td>
                     <td>{{ record.emergency_feature }}</td>
                     <td>{{ record.dead }}</td>
                     <td>{{ record.injured }}</td>

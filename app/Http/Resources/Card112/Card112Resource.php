@@ -22,6 +22,7 @@ class Card112Resource extends JsonResource
         return [
             'id' => (int)$this->id,
             'location' => (string)$this->location,
+            'detailed_address' => (string)$this->detailed_address,
             'street' => $this->resource->relationLoaded('street') ? (new StreetResource($this->street)) : null,
             'crossroad_1_id' => (int)$this->crossroad_1_id,
             'crossroad1' => $this->resource->relationLoaded('crossroad1') ? (new StreetResource($this->crossroad1)) : null,
