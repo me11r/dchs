@@ -39,6 +39,8 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 2, 'title' => 'Удаление заявок', 'name' => 'CAN_DELETE_REQUEST'],
             ['right_group_id' => 2, 'title' => 'Удаление заявок 101', 'name' => 'DELETE_CARD101'],
 
+            ['right_group_id' => 2, 'title' => 'Изменениие статуса карточки 101 (тип ЧС)', 'name' => 'CAN_CHANGE_CARD101_EMERGENCY_STATUS'],
+
             ['right_group_id' => 3, 'title' => 'Управление пользователями системы', 'name' => 'CAN_MANAGE_USERS'],
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],
 
