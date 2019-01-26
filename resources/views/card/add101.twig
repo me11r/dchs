@@ -549,6 +549,25 @@
                     </div>
 
                     <div id="tab_summary_base" class="content-tab is-active">
+
+                        {% if can_change_card101_emergency_status %}
+                            <!--ТИП ПРОИСШЕСТВИЯ-->
+                            <div class="field">
+                                <p class="control">
+                                    <label for="emergency_type_id">Тип происшествия</label>
+                                </p>
+                                <div class="select">
+                                    <select id="emergency_type_id" name="emergency_type_id">
+                                        <option value="">-</option>
+                                        {% for i in emergencyTypes %}
+                                            <option {% if ticket.emergency_type_id == i.id%} selected {% endif %} value="{{ i.id }}">{{ i.name }}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+
                         <div class="control">
                             <label for="kui">
                                 Номер КУИ:
