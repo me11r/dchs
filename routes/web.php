@@ -163,6 +163,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');
             Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
+            Route::get('formation-record/total-edit/word', 'FormationRecordController@saveTotalAsDocx');
         }
     );
 
@@ -318,6 +319,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
+    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
