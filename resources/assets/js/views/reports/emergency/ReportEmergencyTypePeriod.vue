@@ -27,7 +27,9 @@
                                     label="По">
                             </v-datepicker-search>
                         </div>
+
                     </div>
+
                 </div>
                 <div class="level-right">
                     <div class="level-item">
@@ -37,6 +39,19 @@
                         <a href="/reports/112-emergency-report/export/xlsx" class="button is-info">Сохранить в .XLSX</a>
                     </div>
                 </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <label>Вид ЧС</label><br>
+                    <select v-model="incidentTypeId"
+                            class="control">
+                        <option value="">-</option>
+                        <option v-for="i in incidentTypes"
+                                :key="`incident_type_id_${i.id}`"
+                                :value="i.id">{{ i.name }}</option>
+                    </select>
+                </div>
+
             </div>
         </div>
 
@@ -80,14 +95,19 @@
         props: {
             records: {
                 type: Array,
-                default: () => { return [] }
-            }
+                default: () => { return []; }
+            },
+            incidentTypes: {
+                type: Array,
+                default: () => { return []; }
+            },
         },
         data: function () {
             return {
                 records_: this.records,
-                dateFrom: new Date,
+                dateFrom: new Date("01/01/2019"),
                 dateTo: new Date,
+                incidentTypeId: 0
             }
         },
         computed: {
@@ -104,10 +124,10 @@
                     params: {
                         dateFrom: moment(this.dateFrom).format('YYYY-MM-DD'),
                         dateTo: moment(this.dateTo).format('YYYY-MM-DD'),
+                        incidentTypeId: this.incidentTypeId,
                     }
                 }).then((r) => {
                     this.records_ = r.data.records;
-                    console.dir(r.data);
                 });
             }
         },
@@ -116,6 +136,9 @@
                 this.changeDate();
             },
             'dateFrom'() {
+                this.changeDate();
+            },
+            'incidentTypeId'() {
                 this.changeDate();
             },
         }
