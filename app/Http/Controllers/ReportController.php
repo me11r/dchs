@@ -728,18 +728,52 @@ class ReportController extends AuthorizedController
         $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
         $incidentTypeId = $request->incidentTypeId;
 
-        $currentYear = now()->year;
         $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo]);
+        $data['records101'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo]);
+
         if($incidentTypeId) {
             $data['records'] = $data['records']->where('additional_incident_type_id', $incidentTypeId);
         }
+
         $data['records'] = $data['records']
             ->whereHas('emergency_type', function ($q) {
                 $q->where('name', 'ЧС');
             })
             ->with(['emergency_type','additionalAddress','additionalIncident'])
             ->get();
-        $data['year'] = $currentYear;
+
+        $data['records'] = $data['records']->map(function ($item) {
+            return [
+                'created_at' => $item->created_at->format('d.m.Y H:i'),
+                'detailed_address' => $item->detailed_address,
+                'emergency_feature' => $item->emergency_feature,
+                'dead' => $item->dead,
+                'injured' => $item->injured,
+                'additional_incident' => $item->additional_incident ? $item->additional_incident->name : '',
+            ];
+        });
+
+        $data['records101'] = $data['records101']
+            ->whereHas('emergency_type', function ($q) {
+                $q->where('name', 'ЧС');
+            })
+            ->get();
+
+        $data['records101'] = $data['records101']->map(function ($item) {
+            return [
+                'created_at' => $item->created_at->format('d.m.Y H:i'),
+                'detailed_address' => $item->detailed_address ?? $item->location,
+                'emergency_feature' => $item->ticket_result,
+                'dead' => $item->children_death_count + $item->people_death_count,
+                'injured' => $item->co2_poisoned_count + $item->ch4_poisoned_count + $item->gpt_burns_count,
+                'additional_incident' => $item->additional_incident ? $item->additional_incident->name : '',
+            ];
+        });
+
+        if($data['records101']->count()) {
+            $data['records'] = $data['records101']->merge($data['records']);
+        }
+
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
         $data['incidentTypes'] = IncidentType::all();
