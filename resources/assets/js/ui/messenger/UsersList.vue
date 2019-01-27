@@ -8,7 +8,7 @@
         </div>
         <v-user-list-row
             v-if="isLoadedList"
-            v-for="user in users"
+            v-for="user in allowedUsersToSend"
             :user="user"
             :key="user.id"
             :multiselect.sync="multiselect"
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import rights from '../../scripts/rights';
 import axios from 'axios';
 import SvgPreloader from './SvgPreloader';
 import VUserListRow from './VUserListRow';
@@ -39,6 +40,13 @@ export default {
             users: [],
             lastCheckTime: null,
         };
+    },
+    computed: {
+        allowedUsersToSend() {
+            return this.users.filter((user) => {
+                return rights.canSendMessage(user.id);
+            });
+        }
     },
     methods: {
         updateUsers: function() {
