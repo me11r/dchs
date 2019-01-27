@@ -651,6 +651,8 @@ class CardController extends AuthorizedController
             }
         }
 
+        $this->setEmergencyType($card);
+
         /*todo: отключил, слишком много места сжирает*/
         /*try{
             $this->saveLog($card->id);
@@ -757,5 +759,22 @@ class CardController extends AuthorizedController
         }
 
         return response()->json(['ok'], 200);
+    }
+
+    public function setEmergencyType(&$card)
+    {
+        // ARM-414:
+        // если в карточке 101 во вкладке "Итоги выезда", поле "результат выезда"
+        // проставляется результат "Пожар"/"отравление угарным газом"
+        // должен автоматически проставляться статус "ЧС"
+
+        $emergencyType = EmergencyType::where('name', 'ЧС')->first();
+        $tripResult = TripResult::find($card->trip_result_id);
+        $isFire = $tripResult ? in_array($tripResult->name,['Отравление угарным газом', 'Пожар']) : false;
+
+        if($emergencyType && $isFire) {
+            $card->emergency_type_id = $emergencyType->id;
+            $card->save();
+        }
     }
 }

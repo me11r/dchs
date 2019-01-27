@@ -100,6 +100,7 @@ class FormationRecordController extends Controller
                 $item->head = $airRescueReport->staff_head;
                 $item->head_count = $airRescueReport->staff_head_count;
                 $item->head_phone = $airRescueReport->staff_head_phone;
+                $item->senior_shift_name = $airRescueReport->senior_shift_name;
                 $item->staff_total = $airRescueReport->staff_total;
                 $item->staff_action = $airRescueReport->staff_action;
                 $item->staff_duty_shift = $airRescueReport->staff_duty_shift;
