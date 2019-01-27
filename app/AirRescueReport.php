@@ -53,6 +53,7 @@ class AirRescueReport extends Model
         'staff_total',
         'staff_action',
         'staff_duty_shift',
+        'senior_shift_name',
         'staff_duty_shift_8hours',
     ];
 
