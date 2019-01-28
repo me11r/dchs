@@ -259,7 +259,7 @@
                                     :ticket-type="112"
                             ></card-notification-services>
 
-                            <table v-if="false" class="table is-expanded is-striped is-narrow is-fullwidth">
+                            <!--<table v-if="false" class="table is-expanded is-striped is-narrow is-fullwidth">
                                 <thead>
                                     <tr>
                                         <th>Службы</th>
@@ -320,7 +320,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table>-->
                         </div>
                     </div>
                     <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
