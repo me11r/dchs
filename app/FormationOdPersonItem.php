@@ -79,7 +79,7 @@ class FormationOdPersonItem extends Model
         if(isset($staff_tables[$this->table_name])){
             $staff_entity = $staff_tables[$this->table_name]::find($this->staff_id);
             #$this->staff = $staff_entity;
-            return ['name' => $staff_entity->name];
+            return ['name' => $staff_entity->name ?? null];
         }
 
         return ['name' => ''];
