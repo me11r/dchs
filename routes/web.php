@@ -161,6 +161,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('formation-record/{id}/total-update', 'FormationRecordController@totalUpdate')->name('formation-record.total-update');
             Route::match(['get', 'post'],'formation-record/staff/{date}/{ods}', 'FormationRecordController@staffCreateEdit')->name('formation-record.staff_CreateEdit');
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
+            Route::match(['get', 'post'],'formation-record/duty-persons-services/{date}', 'FormationRecordController@dutyPersonsServicesCreateEdit')->name('formation-record.dutyPersonsServicesCreateEdit_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');
             Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
             Route::get('formation-record/total-edit/word', 'FormationRecordController@saveTotalAsDocx');

@@ -42,12 +42,25 @@
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <label>Вид ЧС</label><br>
+                    <label>Вид ЧС (112 карточка)</label><br>
                     <select v-model="incidentTypeId"
                             class="control">
                         <option value="">-</option>
                         <option v-for="i in incidentTypes"
                                 :key="`incident_type_id_${i.id}`"
+                                :value="i.id">{{ i.name }}</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <label>Результат выезда (101 карточка)</label><br>
+                    <select v-model="tripResultId"
+                            class="control">
+                        <option value="">-</option>
+                        <option v-for="i in tripResults"
+                                :key="`trip_result_id_${i.id}`"
                                 :value="i.id">{{ i.name }}</option>
                     </select>
                 </div>
@@ -101,13 +114,18 @@
                 type: Array,
                 default: () => { return []; }
             },
+            tripResults: {
+                type: Array,
+                default: () => { return []; }
+            },
         },
         data: function () {
             return {
                 records_: this.records,
                 dateFrom: new Date("01/01/2019"),
                 dateTo: new Date,
-                incidentTypeId: 0
+                incidentTypeId: 0,
+                tripResultId: 0,
             }
         },
         computed: {
@@ -125,6 +143,7 @@
                         dateFrom: moment(this.dateFrom).format('YYYY-MM-DD'),
                         dateTo: moment(this.dateTo).format('YYYY-MM-DD'),
                         incidentTypeId: this.incidentTypeId,
+                        tripResultId: this.tripResultId,
                     }
                 }).then((r) => {
                     this.records_ = r.data.records;
@@ -139,6 +158,9 @@
                 this.changeDate();
             },
             'incidentTypeId'() {
+                this.changeDate();
+            },
+            'tripResultId'() {
                 this.changeDate();
             },
         }

@@ -727,12 +727,17 @@ class ReportController extends AuthorizedController
         $dateFrom = $request->input('dateFrom', (new Carbon('01/01/2019'))->format('Y-m-d'));
         $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
         $incidentTypeId = $request->incidentTypeId;
+        $tripResultId = $request->tripResultId;
 
         $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo]);
         $data['records101'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo]);
 
         if($incidentTypeId) {
             $data['records'] = $data['records']->where('additional_incident_type_id', $incidentTypeId);
+        }
+
+        if($tripResultId) {
+            $data['records101'] = $data['records101']->where('trip_result_id', $tripResultId);
         }
 
         $data['records'] = $data['records']
@@ -766,7 +771,7 @@ class ReportController extends AuthorizedController
                 'emergency_feature' => $item->ticket_result,
                 'dead' => $item->children_death_count + $item->people_death_count,
                 'injured' => $item->co2_poisoned_count + $item->ch4_poisoned_count + $item->gpt_burns_count,
-                'additional_incident' => $item->additional_incident ? $item->additional_incident->name : '',
+                'additional_incident' => $item->trip_result ? $item->trip_result->name : '',
             ];
         });
 
@@ -777,6 +782,7 @@ class ReportController extends AuthorizedController
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
         $data['incidentTypes'] = IncidentType::all();
+        $data['tripResults'] = TripResult::all();
         Cache::put('report112_emergency_data', $data, 3600);
 
         if($request->ajax()) {
