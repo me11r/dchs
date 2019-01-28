@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AirRescueReport;
 use App\Dictionary\CityArea;
 use App\DistrictManager;
+use App\DutyPersonsService;
 use App\Enums\FormationOrganisation;
 use App\Exceptions\AccessDeniedException;
 use App\FormationDistrictManager;
@@ -75,6 +76,15 @@ class FormationRecordController extends Controller
         $date = $item->date;
         $cityAreas = CityArea::all();
 
+        $dutyPersonsService = DutyPersonsService::whereDate('date',$date)->first();
+
+        $dutyPersonsServiceArr = [
+            ['name' => 'Департамент полиции 102', 'value' => $dutyPersonsService->police_dept102 ?? null],
+            ['name' => 'Скорая медицинская помощь 103', 'value' => $dutyPersonsService->ambulance103 ?? null],
+            ['name' => 'Служба газа 104', 'value' => $dutyPersonsService->gas_service104 ?? null],
+        ];
+
+
         if($formationDistrictManager){
             foreach ($cityAreas as $key => $area) {
                 foreach ($formationDistrictManager->items as $ppl) {
@@ -130,6 +140,7 @@ class FormationRecordController extends Controller
             'formationDistrictManager' => $formationDistrictManager,
             'dutyShiftItems' => $dutyShiftItems,
             'formationRecords' => $items,
+            'dutyPersonsServiceArr' => $dutyPersonsServiceArr,
         ];
 
         Cache::put('formation_record_journal_data', $data, 3600);
@@ -140,6 +151,7 @@ class FormationRecordController extends Controller
             ->with('cityAreas', $cityAreas)
             ->with('formationDistrictManager', $formationDistrictManager)
             ->with('dutyShiftItems', $dutyShiftItems)
+            ->with('dutyPersonsServiceArr', $dutyPersonsServiceArr)
             ->with('items', $items);
     }
 
@@ -251,6 +263,31 @@ class FormationRecordController extends Controller
         }
 
         return \view('formation-record.district-managers.create-edit', $data);
+    }
+
+    public function dutyPersonsServicesCreateEdit(Request $request, $date)
+    {
+        $data['report'] = DutyPersonsService::whereDate('date', $date)->first();
+        $data['date'] = $date;
+
+        if($request->isMethod('post')){
+
+            $this->hasRightToEdit();
+
+            $report = DutyPersonsService::updateOrCreate([
+                'date' => $request->date
+            ],[
+                'date' => $request->date,
+                'police_dept102' => $request->police_dept102,
+                'ambulance103' => $request->ambulance103,
+                'gas_service104' => $request->gas_service104,
+            ]);
+
+            return back();
+
+        }
+
+        return \view('formation-record.duty-persons-services.create-edit', $data);
     }
 
     public function approve(Request $request, $id)

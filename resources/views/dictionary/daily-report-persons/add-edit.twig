@@ -38,7 +38,7 @@
 
                     <div class="field">
                         <label for="type">Вид отчета</label>
-                        <select required name="type" id="type" class="select">
+                        <select required name="report_type" id="report_type" class="select">
                             {% for key, item in reportTypes %}
                                 <option {{ key == record.report_type|default(0) ? 'selected' : '' }} value="{{ key }}">{{ item }}</option>
                             {% endfor %}

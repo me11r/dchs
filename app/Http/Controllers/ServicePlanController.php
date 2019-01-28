@@ -74,7 +74,7 @@ class ServicePlanController extends Controller
         else{
             $servicePlan = Ticket101ServicePlan::updateOrCreate([
                 'service_type_id' => $request->service_id,
-                'card_id' => $request->card_id,
+                'card112_id' => $request->card_id,
             ],[
                 'service_type_id' => $request->service_id,
                 'card112_id' => $request->card_id,

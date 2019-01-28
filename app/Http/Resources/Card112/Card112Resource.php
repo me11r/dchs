@@ -63,6 +63,7 @@ class Card112Resource extends JsonResource
             'notification_message' => (string) $this->notification_message,
             'emergency_type_id' => (int) $this->emergency_type_id,
             'emergency_feature' => (string) $this->emergency_feature,
+            'service_plans' => $this->service_plans,
         ];
     }
 }

@@ -6,6 +6,7 @@
         icon="clock"
         icon-pack="far"
         type="text"
+        :ref="'call_time_picker'"
         editable
         :readonly="readOnly">
         <div class="field is-grouped" style="justify-content: space-between">
@@ -48,7 +49,6 @@ export default {
     computed: {
         computedDate() {
             const cdate = this.time;
-            console.dir(cdate)
             let dt = new Date('01-01-1970 00:00');
             if (cdate !== '') {
                 const tm = cdate.split(':');

@@ -1,0 +1,45 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="level" style="margin-top: 20px">
+            <div class="level-left">
+                <h4 class="title">Дежурная смена служб взаимодействия от {{ report.date ?? 'now'|date('d-m-Y') }}</h4>
+            </div>
+        </div>
+
+        <form action="" method="post">
+            {{ csrf_field() }}
+            <input type="hidden" name="date" value="{{ date }}"/>
+            <fieldset>
+                <legend>Ф.И.О. дежурного</legend>
+
+                <div class="field">
+                    <label for="field_2_1">Департамент полиции 102</label>
+                    <input type="text" class="input" value="{{ report.police_dept102 ?? null }}" name="police_dept102">
+                </div>
+                <div class="field">
+                    <label for="field_2_1">Скорая медицинская помощь 103</label>
+                    <input type="text" class="input" value="{{ report.ambulance103 ?? null }}" name="ambulance103">
+                </div>
+                <div class="field">
+                    <label for="field_2_1">Служба газа 104</label>
+                    <input type="text" class="input" value="{{ report.gas_service104 ?? null }}" name="gas_service104">
+                </div>
+
+            </fieldset>
+
+            <div class="panel"
+                 style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </form>
+
+    </div>
+{% endblock content %}
