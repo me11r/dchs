@@ -103,6 +103,30 @@
                     </div>
                     <div class="level-left">
                         <div class="column">
+                            <h6 class="title" style="padding: 3px 15px">Дежурная смена служб взаимодействия</h6>
+                            <br>
+                            <table class="formation-record-table">
+                                <thead>
+                                <tr>
+                                    <th>Служба взаимодействия</th>
+                                    <th>ФИО дежурного</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in dutyPersonsServiceArr %}
+                                        <tr>
+                                            <td>{{ i.name }}</td>
+                                            <td>{{ i.value}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="column"></div>
+
+                    </div>
+                    <div class="level-left">
+                        <div class="column">
                             <h6 class="title" style="padding: 3px 15px">Ответственные по районным отделам ЧС г.Алматы</h6>
                             <br>
                             <table class="formation-record-table">

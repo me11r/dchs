@@ -42,6 +42,11 @@
                             </form>
                         {% endif %}
 
+                        <a href="/formation-record/duty-persons-services/{{ item.date|date('Y-m-d') }}"
+                           class="button is-small is-basic">
+                            <i class="fas fa-pencil-alt"></i>&nbsp;
+                            Редактировать дежурных СВ
+                        </a>
                         <a href="/formation-record/district-managers/{{ item.date|date('Y-m-d') }}"
                            class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
