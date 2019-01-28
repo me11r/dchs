@@ -164,6 +164,19 @@ class Card112Controller extends Controller
     {
         $ticket101_service_plans = Ticket101ServicePlan::where('card112_id', $id)->get();
         $serviceTypes = ServiceType::orderBy('name')->get(['id', 'name']);
+        $model = new Card112Resource($this->repository->where('id', '=', $id)
+            ->with([
+                'serviceReactions',
+                'service_plans',
+                'service_plans.service_type',
+                'chronology',
+                'notificationGroups',
+                'popupNotifications',
+                'popupNotifications.user',
+                'popupNotifications.status',
+                'popupNotifications.group'
+            ])
+            ->first());
 
         return View::make('card112.edit')
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
@@ -174,17 +187,7 @@ class Card112Controller extends Controller
             ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('currentTabIndex', $request->input('currentTabIndex', 0))
             ->with('emergencyTypes', EmergencyType::all())
-            ->with('model', new Card112Resource($this->repository->where('id', '=', $id)
-                ->with([
-                    'serviceReactions',
-                    'chronology',
-                    'notificationGroups',
-                    'popupNotifications',
-                    'popupNotifications.user',
-                    'popupNotifications.status',
-                    'popupNotifications.group'
-                ])
-                ->first()));
+            ->with('model', $model);
     }
 
     public function update(Request $request, $id)

@@ -452,10 +452,16 @@
                         <div id="ticket101add_popup_notifications"></div>
                     </div>
 
-                    <div class="panels is-hidden index-1">
+                    <div class="panels is-hidden index-1" id="card-notification-services">
                         {% if ticket and ticket.id %}
-                            {% include 'card/elements/notification-services.twig' with {ticket: ticket} %}
+                            <card-notification-services
+                                    :ticket="{{ ticket }}"
+                            ></card-notification-services>
                         {% endif %}
+
+                        {#{% if ticket and ticket.id %}#}
+                            {#{% include 'card/elements/notification-services.twig' with {ticket: ticket} %}#}
+                        {#{% endif %}#}
                     </div>
                 </div>
                 <div id="tab_chronology" class="is-hidden">

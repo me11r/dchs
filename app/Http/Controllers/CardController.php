@@ -278,7 +278,6 @@ class CardController extends AuthorizedController
                 'popup_notifications.status',
                 'popup_notifications.group',
                 'notification_groups',
-                'notifications.service',
                 'operational_card',
                 'operational_plan.special_plans',
                 'service_plans',
@@ -713,8 +712,8 @@ class CardController extends AuthorizedController
         foreach ($servicePlans as $id => $data) {
             $record = Ticket101ServicePlan::find($id);
             $record->name_accepted = $data['name'] ?? null;
-            $record->dispatched_time = $data['message_time'] ?? null;
-            $record->arrive_time = $data['arrive_time'] ?? null;
+            $record->dispatched_time = $data['message_time'] ? Carbon::parse($data['message_time']) : null;
+            $record->arrive_time = $data['arrive_time'] ? Carbon::parse($data['arrive_time']) : null;
             $record->save();
         }
     }
@@ -768,13 +767,15 @@ class CardController extends AuthorizedController
         // проставляется результат "Пожар"/"отравление угарным газом"
         // должен автоматически проставляться статус "ЧС"
 
-        $emergencyType = EmergencyType::where('name', 'ЧС')->first();
-        $tripResult = TripResult::find($card->trip_result_id);
-        $isFire = $tripResult ? in_array($tripResult->name,['Отравление угарным газом', 'Пожар']) : false;
+        if($card) {
+            $emergencyType = EmergencyType::where('name', 'ЧС')->first();
+            $tripResult = TripResult::find($card->trip_result_id);
+            $isFire = $tripResult ? in_array($tripResult->name,['Отравление угарным газом', 'Пожар']) : false;
 
-        if($emergencyType && $isFire) {
-            $card->emergency_type_id = $emergencyType->id;
-            $card->save();
+            if($emergencyType && $isFire) {
+                $card->emergency_type_id = $emergencyType->id;
+                $card->save();
+            }
         }
     }
 }

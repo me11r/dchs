@@ -530,7 +530,11 @@
                 if (ticket_id !== 0) {
                     axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
                         if (response.data.recommendations !== undefined) {
-                            // self.results_ = response.data.recommendations;
+
+                            globalBus.$emit('checkedRoadtrips', response.data.recommendations);
+
+                            // window.localStorage.setItem('checkedRoadtrips', JSON.stringify(response.data.recommendations));
+
                             response.data.recommendations.forEach((item) => {
                                 let accepted_time = 'accept_time_' + item.id;
                                 let out_time = 'out_time_' + item.id;
@@ -565,6 +569,11 @@
                             });
 
                             if (response.data.service_plans !== undefined) {
+
+                                globalBus.$emit('checkedServicePlans', response.data.service_plans);
+
+                                // window.localStorage.setItem('checkedServicePlans', JSON.stringify(response.data.service_plans));
+
                                 response.data.service_plans.forEach((item) => {
                                     let accepted_name = item.id + '_name';
                                     let message_time = item.id + '_message_time';
@@ -575,16 +584,16 @@
                                     let arrive_time_item = document.getElementById(arrive_time);
 
                                     if (accepted_name_item.value === '') {
-                                        accepted_name_item.value = item.name_accepted;
+                                        // accepted_name_item.value = item.name_accepted;
                                     }
 
                                     if (message_time_item && item.dispatched_time && message_time_item.value === '') {
-                                        message_time_item.value = item.dispatched_time;
+                                        // message_time_item.value = item.dispatched_time;
                                     }
 
-                                    if (item.arrive_time && arrive_time_item.value === '') {
-                                        arrive_time_item.value = item.arrive_time;
-                                    }
+                                    // if (item.arrive_time && arrive_time_item.value === '') {
+                                    //     // arrive_time_item.value = item.arrive_time;
+                                    // }
 
                                 });
                             }

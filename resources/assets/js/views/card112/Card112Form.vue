@@ -253,7 +253,13 @@
                         <div
                             class="panels index-1"
                             :style="{'display': servicesTabIndex === 1? 'block': 'none'}">
-                            <table class="table is-expanded is-striped is-narrow is-fullwidth">
+                            <card-notification-services
+                                    v-if="loaded"
+                                    :ticket="model"
+                                    :ticket-type="112"
+                            ></card-notification-services>
+
+                            <table v-if="false" class="table is-expanded is-striped is-narrow is-fullwidth">
                                 <thead>
                                     <tr>
                                         <th>Службы</th>
@@ -761,6 +767,7 @@ export default {
             serviceTypes: [],
             cityAreas: [],
             emergencyTypes: [],
+            loaded: false,
             model: {
                 location: '',
                 city_area_id: ''
@@ -820,35 +827,37 @@ export default {
                             let servicePlans = response.data.servicePlans;
 
                             if (servicePlans !== undefined) {
+                                globalBus.$emit('checkedServicePlans', servicePlans);
                                 servicePlans.forEach((plan) => {
                                     self.serviceTypes.forEach((serviceType) => {
                                         if (plan.service_type_id === serviceType.id) {
+
                                             self.services[serviceType.id] = {
                                                 dispatched_time: plan.dispatched_time, //|| moment().format('d-m-Y'),
                                                 created_at: plan.dispatched_time,// || moment().format('d-m-Y'),
                                                 name_accepted: plan.name_accepted || '',
                                                 arrive_time: plan.arrive_time || ''
                                             };
-                                            let name = document.getElementById(serviceType.id + '_name');
-                                            let created_at = document.getElementById(serviceType.id + '_created_at');
-                                            let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
-                                            let dispatched_time = document.getElementById(serviceType.id + '_dispatched_time');
-
-                                            if (name.value === '') {
-                                                name.value = plan.name_accepted || '';
-                                            }
-
-                                            if (created_at.value === '') {
-                                                created_at.value = plan.dispatched_time || '';
-                                            }
-
-                                            if (arrived_at.value === '') {
-                                                arrived_at.value = plan.arrive_time || '';
-                                            }
-
-                                            if (dispatched_time.value === '') {
-                                                dispatched_time.value = plan.dispatched_time || '';
-                                            }
+                                            // let name = document.getElementById(serviceType.id + '_name');
+                                            // let created_at = document.getElementById(serviceType.id + '_created_at');
+                                            // let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
+                                            // let dispatched_time = document.getElementById(serviceType.id + '_dispatched_time');
+                                            //
+                                            // if (name.value === '') {
+                                            //     name.value = plan.name_accepted || '';
+                                            // }
+                                            //
+                                            // if (created_at.value === '') {
+                                            //     created_at.value = plan.dispatched_time || '';
+                                            // }
+                                            //
+                                            // if (arrived_at.value === '') {
+                                            //     arrived_at.value = plan.arrive_time || '';
+                                            // }
+                                            //
+                                            // if (dispatched_time.value === '') {
+                                            //     dispatched_time.value = plan.dispatched_time || '';
+                                            // }
                                         }
                                     });
                                 });
@@ -1030,6 +1039,8 @@ export default {
                         });
                     });
                 }
+
+                this.loaded = true;
 
                 this.checkServices();
                 window.addEventListener('storage', (event) => {
