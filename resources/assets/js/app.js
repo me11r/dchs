@@ -109,6 +109,7 @@ Vue.component('quakes-form', require('./views/quakes/CreateEditForm'));
 Vue.component('messenger-permissions', require('./views/messenger-permissions/MessengerPermissions'));
 Vue.component('report-emergency-type-period', require('./views/reports/emergency/ReportEmergencyTypePeriod'));
 Vue.component('card-notification-services', require('./components/ticket101/NotificationServices'));
+Vue.component('norm-psp-form', require('./components/norms-psp/CreateEdit'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
