@@ -16,6 +16,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('messenger-rights', 'AjaxController@getMessengerPermissions');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
+        Route::get('roadtrips-103', 'AjaxController@getRoadtrip103Plans');
+        Route::get('roadtrips-102', 'AjaxController@getRoadtrip102Plans');
         Route::get('service-plans', 'AjaxController@getServicePlans');
         Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
     });
@@ -75,6 +77,31 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hydrants', 'CardController@hydrants')->name('hydrants')->middleware(['right:CAN_ACCESS_HYDRANT']);
 
     Route::resource('/card112', 'Card112Controller');
+
+    Route::resource('/card103', 'Card103Controller');
+    Route::post('/card103/send-department', 'Card103Controller@sendDepartment');
+    Route::post('/card103/service-plans/check', 'Card103Controller@checkServicePlans');
+    Route::group(['prefix' => 'roadtrip-103'], function () {
+        Route::get('/', 'Roadtrip103Controller@index');
+        Route::get('{id}', 'Roadtrip103Controller@show');
+        Route::post('/accept/{id}', 'Roadtrip103Controller@accept')->where('id', '[0-9]+');
+        Route::post('/dispatch', 'Roadtrip103Controller@postDispatch');
+        Route::post('/arrived', 'Roadtrip103Controller@postArrived');
+        Route::post('/return', 'Roadtrip103Controller@postReturn');
+    });
+
+    Route::resource('/card102', 'Card102Controller');
+    Route::post('/card102/send-department', 'Card102Controller@sendDepartment');
+    Route::post('/card102/service-plans/check', 'Card102Controller@checkServicePlans');
+    Route::group(['prefix' => 'roadtrip-102'], function () {
+        Route::get('/', 'Roadtrip102Controller@index');
+        Route::get('{id}', 'Roadtrip102Controller@show');
+        Route::post('/accept/{id}', 'Roadtrip102Controller@accept')->where('id', '[0-9]+');
+        Route::post('/dispatch', 'Roadtrip102Controller@postDispatch');
+        Route::post('/arrived', 'Roadtrip102Controller@postArrived');
+        Route::post('/return', 'Roadtrip102Controller@postReturn');
+    });
+
 //    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
@@ -161,8 +188,10 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('formation-record/{id}/total-update', 'FormationRecordController@totalUpdate')->name('formation-record.total-update');
             Route::match(['get', 'post'],'formation-record/staff/{date}/{ods}', 'FormationRecordController@staffCreateEdit')->name('formation-record.staff_CreateEdit');
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
+            Route::match(['get', 'post'],'formation-record/duty-persons-services/{date}', 'FormationRecordController@dutyPersonsServicesCreateEdit')->name('formation-record.dutyPersonsServicesCreateEdit_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');
             Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
+            Route::get('formation-record/total-edit/word', 'FormationRecordController@saveTotalAsDocx');
         }
     );
 
@@ -210,14 +239,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dictionaries', 'DictionaryController@getIndex');
 
     Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName');
-        //->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
     Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName');
-        //->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
-    Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')
-//        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments')
-        ->where('dict_id', '[0-9]+');
+    Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')->where('dict_id', '[0-9]+');
     Route::post('/dictionaries/{name}/create-edit', 'DictionaryController@postEditCreateByName');
-//        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
 
     Route::get('/dictionaries/list/{dict_id}', 'DictionaryController@getList')->where('dict_id', '[0-9]+');
     Route::get('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@getEdit')
@@ -316,6 +340,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_CREATE']);
         Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_DELETE']);
     });
+
+    Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
+    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){

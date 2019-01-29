@@ -4,6 +4,7 @@ namespace App\Models\Card112;
 
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\EmergencyType;
 use App\Models\IncidentType;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
@@ -120,6 +121,7 @@ class Card112 extends Model
         'additional_comment',
         'city_area_id',
         'location',
+        'detailed_address',
         'injured_hard',
         'poisoned',
         'saved',
@@ -128,7 +130,9 @@ class Card112 extends Model
         'additional_incident_place',
         'reason',
         'chronology_start_time',
-        'chronology_end_time'
+        'chronology_end_time',
+        'emergency_feature',
+        'emergency_type_id',
     ];
 
     /**
@@ -137,6 +141,11 @@ class Card112 extends Model
     public function street()
     {
         return $this->hasOne(Street::class, 'id', 'street_id');
+    }
+
+    public function emergency_type()
+    {
+        return $this->belongsTo(EmergencyType::class, 'emergency_type_id');
     }
 
     /**
@@ -333,5 +342,15 @@ class Card112 extends Model
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
         return $q->whereBetween('created_at', [$from, $to]);
+    }
+
+    public function setDetailedAddressAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['detailed_address'] = $this->attributes['location'];
+        }
+        else {
+            $this->attributes['detailed_address'] = $value;
+        }
     }
 }

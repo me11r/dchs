@@ -272,7 +272,6 @@ class RoadtripController extends AuthorizedController
 
     public function postReturn(Request $request)
     {
-        $f = $request->all();
         $result = FireDepartmentResult::find($request->dept_id);
         $result->ret_time = now()->format('H:i:s');
         $result->save();
@@ -281,7 +280,6 @@ class RoadtripController extends AuthorizedController
 
     public function postRecommend(Request $request)
     {
-        $f = $request->all();
         $result = FireDepartmentResult::find($request->id);
         $result->recommended = $request->recommended;
         $result->save();

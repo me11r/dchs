@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AirRescueReport;
 use App\Dictionary\CityArea;
 use App\DistrictManager;
+use App\DutyPersonsService;
 use App\Enums\FormationOrganisation;
 use App\Exceptions\AccessDeniedException;
 use App\FormationDistrictManager;
@@ -14,9 +15,11 @@ use App\Models\Staff;
 use App\OperDutyShift;
 use App\OperDutyShiftStaff;
 use App\OperDutyShiftStaffItem;
+use App\Services\ReportExport\FormationRecordWordExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 
 class FormationRecordController extends Controller
@@ -73,6 +76,15 @@ class FormationRecordController extends Controller
         $date = $item->date;
         $cityAreas = CityArea::all();
 
+        $dutyPersonsService = DutyPersonsService::whereDate('date',$date)->first();
+
+        $dutyPersonsServiceArr = [
+            ['name' => 'Департамент полиции 102', 'value' => $dutyPersonsService->police_dept102 ?? null],
+            ['name' => 'Скорая медицинская помощь 103', 'value' => $dutyPersonsService->ambulance103 ?? null],
+            ['name' => 'Служба газа 104', 'value' => $dutyPersonsService->gas_service104 ?? null],
+        ];
+
+
         if($formationDistrictManager){
             foreach ($cityAreas as $key => $area) {
                 foreach ($formationDistrictManager->items as $ppl) {
@@ -98,6 +110,7 @@ class FormationRecordController extends Controller
                 $item->head = $airRescueReport->staff_head;
                 $item->head_count = $airRescueReport->staff_head_count;
                 $item->head_phone = $airRescueReport->staff_head_phone;
+                $item->senior_shift_name = $airRescueReport->senior_shift_name;
                 $item->staff_total = $airRescueReport->staff_total;
                 $item->staff_action = $airRescueReport->staff_action;
                 $item->staff_duty_shift = $airRescueReport->staff_duty_shift;
@@ -120,12 +133,25 @@ class FormationRecordController extends Controller
             }
         }
 
+        $data = [
+            'formationMainRecord' => $item,
+            'fields' => $fields,
+            'cityAreas' => $cityAreas,
+            'formationDistrictManager' => $formationDistrictManager,
+            'dutyShiftItems' => $dutyShiftItems,
+            'formationRecords' => $items,
+            'dutyPersonsServiceArr' => $dutyPersonsServiceArr,
+        ];
+
+        Cache::put('formation_record_journal_data', $data, 3600);
+
         return View::make('formation-record.total-edit')
             ->with('item', $item)
             ->with('fields', $fields)
             ->with('cityAreas', $cityAreas)
             ->with('formationDistrictManager', $formationDistrictManager)
             ->with('dutyShiftItems', $dutyShiftItems)
+            ->with('dutyPersonsServiceArr', $dutyPersonsServiceArr)
             ->with('items', $items);
     }
 
@@ -239,6 +265,31 @@ class FormationRecordController extends Controller
         return \view('formation-record.district-managers.create-edit', $data);
     }
 
+    public function dutyPersonsServicesCreateEdit(Request $request, $date)
+    {
+        $data['report'] = DutyPersonsService::whereDate('date', $date)->first();
+        $data['date'] = $date;
+
+        if($request->isMethod('post')){
+
+            $this->hasRightToEdit();
+
+            $report = DutyPersonsService::updateOrCreate([
+                'date' => $request->date
+            ],[
+                'date' => $request->date,
+                'police_dept102' => $request->police_dept102,
+                'ambulance103' => $request->ambulance103,
+                'gas_service104' => $request->gas_service104,
+            ]);
+
+            return back();
+
+        }
+
+        return \view('formation-record.duty-persons-services.create-edit', $data);
+    }
+
     public function approve(Request $request, $id)
     {
         $formationRecord = FormationRecord::find($id);
@@ -268,5 +319,20 @@ class FormationRecordController extends Controller
         }
 
         return true;
+    }
+
+    public function saveTotalAsDocx()
+    {
+        if ($data = Cache::get('formation_record_journal_data')){
+            $exportService = new FormationRecordWordExport($data);
+            $writer = $exportService->getWriter();
+            $date = $data['formationMainRecord']->created_at->addDay()->format('d.m.Y');
+            $fileName = 'Журнал строевых записок ДЧС г.Алматы (' . $date . ').docx';
+
+            $writer->save(public_path($fileName));
+            return response()->download(public_path($fileName));
+        }
+
+        return dd('Кеш не заполнен');
     }
 }

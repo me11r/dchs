@@ -107,6 +107,7 @@ class FormationRecord extends Model
         'head_phone',
         'staff_total',
         'staff_action',
+        'senior_shift_name',
         'staff_duty_shift',
         'staff_duty_shift_8hours',
 

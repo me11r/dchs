@@ -8,6 +8,7 @@ use App\Models\Card112\Card112ServiceReaction;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
 use App\Ticket101ServicePlan;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class EloquentCard112Repository extends Repository implements Card112RepositoryInterface
@@ -33,7 +34,8 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
         /*службы взаимодействия - создание шаблонов путевых листов*/
         foreach ($services as $service) {
             Ticket101ServicePlan::create([
-                'card112_id' => $card112->id
+                'card112_id' => $card112->id,
+                'service_type_id' => $service,
             ]);
         }
 
@@ -105,16 +107,11 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
     public function updateServicePlans($servicePlans, $cardId) :void
     {
         foreach ($servicePlans as $id => $data) {
-            $record = Ticket101ServicePlan::updateOrCreate([
-                'service_type_id' => $id,
-                'card112_id' => $cardId,
-            ],[
-                'service_type_id' => $id,
-                'card112_id' => $cardId,
-                'name_accepted' => $data['name'] ?? null,
-                'dispatched_time' => $data['dispatched_time'] ?? null,
-                'arrive_time' => $data['arrive_time'] ?? null,
-            ]);
+            $record = Ticket101ServicePlan::find($id);
+            $record->name_accepted = $data['name'] ?? null;
+            $record->dispatched_time = $data['message_time'] ? Carbon::parse($data['message_time']) : null;
+            $record->arrive_time = $data['arrive_time'] ? Carbon::parse($data['arrive_time']) : null;
+            $record->save();
         }
     }
 }

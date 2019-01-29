@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\FireDepartment;
 use App\Http\Resources\HydrantResource;
 use App\Repositories\Contracts\HydrantRepositoryInterface;
 use Illuminate\Http\Request;
@@ -18,8 +19,13 @@ class HydrantController extends Controller
 
     public function index()
     {
-        $items = $this->repository->with(['fireDepartment'])->get();
-        return HydrantResource::collection($items);
+        $hydrants = $this->repository->with(['fireDepartment'])->get();
+
+//        return HydrantResource::collection($hydrants);
+
+        $fireDepts = FireDepartment::all();
+
+        return response()->json(['hydrants' => $hydrants, 'fireDepartments' => $fireDepts]);
     }
 
     public function create()

@@ -28,6 +28,7 @@ class HydrantResource extends JsonResource
         return [
             'id' => (int)$this->id,
             'address' => (string)$this->address,
+            'fire_department' => $department,
             'specification' => (string)$this->specification,
             'fire_department_id' => (int)$this->fire_department_id,
             'lat' => (float)$this->lat,

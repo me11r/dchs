@@ -101,6 +101,7 @@ class FormationController extends AuthorizedController
         $data['total_persons_available_count'] = $data['report']->staff_action;
         $data['total_persons_oper_count'] = $data['report']->staff_duty_shift;
         $data['total_persons_oper_8hours_count'] = $data['report']->staff_duty_shift_8hours;
+        $data['senior_shift_name'] = $data['report']->senior_shift_name;
 
         $data['tech_active'] = $data['report']->tech()->status('action')->get();
         $data['tech_reserve'] = $data['report']->tech()->status('reserve')->get();
@@ -146,6 +147,7 @@ class FormationController extends AuthorizedController
         $report->staff_total = $request->staff_total;
         $report->staff_action = $request->staff_action;
         $report->staff_duty_shift = $request->staff_duty_shift;
+        $report->senior_shift_name = $request->senior_shift_name;
         $report->staff_duty_shift_8hours = $request->staff_duty_shift_8hours;
         $report->staff_head = $request->staff_head;
         $report->staff_head_count = $request->staff_head_count;
