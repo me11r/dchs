@@ -4,7 +4,7 @@
         v-if="formDataExists">
         <h4
             class="title"
-            style="padding: 3px 15px">{{ model.id ? 'Редактирование' : 'Добавление' }}: Карточка 103</h4>
+            style="padding: 3px 15px">{{ model.id ? 'Редактирование' : 'Добавление' }}: Карточка 102</h4>
         <form
             :action="this.formRoute"
             id="card102_form"
