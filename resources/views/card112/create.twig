@@ -5,6 +5,7 @@
     <script>
         window.card112FormData = {
             streets: {{ streets | json_encode() | raw }},
+            emergencyTypes: {{ emergencyTypes | json_encode() | raw }},
             cityAreas: {{ cityAreas | json_encode() | raw }},
             incidentTypes: {{ incidentTypes | json_encode() | raw }},
             serviceTypes: {{ serviceTypes | json_encode() | raw }},
@@ -16,6 +17,5 @@
             formRoute: '{{ route('card112.store') }}'
         };
     </script>
-    <div id="card112-form-block">
-    </div>
+    <div id="card112-form-block"></div>
 {% endblock content %}

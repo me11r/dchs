@@ -13,6 +13,7 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
+use App\EmergencyType;
 use App\EventInfo;
 use App\EventInfoArrived;
 use App\FireDepartment;
@@ -211,6 +212,8 @@ class CardController extends AuthorizedController
         $operational_cards = OperationalCard::all();
         $special_plans = SpecialPlan::all();
 
+        $this->set('can_change_card101_emergency_status', Auth::user()->hasRight('CAN_CHANGE_CARD101_EMERGENCY_STATUS'));
+        $this->set('emergencyTypes', EmergencyType::all());
         $this->set('wall_materials', $wall_materials);
         $this->set('notification_get_back', session()->pull('notification.get_back', 0));
         $this->set('wall_materials', $wall_materials);
@@ -275,7 +278,6 @@ class CardController extends AuthorizedController
                 'popup_notifications.status',
                 'popup_notifications.group',
                 'notification_groups',
-                'notifications.service',
                 'operational_card',
                 'operational_plan.special_plans',
                 'service_plans',
@@ -538,134 +540,117 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
-        $data = $request->except([
-            'ph',
-            'departments_to_ride',
-            'time_arrive',
-            'on_way',
-            'file_1',
-            'file_2',
-            'file_3',
-            'file_4',
-            'hq',
-            'notification_services',
-            '00:00', // дефолтное названия инпута из компонента timepicker
-        ]);
-
-        $deptsToGetBack = collect([]);
-        $r = $request->all();
-
-        unset($data['comeback']);
-        $back = '/card/101';
-
-        $comeback = $request->get('comeback', false);
-        $otherRecords = array_get($data, 'other_records', []);
-        unset($data['other_records']);
-
-        if ($request->operational_plan_id == 'NaN' || is_null($request->operational_plan_id)) {
-            $data['operational_plan_id'] = 0;
-        }
-
-        if ($request->fire_level_id == 'NaN' || is_null($request->fire_level_id)) {
-            $data['fire_level_id'] = 1;
-        }
-
-        if ($request->fire_department_id == 'NaN' || is_null($request->fire_department_id)) {
-            $data['fire_department_id'] = 0;
-        }
-
-        /** @var Ticket101 $card */
-        $card = Ticket101::findOrNew($card_id);
-
-        /*при создании карточки единожды привязываемся к строевой записке, во избежание дублей высылки*/
-        if(!$card->id){
-            $data['formation_report_id'] = FormationReport::approved()
-                ->has('people_reports')
-                ->max('id');
-        }
-
-        $canEditTicket = $card->canEditTicket();
-        if (!$canEditTicket && !Auth::user()->hasRight('CARD101_EDIT_CLOSED')) {
-
-            if ($request->ajax()) {
-                return response()->json('ok', 403);
+        if (Auth::user()->hasRight('CAN_EDIT_REQUEST')) {
+            $data = $request->except([
+                'ph',
+                'departments_to_ride',
+                'time_arrive',
+                'on_way',
+                'file_1',
+                'file_2',
+                'file_3',
+                'file_4',
+                'hq',
+                'notification_services',
+                '00:00', // дефолтное названия инпута из компонента timepicker
+            ]);
+            $deptsToGetBack = collect([]);
+            $r = $request->all();
+            unset($data['comeback']);
+            $back = '/card/101';
+            $comeback = $request->get('comeback', false);
+            $otherRecords = array_get($data, 'other_records', []);
+            unset($data['other_records']);
+            if ($request->operational_plan_id == 'NaN' || is_null($request->operational_plan_id)) {
+                $data['operational_plan_id'] = 0;
             }
-            return redirect('/card/add101/')->with('_message', ['type' => 'error', 'text' => 'Данные не могут быть сохранены. Архивная карточка']);
-        }
+            if ($request->fire_level_id == 'NaN' || is_null($request->fire_level_id)) {
+                $data['fire_level_id'] = 1;
+            }
+            if ($request->fire_department_id == 'NaN' || is_null($request->fire_department_id)) {
+                $data['fire_department_id'] = 0;
+            }
+            /** @var Ticket101 $card */
+            $card = Ticket101::findOrNew($card_id);/*при создании карточки единожды привязываемся к строевой записке, во избежание дублей высылки*/
+            if (!$card->id) {
+                $data['formation_report_id'] = FormationReport::approved()
+                    ->has('people_reports')
+                    ->max('id');
+            }
+            $canEditTicket = $card->canEditTicket();
+            if (!$canEditTicket && !Auth::user()->hasRight('CARD101_EDIT_CLOSED')) {
 
-        /*если поменяли уровень пожара, новые рекомендации */
-        if ($card->fire_level_id !== null) {
+                if ($request->ajax()) {
+                    return response()->json('ok', 403);
+                }
+                return redirect('/card/add101/')->with('_message', ['type' => 'error', 'text' => 'Данные не могут быть сохранены. Архивная карточка']);
+            }/*если поменяли уровень пожара, новые рекомендации */
+            if ($card->fire_level_id !== null) {
 
-            /* повышаем ранг*/
-            if ($card->fire_level_id < $request->fire_level_id) {
-                $card->results()->whereNull('out_time')->delete();
-                $card->road_trip_plans()->where('is_accepted', false)->delete();
-            } /* понижаем ранг*/
-            elseif ($card->fire_level_id > $request->fire_level_id) {
-                $deptsToDelete = $card->results()->whereNull('out_time'); //подразделение, которые еще не выехали, нужно удалить
+                /* повышаем ранг*/
+                if ($card->fire_level_id < $request->fire_level_id) {
+                    $card->results()->whereNull('out_time')->delete();
+                    $card->road_trip_plans()->where('is_accepted', false)->delete();
+                } /* понижаем ранг*/
+                elseif ($card->fire_level_id > $request->fire_level_id) {
+                    $deptsToDelete = $card->results()->whereNull('out_time'); //подразделение, которые еще не выехали, нужно удалить
 
-                //подразделение, которые уже выехали, но, возможно не входят в дальнейшие рекомендации,
-                //нужно вернуть
-                $deptsToGetBack = $card->results()
-                    ->whereNotNull('out_time')
+                    //подразделение, которые уже выехали, но, возможно не входят в дальнейшие рекомендации,
+                    //нужно вернуть
+                    $deptsToGetBack = $card->results()
+                        ->whereNotNull('out_time')
+                        ->recommended()
+                        ->get();
+
+                    $deptsToDelete->delete();
+                    $card->road_trip_plans()->where('is_accepted', false)->delete();
+                }
+            }
+            $card->fill($data);
+            $card->save();
+            $this->saveOtherRecords($card, $otherRecords);
+            if ($card_id) {
+                $this->updateNotificationServices($request->input('notification_services', []));
+            } else {
+                $this->createNotificationServices($card);
+            }
+            $this->createServicePlans($card);
+            $this->updateServicePlans($request->input('notification_services', []));
+            $this->recommend($request, $card);
+            $this->saveHqRides($request, $card);//если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
+            // надо вернуть
+            if ($deptsToGetBack->count()) {
+                $getBackArray = $deptsToGetBack->pluck('tech_id')->toArray();
+
+                $alreadyRecommended = $card->results()
                     ->recommended()
-                    ->get();
+                    ->whereIn('tech_id', $getBackArray)
+                    ->markToGetBack();
 
-                $deptsToDelete->delete();
-                $card->road_trip_plans()->where('is_accepted', false)->delete();
+                session(['notification.get_back' => $alreadyRecommended]);
+            }
+            $this->saveArriveTimes($request);
+            $this->saveFiles($card, $request);
+            if ($card->trip_result_id) {
+                $this->saveAnalytics($card);
+            }
+            $card_type = ($ticket_other->drill_type ?? null) == null ? '' : '/drill';
+            if ($comeback) {
+                $back = "/card/add101/{$card->id}{$card_type}#return={$comeback}";
+            } else {
+                $back = "/card/add101/{$card->id}{$card_type}";
             }
         }
 
-//        unset($data['notification_services']);
-
-        $card->fill($data);
-        $card->save();
-
-        $this->saveOtherRecords($card, $otherRecords);
-
-        $f = $request->input('notification_services', []);
-
-        if ($card_id) {
-            $this->updateNotificationServices($request->input('notification_services', []));
-        } else {
-            $this->createNotificationServices($card);
+        if(Auth::user()->hasRight('CAN_CHANGE_CARD101_EMERGENCY_STATUS')) {
+            $card = Ticket101::find($card_id);
+            if ($card) {
+                $card->emergency_type_id = $request->emergency_type_id;
+                $card->save();
+            }
         }
 
-        $this->createServicePlans($card);
-        $this->updateServicePlans($request->input('notification_services', []));
-
-        $this->recommend($request, $card);
-
-        $this->saveHqRides($request, $card);
-
-        //если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
-        // надо вернуть
-        if($deptsToGetBack->count()){
-            $getBackArray = $deptsToGetBack->pluck('tech_id')->toArray();
-
-            $alreadyRecommended = $card->results()
-                ->recommended()
-                ->whereIn('tech_id', $getBackArray)
-                ->markToGetBack();
-
-            session(['notification.get_back' => $alreadyRecommended]);
-        }
-
-        $this->saveArriveTimes($request);
-
-        $this->saveFiles($card, $request);
-
-        if($card->trip_result_id){
-            $this->saveAnalytics($card);
-        }
-
-        $card_type = ($ticket_other->drill_type ?? null) ==  null ? ''  : '/drill';
-        if ($comeback) {
-            $back = "/card/add101/{$card->id}{$card_type}#return={$comeback}";
-        }
-        else{
-            $back = "/card/add101/{$card->id}{$card_type}";
-        }
+        $this->setEmergencyType($card);
 
         /*todo: отключил, слишком много места сжирает*/
         /*try{
@@ -727,8 +712,8 @@ class CardController extends AuthorizedController
         foreach ($servicePlans as $id => $data) {
             $record = Ticket101ServicePlan::find($id);
             $record->name_accepted = $data['name'] ?? null;
-            $record->dispatched_time = $data['message_time'] ?? null;
-            $record->arrive_time = $data['arrive_time'] ?? null;
+            $record->dispatched_time = $data['message_time'] ? Carbon::parse($data['message_time']) : null;
+            $record->arrive_time = $data['arrive_time'] ? Carbon::parse($data['arrive_time']) : null;
             $record->save();
         }
     }
@@ -773,5 +758,24 @@ class CardController extends AuthorizedController
         }
 
         return response()->json(['ok'], 200);
+    }
+
+    public function setEmergencyType(&$card)
+    {
+        // ARM-414:
+        // если в карточке 101 во вкладке "Итоги выезда", поле "результат выезда"
+        // проставляется результат "Пожар"/"отравление угарным газом"
+        // должен автоматически проставляться статус "ЧС"
+
+        if($card) {
+            $emergencyType = EmergencyType::where('name', 'ЧС')->first();
+            $tripResult = TripResult::find($card->trip_result_id);
+            $isFire = $tripResult ? in_array($tripResult->name,['Отравление угарным газом', 'Пожар']) : false;
+
+            if($emergencyType && $isFire) {
+                $card->emergency_type_id = $emergencyType->id;
+                $card->save();
+            }
+        }
     }
 }

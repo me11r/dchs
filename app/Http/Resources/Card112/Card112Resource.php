@@ -22,6 +22,7 @@ class Card112Resource extends JsonResource
         return [
             'id' => (int)$this->id,
             'location' => (string)$this->location,
+            'detailed_address' => (string)$this->detailed_address,
             'street' => $this->resource->relationLoaded('street') ? (new StreetResource($this->street)) : null,
             'crossroad_1_id' => (int)$this->crossroad_1_id,
             'crossroad1' => $this->resource->relationLoaded('crossroad1') ? (new StreetResource($this->crossroad1)) : null,
@@ -59,7 +60,10 @@ class Card112Resource extends JsonResource
             'chronology_end_time' => Carbon::parse($this->chronology_end_time)->format('Y-m-d H:i:s'),
             'popup_notifications' => $this->resource->relationLoaded('popupNotifications') ? Resource::collection($this->popupNotifications) : [],
             'notifications_sent' => (bool) $this->notifications_sent,
-            'notification_message' => (string) $this->notification_message
+            'notification_message' => (string) $this->notification_message,
+            'emergency_type_id' => (int) $this->emergency_type_id,
+            'emergency_feature' => (string) $this->emergency_feature,
+            'service_plans' => $this->service_plans,
         ];
     }
 }

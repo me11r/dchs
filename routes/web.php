@@ -188,8 +188,10 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('formation-record/{id}/total-update', 'FormationRecordController@totalUpdate')->name('formation-record.total-update');
             Route::match(['get', 'post'],'formation-record/staff/{date}/{ods}', 'FormationRecordController@staffCreateEdit')->name('formation-record.staff_CreateEdit');
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
+            Route::match(['get', 'post'],'formation-record/duty-persons-services/{date}', 'FormationRecordController@dutyPersonsServicesCreateEdit')->name('formation-record.dutyPersonsServicesCreateEdit_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');
             Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
+            Route::get('formation-record/total-edit/word', 'FormationRecordController@saveTotalAsDocx');
         }
     );
 
@@ -237,14 +239,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dictionaries', 'DictionaryController@getIndex');
 
     Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName');
-        //->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
     Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName');
-        //->where('dict_id', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
-    Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')
-//        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments')
-        ->where('dict_id', '[0-9]+');
+    Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')->where('dict_id', '[0-9]+');
     Route::post('/dictionaries/{name}/create-edit', 'DictionaryController@postEditCreateByName');
-//        ->where('name', 'incident-types|operational-plans|operational-cards|aircraft-types|aircrafts|fire-departments');
 
     Route::get('/dictionaries/list/{dict_id}', 'DictionaryController@getList')->where('dict_id', '[0-9]+');
     Route::get('/dictionaries/edit/{dict_id}/{row_id?}', 'DictionaryController@getEdit')
@@ -343,6 +340,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_CREATE']);
         Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_DELETE']);
     });
+
+    Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
+    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){

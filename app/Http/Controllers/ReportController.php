@@ -23,6 +23,7 @@ use App\Models\Weather;
 use App\OperationalCard;
 use App\Reports\Report;
 use App\Reports\Report112;
+use App\Reports\Report112Emergency;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
@@ -33,6 +34,8 @@ use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
+use App\Services\ReportExport\Ticket112EmergencyExcelExport;
+use App\Services\ReportExport\Ticket112EmergencyWordExport;
 use App\Services\ReportExport\Ticket112PeriodExcelExport;
 use App\SirenSpeechTech;
 use App\Ticket101;
@@ -717,5 +720,105 @@ class ReportController extends AuthorizedController
             'Content-Transfer-Encoding' => 'binary',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0'
         ]);
+    }
+
+    public function getReport112EmergencyType(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', (new Carbon('01/01/2019'))->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $incidentTypeId = $request->incidentTypeId;
+        $tripResultId = $request->tripResultId;
+
+        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo]);
+        $data['records101'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo]);
+
+        if($incidentTypeId) {
+            $data['records'] = $data['records']->where('additional_incident_type_id', $incidentTypeId);
+        }
+
+        if($tripResultId) {
+            $data['records101'] = $data['records101']->where('trip_result_id', $tripResultId);
+        }
+
+        $data['records'] = $data['records']
+            ->whereHas('emergency_type', function ($q) {
+                $q->where('name', 'ЧС');
+            })
+            ->with(['emergency_type','additionalAddress','additionalIncident'])
+            ->get();
+
+        $data['records'] = $data['records']->map(function ($item) {
+            return [
+                'created_at' => $item->created_at->format('d.m.Y H:i'),
+                'detailed_address' => $item->detailed_address,
+                'emergency_feature' => $item->emergency_feature,
+                'dead' => $item->dead,
+                'injured' => $item->injured,
+                'additional_incident' => $item->additional_incident ? $item->additional_incident->name : '',
+            ];
+        });
+
+        $data['records101'] = $data['records101']
+            ->whereHas('emergency_type', function ($q) {
+                $q->where('name', 'ЧС');
+            })
+            ->get();
+
+        $data['records101'] = $data['records101']->map(function ($item) {
+            return [
+                'created_at' => $item->created_at->format('d.m.Y H:i'),
+                'detailed_address' => $item->detailed_address ?? $item->location,
+                'emergency_feature' => $item->ticket_result,
+                'dead' => $item->children_death_count + $item->people_death_count,
+                'injured' => $item->co2_poisoned_count + $item->ch4_poisoned_count + $item->gpt_burns_count,
+                'additional_incident' => $item->trip_result ? $item->trip_result->name : '',
+            ];
+        });
+
+        if($data['records101']->count()) {
+            $data['records'] = $data['records101']->merge($data['records']);
+        }
+
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+        $data['incidentTypes'] = IncidentType::all();
+        $data['tripResults'] = TripResult::all();
+        Cache::put('report112_emergency_data', $data, 3600);
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+
+        return view('reports.112.emergency_type', $data);
+    }
+
+    public function exportReport112Emergency($type)
+    {
+        if ($data = Cache::get('report112_emergency_data')) {
+            $data = (new Report112Emergency($data))->getReport();
+
+            if($type === 'docx') {
+
+                $dailyWordExport = new Ticket112EmergencyWordExport($data);
+
+                $writer = $dailyWordExport->getWriter('Word2007');
+                $fileName = 'Чрезвычайные ситуации природного и техногенного характера  - '.date('d-m-Y'). '.docx';
+                $writer->save(public_path($fileName));
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket112EmergencyExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Отчет по карточке 112 (ЧС) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
     }
 }

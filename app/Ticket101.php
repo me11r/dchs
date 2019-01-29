@@ -278,6 +278,11 @@ class Ticket101 extends Model
         'liqv_time_total',
     ];
 
+    public function emergency_type()
+    {
+        return $this->belongsTo(EmergencyType::class, 'emergency_type_id');
+    }
+
     public function chronologies()
     {
         return $this->hasMany(Chronology101::class, 'ticket101_id');

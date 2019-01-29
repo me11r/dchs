@@ -253,7 +253,13 @@
                         <div
                             class="panels index-1"
                             :style="{'display': servicesTabIndex === 1? 'block': 'none'}">
-                            <table class="table is-expanded is-striped is-narrow is-fullwidth">
+                            <card-notification-services
+                                    v-if="loaded"
+                                    :ticket="model"
+                                    :ticket-type="112"
+                            ></card-notification-services>
+
+                            <!--<table v-if="false" class="table is-expanded is-striped is-narrow is-fullwidth">
                                 <thead>
                                     <tr>
                                         <th>Службы</th>
@@ -314,7 +320,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table>-->
                         </div>
                     </div>
                     <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
@@ -354,9 +360,14 @@
                         <!--УТОЧНЕННЫЙ АДРЕС-->
                         <div class="field">
                             <p class="control">
-                                <label for="additional_street_id">Уточненный адрес</label>
+                                <label for="detailed_address">Уточненный адрес</label>
+                                <input type="text"
+                                       class="input"
+                                       id="detailed_address"
+                                       name="detailed_address"
+                                       v-model="model.detailed_address">
                             </p>
-                            <div class="select">
+                            <!--<div class="select">
                                 <buefy-common-select
                                     id="additional_street_id"
                                     :options="streetsOptions"
@@ -365,6 +376,26 @@
                                     type="hidden"
                                     name="additional_street_id"
                                     v-model="model.additional_street_id">
+                            </div>-->
+                        </div>
+
+                        <!--ТИП ПРОИСШЕСТВИЯ-->
+                        <div class="field">
+                            <p class="control">
+                                <label for="emergency_type_id">Тип происшествия</label>
+                            </p>
+                            <div class="select">
+                                <select
+                                        id="emergency_type_id"
+                                        name="emergency_type_id"
+                                        v-model="model.emergency_type_id">
+                                    <option value="">-</option>
+                                    <option
+                                            v-for="i in emergencyTypes"
+                                            :key="i.id"
+                                            :value="i.id">{{ i.name }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
                         <div class="field is-grouped">
@@ -400,6 +431,18 @@
                                     id="additional_incident_place"
                                     v-model="model.additional_incident_place">
                             </div>
+                        </div>
+
+                        <!--ХАРАКТЕРИСТИКА ПРОИСШЕСТВИЯ-->
+                        <div class="field">
+                            <label for="emergency_feature">Характеристика происшествия</label>
+                            <textarea
+                                name="emergency_feature"
+                                id="emergency_feature"
+                                class="textarea"
+                                cols="30"
+                                rows="3"
+                                v-model="model.emergency_feature"></textarea>
                         </div>
 
                         <!--ПРИЧИНА-->
@@ -723,6 +766,8 @@ export default {
             incidentTypes: [],
             serviceTypes: [],
             cityAreas: [],
+            emergencyTypes: [],
+            loaded: false,
             model: {
                 location: '',
                 city_area_id: ''
@@ -753,6 +798,9 @@ export default {
         streetsOptions() {
             return this.commonOptionsMapping(this.streets);
         },
+        emergencyTypesOptions() {
+            return this.commonOptionsMapping(this.emergencyTypes);
+        },
         cityAreasOptions() {
             return this.commonOptionsMapping(this.cityAreas);
         }
@@ -779,35 +827,37 @@ export default {
                             let servicePlans = response.data.servicePlans;
 
                             if (servicePlans !== undefined) {
+                                globalBus.$emit('checkedServicePlans', servicePlans);
                                 servicePlans.forEach((plan) => {
                                     self.serviceTypes.forEach((serviceType) => {
                                         if (plan.service_type_id === serviceType.id) {
+
                                             self.services[serviceType.id] = {
                                                 dispatched_time: plan.dispatched_time, //|| moment().format('d-m-Y'),
                                                 created_at: plan.dispatched_time,// || moment().format('d-m-Y'),
                                                 name_accepted: plan.name_accepted || '',
                                                 arrive_time: plan.arrive_time || ''
                                             };
-                                            let name = document.getElementById(serviceType.id + '_name');
-                                            let created_at = document.getElementById(serviceType.id + '_created_at');
-                                            let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
-                                            let dispatched_time = document.getElementById(serviceType.id + '_dispatched_time');
-
-                                            if (name.value === '') {
-                                                name.value = plan.name_accepted || '';
-                                            }
-
-                                            if (created_at.value === '') {
-                                                created_at.value = plan.dispatched_time || '';
-                                            }
-
-                                            if (arrived_at.value === '') {
-                                                arrived_at.value = plan.arrive_time || '';
-                                            }
-
-                                            if (dispatched_time.value === '') {
-                                                dispatched_time.value = plan.dispatched_time || '';
-                                            }
+                                            // let name = document.getElementById(serviceType.id + '_name');
+                                            // let created_at = document.getElementById(serviceType.id + '_created_at');
+                                            // let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
+                                            // let dispatched_time = document.getElementById(serviceType.id + '_dispatched_time');
+                                            //
+                                            // if (name.value === '') {
+                                            //     name.value = plan.name_accepted || '';
+                                            // }
+                                            //
+                                            // if (created_at.value === '') {
+                                            //     created_at.value = plan.dispatched_time || '';
+                                            // }
+                                            //
+                                            // if (arrived_at.value === '') {
+                                            //     arrived_at.value = plan.arrive_time || '';
+                                            // }
+                                            //
+                                            // if (dispatched_time.value === '') {
+                                            //     dispatched_time.value = plan.dispatched_time || '';
+                                            // }
                                         }
                                     });
                                 });
@@ -957,6 +1007,7 @@ export default {
                 this.yandexMapsBus = yandexMapsBus;
                 this.streets = window.card112FormData.streets;
                 this.cityAreas = window.card112FormData.cityAreas;
+                this.emergencyTypes = window.card112FormData.emergencyTypes;
                 this.incidentTypes = window.card112FormData.incidentTypes;
                 this.serviceTypes = window.card112FormData.serviceTypes;
                 this.method = window.card112FormData.method;
@@ -988,6 +1039,8 @@ export default {
                         });
                     });
                 }
+
+                this.loaded = true;
 
                 this.checkServices();
                 window.addEventListener('storage', (event) => {

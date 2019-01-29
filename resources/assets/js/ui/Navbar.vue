@@ -298,6 +298,11 @@
                                 class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Аналитика
                         </a>
+                        <a
+                                href="/reports/112-emergency-report/"
+                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
+                            &nbsp; Отчет по ЧС
+                        </a>
                     </div>
                 </div>
                 <div

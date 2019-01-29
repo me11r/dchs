@@ -9,6 +9,7 @@ use App\Dictionary;
 use App\DistrictManager;
 use App\FireDepartment;
 use App\IncidentTypeCategory;
+use App\Models\DailyReportPerson;
 use App\Models\IncidentType;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
@@ -58,6 +59,10 @@ class DictionaryController extends AuthorizedController
         [
             'title' => 'Ответственные по районам',
             'href' => '/dictionaries/district-managers',
+        ],
+        [
+            'title' => 'Персоны суточного отчета',
+            'href' => '/dictionaries/daily-report-persons',
         ],
     ];
 
@@ -260,6 +265,16 @@ class DictionaryController extends AuthorizedController
 
             $data['title'] = "Пожарные части";
         }
+        elseif($name == 'daily-report-persons') {
+            $reports = DailyReportPerson::orderBy('id');
+
+            if($request->search){
+                $reports = $reports->where('name', 'like', "%$request->search%");
+            }
+
+            $data['records'] = $reports->paginate($data['per_page']);
+            $data['title'] = "Персоны суточного отчета";
+        }
 
 
         return view($view, $data);
@@ -314,6 +329,21 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'aircraft-types'){
             $data['record'] = AircraftType::find($id);
             $data['title'] = "Тип воздушного судна";
+
+        }
+        elseif($name == 'daily-report-persons'){
+            $data['record'] = DailyReportPerson::find($id);
+            $data['title'] = "Персоны суточного отчета";
+            $data['types'] = [
+                'header' => 'Шапка',
+                'footer_first' => 'Подвал 1',
+                'footer_second' => 'Подвал 2',
+            ];
+
+            $data['reportTypes'] = [
+                '101_daily' => '101',
+                '112_daily' => '102',
+            ];
 
         }
         elseif($name == 'aircrafts'){
@@ -443,6 +473,16 @@ class DictionaryController extends AuthorizedController
             $record->type = $request->type;
             $record->aircraft_type_id = $request->aircraft_type_id;
 
+            $record->save();
+        }
+        elseif ($name == 'daily-report-persons') {
+            $record  = DailyReportPerson::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->position = $request->position;
+            $record->city = $request->city;
+            $record->post = $request->post;
+            $record->type = $request->type;
+            $record->report_type = $request->report_type;
             $record->save();
         }
         elseif($name == 'fire-departments'){
@@ -621,6 +661,9 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'aircraft-types':
                 $dict = AircraftType::class;
+                break;
+            case 'daily-report-persons':
+                $dict = DailyReportPerson::class;
                 break;
             case 'aircrafts':
                 $dict = Aircraft::class;

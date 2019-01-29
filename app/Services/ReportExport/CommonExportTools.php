@@ -21,7 +21,7 @@ trait CommonExportTools
 
             $this->sumPeople['total'], // В карауле по списку л/с
 
-            $this->sumPeople['active'] . ($this->data['totalTraineeCount']['active'] ? "/".$this->data['totalTraineeCount']['active'] : ''), // На лицо личного состава -> Всего
+            $this->sumPeople['active'] , // На лицо личного состава -> Всего  . ($this->data['totalTraineeCount']['active'] ? "/".$this->data['totalTraineeCount']['active'] : '')
             $this->sumPeople['head_guards'].($this->data['totalTraineeCount']['head_guards'] ? "/".$this->data['totalTraineeCount']['head_guards'] : ''), // На лицо личного состава -> Нач. караулов
             $this->sumPeople['commander_squads'].($this->data['totalTraineeCount']['commander_squads'] ? "/".$this->data['totalTraineeCount']['commander_squads'] : ''), // На лицо личного состава -> Ком. отделений
             $this->sumPeople['drivers'].($this->data['totalTraineeCount']['drivers'] ? "/".$this->data['totalTraineeCount']['drivers'] : ''), // На лицо личного состава -> Шоферы
@@ -52,6 +52,28 @@ trait CommonExportTools
         ];
     }
 
+    private function getTableSumRow($rows)
+    {
+        $result = [];
+        foreach ($rows as $row_index => $cells) {
+            foreach ($cells as $index => $cell) {
+
+                if(!isset($result[$index])) {
+                    $result[$index] = 0;
+                }
+
+                if(is_numeric($cell)) {
+                    $result[$index] += $cell;
+                }
+                else {
+                    $result[$index] += 0;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * @param FireDepartment $department
      * @return array
@@ -70,7 +92,7 @@ trait CommonExportTools
 
             array_get($peopleData, 'total', 0), // В карауле по списку л/с
 
-            array_get($peopleData, 'active', 0).($peopleData && $peopleData->getTraineeCount('active') ? '/'.$peopleData->getTraineeCount('active') : ''), // На лицо личного состава -> Всего
+            array_get($peopleData, 'active', 0), // На лицо личного состава -> Всего  .($peopleData && $peopleData->getTraineeCount('active') ? '/'.$peopleData->getTraineeCount('active') : '')
             array_get($peopleData, 'head_guards', 0) .($peopleData && $peopleData->getTraineeCount('head_guards') ? '/'.$peopleData->getTraineeCount('head_guards') : ''), // На лицо личного состава -> Нач. караулов
             array_get($peopleData, 'commander_squads', 0).($peopleData && $peopleData->getTraineeCount('commander_squads') ? '/'.$peopleData->getTraineeCount('commander_squads') : ''), // На лицо личного состава -> Ком. отделений
             array_get($peopleData, 'drivers', 0).($peopleData && $peopleData->getTraineeCount('drivers') ? '/'.$peopleData->getTraineeCount('drivers') : ''), // На лицо личного состава -> Шоферы
@@ -99,6 +121,19 @@ trait CommonExportTools
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
         ];
+    }
+
+    private function getFirstTableRowForOrganization($formationRecord, $fields)
+    {
+        $delimiter = ', ';
+
+        $result = [];
+        $result[] = $formationRecord->organisationName();
+        foreach ($fields as $field) {
+            $result[] = $formationRecord[$field] ?? 0;
+        }
+
+        return $result;
     }
 
 

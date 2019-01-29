@@ -74,7 +74,8 @@
 
                         {% for ppl in people_fields %}
                             <td>
-                                {{ people[dept.id][ppl]|default('-') }}{% if people[dept.id]['trainee']|default(null) is not empty and people[dept.id].getTraineeCount(ppl) %}/{{ people[dept.id].getTraineeCount(ppl) }}{% endif %}
+                                {{ people[dept.id][ppl]|default('-') }}
+                                {#{% if people[dept.id]['trainee']|default(null) is not empty and people[dept.id].getTraineeCount(ppl) %}/{{ people[dept.id].getTraineeCount(ppl) }}{% endif %}#}
                             </td>
                         {% endfor %}
 
@@ -123,7 +124,7 @@
                 <tr>
                     <td><b>Итого</b></td>
                     {% for ppl in people_fields %}
-                        <td><b>{{ sumArray['people'][ppl]|default(0) }} {% if ppl != 'total' and totalTraineeCount[ppl] is defined and totalTraineeCount[ppl] != 0 %}/{{ totalTraineeCount[ppl] }} {% endif %}</b></td>
+                        <td><b>{{ sumArray['people'][ppl]|default(0) }} {% if ppl != 'total' and totalTraineeCount[ppl] is defined and totalTraineeCount[ppl] != 0 and ppl != 'active' %}/{{ totalTraineeCount[ppl] }} {% endif %}</b></td>
                     {% endfor %}
                     {% for tch in tech_fields %}
                         <td>
