@@ -213,7 +213,6 @@ class User extends Authenticatable
         }
 
         if (!isset($user) || ($user->fire_department_id != $dept)) {
-//            throw new AccessDeniedException();
             false;
         }
 

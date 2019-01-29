@@ -1,0 +1,26 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="section container" id="vue">
+        <h4 class="title">Нормативы по ПСП</h4>
+        <form action="/norms-psp/{% if record is defined %}{{ record.id }}/update{% else %}create{% endif %}" method="post">
+            {{ csrf_field() }}
+
+            {% if record is defined %}
+            <norm-psp-form
+                    :record="{{ record }}"
+                    :fire-department="{{ fire_department }}"
+                    :norm-numbers="{{ norm_numbers }}"
+                    :norm-types="{{ norm_types }}"
+            >
+            {% else %}
+                <norm-psp-form
+                        :fire-department="{{ fire_department }}"
+                        :norm-numbers="{{ norm_numbers }}"
+                        :norm-types="{{ norm_types }}"
+                >
+            {% endif %}
+
+            </norm-psp-form>
+        </form>
+    </div>
+{% endblock content %}

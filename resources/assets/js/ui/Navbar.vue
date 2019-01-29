@@ -41,6 +41,13 @@
                             Учения
                         </a>
                         <a
+                                v-if="hasRight('CAN_ACCESS_NORMS_PSP')"
+                                href="/norms-psp"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Нормативы ПСП
+                        </a>
+                        <a
                                 v-if="hasRight(2)"
                                 href="/card/101"
                                 class="dropdown-item is-small"><i
@@ -468,6 +475,8 @@ export default {
         let rightsPromise = rights.getRights();
         rightsPromise.then((list) => {
             this.rights = list;
+            console.dir(this.hasRight('CAN_ACCESS_NORMS_PSP'));
+
         });
 
         //todo: depricated: moved to rights.js
