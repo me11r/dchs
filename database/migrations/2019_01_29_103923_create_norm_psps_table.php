@@ -20,7 +20,7 @@ class CreateNormPspsTable extends Migration
             $table->string('time_end')->nullable();
 
             $table->unsignedInteger('fire_department_id');
-            $table->foreign('fire_departments')
+            $table->foreign('fire_department_id')
                 ->references('id')
                 ->on('fire_departments')
                 ->onDelete('cascade');

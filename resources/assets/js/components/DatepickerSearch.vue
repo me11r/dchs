@@ -1,20 +1,17 @@
 <template>
     <div>
-        <!--<form-->
-            <!--id="date-form"-->
-            <!--action="formAction_">-->
-            <b-field :label="label">
-                <b-datepicker
-                    v-model="date_"
-                    placeholder="Click to select..."
-                    :date-formatter="(date) => formatDate(date)"
-                    :month-names="months"
-                    :first-day-of-week="1"
-                    :day-names="days"
-                    @input="$emit('dateChanged',date_)"
-                    icon="calendar-today"/>
-            </b-field>
-        <!--</form>-->
+        <b-field :label="label">
+            <b-datepicker
+                v-model="date_"
+                placeholder="Нажмите для выбора"
+                :date-formatter="(date) => formatDate(date)"
+                :month-names="months"
+                :first-day-of-week="1"
+                :name="name_"
+                :day-names="days"
+                @input="$emit('dateChanged',date_)"
+                icon="calendar-today"/>
+        </b-field>
     </div>
 
 </template>
@@ -25,6 +22,10 @@ export default {
     name: 'DatepickerSearch',
     props: {
         formAction: {
+            type: String,
+            default: ''
+        },
+        name: {
             type: String,
             default: ''
         },
@@ -43,6 +44,7 @@ export default {
             months: ["Январь", "Февраль", "Март", "Апреть", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
             days: ["Вс","Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
             date_: this.date,
+            name_: this.name,
         };
     },
     methods: {
@@ -53,7 +55,7 @@ export default {
             return moment(date).format('DD-MM-YYYY');
         }
 
-    }
+    },
 };
 </script>
 

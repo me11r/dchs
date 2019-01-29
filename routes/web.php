@@ -70,8 +70,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
     Route::post('/card/101/delete', 'CardController@postDelete')->name('card101.delete');
 
-    Route::group(['prefix' => ''], function (){
-//        Route::get('')
+    Route::group(['prefix' => 'norms-psp', 'as' => 'norms-psp.'], function (){
+        Route::get('/', 'NormPspController@index')->name('index')->middleware(['right:CAN_ACCESS_NORMS_PSP']);
+        Route::get('{id}/edit', 'NormPspController@edit')->name('edit')->middleware(['right:CAN_ACCESS_NORMS_PSP']);
+        Route::delete('delete/{id}', 'NormPspController@delete')->name('delete')->middleware(['right:CAN_DELETE_NORMS_PSP']);
+        Route::post('{id}/update', 'NormPspController@update')->name('update')->middleware(['right:CAN_EDIT_NORMS_PSP']);
+        Route::match(['get','post'],'create', 'NormPspController@create')->name('create')->middleware(['right:CAN_CREATE_NORMS_PSP']);
     });
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
