@@ -171,6 +171,16 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'emergency_types',
                 'model' => \App\EmergencyType::class
             ],
+            [
+                'title' => "Номер норматива",
+                'table' => 'norm_numbers',
+                'model' => \App\NormNumber::class
+            ],
+            [
+                'title' => "Тип норматива",
+                'table' => 'norm_types',
+                'model' => \App\NormType::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

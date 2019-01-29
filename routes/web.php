@@ -66,16 +66,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('delete/{id}', 'DrillRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_DRILL_RIDES,CARD101_DRILL_RIDES_CAN_DELETE']);
     });
 
-    #Route::get('/card/add101-other/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}/{card_type?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+','card_type' => '[A-Za-z]+']);
     Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
     Route::post('/card/101/delete', 'CardController@postDelete')->name('card101.delete');
+
+    Route::group(['prefix' => ''], function (){
+//        Route::get('')
+    });
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
     Route::get('/hydrants', 'CardController@hydrants')->name('hydrants')->middleware(['right:CAN_ACCESS_HYDRANT']);
 
     Route::resource('/card112', 'Card112Controller');
-//    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
 
