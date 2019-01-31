@@ -10,6 +10,7 @@ use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\NormPsp;
 use App\OnWay101;
 use App\Services\Ticket101\NotificationService;
 use App\Ticket101;
@@ -358,11 +359,34 @@ class CardController extends Controller
             return response()->json([], 200);
         }
 
-        $data['recommendations'] = $ticket->results()->with([
-            'tech',
-            'tech.formation_tech_report',
-            'department',
-        ])->get();
+        //*новый вариант/
+        $currentRidesTechIds = $ticket->results()->pluck('tech_id')->toArray();
+
+        $techNotAvailableIds = FireDepartmentResult::whereIn('tech_id', $currentRidesTechIds)
+            ->whereHas('ticket', function ($q){
+                $q->real();
+            })
+            ->whereNotNull('dispatch_time')
+            ->where('ticket101_id', '<>', $ticket->id)
+            ->get()
+            ->pluck('tech_id')
+            ->toArray();
+
+        $data['recommendations'] = $ticket->results()
+            ->whereNotIn('tech_id', $techNotAvailableIds)
+            ->with([
+                'tech',
+                'tech.formation_tech_report',
+                'department',
+            ])->get();
+        //*/
+
+//старый вариант
+//        $data['recommendations'] = $ticket->results()->with([
+//            'tech',
+//            'tech.formation_tech_report',
+//            'department',
+//        ])->get();
 
         $data['service_plans'] = $ticket->service_plans;
         $data['departmentsOnWay'] = FireDepartmentResult::with(['department', 'tech'])
@@ -378,11 +402,35 @@ class CardController extends Controller
             return response()->json([], 200);
         }
 
-        $data['recommendations'] = $ticket->results()->with([
+        $currentRidesTechIds = $ticket->results()->pluck('tech_id')->toArray();
+
+        $techNotAvailableIds = FireDepartmentResult::whereIn('tech_id', $currentRidesTechIds)
+            ->whereHas('ticket', function ($q){
+                $q->real();
+            })
+            ->whereNotNull('dispatch_time')
+            ->get()
+            ->pluck('tech_id')
+            ->toArray();
+
+        $data['recommendations'] = $ticket->results()
+            ->whereNotIn('tech_id', $techNotAvailableIds)
+            ->with([
             'tech',
             'tech.formation_tech_report',
             'department',
         ])->get();
+
+
+
+        //старый вариант
+        /*$data['recommendations'] = $ticket->results()->with([
+            'tech',
+            'tech.formation_tech_report',
+            'department',
+        ])->get();*/
+
+
 
         return response()->json($data);
     }
