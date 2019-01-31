@@ -36,7 +36,7 @@
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_DRILL_RIDES')"
-                            href="/card101-drill-rides/create"
+                            href="/card/add101/0/drill"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Учения
                         </a>
