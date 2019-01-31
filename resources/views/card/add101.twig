@@ -407,8 +407,15 @@
                                         <p class="control">
                                             {% if (card_type == 'drill') %}
                                                 <label for="caller_name">Тип учения</label>
-                                                <input tabindex="9" type="text" class="input" name="form_type_drill" id="form_type_drill"
-                                                       value="{{ ticket.form_type_drill|default('') }}"/>
+                                                <div class="select" style="display: block">
+                                                    <select tabindex="6" name="form_type_drill" id="form_type_drill" required
+                                                            style="width: 100%;">
+                                                        {% for object in drill_types %}
+                                                            <option {% if object == ticket.form_type_drill %} selected {% endif %}
+                                                                    value="{{ object }}">{{ object }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                                 <input type="hidden" name="drill_type" value="drill">
                                             {% else %}
                                                 <label for="caller_phone">Телефон заявителя</label>

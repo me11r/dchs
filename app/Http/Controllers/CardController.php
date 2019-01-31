@@ -343,6 +343,14 @@ class CardController extends AuthorizedController
         $this->set('max_square', $max_square);
         $this->set('ticket', $ticket);
         $this->set('other_records_unique', $other_records_unique);
+        $this->set('drill_types', [
+        'РКШУ',
+        'ТСУ',
+        'ПТУ',
+        'ПТЗ',
+        'ТДК',
+        'Учения'
+        ]);
     }
 
     private function saveAnalytics($ticket)
