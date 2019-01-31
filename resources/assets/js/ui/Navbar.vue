@@ -298,6 +298,11 @@
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Отчет по ЧС
                         </a>
+                        <a
+                                href="/reports/other-rides-report/"
+                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
+                            &nbsp; Отчет по прочим выездам
+                        </a>
                     </div>
                 </div>
                 <div
