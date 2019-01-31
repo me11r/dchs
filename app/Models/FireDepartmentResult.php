@@ -6,6 +6,7 @@ use App\Chronology101;
 use App\FireDepartment;
 use App\RoadtripPlan;
 use App\Ticket101;
+use App\Ticket101Other;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -78,6 +79,7 @@ class FireDepartmentResult extends Model
         'get_back',
         'promoted_at',
         'promoted_department',
+        'ticket101_other_id',
     ];
 
     public function chronology()
@@ -114,6 +116,11 @@ class FireDepartmentResult extends Model
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'ticket101_id');
+    }
+
+    public function ticket_other()
+    {
+        return $this->belongsTo(Ticket101Other::class, 'ticket101_other_id');
     }
 
     public function tech()

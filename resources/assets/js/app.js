@@ -161,7 +161,6 @@ if (document.getElementById('cardadd101')) {
         document.getElementById('preload_pane').style.display = 'none';
         const ret = window.location.hash.match(/#return=(\d+)/);
         if (ret !== null) {
-            // console.dir(parseInt(ret[1]))
             window.add101tabs.setTab(parseInt(ret[1]));
         } else {
             window.add101tabs.setTab(0);
@@ -169,11 +168,6 @@ if (document.getElementById('cardadd101')) {
         /* document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
-        }); */
-
-        /* document.getElementById('truck_tab_button').addEventListener('click', (e) => {
-            e.preventDefault();
-            window.add101tabs.setTab(1);
         }); */
     });
 }

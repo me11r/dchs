@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\FireDepartmentResult;
 use App\Models\Staff;
 use Illuminate\Database\Eloquent\Model;
 
@@ -44,15 +45,17 @@ class Ticket101Other extends Model
 {
     protected $fillable = [
         'ride_type_id',
-        'ticket_101_id',
-        'fire_department_id',
-        'department',
         'time_begin',
         'time_end',
         'object_name',
-        'staff_id',
         'note',
+        'formation_report_id',
+        'responsible_person',
         'direction',
+        'final_ride_type_id',
+        'final_responsible_person',
+        'final_direction',
+        'final_object_name',
     ];
 
     public function ride_type()
@@ -73,5 +76,55 @@ class Ticket101Other extends Model
     public function staff()
     {
         return $this->belongsTo(Staff::class,'staff_id');
+    }
+
+    public function formation_report()
+    {
+        return $this->belongsTo(FormationReport::class,'formation_report_id');
+    }
+
+    public function results()
+    {
+        return $this->hasMany(FireDepartmentResult::class, 'ticket101_other_id');
+    }
+
+    public function setFinalRideTypeIdAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['final_ride_type_id'] = $this->attributes['ride_type_id'];
+        }
+        else {
+            $this->attributes['final_ride_type_id'] = $value;
+        }
+    }
+
+    public function setFinalResponsiblePersonAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['final_responsible_person'] = $this->attributes['responsible_person'];
+        }
+        else {
+            $this->attributes['final_responsible_person'] = $value;
+        }
+    }
+
+    public function setFinalDirectionAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['final_direction'] = $this->attributes['direction'];
+        }
+        else {
+            $this->attributes['final_direction'] = $value;
+        }
+    }
+
+    public function setFinalObjectNameAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['final_object_name'] = $this->attributes['object_name'];
+        }
+        else {
+            $this->attributes['final_object_name'] = $value;
+        }
     }
 }

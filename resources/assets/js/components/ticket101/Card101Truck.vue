@@ -181,7 +181,7 @@
                             <td>
                                 <p v-for="i in formReserve[department.id]">
                                     <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'reserve')">-->
-                                        <label for="">
+                                    <label for="">
                                         <input v-model="i.promoted_at" type="text" class="input small-imput">
                                     </label>
                                 </p>
@@ -352,7 +352,6 @@
 
             </b-tab-item>
         </b-tabs>
-
     </div>
 </template>
 
