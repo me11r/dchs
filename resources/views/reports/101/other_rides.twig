@@ -1,0 +1,12 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="vue">
+        <report-other-rides-period
+            :records="{{ records }}"
+            :ride-types="{{ rideTypes }}"
+            :fire-departments="{{ fireDepartments }}"
+        >
+        </report-other-rides-period>
+
+    </div>
+{% endblock content %}

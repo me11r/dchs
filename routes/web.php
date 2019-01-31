@@ -329,6 +329,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
     Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
 
+    Route::get('reports/other-rides-report','ReportController@getReportOtherRides');
+    Route::get('reports/other-rides-report/export/{type}','ReportController@exportReportOtherRides');
+
+
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
         Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');

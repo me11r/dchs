@@ -11,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\Staff;
 use App\RideType;
 use App\Ticket101Other;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,6 +40,9 @@ class OtherRides101Controller extends Controller
                 ->has('tech_reports')
                 ->max('id');
 
+//            $dataToSave['time_begin'] = Carbon::parse($dataToSave['time_begin'] ?? null)->subHours(18)->format('H:i');
+//            $dataToSave['time_end'] = Carbon::parse($dataToSave['time_end'] ?? null)->subHours(18)->format('H:i');
+
             $record = Ticket101Other::create($dataToSave);
             $techItems = $this->recommend($record);
 
@@ -63,6 +67,8 @@ class OtherRides101Controller extends Controller
         $data['record'] = Ticket101Other::find($id);
         $all = $request->all();
         if($request->isMethod('POST')){
+//            $all['time_begin'] = Carbon::parse($all['time_begin'] ?? null)->subHours(18)->format('H:i');
+//            $all['time_end'] = Carbon::parse($all['time_end'] ?? null)->subHours(18)->format('H:i');
             $data['record']->update($all);
 
             $techItems = $data['record']->results()->with([
