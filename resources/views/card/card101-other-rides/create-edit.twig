@@ -1,18 +1,18 @@
 {% extends "layout/html" %}
 {% block content %}
     <div class="section container">
-        <h4 class="title">Карточка 101</h4>
-        <form action="/card101-other-rides/{% if record is defined %}{{ record.id }}/edit{% else %}create{% endif %}" method="post">
+        <h4 class="title">Прочие выезда</h4>
+        <form id="other-rides-form" action="/card101-other-rides/{% if record is defined %}{{ record.id }}/edit{% else %}create{% endif %}" method="post">
             {{ csrf_field() }}
             <div id="other-rides">
                 <other-rides
                         :ride-types="{{ ride_types }}"
-                        :other-ride="{{ record|default([])|json_encode }}"
-                        :fire-departments="{{ fire_departments_vue }}"
+                        :other-ride="{{ record|default(null)|json_encode }}"
+                        :fire-departments="{{ fire_departments }}"
+                        :tech-items="{{ techItems }}"
                         :staff="{{ staff }}"
                 ></other-rides>
             </div>
-            <button type="submit" class="button is-success">Сохранить</button>
         </form>
     </div>
 {% endblock content %}

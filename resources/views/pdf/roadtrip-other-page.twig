@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>
+<html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>
+<html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="ru"> <!--<![endif]-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <style>
+        * {
+            font-family: Arial, DejaVu Sans;
+        }
+    </style>
+</head>
+<body>
+<div class="page-margin">
+    <div class="level">
+        <div class="level-left">
+            <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
+        </div>
+        <div class="level-right printing-invisible">
+            <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
+        </div>
+    </div>
+    <table class="table is-narrow printing-full-width">
+        {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
+            <tr class="printing-invisible">
+                <td class="has-text-right is-bold">Выезд сил</td>
+                <td>
+-
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td class="has-text-right is-bold">Адрес</td>
+            <td>{{ trip.ticket101_other.direction|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Наименование</td>
+            <td>{{ trip.ticket101_other.ride_type.name|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Наименование объекта</td>
+            <td>{{ trip.ticket101_other.object_name|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Ответстенное лицо</td>
+            <td>{{ trip.ticket101_other.responsible_person|default('-') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Время получения сообщения</td>
+            <td>{{ trip.ticket101_other.created_at|date('d.m.Y H:i') }}</td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Время возвращение в ПЧ</td>
+            <td>
+                {% if trip.is_closed %}{{ trip.return_time|date('d.m.Y h:i') }}{% else %}
+                                       <div class="printing-visible">
+                        &ndash;
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="has-text-right is-bold">Дата(день,месяц,год)</td>
+            <td>{{ trip.created_at|date('d.m.Y') }}</td>
+        </tr>
+    </table>
+</div>
+<img style="width: 1010px; transform: rotate(-90deg);transform-origin: 0 0; margin-top: 990px" src="{{ image_path }}">
+</body>
+</html>

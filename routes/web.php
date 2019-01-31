@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/card/add101/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+', 'card_type' => '[A-Za-z]+']);
 
     Route::group(['prefix' => 'card101-other-rides', 'as' => 'card101-other-rides'], function (){
-        Route::get('/', 'OtherRides101Controller@index')->name('index')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::get('/', '\@index')->name('index')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::match(['get', 'post'], '/create', 'OtherRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::match(['get', 'post'], '{id}/edit', 'OtherRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::delete('delete/{id}', 'OtherRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHERS_RIDES_CAN_DELETE']);
@@ -181,6 +181,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
             ->name('roadtrip.plan.view')
             ->where('plan_id', '[0-9]+');
+        Route::get('/view-other/{plan_id}', 'RoadtripController@getViewOther')
+            ->name('roadtrip.plan.view.other')
+            ->where('plan_id', '[0-9]+');
         Route::get('/print/{id}', 'RoadtripController@getPrint')
             ->where('id', '[0-9]+')
             ->name('roadtrip.plan.print');
@@ -194,11 +197,14 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('ticket_id', '[0-9]+')
             ->where('departments', '[0-9]+');
         Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
+        Route::post('other/send-all/{ticket_id}', 'RoadtripController@postSendAllOther');
+        Route::post('other/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@postSendOther');
         Route::post('recommend', 'RoadtripController@postRecommend');
 
         Route::get('/additional/{id}', 'RoadtripController@getAdditional')
             ->name('roadtrip.additional')
             ->where('id', '[0-9]+');
+
     });
 
     Route::group(['prefix' => 'service-plans'], function (){
