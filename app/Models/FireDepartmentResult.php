@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Chronology101;
 use App\FireDepartment;
+use App\NormPsp;
 use App\RoadtripPlan;
 use App\Ticket101;
 use App\Ticket101Other;
@@ -80,6 +81,10 @@ class FireDepartmentResult extends Model
         'promoted_at',
         'promoted_department',
         'ticket101_other_id',
+    ];
+
+    protected $appends = [
+        'status',
     ];
 
     public function chronology()
@@ -163,6 +168,37 @@ class FireDepartmentResult extends Model
         }
 
         return 'Нет результата';
+    }
+
+    public function getStatusAttribute()
+    {
+        $resultStatus = "ПЧ";
+
+        //проверка в общей таблице выездов
+        $deptOnRide = FireDepartmentResult::where('tech_id', $this->tech_id)
+            ->where('id', '<>', $this->id)
+            ->latest()
+            ->first();
+
+        //проверка в таблице нормативы по ПСП
+        if($this->tech) {
+            $norm = NormPsp::whereNull('time_end')
+                ->whereNotNull('time_begin')
+                ->where('fire_department_id', $this->fire_department_id)
+                ->where('department', $this->tech->department)
+                ->first();
+
+            if($norm) {
+                return "Нормативы по ПСП";
+            }
+        }
+
+        if(!$deptOnRide || $deptOnRide->ret_time !== null || $deptOnRide->dispatch_time === null) {
+            return $resultStatus;
+        }
+
+        return $deptOnRide->ticket_other ? ($deptOnRide->ticket_other->ride_type->name ?? null) : null;
+
     }
 
 }
