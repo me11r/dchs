@@ -104,6 +104,7 @@
                                 <th>Время прибытия</th>
                                 <th>Время возвращения</th>
                                 <th>Отправка</th>
+                                <th>Статус</th>
                                 <th>Время оповещения</th>
                             </tr>
                             </thead>
@@ -197,6 +198,10 @@
                                             <i class="fas fa-bus"></i>&nbsp;Выслать
                                         </a>
                                     </p>
+                                </td>
+
+                                <td class="is-expanded">
+                                    <p v-for="i in formActive[department.id]">{{ i.status }}</p>
                                 </td>
 
                                 <!--{#Время оповещения#}-->
@@ -659,8 +664,9 @@
             if(this.otherRide !== null) {
                 this.otherRide_ = this.otherRide;
             }
+            this.checkRoadtrips();
 
-            setTimeout(this.checkRoadtrips, this.time);
+            // setTimeout(this.checkRoadtrips, this.time);
 
             this.prepareRecord(this.otherRide_);
         }

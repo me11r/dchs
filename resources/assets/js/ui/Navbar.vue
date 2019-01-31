@@ -475,16 +475,7 @@ export default {
         let rightsPromise = rights.getRights();
         rightsPromise.then((list) => {
             this.rights = list;
-            console.dir(this.hasRight('CAN_ACCESS_NORMS_PSP'));
-
         });
-
-        //todo: depricated: moved to rights.js
-        /*axios.get('/ajax/rights/list').then((response) => {
-            this.rights = response.data;
-            window.localStorage.setItem('preloaded_rights', JSON.stringify(this.rights));
-        });*/
-
     }
 
 };
