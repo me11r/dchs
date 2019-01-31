@@ -56,7 +56,6 @@ export default {
             let self = this;
             axios.post('/roadtrip/dispatch', {
                 dept_id: self.dep_.id
-                // trip_id: self.roadtrip_id_,
             }).then((resp) => {
                 self.is_dispatched_ = 1;
             });
@@ -80,7 +79,6 @@ export default {
         }
     },
     created() {
-        console.dir(this.is_arrived_);
     }
 };
 </script>

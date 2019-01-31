@@ -15,6 +15,7 @@ use App\Services\Ticket101\NotificationService;
 use App\Ticket101;
 use App\Ticket101HqRide;
 use App\Ticket101InfoFromFd;
+use App\Ticket101Other;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -344,7 +345,14 @@ class CardController extends Controller
     public function checkRoadtrip(Request $request)
     {
         $id = $request->id;
-        $ticket = Ticket101::find($id);
+        $otherId = $request->ticket_other_id;
+
+        if($id) {
+            $ticket = Ticket101::find($id);
+        }
+        else {
+            return $this->checkTicket101Other($otherId);
+        }
 
         if (!$ticket) {
             return response()->json([], 200);
@@ -363,4 +371,20 @@ class CardController extends Controller
 
         return response()->json($data);
     }
+
+    private function checkTicket101Other($id)
+    {
+        if (!$ticket = Ticket101Other::find($id)) {
+            return response()->json([], 200);
+        }
+
+        $data['recommendations'] = $ticket->results()->with([
+            'tech',
+            'tech.formation_tech_report',
+            'department',
+        ])->get();
+
+        return response()->json($data);
+    }
+
 }

@@ -27,6 +27,7 @@ use App\RoadtripPlan;
 use App\RoadtripSubscription;
 use App\Ticket101;
 use App\Ticket101InfoFromFd;
+use App\Ticket101Other;
 use App\User;
 use Auth;
 use Carbon\Carbon;
@@ -44,6 +45,7 @@ class RoadtripController extends AuthorizedController
         $user = Auth::user();
         $trips = RoadtripPlan::with(['ticket', 'department'])
             ->has('ticket')
+            ->orHas('ticket101_other')
             ->where('is_closed', false);
 
         if ($user->fire_department_id) {
@@ -109,6 +111,57 @@ class RoadtripController extends AuthorizedController
         $this->set('departments', $departments);
     }
 
+    public function getViewOther($plan_id)
+    {
+        $trip = RoadtripPlan::with([
+            'ticket101_other',
+        ])
+            ->findOrFail($plan_id);
+
+       if(!$trip->ticket101_other){
+           return redirect('roadtrip')->with('_message', [
+               'type' => 'danger',
+               'text' => 'Невозможно открыть путевой лист. Карточка была удалена'
+           ]);
+       }
+
+        $results = $trip
+            ->ticket101_other
+            ->results()
+            ->isDispatched()
+            ->with(['tech'])
+            ->where('fire_department_id', $trip->department_id)
+            ->get();
+
+        foreach ($results as $result) {
+            if(!$result->accept_time){
+                $result->accept_time = now();
+                $result->save();
+            }
+        }
+
+        if(!$trip->is_accepted){
+            $trip->is_accepted = true;
+            $trip->save();
+        }
+
+        $departments = [];
+
+        if($results->count()){
+            foreach ($trip->ticket101_other->results as $item) {
+                $departments[] = $item->tech->department;
+            }
+        }
+
+        $data = [
+            'results' => $results,
+            'trip' => $trip,
+            'departments' => $departments,
+        ];
+
+        return view('roadtrip.view-other', $data);
+    }
+
     public function postPlan(Request $request, $plan_id)
     {
         $plan = RoadtripPlan::findOrFail($plan_id);
@@ -167,12 +220,69 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
+    public function postSendOther(Request $request, $dept_id, $ticket_id, $tech_id = null)
+    {
+        $this->noLayout();
+
+        $plan = RoadtripPlan::firstOrCreate([
+            'card101_other_id' => $ticket_id,
+            'department_id' => $dept_id
+        ]);
+
+        FireDepartmentResult::updateOrCreate(
+            [
+                'tech_id' => $tech_id,
+                'ticket101_other_id' => $ticket_id,
+            ],
+            [
+                'dispatched' => true,
+                'dispatch_time' => now(),
+                'dispatch_id' => $plan->id,
+                'tech_id' => $tech_id,
+                'ticket101_other_id' => $ticket_id,
+                'fire_department_id' => $dept_id,
+            ]
+        );
+
+        RoadtripSubscription::notifyDepartment($dept_id, $plan->id);
+
+        if($request->ajax()){
+            return response()->json('ok', 200);
+        }
+
+        return redirect(route('card101add', ['card_id' => $ticket_id]))
+            ->with('_message', [
+                'type' => 'success',
+                'text' => 'В подразделение отправлен путевой лист'
+            ]);
+    }
+
     public function postSendAll($ticket_id)
     {
         $this->noLayout();
         $ticket = Ticket101::findOrFail($ticket_id);
 
         foreach ($ticket->results()->recommended()->get() as $result) {
+            $plan = RoadtripPlan::firstOrCreate([
+                'card_id' => $ticket_id,
+                'department_id' => $result->fire_department_id
+            ]);
+
+            $result->dispatched = true;
+            $result->dispatch_time = now();
+            $result->dispatch_id = $plan->id;
+            $result->save();
+        }
+
+        return response()->json('ok', 200);
+    }
+
+    public function postSendAllOther($ticket_id)
+    {
+        $this->noLayout();
+        $ticket = Ticket101Other::findOrFail($ticket_id);
+
+        foreach ($ticket->results()->get() as $result) {
             $plan = RoadtripPlan::firstOrCreate([
                 'card_id' => $ticket_id,
                 'department_id' => $result->fire_department_id
@@ -219,15 +329,17 @@ class RoadtripController extends AuthorizedController
 
     public function getPrint(Request $request, $id)
     {
-        $record = RoadtripPlan::with(['ticket', 'department', 'results'])->find($id);
+        $record = RoadtripPlan::with(['ticket','ticket101_other', 'department', 'results'])->find($id);
 
         if($record->printed){
             return response()->json('', 200);
         }
 
+        $view = $record->ticket ? 'pdf.roadtrip-page' : 'pdf.roadtrip-other-page';
+
         $this->noLayout();
         $html = view(
-            'pdf.roadtrip-page',
+            $view,
             [
                 'trip' => $record,
                 'image_path' => $request->get('image_path')
