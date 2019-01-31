@@ -176,7 +176,7 @@ class CardController extends AuthorizedController
             ->set('per_page', $perPage);
     }
 
-    public function getAdd101(Request $request, $card_id = 0, $card_type = 'real')
+    public function getAdd101(Request $request, $card_id = 0, $card_type = null)
     {
         $gu_notify = [
             '100' => '100',
@@ -343,6 +343,14 @@ class CardController extends AuthorizedController
         $this->set('max_square', $max_square);
         $this->set('ticket', $ticket);
         $this->set('other_records_unique', $other_records_unique);
+        $this->set('drill_types', [
+        'РКШУ',
+        'ТСУ',
+        'ПТУ',
+        'ПТЗ',
+        'ТДК',
+        'Учения'
+        ]);
     }
 
     private function saveAnalytics($ticket)
@@ -634,11 +642,11 @@ class CardController extends AuthorizedController
             if ($card->trip_result_id) {
                 $this->saveAnalytics($card);
             }
-            $card_type = ($ticket_other->drill_type ?? null) == null ? '' : '/drill';
+            $card_type = ($card->drill_type ?? null) == null ? '' : 'drill';
             if ($comeback) {
-                $back = "/card/add101/{$card->id}{$card_type}#return={$comeback}";
+                $back = "/card/add101/{$card->id}/{$card_type}#return={$comeback}";
             } else {
-                $back = "/card/add101/{$card->id}{$card_type}";
+                $back = "/card/add101/{$card->id}/{$card_type}";
             }
         }
 
