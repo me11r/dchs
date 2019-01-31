@@ -8,6 +8,7 @@ use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
+use App\FireDepartment;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\Card112\Card112;
@@ -22,16 +23,19 @@ use App\Models\Vehicle;
 use App\Models\Weather;
 use App\OperationalCard;
 use App\Reports\Report;
+use App\Reports\Report101OtherRides;
 use App\Reports\Report112;
 use App\Reports\Report112Emergency;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
+use App\RideType;
 use App\Services\ReportExport\Daily112WordExport;
 use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
+use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
 use App\Services\ReportExport\Ticket112EmergencyExcelExport;
@@ -39,6 +43,7 @@ use App\Services\ReportExport\Ticket112EmergencyWordExport;
 use App\Services\ReportExport\Ticket112PeriodExcelExport;
 use App\SirenSpeechTech;
 use App\Ticket101;
+use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
@@ -809,6 +814,78 @@ class ReportController extends AuthorizedController
                 $exportService = new Ticket112EmergencyExcelExport($data);
                 $writer = $exportService->getXlsWriter();
                 $fileName = 'Отчет по карточке 112 (ЧС) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
+    }
+
+    public function getReportOtherRides(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $ride_type_id = $request->rideTypeId;
+        $fire_department_id = $request->fireDepartmentId;
+        $direction = $request->direction;
+
+        $data['records'] = Ticket101Other::whereBetween('created_at', [$dateFrom, $dateTo]);
+
+        if($fire_department_id) {
+            $data['records'] = $data['records']->whereHas('results', function ($q) use ($fire_department_id) {
+                $q->where('fire_department_id', $fire_department_id);
+            });
+        }
+
+        if($direction) {
+            $data['records'] = $data['records']->where('direction', 'like', "%{$direction}%");
+        }
+
+        if($ride_type_id) {
+            $data['records'] = $data['records']->where('ride_type_id', $ride_type_id);
+        }
+
+        $data['records'] = $data['records']
+            ->with([
+                'ride_type',
+                'results',
+                'results.department',
+                'results.tech',
+            ])
+            ->get();
+
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+        $data['rideTypes'] = RideType::all();
+        $data['fireDepartments'] = FireDepartment::all();
+
+
+        Cache::put('report101_other_rides', $data, 3600);
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+
+        return view('reports.101.other_rides', $data);
+    }
+
+    public function exportReportOtherRides($type)
+    {
+        if ($data = Cache::get('report101_other_rides')) {
+            $data = (new Report101OtherRides($data))->getReport();
+
+            if($type === 'docx') {
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket101OtherRidesExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Отчет прочим выездам (101) за период.xls';
 
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="' . $fileName . '"');
