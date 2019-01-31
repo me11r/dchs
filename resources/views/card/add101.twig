@@ -14,32 +14,32 @@
     {% include "layout/yandex-maps-bus.twig" with {areas: city_area} %}
 
     <section class="container section" id="cardadd101">
-        <h4 class="title">Добавление: Карточка 101</h4>
+        <h4 class="title">{{ card_type == 'drill' ? 'Учения' : 'Добавление: Карточка 101' }}</h4>
         <form action="" method="post" id="card-101-form" enctype='multipart/form-data'>
             {{ csrf_field() }}
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
 
             <div id="other-rides">
-                {% if card_type != 'real'or ticket.drill_type is not null %}
+                {#{% if card_type != 'real'or ticket.drill_type is not null %}#}
 
 
-                    <div class="bd-notification is-primary">
-                        <label for="drill_type">Тип карточки</label>
-                        <div class="select"
-                             style="display: block">
-                            <select
-                                    name="drill_type"
-                                    id="drill_type"
-                                    style="width: 100%;"
-                            >
-                                <option {{ ticket.drill_type == null ? 'selected' : '' }} value=""></option>
-                                <option {{ ticket.drill_type == 'ПТЗ' ? 'selected' : '' }} value="ПТЗ">ПТЗ</option>
-                                <option {{ ticket.drill_type == 'ПТУ' ? 'selected' : '' }} value="ПТУ">ПТУ</option>
-                            </select>
-                        </div>
-                    </div>
+                    {#<div class="bd-notification is-primary">#}
+                        {#<label for="drill_type">Тип карточки</label>#}
+                        {#<div class="select"#}
+                             {#style="display: block">#}
+                            {#<select#}
+                                    {#name="drill_type"#}
+                                    {#id="drill_type"#}
+                                    {#style="width: 100%;"#}
+                            {#>#}
+                                {#<option {{ ticket.drill_type == null ? 'selected' : '' }} value=""></option>#}
+                                {#<option {{ ticket.drill_type == 'ПТЗ' ? 'selected' : '' }} value="ПТЗ">ПТЗ</option>#}
+                                {#<option {{ ticket.drill_type == 'ПТУ' ? 'selected' : '' }} value="ПТУ">ПТУ</option>#}
+                            {#</select>#}
+                        {#</div>#}
+                    {#</div>#}
 
-                {% endif %}
+                {#{% endif %}#}
             </div>
             <br>
 
@@ -371,9 +371,15 @@
                                 <div class="bd-notification is-primary">
                                     <div class="field">
                                         <p class="control is-expanded">
-                                            <label for="caller_name">ФИО Заявителя</label>
-                                            <input tabindex="9" type="text" class="input" name="caller_name" id="caller_name"
-                                                   value="{{ ticket.caller_name|default('') }}"/>
+                                            {% if (card_type == 'drill') %}
+                                                <label for="caller_name">Ответственное лицо</label>
+                                                <input tabindex="9" type="text" class="input" name="responsible_person" id="responsible_person"
+                                                       value="{{ ticket.responsible_person|default('') }}"/>
+                                            {% else %}
+                                                <label for="caller_name">ФИО Заявителя</label>
+                                                <input tabindex="9" type="text" class="input" name="caller_name" id="caller_name"
+                                                       value="{{ ticket.caller_name|default('') }}"/>
+                                            {% endif %}
                                         </p>
                                     </div>
                                 </div>
@@ -399,9 +405,16 @@
                                 <div class="bd-notification is-primary">
                                     <div class="field">
                                         <p class="control">
-                                            <label for="caller_phone">Телефон заявителя</label>
-                                            <input tabindex="10" type="text" class="input" name="caller_phone" id="caller_phone"
-                                                   value="{{ ticket.caller_phone|default('') }}"/>
+                                            {% if (card_type == 'drill') %}
+                                                <label for="caller_name">Тип учения</label>
+                                                <input tabindex="9" type="text" class="input" name="form_type_drill" id="form_type_drill"
+                                                       value="{{ ticket.form_type_drill|default('') }}"/>
+                                                <input type="hidden" name="drill_type" value="drill">
+                                            {% else %}
+                                                <label for="caller_phone">Телефон заявителя</label>
+                                                <input tabindex="10" type="text" class="input" name="caller_phone" id="caller_phone"
+                                                       value="{{ ticket.caller_phone|default('') }}"/>
+                                            {% endif %}
                                         </p>
                                     </div>
                                 </div>
@@ -694,7 +707,13 @@
                         <div class="field is-grouped">
                             <div class="control is-three-fifths">
                                 <p>
-                                    <label for="result_fire_level_id">Уточненный ранг пожара</label>
+                                    <label for="result_fire_level_id">
+                                        {% if (card_type == 'drill') %}
+                                            Ранг пожара
+                                        {% else %}
+                                            Уточненный ранг пожара
+                                        {% endif %}
+                                    </label>
                                 <div class="select">
                                     <select name="result_fire_level_id" id="result_fire_level_id">
                                         <option value="">-</option>
@@ -707,7 +726,13 @@
                                 </p>
                             </div>
                             <div class="control">
-                                <label for="fire_dep_results_info">Участники тушения</label>
+                                <label for="fire_dep_results_info">
+                                    {% if (card_type == 'drill') %}
+                                        Участники учения
+                                    {% else %}
+                                        Участники тушения
+                                    {% endif %}
+                                </label>
                                 <textarea class="input" type="text" id="fire_dep_results_info"
                                           value="">{{ fire_dep_results_info }}</textarea>
                             </div>
