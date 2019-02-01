@@ -559,6 +559,9 @@
                 </div>
                 <div id="tab_summary" class="is-hidden">
 
+                    {% if (card_type == 'drill') %}
+                        {% include 'card/drillTotals.twig' %}
+                    {% else %}
                     <div class="tabs buttab is-boxed" id="">
                         <ul>
                             <li class="main-tab-inner is-active" onclick="window.add101tabs.openInnerTab(event, 'tab_summary_base');">
@@ -1085,6 +1088,7 @@
                             </tbody>
                         </table>
                     </div>
+                    {% endif %}
                 </div>
 
             </div>

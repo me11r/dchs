@@ -1,0 +1,351 @@
+
+<div class="control">
+    <label for="drill_type_total">
+        Тип учения
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_type_total"
+           id="drill_type_total"
+           value="{{ ticket.drill_type_total|default('') }}"/>
+</div>
+
+<div class="control">
+    <label for="drill_name_total">
+        Наименование объекта
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_name_total"
+           id="drill_name_total"
+           value="{{ ticket.drill_name_total|default('') }}"/>
+</div>
+
+<div class="control">
+    <label for="drill_address_total">
+        Адрес
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_address_total"
+           id="drill_address_total"
+           value="{{ ticket.drill_address_total|default('') }}"/>
+</div>
+
+<div class="field" style="padding-top: 10px">
+    <div class="bd-notification is-primary">
+        <p class="control">
+            <label for="city_area">Район города</label>
+        </p>
+        <input class="input" readonly value="{{ ticket.city_area ? ticket.city_area.name : '' }}">
+    </div>
+</div>
+
+<div class="control">
+    <label for="drill_checked_pg_total">
+        Проверено ПГ
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_checked_pg_total"
+           id="drill_checked_pg_total"
+           value="{{ ticket.drill_checked_pg_total|default('') }}"/>
+</div>
+
+<div class="control">
+    <label for="drill_checked_pv_total">
+        Проверено ПВ
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_checked_pv_total"
+           id="drill_checked_pv_total"
+           value="{{ ticket.drill_checked_pv_total|default('') }}"/>
+</div>
+
+<div class="control">
+    <label for="drill_out_pg_total">
+        Неисправно ПГ
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_out_pg_total"
+           id="drill_out_pg_total"
+           value="{{ ticket.drill_out_pg_total|default('') }}"/>
+</div>
+
+<div class="control">
+    <label for="drill_out_pv_total">
+        Неисправно ПВ
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_out_pv_total"
+           id="drill_out_pv_total"
+           value="{{ ticket.drill_out_pv_total|default('') }}"/>
+</div>
+
+<div class="control">
+    <label for="drill_corrected_op_total">
+        Откорректированно ОП
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_corrected_op_total"
+           id="drill_corrected_op_total"
+           value="{{ ticket.drill_corrected_op_total|default('') }}"/>
+</div>
+
+<div class="control">
+    <label for="drill_corrected_ok_total">
+        Откорректированно ОК
+    </label>
+    <input type="text"
+           class="input"
+           name="drill_corrected_ok_total"
+           id="drill_corrected_ok_total"
+           value="{{ ticket.drill_corrected_ok_total|default('') }}"/>
+</div>
+
+<div class="field">
+    <div class="control">
+        <label for="burn_object_id">Объект горения</label>
+    </div>
+    <div class="select">
+        <select name="burn_object_id" id="burn_object_id">
+            <option value=""> -</option>
+            {% for burn in burn_object %}
+                <option value="{{ burn.id }}"
+                        {% if burn.id == ticket.burn_object_id %}selected{% endif %}>{{ burn.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<div class="field">
+    <div class="control">
+        <label for="living_sector_type_id">Тип жилого сектора</label>
+    </div>
+    <div class="select">
+        <select name="living_sector_type_id" id="living_sector_type_id">
+            <option value=""> -</option>
+            {% for item in living_sector_types %}
+                <option value="{{ item.id }}"
+                        {% if item.id == ticket.living_sector_type_id %}selected{% endif %}>{{ item.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<div class="field">
+    <div class="control">
+        <label for="trip_result_id">Результат выезда</label>
+    </div>
+    <div class="select">
+        <select name="trip_result_id" id="trip_result_id">
+            <option value=""> -</option>
+            {% for trip_res in trip_result %}
+                <option value="{{ trip_res.id }}"
+                        {% if trip_res.id == ticket.trip_result_id %}selected{% endif %}>{{ trip_res.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="field is-grouped">
+    <div class="field control">
+        <div class="control">
+            <label for="liquidation_method_id">Ликвидация достигнута</label>
+        </div>
+        <div class="select control">
+            <select name="liquidation_method_id" id="liquidation_method_id">
+                <option value="">-</option>
+                {% for liquidation_method in liquidation_methods %}
+                    <option value="{{ liquidation_method.id }}"
+                            {% if liquidation_method.id == ticket.liquidation_method_id %}selected{% endif %}>{{ liquidation_method.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="control">
+        <div id="ticket101_other_records_results"></div>
+    </div>
+</div>
+<br>
+<br>
+
+<div class="field is-grouped">
+    <div class="control is-three-fifths">
+        <p>
+            <label for="result_fire_level_id">
+                Ранг пожара
+            </label>
+        <div class="select">
+            <select name="result_fire_level_id" id="result_fire_level_id">
+                <option value="">-</option>
+                {% for fire_level in fire_levels %}
+                    <option value="{{ fire_level.id }}"
+                            {% if fire_level.id == ticket.result_fire_level_id %}selected{% endif %}>{{ fire_level.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        </p>
+    </div>
+    <div class="control">
+        <label for="fire_dep_results_info">
+            Участники учения
+        </label>
+        <textarea class="input" type="text" id="fire_dep_results_info"
+                  value="">{{ fire_dep_results_info }}</textarea>
+    </div>
+    <div class="control">
+        <label for="square_max">Площадь пожара</label>
+        <input min=0 oninput="validity.valid||(value='');" class="input" type="number"
+               step=".01"
+               id="square_max" name="max_square" value="{{ max_square }}">
+    </div>
+    <div class="control">
+        <span class="field">м<sup><small>2</small></sup></span>
+    </div>
+</div>
+<div class="field is-grouped">
+    <div class="control">
+        <div class="checkbox">
+            <input type="hidden" name="vu_found" value="0"/>
+            <input type="checkbox" name="vu_found" id="vu_found" value="1"
+                   {% if ticket.vu_found == 1 %}checked{% endif %}/>
+            <label for="vu_found">Обнаружено ВУ</label>
+        </div>
+    </div>
+    <div class="control">
+        <div class="checkbox">
+            <input type="hidden" name="animal_death" value="0"/>
+            <input type="checkbox" name="animal_death" id="animal_death" value="1"
+                   {% if ticket.animal_death == 1 %}checked{% endif %}/>
+            <label for="animal_death">Гибель животных</label>
+        </div>
+    </div>
+    <div class="control">
+        <div class="checkbox">
+            <input type="hidden" name="car_crash" value="0"/>
+            <input type="checkbox" name="car_crash" id="car_crash" value="1"
+                   {% if ticket.car_crash == 1 %}checked{% endif %}/>
+            <label for="car_crash">Авария А/М при следовании на пожар</label>
+        </div>
+    </div>
+
+</div>
+<div class="field is-grouped" style="margin-right: 40px">
+    <div class="control" style="width: 25%">
+        <label for="rescued_count">Спасено людей
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="rescued_count" id="rescued_count"
+               value="{{ ticket.rescued_count|default('') }}"/>
+    </div>
+    <div class="control" style="width: 25%">
+        <label for="evac_count">Эвакуировано людей
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="evac_count" id="evac_count"
+               value="{{ ticket.evac_count|default('') }}"/>
+    </div>
+
+    <div class="control" style="width: 25%">
+        <label for="co2_poisoned_count">Получили отравления угарным газом
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="co2_poisoned_count" id="co2_poisoned_count"
+               value="{{ ticket.co2_poisoned_count|default('') }}"/>
+    </div>
+    <div class="control" style="width: 25%">
+        <label for="ch4_poisoned_count">Получили отравления природным газом
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="ch4_poisoned_count" id="ch4_poisoned_count"
+               value="{{ ticket.ch4_poisoned_count|default('') }}"/>
+    </div>
+
+</div>
+<div class="field is-grouped" style="margin-right: 40px">
+    <div class="control" style="width: 25%">
+        <label for="gpt_burns_count">Получили ожоги
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="gpt_burns_count" id="gpt_burns_count"
+               value="{{ ticket.gpt_burns_count|default('') }}"/>
+    </div>
+
+    <div class="control" style="width: 25%">
+        <label for="people_death_count">Гибель людей
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="people_death_count" id="people_death_count"
+               value="{{ ticket.people_death_count|default('') }}"/>
+    </div>
+    <div class="control" style="width: 25%">
+        <label for="children_death_count">Гибель детей
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="children_death_count" id="children_death_count"
+               value="{{ ticket.children_death_count|default('') }}"/>
+    </div>
+    <div class="control" style="width: 25%">
+        <label for="hospitalized_count">Госпитализировано
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               name="hospitalized_count" id="hospitalized_count"
+               value="{{ ticket.hospitalized_count|default('') }}"/>
+    </div>
+</div>
+
+<div class="field">
+    <div class="control">
+        <label for="ticket_result">Итог выезда</label>
+        <textarea class="textarea" cols="30" name="ticket_result" id="ticket_result"
+                  rows="2">{{ ticket.ticket_result|default('') }}</textarea>
+    </div>
+</div>
+
+<div class="field">
+    <div class="control">
+        <label for="special_tech">Спец. тех. средства</label>
+        <textarea class="textarea" cols="30" name="special_tech" id="special_tech"
+                  rows="2">{{ ticket.special_tech|default('') }}</textarea>
+    </div>
+</div>
+
+<div class="field">
+    <label for="more_info">Дополнительная информация</label>
+    <textarea name="more_info" id="more_info" cols="30" rows="2"
+              class="textarea">{{ ticket.more_info|default('') }}</textarea>
+</div>
+<div class="field">
+    <div class="control">
+        <label for="water_supply_source_id">Источник противопожарного водоснабжения</label>
+    </div>
+    <div class="select">
+        <select name="water_supply_source_id" id="water_supply_source_id">
+            {% for object in water_sources %}
+                <option value="{{ object.id }}"
+                        {% if object.id == ticket.water_supply_source_id %}{{ 'selected' }}{% endif %}>{{ object.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+</div>
+
+<div class="field">
+    <div class="control">
+        <label for="distance">Расстояние до места
+        </label>
+        <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+               step=".01"
+               name="distance" id="distance"
+               value="{{ ticket.distance|default('') }}"/>
+    </div>
+</div>
+<div class="field">
+    <label for="owner">Ответственное лицо</label>
+    <input type="text" id="owner" name="owner" value="{{ ticket.responsible_person|default('') }}"
+           class="input"/>
+</div>
