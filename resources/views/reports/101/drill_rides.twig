@@ -1,0 +1,12 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="vue">
+        <report-drill-rides-period
+            :records="{{ records|json_encode }}"
+            :norm-types="{{ normTypes|json_encode }}"
+            :fire-departments="{{ fireDepartments }}"
+        >
+        </report-drill-rides-period>
+
+    </div>
+{% endblock content %}

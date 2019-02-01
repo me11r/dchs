@@ -21,8 +21,11 @@ use App\Models\OperationalPlan;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use App\Models\Weather;
+use App\NormPsp;
+use App\NormType;
 use App\OperationalCard;
 use App\Reports\Report;
+use App\Reports\Report101DrillRides;
 use App\Reports\Report101OtherRides;
 use App\Reports\Report112;
 use App\Reports\Report112Emergency;
@@ -34,6 +37,7 @@ use App\Services\ReportExport\Daily112WordExport;
 use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
+use App\Services\ReportExport\Ticket101DrillRidesExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
@@ -885,7 +889,146 @@ class ReportController extends AuthorizedController
             elseif($type === 'xlsx') {
                 $exportService = new Ticket101OtherRidesExcelExport($data);
                 $writer = $exportService->getXlsWriter();
-                $fileName = 'Отчет прочим выездам (101) за период.xls';
+                $fileName = 'Общий свод по прочим выездам (101) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
+    }
+
+    public function getReportDrillRides(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $fire_department_id = $request->fireDepartmentId;
+        $type = $request->type;
+        $location = $request->location;
+
+        $normTypes = NormType::all()->map(function ($item) {
+            return $item->name;
+        })->toArray();
+
+        $normTypes = array_merge($normTypes, [
+            'РКШУ',
+            'ТСУ',
+            'ПТУ',
+            'ПТЗ',
+            'ТДК',
+            'Учения',
+        ]);
+
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+        $data['normTypes'] = $normTypes;
+        $data['fireDepartments'] = FireDepartment::all();
+
+        $data['drill'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+            ->real('drill');
+
+        $data['psp'] = NormPsp::whereBetween('created_at', [$dateFrom, $dateTo]);
+
+        if($fire_department_id) {
+            $data['drill'] = $data['drill']->whereHas('results', function ($q) use ($fire_department_id) {
+                $q->where('fire_department_id', $fire_department_id);
+            });
+
+            $data['psp'] = $data['psp']->where('fire_department_id', $fire_department_id);
+        }
+
+        if($type) {
+            $data['drill'] = $data['drill']->where('form_type_drill', $type);
+            $data['psp'] = $data['psp']->whereHas('norm_type', function ($q) use ($type) {
+                $q->where('name',$type);
+            });
+        }
+
+        if($location) {
+            $data['drill'] = $data['drill']->where('location', "like","%$location%");
+        }
+
+        $drills = $data['drill']->get()->map(function ($q) {
+           return [
+               'date' => $q->created_at->format('d.m.Y H:i'),
+               'fire_departments' => $q->results()->whereNotNull('dispatch_time')->get()->map(function ($q) {
+                   return [
+                       'name' => $q->department->title ?? null,
+                   ];
+               })->toArray(),
+               'type' => $q->form_type_drill,
+               'departments' => $q->results()->whereNotNull('dispatch_time')->get()->map(function ($q) {
+                   return [
+                       'name' => $q->tech->department ?? null,
+                   ];
+               })->toArray(),
+               'name' => $q->object_name,
+               'location' => $q->location,
+               'time_begin' => $q->loc_time,
+               'time_end' => $q->liqv_time,
+               'responsible_person' => $q->responsible_person,
+               'checked_pg_total' => $q->drill_checked_pg_total,
+               'checked_pv_total' => $q->drill_checked_pv_total,
+               'out_pg_total' => $q->drill_out_pg_total,
+               'out_pv_total' => $q->drill_out_pv_total,
+               'corrected_op_total' => $q->drill_corrected_op_total,
+               'corrected_ok_total' => $q->drill_corrected_ok_total,
+           ];
+        })->toArray();
+
+        $psp = $data['psp']->get()->map(function ($q) {
+            return [
+                'date' => $q->created_at->format('d.m.Y H:i'),
+                'fire_departments' => [
+                    ['name' => $q->fire_department->title ?? null]
+                    ],
+                'type' => $q->norm_type->name ?? null,
+                'departments' => [
+                    ['name' => $q->department]
+                    ],
+                'name' => $q->norm_number->name ?? null,
+                'location' => '',
+                'time_begin' => $q->time_begin,
+                'time_end' => $q->time_end,
+                'responsible_person' => $q->responsible_person,
+                'checked_pg_total' => '',
+                'checked_pv_total' => '',
+                'out_pg_total' => '',
+                'out_pv_total' => '',
+                'corrected_op_total' => '',
+                'corrected_ok_total' => '',
+            ];
+        })->toArray();
+
+        unset($data['psp'],$data['drill']);
+
+        $data['records'] = array_merge($drills, $psp);
+
+        Cache::put('report101_drill_rides', $data, 3600);
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+
+        return view('reports.101.drill_rides', $data);
+    }
+
+    public function exportReportDrillRides($type)
+    {
+        if ($data = Cache::get('report101_drill_rides')) {
+            $data = (new Report101DrillRides($data))->getReport();
+
+            if($type === 'docx') {
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket101DrillRidesExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Общий свод по учениям и занятиям (101) за период.xls';
 
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="' . $fileName . '"');
