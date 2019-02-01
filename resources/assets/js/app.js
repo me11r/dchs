@@ -112,6 +112,7 @@ Vue.component('report-other-rides-period', require('./views/reports/emergency/Re
 Vue.component('report-drill-rides-period', require('./views/reports/emergency/ReportTicket101DrillRidesPeriod'));
 Vue.component('card-notification-services', require('./components/ticket101/NotificationServices'));
 Vue.component('norm-psp-form', require('./components/norms-psp/CreateEdit'));
+Vue.component('report-forces-resources', require('./views/reports/emergency/ReportForcesResources'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
