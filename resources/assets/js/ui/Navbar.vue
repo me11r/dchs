@@ -303,6 +303,11 @@
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Отчет по прочим выездам
                         </a>
+                        <a
+                                href="/reports/forces-resources/"
+                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
+                            &nbsp; Отчет "Учет сил и средств"
+                        </a>
                     </div>
                 </div>
                 <div

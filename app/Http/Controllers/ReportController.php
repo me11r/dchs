@@ -898,4 +898,74 @@ class ReportController extends AuthorizedController
         }
         dd('Кеш устарел, обновите страницу');
     }
+
+
+    public function getReportForcesResources(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $fire_department_id = $request->fireDepartmentId;
+
+        $data = [];
+
+        $reportData = FireDepartmentResult::
+            whereBetween('created_at', [$dateFrom, $dateTo])
+            ->whereNotNull('dispatch_time')
+            ->with(['tech.formation_tech_report', 'department']);
+
+        if ($fire_department_id) {
+            $reportData = $reportData->where('fire_department_id', $fire_department_id);
+        }
+
+        $data['reports'] = $reportData->orderBy('fire_department_id')->get();
+//
+//        foreach ($data['reports'] as $report_key => $report) {
+//            foreach ($report->items as $item_key => $tech_item) {
+//                $report->items[$item_key]['departures_count'] = FireDepartmentResult::
+//                    where('tech_id', $tech_item->id)
+//                    ->whereNotNull('out_time')->count();
+//
+//                $report->items[$item_key]['status'] = Ticket101::
+//                whereHas('results', function ($q) use ($tech_item) {
+//                    $q->where('tech_id', $tech_item->id)->
+//                        whereNull('ret_time')->
+//                        whereNotNull('out_time');
+//                    })
+//                    ->with(['results', 'fire_level'])
+//                    ->first();
+//
+//                $report->items[$item_key]['address'] = $report->items[$item_key]['status']->location ?? null;
+//                $report->items[$item_key]['fire_rank'] = $report->items[$item_key]['status']->fire_level->name ?? null;
+//                $report->items[$item_key]['out_time'] = $report->items[$item_key]['status']->fire_level->name ?? null;
+//
+//                if($report->items[$item_key]['status']){
+//                    $roadtripItem = $report->items[$item_key]['status']->results()->where('tech_id', $tech_item->id)->first();
+//                    if($roadtripItem){
+//                        $report->items[$item_key]['out_time'] = $roadtripItem->out_time;
+//                        $report->items[$item_key]['arrive_time'] = $roadtripItem->arrive_time;
+//                    }
+//                }
+//                else{
+//                    $report->items[$item_key]['out_time'] = null;
+//                    $report->items[$item_key]['arrive_time'] = null;
+//                }
+//            }
+//        }
+        $data['fireDepartments'] = FireDepartment::all();
+
+        Cache::put('report_forces_resources_data', $data, 3600);
+
+        if($request->ajax()){
+            return response()->json($data);
+        }
+
+
+        return view('reports.101.forcesResources', $data);
+    }
+
+
+    public function exportReportForcesResources(Request $request)
+    {
+
+    }
 }
