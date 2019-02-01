@@ -63,21 +63,6 @@ class Ticket101Other extends Model
         return $this->belongsTo(RideType::class,'ride_type_id');
     }
 
-    public function ticket101()
-    {
-        return $this->belongsTo(Ticket101::class,'ticket_101_id');
-    }
-
-    public function fire_department()
-    {
-        return $this->belongsTo(FireDepartment::class,'fire_department_id');
-    }
-
-    public function staff()
-    {
-        return $this->belongsTo(Staff::class,'staff_id');
-    }
-
     public function formation_report()
     {
         return $this->belongsTo(FormationReport::class,'formation_report_id');

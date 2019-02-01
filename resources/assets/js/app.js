@@ -108,6 +108,7 @@ Vue.component('ticket101-save-btn', require('./components/ticket101/SaveBtn'));
 Vue.component('quakes-form', require('./views/quakes/CreateEditForm'));
 Vue.component('messenger-permissions', require('./views/messenger-permissions/MessengerPermissions'));
 Vue.component('report-emergency-type-period', require('./views/reports/emergency/ReportEmergencyTypePeriod'));
+Vue.component('report-other-rides-period', require('./views/reports/emergency/ReportTicket101OtherRidesPeriod'));
 Vue.component('card-notification-services', require('./components/ticket101/NotificationServices'));
 Vue.component('norm-psp-form', require('./components/norms-psp/CreateEdit'));
 // верхнее меню

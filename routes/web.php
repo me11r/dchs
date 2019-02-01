@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/card/add101/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+', 'card_type' => '[A-Za-z]+']);
 
     Route::group(['prefix' => 'card101-other-rides', 'as' => 'card101-other-rides'], function (){
-        Route::get('/', '\@index')->name('index')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+        Route::get('/', 'OtherRides101Controller@index')->name('index')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::match(['get', 'post'], '/create', 'OtherRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::match(['get', 'post'], '{id}/edit', 'OtherRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::delete('delete/{id}', 'OtherRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHERS_RIDES_CAN_DELETE']);
@@ -328,6 +328,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
     Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
+
+    Route::get('reports/other-rides-report','ReportController@getReportOtherRides');
+    Route::get('reports/other-rides-report/export/{type}','ReportController@exportReportOtherRides');
+
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){

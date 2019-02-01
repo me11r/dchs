@@ -104,6 +104,7 @@
                                 <th>Время прибытия</th>
                                 <th>Время возвращения</th>
                                 <th>Отправка</th>
+                                <th>Статус</th>
                                 <th>Время оповещения</th>
                             </tr>
                             </thead>
@@ -197,6 +198,10 @@
                                             <i class="fas fa-bus"></i>&nbsp;Выслать
                                         </a>
                                     </p>
+                                </td>
+
+                                <td class="is-expanded">
+                                    <p v-for="i in formActive[department.id]">{{ i.status }}</p>
                                 </td>
 
                                 <!--{#Время оповещения#}-->
@@ -507,9 +512,11 @@
                 let form = document.getElementById('other-rides-form');
                 let loadingComponent = this.$loading.open({
                     container: form
-                })
+                });
                 let urlToSave = this.urlToSave;
-                axios.post(urlToSave, this.otherRide_).then((r) => {
+                // console.dir(this.otherRide_)
+
+                axios.post(urlToSave, this.dataToSave).then((r) => {
                     this.otherRide_ = this.prepareRecord(r.data.record);
                     this.techItems_ = r.data.techItems;
                     window.history.pushState('page2', 'Title', `/card101-other-rides/${this.otherRide_.id}/edit`);
@@ -610,8 +617,8 @@
                 return moment(date).format('DD.MM.YYYY HH:mm');
             },
             prepareRecord(record) {
-                record.time_begin = record.time_begin !== null ? moment("1970-01-01 "+record.time_begin).toDate() : null;
-                record.time_end = record.time_end !== null ? moment("1970-01-01 "+record.time_end).toDate() : null;
+                record.time_begin = record.time_begin !== null ? moment("2019-01-01 "+record.time_begin).toDate() : null;
+                record.time_end = record.time_end !== null ? moment("2019-01-01 "+record.time_end).toDate() : null;
 
                 return record;
             },
@@ -635,6 +642,13 @@
             urlToSave() {
                 return `/card101-other-rides/` + (this.otherRide_.id !== 0 ? `${this.otherRide_.id}/edit` : 'create');
             },
+            dataToSave() {
+                let data = JSON.parse(JSON.stringify(this.otherRide_));
+                data.time_begin = moment(data.time_begin).format('H:m');
+                data.time_end = moment(data.time_end).format('H:m');
+
+                return data;
+            },
             formActive() {
                 this.fireDepartments_.forEach((dept) => {
                     this.active[dept.id] = _.filter(this.techItems_, function (result) {
@@ -654,13 +668,17 @@
 
                 return this.reserve;
             },
+
+        },
+        watch: {
         },
         mounted(){
             if(this.otherRide !== null) {
                 this.otherRide_ = this.otherRide;
             }
+            this.checkRoadtrips();
 
-            setTimeout(this.checkRoadtrips, this.time);
+            // setTimeout(this.checkRoadtrips, this.time);
 
             this.prepareRecord(this.otherRide_);
         }

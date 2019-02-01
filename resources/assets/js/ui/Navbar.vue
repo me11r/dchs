@@ -298,6 +298,11 @@
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Отчет по ЧС
                         </a>
+                        <a
+                                href="/reports/other-rides-report/"
+                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
+                            &nbsp; Отчет по прочим выездам
+                        </a>
                     </div>
                 </div>
                 <div
@@ -475,16 +480,7 @@ export default {
         let rightsPromise = rights.getRights();
         rightsPromise.then((list) => {
             this.rights = list;
-            console.dir(this.hasRight('CAN_ACCESS_NORMS_PSP'));
-
         });
-
-        //todo: depricated: moved to rights.js
-        /*axios.get('/ajax/rights/list').then((response) => {
-            this.rights = response.data;
-            window.localStorage.setItem('preloaded_rights', JSON.stringify(this.rights));
-        });*/
-
     }
 
 };
