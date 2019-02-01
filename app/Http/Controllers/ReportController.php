@@ -27,6 +27,7 @@ use App\OperationalCard;
 use App\Reports\Report;
 use App\Reports\Report101DrillRides;
 use App\Reports\Report101OtherRides;
+use App\Reports\Report101Resources;
 use App\Reports\Report112;
 use App\Reports\Report112Emergency;
 use App\Repositories\Contracts\BurntObjectInterface;
@@ -41,6 +42,7 @@ use App\Services\ReportExport\Ticket101DrillRidesExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
+use App\Services\ReportExport\Ticket101ResourcesExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
 use App\Services\ReportExport\Ticket112EmergencyExcelExport;
 use App\Services\ReportExport\Ticket112EmergencyWordExport;
@@ -1051,49 +1053,25 @@ class ReportController extends AuthorizedController
 
         $data = [];
 
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+
         $reportData = FireDepartmentResult::
             whereBetween('created_at', [$dateFrom, $dateTo])
             ->whereNotNull('dispatch_time')
-            ->with(['tech.formation_tech_report', 'department']);
+            ->with([
+                'tech',
+                'ticket',
+                'ticket_other',
+                'department',
+            ]);
 
         if ($fire_department_id) {
             $reportData = $reportData->where('fire_department_id', $fire_department_id);
         }
 
         $data['reports'] = $reportData->orderBy('fire_department_id')->get();
-//
-//        foreach ($data['reports'] as $report_key => $report) {
-//            foreach ($report->items as $item_key => $tech_item) {
-//                $report->items[$item_key]['departures_count'] = FireDepartmentResult::
-//                    where('tech_id', $tech_item->id)
-//                    ->whereNotNull('out_time')->count();
-//
-//                $report->items[$item_key]['status'] = Ticket101::
-//                whereHas('results', function ($q) use ($tech_item) {
-//                    $q->where('tech_id', $tech_item->id)->
-//                        whereNull('ret_time')->
-//                        whereNotNull('out_time');
-//                    })
-//                    ->with(['results', 'fire_level'])
-//                    ->first();
-//
-//                $report->items[$item_key]['address'] = $report->items[$item_key]['status']->location ?? null;
-//                $report->items[$item_key]['fire_rank'] = $report->items[$item_key]['status']->fire_level->name ?? null;
-//                $report->items[$item_key]['out_time'] = $report->items[$item_key]['status']->fire_level->name ?? null;
-//
-//                if($report->items[$item_key]['status']){
-//                    $roadtripItem = $report->items[$item_key]['status']->results()->where('tech_id', $tech_item->id)->first();
-//                    if($roadtripItem){
-//                        $report->items[$item_key]['out_time'] = $roadtripItem->out_time;
-//                        $report->items[$item_key]['arrive_time'] = $roadtripItem->arrive_time;
-//                    }
-//                }
-//                else{
-//                    $report->items[$item_key]['out_time'] = null;
-//                    $report->items[$item_key]['arrive_time'] = null;
-//                }
-//            }
-//        }
+
         $data['fireDepartments'] = FireDepartment::all();
 
         Cache::put('report_forces_resources_data', $data, 3600);
@@ -1107,8 +1085,27 @@ class ReportController extends AuthorizedController
     }
 
 
-    public function exportReportForcesResources(Request $request)
+    public function exportReportForcesResources(Request $request, $type)
     {
+        if ($data = Cache::get('report_forces_resources_data')) {
+            $data = (new Report101Resources($data))->getReport();
 
+            if($type === 'docx') {
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket101ResourcesExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Учет сил и средств (101) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
     }
 }

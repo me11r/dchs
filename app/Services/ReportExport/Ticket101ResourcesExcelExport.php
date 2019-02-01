@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
-class Ticket101DrillRidesExcelExport
+class Ticket101ResourcesExcelExport
 {
 
     private $spreadsheet;
@@ -87,7 +87,7 @@ class Ticket101DrillRidesExcelExport
     private function prepareSpreadsheet()
     {
         $sheet = $this->getActiveSheetByIndex(0);
-        $sheet->setTitle('Общий свод по учениям');
+        $sheet->setTitle('Учет сил');
         $this->addFirstTableHeaders($sheet);
         $this->addFirstTableData($sheet);
 
@@ -102,17 +102,30 @@ class Ticket101DrillRidesExcelExport
     {
         // заголовки таблицы
         $sheet->getCell('B1')
-            ->setValue("Общий свод по учениям и занятиям за {$this->data['dateFrom']} по {$this->data['dateTo']}");
+            ->setValue("Учет сил и средств за {$this->data['dateFrom']} по {$this->data['dateTo']}");
         $sheet->mergeCells('B1:T1');
         $sheet->getRowDimension(1)->setRowHeight(50);
         $sheet->getRowDimension(2)->setRowHeight(50);
+        $sheet->getRowDimension(3)->setRowHeight(50);
 
         $letters = range('A', 'Z');
 
-        foreach ($this->data['headers'] as $index => $header) {
+        foreach ($this->data['headers1'] as $index => $header) {
             $sheet->getColumnDimension($letters[$index])->setWidth(20);
             $this->setCell($sheet, $header, "$letters[$index]2", "$letters[$index]2", self::HStyle);
         }
+
+        $sheet->mergeCells('B2:F2');
+
+        $letters = range('B', 'Z');
+
+        foreach ($this->data['headers2'] as $index => $header) {
+            $sheet->getColumnDimension($letters[$index])->setWidth(20);
+            $this->setCell($sheet, $header, "$letters[$index]3", "$letters[$index]3", self::HStyle);
+        }
+
+//        $sheet->mergeCells('B3:F3');
+
 
     }
 
@@ -121,18 +134,37 @@ class Ticket101DrillRidesExcelExport
      * @param int $startRowIndex
      * @throws Exception
      */
-    private function addFirstTableData(Worksheet $sheet, $startRowIndex = 3)
+    private function addFirstTableData(Worksheet $sheet, $startRowIndex = 4)
     {
         $rowIndex = $startRowIndex;
+        $firDeptIndex = 3;
 
-        foreach ($this->data['values'] as $rowVal) {
+        foreach ($this->data['fireDepartments'] as $fireDepartment) {
 
-            $sheet->fromArray($rowVal, null, "A$rowIndex");
-            $sheet->getStyle("A$rowIndex:P$rowIndex")->applyFromArray(self::HStyle);
-            $sheet->getRowDimension($rowIndex)->setRowHeight(50);
-            $rowIndex++;
+            if(!count($this->data['values'][$fireDepartment->title])) {
+                continue;
+            }
 
+            $this->setCell($sheet, $fireDepartment->title, "A{$rowIndex}", "A{$rowIndex}", self::HStyle);
+
+            foreach ($this->data['values'] as $fireDept => $rowVal) {
+
+                if($fireDepartment->title === $fireDept) {
+                    if($dataCount = count($rowVal)) {
+                        $verticalCellsToMerge = $dataCount + $rowIndex - 1;
+                        $sheet->mergeCells("A{$rowIndex}:A{$verticalCellsToMerge}");
+                    }
+                    foreach ($rowVal as $department) {
+                        $sheet->fromArray($department, null, "B$rowIndex");
+                        $sheet->getStyle("B$rowIndex:F$rowIndex")->applyFromArray(self::HStyle);
+                        $sheet->getRowDimension($rowIndex)->setRowHeight(50);
+                        $rowIndex++;
+                    }
+                }
+            }
+            $firDeptIndex++;
         }
+
     }
 
     /**

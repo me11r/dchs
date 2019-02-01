@@ -32,7 +32,7 @@
                     </div>
                     <div class="level-left">
                         <a
-                            href="/xls/report101/forces"
+                            href="/reports/forces-resources/export/xlsx"
                             target="_blank"
                             download
                             class="button is-primary"
@@ -68,8 +68,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="dept in reports_">
-                                <td>{{ dept.department.title }}</td>
+                            <tr v-for="dept in fireDepartments" v-if="uniqueDepartments(dept.id).length">
+                                <td>{{ dept.title }}</td>
                                 <td>
                                     <div >
                                         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small is-bordered">
@@ -77,42 +77,18 @@
                                                 <tr>
                                                     <td>Отделение</td>
                                                     <td>Кол-во выездов за период</td>
-                                                    <td>Статус</td>
+                                                    <td>Выезда по тревоге</td>
+                                                    <td>Учения</td>
+                                                    <td>Прочие выезда</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="department in dept.items">
-                                                    <td>{{ department.department || department.reserve + ' резерв' }}</td>
-                                                    <td>{{ department.departures_count }}</td>
-                                                    <td>
-                                                        <table
-                                                            v-if="department.status"
-                                                            class="table is-narrow is-hoverable is-fullwidth is-striped is-small is-bordered">
-                                                            <thead>
-                                                                <tr>
-                                                                    <td>Адрес</td>
-                                                                    <td>Ранг пожара</td>
-                                                                    <td>Время выезда</td>
-                                                                    <td>Время прибытия</td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <span
-                                                                            class="ymaps-geolink"
-                                                                            data-type="biz">
-                                                                            Алматы, {{ department.address }}
-                                                                        </span>
-                                                                    </td>
-                                                                    <td>{{ department.fire_rank }}</td>
-                                                                    <td>{{ department.out_time }}</td>
-                                                                    <td>{{ department.arrive_time }}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                        <p v-else>в ПЧ</p>
-                                                    </td>
+                                                <tr v-for="ride in uniqueDepartments(dept.id)">
+                                                    <td>{{ ride.tech.department || ride.tech.reserve + ' резерв' }}</td>
+                                                    <td>{{ amountRides(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesReal(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesDrill(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesOther(dept.id, ride.tech.department).length }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -158,16 +134,15 @@ export default {
         dateFromFormatted() {
             return moment(this.dateFrom).format('DD-MM-YYYY');
         },
-        formActive() {
+        formRides() {
+            let data = [];
             this.fireDepartments.forEach((dept) => {
-                this.active[dept.id] = _.filter(this.reports_, function (result) {
-                    return (result.tech.department && result.tech.formation_tech_report.dept_id === dept.id && result.tech.status === 'action') ||
-                        (result.promoted_at !== null && result.tech.formation_tech_report.dept_id === dept.id);
+                data[dept.id] = _.filter(this.reports_, function (report) {
+                    return report.fire_department_id === dept.id;
                 });
             });
-            console.log(this.active);
 
-            return this.active;
+            return data;
         },
     },
     methods: {
@@ -181,6 +156,32 @@ export default {
             } catch (e) {
                 return null;
             }
+        },
+        amountRidesReal(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.form_type_drill === null;
+            });
+        },
+        amountRidesOther(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket_other;
+            });
+        },
+        amountRidesDrill(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.form_type_drill !== null;
+            });
+        },
+        amountRides(deptId, department) {
+            return _.filter(this.formRides[deptId], function (q) {
+                return q.tech.department === department;
+            });
+        },
+        uniqueDepartments(deptId) {
+            let rides = this.formRides[deptId];
+            return _.uniqBy(rides, function (q) {
+                return q.tech.department;
+            });
         },
         status(data) {
             if (data === null) {
