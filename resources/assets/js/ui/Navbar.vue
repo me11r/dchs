@@ -301,7 +301,12 @@
                         <a
                                 href="/reports/other-rides-report/"
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Отчет по прочим выездам
+                            &nbsp; Общий свод по прочим выездам
+                        </a>
+                        <a
+                                href="/reports/drill-rides-report/"
+                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
+                            &nbsp; Общий свод по учениям и занятиям
                         </a>
                     </div>
                 </div>

@@ -332,6 +332,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports/other-rides-report','ReportController@getReportOtherRides');
     Route::get('reports/other-rides-report/export/{type}','ReportController@exportReportOtherRides');
 
+    Route::get('reports/drill-rides-report','ReportController@getReportDrillRides');
+    Route::get('reports/drill-rides-report/export/{type}','ReportController@exportReportDrillRides');
+
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
