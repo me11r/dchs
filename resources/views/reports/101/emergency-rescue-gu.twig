@@ -1,0 +1,10 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="vue">
+        <report-emergency-rescue-gu
+            :record="{{ record|json_encode }}"
+        >
+        </report-emergency-rescue-gu>
+
+    </div>
+{% endblock content %}

@@ -311,7 +311,12 @@
                         <a
                                 href="/reports/forces-resources/"
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Отчет "Учет сил и средств"
+                            &nbsp; Учет сил и средств
+                        </a>
+                        <a
+                                href="/reports/emergency-rescue-gu/"
+                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
+                            &nbsp; Учет аварийно-спасательных работ ГУ "СПиАСР"
                         </a>
                     </div>
                 </div>
