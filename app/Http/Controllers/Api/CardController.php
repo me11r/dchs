@@ -366,7 +366,11 @@ class CardController extends Controller
             ->whereHas('ticket', function ($q){
                 $q->real();
             })
-            ->whereNotNull('dispatch_time')
+            ->where(function ($q) {
+                $q->whereNotNull('dispatch_time')
+                    ->whereNull('ret_time');
+
+            })
             ->where('ticket101_id', '<>', $ticket->id)
             ->get()
             ->pluck('tech_id')
@@ -407,6 +411,11 @@ class CardController extends Controller
         $techNotAvailableIds = FireDepartmentResult::whereIn('tech_id', $currentRidesTechIds)
             ->whereHas('ticket', function ($q){
                 $q->real();
+            })
+            ->where(function ($q) {
+                $q->whereNotNull('dispatch_time')
+                    ->whereNull('ret_time');
+
             })
             ->whereNotNull('dispatch_time')
             ->get()

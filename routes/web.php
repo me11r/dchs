@@ -332,6 +332,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports/other-rides-report','ReportController@getReportOtherRides');
     Route::get('reports/other-rides-report/export/{type}','ReportController@exportReportOtherRides');
 
+    Route::get('reports/forces-resources','ReportController@getReportForcesResources');
+    Route::get('reports/forces-resources/export/{type}','ReportController@exportReportForcesResources');
+
     Route::get('reports/drill-rides-report','ReportController@getReportDrillRides');
     Route::get('reports/drill-rides-report/export/{type}','ReportController@exportReportDrillRides');
 

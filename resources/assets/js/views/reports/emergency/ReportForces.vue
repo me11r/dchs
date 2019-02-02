@@ -116,7 +116,6 @@ export default {
             setInterval(() => {
                 axios.get('/reports/101/forces-resources').then((response) => {
                     this.reports_ = response.data.reports;
-                    console.dir(response.data.reports);
                 });
             }, 10000);
         },
