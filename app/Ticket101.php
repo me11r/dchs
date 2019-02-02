@@ -23,6 +23,7 @@ use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\UploadedFile;
 use App\Models\WallMaterial;
 use Carbon\Carbon;
+use function foo\func;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -639,33 +640,6 @@ class Ticket101 extends Model
             }
         }
 
-        /*foreach ($reasons as $reason) {
-            foreach ($areas as $area) {
-                $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
-                    ->where('trip_result_id', $reason->id)
-                    ->where('city_area_id', $area->id);
-
-                $for_period = $baseQuery->get();
-
-                $result[$reason->name][$area->name]['total'] = $baseQuery->count();
-                $result[$reason->name][$area->name]['rescued_count'] = $baseQuery->sum('rescued_count');
-                $result[$reason->name][$area->name]['evac_count'] = $baseQuery->sum('evac_count');
-                $result[$reason->name][$area->name]['co2_poisoned_count'] = $baseQuery->sum('co2_poisoned_count');
-                $ticket$result[$reason->name][$area->name]['ch4_poisoned_count'] = $baseQuery->sum('ch4_poisoned_count');
-                $result[$reason->name][$area->name]['gpt_burns_count'] = $baseQuery->sum('gpt_burns_count');
-                $result[$reason->name][$area->name]['people_death_count'] = $baseQuery->sum('people_death_count');
-                $result[$reason->name][$area->name]['children_death_count'] = $baseQuery->sum('children_death_count');
-                $result[$reason->name][$area->name]['hospitalized_count'] = $baseQuery->sum('hospitalized_count');
-
-                $result[$reason->name][$area->name]['hurt'] = $baseQuery->sum('co2_poisoned_count')
-                    + $baseQuery->sum('ch4_poisoned_count')
-                    + $baseQuery->sum('gpt_burns_count')
-                    + $baseQuery->sum('hospitalized_count');
-            }
-        }*/
-
-
-
         return $result;
     }
 
@@ -718,5 +692,48 @@ class Ticket101 extends Model
     public function fireDepartmentsInfo()
     {
         return $this->hasMany(Ticket101InfoFromFd::class, 'ticket_id');
+    }
+
+    public function getDetailedStaffCount()
+    {
+        if(!$this->detailed_staff_count && $this->results->count()) {
+            $depts_out = $this->results()->whereNotNull('dispatch_time')->get();
+            $deptsArr = array_unique($depts_out->pluck('fire_department_id')->toArray());
+
+            foreach (FireDepartment::whereIn('id', $deptsArr)->get() as $item) {
+
+                $deptsNumbers = $depts_out->filter(function ($q) use ($item){
+                    return $q->fire_department_id === $item->id;
+                })->pluck('tech.department')->toArray();
+
+                $deptsStaffCounts = $depts_out->filter(function ($q) use ($item){
+                    return $q->fire_department_id === $item->id;
+                })->pluck('staff_count')->toArray();
+
+                $res = [];
+                foreach ($deptsNumbers as $key => $deptsNumber) {
+                    $res[] = "{$deptsNumber}:{$deptsStaffCounts[$key]} чел.";
+                }
+
+                $deptsNumbers = implode(',', $res);
+
+                $this->detailed_staff_count .= "{$item->title}($deptsNumbers), ";
+
+            }
+        }
+        return $this->detailed_staff_count;
+    }
+
+    public function setTotalStaffCountAttribute($value)
+    {
+        if(!$value) {
+            $results = $this->results;
+
+            if($results && $results->count()) {
+                $value = $this->results()->sum('staff_count');
+            }
+        }
+
+        $this->attributes['total_staff_count'] = $value;
     }
 }
