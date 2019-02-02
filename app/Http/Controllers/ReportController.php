@@ -446,7 +446,6 @@ class ReportController extends AuthorizedController
         foreach ($data['reports'] as $report_key => $report) {
             foreach ($report->items as $item_key => $tech_item) {
                 $report->items[$item_key]['departures_count'] = FireDepartmentResult::
-//                    where('fire_department_id', $report->dept_id)->
                 whereDate('created_at', $today)->
                 where('tech_id', $tech_item->id)->
                 whereNotNull('out_time')->
@@ -477,22 +476,6 @@ class ReportController extends AuthorizedController
                     $report->items[$item_key]['arrive_time'] = null;
                 }
 
-
-                /*if($report->items[$item_key]['status']){
-
-                }
-                else{
-
-                }*/
-
-                /*FireDepartmentResult::
-//                    where('fire_department_id', $report->dept_id)->
-                whereDate('created_at', $today)->
-                where('tech_id', $tech_item->id)->
-                with(['ticket'])->
-                whereNotNull('out_time')->
-                first()->ticket ?? null;
-            ;*/
             }
         }
 
