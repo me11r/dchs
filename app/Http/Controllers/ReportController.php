@@ -26,6 +26,7 @@ use App\NormType;
 use App\OperationalCard;
 use App\Reports\Report;
 use App\Reports\Report101DrillRides;
+use App\Reports\Report101EmergencyRescueGu;
 use App\Reports\Report101OtherRides;
 use App\Reports\Report101Resources;
 use App\Reports\Report112;
@@ -39,6 +40,7 @@ use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101DrillRidesExcelExport;
+use App\Services\ReportExport\Ticket101EmergencyRescueGuExcel;
 use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
@@ -1077,6 +1079,83 @@ class ReportController extends AuthorizedController
             }
             elseif($type === 'xlsx') {
                 $exportService = new Ticket101ResourcesExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Учет сил и средств (101) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
+    }
+
+    public function getReportEmergencyRescueGu(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+
+        $data = [];
+
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+
+        $reportData = Ticket101::
+            whereBetween('created_at', [$dateFrom, $dateTo]);
+
+        $data['record'] = [
+            'rides_count' => $reportData->count(),
+            'rides_asr_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+                ->whereHas('trip_result', function ($q) {
+                    $q->where('name', 'АСР');
+                })
+                ->count(),
+            'rides_false_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+                ->whereHas('trip_result', function ($q) {
+                    $q->where('name', 'Ложный');
+                })
+                ->count(),
+            'total_staff_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->sum('total_staff_count') . ' чел.',
+            'total_tech_count' => FireDepartmentResult::whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->whereNotNull('dispatch_time')
+                    ->count() . ' ед.',
+
+            'saved_vehicles' => $reportData->sum('saved_vehicles'),
+            'rescued_count' => $reportData->sum('rescued_count'),
+            'saved_children' => $reportData->sum('saved_children'),
+            'bodies_extracted' => $reportData->sum('bodies_extracted'),
+            'children_bodies_extracted' => $reportData->sum('children_bodies_extracted'),
+            'medical_care_provided' => $reportData->sum('medical_care_provided'),
+            'children_medical_care_provided' => $reportData->sum('children_medical_care_provided'),
+            'evac_count' => $reportData->sum('evac_count'),
+            'children_evacuated' => $reportData->sum('children_evacuated'),
+        ];
+
+        Cache::put('emergency_rescue_gu_data', $data, 3600);
+
+        if($request->ajax()){
+            return response()->json($data);
+        }
+
+
+        return view('reports.101.emergency-rescue-gu', $data);
+    }
+
+
+    public function exportReportEmergencyRescueGu(Request $request, $type)
+    {
+        if ($data = Cache::get('emergency_rescue_gu_data')) {
+            $data = (new Report101EmergencyRescueGu($data))->getReport();
+
+            if($type === 'docx') {
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket101EmergencyRescueGuExcel($data);
                 $writer = $exportService->getXlsWriter();
                 $fileName = 'Учет сил и средств (101) за период.xls';
 
