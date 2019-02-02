@@ -855,6 +855,53 @@
                                        value="{{ ticket.hospitalized_count|default('') }}"/>
                             </div>
                         </div>
+                        <div class="field is-grouped" style="margin-right: 40px">
+                            <div class="control" style="width: 25%">
+                                <label class="is-small" for="gpt_burns_count">Количество освобожденных а/м при заносах</label>
+                                <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                       name="saved_vehicles" id="saved_vehicles"
+                                       value="{{ ticket.saved_vehicles|default('') }}"/>
+                            </div>
+                            <div class="control" style="width: 25%">
+                                <label for="gpt_burns_count">Спасено детей</label>
+                                <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                       name="saved_children" id="saved_children"
+                                       value="{{ ticket.saved_children|default('') }}"/>
+                            </div>
+                            <div class="control" style="width: 25%">
+                                <label for="gpt_burns_count">Извлечено тел</label>
+                                <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                       name="bodies_extracted" id="bodies_extracted"
+                                       value="{{ ticket.bodies_extracted|default('') }}"/>
+                            </div>
+                            <div class="control" style="width: 25%">
+                                <label for="gpt_burns_count">Извлечено тел (детей)</label>
+                                <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                       name="children_bodies_extracted" id="children_bodies_extracted"
+                                       value="{{ ticket.children_bodies_extracted|default('') }}"/>
+                            </div>
+
+                        </div>
+                        <div class="field is-grouped" style="margin-right: 40px">
+                            <div class="control" style="width: 25%">
+                                <label for="medical_care_provided">Оказана мед. помощь</label>
+                                <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                       name="medical_care_provided" id="medical_care_provided"
+                                       value="{{ ticket.medical_care_provided|default('') }}"/>
+                            </div>
+                            <div class="control" style="width: 25%">
+                                <label for="children_medical_care_provided">Оказана мед. помощь (детям)</label>
+                                <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                       name="children_medical_care_provided" id="children_medical_care_provided"
+                                       value="{{ ticket.children_medical_care_provided|default('') }}"/>
+                            </div>
+                            <div class="control" style="width: 25%">
+                                <label for="children_evacuated">Кол-во эвакуированных детей</label>
+                                <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                       name="children_evacuated" id="children_evacuated"
+                                       value="{{ ticket.children_evacuated|default('') }}"/>
+                            </div>
+                        </div>
 
                         <div class="field">
                             <div class="control">
