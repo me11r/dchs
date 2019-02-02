@@ -30,7 +30,6 @@ class CardController extends Controller
 
     public function postPromoteToAction(Request $request)
     {
-        $all = $request->all();
         $reserved_item = FireDepartmentResult::find($request->id);
         $reserved_item->promoted_at = now();
         $reserved_item->promoted_department = $request->promoted_department;
@@ -442,6 +441,24 @@ class CardController extends Controller
 
 
         return response()->json($data);
+    }
+
+    public function postUpdateFireDepartmentResult(Request $request)
+    {
+        $fireDeptResult = FireDepartmentResult::find($request->id);
+        if($fireDeptResult) {
+            $fireDeptResult->staff_count = $request->staff_count;
+            $fireDeptResult->save();
+        }
+
+        if($ticket = $fireDeptResult->ticket) {
+            $sum = FireDepartmentResult::where('ticket101_id', $fireDeptResult->ticket->id)->sum('staff_count');
+
+            $ticket->total_staff_count = $sum;
+            $ticket->save();
+        }
+
+        return response()->json(['ok']);
     }
 
 }

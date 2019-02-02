@@ -9,6 +9,7 @@
                         <tr>
                             <th>ПЧ</th>
                             <th>Отделение</th>
+                            <th>Количество привлеченного л/с</th>
                             <th>Хронология</th>
                             <th></th>
                         </tr>
@@ -19,6 +20,12 @@
                             :key="`dept__idx__${dept.id}`">
                             <td>{{ dept.department.title }}</td>
                             <td>{{ dept.tech.department }}</td>
+                            <td>
+                                <input type="number"
+                                       v-model="dept.staff_count"
+                                       @change="changeStaffCount(dept)"
+                                       class="input">
+                            </td>
                             <td>
                                 <div class="add_button">
                                     <button
@@ -644,11 +651,23 @@ export default {
                 return false;
             }
         },
+        changeStaffCount(dept) {
+            document.getElementById('total_staff_count').value = '';
+            axios.post('/api/101card/update-fire-department-result', {
+                id: dept.id,
+                staff_count: dept.staff_count,
+            });
+        },
         createNewItemOnWay(dept) {
             let token = document.head.querySelector('meta[name="csrf-token"]');
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
             let card_data = window.ticket101add;
+
+            axios.post('/api/101card/update-fire-department-result', {
+                id: dept.id,
+                staff_count: dept.staff_count,
+            });
 
             this.records_onway.push({
                 id: moment().valueOf(),

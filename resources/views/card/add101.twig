@@ -9,6 +9,7 @@
             ticket101: {{ ticket | json_encode() | raw }},
             notificationGroups: {{ notificationGroups | json_encode() | raw }}
         };
+        {#{{ dump(ticket.getDetailedStaffCount()) }}#}
     </script>
 
     {% include "layout/yandex-maps-bus.twig" with {areas: city_area} %}
@@ -705,6 +706,14 @@
                                                     {% if liquidation_method.id == ticket.liquidation_method_id %}selected{% endif %}>{{ liquidation_method.name }}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+                                <div class="control">
+                                    <label for="">Количество привлеченного л/с</label>
+                                    <textarea name="detailed_staff_count" id="detailed_staff_count" class="textarea">{{ ticket.getDetailedStaffCount() }}</textarea>
+                                </div>
+                                <div class="control">
+                                    <label for="">Количество привлеченного л/с (сумма)</label>
+                                    <input type="text" id="total_staff_count" name="total_staff_count" value="{{ ticket.total_staff_count }}" class="input">
                                 </div>
                             </div>
                             <div class="control">
