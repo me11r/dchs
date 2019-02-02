@@ -81,6 +81,7 @@ class FireDepartmentResult extends Model
         'promoted_at',
         'promoted_department',
         'ticket101_other_id',
+        'staff_count',
     ];
 
     protected $appends = [
