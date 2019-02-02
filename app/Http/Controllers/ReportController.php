@@ -27,6 +27,7 @@ use App\OperationalCard;
 use App\Reports\Report;
 use App\Reports\Report101DrillRides;
 use App\Reports\Report101OtherRides;
+use App\Reports\Report101Resources;
 use App\Reports\Report112;
 use App\Reports\Report112Emergency;
 use App\Repositories\Contracts\BurntObjectInterface;
@@ -41,6 +42,7 @@ use App\Services\ReportExport\Ticket101DrillRidesExcelExport;
 use App\Services\ReportExport\Ticket101ExcelExport;
 use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
+use App\Services\ReportExport\Ticket101ResourcesExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
 use App\Services\ReportExport\Ticket112EmergencyExcelExport;
 use App\Services\ReportExport\Ticket112EmergencyWordExport;
@@ -444,7 +446,6 @@ class ReportController extends AuthorizedController
         foreach ($data['reports'] as $report_key => $report) {
             foreach ($report->items as $item_key => $tech_item) {
                 $report->items[$item_key]['departures_count'] = FireDepartmentResult::
-//                    where('fire_department_id', $report->dept_id)->
                 whereDate('created_at', $today)->
                 where('tech_id', $tech_item->id)->
                 whereNotNull('out_time')->
@@ -475,22 +476,6 @@ class ReportController extends AuthorizedController
                     $report->items[$item_key]['arrive_time'] = null;
                 }
 
-
-                /*if($report->items[$item_key]['status']){
-
-                }
-                else{
-
-                }*/
-
-                /*FireDepartmentResult::
-//                    where('fire_department_id', $report->dept_id)->
-                whereDate('created_at', $today)->
-                where('tech_id', $tech_item->id)->
-                with(['ticket'])->
-                whereNotNull('out_time')->
-                first()->ticket ?? null;
-            ;*/
             }
         }
 
@@ -1029,6 +1014,71 @@ class ReportController extends AuthorizedController
                 $exportService = new Ticket101DrillRidesExcelExport($data);
                 $writer = $exportService->getXlsWriter();
                 $fileName = 'Общий свод по учениям и занятиям (101) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
+    }
+
+
+    public function getReportForcesResources(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $fire_department_id = $request->fireDepartmentId;
+
+        $data = [];
+
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+
+        $reportData = FireDepartmentResult::
+            whereBetween('created_at', [$dateFrom, $dateTo])
+            ->whereNotNull('dispatch_time')
+            ->with([
+                'tech',
+                'ticket',
+                'ticket_other',
+                'department',
+            ]);
+
+        if ($fire_department_id) {
+            $reportData = $reportData->where('fire_department_id', $fire_department_id);
+        }
+
+        $data['reports'] = $reportData->orderBy('fire_department_id')->get();
+
+        $data['fireDepartments'] = FireDepartment::all();
+
+        Cache::put('report_forces_resources_data', $data, 3600);
+
+        if($request->ajax()){
+            return response()->json($data);
+        }
+
+
+        return view('reports.101.forcesResources', $data);
+    }
+
+
+    public function exportReportForcesResources(Request $request, $type)
+    {
+        if ($data = Cache::get('report_forces_resources_data')) {
+            $data = (new Report101Resources($data))->getReport();
+
+            if($type === 'docx') {
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket101ResourcesExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Учет сил и средств (101) за период.xls';
 
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="' . $fileName . '"');
