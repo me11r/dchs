@@ -20,28 +20,7 @@
             {{ csrf_field() }}
             <span id="card-101-form-id" class="is-hidden" data-id="{{ ticket.id|default(0) }}"></span>
 
-            <div id="other-rides">
-                {#{% if card_type != 'real'or ticket.drill_type is not null %}#}
-
-
-                    {#<div class="bd-notification is-primary">#}
-                        {#<label for="drill_type">Тип карточки</label>#}
-                        {#<div class="select"#}
-                             {#style="display: block">#}
-                            {#<select#}
-                                    {#name="drill_type"#}
-                                    {#id="drill_type"#}
-                                    {#style="width: 100%;"#}
-                            {#>#}
-                                {#<option {{ ticket.drill_type == null ? 'selected' : '' }} value=""></option>#}
-                                {#<option {{ ticket.drill_type == 'ПТЗ' ? 'selected' : '' }} value="ПТЗ">ПТЗ</option>#}
-                                {#<option {{ ticket.drill_type == 'ПТУ' ? 'selected' : '' }} value="ПТУ">ПТУ</option>#}
-                            {#</select>#}
-                        {#</div>#}
-                    {#</div>#}
-
-                {#{% endif %}#}
-            </div>
+            <div id="other-rides"></div>
             <br>
 
             <div class="tabs buttab is-boxed" id="">
@@ -663,6 +642,11 @@
                                 </select>
                             </div>
                         </div>
+
+                        {#{% if (card_type == 'drill') %}#}
+
+                        {#{% endif %}#}
+
                         <div class="field">
                             <div class="control">
                                 <label for="living_sector_type_id">Тип жилого сектора</label>
@@ -938,6 +922,8 @@
                             </div>
 
                         </div>
+
+
 
                         <div class="field">
                             <div class="control">

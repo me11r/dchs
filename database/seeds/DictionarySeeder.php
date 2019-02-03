@@ -181,6 +181,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'norm_types',
                 'model' => \App\NormType::class
             ],
+            [
+                'title' => "Классификация объектов",
+                'table' => 'object_classifications',
+                'model' => \App\ObjectClassification::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();
