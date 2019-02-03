@@ -341,6 +341,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports/emergency-rescue-gu/','ReportController@getReportEmergencyRescueGu');
     Route::get('reports/emergency-rescue-gu/export/{type}','ReportController@exportReportEmergencyRescueGu');
 
+    Route::get('reports/object-classifications/','ReportController@getReportObjectClassification');
+    Route::get('reports/object-classifications/export/{type}','ReportController@exportReportObjectClassification');
+
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){

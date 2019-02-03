@@ -23,10 +23,12 @@ use App\Models\Vehicle;
 use App\Models\Weather;
 use App\NormPsp;
 use App\NormType;
+use App\ObjectClassification;
 use App\OperationalCard;
 use App\Reports\Report;
 use App\Reports\Report101DrillRides;
 use App\Reports\Report101EmergencyRescueGu;
+use App\Reports\Report101ObjectClass;
 use App\Reports\Report101OtherRides;
 use App\Reports\Report101Resources;
 use App\Reports\Report112;
@@ -42,6 +44,7 @@ use App\Services\ReportExport\Ticket101ChronologyExcelExport;
 use App\Services\ReportExport\Ticket101DrillRidesExcelExport;
 use App\Services\ReportExport\Ticket101EmergencyRescueGuExcel;
 use App\Services\ReportExport\Ticket101ExcelExport;
+use App\Services\ReportExport\Ticket101ObjectClassExcelExport;
 use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101ResourcesExcelExport;
@@ -1158,6 +1161,71 @@ class ReportController extends AuthorizedController
                 $exportService = new Ticket101EmergencyRescueGuExcel($data);
                 $writer = $exportService->getXlsWriter();
                 $fileName = 'Учет сил и средств (101) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
+    }
+
+    public function getReportObjectClassification(Request $request)
+    {
+        $year = $request->input('year', now()->format('Y'));
+
+        $data['object_classes'] = ObjectClassification::all();
+
+        foreach (['ПТЗ','ПТУ'] as $type) {
+
+            foreach (range(1, 12) as $month) {
+
+                $data['counts'][$type]['per_month'][$month] = Ticket101::whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->whereIn('form_type_drill',[$type])
+                    ->count();
+
+                foreach ($data['object_classes'] as $object_class) {
+
+                    $data['records'][$type][$object_class->name][$month] = Ticket101::whereYear('created_at', $year)
+                        ->where('object_classification_id', $object_class->id)
+                        ->whereMonth('created_at', $month)
+                        ->whereIn('form_type_drill',[$type])->count();
+
+                    $data['counts'][$type]['per_object'][$object_class->name] = Ticket101::whereYear('created_at', $year)
+                        ->whereIn('form_type_drill',[$type])
+                        ->where('object_classification_id', $object_class->id)
+                        ->count();
+                }
+            }
+        }
+
+        $data['year'] = $year;
+
+        Cache::put('report101_object_classes', $data, 3600);
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+
+        return view('reports.101.object-classifications', $data);
+    }
+
+    public function exportReportObjectClassification($type)
+    {
+        if ($data = Cache::get('report101_object_classes')) {
+            $data = (new Report101ObjectClass($data))->getReport();
+
+            if($type === 'docx') {
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket101ObjectClassExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Классификация объектов (101) за период.xls';
 
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="' . $fileName . '"');
