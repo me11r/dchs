@@ -284,6 +284,11 @@ class Ticket101 extends Model
         return $this->belongsTo(EmergencyType::class, 'emergency_type_id');
     }
 
+    public function object_classification()
+    {
+        return $this->belongsTo(ObjectClassification::class, 'object_classification_id');
+    }
+
     public function chronologies()
     {
         return $this->hasMany(Chronology101::class, 'ticket101_id');
