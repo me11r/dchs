@@ -151,7 +151,7 @@
                         <tr>
                             <th>ПЧ</th>
                             <th>Отделение</th>
-                            <th>Хронология</th>
+                            <th>Стволы</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -166,8 +166,14 @@
                                     <button
                                         class="button is-small is-outlined is-success"
                                         type="button"
-                                        @click.prevent="createNewItemArrived(dept)">
+                                        @click.prevent="createNewItemArrived(dept, false)">
                                         <i class="fa fa-plus"></i>&nbsp;Добавить
+                                    </button>
+                                    <button
+                                        class="button is-small is-outlined is-success"
+                                        type="button"
+                                        @click.prevent="createNewItemArrived(dept, true)">
+                                        <i class="fa fa-plus"></i>&nbsp;ГДЗС
                                     </button>
                                 </div>
                             </td>
@@ -190,7 +196,11 @@
 
                                     <div class="column">
                                         <label :for="'on_way['+item.id+'][event_info_id]'">Событие</label>
-                                        <div class="select">
+                                        <div v-if="item.is_gdzs" class="control">
+                                            <input type="text" disabled class="input" value="ГДЗС">
+                                            <input type="hidden" class="input" v-model="item.event_info_arrived_id">
+                                        </div>
+                                        <div v-else class="select">
                                             <select
                                                 required
                                                 title="Ситуация"
@@ -682,7 +692,7 @@ export default {
             });
         },
 
-        createNewItemArrived(dept) {
+        createNewItemArrived(dept, gdzs) {
             let token = document.head.querySelector('meta[name="csrf-token"]');
             axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
@@ -691,9 +701,10 @@ export default {
             this.records_arrived.push({
                 id: moment().valueOf(),
                 working_time: 0,
+                is_gdzs: gdzs,
                 time: '00:00',
                 information: '',
-                event_info_arrived_id: 1,
+                event_info_arrived_id: gdzs ? 4 : 1,
                 quantity: 1,
                 fire_department_result: dept,
                 event_info: {
