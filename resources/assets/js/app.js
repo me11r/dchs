@@ -114,6 +114,7 @@ Vue.component('card-notification-services', require('./components/ticket101/Noti
 Vue.component('norm-psp-form', require('./components/norms-psp/CreateEdit'));
 Vue.component('report-forces-resources', require('./views/reports/emergency/ReportForcesResources'));
 Vue.component('report-emergency-rescue-gu', require('./views/reports/emergency/ReportTicket101EmergencyRescueGu'));
+Vue.component('report-object-classification', require('./views/reports/emergency/ReportTicket101ObjectClassification'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
