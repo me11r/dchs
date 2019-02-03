@@ -1,0 +1,12 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="vue">
+        <report-object-classification
+            :records="{{ records|json_encode }}"
+            :counts="{{ counts|json_encode }}"
+            :object_classes="{{ object_classes }}"
+        >
+        </report-object-classification>
+
+    </div>
+{% endblock content %}
