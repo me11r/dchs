@@ -35,6 +35,7 @@ use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
 use App\Models\WallMaterial;
+use App\ObjectClassification;
 use App\OperationalCard;
 use App\RideType;
 use App\Services\AnalyticsService;
@@ -234,6 +235,7 @@ class CardController extends AuthorizedController
         $this->set('city_area', CityArea::with(['fire_departments'])->get());
         $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
+        $this->set('object_classifications', ObjectClassification::all());
         $this->set('living_sector_types', LivingSectorType::all());
         $this->set('burn_object', FireObject::all());
         $this->set('trip_result', TripResult::all());
