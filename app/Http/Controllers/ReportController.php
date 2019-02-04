@@ -283,7 +283,6 @@ class ReportController extends AuthorizedController
         $reasons = TripResult::orderBy('name')->get();
         $burntObjects = BurntObject::orderBy('name')->get();
         $cityAreas = CityArea::orderBy('name')->get();
-
         return view('reports.101.emergency', compact('reasons', 'burntObjects', 'cityAreas'));
     }
 
@@ -538,7 +537,7 @@ class ReportController extends AuthorizedController
 
         $exportService = new Ticket101PeriodExcelExport($stat);
         $writer = $exportService->getXlsWriter();
-        $fileName = 'Отчет по карточке 101 за период.xls';
+        $fileName = 'Отчет-1.xls';
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');

@@ -207,6 +207,7 @@
                                                 v-model="item.event_info_arrived_id">
                                                 <option
                                                     v-for="e in eventInfoArrived_"
+                                                    v-if="e.name !== 'ГДЗС'"
                                                     :key="'event_' + e.id"
                                                     :value="e.id">{{ e.name }}
                                                 </option>

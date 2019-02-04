@@ -259,7 +259,7 @@
                             v-if="hasRight(24)"
                             href="/reports/101/emergency"
                             class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
-                            Отчет по карточке 101 за период</a>
+                            Отчет-1</a>
                         <a
                             v-if="hasRight(24)"
                             href="/reports/112/emergency"
