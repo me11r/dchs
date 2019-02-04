@@ -177,6 +177,10 @@ class Ticket101WordExport
 
             $fireDept = FireDepartment::find($dept_id);
 
+            if(!$fireDept) {
+                continue;
+            }
+
             $sickLeavePpl = $personSummary->formation_person_items()->rank(['sick_leave','sick'])->get();
 
             $result[$fireDept->title] = [
@@ -242,6 +246,10 @@ class Ticket101WordExport
         foreach ($people as $dept_id => $personSummary) {
 
             $fireDept = FireDepartment::find($dept_id);
+
+            if(!$fireDept) {
+                continue;
+            }
 
             $vacationPpl = $personSummary->formation_person_items()->rank('vacation')->get();
             $dispatchersPpl = $personSummary->formation_person_items()->rank('dispatchers')->get();
