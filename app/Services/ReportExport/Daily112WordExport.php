@@ -187,9 +187,15 @@ class Daily112WordExport
         $this->addParagraph($section, '- АГЭУ ГУ «Казселезащита: ', $this->data['mudflow_emergency_count'] ? $this->data['mudflow_emergency_count'] : 'не зарегистрировано', ['indentation' => ['left' => 540]]);
         $this->addParagraph($section, '3. Системы жизнеобеспечения города: ', 'не зарегистрировано');
         $this->addParagraph($section, '4. Подтопления: ', $this->data['flooding_count']);
-        $this->addParagraph($section, '5. ЦМК: ', $this->data['cmk_count']);
-        $this->addParagraph($section, '6. РОСО: ', ($this->data['roso_count'] ? $this->data['roso_count'] : 'без выездов'));
-        $this->addParagraph($section, '7. По основной деятельности «112»: ', (!$this->data['cards112']->count() ? 'не зарегистрировано': ''));
+
+        $index = 5;
+        foreach ($this->data['services'] as $serviceName => $datum) {
+            $this->addParagraph($section, "$index. {$serviceName}: ", $datum->count() ? $datum->count() : 'не зарегистрировано');
+            $this->serviceInfo($section, $datum);
+            $index++;
+        }
+
+        $this->addParagraph($section, "{$index}. По основной деятельности «112»: ", (!$this->data['cards112']->count() ? 'не зарегистрировано': ''));
 
         foreach ($this->data['cards112'] as $card) {
             $section->addText(
@@ -200,8 +206,10 @@ class Daily112WordExport
             );
         }
 
-        $this->addParagraph($section, '8. ГУ «СП и АСР» ', $this->data['cards101']->count());
-        $this->addParagraph($section, '9. ЕДДС: Всего поступивших звонков на «112» - ', ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
+        $index++;
+        $this->addParagraph($section, "{$index}. ГУ «СП и АСР» ", $this->data['cards101']->count());
+        $index++;
+        $this->addParagraph($section, "{$index}. ЕДДС: Всего поступивших звонков на «112» - ", ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
 
         $strAircraft = '';
 
@@ -209,10 +217,17 @@ class Daily112WordExport
             $strAircraft .= $air_rescue_report_tech->name.', ';
         }
 
-        $this->addParagraph($section, '10. Казавиаспас: в аэропорту Боролдай в режиме дежурства: ', $strAircraft);
-        $this->addParagraph($section, '11. Отработано всего выездов Службой Спасения г. Алматы – ', $this->data['cards112']->count());
-        $this->addParagraph($section, '12. Данные по СРУ: ', $this->data['siren_speech_tech']->total .":". "С-40 (моторные) – {$this->data['siren_speech_tech']->motor}, СРУ-{$this->data['siren_speech_tech']->sst}:  из них  в нерабочем – {$this->data['siren_speech_tech']->broken}");
-        $this->addParagraph($section, '13. Мониторинг интернет пространства – ', 'негативная информация не зарегистрирована.');
+        $index++;
+
+        $this->addParagraph($section, "$index. Казавиаспас: в аэропорту Боролдай в режиме дежурства: ", $strAircraft);
+        $index++;
+
+        $this->addParagraph($section, "$index. Отработано всего выездов Службой Спасения г. Алматы – ", $this->data['cards112']->count());
+        $index++;
+
+        $this->addParagraph($section, "$index. Данные по СРУ: ", $this->data['siren_speech_tech']->total .":". "С-40 (моторные) – {$this->data['siren_speech_tech']->motor}, СРУ-{$this->data['siren_speech_tech']->sst}:  из них  в нерабочем – {$this->data['siren_speech_tech']->broken}");
+        $index++;
+        $this->addParagraph($section, "$index. Мониторинг интернет пространства – ", 'негативная информация не зарегистрирована.');
 
         $section->addText(
             '',
@@ -241,7 +256,24 @@ class Daily112WordExport
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
+    }
 
+    private function serviceInfo(&$section, $data, $style = ['indentation' => ['left' => 540]])
+    {
+        foreach ($data as $datum) {
+            $this->addParagraph($section, 'Дата: ', $datum->date_human_format, $style);
+            $this->addParagraph($section, 'Время: ', $datum->time_human_format, $style);
+            $this->addParagraph($section, 'Место ЧС: ', $datum->location, $style);
+            $this->addParagraph($section, 'Информация о событии: ', $datum->description, $style);
+            $this->addParagraph($section, 'Пострадавших людей/детей: ', $datum->wounded, $style);
+            $this->addParagraph($section, 'Погибло людей/детей: ', $datum->died, $style);
+            $this->addParagraph($section, 'Эвакуированных людей/детей: ', $datum->evacuated, $style);
+            $this->addParagraph($section, 'Госпитализированных людей/детей: ', $datum->hospitalized, $style);
+            $this->addParagraph($section, 'Травмированных людей/детей: ', $datum->injured, $style);
+            $this->addParagraph($section, 'Отравление людей/детей: ', $datum->poisoned, $style);
+            $this->addParagraph($section, 'Спасено людей/детей: ', $datum->saved, $style);
+            $this->addParagraph($section, 'Спасено животных: ', $datum->saved_animals, $style);
+        }
     }
 
     private function addParagraph(&$section, $header, $data, $style = ['align' => Jc::BOTH])

@@ -19,6 +19,7 @@ use App\Models\EmergencySituation;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationTechItem;
 use App\Models\Quake;
+use App\Models\ServiceType;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Weather;
 use App\Repositories\Contracts\BurntObjectInterface;
@@ -38,6 +39,8 @@ class Report112
     protected $tickets112;
     protected $fireObject;
     protected $burntObject;
+    private $today;
+    private $yesterday;
 
     protected $dictionaries;
 
@@ -46,6 +49,8 @@ class Report112
         $this->time = time();
         $this->tickets101 = Ticket101::dailyRecords();
         $this->tickets112 = Card112::dailyRecords();
+        $this->today = today()->addHours(7)->format('Y-m-d H:i:s');
+        $this->yesterday = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
     }
 
     public function getReport($date = null): array
@@ -88,6 +93,12 @@ class Report112
         $data['emergency_situations'] = EmergencySituation::dailyRecords()->get();
         $data['call_info'] = $callInfo;
 
+        //РОСО,ЦМК,109,Өрт сөндіруші, РГП Казавиаспас
+        $dailyServices = ServiceType::dailyServices112()->get();
+        foreach ($dailyServices as $item) {
+            $data['services'][$item->name] = $this->getServiceInfo($item->name);
+        }
+
         $data['trip_results101'] = [];
 
         foreach (TripResult::all() as $tripResult) {
@@ -110,6 +121,16 @@ class Report112
         ]);
 
         return $data;
+    }
+
+    private function getServiceInfo($service)
+    {
+        $emergency = EmergencySituation::dailyRecords()
+            ->whereHas('user.service_type', function ($q) use ($service) {
+                $q->where('name', $service);
+            })->get();
+
+        return $emergency;
     }
 
 
