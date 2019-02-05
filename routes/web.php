@@ -280,6 +280,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
+    Route::resource('/salvage', 'SalvageController');
 
     Route::group(['prefix' => 'reports/101', 'as' => 'reports.'], function () {
         Route::get('/staff', 'ReportController@getReport101Staff')->name('staff');

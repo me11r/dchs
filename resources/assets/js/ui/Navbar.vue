@@ -177,6 +177,10 @@
                             target="_blank"
                             class="dropdown-item is-small"><i class="fas fa-eye-dropper fa-fw"></i>&nbsp;
                             Карта гидрантов</a>
+                        <a
+                            href="/salvage"
+                            class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
+                            Сумма спасенного имущества</a>
                     </div>
                 </div>
                 <div
