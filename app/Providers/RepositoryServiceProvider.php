@@ -8,11 +8,13 @@ use App\Repositories\Contracts\HydrantRepositoryInterface;
 use App\Repositories\Contracts\ChatInterface;
 use App\Repositories\Contracts\MessageInterface;
 use App\Repositories\Contracts\NicknameInterface;
+use App\Repositories\Contracts\SalvageInterface;
 use App\Repositories\EloquentCard112Repository;
 use App\Repositories\EloquentHydrantRepository;
 use App\Repositories\EloquentChatRepository;
 use App\Repositories\EloquentMessageRepository;
 use App\Repositories\EloquentNicknameRepository;
+use App\Repositories\EloquentSalvageRepository;
 use App\Repositories\EmergencySituationRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -40,6 +42,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->registerQuake();
         $this->registerHydrantRepository();
         $this->registerEmergencySituationRepository();
+        $this->registerSalvageRepository();
     }
 
 
@@ -152,6 +155,14 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             EmergencySituationRepositoryInterface::class,
             EmergencySituationRepository::class
+        );
+    }
+
+    protected function registerSalvageRepository()
+    {
+        $this->app->bind(
+            SalvageInterface::class,
+            EloquentSalvageRepository::class
         );
     }
 }

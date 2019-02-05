@@ -1,0 +1,66 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="panel">
+            <div class="level">
+                <div class="level-left">
+                    <h4 style="" class="title">Сумма спасенного имущества</h4>
+                </div>
+                <div class="level-right has-text-right">
+                    {% if (user.currentRole() == 'dispatcher_pch') %}
+                        <a href="{{ route('salvage.create') }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                    {% endif %}
+                </div>
+            </div>
+            <form>
+                <table class="table is-narrow is-striped is-hoverable is-selectable">
+                    <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>
+                            <p>ПЧ</p>
+                            {% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101', 'Диспетчер ОД 101']) %}
+                                <select name="filter_department" class="select control" onchange="this.form.submit()">
+                                    <option value="">Все ПЧ</option>
+                                    {% for f in fire_departments %}
+                                        <option {% if filter_department is defined and filter_department == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </th>
+                        <th>Сумма спасенного имущества</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.date }}</td>
+                            <td>{{ item.fireDepartment.name ?? '' }}</td>
+                            <td>{{ item.value }}</td>
+                            <td>
+                                {% if (user.currentRole() == 'dispatcher_pch') %}
+                                    <div class="field is-grouped">
+                                    <a class="button is-basic is-small" href="{{ route('salvage.edit', {'id':item.id}) }}">
+                                        <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+
+                                    <form method="post" action="{{ route('salvage.destroy', {'id':item.id}) }}">
+                                        {{ csrf_field() }}
+                                        {{  method_field('DELETE') }}
+                                        <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
+                                            <i class="fas fa-trash"></i>&nbsp;Удалить</button>
+                                    </form>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+
+                </table>
+            </form>
+
+            {% include "_templates/pagination" with {'items': items, 'per_page': per_page,'other': {'filter_department':filter_department}} %}
+
+        </div>
+    </div>
+{% endblock content %}

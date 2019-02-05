@@ -1,0 +1,33 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="{{ record is defined ? route('salvage.update', {'id':record.id}) : route('salvage.store')}}" method="post">
+                    {% if record is defined %}
+                        {{  method_field('PUT') }}
+                    {% endif %}
+                    {{ csrf_field() }}
+                    <div class="field">
+                        <label for="name">Дата</label>
+                        <input class="input" type="date" name="date" id="date" value="{{ attribute(record, 'date')|default('') }}" required>
+                    </div>
+                    <div class="field">
+                        <label for="number">Сумма спасенного имущества</label>
+                        <input type="number" class="input" name="value" id="value" value="{{ attribute(record, 'value')|default('') }}" required/>
+                    </div>
+                    <div class="field">
+                        <label for="name">ПЧ</label><br>
+                        <input type="hidden" class="input" name="fire_department_id" id="fire_department_id" value="{{ fire_department.id }}"/>
+                        <input type="text" disabled class="input" value="{{ fire_department.title }}"/>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="{{ url('/salvage') }}" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
