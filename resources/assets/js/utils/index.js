@@ -27,3 +27,7 @@ export function isEmpty(key) {
         return false;
     }
 }
+
+export function clone(data) {
+    return JSON.parse(JSON.stringify(data));
+}

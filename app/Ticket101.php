@@ -277,7 +277,139 @@ class Ticket101 extends Model
     protected $appends = [
         'loc_time_total',
         'liqv_time_total',
+        'on_way_category',
+        'liqv_category',
+        'gdzs_count',
+        'gdzs_count_type',
+        'gdzs_count_time',
     ];
+
+    public function getTrucks()
+    {
+        return $this->chronologies ? $this->chronologies()
+            ->whereDoesntHave('event_info_arrived', function ($q) {
+                $q->where('name', 'ГДЗС');
+            })->get() : [];
+    }
+
+    public function getGdzs()
+    {
+        return $this->chronologies ? $this->chronologies()
+            ->whereHas('event_info_arrived', function ($q) {
+                $q->where('name', 'ГДЗС');
+            })
+            ->with('event_info_arrived')
+            ->get() : [];
+    }
+
+    public function getGdzsCountTypeAttribute()
+    {
+        $count = $this->gdzs_count;
+
+        if($count === 1) {
+            return 'one';
+        }
+        elseif ($count > 1) {
+            return 'many';
+        }
+
+        return null;
+    }
+
+    public function getGdzsCountTimeAttribute()
+    {
+        return $this->chronologies ? $this->chronologies()
+            ->whereHas('event_info_arrived', function ($q) {
+                $q->where('name', 'ГДЗС');
+            })
+            ->with('event_info_arrived')
+            ->sum('working_time') : 0;
+    }
+
+//    public function getGdzsCountTypeAttribute()
+//    {
+//        if ($items = count($this->getGdzs())) {
+//            return $items;
+//        }
+//        return 0;
+//    }
+
+    //время следования
+    public function getOnWayCategoryAttribute()
+    {
+        if($first_arrived = $this->first_department_arrived()) {
+//            $minutes = Carbon::createFromTimestamp($first_arrived->on_way_time)->format('H'); //`H` т.к. 00:00:00
+//            $first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
+//                ->format('H:i:s');
+
+            $minutes = $first_arrived->on_way_time;
+
+            if($minutes !== null && $minutes !== '0') {
+                if($minutes < 5) {
+                    return 'less_5';
+                }
+                elseif($minutes > 5 && $minutes < 10) {
+                    return 'less_10';
+                }
+                elseif($minutes > 10) {
+                    return 'more_10';
+                }
+            }
+        }
+
+        return null;
+    }
+
+    //время ликвидации
+    public function getLiqvCategoryAttribute()
+    {
+        if($this->liqv_time_total !== '00:00:00' && $this->liqv_time_total !== null) {
+            $time = Carbon::parse($this->liqv_time_total)->diffInMinutes('00:00:00');
+            if($time < 15) {
+                return 'less_15';
+            }
+            elseif($time > 15 && $time < 30) {
+                return 'less_30';
+            }
+            elseif($time > 30 && $time < 60){
+                return 'less_60';
+            }
+            elseif($time > 60 && $time < 120) {
+                return 'less_120';
+            }
+            elseif($time > 120) {
+                return 'more_120';
+            }
+        }
+
+        return null;
+    }
+
+    //время ликвидации
+    public function getGdzsCountAttribute()
+    {
+        if($this->chronologies) {
+            $count = $this->chronologies()
+                ->whereDoesntHave('event_info_arrived', function ($q) {
+                    $q->where('name', 'ГДЗС');
+                })->get();
+
+            $count2 = $this->chronologies()
+                ->whereDoesntHave('event_info_arrived', function ($q) {
+                    $q->where('name', 'ГДЗС');
+                })->sum('quantity');
+
+            if($count->count() == 1 || $count2 == 1) {
+
+                return 1;
+            }
+            elseif($count->count() > 1 || $count2 > 1) {
+                return max($count->count(), $count2);
+            }
+        }
+
+        return 0;
+    }
 
     public function emergency_type()
     {
@@ -292,6 +424,14 @@ class Ticket101 extends Model
     public function chronologies()
     {
         return $this->hasMany(Chronology101::class, 'ticket101_id');
+    }
+
+    public function chronologies_trucks()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id')
+            ->whereDoesntHave('event_info_arrived', function ($q){
+                $q->where('name', 'ГДЗС');
+            });
     }
 
     public function chronologiesFromFd()
@@ -394,11 +534,24 @@ class Ticket101 extends Model
 
     public function first_department_arrived()
     {
-        return $this->results()
+        $first_arrived = $this->results()
             ->selectRaw('arrive_time, id, out_time, out_time - arrive_time as on_way_time')
             ->groupBy('id')
             ->havingRaw('min(arrive_time)')
             ->first();
+
+        if($first_arrived) {
+            try {
+                $arrive_time = Carbon::parse($first_arrived->arrive_time);
+                $first_arrived->on_way_time = $arrive_time->diffInMinutes($first_arrived->out_time);
+            }
+            catch (\Exception $e) {
+
+            }
+
+        }
+
+        return $first_arrived;
     }
 
     public function departments_arrived()
@@ -583,9 +736,6 @@ class Ticket101 extends Model
 
     public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null, $burnt_id = null, $city_area_id = null)
     {
-        $result = [];
-        $areas = CityArea::all();
-
         $date_begin = $date_begin ? $date_begin: now()->subMonth();
         $date_end = $date_end ? $date_end : now();
 
@@ -604,21 +754,21 @@ class Ticket101 extends Model
             'results',
             'results.tech',
             'results.tech.formation_tech_report',
-            'notifications',
-            'notifications.service',
-            'popup_notifications',
-            'popup_notifications.user',
-            'popup_notifications.status',
-            'popup_notifications.group',
-            'notification_groups',
-            'notifications.service',
+//            'notifications',
+//            'notifications.service',
+//            'popup_notifications',
+//            'popup_notifications.user',
+//            'popup_notifications.status',
+//            'popup_notifications.group',
+//            'notification_groups',
+//            'notifications.service',
             'operational_card',
             'operational_plan.special_plans'
         ])
+//            ->append(['trunks_count'])
             ->whereBetween('created_at',[$date_begin, $date_end]);
 
         if($result_id){
-            $reasons = TripResult::where('id', $result_id)->get();
             $tickets = $tickets->where('trip_result_id', $result_id);
         }
 
@@ -630,17 +780,26 @@ class Ticket101 extends Model
             $tickets = $tickets->where('city_area_id', $city_area_id);
         }
 
-        $result = $tickets->orderBy('id', 'desc')->get();
+        $result = $tickets->orderBy('id', 'desc')
+            ->get()
+        ;
 
         foreach ($result as $key => $ticket) {
             $first_arrived = $ticket->first_department_arrived();
 
-            if($first_arrived){
-                $first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
-                    ->format('H:i:s');
+            if($first_arrived) {
+//                $first_arrived->arrive_time = Carbon::parse($first_arrived->arrive_time);
+
+//                $first_arrived->on_way_time = $first_arrived->arrive_time->diffInMinutes($first_arrived->out_time);
+
+                /*$first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
+                    ->format('H:i:s');*/
 
                 $result[$key]->first_arrived_time = $first_arrived->arrive_time;
                 $result[$key]->on_way_time = $first_arrived->on_way_time;
+
+                $result[$key]->detailed_staff_count = $ticket->getDetailedStaffCount();
+                $result[$key]->gdzs_items = $ticket->getGdzs();
 
             }
         }
