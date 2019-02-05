@@ -167,7 +167,7 @@
                                         class="button is-small is-outlined is-success"
                                         type="button"
                                         @click.prevent="createNewItemArrived(dept, false)">
-                                        <i class="fa fa-plus"></i>&nbsp;Добавить
+                                        <i class="fa fa-plus"></i>&nbsp;Стволы
                                     </button>
                                     <button
                                         class="button is-small is-outlined is-success"
@@ -195,7 +195,8 @@
                                     </div>
 
                                     <div class="column">
-                                        <label :for="'on_way['+item.id+'][event_info_id]'">Событие</label>
+                                        <label v-if="!item.is_gdzs" :for="'on_way['+item.id+'][event_info_id]'">Стволы</label>
+                                        <label v-if="item.is_gdzs" :for="'on_way['+item.id+'][event_info_id]'">ГДЗС</label>
                                         <div v-if="item.is_gdzs" class="control">
                                             <input type="text" disabled class="input" value="ГДЗС">
                                             <input type="hidden" class="input" v-model="item.event_info_arrived_id">
