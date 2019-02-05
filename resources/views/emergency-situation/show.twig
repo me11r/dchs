@@ -8,30 +8,20 @@
 
     <div class="emergency-situation-view section container">
         <p style="text-align: center; margin-bottom: 20px"><b>Экстренная информация по чрезвычайной ситуации</b></p>
-        <p><b>Вид чрезвычайной ситуации (согласно классификатора ЧС):</b>&nbsp;{{ item.incident_type }}</p>
         <p><b>Дата происшествия:</b>&nbsp;{{ item.date }}</p>
         <p><b>Время происшествия:</b>&nbsp;{{ item.readable_time }}</p>
-        <p><b>Место ЧС:</b>&nbsp;{{ item.place }}</p>
-        <p><b>Район:</b>&nbsp;{{ item.area_name }}</p>
-        <p><b>Населенный пункт:</b>&nbsp;{{ item.location }}</p>
-        <p><b>Наименование объекта:</b>&nbsp;{{ item.object_name }}</p>
-        <p><b>Характер и масштаб ЧС:</b>&nbsp;{{ item.size }}</p>
+        <p><b>Место чс:</b>&nbsp;{{ item.location }}</p>
         <p><b>Количество пострадавших/ из них детей: в том числе:</b></p>
-        <p>Погибло {{ item.died }} / из них детей {{ item.died_children }}</p>
-        <p>Травмировано {{ item.injured }} / из них детей {{ item.injured_children }}</p>
-        <p>Госпитализировано {{ item.hospitalized }} / из них детей {{ item.hospitalized_children }}</p>
-        <p>Эвакуировано {{ item.evacuated }} / из них детей {{ item.evacuated_children }}</p>
-        <p>Спасено {{ item.saved }} / из них детей {{ item.saved_children }}</p>
-        <p>Пропало без вести {{ item.lost }} / из них детей {{ item.lost_children }}</p>
-        <p><b>Влияние чрезвычайной ситуации на работу других отраслей:</b>&nbsp;{{ item.influence }}</p>
-        <p>
-            <b>Возможность ликвидации ЧС собственными силами (да, нет):</b>&nbsp;{{ item.can_fix_themselves_readable }}
-        </p>
-        <p><b>Силы и средства, задействованные в ликвидации ЧС:</b></p>
-        <p><b>КЧС:</b>&nbsp;{{ item.involved }}</p>
-        <p><b>Коммунальных и других служб:</b>&nbsp;{{ item.involved_services }}</p>
-        <p><b>Количество человек</b>&nbsp;{{ item.involved_people }}</p>
-        <p><b>Количество техники</b>&nbsp;{{ item.involved_tech }}</p>
+        <p><b>Информация о событии</b></p>
+        <p>{{ item.description }}</p>
+        <p>Погибло {{ item.died }}</p>
+        <p>Травмировано {{ item.injured }}</p>
+        <p>Пострадало {{ item.wounded }}</p>
+        <p>Отравление {{ item.poisoned }}</p>
+        <p>Госпитализировано {{ item.hospitalized }}</p>
+        <p>Эвакуировано {{ item.evacuated }}</p>
+        <p>Спасено {{ item.saved }}</p>
+        <p>Спасено животных {{ item.saved_animals }}</p>
 
         <p style="margin-top: 20px">
             <b>Должность, Ф.И.О. оперативного дежурного УЕДДС: </b>&nbsp;{{ item.user_name }} ___________ (подпись)

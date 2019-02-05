@@ -220,6 +220,7 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
+    //отправить отделение (прочие выезды)
     public function postSendOther(Request $request, $dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
@@ -268,10 +269,13 @@ class RoadtripController extends AuthorizedController
                 'department_id' => $result->fire_department_id
             ]);
 
-            $result->dispatched = true;
-            $result->dispatch_time = now();
-            $result->dispatch_id = $plan->id;
-            $result->save();
+            if(!$result->dispatch_time) {
+                $result->dispatch_time = now();
+
+                $result->dispatched = true;
+                $result->dispatch_id = $plan->id;
+                $result->save();
+            }
         }
 
         return response()->json('ok', 200);
