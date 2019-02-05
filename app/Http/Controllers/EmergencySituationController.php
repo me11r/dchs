@@ -35,7 +35,7 @@ class EmergencySituationController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->hasRight([Right::CAN_SEE_ALL_EMERGENCY_SITUATIONS]) || Auth::user()->isAdmin()){
+        if(Auth::user()->hasRight([Right::CAN_SEE_ALL_EMERGENCY_SITUATIONS])){
             $items = $this->repository->with(['user', 'user.service_type'])->orderBy('id', 'DESC')->get();
         }
         else{
@@ -58,7 +58,6 @@ class EmergencySituationController extends Controller
     public function create()
     {
         return View::make('emergency-situation.edit')
-            ->with('cityAreas', collect((new CityArea)->orderBy('name')->get(['id', 'name']))->toArray())
             ->with('item', new EmergencySituation())
             ->with('title', 'Добавление оперативной информации')
             ->render();
@@ -95,7 +94,6 @@ class EmergencySituationController extends Controller
     public function edit($id)
     {
         return View::make('emergency-situation.edit')
-            ->with('cityAreas', collect((new CityArea)->orderBy('name')->get(['id', 'name']))->toArray())
             ->with('item', $this->repository->with(['user', 'user.service_type'])->find($id))
             ->with('title', 'Изменение оперативной информации')
             ->render();
@@ -108,9 +106,6 @@ class EmergencySituationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!$request->has('can_fix_themselves')){
-            $request->request->add(['can_fix_themselves' => 0]);
-        }
         $this->repository->update($request->all(), $id);
         return redirect(route('emergency-situation.edit', $id));
     }

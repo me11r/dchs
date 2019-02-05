@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Dictionary\CityArea;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -85,17 +86,25 @@ class EmergencySituation extends Model
      */
     public $guarded = ['id'];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function cityArea()
-    {
-        return $this->hasOne(CityArea::class, 'id', 'city_area_id');
-    }
-
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function getTimeHumanFormatAttribute()
+    {
+        if($this->time) {
+            return Carbon::parse($this->time)->format('H') . ' час ' . Carbon::parse($this->time)->format('i') . ' мин.';
+        }
+        return null;
+    }
+
+    public function getDateHumanFormatAttribute()
+    {
+        if($this->date) {
+            return Carbon::parse($this->date)->format('d.m.Y');
+        }
+        return null;
     }
 
     public function scopeDailyRecords($q, $from = null, $to = null)

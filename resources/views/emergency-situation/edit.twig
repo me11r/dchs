@@ -58,9 +58,12 @@
                         <input type="hidden" name="date" :value="dateToSave">
                         <b-datepicker
                                 v-model="date"
-                                first-day-of-week="1"
+                                :first-day-of-week="1"
+                                :date-formatter="(date) => formatDate(date)"
                                 icon-pack="far"
                                 style="width: 100%"
+                                :day-names="days"
+                                :month-names="months"
                                 icon="calendar"
                                 :readonly="false">
                         </b-datepicker>
@@ -93,46 +96,6 @@
                             </div>
                         </b-timepicker>
                     </div>
-
-                    <div class="field field-quarter">
-                        <label for="incident_type">Тип инцидента</label>
-                        <input type="text"
-                               class="input"
-                               name="incident_type"
-                               id="incident_type"
-                               value="{{ item.incident_type }}"/>
-                    </div>
-
-                    <div class="field field-half inline-field">
-                        <p class="control">
-                            <label for="city_area">Район города</label>
-                        </p>
-                        <div class="select full-width-select">
-                            <select name="city_area_id" id="city_area">
-                                <option value="">-</option>
-                                {% for cityArea in cityAreas %}
-                                    <option
-                                            value="{{ cityArea.id }}"
-                                            {% if cityArea.id == item.city_area_id %}
-                                    selected
-                                            {% endif %}>
-                                        {{ cityArea.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="field inline-field field-half">
-                        <label for="place">Населенный пункт</label>
-                        <input type="text"
-                               required
-                               class="input"
-                               name="place"
-                               id="place"
-                               value="{{ item.place }}"/>
-                    </div>
-
                     <div class="field inline-field field-half">
                         <label for="location">Место ЧС</label>
                         <input type="text"
@@ -141,28 +104,24 @@
                                id="location"
                                value="{{ item.location }}"/>
                     </div>
-
-                    <div class="field inline-field field-half">
-                        <label for="object_name">Название объекта</label>
-                        <input type="text"
-                               class="input"
-                               name="object_name"
-                               id="object_name"
-                               value="{{ item.object_name }}"/>
+                    <div class="field is-full">
+                        <label for="description">Информация о событии</label>
+                        <textarea name="description" class="textarea" id="description" cols="30" rows="10">{{ item.description }}</textarea>
                     </div>
 
-                    <div class="field inline-field field-half">
-                        <label for="size">Характер и масштаб ЧС</label>
-                        <input type="text"
-                               class="input"
-                               name="size"
-                               id="size"
-                               value="{{ item.size }}"/>
-                    </div>
+                    <div class="columns">
 
-                    <div class="field-group">
-                        <div class="field inline-field field-quarter">
-                            <label for="died">Погибло</label>
+                        <div class="column">
+                            <label for="wounded">Пострадавших людей/детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="wounded"
+                                   id="wounded"
+                                   value="{{ item.wounded }}"/>
+                        </div>
+
+                        <div class="column">
+                            <label for="died">Погибло людей/детей</label>
                             <input type="number"
                                    class="input"
                                    name="died"
@@ -170,59 +129,8 @@
                                    value="{{ item.died }}"/>
                         </div>
 
-                        <div class="field inline-field field-quarter">
-                            <label for="died_children">Из них детей</label>
-                            <input type="number"
-                                   class="input"
-                                   name="died_children"
-                                   id="died_children"
-                                   value="{{ item.died_children }}"/>
-                        </div>
-                    </div>
-
-                    <div class="field-group">
-                        <div class="field inline-field field-quarter">
-                            <label for="injured">Травмировано</label>
-                            <input type="number"
-                                   class="input"
-                                   name="injured"
-                                   id="injured"
-                                   value="{{ item.injured }}"/>
-                        </div>
-
-                        <div class="field inline-field field-quarter">
-                            <label for="injured_children">Из них детей</label>
-                            <input type="number"
-                                   class="input"
-                                   name="injured_children"
-                                   id="injured_children"
-                                   value="{{ item.injured_children }}"/>
-                        </div>
-                    </div>
-
-                    <div class="field-group">
-                        <div class="field inline-field field-quarter">
-                            <label for="hospitalized">Госпитализировано</label>
-                            <input type="number"
-                                   class="input"
-                                   name="hospitalized"
-                                   id="hospitalized"
-                                   value="{{ item.hospitalized }}"/>
-                        </div>
-
-                        <div class="field inline-field field-quarter">
-                            <label for="hospitalized_children">Из них детей</label>
-                            <input type="number"
-                                   class="input"
-                                   name="hospitalized_children"
-                                   id="hospitalized_children"
-                                   value="{{ item.hospitalized_children }}"/>
-                        </div>
-                    </div>
-
-                    <div class="field-group">
-                        <div class="field inline-field field-quarter">
-                            <label for="evacuated">Эвакуировано</label>
+                        <div class="column">
+                            <label for="evacuated">Эвакуированных людей/детей</label>
                             <input type="number"
                                    class="input"
                                    name="evacuated"
@@ -230,19 +138,39 @@
                                    value="{{ item.evacuated }}"/>
                         </div>
 
-                        <div class="field inline-field field-quarter">
-                            <label for="evacuated_children">Из них детей</label>
+                        <div class="column">
+                            <label for="hospitalized">Госпитализированных людей/детей</label>
                             <input type="number"
                                    class="input"
-                                   name="evacuated_children"
-                                   id="evacuated_children"
-                                   value="{{ item.evacuated_children }}"/>
+                                   name="hospitalized"
+                                   id="hospitalized"
+                                   value="{{ item.hospitalized }}"/>
                         </div>
-                    </div>
 
-                    <div class="field-group">
-                        <div class="field inline-field field-quarter">
-                            <label for="saved">Спасено</label>
+                    </div>
+                    <div class="columns">
+
+                        <div class="column">
+                            <label for="injured">Травмированных людей/детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="injured"
+                                   id="injured"
+                                   value="{{ item.injured }}"/>
+                        </div>
+
+
+                        <div class="column">
+                            <label for="poisoned">Отравление людей/детей</label>
+                            <input type="number"
+                                   class="input"
+                                   name="poisoned"
+                                   id="poisoned"
+                                   value="{{ item.poisoned }}"/>
+                        </div>
+
+                        <div class="column">
+                            <label for="saved">Спасено людей/детей</label>
                             <input type="number"
                                    class="input"
                                    name="saved"
@@ -250,88 +178,15 @@
                                    value="{{ item.saved }}"/>
                         </div>
 
-                        <div class="field inline-field field-quarter">
-                            <label for="saved_children">Из них детей</label>
+                        <div class="column">
+                            <label for="saved_animals">Спасено животных</label>
                             <input type="number"
                                    class="input"
-                                   name="saved_children"
-                                   id="saved_children"
-                                   value="{{ item.saved_children }}"/>
-                        </div>
-                    </div>
-
-                    <div class="field-group">
-                        <div class="field inline-field field-quarter">
-                            <label for="lost">Пропало без вести</label>
-                            <input type="number"
-                                   class="input"
-                                   name="lost"
-                                   id="lost"
-                                   value="{{ item.lost }}"/>
+                                   name="saved_animals"
+                                   id="saved_animals"
+                                   value="{{ item.saved_animals }}"/>
                         </div>
 
-                        <div class="field inline-field field-quarter">
-                            <label for="lost_children">Из них детей</label>
-                            <input type="number"
-                                   class="input"
-                                   name="lost_children"
-                                   id="lost_children"
-                                   value="{{ item.lost_children }}"/>
-                        </div>
-                    </div>
-
-                    <div class="field inline-field field-full">
-                        <label for="influence">Влияние чрезвычайной ситуации на работу других отраслей</label>
-                        <input type="text"
-                               class="input"
-                               name="influence"
-                               id="influence"
-                               value="{{ item.influence }}"/>
-                    </div>
-
-                    <div class="field inline-field field-half">
-                        <label for="involved">Силы и средства, задействованные в ликвидации ЧС</label>
-                        <input type="text"
-                               class="input"
-                               name="involved"
-                               id="involved"
-                               value="{{ item.involved }}"/>
-                    </div>
-
-                    <div class="field inline-field field-half">
-                        <label for="involved_services">Коммунальных и других служб</label>
-                        <input type="text"
-                               class="input"
-                               name="involved_services"
-                               id="involved_services"
-                               value="{{ item.involved_services }}"/>
-                    </div>
-
-                    <div class="field inline-field field-half">
-                        <label for="involved_people">Количество человек</label>
-                        <input type="number"
-                               class="input"
-                               name="involved_people"
-                               id="involved_people"
-                               value="{{ item.involved_people }}"/>
-                    </div>
-
-                    <div class="field inline-field field-half">
-                        <label for="involved_tech">Количество техники</label>
-                        <input type="number"
-                               class="input"
-                               name="involved_tech"
-                               id="involved_tech"
-                               value="{{ item.involved_tech }}"/>
-                    </div>
-
-                    <div class="field">
-                        <input type="checkbox"
-                               name="can_fix_themselves"
-                                {% if item.can_fix_themselves %} checked {% endif %}
-                               value="1"
-                               id="can_fix_themselves"/>
-                        <label for="can_fix_themselves">Возможность ликвидации ЧС собственными силами</label>
                     </div>
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
