@@ -53,6 +53,7 @@ class FireDepartment extends Model
         'address',
         'recommend',
         'city_area_id',
+        'goes_in_formation_report',
     ];
 
     public function getNameAttribute()
@@ -88,5 +89,10 @@ class FireDepartment extends Model
     public function scopeRecommend($q, $search = true)
     {
         return $q->where('recommend', $search);
+    }
+
+    public function scopeUsingInFormationReport($q, $search = true)
+    {
+        return $q->where('goes_in_formation_report', $search);
     }
 }

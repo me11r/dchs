@@ -528,15 +528,11 @@ class Report
                 today()->format('Y-m-d'),
                 today()->addDay(-1)->format('Y-m-d')
             ])
+            ->where(function ($q) use ($from, $to) {
+                $q->where('created_at', '>',$from)
+                    ->where('created_at', '<', $to);
+            })
             ->get();
-//            ->filter(function ($item) use ($from, $to) {
-//                /** @var FireDepartmentCheck $item */
-//                if (Carbon::parse($to)->format('Y-m-d') === Carbon::parse($item->date)->format('Y-m-d')) {
-//                    return (int)Carbon::parse($item->time_end)->format('H') <= (int)Carbon::parse($to)->format('H');
-//                } else {
-//                    return (int)Carbon::parse($item->time_begin)->format('H') >= (int)Carbon::parse($from)->format('H') ;
-//                }
-//            });
     }
 
     private function getDates()
