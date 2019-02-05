@@ -56,6 +56,7 @@
                         {% endif %}
                     </th>
                     <th>Использовать в рекомендациях</th>
+                    <th>Использовать в строевых</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -66,6 +67,7 @@
                         <td class="max-width: 20%">{{ record.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.city_area.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.recommend|default('') ? 'Да' : 'Нет' }}</td>
+                        <td class="max-width: 20%">{{ record.goes_in_formation_report|default('') ? 'Да' : 'Нет' }}</td>
                         <td>
                             <form method="POST"
                                   onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"

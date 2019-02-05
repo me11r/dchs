@@ -54,7 +54,7 @@ class OtherRides101Controller extends Controller
             return redirect('card101-other-rides')->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
         }
         else{
-            $data['fire_departments'] = FireDepartment::all();
+            $data['fire_departments'] = FireDepartment::recommend()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
             $data['techItems'] = json_encode([]);
@@ -81,7 +81,7 @@ class OtherRides101Controller extends Controller
         }
         else{
 
-            $data['fire_departments'] = FireDepartment::all();
+            $data['fire_departments'] = FireDepartment::recommend()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
             $data['techItems'] = FireDepartmentResult::where('ticket101_other_id', $id)

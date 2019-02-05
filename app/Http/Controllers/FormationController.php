@@ -135,8 +135,6 @@ class FormationController extends AuthorizedController
     {
         $id = $request->id;
 
-        $f = $request->all();
-
         $report = AirRescueReport::firstOrNew(['id' => $id]);
         $report->jet_fuel_action = $request->jet_fuel_action;
         $report->jet_fuel_reserved = $request->jet_fuel_reserved;
@@ -235,14 +233,13 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION, false);
-//        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION) && !Auth::user()->isAdmin();
 
         $belongsToDept = Auth::user()->fire_department_id;
 
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::where('id', '<>', 19)->get();
+            $departments = FireDepartment::usingInFormationReport()->get();
         }
 
         $fieldlist = [
@@ -458,7 +455,7 @@ class FormationController extends AuthorizedController
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::where('id', '!=', 19)->get();
+            $departments = FireDepartment::usingInFormationReport()->get();
         }
 
         $model = (new FormationTechReport)->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
@@ -708,7 +705,7 @@ class FormationController extends AuthorizedController
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
 
         $departments = new FireDepartment();
-        $departments = $departments->whereNotIn('title', ['ОД']);
+        $departments = $departments->usingInFormationReport();
         if (auth()->user()->fire_department_id){
             $departments = $departments->where('id', '=', auth()->user()->fire_department_id);
         }

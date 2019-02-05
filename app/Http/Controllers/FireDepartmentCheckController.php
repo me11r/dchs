@@ -84,7 +84,10 @@ class FireDepartmentCheckController extends Controller
 
     public function editByDay ($date)
     {
-        $items = FireDepartmentCheck::with(['fire_department'])->where('date', '=', $date)->get()->keyBy('id');
+        $items = FireDepartmentCheck::with(['fire_department'])
+            ->where('date', '=', $date)
+            ->get()
+            ->keyBy('id');
 
         $data['dspt'] = $items->where('is_dspt', '=', true)->all();
         $data['not_dspt'] = $items->where('is_dspt', '=', false)->all();
