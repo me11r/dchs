@@ -13,6 +13,7 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
+use App\DrillType;
 use App\EmergencyType;
 use App\EventInfo;
 use App\EventInfoArrived;
@@ -97,8 +98,6 @@ class CardController extends AuthorizedController
     {
         $perPage = $request->get('per_page', 10);
 
-        $f = $request->all();
-
         $search = trim($request->search);
 
         if(Auth::user()->hasRight('DELETE_CARD101')){
@@ -110,7 +109,7 @@ class CardController extends AuthorizedController
         $city_area = $request->input('filter.city_area', '');
 
         $city_areas = Ticket101::groupBy('city_area_id')
-            ->checkDrill($card_type)
+            ->real()
             ->get(['city_area_id'])
             ->pluck('city_area_id')
             ->toArray();
@@ -120,7 +119,7 @@ class CardController extends AuthorizedController
         if($id){
             $tickets = Ticket101::with(['city_area'])
                 ->orderBy($sort,'desc')
-                ->checkDrill($card_type)
+                ->real()
                 ->where('id',$id)
                 ->paginate($perPage);
         }
@@ -128,7 +127,7 @@ class CardController extends AuthorizedController
 
             $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
                 ->where('city_area_id', $city_area)
-                ->checkDrill($card_type)
+                ->real()
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
@@ -136,7 +135,7 @@ class CardController extends AuthorizedController
             if(is_numeric($search)){
                 $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
                     ->where('id', $search)
-                    ->checkDrill($card_type)
+                    ->real()
                     ->orderBy($sort,'desc')
                     ->paginate($perPage);
             }
@@ -148,7 +147,7 @@ class CardController extends AuthorizedController
                     $date = null;
                 }
                 $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                    ->checkDrill($card_type)
+                    ->real()
                     ->where('location', "like", "$search%")
                     ->orWhereDate('created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
@@ -161,7 +160,7 @@ class CardController extends AuthorizedController
         }
         else{
             $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                ->checkDrill($card_type)
+                ->real()
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
@@ -345,14 +344,7 @@ class CardController extends AuthorizedController
         $this->set('max_square', $max_square);
         $this->set('ticket', $ticket);
         $this->set('other_records_unique', $other_records_unique);
-        $this->set('drill_types', [
-            'РКШУ',
-            'ТСУ',
-            'ПТУ',
-            'ПТЗ',
-            'ТДК',
-            'Учения'
-        ]);
+        $this->set('drill_types', DrillType::all());
     }
 
     private function saveAnalytics($ticket)

@@ -327,23 +327,23 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_DELETE']);
     });
 
-    Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
-    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
+    Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType')->middleware(['right:CAN_ACCESS_REPORT_112_EMERGENCY_REPORT']);
+    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency')->middleware(['right:CAN_ACCESS_REPORT_112_EMERGENCY_REPORT']);
 
-    Route::get('reports/other-rides-report','ReportController@getReportOtherRides');
-    Route::get('reports/other-rides-report/export/{type}','ReportController@exportReportOtherRides');
+    Route::get('reports/other-rides-report','ReportController@getReportOtherRides')->middleware(['right:CAN_ACCESS_REPORT_OTHER_RIDES']);
+    Route::get('reports/other-rides-report/export/{type}','ReportController@exportReportOtherRides')->middleware(['right:CAN_ACCESS_REPORT_OTHER_RIDES']);
 
-    Route::get('reports/forces-resources','ReportController@getReportForcesResources');
-    Route::get('reports/forces-resources/export/{type}','ReportController@exportReportForcesResources');
+    Route::get('reports/forces-resources','ReportController@getReportForcesResources')->middleware(['right:CAN_ACCESS_REPORT_FORCES_RESOURCES']);
+    Route::get('reports/forces-resources/export/{type}','ReportController@exportReportForcesResources')->middleware(['right:CAN_ACCESS_REPORT_FORCES_RESOURCES']);
 
-    Route::get('reports/drill-rides-report','ReportController@getReportDrillRides');
-    Route::get('reports/drill-rides-report/export/{type}','ReportController@exportReportDrillRides');
+    Route::get('reports/drill-rides-report','ReportController@getReportDrillRides')->middleware(['right:CAN_ACCESS_REPORT_DRILL_RIDES']);
+    Route::get('reports/drill-rides-report/export/{type}','ReportController@exportReportDrillRides')->middleware(['right:CAN_ACCESS_REPORT_DRILL_RIDES']);
 
-    Route::get('reports/emergency-rescue-gu/','ReportController@getReportEmergencyRescueGu');
-    Route::get('reports/emergency-rescue-gu/export/{type}','ReportController@exportReportEmergencyRescueGu');
+    Route::get('reports/emergency-rescue-gu/','ReportController@getReportEmergencyRescueGu')->middleware(['right:CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU']);
+    Route::get('reports/emergency-rescue-gu/export/{type}','ReportController@exportReportEmergencyRescueGu')->middleware(['right:CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU']);
 
-    Route::get('reports/object-classifications/','ReportController@getReportObjectClassification');
-    Route::get('reports/object-classifications/export/{type}','ReportController@exportReportObjectClassification');
+    Route::get('reports/object-classifications/','ReportController@getReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+    Route::get('reports/object-classifications/export/{type}','ReportController@exportReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
 
 
     /** Суточные отчеты в формате Ворд */

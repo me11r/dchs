@@ -8,6 +8,7 @@ use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
+use App\DrillType;
 use App\FireDepartment;
 use App\FormationReport;
 use App\FormationTechReport;
@@ -1179,24 +1180,26 @@ class ReportController extends AuthorizedController
 
         $data['object_classes'] = ObjectClassification::all();
 
-        foreach (['ПТЗ','ПТУ'] as $type) {
+        $drillTypes = DrillType::whereIn('name', ['ПТЗ','ПТУ'])->get();
+
+        foreach ($drillTypes as $type) {
 
             foreach (range(1, 12) as $month) {
 
-                $data['counts'][$type]['per_month'][$month] = Ticket101::whereYear('created_at', $year)
+                $data['counts'][$type->name]['per_month'][$month] = Ticket101::whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->whereIn('form_type_drill',[$type])
+                    ->where('drill_type_id',$type->id)
                     ->count();
 
                 foreach ($data['object_classes'] as $object_class) {
 
-                    $data['records'][$type][$object_class->name][$month] = Ticket101::whereYear('created_at', $year)
+                    $data['records'][$type->name][$object_class->name][$month] = Ticket101::whereYear('created_at', $year)
                         ->where('object_classification_id', $object_class->id)
                         ->whereMonth('created_at', $month)
-                        ->whereIn('form_type_drill',[$type])->count();
+                        ->where('drill_type_id',$type->id)->count();
 
-                    $data['counts'][$type]['per_object'][$object_class->name] = Ticket101::whereYear('created_at', $year)
-                        ->whereIn('form_type_drill',[$type])
+                    $data['counts'][$type->name]['per_object'][$object_class->name] = Ticket101::whereYear('created_at', $year)
+                        ->where('drill_type_id',$type->id)
                         ->where('object_classification_id', $object_class->id)
                         ->count();
                 }
