@@ -143,12 +143,12 @@
                     </div>
                 </div>
                 <div
-                    v-if="hasAnyRight(25,26,'CAN_ACCESS_TECH','CAN_ACCESS_PERSONS',29,30,'CAN_ACCESS_HYDRANT')"
+                    v-if="hasAnyRight('CAN_ACCESS_MANUAL_INPUT_CHRONO','CAN_ACCESS_HYDRANT','CAN_ACCESS_TECH','CAN_ACCESS_PERSONS',29,30,'CAN_ACCESS_HYDRANT')"
                     class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox fa-fw"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(25)"
+                            v-if="hasRight('CAN_ACCESS_MANUAL_INPUT_CHRONO')"
                             href="/chats"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Ручной ввод хронометража</a>
@@ -163,7 +163,7 @@
                             class="dropdown-item is-small"><i class="fas fa-child fa-fw"></i>&nbsp;
                             Личный состав</a>
                         <a
-                            v-if="hasRight(29)"
+                            v-if="hasRight('CAN_ACCESS_FIRE_DEPTS')"
                             href="/schedules"
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
                             Пожарные части</a>
@@ -185,11 +185,11 @@
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(11,23,24,'SIREN_SPEECH_TECH_SHOW','CALL_INFO_SHOW','ANALYTICS101_SHOW')">
+                    v-if="hasAnyRight('CAN_ACCESS_REPORTS_TAB')">
                     <a class="navbar-link is-small"><i class="fas fa-receipt fa-fw"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown">
                         <div
-                            v-if="hasRight(11)"
+                            v-if="hasRight('CAN_SEE_DAILY_REPORT')"
                             class="dropdown-item">
                             <div class="level is-mobile">
                                 <div class="level-left">
@@ -215,7 +215,7 @@
                         </div>
                         <div
                             class="dropdown-item"
-                            v-if="hasRight(11)">
+                            v-if="hasRight('CAN_SEE_DAILY_REPORT')">
                             <div class="level is-mobile">
                                 <div class="level-left">
                                     <i class="fas fa-receipt fa-fw"></i>&nbsp;
@@ -260,25 +260,25 @@
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Отчет по технике</a>
                         <a
-                            v-if="hasRight(24)"
+                            v-if="hasRight('CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD')"
                             href="/reports/101/emergency"
                             class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
                             Отчет-1</a>
                         <a
-                            v-if="hasRight(24)"
+                            v-if="hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_PERIOD')"
                             href="/reports/112/emergency"
                             class="dropdown-item is-small"><i class="fas fa-bolt fa-fw"></i>&nbsp;
                             Отчет по карточке 112 за период</a>
                         <a
-                            v-if="hasRight(24)"
+                            v-if="hasRight('CAN_ACCESS_REPORT_BRANCHES')"
                             href="/reports/112/branches"
                             class="dropdown-item is-small"><i class="fas fa-tree"></i>
                             &nbsp; Подтопления / Падение веток и деревьев</a>
-                        <a
-                            v-if="hasRight(24)"
+                        <!--<a
+                            v-if="hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES')"
                             href="/reports/101/forces-resources/"
                             class="dropdown-item is-small"><i class="fas fa-archive"></i>
-                            &nbsp; Учет сил и средств</a>
+                            &nbsp; Учет сил и средств</a>-->
                         <a
                             v-if="hasRight('SIREN_SPEECH_TECH_SHOW')"
                             href="/reports/siren-speeches/"
@@ -298,26 +298,37 @@
                             &nbsp; Аналитика
                         </a>
                         <a
+                                v-if="hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_REPORT')"
                                 href="/reports/112-emergency-report/"
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Отчет по ЧС
                         </a>
                         <a
+                                v-if="hasRight('CAN_ACCESS_REPORT_OTHER_RIDES')"
                                 href="/reports/other-rides-report/"
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Общий свод по прочим выездам
                         </a>
                         <a
+                                v-if="hasRight('CAN_ACCESS_REPORT_DRILL_RIDES')"
                                 href="/reports/drill-rides-report/"
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Общий свод по учениям и занятиям
                         </a>
                         <a
+                                v-if="hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES')"
                                 href="/reports/forces-resources/"
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Учет сил и средств
                         </a>
                         <a
+                                v-if="hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION')"
+                                href="/reports/object-classifications/"
+                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
+                            &nbsp; Классификация объектов
+                        </a>
+                        <a
+                                v-if="hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU')"
                                 href="/reports/emergency-rescue-gu/"
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Учет аварийно-спасательных работ ГУ "СПиАСР"

@@ -688,7 +688,7 @@ class Ticket101 extends Model
 
     public function scopeReal($q, $search = null)
     {
-        return $q->where('drill_type', $search);
+        return $q->where('drill_type_id', $search);
     }
 
     public function scopeClosed($q, $search = true)
