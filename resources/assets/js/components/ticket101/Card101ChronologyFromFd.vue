@@ -9,6 +9,7 @@
                         <tr>
                             <th>ПЧ</th>
                             <th>Отделение</th>
+                            <th>Количество привлеченного л/с</th>
                             <th>Хронология</th>
                             <th></th>
                         </tr>
@@ -19,6 +20,12 @@
                             :key="`dept_${dept.id}`">
                             <td>{{ dept.department.title }}</td>
                             <td>{{ dept.tech.department }}</td>
+                            <td>
+                                <input type="number"
+                                       v-model="dept.staff_count"
+                                       @change="changeStaffCount(dept)"
+                                       class="input">
+                            </td>
                             <td>
                                 <div class="add_button">
                                     <button
@@ -464,6 +471,13 @@ export default {
             } else {
                 return timestamp;
             }
+        },
+        changeStaffCount(dept) {
+            // document.getElementById('total_staff_count').value = '';
+            axios.post('/api/101card/update-fire-department-result', {
+                id: dept.id,
+                staff_count: dept.staff_count,
+            });
         },
         editData(id) {
             if (_.find(this.tableEdits, {id: id})) {

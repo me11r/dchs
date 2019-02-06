@@ -692,11 +692,11 @@
                                 </div>
                                 <div class="control">
                                     <label for="">Количество привлеченного л/с</label>
-                                    <textarea name="detailed_staff_count" id="detailed_staff_count" class="textarea">{{ ticket.getDetailedStaffCount() }}</textarea>
+                                    <textarea readonly id="detailed_staff_count" class="textarea">{{ ticket.getDetailedStaffCount() }}</textarea>
                                 </div>
                                 <div class="control">
                                     <label for="">Количество привлеченного л/с (сумма)</label>
-                                    <input type="text" id="total_staff_count" name="total_staff_count" value="{{ ticket.total_staff_count }}" class="input">
+                                    <input type="text" readonly id="total_staff_count" value="{{ ticket.total_staff_count }}" class="input">
                                 </div>
                             </div>
                             <div class="control">

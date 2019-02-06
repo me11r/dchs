@@ -849,7 +849,7 @@ class Ticket101 extends Model
 
     public function getDetailedStaffCount()
     {
-        if(!$this->detailed_staff_count && $this->results->count()) {
+        if($this->results->count()) {
             $depts_out = $this->results()->whereNotNull('dispatch_time')->get();
             $deptsArr = array_unique($depts_out->pluck('fire_department_id')->toArray());
 
@@ -888,5 +888,18 @@ class Ticket101 extends Model
         }
 
         $this->attributes['total_staff_count'] = $value;
+    }
+
+    public function getTotalStaffCountAttribute($value)
+    {
+        if(!$value) {
+            $results = $this->results;
+
+            if($results && $results->count()) {
+                $value = $this->results()->sum('staff_count');
+            }
+        }
+
+        return $value;
     }
 }
