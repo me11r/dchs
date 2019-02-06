@@ -326,21 +326,10 @@ class Ticket101 extends Model
             ->sum('working_time') : 0;
     }
 
-//    public function getGdzsCountTypeAttribute()
-//    {
-//        if ($items = count($this->getGdzs())) {
-//            return $items;
-//        }
-//        return 0;
-//    }
-
     //время следования
     public function getOnWayCategoryAttribute()
     {
         if($first_arrived = $this->first_department_arrived()) {
-//            $minutes = Carbon::createFromTimestamp($first_arrived->on_way_time)->format('H'); //`H` т.к. 00:00:00
-//            $first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
-//                ->format('H:i:s');
 
             $minutes = $first_arrived->on_way_time;
 

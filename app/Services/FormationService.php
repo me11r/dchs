@@ -46,17 +46,16 @@ class FormationService
                 }
                 $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? (float)$peopleReport[$department['id']]->{$peopleField} : 0;
 
-//                if($peopleField == 'privates'){
-                    //добавляем к списку стажеров
-                    $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? $peopleReport[$department['id']]
-                        ->formation_person_items()
-                        ->whereHas('staff', function ($q) use ($department){
-                            $q->where('department_id', $department['id']);
-                        })
-                        ->where('rank', 'trainee')
-                        ->where('trainee_type', $peopleField)
-                        ->count() : 0;
-//                }
+                //todo: стажеров суммируем отдельно
+                //добавляем к списку стажеров
+//                $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? $peopleReport[$department['id']]
+//                    ->formation_person_items()
+//                    ->whereHas('staff', function ($q) use ($department){
+//                        $q->where('department_id', $department['id']);
+//                    })
+//                    ->where('rank', 'trainee')
+//                    ->where('trainee_type', $peopleField)
+//                    ->count() : 0;
             }
 
             foreach ($techFields as $techField) {
