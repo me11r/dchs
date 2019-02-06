@@ -490,6 +490,7 @@ class DictionaryController extends AuthorizedController
             $record->title = $request->title;
             $record->city_area_id = $request->city_area_id;
             $record->recommend = $request->recommend;
+            $record->goes_in_formation_report = $request->goes_in_formation_report;
             $record->address = $request->address;
 
             $record->save();
