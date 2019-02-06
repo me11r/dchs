@@ -109,6 +109,7 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Может изменять список гидрантов', 'name' => 'CAN_EDIT_HYDRANT_LOCATIONS'],
             ['right_group_id' => 7, 'title' => 'Личный состав: полный просмотр', 'name' => 'STAFF_FULL_VIEW_ACCESS'],
             ['right_group_id' => 7, 'title' => 'Транспортные средства: полный просмотр', 'name' => 'VEHICLES_FULL_VIEW_ACCESS'],
+            ['right_group_id' => 7, 'title' => 'Сумма спасенного имущества', 'name' => 'CAN_ACCESS_SALVAGE'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 
