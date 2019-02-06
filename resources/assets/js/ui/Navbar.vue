@@ -349,7 +349,7 @@
                             href="/roadtrip/"
                             class="dropdown-item">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;
-                            Путевые листы ДЧС
+                            Путевые листы ПЧ
                         </a>
                         <a
                             v-if="hasRight(32)"
