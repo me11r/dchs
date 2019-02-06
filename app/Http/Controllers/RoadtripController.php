@@ -44,8 +44,10 @@ class RoadtripController extends AuthorizedController
         /** @var User $user */
         $user = Auth::user();
         $trips = RoadtripPlan::with(['ticket', 'department'])
-            ->has('ticket')
-            ->orHas('ticket101_other')
+            ->where(function ($q){
+                $q->has('ticket')
+                    ->orHas('ticket101_other');
+            })
             ->where('is_closed', false);
 
         if ($user->fire_department_id) {
