@@ -375,25 +375,38 @@ class RoadtripController extends AuthorizedController
     {
         $result = FireDepartmentResult::find($request->dept_id);
         $result->dispatched = true;
-        $result->out_time = now()->format('H:i:s');
-        $result->save();
+        if($result->out_time === null) {
+            $result->out_time = now()->format('H:i:s');
+            $result->save();
+        }
+
         return response()->json(['ok'], 200);
     }
 
     public function postArrived(Request $request)
     {
         $result = FireDepartmentResult::find($request->dept_id);
-        $result->arrive_time = now()->format('H:i:s');
-        $result->save();
+        if($result->out_time !== null) {
+            $result->arrive_time = now()->format('H:i:s');
+            $result->save();
+        }
+        else {
+            return response()->json('error', 500);
+        }
         return response()->json(['ok'], 200);
     }
 
     public function postReturn(Request $request)
     {
-        $f = $request->all();
         $result = FireDepartmentResult::find($request->dept_id);
-        $result->ret_time = now()->format('H:i:s');
-        $result->save();
+        if($result->out_time !== null && $result->arrive_time != null) {
+            $result->ret_time = now()->format('H:i:s');
+            $result->save();
+        }
+        else {
+            return response()->json('error', 500);
+        }
+
         return response()->json(['ok'], 200);
     }
 
@@ -434,20 +447,23 @@ class RoadtripController extends AuthorizedController
         $eventInfosArrived = EventInfoArrived::all();
         $departmentsOnWay = FireDepartmentResult::with(['department', 'tech'])
             ->onWay($trip->ticket->id)
-            ->where('fire_department_id', Auth::user()->fire_department_id)
+            ->where('fire_department_id', Auth::user()->fire_department_id ?? 1)
             ->get();
 
         $departmentsArrived = FireDepartmentResult::with(['department', 'tech'])
             ->arrived($trip->ticket->id)
-            ->where('fire_department_id', Auth::user()->fire_department_id)
+            ->where('fire_department_id', Auth::user()->fire_department_id ?? 1)
             ->get();
+
+        $ticket = $trip->ticket;
+        $ticket->getDetailedStaffCount = $ticket->getDetailedStaffCount();
 
         $this->set('eventInfos', $eventInfos);
         $this->set('eventInfosArrived', $eventInfosArrived);
         $this->set('departmentsOnWay', $departmentsOnWay);
         $this->set('departmentsArrived', $departmentsArrived);
         $this->set('trip', $trip);
-        $this->set('ticket', $trip->ticket);
+        $this->set('ticket', $ticket);
 //        $this->set('city_area', CityArea::with(['fire_departments'])->get());
         $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
@@ -485,7 +501,7 @@ class RoadtripController extends AuthorizedController
         if (!$ticketInfo) {
             $ticketInfo = new Ticket101InfoFromFd([
                 'ticket_id' => $trip->ticket->id,
-                'fire_department_id' => Auth::user()->fire_department_id
+                'fire_department_id' => Auth::user()->fire_department_id ?? 1
             ]);
             $ticketInfo->save();
         }
@@ -498,7 +514,7 @@ class RoadtripController extends AuthorizedController
 //        $this->set('special_plans', $special_plans);
 //        $this->set('operational_cards', $operational_cards);
         $this->set('ticketInfo', $ticketInfo);
-        $this->set('departmentId', Auth::user()->fire_department_id);
+        $this->set('departmentId', Auth::user()->fire_department_id ?? 1);
 
     }
 }
