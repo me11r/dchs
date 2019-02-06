@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Dictionary\CityArea;
 use App\FireDepartment;
 use App\Models\Staff;
 use App\RideType;
+use App\Ticket101;
 use App\Ticket101Drill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,12 +18,16 @@ class DrillRides101Controller extends Controller
         $data['per_page'] = $request->get('per_page', 10);
         $data['can_delete'] = false;
         $data['card_type'] = 'drill';
+        $data['search'] = '';
+        $data['city_areas'] = CityArea::all();
 
         if(Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_DELETE')){
             $data['can_delete'] = true;
         }
 
-        $data['records'] = Ticket101Drill::orderBy('id', 'desc')->paginate($data['per_page']);
+        $data['tickets'] = Ticket101::whereNotNull('drill_type_id')
+            ->orderBy('id', 'desc')
+            ->paginate($data['per_page']);
 
         return view('card.card101-drill-rides.index', $data);
     }

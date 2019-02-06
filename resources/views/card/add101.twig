@@ -9,7 +9,6 @@
             ticket101: {{ ticket | json_encode() | raw }},
             notificationGroups: {{ notificationGroups | json_encode() | raw }}
         };
-        {#{{ dump(ticket.getDetailedStaffCount()) }}#}
     </script>
 
     {% include "layout/yandex-maps-bus.twig" with {areas: city_area} %}
@@ -388,15 +387,15 @@
                                             {% if (card_type == 'drill') %}
                                                 <label for="caller_name">Тип учения</label>
                                                 <div class="select" style="display: block">
-                                                    <select tabindex="6" name="form_type_drill" id="form_type_drill" required
+                                                    <select tabindex="6" name="drill_type_id" id="drill_type_id" required
                                                             style="width: 100%;">
                                                         {% for object in drill_types %}
-                                                            <option {% if object == ticket.form_type_drill %} selected {% endif %}
-                                                                    value="{{ object }}">{{ object }}</option>
+                                                            <option {% if object.id == ticket.drill_type_id %} selected {% endif %}
+                                                                    value="{{ object.id }}">{{ object.name }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
-                                                <input type="hidden" name="drill_type" value="drill">
+                                                {#<input type="hidden" name="drill_type" value="drill">#}
                                             {% else %}
                                                 <label for="caller_phone">Телефон заявителя</label>
                                                 <input tabindex="10" type="text" class="input" name="caller_phone" id="caller_phone"

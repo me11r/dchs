@@ -74,6 +74,17 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 6, 'title' => 'Может смотреть отчет по ЛС', 'name' => 'CAN_ACCESS_PERORT_PERSONS'],
             ['right_group_id' => 6, 'title' => 'Может смотреть отчет по технике', 'name' => 'CAN_ACCESS_PERORT_TECH'],
 
+            ['right_group_id' => 6, 'title' => 'Доступ к вкладке "Отчетность"', 'name' => 'CAN_ACCESS_REPORTS_TAB'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет по карточке 112 за период', 'name' => 'CAN_ACCESS_REPORT_112_EMERGENCY_PERIOD'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет по карточке 101 за период', 'name' => 'CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Подтопления / Падение веток и деревьев"', 'name' => 'CAN_ACCESS_REPORT_BRANCHES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Учет сил и средств"', 'name' => 'CAN_ACCESS_REPORT_FORCES_RESOURCES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Отчет по ЧС"', 'name' => 'CAN_ACCESS_REPORT_112_EMERGENCY_REPORT'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Общий свод по прочим выездам"', 'name' => 'CAN_ACCESS_REPORT_OTHER_RIDES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Общий свод по учениям и занятиям"', 'name' => 'CAN_ACCESS_REPORT_DRILL_RIDES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Классификация объектов"', 'name' => 'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Учет аварийно-спасательных работ ГУ "СПиАСР""', 'name' => 'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU'],
+
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: просмотр', 'name' => 'SIREN_SPEECH_TECH_SHOW'],
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: создание', 'name' => 'SIREN_SPEECH_TECH_CREATE'],
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: редактирование', 'name' => 'SIREN_SPEECH_TECH_EDIT'],
