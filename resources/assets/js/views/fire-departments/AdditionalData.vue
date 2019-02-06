@@ -36,6 +36,7 @@
                         :trip_result="trip_result"
                         :liquidation_methods="liquidation_methods"
                         :fire_levels="fire_levels"
+                        :original-ticket="ticket"
                         :water_sources="water_sources"/>
                 </div>
             </div>

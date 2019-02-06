@@ -876,8 +876,6 @@ export default {
         /* globalBus.$on('departmentHasSent', (data) => {
             this.departments_.push(data.result);
         }); */
-
-        // console.dir(this.departments_)
     }
 };
 </script>

@@ -71,6 +71,7 @@
                         <div id="vue">
                             {% for dep in results %}
                                 {% if ((trip.result is defined) or (trip.result is null)) and trip.result.out_time|default(null) is null and trip.is_accepted %}
+                                {#{% if trip.is_accepted %}#}
                                     <roadtrip-dept-btn :trip="{{ trip }}" :dep="{{ dep }}"></roadtrip-dept-btn>
                                 {% endif %}
                             {% endfor %}
