@@ -116,9 +116,14 @@ class Ticket101EmergencyRescueGuExcel
             $this->setCell($sheet, $header, "$letters[$index]2", "$letters[$index]2", self::HStyle);
         }
 
-        $sheet->mergeCells('G2:O2');
+        $sheet->mergeCells('E2:O2');
 
-        $letters = range('G', 'Z');
+        $sheet->mergeCells('A2:A3');
+        $sheet->mergeCells('B2:B3');
+        $sheet->mergeCells('C2:C3');
+        $sheet->mergeCells('D2:D3');
+
+        $letters = range('E', 'Z');
 
         foreach ($this->data['headers2'] as $index => $header) {
             $sheet->getColumnDimension($letters[$index])->setWidth(20);
@@ -130,7 +135,7 @@ class Ticket101EmergencyRescueGuExcel
             $this->setCell($sheet, $header, "$letters[$index]3", "$letters[$index]3", self::HStyle);
         }
 
-        $sheet->mergeCells('A3:F3');
+        $sheet->mergeCells('A3:D3');
 
     }
 
