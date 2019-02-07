@@ -41,30 +41,29 @@
                     </div>
                 </div>
             </div>
-            <div class="field is-grouped">
-                <div class="control">
-                    <label>Куда</label><br>
-                    <select v-model="rideTypeId"
-                            class="control">
-                        <option value="">-</option>
-                        <option v-for="i in rideTypes"
-                                :key="`ride_type_id_${i.id}`"
-                                :value="i.id">{{ i.name }}</option>
-                    </select>
-                </div>
-                <div class="control">
-                    <label>ПЧ</label><br>
-                    <select v-model="fireDepartmentId"
-                            class="control">
-                        <option value="">-</option>
-                        <option v-for="i in fireDepartments"
-                                :key="`fire_department_id_${i.id}`"
-                                :value="i.id">{{ i.title }}</option>
-                    </select>
-                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <label>Куда</label><br>
+                        <select v-model="rideTypeId"
+                                class="control">
+                            <option value="">-</option>
+                            <option v-for="i in rideTypes"
+                                    :key="`ride_type_id_${i.id}`"
+                                    :value="i.id">{{ i.name }}</option>
+                        </select>
+                    </div>
+                    <div class="control">
+                        <label>ПЧ</label><br>
+                        <select v-model="fireDepartmentId"
+                                class="control">
+                            <option value="">-</option>
+                            <option v-for="i in fireDepartments"
+                                    :key="`fire_department_id_${i.id}`"
+                                    :value="i.id">{{ i.title }}</option>
+                        </select>
+                    </div>
 
-
-            </div>
+                </div>
         </div>
 
         <div class="panel">
