@@ -21,18 +21,48 @@
                     </div>
 
                     <div class="field">
-                        <label for="">112</label>
-                        <input type="text" class="input" value="{{ record.count_112|default('') }}" name="count_112">
+                        <label for="">101</label>
+                        <input type="number" class="input" value="{{ record.count_101|default('') }}" name="count_101">
                     </div>
 
                     <div class="field">
-                        <label for="">101</label>
-                        <input type="text" class="input" value="{{ record.count_101|default('') }}" name="count_101">
+                        <label for="">102</label>
+                        <input type="number" class="input" value="{{ record.count_102|default('') }}" name="count_102">
+                    </div>
+
+                    <div class="field">
+                        <label for="">103</label>
+                        <input type="number" class="input" value="{{ record.count_103|default('') }}" name="count_103">
                     </div>
 
                     <div class="field">
                         <label for="">109</label>
-                        <input type="text" class="input" value="{{ record.count_109|default('') }}" name="count_109">
+                        <input type="number" class="input" value="{{ record.count_109|default('') }}" name="count_109">
+                    </div>
+
+                    <div class="field">
+                        <label for="">112</label>
+                        <input type="number" class="input" value="{{ record.count_112|default('') }}" name="count_112">
+                    </div>
+
+                    <div class="field">
+                        <label for="">Информационно – справочного характера</label>
+                        <input type="number" class="input" value="{{ record.count_info|default('') }}" name="count_info">
+                    </div>
+
+                    <div class="field">
+                        <label for="">Прочее (проверка сотовых телефонов, шалость детей и т.д.)</label>
+                        <input type="number" class="input" value="{{ record.count_other|default('') }}" name="count_other">
+                    </div>
+
+                    <div class="field">
+                        <label for="">По вопросам реагирования на ЧС природного и техногенного характера</label>
+                        <input type="number" class="input" value="{{ record.count_emergency|default('') }}" name="count_emergency">
+                    </div>
+
+                    <div class="field">
+                        <label for="">Примечание</label>
+                        <textarea class="textarea" name="note" id="note">{{ record.note|default('') }}</textarea>
                     </div>
 
 

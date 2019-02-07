@@ -158,13 +158,11 @@ export default {
                 reason_id: self.reason_id
             }).then((resp) => {
                 self.report_summary = resp.data;
-                console.dir(self.report_summary);
             });
         },
 
         selectPeriod() {
             this.post_data();
-            console.dir(this.report_summary);
         }
     },
 
