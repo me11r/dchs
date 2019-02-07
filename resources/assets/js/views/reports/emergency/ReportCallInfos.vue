@@ -37,7 +37,7 @@
                             download
                             class="button is-primary"
                             type="submit">
-                            <i class="fas fa-print"></i>&nbsp;Сохранить в XLSX
+                            <i class="fas fa-print"></i>&nbsp;Сохранить в DOCX
                         </a>
                     </div>
                 </div>
