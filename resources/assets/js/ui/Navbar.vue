@@ -293,7 +293,15 @@
                             &nbsp; Информация по звонкам
                         </a>
                         <a
-                                v-if="hasRight('ANALYTICS101_SHOW')"
+                                v-if="hasAnyRight('ANALYTICS101_SHOW',
+                                'CAN_ACCESS_REPORT_112_EMERGENCY_REPORT',
+                                'CAN_ACCESS_REPORT_OTHER_RIDES',
+                                'CAN_ACCESS_REPORT_DRILL_RIDES',
+                                'CAN_ACCESS_REPORT_FORCES_RESOURCES',
+                                'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
+                                'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU',
+                                'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'
+                                )"
                                 href="/reports/analytics101/"
                                 class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Аналитика
@@ -304,36 +312,36 @@
                                 class="dropdown-item is-small"><i class="fas fa-address-card"></i>
                             &nbsp; Отчет по ЧС
                         </a>
-                        <a
-                                v-if="hasRight('CAN_ACCESS_REPORT_OTHER_RIDES')"
-                                href="/reports/other-rides-report/"
-                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Общий свод по прочим выездам
-                        </a>
-                        <a
-                                v-if="hasRight('CAN_ACCESS_REPORT_DRILL_RIDES')"
-                                href="/reports/drill-rides-report/"
-                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Общий свод по учениям и занятиям
-                        </a>
-                        <a
-                                v-if="hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES')"
-                                href="/reports/forces-resources/"
-                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Учет сил и средств
-                        </a>
-                        <a
-                                v-if="hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION')"
-                                href="/reports/object-classifications/"
-                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Классификация объектов
-                        </a>
-                        <a
-                                v-if="hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU')"
-                                href="/reports/emergency-rescue-gu/"
-                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Учет аварийно-спасательных работ ГУ "СПиАСР"
-                        </a>
+                        <!--<a-->
+                                <!--v-if="hasRight('CAN_ACCESS_REPORT_OTHER_RIDES')"-->
+                                <!--href="/reports/other-rides-report/"-->
+                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
+                            <!--&nbsp; Общий свод по прочим выездам-->
+                        <!--</a>-->
+                        <!--<a-->
+                                <!--v-if="hasRight('CAN_ACCESS_REPORT_DRILL_RIDES')"-->
+                                <!--href="/reports/drill-rides-report/"-->
+                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
+                            <!--&nbsp; Общий свод по учениям и занятиям-->
+                        <!--</a>-->
+                        <!--<a-->
+                                <!--v-if="hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES')"-->
+                                <!--href="/reports/forces-resources/"-->
+                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
+                            <!--&nbsp; Учет сил и средств-->
+                        <!--</a>-->
+                        <!--<a-->
+                                <!--v-if="hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION')"-->
+                                <!--href="/reports/object-classifications/"-->
+                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
+                            <!--&nbsp; Классификация объектов-->
+                        <!--</a>-->
+                        <!--<a-->
+                                <!--v-if="hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU')"-->
+                                <!--href="/reports/emergency-rescue-gu/"-->
+                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
+                            <!--&nbsp; Форма ЧС-051-->
+                        <!--</a>-->
                     </div>
                 </div>
                 <div
