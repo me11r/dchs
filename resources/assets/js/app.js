@@ -115,6 +115,7 @@ Vue.component('norm-psp-form', require('./components/norms-psp/CreateEdit'));
 Vue.component('report-forces-resources', require('./views/reports/emergency/ReportForcesResources'));
 Vue.component('report-emergency-rescue-gu', require('./views/reports/emergency/ReportTicket101EmergencyRescueGu'));
 Vue.component('report-object-classification', require('./views/reports/emergency/ReportTicket101ObjectClassification'));
+Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({

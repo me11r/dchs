@@ -325,6 +325,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:CALL_INFO_EDIT']);
         Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_CREATE']);
         Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_DELETE']);
+        Route::get('/show', 'CallInfoController@show')->name('show');//->middleware(['right:CALL_INFO_DELETE']);
+        Route::get('/download/{format}', 'CallInfoController@download')->name('download');//->middleware(['right:CALL_INFO_DELETE']);
     });
 
     Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType')->middleware(['right:CAN_ACCESS_REPORT_112_EMERGENCY_REPORT']);

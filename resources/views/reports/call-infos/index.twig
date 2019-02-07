@@ -2,20 +2,25 @@
 {% block content %}
     <div class="container section">
             <div class="level">
-            <div class="level-left">
-            <h4 style="" class="title">Информация по звонкам</h4>
-            </div>
-            <div class="level-right has-text-right">
-                <a href="{{ route('reports-call-infos.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
-            </div>
+                <div class="level-left">
+                    <h4 style="" class="title">Информация по звонкам</h4>
+                </div>
+                <div class="level-right has-text-right">
+                    <a href="{{ route('reports-call-infos.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                </div>
+                <div class="level-right has-text-right">
+                    <a href="{{ route('reports-call-infos.show') }}" class="button is-dark"><i class="fas fa-glasses"></i>&nbsp;Отчет за период</a>
+                </div>
             </div>
         <div class="panel">
             <table class="table is-striped is-narrow is-hoverable is-selectable">
                 <thead>
                     <tr>
-                        <th>112</th>
                         <th>101</th>
+                        <th>102</th>
+                        <th>103</th>
                         <th>109</th>
+                        <th>112</th>
                         <th>Дата</th>
                         <th></th>
                     </tr>
@@ -23,9 +28,11 @@
                 <tbody>
                     {% for item in items %}
                         <tr>
-                            <td>{{ item.count_112 }}</td>
                             <td>{{ item.count_101 }}</td>
+                            <td>{{ item.count_102 }}</td>
+                            <td>{{ item.count_103 }}</td>
                             <td>{{ item.count_109 }}</td>
+                            <td>{{ item.count_112 }}</td>
                             <td>{{ item.created_at }}</td>
                             <td>
                                 <div class="field is-grouped">
