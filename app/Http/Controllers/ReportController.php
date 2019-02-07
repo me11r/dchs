@@ -831,9 +831,17 @@ class ReportController extends AuthorizedController
 
         $data['records'] = Ticket101Other::whereBetween('created_at', [$dateFrom, $dateTo]);
 
+        //берем только те записи, где есть выезды
         if($fire_department_id) {
             $data['records'] = $data['records']->whereHas('results', function ($q) use ($fire_department_id) {
-                $q->where('fire_department_id', $fire_department_id);
+                $q->where('fire_department_id', $fire_department_id)
+                    ->whereNotNull('dispatch_time')
+                ;
+            });
+        }
+        else {
+            $data['records'] = $data['records']->whereHas('results', function ($q) use ($fire_department_id) {
+                $q->whereNotNull('dispatch_time');
             });
         }
 
