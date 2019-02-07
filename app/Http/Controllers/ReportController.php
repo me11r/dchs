@@ -1116,35 +1116,52 @@ class ReportController extends AuthorizedController
         $data['dateTo'] = $dateTo;
 
         $reportData = Ticket101::
-            whereBetween('created_at', [$dateFrom, $dateTo]);
+            whereBetween('created_at', [$dateFrom, $dateTo])
+            ->whereNull('drill_type_id');
+
+        $reportDataASR = (clone $reportData)->whereHas('trip_result', function ($q) {
+            $q->where('name', 'АСР');
+        });
 
         $data['record'] = [
             'rides_count' => $reportData->count(),
             'rides_asr_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+                ->whereNull('drill_type_id')
                 ->whereHas('trip_result', function ($q) {
                     $q->where('name', 'АСР');
                 })
                 ->count(),
             'rides_false_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+                ->whereNull('drill_type_id')
                 ->whereHas('trip_result', function ($q) {
                     $q->where('name', 'Ложный');
                 })
                 ->count(),
             'total_staff_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->whereNull('drill_type_id')
+                    ->whereHas('trip_result', function ($q) {
+                        $q->where('name', 'АСР');
+                    })
                     ->sum('total_staff_count') . ' чел.',
             'total_tech_count' => FireDepartmentResult::whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->whereHas('ticket', function ($q){
+                        $q->whereNull('drill_type_id');
+                    })
+                    ->whereHas('ticket.trip_result', function ($q) {
+                        $q->where('name', 'АСР');
+                    })
                     ->whereNotNull('dispatch_time')
                     ->count() . ' ед.',
 
-            'saved_vehicles' => $reportData->sum('saved_vehicles'),
-            'rescued_count' => $reportData->sum('rescued_count'),
-            'saved_children' => $reportData->sum('saved_children'),
-            'bodies_extracted' => $reportData->sum('bodies_extracted'),
-            'children_bodies_extracted' => $reportData->sum('children_bodies_extracted'),
-            'medical_care_provided' => $reportData->sum('medical_care_provided'),
-            'children_medical_care_provided' => $reportData->sum('children_medical_care_provided'),
-            'evac_count' => $reportData->sum('evac_count'),
-            'children_evacuated' => $reportData->sum('children_evacuated'),
+            'saved_vehicles' => $reportDataASR->sum('saved_vehicles'),
+            'rescued_count' => $reportDataASR->sum('rescued_count'),
+            'saved_children' => $reportDataASR->sum('saved_children'),
+            'bodies_extracted' => $reportDataASR->sum('bodies_extracted'),
+            'children_bodies_extracted' => $reportDataASR->sum('children_bodies_extracted'),
+            'medical_care_provided' => $reportDataASR->sum('medical_care_provided'),
+            'children_medical_care_provided' => $reportDataASR->sum('children_medical_care_provided'),
+            'evac_count' => $reportDataASR->sum('evac_count'),
+            'children_evacuated' => $reportDataASR->sum('children_evacuated'),
         ];
 
         Cache::put('emergency_rescue_gu_data', $data, 3600);
@@ -1168,7 +1185,7 @@ class ReportController extends AuthorizedController
             elseif($type === 'xlsx') {
                 $exportService = new Ticket101EmergencyRescueGuExcel($data);
                 $writer = $exportService->getXlsWriter();
-                $fileName = 'Учет сил и средств (101) за период.xls';
+                $fileName = 'Форма ЧС-051.xls';
 
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="' . $fileName . '"');

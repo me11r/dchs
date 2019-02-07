@@ -51,7 +51,7 @@
                     <td v-for="(month, key) in months">{{ records_[type][c.name][++key] }}</td>
                     <td>{{ counts_[type]['per_object'][c.name] }}</td>
                 </tr>
-                <tr>
+                <tr v-if="object_classes.length">
                     <td>Итого</td>
                     <td v-for="totalMonth in counts_[type]['per_month']">{{ totalMonth }}</td>
                     <td></td>
@@ -71,12 +71,12 @@
         components: {BField},
         props: {
             records: {
-                type: Object,
+                type: Array,
                 default: () => { return []; }
             },
             counts: {
                 type: Object,
-                default: () => { return []; }
+                default: () => { return {};}
             },
             object_classes: {
                 type: Array,
