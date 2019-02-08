@@ -43,6 +43,9 @@
                                                 <tr>
                                                     <td>Отделение</td>
                                                     <td>Кол-во выездов за сегодня</td>
+                                                    <td>Выезда по тревоге</td>
+                                                    <td>Учения</td>
+                                                    <td>Прочие</td>
                                                     <td>Статус</td>
                                                 </tr>
                                             </thead>
@@ -50,6 +53,9 @@
                                                 <tr v-for="department in dept.items">
                                                     <td>{{ department.department || department.reserve + ' резерв' }}</td>
                                                     <td>{{ department.departures_count }}</td>
+                                                    <td>{{ department.real_departures_count }}</td>
+                                                    <td>{{ department.drill_departures_count }}</td>
+                                                    <td>{{ department.other_departures_count }}</td>
                                                     <td>
                                                         <table
                                                             v-if="department.status"
@@ -114,10 +120,13 @@ export default {
         },
         sync() {
             setInterval(() => {
-                axios.get('/reports/101/forces-resources').then((response) => {
-                    this.reports_ = response.data.reports;
-                });
+                this.getReports();
             }, 10000);
+        },
+        getReports() {
+            axios.get('/reports/101/forces-resources').then((response) => {
+                this.reports_ = response.data.reports;
+            });
         },
         isNull(data, property) {
             console.dir(data);
