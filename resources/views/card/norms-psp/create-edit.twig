@@ -8,13 +8,18 @@
             {% if record is defined %}
             <norm-psp-form
                     :record="{{ record }}"
+                    :can-select-fd="{{ can_select_fd|json_encode }}"
                     :fire-department="{{ fire_department }}"
+                    :fire-departments="{{ fire_departments }}"
+                    :departments="{{ departments }}"
                     :norm-numbers="{{ norm_numbers }}"
                     :norm-types="{{ norm_types }}"
             >
             {% else %}
                 <norm-psp-form
                         :fire-department="{{ fire_department }}"
+                        :fire-departments="{{ fire_departments }}"
+                        :can-select-fd="{{ can_select_fd|json_encode }}"
                         :norm-numbers="{{ norm_numbers }}"
                         :norm-types="{{ norm_types }}"
                 >

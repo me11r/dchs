@@ -1005,9 +1005,9 @@ class ReportController extends AuthorizedController
                     ['name' => $q->fire_department->title ?? null]
                     ],
                 'type' => $q->norm_type->name ?? null,
-                'departments' => [
-                    ['name' => $q->department]
-                    ],
+                'departments' => $q->departments->map(function($qq){
+                    return ['name' => $qq->name];
+                }),
                 'name' => $q->norm_number->name ?? null,
                 'location' => '',
                 'time_begin' => $q->time_begin,

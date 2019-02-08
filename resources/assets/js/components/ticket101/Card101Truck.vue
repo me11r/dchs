@@ -125,6 +125,7 @@
                                 </a>
                             </p>
                         </td>
+                        <!--Статус-->
                         <td class="is-expanded">
                             <input v-for="i in formActive[department.id]"
                                    type="text"

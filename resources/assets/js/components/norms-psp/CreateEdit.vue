@@ -83,17 +83,24 @@
                 <div class="column">
                     <div class="field">
                         <label for="">Подразделение</label>
-                        <p v-if="fireDepartment_.id === 0" style="color: red">У пользователя не указан номер подразделения</p>
-                        <input class="input" required readonly type="text" v-model="fireDepartment_.title">
-                        <input class="input" name="fire_department_id" hidden type="hidden" v-model="fireDepartment_.id">
+                        <div class="box" v-if="canSelectFd === true">
+                            <select name="fire_department_id"
+                                    v-model="record_.fire_department_id"
+                                    id="fire_department_id"
+                                    class="control">
+                                <option v-for="dept in fireDepartments" :value="dept.id">{{ dept.title }}</option>
+                            </select>
+                        </div>
+                        <div class="box" v-else-if="fireDepartment_.id === 0 && canSelectFd === false">
+                            <p style="color: red">У пользователя не указан номер подразделения</p>
+                        </div>
+                        <div v-else class="box">
+                            <input class="input" required readonly type="text" v-model="fireDepartment_.title">
+                            <input class="input" name="fire_department_id" hidden type="hidden" v-model="fireDepartment_.id">
+                        </div>
                     </div>
                 </div>
-                <div class="column">
-                    <div class="field">
-                        <label for="">Отделение</label>
-                        <input class="input" required name="department" type="text" v-model="record_.department">
-                    </div>
-                </div>
+
                 <div class="column">
                     <div class="field">
                         <p class="control">
@@ -111,33 +118,42 @@
 
         </div>
         <div class="field is-grouped">
-            <div class="columns">
-                <div class="column">
-                </div>
-
-                <div class="column">
-                    <div class="field">
-                        <p class="control">
-                            <label for="norm_number_id">Тип норматива</label>
-                        </p>
-                        <div class="select">
-                            <select name="norm_type_id" required v-model="record_.norm_type_id" id="norm_type_id">
-                                <option v-for="type in normTypes_" :value="type.id">{{ type.name }}</option>
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="column">
-                    <div class="field">
-                        <label for="">Ответственное лицо</label>
-                        <input name="responsible_person" required class="input" type="text" v-model="record_.responsible_person">
-                    </div>
+            <div class="field">
+                <p class="control">
+                    <label for="norm_number_id">Тип норматива</label>
+                </p>
+                <div class="select">
+                    <select name="norm_type_id" required v-model="record_.norm_type_id" id="norm_type_id">
+                        <option v-for="type in normTypes_" :value="type.id">{{ type.name }}</option>
+                    </select>
                 </div>
             </div>
 
+            <div class="field">
+                <label for="">Ответственное лицо</label>
+                <input name="responsible_person" required class="input" type="text" v-model="record_.responsible_person">
+            </div>
+
         </div>
-        <button v-if="fireDepartment_.id !== 0" type="submit" class="button is-success">Сохранить</button>
+        <div class="field is-grouped">
+            <div class="columns">
+                <div class="column">
+                    <p>Отделение</p>&nbsp; <a @click.prevent="addDepartment" class="button is-info" href="">+</a>
+                </div>
+                <div class="column">
+                    <div v-for="dept in departments_" :key="`department_${dept.id}`" class="columns">
+                        <div class="column">
+                            <input class="input" required name="departments[]" type="number" v-model="dept.name">
+                        </div>
+                        <div class="column">
+                            <a class="button is-danger" @click.prevent="deleteDepartment(dept.id)" href="">-</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <button v-if="fireDepartment_.id !== 0 || canSelectFd" type="submit" class="button is-success">Сохранить</button>
 
     </div>
 </template>
@@ -186,6 +202,22 @@
                     return [];
                 }
             },
+            fireDepartments: {
+                type: Array,
+                default: () => {
+                    return [];
+                }
+            },
+            departments: {
+                type: Array,
+                default: () => {
+                    return [];
+                }
+            },
+            canSelectFd: {
+                type: Boolean,
+                default: false
+            },
         },
         data: function () {
             return {
@@ -193,12 +225,24 @@
                 fireDepartment_: this.fireDepartment ? this.fireDepartment : {id: 0, title: ''},
                 normNumbers_: this.normNumbers,
                 normTypes_: this.normTypes,
+                departments_: this.departments
             }
         },
         methods: {
             setCurrentTimeNow(ref) {
                 this.record_[ref] = moment().toDate();
                 this.closeTimePicker(ref);
+            },
+            addDepartment() {
+                this.departments_.push({
+                    id: moment().valueOf(),
+                    name: '',
+                });
+            },
+            deleteDepartment(id) {
+                this.departments_ = this.departments_.filter((item) => {
+                    return item.id !== id;
+                });
             },
             closeTimePicker(ref) {
                 if (this.$refs[ref].close) {
