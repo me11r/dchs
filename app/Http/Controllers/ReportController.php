@@ -450,17 +450,36 @@ class ReportController extends AuthorizedController
 
         foreach ($data['reports'] as $report_key => $report) {
             foreach ($report->items as $item_key => $tech_item) {
-                $report->items[$item_key]['departures_count'] = FireDepartmentResult::
-                whereDate('created_at', $today)->
-                where('tech_id', $tech_item->id)->
-                whereNotNull('out_time')->
-                count()
-                ;
-                $report->items[$item_key]['status'] = Ticket101::whereHas('results', function ($q) use ($today, $tech_item){
-                    $q->whereDate('created_at', $today)->
-                    where('tech_id', $tech_item->id)->
-                    whereNull('ret_time')->
-                    whereNotNull('out_time');
+
+                $report->items[$item_key]['departures_count'] = FireDepartmentResult::shiftRecords()
+                    ->where('tech_id', $tech_item->id)
+                    ->whereNotNull('out_time')
+                    ->count();
+
+                $report->items[$item_key]['real_departures_count'] = FireDepartmentResult::shiftRecords()
+                    ->where('tech_id', $tech_item->id)
+                    ->whereNotNull('out_time')
+                    ->doesntHave('ticket.drill_type')
+                    ->whereNull('ticket101_other_id')
+                    ->count();
+
+                $report->items[$item_key]['drill_departures_count'] = FireDepartmentResult::shiftRecords()
+                    ->where('tech_id', $tech_item->id)
+                    ->whereNotNull('out_time')
+                    ->has('ticket.drill_type')
+                    ->count();
+
+                $report->items[$item_key]['other_departures_count'] = FireDepartmentResult::shiftRecords()
+                    ->where('tech_id', $tech_item->id)
+                    ->whereNotNull('out_time')
+                    ->whereNotNull('ticket101_other_id')
+                    ->count();
+
+                $report->items[$item_key]['status'] = Ticket101::whereHas('results', function ($q) use ($tech_item){
+                    $q->shiftRecords()
+                        ->where('tech_id', $tech_item->id)
+                        ->whereNull('ret_time')
+                        ->whereNotNull('out_time');
                 })
                     ->with(['results', 'fire_level'])
                     ->first();

@@ -131,7 +131,7 @@ export default {
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
-        setTimeout(this.get_data, this.time);
+        // setTimeout(this.get_data, this.time);
     }
 };
 </script>
