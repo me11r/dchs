@@ -186,7 +186,9 @@ class FireDepartmentResult extends Model
             $norm = NormPsp::whereNull('time_end')
                 ->whereNotNull('time_begin')
                 ->where('fire_department_id', $this->fire_department_id)
-                ->where('department', $this->tech->department)
+                ->whereHas('departments', function ($q) {
+                    $q->where('name', $this->tech->department);
+                })
                 ->first();
 
             if($norm) {

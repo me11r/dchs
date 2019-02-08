@@ -45,6 +45,7 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: создание', 'name' => 'CAN_CREATE_NORMS_PSP'],
             ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: редактирование', 'name' => 'CAN_EDIT_NORMS_PSP'],
             ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: удаление', 'name' => 'CAN_DELETE_NORMS_PSP'],
+            ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: выбор ПЧ', 'name' => 'CAN_SELECT_FD_NORMS_PSP'],
 
             ['right_group_id' => 3, 'title' => 'Управление пользователями системы', 'name' => 'CAN_MANAGE_USERS'],
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],

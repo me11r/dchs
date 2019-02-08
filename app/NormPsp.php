@@ -11,7 +11,7 @@ class NormPsp extends Model
         'time_begin',
         'time_end',
         'fire_department_id',
-        'department',
+//        'department',
         'norm_number_id',
         'norm_type_id',
         'responsible_person',
@@ -30,5 +30,10 @@ class NormPsp extends Model
     public function fire_department()
     {
         return $this->belongsTo(FireDepartment::class, 'fire_department_id');
+    }
+
+    public function departments()
+    {
+        return $this->hasMany(NormPspDepartment::class,'norm_id');
     }
 }
