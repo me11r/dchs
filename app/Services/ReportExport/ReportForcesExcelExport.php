@@ -115,7 +115,7 @@ class ReportForcesExcelExport
         $sheet->getRowDimension(1)->setRowHeight(25);
 
         $this->setCell($sheet, 'ПЧ', 'A1', 'A1', self::HStyleBold);
-        $this->setCell($sheet, 'Статус', 'B1', 'G1', self::HStyleBold);
+        $this->setCell($sheet, 'Статус', 'B1', 'J1', self::HStyleBold);
     }
 
 
@@ -157,7 +157,13 @@ class ReportForcesExcelExport
         // Статус -> заголовки
         $this->setCell($sheet, 'Отделение', 'B' . $rowIndex, 'B' . $rowIndex, self::HStyleBold);
         $this->setCell($sheet, 'Кол-во выездов за сегодня', 'C' . $rowIndex, 'C' . $rowIndex, self::HStyleBold);
-        $this->setCell($sheet, 'Статус', 'D' . $rowIndex, 'G' . $rowIndex, self::HStyleBold);
+        $this->setCell($sheet, 'Выезда по тревоге', 'D' . $rowIndex, 'D' . $rowIndex, self::HStyleBold);
+        $this->setCell($sheet, 'Учения', 'E' . $rowIndex, 'E' . $rowIndex, self::HStyleBold);
+        $this->setCell($sheet, 'Прочие', 'F' . $rowIndex, 'F' . $rowIndex, self::HStyleBold);
+        $this->setCell($sheet, 'Статус', 'G' . $rowIndex, 'J' . $rowIndex, self::HStyleBold);
+
+        $sheet->getRowDimension($rowIndex)->setRowHeight(30);
+
 
         $rowIndex++;
 
@@ -165,20 +171,26 @@ class ReportForcesExcelExport
             $departmentName = $department->department ?? $department->reserve . ' резерв';
             $this->setCell($sheet, $departmentName, 'B' . $rowIndex, 'B' . ($rowIndex + 1), self::HStyle);
             $this->setCell($sheet, $department->departures_count, 'C' . $rowIndex, 'C' . ($rowIndex + 1), self::HStyle);
+            $this->setCell($sheet, $department->real_departures_count, 'D' . $rowIndex, 'D' . ($rowIndex + 1), self::HStyle);
+            $this->setCell($sheet, $department->drill_departures_count, 'E' . $rowIndex, 'E' . ($rowIndex + 1), self::HStyle);
+            $this->setCell($sheet, $department->other_departures_count, 'F' . $rowIndex, 'F' . ($rowIndex + 1), self::HStyle);
 
             if ($department->status) {
                 $dataRowIndex = $rowIndex + 1;
-                $this->setCell($sheet, 'Адрес', 'D' . $rowIndex, 'D' . $rowIndex, self::HStyleBold);
-                $this->setCell($sheet, 'Ранг пожара', 'E' . $rowIndex, 'E' . $rowIndex, self::HStyleBold);
-                $this->setCell($sheet, 'Время выезда', 'F' . $rowIndex, 'F' . $rowIndex, self::HStyleBold);
-                $this->setCell($sheet, 'Время прибытия', 'G' . $rowIndex, 'G' . $rowIndex, self::HStyleBold);
+                $this->setCell($sheet, 'Адрес', 'G' . $rowIndex, 'G' . $rowIndex, self::HStyleBold);
+                $this->setCell($sheet, 'Ранг пожара', 'H' . $rowIndex, 'H' . $rowIndex, self::HStyleBold);
+                $this->setCell($sheet, 'Время выезда', 'I' . $rowIndex, 'I' . $rowIndex, self::HStyleBold);
+                $this->setCell($sheet, 'Время прибытия', 'J' . $rowIndex, 'J' . $rowIndex, self::HStyleBold);
 
-                $this->setCell($sheet, $department->address, 'D' . $dataRowIndex, 'D' . $dataRowIndex, self::HStyle);
-                $this->setCell($sheet, $department->fire_rank, 'E' . $dataRowIndex, 'E' . $dataRowIndex, self::HStyle);
-                $this->setCell($sheet, $department->out_time, 'F' . $dataRowIndex, 'F' . $dataRowIndex, self::HStyle);
-                $this->setCell($sheet, $department->arrive_time, 'G' . $dataRowIndex, 'G' . $dataRowIndex, self::HStyle);
+                $sheet->getRowDimension($rowIndex)->setRowHeight(50);
+
+
+                $this->setCell($sheet, $department->address, 'G' . $dataRowIndex, 'G' . $dataRowIndex, self::HStyle);
+                $this->setCell($sheet, $department->fire_rank, 'H' . $dataRowIndex, 'H' . $dataRowIndex, self::HStyle);
+                $this->setCell($sheet, $department->out_time, 'I' . $dataRowIndex, 'I' . $dataRowIndex, self::HStyle);
+                $this->setCell($sheet, $department->arrive_time, 'J' . $dataRowIndex, 'J' . $dataRowIndex, self::HStyle);
             } else {
-                $this->setCell($sheet, 'в ПЧ', 'D' . $rowIndex, 'G' . ($rowIndex + 1), self::HStyle);
+                $this->setCell($sheet, 'в ПЧ', 'G' . $rowIndex, 'J' . ($rowIndex + 1), self::HStyle);
             }
 
             $rowIndex += 2;
@@ -198,9 +210,9 @@ class ReportForcesExcelExport
      */
     private function setCell(
         Worksheet $sheet,
-        string $value,
-        string $cell1,
-        string $cell2,
+        $value,
+        $cell1,
+        $cell2,
         array $styles
     )
     {
