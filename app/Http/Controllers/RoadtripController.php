@@ -88,8 +88,10 @@ class RoadtripController extends AuthorizedController
             ->where('fire_department_id', $trip->department_id)
             ->get();
 
+        //отмечаем отделения как "принятые в работу"
+        //только если пользователь - оператор той ПЧ, в которую пришел путевой
         foreach ($results as $result) {
-            if(!$result->accept_time){
+            if(!$result->accept_time && Auth::user()->fire_department_id === $trip->department_id){
                 $result->accept_time = now();
                 $result->save();
             }
