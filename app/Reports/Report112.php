@@ -46,34 +46,45 @@ class Report112
 
     protected $dictionaries;
 
-    public function __construct()
+    public function __construct($date = null)
     {
-        $this->time = time();
-        $this->tickets101 = Ticket101::dailyRecords();
-        $this->tickets112 = Card112::dailyRecords();
-        $this->today = today()->addHours(7)->format('Y-m-d H:i:s');
-        $this->yesterday = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        if(!$date) {
+            $this->time = time();
+            $this->tickets101 = Ticket101::dailyRecords();
+            $this->tickets112 = Card112::dailyRecords();
+            $this->today = today()->addHours(7)->format('Y-m-d H:i:s');
+            $this->yesterday = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        }
+        else {
+            $from = Carbon::parse($date)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+            $to = Carbon::parse($date)->addHours(7)->format('Y-m-d H:i:s');
+            $this->time = time();
+            $this->tickets101 = Ticket101::dailyRecords($from, $to);
+            $this->tickets112 = Card112::dailyRecords($from, $to);
+            $this->today = Carbon::parse($date)->addHours(7)->format('Y-m-d H:i:s');
+            $this->yesterday = Carbon::parse($date)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        }
     }
 
-    public function getReport($date = null): array
+    public function getReport(): array
     {
         $data['fires_count'] = $this->tickets101->get()->filter(function ($event) {
             $q = TripResult::name('Пожар')->first();
             return $event->trip_result_id == ($q->id ?? 0);
         })->count();
 
-        $data['yesterday'] = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-        $data['today'] = today()->addHours(7)->format('Y-m-d H:i:s');
+        $data['yesterday'] = $this->yesterday;
+        $data['today'] = $this->today;
 
         $cards112 = $this->tickets112->get();
         $cards101 = $this->tickets101->get();
 
-        $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
+        /*$card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
             ->dailyRecords()
             ->whereNotNull('card112_id')
-            ->get();
+            ->get();*/
 
-        $air_rescue_report = AirRescueReport::dailyRecords();
+        $air_rescue_report = AirRescueReport::dailyRecords($this->yesterday, $this->today);
 
         $callInfo = CallInfo::latest()->first();
 
@@ -132,7 +143,7 @@ class Report112
 
     private function getServiceInfo($service)
     {
-        $emergency = EmergencySituation::dailyRecords()
+        $emergency = EmergencySituation::dailyRecords($this->yesterday, $this->today)
             ->whereHas('user.service_type', function ($q) use ($service) {
                 $q->where('name', $service);
             })->get();
@@ -146,8 +157,8 @@ class Report112
         return [
             'hour' => '07',
             'minutes' => '00',
-            'to' => date('d.m.Y', $this->time),
-            'from' => date('d.m.Y', $this->time - (60 * 60 * 24))
+            'to' => Carbon::parse($this->yesterday)->format('d.m.Y'),//date('d.m.Y', $this->time),
+            'from' => Carbon::parse($this->today)->format('d.m.Y'),//date('d.m.Y', $this->time - (60 * 60 * 24))
         ];
     }
 

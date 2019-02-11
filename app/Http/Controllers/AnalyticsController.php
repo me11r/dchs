@@ -7,6 +7,7 @@ use App\Analytics101Item;
 use App\Dictionary\TripResult;
 use App\DrillType;
 use App\FireDepartment;
+use App\Models\Card112\Card112;
 use App\NormType;
 use App\ObjectClassification;
 use App\Reports\Report;
@@ -100,6 +101,8 @@ class AnalyticsController extends Controller
             ->paginate($perPage);
         $data['per_page'] = $perPage;
         $data['user'] = Auth::user();
+
+//        $data['reports112'] = Card112::paginate($perPage)->groupBy
 
         return view('analytics.index', $data);
     }

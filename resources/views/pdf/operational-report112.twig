@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>
+<html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>
+<html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="ru"> <!--<![endif]-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <style>
+        * {
+            font-family: DejaVu Sans;
+        }
+    </style>
+</head>
+<body>
+
+<div style="width:100%;font-size: 12px">
+    <div style="width: 200px; float: right;padding-bottom: 50px;padding-right: 20px">
+        {{ header_person.position }}<br>
+        {{ header_person.city }}<br>
+        {{ header_person.post }}<br>
+        {{ header_person.name }}<br>
+    </div>
+    <div style="clear: both"></div>
+
+    <div style="margin: 0 auto;width: 40%;">
+        &nbsp;&nbsp;&nbsp;ОПЕРАТИВНАЯ ИНФОРМАЦИЯ
+    </div>
+    <div style="margin: 0 auto;width: 40%;">
+        Управления  единой дежурно-диспетчерской службы ДЧС г. Алматы об основных чрезвычайных происшествиях, произошедших в период
+    </div>
+
+    <div style="margin: 0 auto;width: 50%;padding-bottom: 30px;">
+        с {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.from }}г. до {{ dates.hour }} час. {{ dates.minutes }} мин. {{ dates.to }}г.
+    </div>
+
+    <div>
+        Городская подсистема государственной системы гражданской защиты   функционирует в режиме повседневной деятельности:
+    </div>
+    <div>{{ emergency_string }} .</div>
+    <div>1. Системы связи и оповещения: в исправном состоянии и в рабочем режиме.</div>
+    <div>2. Мониторинг окружающей среды и происшествий природного характера:</div>
+    <div style="padding-left: 20px">- ГУ «СОМЭ КН МОН РК»: {{ SOME.epicenter|default('') }} магнитуда: {{ SOME.mpv|default('')}}.</div>
+    <div style="padding-left: 20px">- РГП «Казгидромет»: {{ weather_forecast.forecast_city1 }}</div>
+    <div style="padding-left: 20px">- АГЭУ ГУ «Казселезащита: {{ mudflow_emergency_count ? mudflow_emergency_count : 'не зарегистрировано' }}</div>
+    <div>3. Системы жизнеобеспечения города: не зарегистрировано</div>
+    <div>4. Подтопления: {{ flooding_count }}</div>
+
+    {% set index = 5 %}
+
+    {% for datum, serviceName in services  %}
+        <div>{{ index ~". "~ datum ~ ": " }} {{ serviceName.count() ? serviceName.count() : 'не зарегистрировано' }}</div>
+        {% set index = index + 1 %}
+    {% endfor %}
+    <div>{{ index }}. По основной деятельности «112»: {{ cards112.count() ? 'не зарегистрировано': '' }}</div>
+
+    {% for card in cards112 %}
+        <div>{{ card.created_at.format('H:i') }} {{ card.location }} {{ card.reason }} {{ card.measures }} {{ card.resources }}</div>
+        <div>Материал зарегистрирован в КУИ № {{ card.id }} от {{ card.created_at.format('d-m-Y') }} г. "</div>
+    {% endfor %}
+
+    {% set index = index + 1 %}
+
+    <div>
+        {{ index }}. ГУ «СП и АСР»: {{ cards101.count() }}
+        {% if fires_count > 0 %}
+        , из них: {% for tripResult, count in trip_results101 %} <p style="padding-left: 40px">{{ tripResult }}: {{ count }}</p> {% endfor %}
+        {% endif %}
+
+    </div>
+    {% set index = index + 1 %}
+
+    <div>
+        {{ index }}. ЕДДС: Всего поступивших  звонков на «112» - {{ call_info.count_112|default(0) }}, «101» - {{ call_info.count_101|default(0) }} , «109» - {{ call_info.count_109|default(0) }}.
+    </div>
+    {% set index = index + 1 %}
+
+    <div>
+        {{ index }}. Казавиаспас: в аэропорту Боролдай в режиме дежурства:
+
+        {% for air_unit in air_rescue_report_tech|default([]) %}
+            <div style="padding-left: 40px">- {{ air_unit.name }}</div>
+        {% endfor %}
+
+    </div>
+    {% set index = index + 1 %}
+
+    <div>
+        {{ index }}. Отработано всего  выездов  Службой Спасения г. Алматы – {{ cards112.count() }}, из них:
+    </div>
+    {% set index = index + 1 %}
+
+    <div>
+        {{ index }}. Данные по СРУ: {{ siren_speech_tech.total|default(0) }}: С-40 (моторные) – {{ siren_speech_tech.motor|default(0) }}, СРУ-{{ siren_speech_tech.sst|default(0) }}:  из них  в нерабочем – {{ siren_speech_tech.broken|default(0) }}:
+    </div>
+    {% set index = index + 1 %}
+    <div>{{ index }}. Мониторинг интернет пространства – негативная информация не зарегистрирована.</div>
+
+    <div style="padding-top: 50px;">
+        {% for person in footer_persons %}
+            <div style="float: left;width: 55%">
+                {{ person.position }} {{ person.city }}
+            </div><br>
+            <div style="float: right;width: 25%">
+                {{ person.rank }}
+            </div><br>
+            <div style="float: right;width: 25%">
+                {{ person.name }}
+            </div><br>
+        {% endfor %}
+        <div style="clear: both"></div>
+
+    </div>
+</div>
+
+</body>
+</html>
