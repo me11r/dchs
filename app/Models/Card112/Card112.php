@@ -353,4 +353,13 @@ class Card112 extends Model
             $this->attributes['detailed_address'] = $value;
         }
     }
+
+    public function getDateAttribute()
+    {
+        if ($this->created_at) {
+            return $this->created_at->format('d.m.Y');
+        }
+
+        return null;
+    }
 }
