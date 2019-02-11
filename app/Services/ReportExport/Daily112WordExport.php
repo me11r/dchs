@@ -235,27 +235,32 @@ class Daily112WordExport
             ['align' => Jc::BOTH]
         );
 
-        $section->addText(
-            $this->data['footer_first_person']['position'].' '.$this->data['footer_first_person']['city'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            $this->data['footer_first_person']['post'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            $this->data['footer_first_person']['name'],
-            $generalBoldFontStyle,
-            ['align' => Jc::END]
-        );
+        foreach ($this->data['footer_persons'] as $person) {
 
-        $section->addText(
-            '',
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
+            $section->addText(
+                $person->position.' '.$person->city,
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+            $section->addText(
+                $person->rank,
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+            $section->addText(
+                $person->name,
+                $generalBoldFontStyle,
+                ['align' => Jc::END]
+            );
+
+            $section->addText(
+                '',
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+        }
+
+
     }
 
     private function serviceInfo(&$section, $data, $style = ['indentation' => ['left' => 540]])

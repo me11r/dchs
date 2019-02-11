@@ -22,6 +22,8 @@ use App\Models\Quake;
 use App\Models\ServiceType;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Weather;
+use App\OperDutyShiftStaff;
+use App\OperDutyShiftStaffItem;
 use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\Repositories\Contracts\FireObjectInterface;
@@ -115,8 +117,13 @@ class Report112
             'childrenDeathCount' => $cards101->sum('children_death_count'),
             'hospitalizedCount' => $cards101->sum('hospitalized_count'),
             'header_person' => DailyReportPerson::where('type', 'header')->where('report_type', '112_daily')->first(),
-            'footer_first_person' => DailyReportPerson::where('type', 'footer_first')->where('report_type', '112_daily')->first(),
-            'footer_second_person' => DailyReportPerson::where('type', 'footer_second')->where('report_type', '112_daily')->first()
+            'footer_persons' => OperDutyShiftStaff::whereHas('shifts', function ($q) {
+                $q->where('date', today())
+                    ->where('rank','duty_officer')
+                ;
+            })->get()
+//            'footer_first_person' => DailyReportPerson::where('type', 'footer_first')->where('report_type', '112_daily')->first(),
+//            'footer_second_person' => DailyReportPerson::where('type', 'footer_second')->where('report_type', '112_daily')->first()
 
         ]);
 
