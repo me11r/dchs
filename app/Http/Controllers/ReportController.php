@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AirRescueReport;
+use App\Analytics101;
 use App\CallInfo;
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
@@ -60,6 +61,7 @@ use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
@@ -351,19 +353,38 @@ class ReportController extends AuthorizedController
                 $preparedToExport[$card->cityArea->name] = [];
             }
 
-            $preparedToExport[$card->cityArea->name][] = [
-                '№' => $card->id,
-                'Адрес' => $card->location,
-                'Место происшествия' => $card->incident_place,
-                'Причина' => $card->reason,
-                'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
-                'Принятые меры' => $card->measures,
-                'Количество задействованных сил и средств' => $card->resources,
-                'Начало и завершение работ' =>
-                    'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
-                    ' / ' .
-                    'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
-            ];
+            if($card->incident->name == 'Падение веток и деревьев' || $card->incident->name == 'Подтопления') {
+                $preparedToExport[$card->cityArea->name][] = [
+                    '№' => $card->id,
+                    'Адрес' => $card->location,
+                    'Дата происшествия' => $card->created_at->format('d.m.Y'),
+                    'Место происшествия' => $card->incident_place,
+                    'Причина' => $card->reason,
+                    'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
+                    'Принятые меры' => $card->measures,
+                    'Количество задействованных сил и средств' => $card->resources,
+                    'Начало и завершение работ' =>
+                        'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
+                        ' / ' .
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                ];
+            }
+            else {
+                $preparedToExport[$card->cityArea->name][] = [
+                    '№' => $card->id,
+                    'Адрес' => $card->location,
+                    'Место происшествия' => $card->incident_place,
+                    'Причина' => $card->reason,
+                    'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
+                    'Принятые меры' => $card->measures,
+                    'Количество задействованных сил и средств' => $card->resources,
+                    'Начало и завершение работ' =>
+                        'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
+                        ' / ' .
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                ];
+            }
+
         }
 
         $spreadsheet = new Spreadsheet();
@@ -386,11 +407,11 @@ class ReportController extends AuthorizedController
             $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
 
             $activeSheet
-                ->getStyle('A'.($rowIndex + 1).':H'. $activeSheet->getHighestRow())
+                ->getStyle('A'.($rowIndex + 1).':I'. $activeSheet->getHighestRow())
                 ->applyFromArray(Ticket101ExcelExport::HStyle);
 
             $activeSheet
-                ->getStyle('A'.($rowIndex + 1).':H'. ($rowIndex + 1))
+                ->getStyle('A'.($rowIndex + 1).':I'. ($rowIndex + 1))
                 ->getFont()
                 ->setBold(true);
 
@@ -406,10 +427,11 @@ class ReportController extends AuthorizedController
         $activeSheet->getColumnDimension('F')->setWidth(20);
         $activeSheet->getColumnDimension('G')->setWidth(20);
         $activeSheet->getColumnDimension('H')->setWidth(20);
+        $activeSheet->getColumnDimension('I')->setWidth(20);
 
 
         $activeSheet = $spreadsheet->getActiveSheet();
-        $activeSheet->getStyle('A1:H'. $rowIndex)
+        $activeSheet->getStyle('A1:I'. $rowIndex)
             ->getFont()
             ->setSize(7)
             ->setName('Times New Roman');
@@ -1283,5 +1305,17 @@ class ReportController extends AuthorizedController
             return response()->download(public_path($fileName));
         }
         dd('Кеш устарел, обновите страницу');
+    }
+
+    public function daily_reports(Request $request, $type = '101')
+    {
+        $data = [];
+        $perPage = $request->get('per_page', 10);
+        $data['items'] = Analytics101::orderBy('id', 'desc')
+            ->paginate($perPage);
+        $data['per_page'] = $perPage;
+        $data['user'] = Auth::user();
+
+        return view("daily-reports.$type",$data);
     }
 }
