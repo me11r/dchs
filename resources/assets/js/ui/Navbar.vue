@@ -223,38 +223,39 @@
                                 'CAN_ACCESS_REPORT_FORCES_RESOURCES',
                                 'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
                                 'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU',
+                                'CAN_SEE_DAILY_REPORT',
                                 'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'
                                 )"
                                 href="/reports/analytics101/"
                                 class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Суточные отчеты
                         </a>
-                        <div
-                            class="dropdown-item"
-                            v-if="hasRight('CAN_SEE_DAILY_REPORT')">
-                            <div class="level is-mobile">
-                                <div class="level-left">
-                                    <i class="fas fa-receipt fa-fw"></i>&nbsp;
-                                    Суточный отчет 112
-                                </div>
-                                <div class="level-right">
-                                    <div class="buttons">
-                                        <a
-                                            href="/pdf/operational-report"
-                                            target="_blank"
-                                            class="button is-small"><i class="fas fa-file-pdf"></i>.pdf
-                                        </a>
-                                        <a
-                                            href="/reports/daily112/word"
-                                            target="_blank"
-                                            class=" button is-small">
-                                            <i class="fas fa-file-word"></i>.doc
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                        <!--<div-->
+                            <!--class="dropdown-item"-->
+                            <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')">-->
+                            <!--<div class="level is-mobile">-->
+                                <!--<div class="level-left">-->
+                                    <!--<i class="fas fa-receipt fa-fw"></i>&nbsp;-->
+                                    <!--Суточный отчет 112-->
+                                <!--</div>-->
+                                <!--<div class="level-right">-->
+                                    <!--<div class="buttons">-->
+                                        <!--<a-->
+                                            <!--href="/pdf/operational-report"-->
+                                            <!--target="_blank"-->
+                                            <!--class="button is-small"><i class="fas fa-file-pdf"></i>.pdf-->
+                                        <!--</a>-->
+                                        <!--<a-->
+                                            <!--href="/reports/daily112/word"-->
+                                            <!--target="_blank"-->
+                                            <!--class=" button is-small">-->
+                                            <!--<i class="fas fa-file-word"></i>.doc-->
+                                        <!--</a>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
 
-                        </div>
+                        <!--</div>-->
                         <!--<a
                             v-if="hasRight(21)"
                             href="/information"
