@@ -230,6 +230,16 @@
                                 class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Суточные отчеты
                         </a>
+                        <a class="dropdown-item is-small"
+                           v-if="hasRight('CAN_SEE_DAILY_REPORT')"
+                           href="/reports/daily-reports/101">
+                            <i class="fas fa-database"></i>&nbsp; Суточный отчет 101</a>
+                        <a class="dropdown-item is-small"
+                           v-if="hasRight('CAN_SEE_DAILY_REPORT')"
+                           href="/reports/daily-reports/112">
+                            <i class="fas fa-database"></i>&nbsp; Суточный отчет 112</a>
+
+
                         <!--<div-->
                             <!--class="dropdown-item"-->
                             <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')">-->

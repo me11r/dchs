@@ -347,6 +347,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports/object-classifications/','ReportController@getReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
     Route::get('reports/object-classifications/export/{type}','ReportController@exportReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
 
+    Route::get('reports/daily-reports/{type}','ReportController@daily_reports');
+
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
