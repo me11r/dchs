@@ -3,51 +3,117 @@
     <div class="container section" id="vue">
         <b-tabs position="is-centered" class="block" id="other-rides-form">
             {% if user.hasRight('ANALYTICS101_SHOW') %}
-                <b-tab-item label="Аналитика">
-                    <div class="level">
-                        <div class="level-left">
-                            <h4 style="" class="title">Аналитика</h4>
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <table class="table is-striped is-narrow is-hoverable is-selectable">
-                            <thead>
-                            <tr>
-                                <th>Дата и время</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in items %}
-                                <tr>
-                                    <td>{{ item.date|date('d.m.Y') }}</td>
-                                    <td>
-                                        <div class="field is-grouped">
-                                            <a class="button is-basic is-small" href="{{ route('reports.analytics101.edit', {'id':item.id}) }}">
-                                                <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+                <b-tab-item label="Суточный отчет">
 
-                                            <form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">
-                                                {{ csrf_field() }}
-                                                {{  method_field('DELETE') }}
-                                                <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
-                                                    <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
-                                            </form>
-                                            <a class="button is-info is-small"
-                                               target="_blank"
-                                               href="{{ route('reports.analytics101.word', {'id':item.id}) }}">
-                                                <i class="fas fa-file-word"></i>.doc</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr><h3 class="is-danger">Нет данных в таблице</h3></tr>
-                            {% endfor %}
-                            </tbody>
+                    <b-tabs position="is-centered" class="block" id="other-rides-form">
+                        <b-tab-item label="Отчет 101">
+                            <div class="level">
+                                <div class="level-left">
+                                    <h4 style="" class="title">Суточные отчеты 101</h4>
+                                </div>
+                                <div class="level-right">
+                                    <a class="button is-big is-info" href="/reports/daily101/word">
+                                        <i class="fas fa-file-word"></i>&nbsp; Скачать последний отчет</a>
+                                </div>
+                            </div>
+                            <div class="panel">
+                                <table class="table is-striped is-narrow is-hoverable is-selectable">
+                                    <thead>
+                                    <tr>
+                                        <th>Дата и время</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td>{{ item.date|date('d.m.Y') }}</td>
+                                            <td>
+                                                <div class="field is-grouped">
+                                                    <a class="button is-basic is-small" href="{{ route('reports.analytics101.edit', {'id':item.id}) }}">
+                                                        <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
 
-                        </table>
-                        {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+                                                    <form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">
+                                                        {{ csrf_field() }}
+                                                        {{  method_field('DELETE') }}
+                                                        <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
+                                                            <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
+                                                    </form>
+                                                    <a class="button is-info is-small"
+                                                       target="_blank"
+                                                       href="{{ route('reports.analytics101.word', {'id':item.id}) }}">
+                                                        <i class="fas fa-file-word"></i>.doc</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr><h3 class="is-danger">Нет данных в таблице</h3></tr>
+                                    {% endfor %}
+                                    </tbody>
 
-                    </div>
+                                </table>
+                                {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+
+                            </div>
+                        </b-tab-item>
+                        <b-tab-item label="Отчет 112">
+                            <div class="level">
+                                <div class="level-left">
+                                    <h4 style="" class="title">Суточные отчеты 112</h4>
+                                </div>
+                                <div class="level-right">
+                                    <a class="button is-big is-info" href="/reports/daily112/word">
+                                        <i class="fas fa-file-word"></i>&nbsp; Скачать последний отчет</a>
+                                </div>
+                            </div>
+                            <div class="panel">
+                                <table class="table is-striped is-narrow is-hoverable is-selectable">
+                                    <thead>
+                                    <tr>
+                                        <th>Дата и время</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td>{{ item.date|date('d.m.Y') }}</td>
+                                            <td>
+                                                <div class="field is-grouped">
+                                                    {#<a class="button is-basic is-small" href="#">#}
+                                                        {#<i class="fas fa-edit"></i>&nbsp;Редактировать</a>#}
+
+                                                    {#<form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">#}
+                                                        {#{{ csrf_field() }}#}
+                                                        {#{{  method_field('DELETE') }}#}
+                                                        {#<button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">#}
+                                                            {#<i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>#}
+                                                    {#</form>#}
+                                                    <a class="button is-info is-small"
+                                                       target="_blank"
+                                                       href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'word'}) }}">
+                                                        <i class="fas fa-file-word"></i>.DOCX</a>
+
+                                                    <a class="button is-danger is-small"
+                                                       target="_blank"
+                                                       href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'pdf'}) }}">
+                                                        <i class="fas fa-file-pdf"></i>.PDF</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr><h3 class="is-danger">Нет данных в таблице</h3></tr>
+                                    {% endfor %}
+                                    </tbody>
+
+                                </table>
+                                {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+
+                            </div>
+                        </b-tab-item>
+                    </b-tabs>
+
+
                 </b-tab-item>
             {% endif %}
 

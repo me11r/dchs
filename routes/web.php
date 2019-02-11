@@ -383,6 +383,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('word/{id}', 'AnalyticsController@word')->name('word')->middleware(['right:ANALYTICS101_EDIT']);
     });
 
+    Route::group(['prefix' => 'reports/analytics112', 'as' => 'reports.analytics112.'], function (){
+        Route::get('/', 'Analytics112Controller@index')->name('index'); //->middleware(['right:ANALYTICS101_SHOW']);
+        Route::get('{id}/edit', 'Analytics112Controller@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
+        Route::post('update/{id}', 'Analytics112Controller@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
+        Route::delete('delete/{id}', 'Analytics112Controller@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
+        Route::get('download/{date}/{type?}', 'Analytics112Controller@download')->name('download')->middleware(['right:ANALYTICS101_EDIT']);
+    });
+
     Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
 
 
