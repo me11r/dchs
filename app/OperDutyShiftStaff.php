@@ -23,6 +23,10 @@ class OperDutyShiftStaff extends Model
     protected $fillable = [
         'name',
         'guard_number_id',
+        'position',
+        'city',
+        'rank',
+        'military_rank',
     ];
 
     public function shifts()
