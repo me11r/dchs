@@ -4,6 +4,7 @@ namespace App\Models\Card112;
 
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\EmergencyName;
 use App\EmergencyType;
 use App\Models\IncidentType;
 use App\Models\Notification\Notification;
@@ -133,6 +134,7 @@ class Card112 extends Model
         'chronology_end_time',
         'emergency_feature',
         'emergency_type_id',
+        'emergency_name_id',
     ];
 
     /**
@@ -141,6 +143,14 @@ class Card112 extends Model
     public function street()
     {
         return $this->hasOne(Street::class, 'id', 'street_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function emergency_name()
+    {
+        return $this->hasOne(EmergencyName::class, 'id', 'emergency_name_id');
     }
 
     public function emergency_type()

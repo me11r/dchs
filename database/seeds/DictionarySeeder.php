@@ -191,6 +191,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'drill_types',
                 'model' => \App\DrillType::class
             ],
+            [
+                'title' => "Название ЧС",
+                'table' => 'emergency_names',
+                'model' => \App\EmergencyName::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();
