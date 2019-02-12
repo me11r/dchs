@@ -77,11 +77,6 @@
                 <td class="has-text-right is-bold">Место ЧС (адрес)</td>
                 <td>
                     {{ record.anyCard.location|default('-') }}
-                    {#{% if record.ticket %}
-                        {{  record.ticket.location|default('-') }}
-                    {% else %}
-                        {{  record.ticket112.location|default('-') }}
-                    {% endif %}#}
                 </td>
             </tr>
             <tr>
@@ -95,7 +90,7 @@
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Происшествие</td>
-                <td>{{ record.anyCard.incident.name ?? record.anyCard.trip_result.name ?? '' }}</td>
+                <td>{{ record.anyCard.incident.name ?? record.anyCard.incident_type_text ?? record.anyCard.trip_result.name ?? '' }}</td>
             </tr>
             <tr>
                 <td class="has-text-right is-bold">Место происшествия</td>

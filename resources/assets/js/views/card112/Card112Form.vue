@@ -126,22 +126,23 @@
                                 class="control"
                                 style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
                                 <p class="control">
-                                    <label for="incident_type_id">Происшествие</label>
+                                    <label for="incident_type_text">Происшествие</label>
                                 </p>
-                                <div class="select">
-                                    <select
-                                        id="incident_type_id"
-                                        name="incident_type_id"
-                                        required
-                                        v-model="model.incident_type_id"
-                                    >
-                                        <option
-                                            v-for="incidentType in incidentTypes"
-                                            :key="incidentType.id"
-                                            :value="incidentType.id">{{ incidentType.name }}
-                                        </option>
-                                    </select>
-                                </div>
+                                <input type="text" class="input" name="incident_type_text" v-model="model.incident_type_text">
+                                <!--<div class="select">-->
+                                    <!--<select-->
+                                        <!--id="incident_type_id"-->
+                                        <!--name="incident_type_id"-->
+                                        <!--required-->
+                                        <!--v-model="model.incident_type_id"-->
+                                    <!--&gt;-->
+                                        <!--<option-->
+                                            <!--v-for="incidentType in incidentTypes"-->
+                                            <!--:key="incidentType.id"-->
+                                            <!--:value="incidentType.id">{{ incidentType.name }}-->
+                                        <!--</option>-->
+                                    <!--</select>-->
+                                <!--</div>-->
                             </div>
 
 
@@ -346,7 +347,8 @@
                                 <label for="incident_type_id">Происшествие</label>
                             </p>
                             <div class="select">
-                                <select disabled
+                                <select
+                                        name="incident_type_id"
                                         v-model="model.incident_type_id">
                                     <option
                                             v-for="incidentType in incidentTypes"
@@ -1077,13 +1079,15 @@ export default {
                     }
 
                     window.addEventListener('storage', (event) => {
-                        if (event.key === AREA_ID_FOUND) {
+                        if (event.key === AREA_ID_FOUND && !this.model.id) {
                             this.model.city_area_id = parseInt(event.newValue);
                         }
                     });
                 });
                 globalBus.$on(AREA_ID_FOUND, (value) => {
-                    this.model.city_area_id = value;
+                    if (!this.model.id) {
+                        this.model.city_area_id = value;
+                    }
                 });
             });
     }
