@@ -34,26 +34,12 @@ use Carbon\Carbon;
 class Report101Resources
 {
     private $data;
+    private $rides;
 
     public function __construct($data)
     {
         $this->data = $data;
-        $depts = $data['fireDepartments']->map(function ($item) {
-            return $item['id'];
-        })->toArray();
-        $rides = $data['reports']->map(function ($item) {
-            return $item['id'];
-        })->toArray();
-
-        $this->data['fireDepartments'] = FireDepartment::whereIn('id', $depts)
-            ->get();
-        $this->data['reports'] = FireDepartmentResult::whereIn('id', $rides)
-            ->with([
-                'ticket',
-                'ticket_other',
-                'tech',
-            ])
-            ->get();
+        $this->formRides();
     }
 
     public function getReport(): array
@@ -64,12 +50,23 @@ class Report101Resources
         ];
 
         $data['headers2'] = [
-            'Отделение',
-            'Кол-во выездов за период',
-            'Выезда по тревоге',
-            'Учения',
-            'Прочие выезда',
+            'Количество выездов по тревоге'
         ];
+
+        $data['headers3'] = [
+            'Отделение',
+            'Общее количество выездов по тревоге',
+            'Пожары',
+            'Проведение аварийно-спасательных работ',
+            'Ложные/Бдительность населения',
+            'Срабатывание сигнализации',
+            'Область',
+            'Случаи горения, не подлежащие учету как пожары',
+            'Практические выезда (ПТЗ,ПТУ,ТСУ,РКШУ,Учения, ТДК)',
+            'Корректировки',
+            'Прочие Выезда',
+        ];
+
 
         $data['dateFrom'] = Carbon::parse($this->data['dateFrom'])->format('d.m.Y');
         $data['dateTo'] = Carbon::parse($this->data['dateTo'])->format('d.m.Y');
@@ -82,12 +79,39 @@ class Report101Resources
             $data['values'][$dept->title] = [];
 
             foreach ($this->uniqueDepartments($dept->id) as $ride) {
+
+                //Общее колво карточек 101 по всем результатам выезда
+                $count = count($this->amountRides($dept->id, $ride['tech']['department']));
+                //Колво Карточек с  результатом выезда ПОЖАР
+                $countFire = count($this->amountTrip($dept->id, $ride['tech']['department'], [1]));
+                //Колво Карточек с  результатом выезда АСР
+                $countAsr = count($this->amountTrip($dept->id, $ride['tech']['department'], [3]));
+                //Сумма колва карточек 101 с результатами выезда Ложный и Бдительность Населения
+                $countPeople = count($this->amountTrip($dept->id, $ride['tech']['department'], [2,5]));
+                //Колво Карточек с  результатом выезда Срабатывание сигнал
+                $countSignal = count($this->amountTrip($dept->id, $ride['tech']['department'], [17]));
+                //Колво Карточек с  результатом выезда Область
+                $countRegion = count($this->amountTrip($dept->id, $ride['tech']['department'], [12]));
+
+
                 $data['values'][$dept->title][] = [
                     $ride['tech']['department'] ?? ($ride->tech->reserve) . ' резерв',
-                    count($this->amountRides($dept->id, $ride['tech']['department'])),
-                    count($this->amountRidesReal($dept->id, $ride['tech']['department'])),
-                    count($this->amountRidesDrill($dept->id, $ride['tech']['department'])),
-                    count($this->amountRidesOther($dept->id, $ride['tech']['department'])),
+
+                    $count,
+                    $countFire,
+                    $countAsr,
+                    $countPeople,
+                    $countSignal,
+                    $countRegion,
+                    //Сумма всех карточек 101 с остальными результатами выезда.
+                    $count - ($countFire + $countAsr + $countPeople + $countSignal + $countRegion),
+
+                    //Колво карточек учения по ТИПУ УЧЕНИЯ (ПТЗ,ПТУ,ТСУ,РКШУ,Учения, ТДК)
+                    count($this->amountDrill($dept->id, $ride['tech']['department'], [1,2,3,4,5,6])),
+                    //Колво карточек учения 101 с Типом учения Корректировка
+                    count($this->amountDrill($dept->id, $ride['tech']['department'], [7])),
+                    //Колво карточек прочие выезда 101
+                    count($this->amountRidesOther($dept->id, $ride['tech']['department']))
                 ];
             }
         }
@@ -95,12 +119,20 @@ class Report101Resources
         return $data;
     }
 
-    private function amountRidesReal($deptId, $department)
+    private function amountTrip($deptId, $department, $trip)
     {
-        return collect($this->amountRides($deptId, $department))->filter(function ($q) {
-            return $q['ticket'] && $q['ticket']['form_type_drill'] !== null;
+        return collect($this->amountRides($deptId, $department))->filter(function ($q) use ($trip) {
+            return $q['ticket'] && in_array($q['ticket']['trip_result_id'], $trip);
         })->toArray();
     }
+
+    private function amountDrill($deptId, $department, $drill)
+    {
+        return collect($this->amountRides($deptId, $department))->filter(function ($q) use ($drill) {
+            return $q['ticket'] && in_array($q['ticket']['drill_type_id'], $drill);
+        })->toArray();
+    }
+
 
     private function amountRidesOther($deptId, $department)
     {
@@ -109,16 +141,9 @@ class Report101Resources
         })->toArray();
     }
 
-    private function amountRidesDrill($deptId, $department)
-    {
-        return collect($this->amountRides($deptId, $department))->filter(function ($q) {
-            return $q['ticket'] && $q['ticket']['form_type_drill'] !== null;
-        })->toArray();
-    }
-
     private function amountRides($deptId, $department)
     {
-        $formRides = $this->formRides()[$deptId];
+        $formRides = $this->rides[$deptId];
         return collect($formRides)->filter(function ($q) use ($department) {
             return $q['tech']['department'] === $department;
         })->toArray();
@@ -126,23 +151,22 @@ class Report101Resources
 
     private function uniqueDepartments($deptId)
     {
-        $formRides = $this->formRides()[$deptId];
+        $formRides = $this->rides[$deptId];
         return collect($formRides)->unique('tech.department')->toArray();
     }
 
     private function formRides() : array
     {
-        $formRides = [];
+        $this->rides = [];
 
         foreach ($this->data['fireDepartments'] as $fireDept) {
             $filtered = collect($this->data['reports'])->filter(function ($q) use ($fireDept){
                 return $q->fire_department_id === $fireDept->id;
             })->toArray();
-
-            $formRides[$fireDept->id] = $filtered;
+            $this->rides[$fireDept->id] = $filtered;
         }
 
-        return $formRides;
+        return $this->rides;
     }
 
 

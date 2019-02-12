@@ -115,15 +115,22 @@ class Ticket101ResourcesExcelExport
             $this->setCell($sheet, $header, "$letters[$index]2", "$letters[$index]2", self::HStyle);
         }
 
-        $sheet->mergeCells('B2:F2');
+        $sheet->mergeCells('B2:L2');
 
-        $letters = range('B', 'Z');
+        $letters = range('C', 'Z');
 
         foreach ($this->data['headers2'] as $index => $header) {
             $sheet->getColumnDimension($letters[$index])->setWidth(20);
             $this->setCell($sheet, $header, "$letters[$index]3", "$letters[$index]3", self::HStyle);
         }
+        $sheet->mergeCells('C3:I3');
 
+        $letters = range('B', 'Z');
+
+        foreach ($this->data['headers3'] as $index => $header) {
+            $sheet->getColumnDimension($letters[$index])->setWidth(20);
+            $this->setCell($sheet, $header, "$letters[$index]4", "$letters[$index]4", self::HStyle);
+        }
 //        $sheet->mergeCells('B3:F3');
 
 
@@ -134,7 +141,7 @@ class Ticket101ResourcesExcelExport
      * @param int $startRowIndex
      * @throws Exception
      */
-    private function addFirstTableData(Worksheet $sheet, $startRowIndex = 4)
+    private function addFirstTableData(Worksheet $sheet, $startRowIndex = 5)
     {
         $rowIndex = $startRowIndex;
         $firDeptIndex = 3;
