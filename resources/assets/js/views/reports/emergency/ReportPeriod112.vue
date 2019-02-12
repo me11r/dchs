@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="">
         <div class="panel">
             <div
                 class="box"
@@ -142,8 +142,6 @@ export default {
     methods: {
         selectReason(event) {
             this.reason_id = event.target.value;
-
-            window.history.pushState('page2', 'Title', '/reports/112/emergency?reason=' + this.reason_id);
 
             this.post_data(this.reason_id);
         },

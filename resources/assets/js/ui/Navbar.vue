@@ -239,6 +239,11 @@
                            href="/reports/daily-reports/112">
                             <i class="fas fa-database"></i>&nbsp; Суточный отчет 112</a>
 
+                        <a class="dropdown-item is-small"
+                           v-if="hasRight('ANALYTICS112_SHOW')"
+                           href="/reports/112">
+                            <i class="fas fa-database"></i>&nbsp; Аналитика ДЧС</a>
+
 
                         <!--<div-->
                             <!--class="dropdown-item"-->
@@ -292,21 +297,6 @@
                             class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
                             Отчет-1</a>
                         <a
-                            v-if="hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_PERIOD')"
-                            href="/reports/112/emergency"
-                            class="dropdown-item is-small"><i class="fas fa-bolt fa-fw"></i>&nbsp;
-                            Отчет по карточке 112 за период</a>
-                        <a
-                            v-if="hasRight('CAN_ACCESS_REPORT_BRANCHES')"
-                            href="/reports/112/branches"
-                            class="dropdown-item is-small"><i class="fas fa-tree"></i>
-                            &nbsp; Подтопления / Падение веток и деревьев</a>
-                        <!--<a
-                            v-if="hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES')"
-                            href="/reports/101/forces-resources/"
-                            class="dropdown-item is-small"><i class="fas fa-archive"></i>
-                            &nbsp; Учет сил и средств</a>-->
-                        <a
                             v-if="hasRight('SIREN_SPEECH_TECH_SHOW')"
                             href="/reports/siren-speeches/"
                             class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
@@ -318,43 +308,6 @@
                             class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
                             &nbsp; Информация по звонкам
                         </a>
-
-                        <a
-                                v-if="hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_REPORT')"
-                                href="/reports/112-emergency-report/"
-                                class="dropdown-item is-small"><i class="fas fa-address-card"></i>
-                            &nbsp; Отчет по ЧС
-                        </a>
-                        <!--<a-->
-                                <!--v-if="hasRight('CAN_ACCESS_REPORT_OTHER_RIDES')"-->
-                                <!--href="/reports/other-rides-report/"-->
-                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
-                            <!--&nbsp; Общий свод по прочим выездам-->
-                        <!--</a>-->
-                        <!--<a-->
-                                <!--v-if="hasRight('CAN_ACCESS_REPORT_DRILL_RIDES')"-->
-                                <!--href="/reports/drill-rides-report/"-->
-                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
-                            <!--&nbsp; Общий свод по учениям и занятиям-->
-                        <!--</a>-->
-                        <!--<a-->
-                                <!--v-if="hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES')"-->
-                                <!--href="/reports/forces-resources/"-->
-                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
-                            <!--&nbsp; Учет сил и средств-->
-                        <!--</a>-->
-                        <!--<a-->
-                                <!--v-if="hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION')"-->
-                                <!--href="/reports/object-classifications/"-->
-                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
-                            <!--&nbsp; Классификация объектов-->
-                        <!--</a>-->
-                        <!--<a-->
-                                <!--v-if="hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU')"-->
-                                <!--href="/reports/emergency-rescue-gu/"-->
-                                <!--class="dropdown-item is-small"><i class="fas fa-address-card"></i>-->
-                            <!--&nbsp; Форма ЧС-051-->
-                        <!--</a>-->
                     </div>
                 </div>
                 <div

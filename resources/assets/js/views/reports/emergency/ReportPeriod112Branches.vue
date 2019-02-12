@@ -1,10 +1,11 @@
 <template>
-    <div class="container">
+    <div class="">
         <div class="panel">
             <div
                 class="box"
                 style="margin-top: 20px">
-                <h4 class="title">Отчет (падение веток и деревьев, подтопления)</h4>
+                <h4 v-if="incidentTypes.length === 2" class="title">Отчет (падение веток и деревьев, подтопления)</h4>
+                <h4 v-else class="title">Отчет 112 по происшествиям</h4>
                 <br>
                 <form>
                     <div class="field">
