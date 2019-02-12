@@ -135,6 +135,7 @@ class Card112 extends Model
         'emergency_feature',
         'emergency_type_id',
         'emergency_name_id',
+        'incident_type_text',
     ];
 
     /**
