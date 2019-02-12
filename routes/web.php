@@ -295,6 +295,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'reports/112', 'as' => 'reports112.'], function () {
+        Route::get('/', 'Analytics112Controller@index')->name('index');
         Route::get('/staff', 'ReportController@getReport112Staff')->name('staff');
         Route::post('/staff', 'ReportController@postReport112Staff')->name('staff_post');
         Route::get('/vehicles', 'ReportController@getReport112Vehicles')->name('vehicles');
