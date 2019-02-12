@@ -65,6 +65,7 @@ class Card112Resource extends JsonResource
             'emergency_feature' => (string) $this->emergency_feature,
             'service_plans' => $this->service_plans,
             'emergency_name_id' => $this->emergency_name_id,
+            'incident_type_text' => $this->incident_type_text,
         ];
     }
 }
