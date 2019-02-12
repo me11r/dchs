@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\EmergencyName;
 use App\EmergencyType;
 use App\Http\Resources\Card112\Card112Resource;
 use App\Models\Card112\Card112;
@@ -130,6 +131,7 @@ class Card112Controller extends Controller
             ->with('model', new Card112Resource(new Card112()))
             ->with('service_plans', $ticket101_service_plans)
             ->with('emergencyTypes', EmergencyType::all())
+            ->with('emergencyNames', EmergencyName::all())
             ->with('currentTabIndex', 0)
             ->render();
     }
@@ -187,6 +189,7 @@ class Card112Controller extends Controller
             ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('currentTabIndex', $request->input('currentTabIndex', 0))
             ->with('emergencyTypes', EmergencyType::all())
+            ->with('emergencyNames', EmergencyName::all())
             ->with('model', $model);
     }
 

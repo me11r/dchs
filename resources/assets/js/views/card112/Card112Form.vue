@@ -143,6 +143,8 @@
                                     </select>
                                 </div>
                             </div>
+
+
                             <!--МЕСТО ПРОИСШЕСТВИЯ-->
                             <div class="control is-expanded">
                                 <p class="control">
@@ -380,7 +382,7 @@
                         </div>
 
                         <!--ТИП ПРОИСШЕСТВИЯ-->
-                        <div class="field">
+                        <div class="field" style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
                             <p class="control">
                                 <label for="emergency_type_id">Тип происшествия</label>
                             </p>
@@ -398,6 +400,30 @@
                                 </select>
                             </div>
                         </div>
+
+                        <!--Название ЧС-->
+                        <div
+                                class="field"
+                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                            <p class="control">
+                                <label for="emergency_name_id">Название ЧС</label>
+                            </p>
+                            <div class="select">
+                                <select
+                                        id="emergency_name_id"
+                                        name="emergency_name_id"
+                                        v-model="model.emergency_name_id"
+                                >
+                                    <option value="">-</option>
+                                    <option
+                                            v-for="name in emergencyNames"
+                                            :key="`emergency_name_${name.id}`"
+                                            :value="name.id">{{ name.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="field is-grouped">
                             <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
                             <div
@@ -764,6 +790,7 @@ export default {
             time: new Date(),
             streets: [],
             incidentTypes: [],
+            emergencyNames: [],
             serviceTypes: [],
             cityAreas: [],
             emergencyTypes: [],
@@ -1010,6 +1037,7 @@ export default {
                 this.emergencyTypes = window.card112FormData.emergencyTypes;
                 this.incidentTypes = window.card112FormData.incidentTypes;
                 this.serviceTypes = window.card112FormData.serviceTypes;
+                this.emergencyNames = window.card112FormData.emergencyNames;
                 this.method = window.card112FormData.method;
                 this.formRoute = window.card112FormData.formRoute;
                 this.model = window.card112FormData.model;
