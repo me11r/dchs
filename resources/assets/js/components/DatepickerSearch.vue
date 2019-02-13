@@ -25,6 +25,10 @@ export default {
             type: String,
             default: ''
         },
+        position: {
+            type: String,
+            default: 'is-bottom-right'
+        },
         name: {
             type: String,
             default: ''
