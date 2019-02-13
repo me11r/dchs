@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Dictionary\CityArea;
 use App\Dictionary\TripResult;
+use App\EmergencyName;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
 use App\Reports\Report112;
@@ -77,6 +79,9 @@ class Analytics112Controller extends Controller
             ->whereIn('name', ['Подтопления', 'Падение веток и деревьев'])
             ->orderBy('name')
             ->get();
+
+        $data['city_areas'] = CityArea::all();
+        $data['emergency_names'] = EmergencyName::all();
 
         $data['tripResults'] = TripResult::all();
 

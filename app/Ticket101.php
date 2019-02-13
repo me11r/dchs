@@ -12,6 +12,7 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
+use App\Models\BaseModel;
 use App\Models\FireDepartmentResult;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
@@ -267,7 +268,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 checkDrill($search)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereDrillType($value)
  */
-class Ticket101 extends Model
+class Ticket101 extends BaseModel
 {
     use SoftDeletes;
     protected $table = 'ticket101';

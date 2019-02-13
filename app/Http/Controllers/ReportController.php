@@ -308,13 +308,17 @@ class ReportController extends AuthorizedController
         return view('reports.112.emergency', compact('reasons'));
     }
 
+    ///reports/112/emergency
+    /// Отчет по карточке 112 за период (фильтр)
     public function postReport112Emergency(Request $request)
     {
         $date_begin = $request->date_begin;
         $date_end = $request->date_end;
         $reason_id = $request->reason_id;
+        $cityAreaId = $request->city_area_id;
+        $emergencyNameId = $request->emergency_name_id;
 
-        $result = Card112::getDetailedStat($date_begin, $date_end, $reason_id);
+        $result = Card112::getDetailedStat($date_begin, $date_end, $reason_id, $cityAreaId,$emergencyNameId);
 
         return response()->json($result);
     }
@@ -329,10 +333,13 @@ class ReportController extends AuthorizedController
         return view('reports.112.branches', compact('incidentTypes'));
     }
 
+    ///Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
         $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
+        $emergency_name_id = $request->emergency_name_id;
+        $cityAreaId = $request->city_area_id;
 
         $fileName = 'Отчет:'
             . $dateStart
@@ -341,11 +348,13 @@ class ReportController extends AuthorizedController
             . '.xls';
 
         $cards = (new Card112())
-            ->where('incident_type_id', '=', $request->get('incident_type_id'))
+            ->skipNullValue('incident_type_id',  $request->get('incident_type_id'))
+            ->skipNullValue('emergency_name_id',$emergency_name_id)
+            ->skipNullValue('city_area_id',$cityAreaId)
             ->with(['cityArea'])
             ->get();
 
-        $incidentType = IncidentType::find($request->get('incident_type_id'));
+        $incidentType = IncidentType::find($request->get('incident_type_id', 1));
 
         $preparedToExport = [];
         foreach ($cards as $card) {
@@ -384,7 +393,10 @@ class ReportController extends AuthorizedController
                         'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
                 ];
             }
+        }
 
+        if($request->ajax()) {
+            return response()->json(['data' => $preparedToExport,]);
         }
 
         $spreadsheet = new Spreadsheet();
@@ -591,11 +603,12 @@ class ReportController extends AuthorizedController
 
     public function exportEmergency112Xls(Request $request)
     {
-        $date_begin = $request->date_begin;
-        $date_end = $request->date_end;
-        $result_id = $request->result_id;
+        $date_begin = $request->date_begin === 'null' ? null : $request->date_begin;
+        $date_end = $request->date_end === 'null' ? null : $request->date_end;
+        $result_id = $request->result_id === 'null' ? null : $request->result_id;
+        $city_area_id = $request->city_area_id === 'null' ? null : $request->city_area_id;
 
-        $stat = Card112::getDetailedStat($date_begin, $date_end, $result_id);
+        $stat = Card112::getDetailedStat($date_begin, $date_end, $result_id, $city_area_id);
 
         $exportService = new Ticket112PeriodExcelExport($stat);
         $writer = $exportService->getXlsWriter();
@@ -762,15 +775,21 @@ class ReportController extends AuthorizedController
         ]);
     }
 
+    ///Чрезвычайные ситуации природного и техногенного характера
     public function getReport112EmergencyType(Request $request)
     {
         $dateFrom = $request->input('dateFrom', (new Carbon('01/01/2019'))->format('Y-m-d'));
         $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
         $incidentTypeId = $request->incidentTypeId;
         $tripResultId = $request->tripResultId;
+        $emergency_name_id = $request->emergency_name_id;
+        $cityAreaId = $request->city_area_id;
 
-        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo]);
-        $data['records101'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo]);
+        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+            ->skipNullValue('city_area_id',$cityAreaId)
+            ->skipNullValue('emergency_name_id',$emergency_name_id);
+        $data['records101'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+            ->skipNullValue('city_area_id',$cityAreaId);
 
         if($incidentTypeId) {
             $data['records'] = $data['records']->where('additional_incident_type_id', $incidentTypeId);
