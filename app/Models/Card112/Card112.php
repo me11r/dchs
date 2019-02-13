@@ -6,6 +6,7 @@ use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\EmergencyName;
 use App\EmergencyType;
+use App\Models\BaseModel;
 use App\Models\IncidentType;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
@@ -93,7 +94,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereIncidentPlace($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereReason($value)
  */
-class Card112 extends Model
+class Card112 extends BaseModel
 {
     /**
      * @var string
@@ -284,10 +285,15 @@ class Card112 extends Model
         return $result;
     }
 
-    public function scopeGetDetailedStat($q, $date_begin, $date_end, $reason_id = null)
+    public function scopeGetDetailedStat($q, $date_begin, $date_end, $reason_id = null, $cityAreaId = null, $emergencyNameId = null)
     {
         $result = [];
-        $areas = CityArea::all();
+        if(!$cityAreaId) {
+            $areas = CityArea::all();
+        }
+        else {
+            $areas = CityArea::where('id', $cityAreaId)->get();
+        }
 
         $date_begin = $date_begin ? $date_begin: now()->subYear();
         $date_end = $date_end ? $date_end : now();
@@ -305,6 +311,10 @@ class Card112 extends Model
                 $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
                     ->where('additional_incident_type_id', $reason->id)
                     ->where('city_area_id', $area->id);
+
+                if($emergencyNameId) {
+                    $baseQuery = $baseQuery->where('emergency_name_id', $emergencyNameId);
+                }
 
                 $result[$reason->name][$area->name]['total'] = $baseQuery->count();
                 $types = [
@@ -339,6 +349,11 @@ class Card112 extends Model
             $service_type->where('name', $filter);
         });
     }
+
+//    public function scopeSkipNullValue($q, $field, $search)
+//    {
+//        return $search ? $q->where($field, $search) : $q;
+//    }
 
     public function scopeFilterByIncidentType($q, $filter)
     {

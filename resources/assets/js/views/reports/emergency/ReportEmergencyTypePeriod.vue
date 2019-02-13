@@ -52,6 +52,24 @@
                     </select>
                 </div>
 
+
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <label for="reason">Название ЧС</label>
+                    <select
+                            class="control"
+                            name="emergencyNameId"
+                            v-model="emergencyNameId"
+                    >
+                        <option value=""></option>
+                        <option
+                                v-for="item in emergencyNames"
+                                :value="item.id"
+                                :key="item.id">{{ item.name }}
+                        </option>
+                    </select>
+                </div>
             </div>
             <div class="field is-grouped">
                 <div class="control">
@@ -65,6 +83,21 @@
                     </select>
                 </div>
 
+            </div>
+            <div class="field">
+                <label for="reason">Район города</label>
+                <select
+                        class="select"
+                        name="city_area_id"
+                        v-model="cityAreaId"
+                        id="city_area_id">
+                    <option value=""></option>
+                    <option
+                            v-for="item in cityAreas"
+                            :value="item.id"
+                            :key="item.id">{{ item.name }}
+                    </option>
+                </select>
             </div>
         </div>
 
@@ -118,6 +151,14 @@
                 type: Array,
                 default: () => { return []; }
             },
+            emergencyNames: {
+                type: Array,
+                default: () => {}
+            },
+            cityAreas: {
+                type: Array,
+                default: () => {}
+            },
         },
         data: function () {
             return {
@@ -126,6 +167,8 @@
                 dateTo: new Date,
                 incidentTypeId: 0,
                 tripResultId: 0,
+                emergencyNameId: null,
+                cityAreaId: null,
             }
         },
         computed: {
@@ -144,6 +187,8 @@
                         dateTo: moment(this.dateTo).format('YYYY-MM-DD'),
                         incidentTypeId: this.incidentTypeId,
                         tripResultId: this.tripResultId,
+                        emergency_name_id: this.emergencyNameId,
+                        city_area_id: this.cityAreaId,
                     }
                 }).then((r) => {
                     this.records_ = r.data.records;
@@ -161,6 +206,12 @@
                 this.changeDate();
             },
             'tripResultId'() {
+                this.changeDate();
+            },
+            'emergencyNameId'() {
+                this.changeDate();
+            },
+            'cityAreaId'() {
                 this.changeDate();
             },
         }
