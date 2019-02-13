@@ -36,6 +36,7 @@ trait CommonExportTools
             $this->sumPeople['other'], // Отсутствуют -> Др. причины
 
             $this->sumPeople['gas_smoke_protection_service'], // ГДЗС
+            $this->sumPeople['asv_dask'], // АСВ + ДАСК
 
             $this->data['sumArray']['tech']['device'], //'-', // Аппараты
 
@@ -107,6 +108,7 @@ trait CommonExportTools
             array_get($peopleData, 'other', 0), // Отсутствуют -> Др. причины
 
             array_get($peopleData, 'gas_smoke_protection_service', 0), // ГДЗС
+            array_get($peopleData, 'asv_dask', 0), // АСВ + ДАСК
 
             isset($this->tech[$id]) ? (int)array_get($techData, 'device', 0) : '-', // Аппараты
 
