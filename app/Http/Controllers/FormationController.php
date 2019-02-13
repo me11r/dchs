@@ -308,9 +308,6 @@ class FormationController extends AuthorizedController
             $model = new FormationPersonsReport();
         }
 
-        $f = $request->all();
-
-
         if($request->dept_id == 13) {
             $active = count($request->input('staff.post1_president_residence.staff_id', [])) +
                 count($request->input('staff.post2_president_archive.staff_id', [])) +
@@ -369,6 +366,8 @@ class FormationController extends AuthorizedController
             'business_trip' => count($request->input('staff.business_trip.staff_id', [])),
             'other' => count($request->input('staff.other.staff_id', [])),
             'gas_smoke_protection_service' => $request->gas_smoke_protection_service,
+            'asv' => $request->asv,
+            'dask' => $request->dask,
         ];
         $model->fill($all)->save();
 
@@ -577,11 +576,13 @@ class FormationController extends AuthorizedController
                 'Командировка',
                 'Другие причины',
             ],
-            'ГДЗС'
+            'ГДЗС' => [
+                'Газодымозащитники',
+                'АСВ/ДАСК',
+            ]
         ];
 
         $tech_fieldlist = [
-//            null,
             'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
@@ -660,10 +661,9 @@ class FormationController extends AuthorizedController
             'business_trip',
             'other',
             'gas_smoke_protection_service',
-//            'sick_leave',
+            'asv_dask',
         ];
         $tech_fields = [
-//            null,
             'device',
             'motor_water_pump',
             'motor_mud_pump',
@@ -699,7 +699,6 @@ class FormationController extends AuthorizedController
             'exhauster',
             'girs',
             'iup',
-//            'head_guard_id',
         ];
 
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
@@ -861,7 +860,10 @@ class FormationController extends AuthorizedController
             }
         }
 
-        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech);
+        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech, $report);
+
+
+
         $user = Auth::user();
         $totalTraineeCount = $report->sumTrainee();
 
