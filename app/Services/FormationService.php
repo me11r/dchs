@@ -33,7 +33,7 @@ class FormationService
      * @param Collection $techReport
      * @return array
      */
-    public function getSumArrayByDepartmentsArray(Collection $departments, array $peopleFields, array $techFields, Collection $peopleReport, Collection $techReport): array
+    public function getSumArrayByDepartmentsArray(Collection $departments, array $peopleFields, array $techFields, Collection $peopleReport, Collection $techReport, $report = null): array
     {
         $sumArray = [
             'people' => [],
@@ -45,17 +45,6 @@ class FormationService
                     $sumArray['people'][$peopleField] = 0;
                 }
                 $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? (float)$peopleReport[$department['id']]->{$peopleField} : 0;
-
-                //todo: стажеров суммируем отдельно
-                //добавляем к списку стажеров
-//                $sumArray['people'][$peopleField] += isset($peopleReport[$department['id']]) ? $peopleReport[$department['id']]
-//                    ->formation_person_items()
-//                    ->whereHas('staff', function ($q) use ($department){
-//                        $q->where('department_id', $department['id']);
-//                    })
-//                    ->where('rank', 'trainee')
-//                    ->where('trainee_type', $peopleField)
-//                    ->count() : 0;
             }
 
             foreach ($techFields as $techField) {
@@ -65,6 +54,11 @@ class FormationService
                 $sumArray['tech'][$techField] += isset($techReport[$department['id']]) ? (float)$techReport[$department['id']]->{$techField} : 0;
             }
         }
+        // сумма АСВ/ДАСК
+        if($report) {
+            $sumArray['people']['asv_dask'] = $report->sumGdzs();
+        }
+
         return $sumArray;
     }
 }

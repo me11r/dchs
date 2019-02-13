@@ -109,6 +109,8 @@ class FormationPersonsReport extends Model
         'gas_smoke_protection_service',
         'trainee',
         'sick_leave',
+        'asv',
+        'dask',
     ];
     
     public $od_staff = [
@@ -125,6 +127,11 @@ class FormationPersonsReport extends Model
         'water_supply' => StaffWaterCanal::class,
         'zhalin' => StaffZhalin::class,
     ];
+
+    public function getAsvDaskAttribute()
+    {
+        return ($this->asv && $this->dask) ? "$this->asv/$this->dask" : 0;
+    }
 
     public function report()
     {

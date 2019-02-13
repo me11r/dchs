@@ -948,7 +948,7 @@ class Ticket101WordExport
 
         $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На лицо личного состава', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(500, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
         $table->addCell(500, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
         $table->addCell(700, $cellRowSpan)->addText('Мотопомпы<w:br/>Водяная<w:br/>Грязевая', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Пожарная техника', $hcFontStyle, $hcAlignStyle);
@@ -971,7 +971,10 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpanThick)->addText('Командировка', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanThick)->addText('Др.причины', $hcFontStyle, $hcAlignStyle);
 
-        $table->addCell(null, $cellRowContinue);
+        $table->addCell(null, $cellRowSpan)->addText('Газодымозащитники', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('АСВ/ДАСК', $hcFontStyle, $hcAlignStyle);
+
+//        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
 
@@ -981,6 +984,7 @@ class Ticket101WordExport
 
         $table->addRow(1200);
 
+        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
