@@ -184,11 +184,58 @@
                             Сумма спасенного имущества</a>
                     </div>
                 </div>
-                <div
-                    class="navbar-item has-dropdown is-hoverable is-small"
+                <div class="navbar-item has-dropdown is-hoverable is-small"
                     v-if="hasAnyRight('CAN_ACCESS_REPORTS_TAB')">
                     <a class="navbar-link is-small"><i class="fas fa-receipt fa-fw"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown">
+                        <div class="dropdown-item">
+                            <div class="level is-mobile">
+                                <div class="level-right">
+
+                                    <div class="dropdown is-hoverable">
+                                        <div role="button" class="dropdown-item is-small dropdown-trigger">
+                                            <button class="button is-info"><span>Аналитика СПиАСР</span> <span
+                                                    class="icon"><i class="fas fa-menu-down fa-lg"></i></span></button>
+                                        </div> <!---->
+                                        <div class="dropdown-menu reports-block">
+                                            <div class="dropdown-content">
+                                                <a
+                                                        v-if="hasRight('CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD')"
+                                                        href="/reports/101/emergency"
+                                                        class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
+                                                    Отчет-1</a>
+                                                <a
+                                                        v-if="hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU')"
+                                                        href="/reports/emergency-rescue-gu"
+                                                        class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
+                                                    Форма ЧС-051</a>
+                                                <a
+                                                        v-if="hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES')"
+                                                        href="/reports/forces-resources"
+                                                        class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
+                                                    Учет сил и средств</a>
+                                                <a
+                                                        v-if="hasRight('CAN_ACCESS_REPORT_DRILL_RIDES')"
+                                                        href="/reports/drill-rides-report"
+                                                        class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
+                                                    Общий свод по учениям и занятиям</a>
+                                                <a
+                                                        v-if="hasRight('CAN_ACCESS_REPORT_OTHER_RIDES')"
+                                                        href="/reports/other-rides-report"
+                                                        class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
+                                                    Общий свод по прочим выездам</a>
+                                                <a
+                                                        v-if="hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION')"
+                                                        href="/reports/object-classifications"
+                                                        class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
+                                                    Классификация объектов</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                         <!--<div-->
                             <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')"-->
                             <!--class="dropdown-item">-->
@@ -291,11 +338,7 @@
                             href="/reports/101/vehicles"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Отчет по технике</a>
-                        <a
-                            v-if="hasRight('CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD')"
-                            href="/reports/101/emergency"
-                            class="dropdown-item is-small"><i class="fas fa-band-aid fa-fw"></i>&nbsp;
-                            Отчет-1</a>
+
                         <a
                             v-if="hasRight('SIREN_SPEECH_TECH_SHOW')"
                             href="/reports/siren-speeches/"
@@ -574,4 +617,15 @@ export default {
             }
         }
     }
+
+    .reports-block {
+        left: 248px !important;
+        top: 3% !important;
+        background-color: #2A394F !important;
+    }
+
+    .reports-block > div {
+        background-color: #2A394F !important;
+    }
+
 </style>

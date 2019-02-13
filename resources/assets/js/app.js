@@ -15,7 +15,6 @@ import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
-// import Ticket101OnWay from './components/ticket101/OnWayInfo';
 
 import AdditionalData from './views/fire-departments/AdditionalData';
 import Add101Functions from './scripts/add101/add101';
