@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\StaffDutyVehicle
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class StaffDutyVehicle extends StaffOd
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'surname',
