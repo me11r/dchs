@@ -7,6 +7,7 @@ use App\Http\Resources\EmergencySituationResource;
 use App\Models\EmergencySituation;
 use App\Repositories\Contracts\EmergencySituationRepositoryInterface;
 use App\Right;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -69,7 +70,12 @@ class EmergencySituationController extends Controller
      */
     public function store(Request $request)
     {
-        $this->repository->create($request->all());
+        $all = $request->all();
+        $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
+        $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
+        $all['date_time'] = "$date $time";
+        unset($all['date'], $all['time']);
+        $this->repository->create($all);
         return redirect(route('emergency-situation.index'));
     }
 
@@ -106,7 +112,13 @@ class EmergencySituationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->repository->update($request->all(), $id);
+        $all = $request->all();
+        $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
+        $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
+        $all['date_time'] = "$date $time";
+        unset($all['date'], $all['time']);
+
+        $this->repository->update($all, $id);
         return redirect(route('emergency-situation.edit', $id));
     }
 

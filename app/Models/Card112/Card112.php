@@ -350,11 +350,6 @@ class Card112 extends BaseModel
         });
     }
 
-//    public function scopeSkipNullValue($q, $field, $search)
-//    {
-//        return $search ? $q->where($field, $search) : $q;
-//    }
-
     public function scopeFilterByIncidentType($q, $filter)
     {
         return $q->whereHas('incident', function ($service_type) use ($filter){
