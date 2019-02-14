@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\StaffWaterCanal
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class StaffWaterCanal extends StaffOd
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'surname',

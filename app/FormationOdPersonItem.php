@@ -55,7 +55,7 @@ class FormationOdPersonItem extends Model
         $staff_tables = $this->report->od_staff;
 
         if(isset($staff_tables[$this->table_name])){
-            $staff_entity = $staff_tables[$this->table_name]::find($this->staff_id);
+            $staff_entity = $staff_tables[$this->table_name]::withTrashed()->where('id',$this->staff_id)->first();
             $this->staff = $staff_entity;
             return $staff_entity;
         }
@@ -77,7 +77,7 @@ class FormationOdPersonItem extends Model
     {
         $staff_tables = $this->report->od_staff ?? null;
         if(isset($staff_tables[$this->table_name])){
-            $staff_entity = $staff_tables[$this->table_name]::find($this->staff_id);
+            $staff_entity = $staff_tables[$this->table_name]::withTrashed()->where('id',$this->staff_id)->first();
             #$this->staff = $staff_entity;
             return ['name' => $staff_entity->name ?? null];
         }
