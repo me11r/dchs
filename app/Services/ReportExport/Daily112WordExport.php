@@ -265,19 +265,22 @@ class Daily112WordExport
 
     private function serviceInfo(&$section, $data, $style = ['indentation' => ['left' => 540]])
     {
-        foreach ($data as $datum) {
-            $this->addParagraph($section, 'Дата: ', $datum->date_human_format, $style);
+        foreach ($data as $index => $datum) {
+            $index++;
+            $this->addParagraph($section, $index.'. Дата: ', $datum->date_human_format, $style);
             $this->addParagraph($section, 'Время: ', $datum->time_human_format, $style);
             $this->addParagraph($section, 'Место ЧС: ', $datum->location, $style);
             $this->addParagraph($section, 'Информация о событии: ', $datum->description, $style);
-            $this->addParagraph($section, 'Пострадавших людей/детей: ', $datum->wounded, $style);
-            $this->addParagraph($section, 'Погибло людей/детей: ', $datum->died, $style);
-            $this->addParagraph($section, 'Эвакуированных людей/детей: ', $datum->evacuated, $style);
-            $this->addParagraph($section, 'Госпитализированных людей/детей: ', $datum->hospitalized, $style);
-            $this->addParagraph($section, 'Травмированных людей/детей: ', $datum->injured, $style);
-            $this->addParagraph($section, 'Отравление людей/детей: ', $datum->poisoned, $style);
-            $this->addParagraph($section, 'Спасено людей/детей: ', $datum->saved, $style);
-            $this->addParagraph($section, 'Спасено животных: ', $datum->saved_animals, $style);
+
+            $datum->wounded === null ?: $this->addParagraph($section, 'Пострадавших людей/детей: ', $datum->wounded, $style);
+            $datum->died === null ?: $this->addParagraph($section, 'Погибло людей/детей: ', $datum->died, $style);
+            $datum->evacuated === null ?: $this->addParagraph($section, 'Эвакуированных людей/детей: ', $datum->evacuated, $style);
+            $datum->hospitalized === null ?: $this->addParagraph($section, 'Госпитализированных людей/детей: ', $datum->hospitalized, $style);
+            $datum->injured === null ?: $this->addParagraph($section, 'Травмированных людей/детей: ', $datum->injured, $style);
+            $datum->poisoned === null ?: $this->addParagraph($section, 'Отравление людей/детей: ', $datum->poisoned, $style);
+            $datum->saved === null ?: $this->addParagraph($section, 'Спасено людей/детей: ', $datum->saved, $style);
+            $datum->saved_animals === null ?: $this->addParagraph($section, 'Спасено животных: ', $datum->saved_animals, $style);
+            $this->addParagraph($section, '', '', $style);
         }
     }
 

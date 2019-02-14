@@ -79,11 +79,6 @@ class Report112
         $cards112 = $this->tickets112->get();
         $cards101 = $this->tickets101->get();
 
-        /*$card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
-            ->dailyRecords()
-            ->whereNotNull('card112_id')
-            ->get();*/
-
         $air_rescue_report = AirRescueReport::dailyRecords($this->yesterday, $this->today);
 
         $callInfo = CallInfo::latest()->first();
@@ -133,9 +128,6 @@ class Report112
                     ->where('rank','duty_officer')
                 ;
             })->get()
-//            'footer_first_person' => DailyReportPerson::where('type', 'footer_first')->where('report_type', '112_daily')->first(),
-//            'footer_second_person' => DailyReportPerson::where('type', 'footer_second')->where('report_type', '112_daily')->first()
-
         ]);
 
         return $data;
@@ -146,7 +138,7 @@ class Report112
         $emergency = EmergencySituation::dailyRecords($this->yesterday, $this->today)
             ->whereHas('user.service_type', function ($q) use ($service) {
                 $q->where('name', $service);
-            })->get();
+            })->orderBy('date_time')->get();
 
         return $emergency;
     }
@@ -157,8 +149,8 @@ class Report112
         return [
             'hour' => '07',
             'minutes' => '00',
-            'to' => Carbon::parse($this->yesterday)->format('d.m.Y'),//date('d.m.Y', $this->time),
-            'from' => Carbon::parse($this->today)->format('d.m.Y'),//date('d.m.Y', $this->time - (60 * 60 * 24))
+            'from' => Carbon::parse($this->yesterday)->format('d.m.Y'),
+            'to' => Carbon::parse($this->today)->format('d.m.Y'),
         ];
     }
 
