@@ -1034,12 +1034,16 @@ class FormationController extends AuthorizedController
         $this->set('reports', FormationSaversReport::orderBy('created_at')->paginate($perPage))
             ->set('today', $today)
             ->set('per_page', $perPage)
+            ->set('auth', Auth::user())
         ;
     }
 
     public function getEditSavers(Request $request, $id)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+        if(!Auth::user()->hasRight(['CAN_ACCESS_FORMATION_REPORT_ROSO_EDIT'])){
+            $this->throwAccessDenied();
+        }
 
         $this->set('report', FormationSaversReport::findOrFail($id));
     }
@@ -1059,7 +1063,9 @@ class FormationController extends AuthorizedController
     public function getSaversOperationsList(Request $request, $id)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
-
+        if(!Auth::user()->hasRight(['CAN_ACCESS_FORMATION_REPORT_ROSO_EVENTS'])){
+            $this->throwAccessDenied();
+        }
         $report = FormationSaversReport::with('operations')->findOrFail($id);
         $operations = $report->operations;
         $this->set('parent', $report)
@@ -1092,6 +1098,9 @@ class FormationController extends AuthorizedController
     public function getSaversMigrationsList(Request $request, $id)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+        if(!Auth::user()->hasRight(['CAN_ACCESS_FORMATION_REPORT_ROSO_MIGRATIONS'])){
+            $this->throwAccessDenied();
+        }
 
         $report = FormationSaversReport::with('migrations')->findOrFail($id);
         $operations = $report->migrations;

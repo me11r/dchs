@@ -7,6 +7,7 @@ use App\FireDepartmentCheck;
 use App\Models\Staff;
 use foo\bar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FireDepartmentCheckController extends Controller
 {
@@ -32,6 +33,9 @@ class FireDepartmentCheckController extends Controller
      */
     public function create()
     {
+        if(!Auth::user()->hasRight(['CAN_CREATE_CHECK_FD'])){
+            $this->throwAccessDenied();
+        }
         $date = date('Y-m-d');
         $count = FireDepartmentCheck::with(['fire_department'])->where('date', '=', $date)->count();
         if ($count > 0) {
@@ -50,6 +54,9 @@ class FireDepartmentCheckController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::user()->hasRight(['CAN_CREATE_CHECK_FD'])){
+            $this->throwAccessDenied();
+        }
         $date = $request->date ? $request->date : date('Y-m-d');
         foreach ($request->get('items', []) as $item) {
             $item['date'] = $date;
@@ -77,6 +84,9 @@ class FireDepartmentCheckController extends Controller
      */
     public function edit($id)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
+            $this->throwAccessDenied();
+        }
         $data['record'] = FireDepartmentCheck::with(['fire_department'])->find($id);
         $data['fire_depts'] = FireDepartment::all();
         return view('fire-department-checks.edit',$data);
@@ -84,6 +94,9 @@ class FireDepartmentCheckController extends Controller
 
     public function editByDay ($date)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
+            $this->throwAccessDenied();
+        }
         $items = FireDepartmentCheck::with(['fire_department'])
             ->where('date', '=', $date)
             ->get()
@@ -100,6 +113,9 @@ class FireDepartmentCheckController extends Controller
 
     public function updateByDay(Request $request, $date)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
+            $this->throwAccessDenied();
+        }
         $items = $request->get('items', []);
         $ids = array_map(function($item) {
             return $item['id'];
@@ -144,6 +160,9 @@ class FireDepartmentCheckController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
+            $this->throwAccessDenied();
+        }
         $f = $request->all();
         $data['record'] = FireDepartmentCheck::find($id);
         $data['record']->fire_department_id = $request->fire_department_id;

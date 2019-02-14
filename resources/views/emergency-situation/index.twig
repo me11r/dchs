@@ -42,6 +42,16 @@
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             Редактировать
                         </a>
+                        <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                              method="POST"
+                              action="{{ route('emergency-situation.destroy', item.id) }}">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button title="Удалить"
+                                    class="button is-small is-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             {% else %}
