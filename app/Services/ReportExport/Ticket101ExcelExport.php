@@ -304,7 +304,6 @@ class Ticket101ExcelExport
         $this->setCell($sheet, 'Газодымозащитники', 'O7', 'O9', self::VStyle);
         $this->setCell($sheet, 'АСВ/ДАСК', 'P7', 'P9', self::VStyle);
 
-        $this->setCell($sheet, 'Аппараты', 'Q6', 'Q9', self::VStyle);
         $this->setCell($sheet, "Мотопомпы\nВодяная/Грязевая", 'R6', 'R9', self::VStyle);
 
 

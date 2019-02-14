@@ -133,6 +133,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $iup
  * @property string|null $girs
  * @property string|null $exhauster
+ * @property int|null $asv
+ * @property int|null $dask
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FormationTechItem[] $formation_tech_items
  * @property-read \App\Models\Staff|null $head_guard
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FormationTechItem[] $items
@@ -215,6 +217,8 @@ class FormationTechReport extends Model
         'girs',
         'iup',
         'head_guard_id',
+        'asv',
+        'dask'
     ];
 
     public function scopeTodayRecords($q)

@@ -583,7 +583,6 @@ class FormationController extends AuthorizedController
         ];
 
         $tech_fieldlist = [
-            'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
                 'Грязевая',
@@ -664,7 +663,6 @@ class FormationController extends AuthorizedController
             'asv_dask',
         ];
         $tech_fields = [
-            'device',
             'motor_water_pump',
             'motor_mud_pump',
         ];
