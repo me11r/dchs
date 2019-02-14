@@ -55,6 +55,9 @@ class RightsSeeder extends Seeder
 
             ['title' => 'СП и АСР', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_101'],
             ['title' => 'РОСО', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO'],
+            ['title' => 'РОСО - Характерные спасоперации', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO_EVENTS'],
+            ['title' => 'РОСО - Перемещение подразделений', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO_MIGRATIONS'],
+            ['title' => 'РОСО - Изменить оперативную информацию', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO_EDIT'],
             ['title' => 'ЦМК', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_CMK'],
             ['title' => 'ГУ "Казселезащита"', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION'],
             ['title' => 'АО"Казавиаспас"', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_AIR_RESCUE'],
@@ -113,6 +116,8 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Личный состав: полный просмотр', 'name' => 'STAFF_FULL_VIEW_ACCESS'],
             ['right_group_id' => 7, 'title' => 'Транспортные средства: полный просмотр', 'name' => 'VEHICLES_FULL_VIEW_ACCESS'],
             ['right_group_id' => 7, 'title' => 'Сумма спасенного имущества', 'name' => 'CAN_ACCESS_SALVAGE'],
+            ['right_group_id' => 7, 'title' => 'Проверка пожарных частей: создание', 'name' => 'CAN_CREATE_CHECK_FD'],
+            ['right_group_id' => 7, 'title' => 'Проверка пожарных частей: редактирование', 'name' => 'CAN_EDIT_CHECK_FD'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 
@@ -126,6 +131,11 @@ class RightsSeeder extends Seeder
 
             ['right_group_id' => 6, 'title' => 'Просмотр оперативной информации (все службы)', 'name' => 'CAN_SEE_ALL_EMERGENCY_SITUATIONS'],
         ];
+
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: просмотр', 'name' => 'CAN_SEE_EMERGENCY_SITUATION'];
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: создание', 'name' => 'CAN_CREATE_EMERGENCY_SITUATION'];
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: редактирование', 'name' => 'CAN_EDIT_EMERGENCY_SITUATION'];
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: удаление', 'name' => 'CAN_DELETE_EMERGENCY_SITUATION'];
 
         $rights[] = ['right_group_id' => 8, 'title' => 'Пожарные части (справочник)', 'name' => 'DICT_FIRE_DEPARTMENTS'];
         $rights[] = ['right_group_id' => 8, 'title' => 'Типы инцидентов', 'name' => 'DICT_INCIDENT_TYPES'];
