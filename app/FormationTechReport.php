@@ -234,7 +234,7 @@ class FormationTechReport extends Model
 
     public function head_guard()
     {
-        return $this->belongsTo(Staff::class, 'head_guard_id');
+        return $this->belongsTo(Staff::class, 'head_guard_id')->withTrashed();
     }
 
     public function report()
