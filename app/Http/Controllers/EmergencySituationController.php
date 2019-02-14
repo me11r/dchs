@@ -74,6 +74,7 @@ class EmergencySituationController extends Controller
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
         $all['date_time'] = "$date $time";
+        unset($all['date'], $all['time']);
         $this->repository->create($all);
         return redirect(route('emergency-situation.index'));
     }
