@@ -58,6 +58,9 @@ class EmergencySituationController extends Controller
      */
     public function create()
     {
+        if(!Auth::user()->hasRight(['CAN_CREATE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         return View::make('emergency-situation.edit')
             ->with('item', new EmergencySituation())
             ->with('title', 'Добавление оперативной информации')
@@ -70,6 +73,9 @@ class EmergencySituationController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Auth::user()->hasRight(['CAN_CREATE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         $all = $request->all();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
@@ -86,6 +92,9 @@ class EmergencySituationController extends Controller
      */
     public function show($id)
     {
+        if(!Auth::user()->hasRight(['CAN_SEE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         $item = $this->repository->find($id);
 
         return View::make('emergency-situation.show')
@@ -99,6 +108,9 @@ class EmergencySituationController extends Controller
      */
     public function edit($id)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         return View::make('emergency-situation.edit')
             ->with('item', $this->repository->with(['user', 'user.service_type'])->find($id))
             ->with('title', 'Изменение оперативной информации')
@@ -112,6 +124,9 @@ class EmergencySituationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         $all = $request->all();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
@@ -128,6 +143,9 @@ class EmergencySituationController extends Controller
      */
     public function destroy($id)
     {
+        if(!Auth::user()->hasRight(['CAN_DELETE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         $this->repository->delete($id);
         return redirect(route('emergency-situation.index'));
     }
