@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -55,6 +56,8 @@ class AirRescueReport extends Model
         'staff_duty_shift',
         'senior_shift_name',
         'staff_duty_shift_8hours',
+
+        'date',
     ];
 
     public function tech()
@@ -62,11 +65,40 @@ class AirRescueReport extends Model
         return $this->hasMany(AirRescueReportTechItem::class, 'report_id');
     }
 
+    public function getTechString($type = 'action')
+    {
+        if($result = $this->tech()->where('status', $type)->count()) {
+            $result .= ': ';
+            foreach ($this->tech()->where('status', $type)->get() as $item) {
+                $result .= $item->aircraft->full_name."; ";
+            }
+
+            return $result;
+        }
+
+        return 0;
+    }
+
     public function scopeDailyRecords($q, $from = null, $to = null)
     {
         $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
-        return $q->whereBetween('created_at', [$from, $to]);
+        return $q->whereBetween('date', [$from, $to]);
+    }
+
+    public function scopeByDate($q, $search)
+    {
+        return $this->date ? $q->where('date', $search) : $q->whereDate('created_at', $search);
+    }
+
+    public function getDateHumanFormatAttribute()
+    {
+        if($this->date) {
+            return Carbon::parse($this->date)->format('d.m.Y');
+        }
+        else{
+            return Carbon::parse($this->created_at)->format('d.m.Y');
+        }
     }
 }
