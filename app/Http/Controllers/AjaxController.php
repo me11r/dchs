@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Dictionary\Street;
 use App\FireDepartment;
+use App\MapCount;
 use App\Models\Building;
 use App\Models\OperationalPlan;
 use App\Models\SpecialPlan;
@@ -208,5 +209,16 @@ class AjaxController extends AuthorizedController
         }
 
         return response()->json(['notifications' => $notifications]);
+    }
+
+    public function incrementMapRequest(Request $request)
+    {
+
+        MapCount::create([
+            'description' => $request->description,
+            'request' => $request->count,
+        ]);
+
+        return response()->json([]);
     }
 }

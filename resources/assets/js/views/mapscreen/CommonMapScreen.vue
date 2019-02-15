@@ -190,10 +190,14 @@ export default {
             this.hydrantPopupShow = true;
         },
         onMarkClick(model) {
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.onMarkClick()'});
+
             this.displayHydrantPopup(model);
         },
         onMarkDragEnd(event, model) {
             if (this.canSaveOrUpdateHydrant(model)) {
+                globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.onMarkDragEnd()'});
+
                 const coords = event.originalEvent.target.geometry['getCoordinates']();
                 model.lat = coords[0];
                 model.long = coords[1];
@@ -202,6 +206,8 @@ export default {
             }
         },
         onMapDoubleClick(event) {
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.onMapDoubleClick()'});
+
             const coords = event.get('coords');
             let model = {...this.emptyModel};
             model.lat = coords[0];
@@ -255,6 +261,9 @@ export default {
                 gridSize: 100
             });
             clusterer.add(geoObjects);
+
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.getHydrantsClusterer()'});
+
             return clusterer;
         },
         getHydrantPlaceMarkFromItem(item, onClick, onDragEnd) {
@@ -278,6 +287,9 @@ export default {
             placemark.events.add('dragend', (event) => {
                 onDragEnd(event, item);
             });
+
+            globalBus.$emit('api-map-request', {'request_count': 2, 'description': 'CommonMapScreen.getHydrantPlaceMarkFromItem()'});
+
             return placemark;
         },
         addHydrantClickListener() {
@@ -391,6 +403,7 @@ export default {
         },
         resetAllObjects() {
             this.map.geoObjects.removeAll();
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.resetAllObjects()'});
         },
         setPointOnTheMap(lat, long, name) {
             const geoObject = new this.ymaps.GeoObject({
@@ -408,6 +421,9 @@ export default {
             this.map.geoObjects.add(geoObject);
             this.map.setZoom(this.zoom);
             this.map.panTo([lat, long]);
+
+            globalBus.$emit('api-map-request', {'request_count': 3, 'description': 'CommonMapScreen.setPointOnTheMap()'});
+
         },
         detectLocation(geoObject) {
             this.location = geoObject.properties
@@ -438,6 +454,9 @@ export default {
                 self.onMapDoubleClick(event);
             });
 
+            globalBus.$emit('api-map-request', {'request_count': 3, 'description': 'CommonMapScreen.initMap()'});
+
+
             this.setMapData();
         },
         initCityAreas() {
@@ -452,11 +471,17 @@ export default {
             for (let polygon in polygons) {
                 this.map.geoObjects.add(polygons[polygon]);
             }
+
+            globalBus.$emit('api-map-request', {'request_count': polygons.length, 'description': 'CommonMapScreen.initFireDepartmentAreas()'});
+
         },
         zoomToObject(lat, long) {
             window.scrollTo(0,document.body.scrollHeight);
             this.map.setZoom(18);
             this.map.panTo([lat, long]);
+
+            globalBus.$emit('api-map-request', {'request_count': 5, 'description': 'CommonMapScreen.zoomToObject()'});
+
 
             if (this.currentHydrantMark) {
                 this.currentHydrantMark.geometry.setCoordinates([lat, long]);
