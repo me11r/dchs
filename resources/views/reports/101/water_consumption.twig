@@ -1,0 +1,41 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container" id="vue">
+        <b-tabs position="is-centered" class="block" id="other-rides-form">
+            {% if user.hasRight('') %}
+            {% endif %}
+            <b-tab-item label="Отчет-1">
+                <report101-emergency
+                        :results="{{ reasons }}"
+                        :burnt_objects="{{ burntObjects }}"
+                        :city_areas="{{ cityAreas }}">
+                </report101-emergency>
+            </b-tab-item>
+
+            {% if user.hasRight('') %}
+            {% endif %}
+            <b-tab-item label="Форма ЧС-051"></b-tab-item>
+
+            {% if user.hasRight('') %}
+            {% endif %}
+            <b-tab-item label="Учет сил и средств"></b-tab-item>
+
+            {% if user.hasRight('') %}
+            {% endif %}
+            <b-tab-item label="Общий свод по учениям и занятиям"></b-tab-item>
+
+            {% if user.hasRight('') %}
+            {% endif %}
+            <b-tab-item label="Общий свод по прочим выездам"></b-tab-item>
+
+            {% if user.hasRight('') %}
+            {% endif %}
+            <b-tab-item label="Классификация объектов"></b-tab-item>
+        </b-tabs>
+        <report-water-consumption
+            :records="{{ records|json_encode }}"
+        >
+        </report-water-consumption>
+
+    </div>
+{% endblock content %}

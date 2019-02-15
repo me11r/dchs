@@ -348,7 +348,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('reports/object-classifications/','ReportController@getReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
     Route::get('reports/object-classifications/export/{type}','ReportController@exportReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
 
+    Route::get('reports/water-consumption/','ReportController@getReportWaterConsumption');//->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+    Route::get('reports/water-consumption/export/{type}','ReportController@exportReportWaterConsumption');//->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+
     Route::get('reports/daily-reports/{type}','ReportController@daily_reports');
+
+    Route::get('reports/analytics-spiasr', 'AnalyticsSpiasrController@index');
 
 
     /** Суточные отчеты в формате Ворд */
@@ -383,7 +388,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{id}/edit', 'AnalyticsController@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
         Route::post('update/{id}', 'AnalyticsController@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
         Route::delete('delete/{id}', 'AnalyticsController@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
-        Route::get('word/{id}', 'AnalyticsController@word')->name('word')->middleware(['right:ANALYTICS101_EDIT']);
+        Route::get('word/{id}', 'AnalyticsController@word')->name('word');//->middleware(['right:ANALYTICS101_EDIT']);
     });
 
     Route::group(['prefix' => 'reports/analytics112', 'as' => 'reports.analytics112.'], function (){
@@ -391,7 +396,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{id}/edit', 'Analytics112Controller@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
         Route::post('update/{id}', 'Analytics112Controller@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
         Route::delete('delete/{id}', 'Analytics112Controller@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
-        Route::get('download/{date}/{type?}', 'Analytics112Controller@download')->name('download')->middleware(['right:ANALYTICS101_EDIT']);
+        Route::get('download/{date}/{type?}', 'Analytics112Controller@download')->name('download');//->middleware(['right:ANALYTICS101_EDIT']);
     });
 
     Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
