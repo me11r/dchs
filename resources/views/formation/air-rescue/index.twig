@@ -21,7 +21,7 @@
         </thead>
         {% for report in reports %}
             <tr class="{% if report.report_date == today %}is-primary{% else %}{% endif %}">
-                <td>{{ report.created_at }}</td>
+                <td>{{ report.date_human_format }}</td>
                 <td class="has-text-right">
                     {% if report.approved %}
                         <a href="#"

@@ -1,12 +1,18 @@
 {% extends "layout/html" %}
 
 {% block content %}
-    <div class="section {#container#}">
+    <div class="section {#container#}" id="vue">
     <h4 class="title" style="padding: 3px 15px">Заполнение строевой записки {{ item.organisationName() }}</h4>
 
     <form action="{{ route('formation-record.update', item.id) }}" method="POST">
         <input type="hidden" name="_method" value="PATCH">
         {{ csrf_field() }}
+        <v-datepicker-search
+                class="column is-2"
+                name="date"
+                date-string="{{ item.date }}"
+                label="Дата">
+        </v-datepicker-search>
         <div class="big-table-container">
             <table class="formation-record-table">
                 <thead>

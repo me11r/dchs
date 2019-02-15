@@ -220,7 +220,7 @@ class FormationRecordWordExport
         $table->addCell(900, $cellRowSpan)->addText('Наименование подразеления', $hcFontStyle, $hcAlignStyle);
 
         $table->addCell(3600, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Руководящий состав', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 4, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Личный состав', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 5, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Личный состав', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 8, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Техника', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow();
@@ -232,7 +232,7 @@ class FormationRecordWordExport
         $table->addCell(null, $cellRowSpan)->addText('Телефон', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('По штату', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('В наличии', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На оперативном дежурстве', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На оперативном дежурстве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Основная', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Специальная', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Вспомогательная', $hcFontStyle, $hcAlignStyle);
@@ -245,7 +245,8 @@ class FormationRecordWordExport
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowSpan)->addText('суточном', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('ФИО Старшего смены', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Количество', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('8-ми часовом рабочем дне', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('На дежурстве(в боевом рассчете)', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('В резерве', $hcFontStyle, $hcAlignStyle);

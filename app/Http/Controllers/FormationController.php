@@ -135,6 +135,8 @@ class FormationController extends AuthorizedController
     {
         $id = $request->id;
 
+        $date = Carbon::parse($request->date)->format('Y-m-d');
+
         $report = AirRescueReport::firstOrNew(['id' => $id]);
         $report->jet_fuel_action = $request->jet_fuel_action;
         $report->jet_fuel_reserved = $request->jet_fuel_reserved;
@@ -150,6 +152,7 @@ class FormationController extends AuthorizedController
         $report->staff_head = $request->staff_head;
         $report->staff_head_count = $request->staff_head_count;
         $report->staff_head_phone = $request->staff_head_phone;
+        $report->date = $date;
 
         $report->save();
 

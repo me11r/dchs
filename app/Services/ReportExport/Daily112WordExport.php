@@ -214,7 +214,7 @@ class Daily112WordExport
         $strAircraft = '';
 
         foreach ($this->data['air_rescue_report_tech'] as $air_rescue_report_tech) {
-            $strAircraft .= $air_rescue_report_tech->name.', ';
+            $strAircraft .= $air_rescue_report_tech->aircraft->name.', ';
         }
 
         $index++;

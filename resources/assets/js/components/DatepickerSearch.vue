@@ -8,6 +8,7 @@
                 :month-names="months"
                 :first-day-of-week="1"
                 :name="name_"
+                :disabled="disabled"
                 :day-names="days"
                 @input="$emit('dateChanged',date_)"
                 icon="calendar-today"/>
@@ -25,6 +26,10 @@ export default {
             type: String,
             default: ''
         },
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
         position: {
             type: String,
             default: 'is-bottom-right'
@@ -36,6 +41,10 @@ export default {
         label: {
             type: String,
             default: 'Выберите дату'
+        },
+        dateString: {
+            type: String,
+            default: ''
         },
         date: {
             type: Date,
@@ -60,6 +69,11 @@ export default {
         }
 
     },
+    created() {
+        if (this.dateString !== '') {
+            this.date_ = moment(this.dateString).toDate();
+        }
+    }
 };
 </script>
 
