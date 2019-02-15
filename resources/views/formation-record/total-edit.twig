@@ -212,6 +212,14 @@
                 if (isNaN(value) && value !== null) {
                     totals[fieldName] += 0;
                 }
+
+                if (fieldName === 'tech_main_action' || fieldName === 'tech_main_reserve') {
+                    if(isNaN(value)) {
+                        let airRescueData = element.value.split(':');
+                        totals[fieldName] += +(airRescueData[0]);
+                    }
+                }
+
             });
             fillTotals(totals);
         }
