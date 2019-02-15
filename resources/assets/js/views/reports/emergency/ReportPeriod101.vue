@@ -3,7 +3,7 @@
         <div class="panel">
             <div
                 class="box"
-                style="margin-top: 20px">
+                style="margin-top: 20px; min-height:1000px;">
                 <div class="level">
                     <div class="level-left">
                         <h4 class="title">Отчет-1</h4>

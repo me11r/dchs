@@ -102,6 +102,9 @@ class RightsSeeder extends Seeder
 
             ['right_group_id' => 6, 'title' => 'Аналитика112: просмотр', 'name' => 'ANALYTICS112_SHOW'],
 
+            ['right_group_id' => 6, 'title' => 'АналитикаСПиАСП: просмотр', 'name' => 'ANALYTICS_SPIASR_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Отчет по расходу воды (101): просмотр', 'name' => 'WATER_CONSUMPTION_REPORT_SHOW'],
+
             ['right_group_id' => 7, 'title' => 'Ручной ввод хронометража', 'name' => 'CAN_ACCESS_MANUAL_INPUT_CHRONO'],
             ['right_group_id' => 7, 'title' => 'Расположение гидрантов', 'name' => 'CAN_ACCESS_HYDRANT'],
             ['right_group_id' => 7, 'title' => 'Транспортные средства', 'name' => 'CAN_ACCESS_TECH'],
