@@ -45,6 +45,7 @@ import VueMessenger from './ui/messenger/Messenger';
 import PopupNotifier from './ui/PopupNotifier';
 import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
+import {globalBus} from './scripts/global-bus';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -116,6 +117,15 @@ Vue.component('report-emergency-rescue-gu', require('./views/reports/emergency/R
 Vue.component('report-object-classification', require('./views/reports/emergency/ReportTicket101ObjectClassification'));
 Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
 Vue.component('report-water-consumption', require('./views/reports/emergency/ReportTicket101WaterConsumption'));
+
+globalBus.$on('api-map-request', (r) => {
+    if (r.request_count !== null && r.request_count !== undefined) {
+        axios.post('/increment-map-request', {description: r.description, count: r.request_count}).then((r) => {
+            console.dir(r);
+        });
+    }
+});
+
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({

@@ -20,7 +20,6 @@ export default class YandexMapsBus {
     }
 
     getInstance() {
-        // const self = this;
         return new Promise((resolve) => {
             if (!instance) {
                 (new YMapsService()).getYmaps()
@@ -41,6 +40,8 @@ export default class YandexMapsBus {
     }
 
     findHouse(location) {
+        globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'yandex-maps-bus.findHouse()'});
+
         this.ymaps['geocode'](location, {results: 1})
             .then((result) => {
                 const geoObject = result['geoObjects'].get(0);
@@ -49,6 +50,7 @@ export default class YandexMapsBus {
                         geoObject.geometry.getBounds()[0][0],
                         geoObject.geometry.getBounds()[0][1]
                     );
+                    globalBus.$emit('api-map-request', 2);
                     window.localStorage.setItem(
                         YANDEX_HOUSE_FOUND,
                         JSON.stringify({
@@ -62,6 +64,8 @@ export default class YandexMapsBus {
     }
 
     detectArea(lat, long) {
+        globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'yandex-maps-bus.detectArea()'});
+
         const self = this;
         this.ymaps['geocode'](lat + ',' + long, {results: 10, kind: 'district'})
             .then((result) => {
@@ -100,6 +104,7 @@ export default class YandexMapsBus {
 
     fireDepartmentArea(lat, long, polygons, map) {
         // Добавляем многоугольник на карту.
+        globalBus.$emit('api-map-request', {'request_count': polygons.length*2, 'description': 'yandex-maps-bus.fireDepartmentArea()'});
         for (let polygon in polygons) {
             let area = polygons[polygon];
 
@@ -115,6 +120,8 @@ export default class YandexMapsBus {
     }
 
     detectCityAreaOsm(lat, long, polygons, map) {
+        globalBus.$emit('api-map-request', {'request_count': polygons.length*2, 'description': 'yandex-maps-bus.detectCityAreaOsm()'});
+
         for (let polygon in polygons) {
             let area = polygons[polygon];
 
