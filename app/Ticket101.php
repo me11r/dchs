@@ -416,6 +416,11 @@ class Ticket101 extends BaseModel
         return $this->hasMany(Chronology101::class, 'ticket101_id');
     }
 
+    public function chronologies_arrived()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id')->whereNotNull('event_info_arrived_id');
+    }
+
     public function chronologies_trucks()
     {
         return $this->hasMany(Chronology101::class, 'ticket101_id')
@@ -582,6 +587,7 @@ class Ticket101 extends BaseModel
 
     }
 
+    //liqv_time_total
     public function getLiqvTimeTotalAttribute()
     {
         try {
@@ -593,6 +599,26 @@ class Ticket101 extends BaseModel
                     $time2 = Carbon::parse($first_arrived->arrive_time);
 
                     return $time1->diff($time2)->format('%H:%I:%S');
+                }
+            }
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    //liqv_time_total_minutes
+    public function getLiqvTimeTotalMinutesAttribute()
+    {
+        try {
+            if ($this->liqv_time) {
+                $first_arrived = $this->first_department_arrived();
+                if ($first_arrived && $first_arrived->arrive_time) {
+
+                    $time1 = Carbon::parse($this->liqv_time);
+                    $time2 = Carbon::parse($first_arrived->arrive_time);
+
+                    return $time1->diffInMinutes($time2);
                 }
             }
             return null;

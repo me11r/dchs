@@ -1,5 +1,5 @@
 <template>
-    <div id="other-rides-form">
+    <div id="other-rides-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
                 style="padding: 3px 15px">Общий свод по учениям и занятиям

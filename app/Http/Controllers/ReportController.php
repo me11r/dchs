@@ -33,6 +33,7 @@ use App\Reports\Report101EmergencyRescueGu;
 use App\Reports\Report101ObjectClass;
 use App\Reports\Report101OtherRides;
 use App\Reports\Report101Resources;
+use App\Reports\Report101WaterConsumption;
 use App\Reports\Report112;
 use App\Reports\Report112Emergency;
 use App\Repositories\Contracts\BurntObjectInterface;
@@ -50,6 +51,7 @@ use App\Services\ReportExport\Ticket101ObjectClassExcelExport;
 use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101ResourcesExcelExport;
+use App\Services\ReportExport\Ticket101WaterConsumptionExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
 use App\Services\ReportExport\Ticket112EmergencyExcelExport;
 use App\Services\ReportExport\Ticket112EmergencyWordExport;
@@ -95,9 +97,6 @@ class ReportController extends AuthorizedController
         $html = view('pdf/daily-report',
             (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport()
         )->render();
-
-        //todo для теста
-//        return $html;
 
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $date = date('d-m-Y');
@@ -1313,6 +1312,99 @@ class ReportController extends AuthorizedController
                 $exportService = new Ticket101ObjectClassExcelExport($data);
                 $writer = $exportService->getXlsWriter();
                 $fileName = 'Классификация объектов (101) за период.xls';
+
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="' . $fileName . '"');
+                header('Cache-Control: max-age=0');
+
+                $writer->save('php://output');
+            }
+
+            return response()->download(public_path($fileName));
+        }
+        dd('Кеш устарел, обновите страницу');
+    }
+
+    public function getReportWaterConsumption(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+
+        $data = [];
+
+        $data['dateFrom'] = $dateFrom;
+        $data['dateTo'] = $dateTo;
+
+        $data['records'] = [];
+
+
+        $cards = Ticket101::real()
+            ->whereHas('trip_result', function ($q) {
+                $q->where('name','Пожар');
+            })
+            ->whereHas('chronologies', function ($b) {
+                $b->whereNotNull('event_info_arrived_id');
+            })
+            ->where(function ($qq){
+                $qq->has('liquidation_method');
+            })
+            ->whereBetween('created_at', [$dateFrom, $dateTo])
+            ->get()
+        ;
+
+        $tripResultIdsWeCount = [1,2,3,9];
+        $tripResultIdsBoolean = [4,5];
+
+        foreach ($cards as $card) {
+            $result = [];
+            $str = '';
+
+            $result['id'] = $card->id;
+            $result['liquidation_method_id'][1] = null;
+            $result['liquidation_method_id'][2] = null;
+            $result['liquidation_method_id'][3] = null;
+            $result['liquidation_method_id'][9] = null;
+
+            $result['liquidation_method_id'][4] = null;
+            $result['liquidation_method_id'][5] = null;
+
+            if(in_array($card->liquidation_method_id, $tripResultIdsWeCount)) {
+                foreach ($card->chronologies_arrived as $chronology) {
+                    $str .= $chronology->fire_department_result->department->title;
+                    $str .= " ({$chronology->fire_department_result->tech->department}: {$chronology->event_info_arrived->name}: {$chronology->working_time} мин;) ";
+                }
+                $result['liquidation_method_id'][$card->liquidation_method_id] = $str;
+            }
+            elseif (in_array($card->liquidation_method_id, $tripResultIdsBoolean)) {
+                $result['liquidation_method_id'][$card->liquidation_method_id] = 1;
+            }
+            else {
+                continue;
+            }
+
+            $result['time'] = $card->liqv_time_total_minutes;
+
+            $data['records'][] = $result;
+        }
+
+        Cache::put('report101_water_consumption', $data, 3600);
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+    }
+
+    public function exportReportWaterConsumption($type)
+    {
+        if ($data = Cache::get('report101_water_consumption')) {
+            $data = (new Report101WaterConsumption($data))->getReport();
+
+            if($type === 'docx') {
+            }
+            elseif($type === 'xlsx') {
+                $exportService = new Ticket101WaterConsumptionExcelExport($data);
+                $writer = $exportService->getXlsWriter();
+                $fileName = 'Расход воды (101) за период.xls';
 
                 header('Content-Type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment;filename="' . $fileName . '"');

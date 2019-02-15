@@ -115,6 +115,7 @@ Vue.component('report-forces-resources', require('./views/reports/emergency/Repo
 Vue.component('report-emergency-rescue-gu', require('./views/reports/emergency/ReportTicket101EmergencyRescueGu'));
 Vue.component('report-object-classification', require('./views/reports/emergency/ReportTicket101ObjectClassification'));
 Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
+Vue.component('report-water-consumption', require('./views/reports/emergency/ReportTicket101WaterConsumption'));
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
