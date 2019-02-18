@@ -17,4 +17,9 @@ class EmergencyName extends Model
     {
         return $this->belongsTo(\Card112::class,'emergency_name_id');
     }
+
+    public function scopeName($q, $search)
+    {
+        return $q->where('name', $search);
+    }
 }

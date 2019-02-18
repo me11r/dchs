@@ -149,24 +149,25 @@ class Daily112WordExport
             ['align' => Jc::BOTH]
         );
 
-        $resultString = 'ЧС – ' . $this->data['cards112']->count().', ';
+        $resultString = 'ЧС – ' . ($this->data['cards112_emergency']->count() + $this->data['cards101_emergency']->count())
+            .', пожары – '.($this->data['fires_count_101']->count() + $this->data['fires_count_112']->count()) .', ';
 
-        foreach (TripResult::all() as $reason) {
+//        foreach (TripResult::all() as $reason) {
+//
+//            $cnt = $this->data['cards101']->filter(function ($event) use ($reason) {
+//                return $event->trip_result_id == $reason->id;
+//            });
+//
+//            if($cnt->count()){
+//                $resultString .= "{$reason->name} – " . $cnt->count().', ';
+//            }
+//        }
 
-            $cnt = $this->data['cards101']->filter(function ($event) use ($reason) {
-                return $event->trip_result_id == $reason->id;
-            });
-
-            if($cnt->count()){
-                $resultString .= "{$reason->name} – " . $cnt->count().', ';
-            }
-        }
-
-        $resultString .= 'погиб – ' . $this->data['dead_count'].', ';
-        $resultString .= 'спасено – ' . $this->data['saved_count'].', ';
+        $resultString .= 'погиб – ' . $this->data['emergency_dead_count'].', ';
+        $resultString .= 'спасено – ' . $this->data['emergency_saved_count'].', ';
         $resultString .= 'эвакуировано – ' . $this->data['evacuated_count'].', ';
-        $resultString .= 'отравление природным/ угарным газом – ' . $this->data['poisoningCount'].', ';
-        $resultString .= 'пострадавший. – ' . $this->data['hurt_count'].'.';
+        $resultString .= 'отравление природным/ угарным газом – ' . $this->data['emergency_poisoningCount'].', ';
+        $resultString .= 'пострадавших – ' . $this->data['emergency_hurt_count'].'.';
 
         $section->addText(
             $resultString,
@@ -189,6 +190,7 @@ class Daily112WordExport
         $this->addParagraph($section, '4. Подтопления: ', $this->data['flooding_count']);
 
         $index = 5;
+        $subIndex = 1;
         foreach ($this->data['services'] as $serviceName => $datum) {
             $this->addParagraph($section, "$index. {$serviceName}: ", $datum->count() ? $datum->count() : 'не зарегистрировано');
             $this->serviceInfo($section, $datum);
@@ -207,14 +209,130 @@ class Daily112WordExport
         }
 
         $index++;
-        $this->addParagraph($section, "{$index}. ГУ «СП и АСР» ", $this->data['cards101']->count());
+        $this->addParagraph($section, "{$index}. ГУ «СП и АСР»: всего выездов – ", $this->data['cards101']->count());
+        $section->addText('Из них: ');
+        $index++;
+
+        $reasons = TripResult::dailyReportConst()->get();
+
+        foreach ($reasons as $reason) {
+
+            $cnt = $this->data['cards101']->filter(function ($event) use ($reason) {
+                return $event->trip_result_id == $reason->id;
+            });
+
+            $upper = ucfirst($reason->name);
+
+            $section->addText(
+                $index.". {$upper} – " . $cnt->count(),
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+
+            $reasonsArr = array_unique($cnt->pluck('burn_object_id')->toArray());
+
+            /*рисуем подпункты*/
+            if($cnt->count() != 0 && count($reasonsArr)){
+                $innerIterator = 1;
+
+                foreach (FireObject::whereIn('id', $reasonsArr)->get() as $fireObject) {
+
+                    $burntFireCount = $this->data['cards101']->filter(function ($event) use($fireObject, $reason) {
+                        return $event->burn_object_id == $fireObject->id && $event->trip_result_id == $reason->id;
+                    })->count();
+
+                    $section->addText(
+                        "{$index}.{$innerIterator}. {$fireObject->name} – " . $burntFireCount,
+                        $generalBoldFontStyle,
+                        ['indentation' => ['left' => 540]]
+                    );
+
+                    $innerIterator++;
+                }
+            }
+
+            $index++;
+        }
+
+        ////
+        $section->addText(
+            (++$index).'. Случаи отравления - ' . $this->data['poisoningCount'],
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            $index.".{$subIndex}. Отравление угарным газом – " . $this->data['carbonPoisoningCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $subIndex++;
+        $section->addText(
+            $index.".{$subIndex}. Отравление природным газом – " . $this->data['naturalPoisoningCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+        $subIndex = 1;
+
+//        $section->addText(
+//            (++$index).'. Сведения по людям/детям: ' . ($this->data['suicideCount'] + $this->data['saved_count'] +
+//                $this->data['evacuated_count'] + $this->data['gptBurnsCount'] + $this->data['peopleDeathCount'] +
+//                $this->data['childrenDeathCount'] + $this->data['hospitalizedCount']),
+//            $generalBoldFontStyle,
+//            ['align' => Jc::BOTH]
+//        );
+
+        $section->addText(
+            "{$index}.{$subIndex}. Попытка суицида - " . $this->data['suicideCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $subIndex++;
+        $section->addText(
+            "{$index}.{$subIndex}. Спасено людей – " . $this->data['saved_count'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $subIndex++;
+        $section->addText(
+            "{$index}.{$subIndex}. Эвакуировано людей – " . $this->data['evacuated_count'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $subIndex++;
+        $section->addText(
+            "{$index}.{$subIndex}. Получили ожоги – " . $this->data['gptBurnsCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $subIndex++;
+        $section->addText(
+            "{$index}.{$subIndex}. Гибель людей – " . $this->data['dead_count'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
+        $subIndex++;
+        $section->addText(
+            "{$index}.{$subIndex}. Госпитализировано – " . $this->data['hospitalizedCount'],
+            $generalBoldFontStyle,
+            ['indentation' => ['left' => 540]]
+        );
+
         $index++;
         $this->addParagraph($section, "{$index}. ЕДДС: Всего поступивших звонков на «112» - ", ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
 
         $strAircraft = '';
 
         foreach ($this->data['air_rescue_report_tech'] as $air_rescue_report_tech) {
-            $strAircraft .= $air_rescue_report_tech->aircraft->name.', ';
+            $strAircraft .= $air_rescue_report_tech->aircraft->full_name.', ';
+        }
+
+        if(!$strAircraft) {
+            $strAircraft .= 'Строевая записка Казавиаспаса не заполнена на указанную дату';
         }
 
         $index++;

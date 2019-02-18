@@ -44,6 +44,8 @@ class Report112
     private $today;
     private $yesterday;
 
+    private $tomorrow;
+
     protected $dictionaries;
 
     public function __construct($date = null)
@@ -54,6 +56,7 @@ class Report112
             $this->tickets112 = Card112::dailyRecords();
             $this->today = today()->addHours(7)->format('Y-m-d H:i:s');
             $this->yesterday = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+            $this->tomorrow = today()->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
         }
         else {
             $from = Carbon::parse($date)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
@@ -63,34 +66,93 @@ class Report112
             $this->tickets112 = Card112::dailyRecords($from, $to);
             $this->today = Carbon::parse($date)->addHours(7)->format('Y-m-d H:i:s');
             $this->yesterday = Carbon::parse($date)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+            $this->tomorrow = Carbon::parse($date)->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
         }
     }
 
     public function getReport(): array
     {
-        $data['fires_count'] = $this->tickets101->get()->filter(function ($event) {
-            $q = TripResult::name('Пожар')->first();
-            return $event->trip_result_id == ($q->id ?? 0);
-        })->count();
-
         $data['yesterday'] = $this->yesterday;
         $data['today'] = $this->today;
 
         $cards112 = $this->tickets112->get();
         $cards101 = $this->tickets101->get();
 
-        $air_rescue_report = AirRescueReport::dailyRecords($this->yesterday, $this->today);
+        $cards112_emergency = (clone $this->tickets112)->whereHas('emergency_type',function ($q) {
+            $q->name('ЧС');
+        })->get();
+
+        $cards101_emergency = (clone $this->tickets101)->whereHas('emergency_type',function ($q) {
+            $q->name('ЧС');
+        })->get();
+
+        $air_rescue_report = AirRescueReport::dailyRecords($this->today, $this->tomorrow);
 
         $callInfo = CallInfo::latest()->first();
 
+        $data['fires_count_112'] = (clone $this->tickets112)->whereHas('emergency_type',function ($q) {
+            $q->name('ЧС');
+        })->whereHas('emergency_name',function ($q) {
+            $q->name('Пожар');
+        })->get();
+
+        $data['fires_count_101'] = (clone $this->tickets101)->whereHas('emergency_type',function ($q) {
+            $q->name('ЧС');
+        })->whereHas('trip_result',function ($q) {
+            $q->name('Пожар');
+        })->get();
+
+        /**/
+        $data['carbonPoisoningCount'] = (clone $this->tickets101)->get()->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Отравление угарным газом%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $data['naturalPoisoningCount'] = (clone $this->tickets101)->get()->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Отравление природным газом%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+
+        $data['suicideCount'] = (clone $this->tickets101)->get()->filter(function ($event) {
+            $q = TripResult::where('name', 'like', "%Покушение на самоубийство%")
+                ->get()
+                ->pluck('id')
+                ->toArray();
+
+            return in_array($event->trip_result_id, $q);
+        })->count();
+        /**/
+
         $data['cards112'] = $cards112;
         $data['cards101'] = $cards101;
-        $data['dead_count'] = $cards101->sum('children_death_count') + $cards101->sum('people_death_count') + $cards112->sum('dead');
-        $data['evacuated_count'] = $cards101->sum('evac_count') + $cards112->sum('evacuated');
-        $data['poisoningCount'] = $cards101->sum('co2_poisoned_count') + $cards101->sum('ch4_poisoned_count') + $cards112->sum('poisoned');
-        $data['hurt_count'] = $cards112->sum('injured_hard') + $cards101->sum('gpt_burns_count');
-        $data['saved_count'] = $cards112->sum('saved') + $cards101->sum('rescued_count');
-//        $data['card112_roadtrips'] = $card112_roadtrips;
+
+        $data['cards112_emergency'] = $cards112_emergency;
+        $data['cards101_emergency'] = $cards101_emergency;
+
+        $data['dead_count'] = $cards101->sum('people_death_count') + $cards112->sum('dead') ."/".$cards101->sum('children_death_count');
+        $data['evacuated_count'] = $cards101->sum('evac_count') + $cards112->sum('evacuated')."/".$cards101->sum('children_evacuated');
+        $data['poisoningCount'] = $cards101->sum('co2_poisoned_count') + $cards101->sum('ch4_poisoned_count') + $cards112->sum('poisoned')."/0";
+        $data['hurt_count'] = $cards112->sum('injured_hard') + $cards101->sum('gpt_burns_count')."/".$cards101->sum('children_death_count');
+        $data['saved_count'] = $cards112->sum('saved') + $cards101->sum('rescued_count')."/".$cards101->sum('saved_children');
+        $data['gptBurnsCount'] = $cards101->sum('gpt_burns_count');
+        $data['children_dead_count'] = $cards101->sum('children_death_count');
+
+
+        $data['emergency_dead_count'] = $cards101_emergency->sum('people_death_count') + $cards112_emergency->sum('dead') ."/".$cards101_emergency->sum('children_death_count');
+        $data['emergency_evacuated_count'] = $cards101_emergency->sum('evac_count') + $cards112_emergency->sum('evacuated')."/".$cards101_emergency->sum('children_evacuated');
+        $data['emergency_poisoningCount'] = $cards101_emergency->sum('co2_poisoned_count') + $cards101_emergency->sum('ch4_poisoned_count') + $cards112_emergency->sum('poisoned')."/0";
+        $data['emergency_hurt_count'] = $cards112_emergency->sum('injured_hard') + $cards101_emergency->sum('gpt_burns_count')."/".$cards101_emergency->sum('children_death_count');
+        $data['emergency_saved_count'] = $cards112_emergency->sum('saved') + $cards101_emergency->sum('rescued_count')."/".$cards101_emergency->sum('saved_children');
+
+
         $data['mudflow_emergency_count'] = $this->tickets112->filterByServiceType('ГУ Казселезащита')->count();
         $data['roso_count'] = $this->tickets112->filterByServiceType('ГУ РОСО')->count();
         $data['cmk_count'] = $this->tickets112->filterByServiceType('ЦМК')->count();
