@@ -50,7 +50,6 @@ export default class YandexMapsBus {
                         geoObject.geometry.getBounds()[0][0],
                         geoObject.geometry.getBounds()[0][1]
                     );
-                    globalBus.$emit('api-map-request', 2);
                     window.localStorage.setItem(
                         YANDEX_HOUSE_FOUND,
                         JSON.stringify({
@@ -104,7 +103,6 @@ export default class YandexMapsBus {
 
     fireDepartmentArea(lat, long, polygons, map) {
         // Добавляем многоугольник на карту.
-        globalBus.$emit('api-map-request', {'request_count': polygons.length*2, 'description': 'yandex-maps-bus.fireDepartmentArea()'});
         for (let polygon in polygons) {
             let area = polygons[polygon];
 
@@ -120,7 +118,6 @@ export default class YandexMapsBus {
     }
 
     detectCityAreaOsm(lat, long, polygons, map) {
-        globalBus.$emit('api-map-request', {'request_count': polygons.length*2, 'description': 'yandex-maps-bus.detectCityAreaOsm()'});
 
         for (let polygon in polygons) {
             let area = polygons[polygon];
