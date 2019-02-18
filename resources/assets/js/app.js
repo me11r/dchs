@@ -118,9 +118,10 @@ Vue.component('report-object-classification', require('./views/reports/emergency
 Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
 Vue.component('report-water-consumption', require('./views/reports/emergency/ReportTicket101WaterConsumption'));
 
+// трекер яндекс-запросов
 globalBus.$on('api-map-request', (r) => {
     if (r.request_count !== null && r.request_count !== undefined) {
-        axios.post('/increment-map-request', {description: r.description, count: r.request_count}).then((r) => {
+        axios.post('/increment-map-request', {description: r.description, count: r.request_count}).then((rr) => {
             console.dir(r);
         });
     }

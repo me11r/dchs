@@ -71,7 +71,6 @@ export default {
                 let lastInserted = null;
 
                 let paths = this.route.getPaths();
-                globalBus.$emit('api-map-request', {'request_count': paths.length, 'description': 'RoadTripViewMap.staticMapPath()'});
 
                 paths
                     .each((path) => {
@@ -174,7 +173,6 @@ export default {
                 this.map.geoObjects.add(self.hydrantsGeoObjects);
                 this.map.setBounds(self.hydrantsGeoObjects.getBounds(), {checkZoomRange: true});
 
-                globalBus.$emit('api-map-request', {'request_count': this.hydrants.length+2, 'description': 'RoadTripViewMap.resetHydrants()'});
             }
 
 
@@ -218,7 +216,7 @@ export default {
                     self.route = route;
                     self.map.geoObjects.add(route);
 
-                    globalBus.$emit('api-map-request', {'request_count': 2, 'description': 'RoadTripViewMap.drawMainRoute()'});
+                    globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'RoadTripViewMap.drawMainRoute()'});
                 })
                 .catch((error) => {
                     this.loader = false;
@@ -236,7 +234,7 @@ export default {
                     self.map.setCenter(self.emergencyCoordinates, 13);
                     self.setHydrants();
 
-                    globalBus.$emit('api-map-request', {'request_count': 2, 'description': 'RoadTripViewMap.setMapCenter()'});
+                    globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'RoadTripViewMap.setMapCenter()'});
                 })
                 .catch(() => {
                     this.loader = false;
