@@ -190,8 +190,6 @@ export default {
             this.hydrantPopupShow = true;
         },
         onMarkClick(model) {
-            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.onMarkClick()'});
-
             this.displayHydrantPopup(model);
         },
         onMarkDragEnd(event, model) {
@@ -262,8 +260,6 @@ export default {
             });
             clusterer.add(geoObjects);
 
-            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.getHydrantsClusterer()'});
-
             return clusterer;
         },
         getHydrantPlaceMarkFromItem(item, onClick, onDragEnd) {
@@ -287,8 +283,6 @@ export default {
             placemark.events.add('dragend', (event) => {
                 onDragEnd(event, item);
             });
-
-            globalBus.$emit('api-map-request', {'request_count': 2, 'description': 'CommonMapScreen.getHydrantPlaceMarkFromItem()'});
 
             return placemark;
         },
@@ -403,7 +397,6 @@ export default {
         },
         resetAllObjects() {
             this.map.geoObjects.removeAll();
-            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.resetAllObjects()'});
         },
         setPointOnTheMap(lat, long, name) {
             const geoObject = new this.ymaps.GeoObject({
@@ -421,9 +414,6 @@ export default {
             this.map.geoObjects.add(geoObject);
             this.map.setZoom(this.zoom);
             this.map.panTo([lat, long]);
-
-            globalBus.$emit('api-map-request', {'request_count': 3, 'description': 'CommonMapScreen.setPointOnTheMap()'});
-
         },
         detectLocation(geoObject) {
             this.location = geoObject.properties
@@ -454,7 +444,7 @@ export default {
                 self.onMapDoubleClick(event);
             });
 
-            globalBus.$emit('api-map-request', {'request_count': 3, 'description': 'CommonMapScreen.initMap()'});
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.initMap()'});
 
 
             this.setMapData();
@@ -471,16 +461,13 @@ export default {
             for (let polygon in polygons) {
                 this.map.geoObjects.add(polygons[polygon]);
             }
-
-            globalBus.$emit('api-map-request', {'request_count': polygons.length, 'description': 'CommonMapScreen.initFireDepartmentAreas()'});
-
         },
         zoomToObject(lat, long) {
             window.scrollTo(0,document.body.scrollHeight);
             this.map.setZoom(18);
             this.map.panTo([lat, long]);
 
-            globalBus.$emit('api-map-request', {'request_count': 5, 'description': 'CommonMapScreen.zoomToObject()'});
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.zoomToObject()'});
 
 
             if (this.currentHydrantMark) {
