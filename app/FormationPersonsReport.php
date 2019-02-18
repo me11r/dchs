@@ -128,10 +128,6 @@ class FormationPersonsReport extends Model
         'zhalin' => StaffZhalin::class,
     ];
 
-    public function getAsvDaskAttribute()
-    {
-        return ($this->asv && $this->dask) ? "$this->asv/$this->dask" : 0;
-    }
 
     public function report()
     {

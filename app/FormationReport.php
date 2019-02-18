@@ -112,6 +112,6 @@ class FormationReport extends Model
 
     public function scopeSumGdzs($q)
     {
-        return  $this->people_reports()->sum('asv'). '/'.$this->people_reports()->sum('dask');
+        return $this->tech_reports()->sum('asv'). '/'.$this->tech_reports()->sum('dask');
     }
 }
