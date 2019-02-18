@@ -663,9 +663,9 @@ class FormationController extends AuthorizedController
             'business_trip',
             'other',
             'gas_smoke_protection_service',
-            'asv_dask',
         ];
         $tech_fields = [
+            'asv_dask',
             'motor_water_pump',
             'motor_mud_pump',
         ];

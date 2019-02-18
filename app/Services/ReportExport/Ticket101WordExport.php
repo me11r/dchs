@@ -974,7 +974,7 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpan)->addText('АСВ/ДАСК', $hcFontStyle, $hcAlignStyle);
 
 //        $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowContinue);
+//        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
 
         $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В боевом расчёте', $hcFontStyle, $hcAlignStyle);
@@ -983,7 +983,7 @@ class Ticket101WordExport
 
         $table->addRow(1200);
 
-        $table->addCell(null, $cellRowContinue);
+//        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);

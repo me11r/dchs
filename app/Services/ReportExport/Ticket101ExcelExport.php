@@ -304,22 +304,22 @@ class Ticket101ExcelExport
         $this->setCell($sheet, 'Газодымозащитники', 'O7', 'O9', self::VStyle);
         $this->setCell($sheet, 'АСВ/ДАСК', 'P7', 'P9', self::VStyle);
 
-        $this->setCell($sheet, "Мотопомпы\nВодяная/Грязевая", 'R6', 'R9', self::VStyle);
+        $this->setCell($sheet, "Мотопомпы\nВодяная/Грязевая", 'Q6', 'Q9', self::VStyle);
 
 
-        $this->setCell($sheet, 'Пожарная техника', 'S6', 'X6', self::HStyle);
+        $this->setCell($sheet, 'Пожарная техника', 'R6', 'W6', self::HStyle);
 
-        $this->setCell($sheet, 'В боевом расчёте', 'S7', 'T7', self::HStyle);
-        $this->setCell($sheet, 'Тип основ пожарного а/м', 'S8', 'S9', self::VStyle);
+        $this->setCell($sheet, 'В боевом расчёте', 'R7', 'S7', self::HStyle);
+        $this->setCell($sheet, 'Тип основ пожарного а/м', 'R8', 'R9', self::VStyle);
         $this->setCell($sheet, 'Марка спец. пожарного а/м Мотоциклы', 'T8', 'T9', self::VStyle);
 
-        $this->setCell($sheet, 'В резерве', 'U7', 'V7', self::HStyle);
-        $this->setCell($sheet, 'Тип основ пожарного а/м', 'U8', 'U9', self::VStyle);
-        $this->setCell($sheet, 'Марка спец. пожарных а/м', 'V8', 'V9', self::VStyle);
+        $this->setCell($sheet, 'В резерве', 'T7', 'U7', self::HStyle);
+        $this->setCell($sheet, 'Тип основ пожарного а/м', 'T8', 'T9', self::VStyle);
+        $this->setCell($sheet, 'Марка спец. пожарных а/м', 'U8', 'U9', self::VStyle);
 
-        $this->setCell($sheet, 'На ремонте', 'W7', 'X7', self::HStyle);
-        $this->setCell($sheet, 'Тип основ пожарного а/м', 'W8', 'W9', self::VStyle);
-        $this->setCell($sheet, 'Марка спец. пожарных а/м', 'X8', 'X9', self::VStyle);
+        $this->setCell($sheet, 'На ремонте', 'V7', 'W7', self::HStyle);
+        $this->setCell($sheet, 'Тип основ пожарного а/м', 'V8', 'V9', self::VStyle);
+        $this->setCell($sheet, 'Марка спец. пожарных а/м', 'W8', 'W9', self::VStyle);
 
 
         $sheet->getColumnDimension('R')->setWidth(20);
@@ -345,7 +345,7 @@ class Ticket101ExcelExport
         foreach ($this->departments as $department) {
             if ($department->id !== 13) { // суеверия
                 $sheet->fromArray($this->getFirstTableRowForDepartment($department), null, "A$rowIndex");
-                $sheet->getStyle("A$rowIndex:X$rowIndex")->applyFromArray(self::HStyle);
+                $sheet->getStyle("A$rowIndex:W$rowIndex")->applyFromArray(self::HStyle);
                 $sheet->getRowDimension($rowIndex)->setRowHeight(-1);
                 $rowIndex++;
             }
@@ -353,14 +353,14 @@ class Ticket101ExcelExport
 
         // строка суммы
         $sheet->fromArray($this->getFirstTableSumRow(), null, "A$rowIndex");
-        $sheet->getStyle("A$rowIndex:X$rowIndex")->applyFromArray(self::HStyle)->getFont()->setBold(true);
+        $sheet->getStyle("A$rowIndex:W$rowIndex")->applyFromArray(self::HStyle)->getFont()->setBold(true);
         $sheet->getRowDimension($rowIndex)->setRowHeight(-1);
         $rowIndex++;
 
         // 13 департамент
         $department13 = $this->departments->where('id', '=', 13)->first();
         $sheet->fromArray($this->getFirstTableRowForDepartment($department13), null, "A$rowIndex");
-        $sheet->getStyle("A$rowIndex:X$rowIndex")->applyFromArray(self::HStyle);
+        $sheet->getStyle("A$rowIndex:W$rowIndex")->applyFromArray(self::HStyle);
         $sheet->getRowDimension($rowIndex)->setRowHeight(-1);
     }
 
