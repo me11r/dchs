@@ -221,6 +221,11 @@ class FormationTechReport extends Model
         'dask'
     ];
 
+    public function getAsvDaskAttribute()
+    {
+        return "$this->asv/$this->dask";
+    }
+
     public function scopeTodayRecords($q)
     {
         return $q->whereDate('created_at', date('Y-m-d'));
