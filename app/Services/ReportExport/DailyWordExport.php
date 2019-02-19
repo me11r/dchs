@@ -300,6 +300,7 @@ class DailyWordExport
 
                 $item['analytics'] = "<div><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number}</span>".$item['analytics']."</div> <br/>";
                 $item['analytics'] = str_replace('<br>', "<br/>", $item['analytics']);
+                $item['analytics'] = str_replace(['&amp;','&gt;','&lt;'], '', $item['analytics']);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($section, $item['analytics'], false, false);
             }
         }
