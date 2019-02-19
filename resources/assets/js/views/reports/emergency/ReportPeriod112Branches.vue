@@ -101,8 +101,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="item in areaArray" :key="`row_`+item['Адрес']">
-                            <th>{{ item['№'] }}</th>
+                        <tr v-for="(item, key) in areaArray" :key="`row_`+item['Адрес']">
+                            <th>{{ ++key }}</th>
                             <th>{{ cityArea }}</th>
                             <th>{{ item['Адрес'] }}</th>
                             <th>{{ item['Дата происшествия'] }}</th>

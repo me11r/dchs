@@ -393,6 +393,13 @@ class ReportController extends AuthorizedController
                 ];
             }
         }
+        //проставляем индексы 1,2,3 и тд
+        foreach ($preparedToExport as $cityArea => $arrays) {
+            $indx = 0;
+            foreach ($arrays as $key => $array) {
+                $preparedToExport[$cityArea][$key]['№'] = ++$indx;
+            }
+        }
 
         if($request->ajax()) {
             return response()->json(['data' => $preparedToExport,]);
