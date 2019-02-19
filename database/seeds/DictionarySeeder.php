@@ -126,11 +126,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'event_infos',
                 'model' => \App\EventInfo::class
             ],
-            [
-                'title' => 'Нормативно-справочная информация: на месте',
-                'table' => 'event_info_arriveds',
-                'model' => \App\EventInfoArrived::class
-            ],
+//            [
+//                'title' => 'Нормативно-справочная информация: на месте',
+//                'table' => 'event_info_arriveds',
+//                'model' => \App\EventInfoArrived::class
+//            ],
             [
                 'title' => 'Типы выездов',
                 'table' => 'ride_types',
@@ -195,6 +195,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'title' => "Название ЧС",
                 'table' => 'emergency_names',
                 'model' => \App\EmergencyName::class
+            ],
+            [
+                'title' => "Типы стволов",
+                'table' => 'trunk_types',
+                'model' => \App\TrunkType::class
             ],
         ];
         #Schema::disableForeignKeyConstraints();

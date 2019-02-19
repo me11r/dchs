@@ -6,6 +6,7 @@ use App\Arrived101;
 use App\Chronology101;
 use App\Chronology101FromFd;
 use App\EventInfo;
+use App\EventInfoArrived;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
@@ -142,17 +143,19 @@ class CardController extends Controller
         }
 
         $resp = [];
+        $eventInfoArrived = EventInfoArrived::find($request->input('record.event_info_arrived_id', null));
         if($request->record){
             $resp = Chronology101::updateOrCreate(['id' => $request->record['id']],[
                 'ticket101_id' => $request->ticket_id,
                 'time' => $time,
+                'water_delivery_distance' => $request->input('record.water_delivery_distance', null),
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
                 'fire_department_result_id' => $request->input('record.fire_department_result.id'),
 
                 'working_time' => $request->input('record.working_time', null),
                 'quantity' => $request->input('record.quantity', null),
-                'event_info_arrived_id' => $request->input('record.event_info_arrived_id', null),
+                'event_info_arrived_id' => $eventInfoArrived->id ?? null,
             ]);
 
             $resp = Chronology101::with([
@@ -182,16 +185,18 @@ class CardController extends Controller
 
         $resp = [];
         if($request->record){
+            $eventInfoArrived = EventInfoArrived::find($request->input('record.event_info_arrived_id', null));
             $resp = Chronology101FromFd::updateOrCreate(['id' => $request->record['id']],[
                 'ticket101_id' => $request->ticket_id,
                 'time' => $time,
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
                 'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+                'water_delivery_distance' => $request->input('record.water_delivery_distance', null),
 
                 'working_time' => $request->input('record.working_time', null),
                 'quantity' => $request->input('record.quantity', null),
-                'event_info_arrived_id' => $request->input('record.event_info_arrived_id', null),
+                'event_info_arrived_id' => $eventInfoArrived->id ?? null,
             ]);
 
             $resp = Chronology101FromFd::with([
@@ -228,6 +233,7 @@ class CardController extends Controller
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
                 'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+                'water_delivery_distance' => $request->input('record.water_delivery_distance', null),
 
                 'working_time' => $request->input('record.working_time', null),
                 'quantity' => $request->input('record.quantity', null),
@@ -456,6 +462,17 @@ class CardController extends Controller
 
             $ticket->total_staff_count = $sum;
             $ticket->save();
+        }
+
+        return response()->json(['ok']);
+    }
+
+    public function postUpdateFireDepartmentResultDistance(Request $request)
+    {
+        $fireDeptResult = FireDepartmentResult::find($request->id);
+        if($fireDeptResult) {
+            $fireDeptResult->distance = $request->distance;
+            $fireDeptResult->save();
         }
 
         return response()->json(['ok']);

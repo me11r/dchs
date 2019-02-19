@@ -26,6 +26,7 @@
                         :event-info="eventInfos"
                         :event-info-arrived="eventInfosArrived"
                         :fire_department_id="fire_department_id"
+                        :trunk-types="trunkTypes"
                     />
                 </div>
                 <div :style="{'display': currentTabIndex === 1? 'block': 'none'}">
@@ -61,7 +62,8 @@ export default {
             fire_levels: window.ticket101fd.fire_levels,
             water_sources: window.ticket101fd.water_sources,
             ticketInfo: window.ticket101fd.ticketInfo,
-            fire_department_id: window.ticket101fd.fire_department_id
+            fire_department_id: window.ticket101fd.fire_department_id,
+            trunkTypes: window.ticket101fd.trunk_types
         };
     },
     methods: {
