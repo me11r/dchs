@@ -28,6 +28,7 @@ use App\RoadtripSubscription;
 use App\Ticket101;
 use App\Ticket101InfoFromFd;
 use App\Ticket101Other;
+use App\TrunkType;
 use App\User;
 use Auth;
 use Carbon\Carbon;
@@ -466,7 +467,6 @@ class RoadtripController extends AuthorizedController
         $this->set('departmentsArrived', $departmentsArrived);
         $this->set('trip', $trip);
         $this->set('ticket', $ticket);
-//        $this->set('city_area', CityArea::with(['fire_departments'])->get());
         $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
         $this->set('living_sector_types', LivingSectorType::all());
@@ -474,12 +474,7 @@ class RoadtripController extends AuthorizedController
         $this->set('trip_result', TripResult::all());
         $this->set('fire_object_options', FireObject::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
-//        $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
-//            return [
-//                'id' => $item->id,
-//                'text' => $item->name
-//            ];
-//        })->toArray());
+
         $this->set('fire_departments', collect(FireDepartment::recommend(true)->get())->map(function ($item) {
             return [
                 'id' => $item->id,
@@ -508,14 +503,11 @@ class RoadtripController extends AuthorizedController
             $ticketInfo->save();
         }
 
-//        $operational_cards = OperationalCard::all();
-//        $special_plans = SpecialPlan::all();
         $this->set('notificationGroups', (new NotificationGroup())->get());
         $this->set('water_sources', WaterSupplySource::all());
         $this->set('max_square', $max_square);
-//        $this->set('special_plans', $special_plans);
-//        $this->set('operational_cards', $operational_cards);
         $this->set('ticketInfo', $ticketInfo);
+        $this->set('trunk_types', TrunkType::all());
         $this->set('departmentId', Auth::user()->fire_department_id ?? 1);
 
     }

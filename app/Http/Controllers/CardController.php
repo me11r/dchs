@@ -46,6 +46,7 @@ use App\Ticket101Drill;
 use App\Ticket101HqRide;
 use App\Ticket101Other;
 use App\Ticket101ServicePlan;
+use App\TrunkType;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -240,6 +241,7 @@ class CardController extends AuthorizedController
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
         $this->set('fire_object_options', FireObject::all());
+        $this->set('trunk_types', TrunkType::all());
         $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
             return [
                 'id' => $item->id,
@@ -261,11 +263,13 @@ class CardController extends AuthorizedController
                 'chronologies',
                 'chronologies.event_info',
                 'chronologies.event_info_arrived',
+//                'chronologies.event_info_arrived.trunk_type',
                 'chronologies.fire_department_result.tech',
                 'chronologies.fire_department_result.department',
                 'chronologiesFromFd',
                 'chronologiesFromFd.event_info',
                 'chronologiesFromFd.event_info_arrived',
+//                'chronologiesFromFd.event_info_arrived.trunk_type',
                 'chronologiesFromFd.fire_department_result.tech',
                 'chronologiesFromFd.fire_department_result.department',
                 'results',

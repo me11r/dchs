@@ -514,17 +514,18 @@
 
                         {% if notification_get_back == 1 %}
                             <notification
-                                    message="Необходимо оповестить отделения о понижении ранга"
+                                message="Необходимо оповестить отделения о понижении ранга"
                             >
                             </notification>
                         {% endif %}
 
                         <ticket101-chronology
-                                :records="{{ ticket.chronologies }}"
-                                :departments="{{ departmentsOnWay }}"
-                                :card="{{ ticket }}"
-                                :event-info="{{ eventInfos }}"
-                                :event-info-arrived="{{ eventInfosArrived }}"
+                            :records="{{ ticket.chronologies }}"
+                            :departments="{{ departmentsOnWay }}"
+                            :card="{{ ticket }}"
+                            :trunk-types="{{ trunk_types }}"
+                            :event-info="{{ eventInfos }}"
+                            :event-info-arrived="{{ eventInfosArrived }}"
                         ></ticket101-chronology>
                     </div>
                 </div>

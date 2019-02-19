@@ -82,6 +82,7 @@ class FireDepartmentResult extends Model
         'promoted_department',
         'ticket101_other_id',
         'staff_count',
+        'distance', //Расстояние до места
     ];
 
     protected $appends = [

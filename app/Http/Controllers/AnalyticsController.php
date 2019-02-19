@@ -136,7 +136,7 @@ class AnalyticsController extends Controller
 
         }
 
-        return redirect()->route('reports.analytics101.index');
+        return redirect('reports/daily-reports/101');
 
     }
 
