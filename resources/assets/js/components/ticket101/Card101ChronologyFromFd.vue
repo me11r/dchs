@@ -138,7 +138,8 @@
                         <tr>
                             <th>ПЧ</th>
                             <th>Отделение</th>
-                            <th>Хронология</th>
+                            <th>Расстояние до места</th>
+                            <th>Стволы</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -149,12 +150,30 @@
                             <td>{{ dept.department.title }}</td>
                             <td>{{ dept.tech.department }}</td>
                             <td>
+                                <input type="number"
+                                       v-model="dept.distance"
+                                       @change="changeDistanceCount(dept)"
+                                       class="input">
+                            </td>
+                            <td>
                                 <div class="add_button">
                                     <button
                                         class="button is-small is-outlined is-success"
                                         type="button"
                                         @click.prevent="createNewItemArrived(dept)">
                                         <i class="fa fa-plus"></i>&nbsp;Добавить
+                                    </button>
+                                    <button
+                                            class="button is-small is-outlined is-success"
+                                            type="button"
+                                            @click.prevent="createNewItemArrivedWaterDelivery(dept)">
+                                        <i class="fa fa-plus"></i>&nbsp;Подвоз воды
+                                    </button>
+                                    <button
+                                            class="button is-small is-outlined is-success"
+                                            type="button"
+                                            @click.prevent="createNewItemArrived(dept, true)">
+                                        <i class="fa fa-plus"></i>&nbsp;ГДЗС
                                     </button>
                                 </div>
                             </td>
@@ -165,30 +184,51 @@
                                     v-if="item.fire_department_result.id === dept.id"
                                     :key="item.id">
 
-                                    <div class="column">
-                                        <label>ПЧ, отделение</label>
-                                        <input
-                                            disabled
-                                            class="input"
-                                            type="text"
-                                            :value="`${item.fire_department_result.department.title}: ${item.fire_department_result.tech.department}`"
-                                        >
-                                    </div>
-
-                                    <div class="column">
-                                        <label :for="'on_way['+item.id+'][event_info_id]'">Событие</label>
+                                    <div class="column" v-if="!item.is_gdzs && !item.is_water_delivery">
+                                        <label>Тип ствола</label>
                                         <div class="select">
                                             <select
-                                                required
-                                                title="Ситуация"
-                                                v-model="item.event_info_arrived_id">
+                                                    required
+                                                    title="Тип ствола"
+                                                    v-model="item.event_info.trunk_type_id">
+                                                <option :value="null"></option>
                                                 <option
-                                                    v-for="e in eventInfoArrived_"
-                                                    :key="'event_' + e.id"
-                                                    :value="e.id">{{ e.name }}
+                                                        v-for="e in trunkTypes"
+                                                        :key="'event_' + e.id"
+                                                        :value="e.id">{{ e.name }}
                                                 </option>
                                             </select>
                                         </div>
+                                    </div>
+
+                                    <div class="column" v-if="!item.is_water_delivery">
+                                        <label v-if="!item.is_gdzs" :for="'on_way['+item.id+'][event_info_id]'">Стволы</label>
+                                        <label v-if="item.is_gdzs" :for="'on_way['+item.id+'][event_info_id]'">ГДЗС</label>
+                                        <div v-if="item.is_gdzs" class="control">
+                                            <input type="text" disabled class="input" value="ГДЗС">
+                                            <input type="hidden" class="input" v-model="item.event_info_arrived_id">
+                                        </div>
+                                        <div v-if="!item.is_gdzs" class="select">
+                                            <select
+                                                    required
+                                                    title="Ситуация"
+                                                    v-model="item.event_info_arrived_id">
+                                                <option
+                                                        v-for="e in eventInfoArrivedFiltered(item.event_info.trunk_type_id)"
+                                                        v-if="e.name !== 'ГДЗС'"
+                                                        :key="'event_' + e.id"
+                                                        :value="e.id">{{ e.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="item.is_water_delivery" class="column">
+                                        <label>Расстояние подвоза</label>
+                                        <input
+                                                class="input"
+                                                type="number"
+                                                v-model="item.water_delivery_distance">
                                     </div>
 
                                     <div class="column">
@@ -207,13 +247,6 @@
                                             @timeChanged="item.time = $event"
                                             :value="item.time"
                                         />
-                                    <!--<timepicker-input
-                                            @timeChanged="item.time = $event"
-                                            :value-data="item.time"/>-->
-                                    <!--<input
-                                            class="input"
-                                            type="number"
-                                            v-model="item.time">-->
                                     </div>
                                     <div class="column">
                                         <label>Время работы</label>
@@ -282,6 +315,7 @@
                     <tr>
                         <th>ПЧ</th>
                         <th>Отделение</th>
+                        <th>Расстояние подвоза</th>
                         <th>Время</th>
                         <th>Количество</th>
                         <th>Время работы</th>
@@ -296,6 +330,12 @@
                         :key="record.id">
                         <td>{{ record.fire_department_result.department.title }}</td>
                         <td>{{ record.fire_department_result.tech.department }}</td>
+                        <td><input
+                                v-if="canEdit(record.id) === true"
+                                class="input"
+                                type="number"
+                                v-model="record.water_delivery_distance">
+                            <span v-else>{{ record.water_delivery_distance }}</span></td>
                         <td>
                             <timepicker
                                 v-if="canEdit(record.id) === true"
@@ -355,7 +395,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <span v-else>{{ record.event_info_arrived.name }}</span>
+                            <span v-else>{{ record.event_info_arrived ? record.event_info_arrived.name : '' }}</span>
                         </td>
                         <td>
                             <textarea
@@ -422,6 +462,12 @@ export default {
                 return [];
             }
         },
+        trunkTypes: {
+            type: Array,
+            default: () => {
+                return [];
+            }
+        },
         eventInfo: {
             type: Array,
             default: () => {
@@ -479,6 +525,13 @@ export default {
                 staff_count: dept.staff_count,
             });
         },
+        changeDistanceCount(dept) {
+            axios.post('/api/101card/update-fire-department-result-distance', {
+                id: dept.id,
+                distance: dept.distance,
+                fd: true,
+            });
+        },
         editData(id) {
             if (_.find(this.tableEdits, {id: id})) {
                 _.find(this.tableEdits, {id: id}).edit = !_.find(this.tableEdits, {id: id}).edit;
@@ -493,10 +546,6 @@ export default {
             }
         },
         createNewItemOnWay(dept) {
-            let token = document.head.querySelector('meta[name="csrf-token"]');
-            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-            // let card_data = window.ticket101add;
 
             this.records_onway.push({
                 id: moment().valueOf(),
@@ -521,13 +570,43 @@ export default {
                 id: moment().valueOf(),
                 working_time: 0,
                 time: '00:00',
+                is_water_delivery: false,
+                water_delivery_distance: 0,
                 information: '',
                 event_info_arrived_id: 1,
                 quantity: 1,
                 fire_department_result: dept,
                 event_info: {
-                    name: 'ствол'
+                    name: 'ствол',
+                    trunk_type_id: 1,
                 }
+            });
+        },
+        createNewItemArrivedWaterDelivery(dept) {
+
+            this.records_arrived.push({
+                id: moment().valueOf(),
+                working_time: 0,
+                is_gdzs: false,
+                time: '00:00',
+                information: '',
+                event_info_arrived_id: 1,
+                water_delivery_distance: 0,
+                is_water_delivery: true,
+                quantity: 1,
+                fire_department_result: dept,
+                event_info: {
+                    name: 'ствол',
+                    trunk_type_id: 1,
+                }
+            });
+        },
+        eventInfoArrivedFiltered(typeId) {
+            if(typeId === null) {
+                return this.eventInfoArrived_;
+            }
+            return _.filter(this.eventInfoArrived_, (item) => {
+                return item.trunk_type_id === typeId;
             });
         },
         getTime(value) {

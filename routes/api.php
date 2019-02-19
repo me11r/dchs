@@ -34,6 +34,7 @@ Route::group(
         Route::post('101card/send_notifications', 'CardController@sendNotifications');
         Route::post('101card/send-hq-ride', 'CardController@sendHqRide');
         Route::post('101card/update-fire-department-result', 'CardController@postUpdateFireDepartmentResult');
+        Route::post('101card/update-fire-department-result-distance', 'CardController@postUpdateFireDepartmentResultDistance');
         Route::group(['namespace' => 'Open', 'prefix' => 'open'], function (){
             Route::post('fcm/register', 'FcmController@register');
             Route::get('fcm/send_test', 'FcmController@sendTest');
