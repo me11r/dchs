@@ -507,6 +507,18 @@
                                 rows="3"
                                 v-model="model.resources"></textarea>
                         </div>
+
+                        <!--ЗАДЕЙСТВОВАННЫЕ РЕСУРСЫ-->
+                        <div class="field">
+                            <label for="resources">№ КУИ</label>
+                            <input
+                                name="kui"
+                                type="number"
+                                id="kui"
+                                class="input"
+                                v-model="model.kui">
+                        </div>
+
                         <div class="field is-grouped">
                             <!--ПОСТРАДАВШИХ ЛЮДЕЙ/ДЕТЕЙ-->
                             <div class="group_25">

@@ -137,6 +137,7 @@ class Card112 extends BaseModel
         'emergency_type_id',
         'emergency_name_id',
         'incident_type_text',
+        'kui',
     ];
 
     /**
