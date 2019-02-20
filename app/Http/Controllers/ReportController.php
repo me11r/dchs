@@ -350,6 +350,7 @@ class ReportController extends AuthorizedController
             ->skipNullValue('incident_type_id',  $request->get('incident_type_id'))
             ->skipNullValue('emergency_name_id',$emergency_name_id)
             ->skipNullValue('city_area_id',$cityAreaId)
+            ->whereBetween('created_at', [$dateStart,$dateEnd])
             ->with(['cityArea'])
             ->get();
 
