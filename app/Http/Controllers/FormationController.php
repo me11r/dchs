@@ -81,6 +81,22 @@ class FormationController extends AuthorizedController
             ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
     }
 
+    public function create(Request $request)
+    {
+        if($request->isMethod('post')) {
+            $date = Carbon::parse($request->date)->format('Y-m-d');
+
+            $model = FormationReport::firstOrCreate(['report_date' => $date]);
+
+            return redirect("/formation/101");
+        }
+        else {
+            $date = today();
+            $data['date'] = $date;
+            return view('formation.create',$data);
+        }
+    }
+
     public function getAirRescue(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 10);
@@ -1034,7 +1050,7 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationSaversReport::orderBy('created_at')->paginate($perPage))
+        $this->set('reports', FormationSaversReport::orderBy('created_at', 'desc')->paginate($perPage))
             ->set('today', $today)
             ->set('per_page', $perPage)
             ->set('auth', Auth::user())
