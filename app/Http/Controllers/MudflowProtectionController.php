@@ -66,7 +66,7 @@ class MudflowProtectionController extends Controller
         $data['now'] = now()->format('Y-m-d');
         $data['per_page'] = $request->per_page ?? 15;
 
-        $data['records'] = MudflowProtection::groupBy(DB::raw('date(created_at)'))
+        $data['records'] = MudflowProtection::groupBy('date')
             ->orderBy('date', 'desc')
             ->paginate($data['per_page']);
 
