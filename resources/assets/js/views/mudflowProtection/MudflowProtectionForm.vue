@@ -154,6 +154,12 @@
                 class="panel bottom_panel">
                 <div class="level">
                     <p class="level-right">
+                        <a
+                            href="/mudflow-protection/2019-02-05/"
+                            class="button is-danger"><i class="fas fa-times"></i>&nbsp;Отменить
+                        </a>
+                    </p>
+                    <p class="level-right">
                         <button
                             type="submit"
                             class="button is-success"><i class="fas fa-check"></i>Сохранить
@@ -205,17 +211,10 @@ export default {
         };
     },
     computed: {
-        // formDataExists() {
-        //     return !!window.mudflowProtectionFormData;
-        // }
+        formDataExists() {
+            return !!window.mudflowProtectionFormData;
+        }
     },
-    // beforeMount() {
-    //     if (window.mudflowProtectionFormData) {
-    //         this.method = window.mudflowProtectionFormData.method;
-    //         this.formRoute = window.mudflowProtectionFormData.formRoute;
-    //         this.model = window.mudflowProtectionFormData.model;
-    //     }
-    // }
 };
 </script>
 
