@@ -124,7 +124,6 @@ Vue.component('mudflow-date-selector', require('./views/mudflowProtection/Select
 globalBus.$on('api-map-request', (r) => {
     if (r.request_count !== null && r.request_count !== undefined) {
         axios.post('/increment-map-request', {description: r.description, count: r.request_count}).then((rr) => {
-            console.dir(r);
         });
     }
 });
