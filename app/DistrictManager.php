@@ -61,4 +61,20 @@ class DistrictManager extends Model
     {
         return $this->belongsTo(CityArea::class, 'city_area_id');
     }
+
+    public function daily_items()
+    {
+        return $this->hasMany(FormationDistrictManagerItem::class, 'manager_id');
+    }
+
+    public function scopeGetDailyPerson($q, $cityAreaId, $date)
+    {
+        return $q->whereHas('daily_items', function ($di) use($cityAreaId, $date) {
+            $di->where('city_area_id',$cityAreaId)
+            ;
+        })->whereHas('daily_items.report', function ($dr) use($cityAreaId, $date) {
+            $dr->where('date',$date)
+            ;
+        })->first();
+    }
 }

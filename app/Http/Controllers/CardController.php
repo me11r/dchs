@@ -13,6 +13,7 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
+use App\DistrictManager;
 use App\DrillType;
 use App\EmergencyType;
 use App\EventInfo;
@@ -558,6 +559,7 @@ class CardController extends AuthorizedController
                 'file_4',
                 'hq',
                 'notification_services',
+                'district_manager_id',
                 '00:00', // дефолтное названия инпута из компонента timepicker
             ]);
             $deptsToGetBack = collect([]);
@@ -657,6 +659,7 @@ class CardController extends AuthorizedController
         }
 
         $this->setEmergencyType($card);
+        $this->setDistrictManager($card, $request);
 
         /*todo: отключил, слишком много места сжирает*/
         /*try{
@@ -682,6 +685,23 @@ class CardController extends AuthorizedController
                 $ticket101->{'file_' . $i . '_id'} = $upload->id;
                 $ticket101->save();
             }
+        }
+    }
+
+    private function setDistrictManager(&$ticket101, Request $request)
+    {
+        if($request->district_manager_id) {
+            $cityAreaId = $ticket101->city_area_id;
+            $date = $ticket101->formation_report ? $ticket101->formation_report->report_date : null;
+
+            $ticket101->district_manager_id = DistrictManager::getDailyPerson($cityAreaId, $date)->id ?? null;
+
+            $ticket101->save();
+        }
+        else {
+            $ticket101->district_manager_id = null;
+
+            $ticket101->save();
         }
     }
 
