@@ -202,7 +202,7 @@ class Daily112WordExport
         foreach ($this->data['cards112'] as $card) {
             $section->addText(
                 "{$card->created_at->format('H:i')} {$card->location} - {$card->reason}. {$card->measures} {$card->resources}. 
-                Материал зарегистрирован в КУИ № {$card->id} от {$card->created_at->format('d-m-Y')} г. ",
+                Материал зарегистрирован в КУИ № {$card->kui} от {$card->created_at->format('d-m-Y')} г. ",
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
             );
