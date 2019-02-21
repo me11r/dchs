@@ -21,6 +21,9 @@
             <th>&nbsp;</th>
         </tr>
         </thead>
+        <tr>
+            <td colspan="3"><a href="/formation/create" class="button is-success is-fullwidth">Создать запись</a></td>
+        </tr>
         {% for report in reports %}
             <tr class="{% if report.report_date == today %}is-primary{% elseif report.is_approved %}is-warning{% endif %}">
                 <td>{{ report.report_date }}</td>
