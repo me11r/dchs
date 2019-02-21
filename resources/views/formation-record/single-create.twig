@@ -1,0 +1,33 @@
+{% extends "layout/html" %}
+
+{% block content %}
+    <div class="section {#container#}" id="vue">
+    <h4 class="title" style="padding: 3px 15px">Создание строевой записки {{ organisationName }}</h4>
+
+    <form action="/formation-record/{{ organisation }}/create" method="POST">
+        {{ csrf_field() }}
+        <v-datepicker-search
+                class="column is-2"
+                name="date"
+                date-string="{{ date }}"
+                label="Дата">
+        </v-datepicker-search>
+        <div class="panel bottom_panel">
+            <div class="level" style="padding-top: 2rem">
+                <div class="level-left">&nbsp;</div>
+                <div class="level-right">
+                    <a href="{{ route('formation-record.single-index', organisation) }}"
+                       style="margin-right: 10px"
+                       class="button is-light">Назад</a>
+                    <button
+                            type="submit"
+                            class="button is-success">
+                        <i class="fas fa-check"></i>Сохранить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    </div>
+{% endblock content %}

@@ -93,6 +93,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'formation'], function () {
         Route::get('/', 'FormationController@getServicesList');
         Route::get('101', 'FormationController@get101');
+        Route::match(['get', 'post'],'create', 'FormationController@create');
         Route::group(['prefix' => 'air-rescue'], function (){
             Route::get('/', 'FormationController@getAirRescue');
             Route::get('/create', 'FormationController@getAirRescueCreate');
@@ -171,8 +172,10 @@ Route::group(['middleware' => 'auth'], function () {
             Route::resource('formation-record', 'FormationRecordController');
             Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
             Route::get('formation-record/total-edit/word', 'FormationRecordController@saveTotalAsDocx');
-        }
-    );
+
+            Route::match(['get', 'post'],'formation-record/{organisation}/create', 'FormationRecordController@create');
+
+    });
 
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
