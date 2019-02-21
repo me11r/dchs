@@ -923,7 +923,14 @@
 
                         </div>
 
-
+                        <div class="field">
+                            <label class="checkbox">
+                                <input type="checkbox" {{ ticket.district_manager ? 'checked' : '' }}
+                                       name="district_manager_id"
+                                       value="1">
+                                Присутствовал сотрудник ОЧС
+                            </label>
+                        </div>
 
                         <div class="field">
                             <div class="control">

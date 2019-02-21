@@ -439,6 +439,11 @@ class Ticket101 extends BaseModel
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
     }
 
+    public function district_manager()
+    {
+        return $this->belongsTo(DistrictManager::class, 'district_manager_id');
+    }
+
     public function analytics()
     {
         return $this->hasOne(Analytics101Item::class, 'ticket101_id');
@@ -877,6 +882,11 @@ class Ticket101 extends BaseModel
     public function fireDepartmentsInfo()
     {
         return $this->hasMany(Ticket101InfoFromFd::class, 'ticket_id');
+    }
+
+    public function formation_report()
+    {
+        return $this->belongsTo(FormationReport::class, 'formation_report_id');
     }
 
     public function getDetailedStaffCount()
