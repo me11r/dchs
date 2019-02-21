@@ -1,13 +1,14 @@
 {% extends "layout/html" %}
 
 {% block content %}
-    <script>
-        window.mudflowProtectionFormData = {
-            model: {{ model | json_encode() | raw }},
-            method: 'PATCH',
-            formRoute: '{{ route('mudflowProtection.update', model.id) }}'
-        };
-    </script>
-    <div id="mudflowProtection-form-block">
+
+    <div id="vue">
+        <mudflow-protection-form
+            :model="{{ model }}"
+            form-route="{{ formRoute }}"
+            :gauging-station="{{ gaugingStation }}"
+        >
+        </mudflow-protection-form>
     </div>
+
 {% endblock content %}

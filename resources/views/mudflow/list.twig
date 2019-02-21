@@ -1,0 +1,51 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="panel">
+            <div class="level">
+                <div class="level-left">
+                    <h4 class="title">ГУ "Казселезащита"</h4>
+                </div>
+                <div class="level-right has-text-right">
+                    <a href="/mudflow-protection/{{ now }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                </div>
+                <div class="level-right has-text-left">
+                    {#<a href="/dictionaries" class="button is-info"><i class="fas fa-backspace"></i>&nbsp;Назад</a>#}
+                </div>
+            </div>
+            <table class="table is-striped is-narrow is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for record in records %}
+                    <tr>
+                        <td>{{ record.date_human }}</td>
+                        <td>
+                            <form method="POST"
+                                  onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                                  action="/mudflow-protection/{{ record.date }}">
+                                <input name="_method" type="hidden" value="DELETE">
+                                {{ csrf_field() }}
+
+                                <a href="/mudflow-protection/{{ record.date }}" class="button is-small is-primary is-outlined">
+                                    <i class="fas fa-edit"></i>&nbsp;Изменить
+                                </a>
+
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td><h5 class="">Нет записей</h5></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+        </div>
+    </div>
+{% endblock content %}
