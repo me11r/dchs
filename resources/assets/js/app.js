@@ -118,6 +118,8 @@ Vue.component('report-object-classification', require('./views/reports/emergency
 Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
 Vue.component('report-water-consumption', require('./views/reports/emergency/ReportTicket101WaterConsumption'));
 
+Vue.component('mudflow-date-selector', require('./views/mudflowProtection/SelectDate'));
+
 // трекер яндекс-запросов
 globalBus.$on('api-map-request', (r) => {
     if (r.request_count !== null && r.request_count !== undefined) {
@@ -198,13 +200,6 @@ if (add101personsFormElement) {
 const add101techFormElement = document.getElementById('add-101-tech-form');
 if (add101techFormElement) {
     (new Add101Tech()).createApp(add101techFormElement);
-}
-
-if (document.getElementById('mudflowProtection-form-block')) {
-    new Vue({
-        el: '#mudflowProtection-form-block',
-        render: h => h(MudflowProtectionForm)
-    });
 }
 
 if (document.getElementById('roadtrip_notifier')) {

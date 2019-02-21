@@ -266,8 +266,19 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('fire-department-checks.update-by-date')->where(['date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']);
 
     Route::resource('/fire-department-checks', 'FireDepartmentCheckController');
-    Route::resource('/mudflowProtection', 'MudflowProtectionController');
-    Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
+
+    Route::get('/mudflowProtection/export/xls/{date}', 'MudflowProtectionController@exportExcel');
+
+    Route::group(['prefix' => 'mudflow-protection'], function () {
+        Route::get('/', 'MudflowProtectionController@list')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
+        Route::get('{date}', 'MudflowProtectionController@indexByDate')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
+        Route::get('{date}/{id}/edit', 'MudflowProtectionController@edit')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
+        Route::get('{date}/{id}/create', 'MudflowProtectionController@create')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+        Route::post('{date}/{id}/update', 'MudflowProtectionController@update')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+        Route::post('{date}/{id}/store', 'MudflowProtectionController@store')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+        Route::post('{date}/{id}/delete', 'MudflowProtectionController@delete')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+    });
+
     Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
     Route::get('/quakes/export/xls', 'QuakeController@exportExcel');

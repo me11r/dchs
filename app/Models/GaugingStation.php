@@ -28,4 +28,10 @@ class GaugingStation extends Model
     {
         return $this->belongsTo(MudflowProtection::class, 'id', 'gauging_station_id');
     }
+
+    public function scopeMudflowProtectionByDate($q, $date)
+    {
+        return $this->hasMany(MudflowProtection::class, 'gauging_station_id')
+            ->whereDate('created_at', $date)->get();
+    }
 }
