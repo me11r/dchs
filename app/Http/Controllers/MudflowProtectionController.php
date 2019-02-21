@@ -63,14 +63,12 @@ class MudflowProtectionController extends Controller
 
     public function list(Request $request)
     {
-        if(!Auth::user()->hasRight(['CAN_VIEW_MUDFLOW_PROTECTION'])){
-            $this->throwAccessDenied();
-        }
-
         $data['now'] = now()->format('Y-m-d');
         $data['per_page'] = $request->per_page ?? 15;
 
-        $data['records'] = MudflowProtection::groupBy(DB::raw('date(created_at)'))->paginate($data['per_page']);
+        $data['records'] = MudflowProtection::groupBy(DB::raw('date(created_at)'))
+            ->orderBy('date', 'desc')
+            ->paginate($data['per_page']);
 
         return view('mudflow.list', $data);
     }
