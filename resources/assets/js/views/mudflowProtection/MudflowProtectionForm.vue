@@ -1,17 +1,12 @@
 <template>
     <section
-        class="container"
-        v-if="formDataExists">
+        class="container">
         <h4
             class="title"
-            style="padding: 3px 15px">{{ model.id ? 'Редактирование' : 'Добавление' }}: {{ model.gaugingStation.name }}</h4>
+            style="padding: 3px 15px">{{ model_.id ? 'Редактирование' : 'Добавление' }}: {{ gaugingStation.name }}</h4>
         <form
-            :action="this.formRoute"
+            :action="formRoute"
             method="POST">
-            <input
-                type="hidden"
-                name="_method"
-                :value="method">
             <input
                 type="hidden"
                 name="_token"
@@ -19,9 +14,19 @@
             <input
                     type="hidden"
                     name="gauging_station_id"
-                    :value="model.gauging_station_id">
+                    :value="gaugingStation.id">
             <div class="panels">
                 <div class="panels">
+                    <div class="field">
+                        <v-datepicker-search
+                                v-model="model_.date"
+                                :date-string="model_.date"
+                                name="date"
+                                @dateChanged="model_.date = $event"
+                                class="control"
+                                label="Дата">
+                        </v-datepicker-search>
+                    </div>
                     <!--Информация-->
                     <div class="field">
                         <label for="information">Информация</label>
@@ -31,7 +36,7 @@
                             class="textarea"
                             cols="30"
                             rows="3"
-                            v-model="model.information"></textarea>
+                            v-model="model_.information"></textarea>
                     </div>
                     <!--Расход воды-->
                     <div class="field">
@@ -42,7 +47,7 @@
                             class="input"
                             name="water_flow_rate"
                             id="water_flow_rate"
-                            v-model="model.water_flow_rate">
+                            v-model="model_.water_flow_rate">
                     </div>
                     <!--Критический расход воды-->
                     <div class="field">
@@ -53,7 +58,7 @@
                             class="input"
                             name="critical_water_flow_rate"
                             id="critical_water_flow_rate"
-                            v-model="model.critical_water_flow_rate">
+                            v-model="model_.critical_water_flow_rate">
                     </div>
                     <!--Мутность воды-->
                     <div class="field">
@@ -64,7 +69,7 @@
                             class="input"
                             name="turbidity_of_water"
                             id="turbidity_of_water"
-                            v-model="model.turbidity_of_water">
+                            v-model="model_.turbidity_of_water">
                     </div>
                     <!--Максимальная мутность воды-->
                     <div class="field">
@@ -75,7 +80,7 @@
                             class="input"
                             name="max_turbidity_of_water"
                             id="max_turbidity_of_water"
-                            v-model="model.max_turbidity_of_water">
+                            v-model="model_.max_turbidity_of_water">
                     </div>
                     <!--Температура воздуха-->
                     <div class="field">
@@ -86,7 +91,7 @@
                             class="input"
                             name="air_temperature"
                             id="air_temperature"
-                            v-model="model.air_temperature">
+                            v-model="model_.air_temperature">
                     </div>
                     <!--Температура воды-->
                     <div class="field">
@@ -97,7 +102,7 @@
                             class="input"
                             name="water_temperature"
                             id="water_temperature"
-                            v-model="model.water_temperature">
+                            v-model="model_.water_temperature">
                     </div>
                     <!--Осадки-->
                     <div class="field">
@@ -108,7 +113,7 @@
                             class="input"
                             name="precipitation"
                             id="precipitation"
-                            v-model="model.precipitation">
+                            v-model="model_.precipitation">
                     </div>
                     <!--Высота снега-->
                     <div class="field">
@@ -119,7 +124,7 @@
                             class="input"
                             name="height_of_snow"
                             id="height_of_snow"
-                            v-model="model.height_of_snow">
+                            v-model="model_.height_of_snow">
                     </div>
                     <!--Погода-->
                     <div class="field">
@@ -130,7 +135,7 @@
                             class="textarea"
                             cols="30"
                             rows="3"
-                            v-model="model.weather"></textarea>
+                            v-model="model_.weather"></textarea>
                     </div>
                     <!--Комментарий-->
                     <div class="field">
@@ -141,13 +146,19 @@
                             class="textarea"
                             cols="30"
                             rows="3"
-                            v-model="model.comment"></textarea>
+                            v-model="model_.comment"></textarea>
                     </div>
                 </div>
             </div>
             <div
                 class="panel bottom_panel">
                 <div class="level">
+                    <p class="level-right">
+                        <a
+                            href="/mudflow-protection/2019-02-05/"
+                            class="button is-danger"><i class="fas fa-times"></i>&nbsp;Отменить
+                        </a>
+                    </p>
                     <p class="level-right">
                         <button
                             type="submit"
@@ -163,12 +174,40 @@
 <script>
 export default {
     name: 'MudflowProtectionForm',
+    props: {
+        model: {
+            type: Object,
+            default: () => {},
+        },
+        gaugingStation: {
+            type: Object,
+            default: () => {},
+        },
+        formRoute: {
+            type: String,
+            default: '',
+        },
+    },
     data() {
         return {
             csrf: window.csrf_token,
-            model: {},
+            model_: this.model ? this.model : {
+                information: '',
+                water_flow_rate: '',
+                critical_water_flow_rate: '',
+                turbidity_of_water: '',
+                max_turbidity_of_water: '',
+                air_temperature: '',
+                water_temperature: '',
+                precipitation: '',
+                height_of_snow: '',
+                weather: '',
+                comment: '',
+                date: '',
+            },
             method: 'POST',
-            formRoute: ''
+            date: new Date(),
+            formRoute_: this.formRoute
         };
     },
     computed: {
@@ -176,13 +215,6 @@ export default {
             return !!window.mudflowProtectionFormData;
         }
     },
-    beforeMount() {
-        if (window.mudflowProtectionFormData) {
-            this.method = window.mudflowProtectionFormData.method;
-            this.formRoute = window.mudflowProtectionFormData.formRoute;
-            this.model = window.mudflowProtectionFormData.model;
-        }
-    }
 };
 </script>
 
