@@ -211,9 +211,9 @@ class Daily112WordExport
         $index++;
         $this->addParagraph($section, "{$index}. ГУ «СП и АСР»: всего выездов – ", $this->data['cards101']->count());
         $section->addText('Из них: ');
-        $index++;
 
         $reasons = TripResult::dailyReportConst()->get();
+        $secondIndex = 0;
 
         foreach ($reasons as $reason) {
 
@@ -221,10 +221,17 @@ class Daily112WordExport
                 return $event->trip_result_id == $reason->id;
             });
 
+            //не выводим "нулевые" выезды
+            if($cnt->count() == 0) {
+                continue;
+            }
+
+            $secondIndex++;
+
             $upper = ucfirst($reason->name);
 
             $section->addText(
-                $index.". {$upper} – " . $cnt->count(),
+                "$index.$secondIndex"." {$upper} – " . $cnt->count(),
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
@@ -242,7 +249,7 @@ class Daily112WordExport
                     })->count();
 
                     $section->addText(
-                        "{$index}.{$innerIterator}. {$fireObject->name} – " . $burntFireCount,
+                        "{$index}.{$secondIndex}.{$innerIterator}. {$fireObject->name} – " . $burntFireCount,
                         $generalBoldFontStyle,
                         ['indentation' => ['left' => 540]]
                     );
@@ -251,78 +258,90 @@ class Daily112WordExport
                 }
             }
 
-            $index++;
         }
 
-        ////
-        $section->addText(
-            (++$index).'. Случаи отравления - ' . $this->data['poisoningCount'],
-            $generalBoldFontStyle,
-            ['align' => Jc::BOTH]
-        );
-        $section->addText(
-            $index.".{$subIndex}. Отравление угарным газом – " . $this->data['carbonPoisoningCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
-        $subIndex++;
-        $section->addText(
-            $index.".{$subIndex}. Отравление природным газом – " . $this->data['naturalPoisoningCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+        if($this->data['poisoningCount'] != '0/0') {
+            $section->addText(
+                "{$index}.{$secondIndex}".'. Случаи отравления - ' . $this->data['poisoningCount'],
+                $generalBoldFontStyle,
+                ['align' => Jc::BOTH]
+            );
+            $section->addText(
+                $index.".{$subIndex}. Отравление угарным газом – " . $this->data['carbonPoisoningCount'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
+            $subIndex++;
+            $section->addText(
+                $index.".{$subIndex}. Отравление природным газом – " . $this->data['naturalPoisoningCount'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
+        }
+
         $subIndex = 1;
 
-//        $section->addText(
-//            (++$index).'. Сведения по людям/детям: ' . ($this->data['suicideCount'] + $this->data['saved_count'] +
-//                $this->data['evacuated_count'] + $this->data['gptBurnsCount'] + $this->data['peopleDeathCount'] +
-//                $this->data['childrenDeathCount'] + $this->data['hospitalizedCount']),
-//            $generalBoldFontStyle,
-//            ['align' => Jc::BOTH]
-//        );
+        if ($this->data['suicideCount'] && $this->data['suicideCount'] !== '0/0') {
+            $section->addText(
+                "{$index}.{$subIndex}. Попытка суицида - " . $this->data['suicideCount'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
 
-        $section->addText(
-            "{$index}.{$subIndex}. Попытка суицида - " . $this->data['suicideCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+            $subIndex++;
+        }
 
-        $subIndex++;
-        $section->addText(
-            "{$index}.{$subIndex}. Спасено людей – " . $this->data['saved_count'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+        if ($this->data['saved_count'] && $this->data['saved_count'] !== '0/0') {
+            $section->addText(
+                "{$index}.{$subIndex}. Спасено людей – " . $this->data['saved_count'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
 
-        $subIndex++;
-        $section->addText(
-            "{$index}.{$subIndex}. Эвакуировано людей – " . $this->data['evacuated_count'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+            $subIndex++;
+        }
 
-        $subIndex++;
-        $section->addText(
-            "{$index}.{$subIndex}. Получили ожоги – " . $this->data['gptBurnsCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+        if ($this->data['evacuated_count'] && $this->data['evacuated_count'] !== '0/0') {
+            $section->addText(
+                "{$index}.{$subIndex}. Эвакуировано людей – " . $this->data['evacuated_count'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
 
-        $subIndex++;
-        $section->addText(
-            "{$index}.{$subIndex}. Гибель людей – " . $this->data['dead_count'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+            $subIndex++;
+        }
 
-        $subIndex++;
-        $section->addText(
-            "{$index}.{$subIndex}. Госпитализировано – " . $this->data['hospitalizedCount'],
-            $generalBoldFontStyle,
-            ['indentation' => ['left' => 540]]
-        );
+        if ($this->data['gptBurnsCount'] && $this->data['gptBurnsCount'] !== '0/0') {
+            $section->addText(
+                "{$index}.{$subIndex}. Получили ожоги – " . $this->data['gptBurnsCount'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
+
+            $subIndex++;
+        }
+
+        if ($this->data['dead_count'] && $this->data['dead_count'] !== '0/0') {
+            $section->addText(
+                "{$index}.{$subIndex}. Гибель людей – " . $this->data['dead_count'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
+
+            $subIndex++;
+        }
+
+        if ($this->data['hospitalizedCount'] && $this->data['hospitalizedCount'] !== '0/0') {
+            $section->addText(
+                "{$index}.{$subIndex}. Госпитализировано – " . $this->data['hospitalizedCount'],
+                $generalBoldFontStyle,
+                ['indentation' => ['left' => 540]]
+            );
+
+        }
 
         $index++;
+
         $this->addParagraph($section, "{$index}. ЕДДС: Всего поступивших звонков на «112» - ", ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
 
         $strAircraft = '';
