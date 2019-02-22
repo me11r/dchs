@@ -11,6 +11,7 @@ use App\Models\IncidentType;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
 use App\Ticket101ServicePlan;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $notifications_sent
  * @property string $notification_message
  * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $custom_created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $additional_comment
  * @property int $city_area_id
@@ -96,6 +98,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Card112 extends BaseModel
 {
+    protected $searchByDate = 'custom_created_at';
     /**
      * @var string
      */
@@ -138,6 +141,7 @@ class Card112 extends BaseModel
         'emergency_name_id',
         'incident_type_text',
         'kui',
+        'custom_created_at', //клон created_at, можно править в карточке
     ];
 
     /**
@@ -256,10 +260,10 @@ class Card112 extends BaseModel
 
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
     {
-        $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);
+        $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end]);
 
         if($reason_id){
-            $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+            $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end])
                 ->where('additional_incident_type_id', $reason_id);
         }
 
@@ -309,7 +313,7 @@ class Card112 extends BaseModel
         foreach ($reasons as $reason) {
             foreach ($areas as $area) {
 
-                $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end])
                     ->where('additional_incident_type_id', $reason->id)
                     ->where('city_area_id', $area->id);
 
@@ -363,7 +367,7 @@ class Card112 extends BaseModel
         $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
-        return $q->whereBetween('created_at', [$from, $to]);
+        return $q->whereBetween('custom_created_at', [$from, $to]);
     }
 
     public function setDetailedAddressAttribute($value)
@@ -378,10 +382,22 @@ class Card112 extends BaseModel
 
     public function getDateAttribute()
     {
+        $format = 'd.m.Y';
+        if ($this->custom_created_at) {
+            return Carbon::parse($this->custom_created_at)->format($format);
+        }
         if ($this->created_at) {
-            return $this->created_at->format('d.m.Y');
+            return $this->created_at->format($format);
         }
 
         return null;
+    }
+
+    public function setCustomCreatedAtAttribute($value)
+    {
+        if(!$value) {
+            $value = now();
+        }
+        $this->attributes['custom_created_at'] = $value;
     }
 }
