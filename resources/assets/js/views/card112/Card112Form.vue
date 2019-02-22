@@ -442,7 +442,7 @@
                                 class="control"
                                 style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
                                 <p class="control">
-                                    <label for="additional_incident_type_id">Происшествие</label>
+                                    <label for="additional_incident_type_id">Происшествие (уточненное)</label>
                                 </p>
                                 <div class="select">
                                     <select
@@ -468,6 +468,61 @@
                                     name="additional_incident_place"
                                     id="additional_incident_place"
                                     v-model="model.additional_incident_place">
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped" v-if="model.additional_incident_type_id === 36">
+                            <!--Место подтопления-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="flooding_place_id">Место подтопления</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="flooding_place_id"
+                                        name="flooding_place_id"
+                                        v-model="model.flooding_place_id">
+                                        <option
+                                            v-for="place in floodingPlaces"
+                                            :key="`flooding_place_${place.id}`"
+                                            :value="place.id">{{ place.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--Причина подтопления-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="flooding_reason_id">Причина подтопления</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="flooding_reason_id"
+                                        name="flooding_reason_id"
+                                        v-model="model.flooding_reason_id">
+                                        <option
+                                            v-for="flood in floodingReasons"
+                                            :key="`flooding_reason_${flood.id}`"
+                                            :value="flood.id">{{ flood.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--МЕСТО ПРОИСШЕСТВИЯ-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="living_count">Количество проживающих</label>
+                                </p>
+                                <input
+                                    type="number"
+                                    class="input"
+                                    name="living_count"
+                                    id="living_count"
+                                    v-model="model.living_count">
                             </div>
                         </div>
 
@@ -832,6 +887,8 @@ export default {
             currentCity: 'Алматы',
             servicePlans: [],
             services: [],
+            floodingPlaces: [],
+            floodingReasons: [],
             servicesTabIndex: 0
         };
     },
@@ -889,26 +946,6 @@ export default {
                                                 name_accepted: plan.name_accepted || '',
                                                 arrive_time: plan.arrive_time || ''
                                             };
-                                            // let name = document.getElementById(serviceType.id + '_name');
-                                            // let created_at = document.getElementById(serviceType.id + '_created_at');
-                                            // let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
-                                            // let dispatched_time = document.getElementById(serviceType.id + '_dispatched_time');
-                                            //
-                                            // if (name.value === '') {
-                                            //     name.value = plan.name_accepted || '';
-                                            // }
-                                            //
-                                            // if (created_at.value === '') {
-                                            //     created_at.value = plan.dispatched_time || '';
-                                            // }
-                                            //
-                                            // if (arrived_at.value === '') {
-                                            //     arrived_at.value = plan.arrive_time || '';
-                                            // }
-                                            //
-                                            // if (dispatched_time.value === '') {
-                                            //     dispatched_time.value = plan.dispatched_time || '';
-                                            // }
                                         }
                                     });
                                 });
@@ -1037,19 +1074,6 @@ export default {
             this.notifyMap();
         }
     },
-    beforeMount() {
-        // if (window.card112FormData) {
-        //     this.streets = window.card112FormData.streets;
-        //     this.cityAreas = window.card112FormData.cityAreas;
-        //     this.incidentTypes = window.card112FormData.incidentTypes;
-        //     this.serviceTypes = window.card112FormData.serviceTypes;
-        //     this.method = window.card112FormData.method;
-        //     this.formRoute = window.card112FormData.formRoute;
-        //     this.model = window.card112FormData.model;
-        //     this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
-        //     this.servicePlans = window.card112FormData.servicePlans;
-        // }
-    },
     mounted() {
         this.getTabIndex();
         (new YandexMapsBus())
@@ -1067,6 +1091,8 @@ export default {
                 this.model = window.card112FormData.model;
                 this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
                 this.servicePlans = window.card112FormData.servicePlans;
+                this.floodingPlaces = window.card112FormData.floodingPlaces;
+                this.floodingReasons = window.card112FormData.floodingReasons;
 
                 globalBus.$emit('dateIsReady', this.model.custom_created_at);
 

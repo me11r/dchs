@@ -6,6 +6,8 @@ use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\EmergencyName;
 use App\EmergencyType;
+use App\FloodingPlace;
+use App\FloodingReason;
 use App\Http\Resources\Card112\Card112Resource;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
@@ -132,6 +134,8 @@ class Card112Controller extends Controller
             ->with('service_plans', $ticket101_service_plans)
             ->with('emergencyTypes', EmergencyType::all())
             ->with('emergencyNames', EmergencyName::all())
+            ->with('flooding_places', FloodingPlace::all())
+            ->with('flooding_reasons', FloodingReason::all())
             ->with('currentTabIndex', 0)
             ->render();
     }
@@ -194,6 +198,8 @@ class Card112Controller extends Controller
             ->with('currentTabIndex', $request->input('currentTabIndex', 0))
             ->with('emergencyTypes', EmergencyType::all())
             ->with('emergencyNames', EmergencyName::all())
+            ->with('flooding_places', FloodingPlace::all())
+            ->with('flooding_reasons', FloodingReason::all())
             ->with('model', $model);
     }
 

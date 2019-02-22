@@ -69,6 +69,9 @@ class Card112Resource extends JsonResource
             'custom_created_at' => $this->custom_created_at,
             'created_at' => $this->created_at,
             'kui' => $this->kui ? $this->kui : $this->id,
+            'flooding_place_id' => $this->flooding_place_id,
+            'flooding_reason_id' => $this->flooding_reason_id,
+            'living_count' => $this->living_count,
         ];
     }
 }
