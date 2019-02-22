@@ -141,9 +141,9 @@ class Card112Controller extends Controller
         $index = $request->currentTabIndex;
 
         $req = $request->except([
-            'notification_services'
+            'notification_services',
+            'custom_created_at',
         ]);
-
         $data = $this->repository->createFilledWithRelations($req);
 
         if ($index) {
@@ -180,6 +180,10 @@ class Card112Controller extends Controller
             ])
             ->first());
 
+        if(!$model->resource) {
+            return redirect('/card112/create');
+        }
+
         return View::make('card112.edit')
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
@@ -197,8 +201,9 @@ class Card112Controller extends Controller
     {
         $index = $request->currentTabIndex;
         $data = $request->except([
-            'notification_services'
+            'notification_services',
         ]);
+        $data['custom_created_at'] = $data['custom_created_at'] ? Carbon::parse($data['custom_created_at'])->format('Y-m-d H:i') : null;
         $this->repository->updateFilledWithRelations($data, $id);
         $this->repository->updateServicePlans($request->input('notification_services', []), $id);
         return redirect(route('card112.edit', $id))->with('currentTabIndex', $index);

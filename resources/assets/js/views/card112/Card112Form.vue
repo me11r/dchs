@@ -328,6 +328,16 @@
                     </div>
                     <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
 
+                        <v-datepicker-search
+                                v-model="model.custom_created_at"
+                                :date="model.custom_created_at"
+                                name="custom_created_at"
+                                :include-time="true"
+                                class="control"
+                                @dateChanged="model.custom_created_at = $event"
+                                label="Дата и время создания карточки">
+                        </v-datepicker-search>
+
                         <h5 class="subtitle">Первоначальная информация:</h5>
 
                         <div class="field">
@@ -1057,6 +1067,8 @@ export default {
                 this.model = window.card112FormData.model;
                 this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
                 this.servicePlans = window.card112FormData.servicePlans;
+
+                globalBus.$emit('dateIsReady', this.model.custom_created_at);
 
                 this.serviceTypes.forEach((item) => {
                     this.services[item.id] = {

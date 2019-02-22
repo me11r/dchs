@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseModel extends Model
 {
+    protected $searchByDate = 'created_at';
+
     public function scopeSkipNullValue($q, $field, $search)
     {
         return $search ? $q->where($field, $search) : $q;
@@ -41,6 +43,6 @@ abstract class BaseModel extends Model
                 ->format('Y-m-d H:i:s');
         }
 
-        return $q->whereBetween('created_at', [$finalDateBegin, $finalDateEnd]);
+        return $q->whereBetween($this->searchByDate, [$finalDateBegin, $finalDateEnd]);
     }
 }

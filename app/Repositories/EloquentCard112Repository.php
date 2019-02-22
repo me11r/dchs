@@ -23,6 +23,7 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
         $serviceReactions = $this->filterServiceReactions(array_get($data, 'service_reactions', []));
         $chronology = $this->filterChronology(array_get($data, 'chronology', []));
         $services = ServiceType::all()->pluck('id')->toArray();
+        $data['custom_created_at'] = now();
 
         /** @var $card112 Card112 */
         $card112 = $this->create($data);
@@ -55,6 +56,11 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
 
         /** @var $card112 Card112 */
         $card112 = $this->find($id);
+
+        if($data['custom_created_at']) {
+            $card112->custom_created_at = $data['custom_created_at'];
+            $card112->save();
+        }
 
         foreach ($serviceReactions as $serviceReaction){
             $fill = [
