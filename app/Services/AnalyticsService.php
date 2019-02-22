@@ -46,6 +46,10 @@ class AnalyticsService
             $service_plans_str .= $service_plan->service_type->name . ', ';
         }
 
+        if($ticket->district_manager) {
+            $service_plans_str .= "ОЧС ({$ticket->district_manager->city_area->name} район, {$ticket->district_manager->position} {$ticket->district_manager->name})";
+        }
+
         $chronology_str = '';
 
         $chronology = Chronology101::where('ticket101_id', $ticket->id)
@@ -87,7 +91,6 @@ class AnalyticsService
         $text = str_replace('<br>', '<br/>', $text);
 
         $dataToSave = [
-//            'text' => $ticket->analytics ? $ticket->analytics->text : $text, оставил на случай если нужно будет вернуть
             'text' => $text,
             'trip_result_id' => $ticket->trip_result_id,
             'ticket101_id' => $ticket->id,

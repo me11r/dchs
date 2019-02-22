@@ -120,6 +120,36 @@ class FireDepartmentResult extends Model
         return $value;
     }
 
+    //время прибытия в минутах
+    public function getArriveTimeMinutesAttribute()
+    {
+        if($this->accept_time && $this->arrive_time) {
+            return Carbon::parse($this->accept_time)->diffInMinutes($this->arrive_time);
+        }
+
+        return null;
+    }
+
+    //хронология в пути: 1 затяжной автозатор,2 раза красный свет
+    public function getChronologyOnWayStringAttribute()
+    {
+        try {
+            $result = '';
+
+            $eventInfos = $this->chronology()->whereNotNull('event_info_id')->get()->groupBy('event_info_id');
+
+            foreach ($eventInfos as $name => $eventInfo) {
+                $result .= "{$eventInfo->count()} {$eventInfo[0]->event_info->name}, ";
+            }
+
+            return $result;
+        }
+        catch (\Exception $e) {
+            return '';
+        }
+
+    }
+
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'ticket101_id');
