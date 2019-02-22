@@ -6,6 +6,8 @@ use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\EmergencyName;
 use App\EmergencyType;
+use App\FloodingPlace;
+use App\FloodingReason;
 use App\Models\BaseModel;
 use App\Models\IncidentType;
 use App\Models\Notification\Notification;
@@ -142,6 +144,9 @@ class Card112 extends BaseModel
         'incident_type_text',
         'kui',
         'custom_created_at', //клон created_at, можно править в карточке
+        'flooding_place_id',
+        'flooding_reason_id',
+        'living_count',
     ];
 
     /**
@@ -150,6 +155,16 @@ class Card112 extends BaseModel
     public function street()
     {
         return $this->hasOne(Street::class, 'id', 'street_id');
+    }
+
+    public function flooding_place()
+    {
+        return $this->belongsTo(FloodingPlace::class, 'flooding_place_id');
+    }
+
+    public function flooding_reason()
+    {
+        return $this->belongsTo(FloodingReason::class, 'flooding_reason_id');
     }
 
     /**

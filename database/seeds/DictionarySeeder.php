@@ -201,6 +201,16 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'trunk_types',
                 'model' => \App\TrunkType::class
             ],
+            [
+                'title' => "Место подтопления",
+                'table' => 'flooding_places',
+                'model' => \App\FloodingPlace::class
+            ],
+            [
+                'title' => "Причина подтопления",
+                'table' => 'flooding_reasons',
+                'model' => \App\FloodingReason::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();
