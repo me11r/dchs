@@ -5,6 +5,7 @@ export const Card112Utils = {
         model.call_time = model.call_time ? moment(model.call_time).toDate() : moment().toDate();
         model.chronology_start_time = model.chronology_start_time ? moment(model.chronology_start_time).toDate() : moment().toDate();
         model.chronology_end_time = model.chronology_end_time ? moment(model.chronology_end_time).toDate() : moment().toDate();
+        model.custom_created_at = model.custom_created_at ? moment(model.custom_created_at).toDate() : moment().toDate();
 
         model.service_reactions = model.service_reactions.length > 0
             ? this.prepareServiceReactions(model.service_reactions)
