@@ -110,33 +110,28 @@ class CardController extends AuthorizedController
         $id = $request->input('filter.id', '');
         $city_area = $request->input('filter.city_area', '');
 
-        $city_areas = Ticket101::groupBy('city_area_id')
-            ->real()
-            ->get(['city_area_id'])
-            ->pluck('city_area_id')
-            ->toArray();
 
-        $city_areas = CityArea::whereIn('id', $city_areas)->get();
+        $city_areas = CityArea::all();
 
         if($id){
-            $tickets = Ticket101::with(['city_area'])
-                ->orderBy($sort,'desc')
+            $tickets = Ticket101::
+                orderBy($sort,'desc')
                 ->real()
                 ->where('id',$id)
                 ->paginate($perPage);
         }
         elseif($city_area){
 
-            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                ->where('city_area_id', $city_area)
+            $tickets = Ticket101::
+                where('city_area_id', $city_area)
                 ->real()
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
         elseif($search){
             if(is_numeric($search)){
-                $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                    ->where('id', $search)
+                $tickets = Ticket101::
+                    where('id', $search)
                     ->real()
                     ->orderBy($sort,'desc')
                     ->paginate($perPage);
@@ -148,8 +143,8 @@ class CardController extends AuthorizedController
                 catch (\Exception $e){
                     $date = null;
                 }
-                $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                    ->real()
+                $tickets = Ticket101::
+                    real()
                     ->where('location', "like", "$search%")
                     ->orWhereDate('created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
@@ -161,8 +156,8 @@ class CardController extends AuthorizedController
 
         }
         else{
-            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                ->real()
+            $tickets = Ticket101::
+                real()
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
@@ -218,8 +213,7 @@ class CardController extends AuthorizedController
         $this->set('emergencyTypes', EmergencyType::all());
         $this->set('wall_materials', $wall_materials);
         $this->set('notification_get_back', session()->pull('notification.get_back', 0));
-        $this->set('wall_materials', $wall_materials);
-        $this->set('staff', Staff::all());
+//        $this->set('staff', Staff::all());
         $this->set('ride_types', RideType::all());
         $this->set('fire_departments_vue', FireDepartment::recommend()->get());
         $this->set('card_type', $card_type);
@@ -234,14 +228,14 @@ class CardController extends AuthorizedController
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::with(['fire_departments'])->get());
-        $this->set('fire_object', BurntObject::all());
+//        $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
         $this->set('object_classifications', ObjectClassification::all());
         $this->set('living_sector_types', LivingSectorType::all());
         $this->set('burn_object', FireObject::all());
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
-        $this->set('fire_object_options', FireObject::all());
+//        $this->set('fire_object_options', FireObject::all());
         $this->set('trunk_types', TrunkType::all());
         $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
             return [
@@ -258,10 +252,10 @@ class CardController extends AuthorizedController
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
         $ticket = Ticket101::with(
             [
-                'crossroad_1',
-                'crossroad_2',
+//                'crossroad_1',
+//                'crossroad_2',
                 'other_records',
-                'chronologies',
+//                'chronologies',
                 'chronologies.event_info',
                 'chronologies.event_info_arrived',
 //                'chronologies.event_info_arrived.trunk_type',
@@ -273,22 +267,22 @@ class CardController extends AuthorizedController
 //                'chronologiesFromFd.event_info_arrived.trunk_type',
                 'chronologiesFromFd.fire_department_result.tech',
                 'chronologiesFromFd.fire_department_result.department',
-                'results',
-                'results.tech',
+//                'results',
+//                'results.tech',
                 'results.tech.formation_tech_report',
                 'results.department',
-                'notifications',
+//                'notifications',
                 'notifications.service',
-                'popup_notifications',
+//                'popup_notifications',
                 'popup_notifications.user',
                 'popup_notifications.status',
                 'popup_notifications.group',
                 'notification_groups',
-                'operational_card',
+//                'operational_card',
                 'operational_plan.special_plans',
-                'service_plans',
+//                'service_plans',
                 'service_plans.service_type',
-                'fireDepartmentsInfo',
+//                'fireDepartmentsInfo',
                 'fireDepartmentsInfo.fire_level',
                 'fireDepartmentsInfo.burn_object',
                 'fireDepartmentsInfo.trip_result',
@@ -661,13 +655,6 @@ class CardController extends AuthorizedController
         $this->setEmergencyType($card);
         $this->setDistrictManager($card, $request);
 
-        /*todo: отключил, слишком много места сжирает*/
-        /*try{
-            $this->saveLog($card->id);
-        }
-        catch (\Exception $exception){
-        }*/
-
         if ($request->ajax()) {
             return response()->json('ok', 200);
         }
@@ -695,11 +682,6 @@ class CardController extends AuthorizedController
             $date = $ticket101->formation_report ? $ticket101->formation_report->report_date : null;
 
             $ticket101->district_manager_id = DistrictManager::getDailyPerson($cityAreaId, $date)->id ?? null;
-
-            $ticket101->save();
-        }
-        else {
-            $ticket101->district_manager_id = null;
 
             $ticket101->save();
         }
