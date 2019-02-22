@@ -33,21 +33,22 @@
     {% if ticket.car_crash %}
     <span><b>Авария А/М при следовании на пожар</b></span>
     {% endif %}
-    {% if ticket.rescued_count %}<span><b>Спасено людей:</b><span>{{  ticket.rescued_count }}</span><span>{% endif %}
-    {% if ticket.saved_children %}<span><b>Спасено детей:</b><span>{{  ticket.saved_children }}</span><span>{% endif %}
-    {% if ticket.evac_count %}<span><b>Эвакуировано людей:</b><span>{{  ticket.evac_count }}</span><span>{% endif %}
-    {% if ticket.co2_poisoned_count %}<span><b>Получили отравления угарным газом:</b><span>{{  ticket.co2_poisoned_count }}</span><span>{% endif %}
-    {% if ticket.ch4_poisoned_count %}<span><b>Получили отравления природным газом:</b><span>{{  ticket.ch4_poisoned_count }}</span><span>{% endif %}
-    {% if ticket.gpt_burns_count %}<span><b>Получили ожоги:</b><span>{{  ticket.gpt_burns_count }}</span><span>{% endif %}
-    {% if ticket.people_death_count %}<span><b>Гибель людей:</b><span>{{  ticket.people_death_count }}</span><span>{% endif %}
-    {% if ticket.children_death_count %}<span><b>Гибель детей:</b><span>{{  ticket.children_death_count }}</span><span>{% endif %}
-    {% if ticket.hospitalized_count %}<span><b>Госпитализировано:</b><span>{{  ticket.hospitalized_count }}</span><span>{% endif %}
-    {% if ticket.saved_vehicles %}<span><b>Количество освобожденных а/м при заносах:</b><span>{{  ticket.saved_vehicles }}</span><span>{% endif %}
-    {% if ticket.saved_children %}<span><b>Спасено детей:</b><span>{{  ticket.saved_children }}</span><span>{% endif %}
-    {% if ticket.bodies_extracted %}<span><b>Извлечено тел:</b><span>{{  ticket.bodies_extracted }}</span><span>{% endif %}
-    {% if ticket.children_bodies_extracted %}<span><b>Извлечено тел (детей):</b><span>{{  ticket.children_bodies_extracted }}</span><span>{% endif %}
-    {% if ticket.medical_care_provided %}<span><b>Оказана мед. помощь:</b><span>{{  ticket.medical_care_provided }}</span><span>{% endif %}
-    {% if ticket.children_medical_care_provided %}<span><b>Оказана мед. помощь (детям):</b><span>{{  ticket.children_medical_care_provided }}</span><span>{% endif %}
-    {% if ticket.children_evacuated %}<span><b>Кол-во эвакуированных детей:</b><span>{{  ticket.children_evacuated }}</span><span>{% endif %}
+    {% if ticket.rescued_count %}<span><b>Спасено людей:</b><span>{{  ticket.rescued_count }}</span></span>{% endif %}
+    {% if ticket.saved_children %}<span><b>Спасено детей:</b><span>{{  ticket.saved_children }}</span></span>{% endif %}
+    {% if ticket.evac_count %}<span><b>Эвакуировано людей:</b><span>{{  ticket.evac_count }}</span></span>{% endif %}
+    {% if ticket.co2_poisoned_count %}<span><b>Получили отравления угарным газом:</b><span>{{  ticket.co2_poisoned_count }}</span></span>{% endif %}
+    {% if ticket.ch4_poisoned_count %}<span><b>Получили отравления природным газом:</b><span>{{  ticket.ch4_poisoned_count }}</span></span>{% endif %}
+    {% if ticket.gpt_burns_count %}<span><b>Получили ожоги:</b><span>{{  ticket.gpt_burns_count }}</span></span>{% endif %}
+    {% if ticket.people_death_count %}<span><b>Гибель людей:</b><span>{{  ticket.people_death_count }}</span></span>{% endif %}
+    {% if ticket.children_death_count %}<span><b>Гибель детей:</b><span>{{  ticket.children_death_count }}</span></span>{% endif %}
+    {% if ticket.hospitalized_count %}<span><b>Госпитализировано:</b><span>{{  ticket.hospitalized_count }}</span></span>{% endif %}
+    {% if ticket.saved_vehicles %}<span><b>Количество освобожденных а/м при заносах:</b><span>{{  ticket.saved_vehicles }}</span></span>{% endif %}
+    {% if ticket.saved_children %}<span><b>Спасено детей:</b><span>{{  ticket.saved_children }}</span></span>{% endif %}
+    {% if ticket.bodies_extracted %}<span><b>Извлечено тел:</b><span>{{  ticket.bodies_extracted }}</span></span>{% endif %}
+    {% if ticket.children_bodies_extracted %}<span><b>Извлечено тел (детей):</b><span>{{  ticket.children_bodies_extracted }}</span></span>{% endif %}
+    {% if ticket.medical_care_provided %}<span><b>Оказана мед. помощь:</b><span>{{  ticket.medical_care_provided }}</span></span>{% endif %}
+    {% if ticket.children_medical_care_provided %}<span><b>Оказана мед. помощь (детям):</b><span>{{  ticket.children_medical_care_provided }}</span></span>{% endif %}
+    {% if ticket.children_evacuated %}<span><b>Кол-во эвакуированных детей:</b><span>{{  ticket.children_evacuated }}</span></span>{% endif %}
 
+    {% if ticket.year_of_development %}<span><b>Год постройки:</b><span>{{  ticket.year_of_development }}</span></span>{% endif %}
     {#Пожар локализован в {{ loc_time }} и ликвидирован в {{ liqv_time }}, {{ chronology_str }}. На место пожара выезжал л/с: {{ depts_out }}.#}
