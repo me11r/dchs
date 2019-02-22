@@ -15,6 +15,8 @@
             method: 'POST',
             currentTabIndex: 0,
             notificationGroups: {{ notificationGroups | json_encode() | raw }},
+            floodingPlaces: {{ flooding_places | json_encode() | raw }},
+            floodingReasons: {{ flooding_reasons | json_encode() | raw }},
             formRoute: '{{ route('card112.store') }}'
         };
     </script>
