@@ -11,6 +11,7 @@ use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\DrillType;
 use App\FireDepartment;
+use App\FloodingReason;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\Card112\Card112;
@@ -340,6 +341,9 @@ class ReportController extends AuthorizedController
         $emergency_name_id = $request->emergency_name_id;
         $cityAreaId = $request->city_area_id;
 
+        $dateStartHuman = Carbon::parse($request->get('date_start'))->format('d.m.Y');
+        $dateEndHuman = Carbon::parse($request->get('date_end'))->format('d.m.Y');
+
         $fileName = 'Отчет:'
             . $dateStart
             . '_'
@@ -350,7 +354,7 @@ class ReportController extends AuthorizedController
             ->skipNullValue('incident_type_id',  $request->get('incident_type_id'))
             ->skipNullValue('emergency_name_id',$emergency_name_id)
             ->skipNullValue('city_area_id',$cityAreaId)
-            ->whereBetween('created_at', [$dateStart,$dateEnd])
+            ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
             ->with(['cityArea'])
             ->get();
 
@@ -362,7 +366,7 @@ class ReportController extends AuthorizedController
                 $preparedToExport[$card->cityArea->name] = [];
             }
 
-            if($card->incident->name == 'Падение веток и деревьев' || $card->incident->name == 'Подтопления') {
+            if($card->incident->name == 'Падение веток и деревьев') {
                 $preparedToExport[$card->cityArea->name][] = [
                     '№' => $card->id,
                     'Адрес' => $card->location,
@@ -378,10 +382,31 @@ class ReportController extends AuthorizedController
                         'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
                 ];
             }
+            elseif ($card->incident->name == 'Подтопления') {
+                $preparedToExport[$card->cityArea->name][] = [
+                    '№' => $card->id,
+                    'Адрес' => $card->location,
+                    'Кол-во проживающих' => $card->living_count ?? 0,
+                    'Место подтопления' => $card->flooding_place->name ?? null,
+                    'Причина подтопления' => $card->flooding_reason->name ?? null,
+                    'Принятые меры' => $card->measures,
+                    'Количество задействованных сил и средств' => $card->resources,
+//                    'Начало и завершение работ' => [
+//                        'Начало' => Carbon::parse($card->chronology_start_time)->format('H:i'),
+//                        'Оконч.' => Carbon::parse($card->chronology_end_time)->format('H:i'),
+//                    ],
+
+                    'Начало и завершение работ' =>
+                        'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
+                        ' / ' .
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                ];
+            }
             else {
                 $preparedToExport[$card->cityArea->name][] = [
                     '№' => $card->id,
                     'Адрес' => $card->location,
+                    'Кол-во проживающих' => $card->living_count,
                     'Место происшествия' => $card->incident_place,
                     'Причина' => $card->reason,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
@@ -394,7 +419,7 @@ class ReportController extends AuthorizedController
                 ];
             }
         }
-        //проставляем индексы 1,2,3 и тд
+        //проставляем номера 1,2,3 и тд
         foreach ($preparedToExport as $cityArea => $arrays) {
             $indx = 0;
             foreach ($arrays as $key => $array) {
@@ -411,6 +436,111 @@ class ReportController extends AuthorizedController
 
         $rowIndex = 1;
         $activeSheet = $spreadsheet->getActiveSheet();
+
+        if($incidentType->name === 'Подтопления') {
+            $floodingReasonsCountArr = [];
+            $floodingReasonsCountStr = '';
+            foreach (FloodingReason::all() as $floodingReason) {
+                $floodingReasonsCountArr[$floodingReason->name] = $cards->filter(function ($q) use ($floodingReason) {
+                    return $q->flooding_reason_id === $floodingReason->id;
+                })->count();
+
+                if($floodingReasonsCountArr[$floodingReason->name] !== 0) {
+                    $floodingReasonsCountStr .= "$floodingReason->name – {$floodingReasonsCountArr[$floodingReason->name]} случаев(-ай); ";
+                }
+            }
+            $activeSheet
+                ->getCell('D' . $rowIndex)
+                ->setValue("Информация")
+                ->getStyle()
+                ->getFont()
+                ->setBold(true);
+
+            $rowIndex++;
+
+            $activeSheet
+                ->getCell('C' . $rowIndex)
+                ->setValue("по подтоплениям по г. Алматы в период с {$dateStartHuman}г. по {$dateEndHuman}г.,")
+                ->getStyle()
+                ->getFont()
+                ->setBold(true);
+
+            $rowIndex++;
+
+            $activeSheet
+                ->getCell('C' . $rowIndex)
+                ->setValue("зафиксировано {$cards->count()} случаев подтоплений участков, из них: {$floodingReasonsCountStr}. ")
+                ->getStyle()
+                ->getFont()
+                ->setBold(true);
+
+            $rowIndex += 3;
+            foreach ($preparedToExport as $key => $data) {
+                $activeSheet->getCell('E' . $rowIndex)->setValue($key)->getStyle()->getFont()->setBold(true);
+
+                $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
+                $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
+
+                $activeSheet
+                    ->getStyle('A'.($rowIndex + 1).':I'. $activeSheet->getHighestRow())
+                    ->applyFromArray(Ticket101ExcelExport::HStyle);
+
+                $activeSheet
+                    ->getStyle('A'.($rowIndex + 1).':I'. ($rowIndex + 1))
+                    ->getFont()
+                    ->setBold(true);
+
+                $rowIndex = $activeSheet->getHighestRow();
+                $rowIndex += 3;
+            }
+
+            $activeSheet->getCell('B' . $rowIndex)
+                ->setValue("Всего на номер «112» поступило {$cards->count()} сообщений о подтоплениях")
+                ->getStyle()
+                ->getFont()
+                ->setBold(true);
+
+            $activeSheet->getColumnDimension('A')->setWidth(3);
+            $activeSheet->getColumnDimension('B')->setWidth(20);
+            $activeSheet->getColumnDimension('C')->setWidth(20);
+            $activeSheet->getColumnDimension('D')->setWidth(20);
+            $activeSheet->getColumnDimension('E')->setWidth(20);
+            $activeSheet->getColumnDimension('F')->setWidth(20);
+            $activeSheet->getColumnDimension('G')->setWidth(20);
+            $activeSheet->getColumnDimension('H')->setWidth(20);
+            $activeSheet->getColumnDimension('I')->setWidth(20);
+            $activeSheet->getColumnDimension('J')->setWidth(20);
+            $activeSheet->getColumnDimension('K')->setWidth(20);
+            $activeSheet->getColumnDimension('L')->setWidth(20);
+
+
+            $activeSheet = $spreadsheet->getActiveSheet();
+            $activeSheet->getStyle('A1:L'. $rowIndex)
+                ->getFont()
+                ->setSize(7)
+                ->setName('Times New Roman');
+
+
+            $activeSheet
+                ->getPageSetup()
+                ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
+                ->setFitToWidth(1)
+                ->setFitToHeight(0);
+
+            $activeSheet->getPageMargins()->setTop(0.25);
+            $activeSheet->getPageMargins()->setRight(0.25);
+            $activeSheet->getPageMargins()->setLeft(0.25);
+            $activeSheet->getPageMargins()->setBottom(0.25);
+
+            $activeSheet->freezePane('A1');
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="' . $fileName . '"');
+            header('Cache-Control: max-age=0');
+
+            $writer->save('php://output');
+        }
+
         $activeSheet
             ->getCell('C' . $rowIndex)
             ->setValue("Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStart}. по {$dateEnd}г. поступившие на линию «109» ССА.")
