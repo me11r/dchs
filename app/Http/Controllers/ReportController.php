@@ -333,7 +333,7 @@ class ReportController extends AuthorizedController
         return view('reports.112.branches', compact('incidentTypes'));
     }
 
-    ///Отчет (падение веток и деревьев, подтопления)
+    //Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
