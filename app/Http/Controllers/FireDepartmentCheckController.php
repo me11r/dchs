@@ -108,6 +108,8 @@ class FireDepartmentCheckController extends Controller
         $data['fire_depts'] = FireDepartment::all();
         $data['date'] = $date;
 
+        $data['fire_dept_id'] = Auth::user()->fire_department_id ?? 0;
+
         return view('fire-department-checks.edit',$data);
     }
 

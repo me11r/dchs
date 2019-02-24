@@ -20,6 +20,7 @@
 
                     <fire-dept-check-form
                             :fire-depts="{{ fire_depts }}"
+                            :fire-dept-id="{{ fire_dept_id }}"
                             :records="{{ not_dspt|default([])|json_encode }}"
                             :type="'fire_dept'"
                     ></fire-dept-check-form>
@@ -28,6 +29,7 @@
 
                     <fire-dept-check-form
                             :fire-depts="{{ fire_depts }}"
+                            :fire-dept-id="{{ fire_dept_id }}"
                             :records="{{ dspt|default([])|json_encode }}"
                             :type="'dspt'"
                     ></fire-dept-check-form>

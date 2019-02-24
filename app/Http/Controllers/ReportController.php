@@ -1076,7 +1076,7 @@ class ReportController extends AuthorizedController
         }
 
         if($type) {
-            $data['drill'] = $data['drill']->where('form_type_drill', $type);
+            $data['drill'] = $data['drill']->where('drill_type_id', $type);
             $data['psp'] = $data['psp']->whereHas('norm_type', function ($q) use ($type) {
                 $q->where('name',$type);
             });

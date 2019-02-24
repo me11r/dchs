@@ -58,6 +58,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="field">
+                    <button class="button is-info"
+                            @click.prevent="changeDate">Поиск</button>
+                </div>
                 <br>
                 <form>
                     <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small formation-record-table">
@@ -215,17 +219,6 @@ export default {
             });
         }
     },
-    watch: {
-        'dateTo'() {
-            this.changeDate();
-        },
-        'dateFrom'() {
-            this.changeDate();
-        },
-        'fireDepartmentId'() {
-            this.changeDate();
-        }
-    }
 
 };
 </script>
