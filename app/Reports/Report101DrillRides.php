@@ -76,7 +76,7 @@ class Report101DrillRides
                 $record['type'], //'Дата',
                 implode(',', array_map(function ($item) {
                     return $item['name'];
-                },$record['departments'])),
+                },$record['departments']->toArray())),
                 $record['name'], //'Куда',
                 $record['location'], //'Адрес',
                 $record['time_begin'], //'Время начала',

@@ -333,7 +333,7 @@ class ReportController extends AuthorizedController
         return view('reports.112.branches', compact('incidentTypes'));
     }
 
-    ///Отчет (падение веток и деревьев, подтопления)
+    //Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
@@ -1076,7 +1076,7 @@ class ReportController extends AuthorizedController
         }
 
         if($type) {
-            $data['drill'] = $data['drill']->where('form_type_drill', $type);
+            $data['drill'] = $data['drill']->where('drill_type_id', $type);
             $data['psp'] = $data['psp']->whereHas('norm_type', function ($q) use ($type) {
                 $q->where('name',$type);
             });

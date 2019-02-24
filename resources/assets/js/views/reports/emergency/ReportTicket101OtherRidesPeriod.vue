@@ -64,6 +64,10 @@
                     </div>
 
                 </div>
+            <div class="field">
+                <button class="button is-info"
+                        @click.prevent="changeDate">Поиск</button>
+            </div>
         </div>
 
         <div class="panel">
@@ -163,23 +167,6 @@
                 });
             }
         },
-        watch: {
-            'direction'() {
-                this.changeDate();
-            },
-            'dateTo'() {
-                this.changeDate();
-            },
-            'dateFrom'() {
-                this.changeDate();
-            },
-            'fireDepartmentId'() {
-                this.changeDate();
-            },
-            'rideTypeId'() {
-                this.changeDate();
-            },
-        }
     }
 </script>
 

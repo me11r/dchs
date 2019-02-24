@@ -9,6 +9,12 @@
                         <h4 class="title">Отчет-1</h4>
                     </div>
                     <div class="level-right has-text-right">
+                        <div class="field">
+                            <button class="button is-info"
+                                    @click.prevent="post_data">Поиск</button>
+                        </div>
+                    </div>
+                    <div class="level-right has-text-right">
                         <button
                             class="button is-primary"
                             @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
@@ -27,7 +33,6 @@
                     <div class="field">
                         <label for="reason">Результат выезда:</label>
                         <select
-                            @change="selectResult"
                             class="select"
                             name=""
                             id="reason">
@@ -42,7 +47,6 @@
                     <div class="field">
                         <label for="burnt">Объект горения:</label>
                         <select
-                            @change="post_data"
                             class="select"
                             v-model="burnt_id"
                             id="burnt">
@@ -57,7 +61,6 @@
                     <div class="field">
                         <label for="cityArea">Район города:</label>
                         <select
-                            @change="post_data"
                             class="select"
                             v-model="city_area_id"
                             id="cityArea">
@@ -133,7 +136,6 @@
                     <div class="field">
                         <label for="startPeriod">Начало периода:</label>
                         <input
-                            @blur="selectPeriod"
                             v-model="date_begin_"
                             type="date"
                             class="date"
@@ -142,7 +144,6 @@
                     <div class="field">
                         <label for="endPeriod">Конец периода:</label>
                         <input
-                            @blur="selectPeriod"
                             v-model="date_end_"
                             class="date"
                             type="date"
@@ -164,6 +165,9 @@
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="field">
+                        <button class="button is-info" @click.prevent="post_data">Поиск</button>
                     </div>
                     <div class="field">
                         <h3 class="title">Общее количество выездов: {{ summaryFiltered.length }}</h3>
@@ -346,7 +350,7 @@ export default {
 
             window.history.pushState('page2', 'Title', '/reports/101/emergency?reason=' + this.result_id);
 
-            this.post_data();
+            // this.post_data();
         },
         print() {
             window.print();
@@ -388,10 +392,6 @@ export default {
                 });
 
             });
-        },
-
-        selectPeriod() {
-            this.post_data();
         },
 
         exportXls() {
