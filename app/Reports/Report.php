@@ -523,15 +523,12 @@ class Report
     {
         $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = today()->addHours(7)->format('Y-m-d H:i:s');
+
         return (new FireDepartmentCheck())
             ->whereIn('date', [
-                today()->format('Y-m-d'),
-                today()->addDay(-1)->format('Y-m-d')
+                Carbon::parse($this->firstDate)->format('Y-m-d'),
+                Carbon::parse($this->secondDate)->format('Y-m-d')
             ])
-            ->where(function ($q) use ($from, $to) {
-                $q->where('created_at', '>',$from)
-                    ->where('created_at', '<', $to);
-            })
             ->get();
     }
 
