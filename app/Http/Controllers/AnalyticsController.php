@@ -116,7 +116,7 @@ class AnalyticsController extends Controller
         ])->find($id);
 
         $data['firstDate'] = Carbon::parse($data['record']->date)->addHours(7)->format('d.m.Y H:i');
-        $data['secondDate'] = Carbon::parse($data['firstDate'])->addDay()->format('d.m.Y H:i');
+        $data['secondDate'] = Carbon::parse($data['record']->date)->addDay()->addHours(7)->format('d.m.Y H:i');
 
         $data['tripResults'] = TripResult::all();
 

@@ -103,7 +103,7 @@ class AnalyticsService
             $exist->save();
         }
         else{
-            $latestAnalytics = Analytics101::where('date', $ticket->created_at->format('d-m-Y'))->first();
+            $latestAnalytics = Analytics101::where('date', $ticket->created_at->format('Y-m-d'))->first();
             if(!$latestAnalytics){
                 $latestAnalytics = Analytics101::select('*')->latest()->first();
             }
