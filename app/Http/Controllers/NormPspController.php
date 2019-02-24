@@ -29,7 +29,7 @@ class NormPspController extends Controller
         $data['record'] = NormPsp::find($id);
         $data['norm_numbers'] = NormNumber::all();
         $data['norm_types'] = NormType::all();
-        $data['fire_department'] = FireDepartment::latest()->first();
+        $data['fire_department'] = $data['record']->fire_department; //Auth::user()->department ? Auth::user()->department : json_encode(null);
         $data['can_select_fd'] = Auth::user()->hasRight('CAN_SELECT_FD_NORMS_PSP');
         $data['fire_departments'] = FireDepartment::all();
         $data['departments'] = $data['record']->departments;
