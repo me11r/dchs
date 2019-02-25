@@ -4,7 +4,12 @@
         <section>
             <b-tabs position="is-centered" class="block">
                 <b-tab-item label="Сведения о чрезвычайных ситуациях">
-                    <main-report :current_year="{{ current_year }}" :previous_year="{{ previous_year }}" :card112_results="{{ results112 }}" :card101_results="{{ results }}"></main-report>
+                    <main-report
+                        :calls-infos="{{ call_infos|json_encode }}"
+                        :cards-infos="{{ card_infos|json_encode }}"
+                        :services-infos="{{ services_infos|json_encode }}"
+                        :rivers="{{ rivers }}"
+                    ></main-report>
                 </b-tab-item>
                 <b-tab-item label="Статус">
                     <report-forces></report-forces>
