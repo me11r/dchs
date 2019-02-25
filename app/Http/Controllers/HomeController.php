@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\CallInfo;
 use App\Dictionary\TripResult;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
+use App\Models\MudflowProtection;
+use App\Models\Quake;
+use App\Models\River;
+use App\Models\Weather;
+use App\NormPsp;
 use App\Services\CommonHelper;
 use App\Services\DbHelper;
 use App\Services\FileHelper;
 use App\Services\Importer\Importer\CommonImporterTrait;
 use App\Ticket101;
+use App\Ticket101Other;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Process\Process;
@@ -33,79 +41,64 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getIndex(Request $request, CommonHelper $cp)
+    public function getIndex(Request $request, CommonHelper $h)
     {
-        $previousYearBegin = now()->subYear()->startOfYear();
-        $previousYearEnd = now()->subYear()->endOfYear();
 
-        $results = [];
-        $results112 = [];
+        $data['call_infos'] = [
+            'count_101' => CallInfo::shiftRecords()->sum('count_101'),
+            'count_112' => CallInfo::shiftRecords()->sum('count_112'),
+        ];
 
-        $currentYearBegin = now()->startOfYear();
-        $currentYearEnd = now()->endOfYear();
+        $data['card_infos'] = [
+            'count_101_real' => Ticket101::shiftRecords()->real()->count(),
+            'count_101_drill' => Ticket101::shiftRecords()->drill()->count(),
+            'count_101_norm_psp' => NormPsp::shiftRecords()->count(),
+            'count_101_other_rides' => Ticket101Other::shiftRecords()->count(),
+            'count_112' => Card112::shiftRecords()->count(),
+        ];
 
-        $date_begin = $request->get('date_begin', $previousYearBegin);
-        $date_end = $request->get('date_end', now());
-
-        $tripResults = TripResult::all();
-        $incident_types = IncidentType::all();
-
-//        $result['total101_previous'] = Ticket101::whereBetween('created_at', [$previousYearBegin, $previousYearEnd])->count();
-//        $result['total112_previous'] = Card112::whereBetween('created_at', [$previousYearBegin, $previousYearEnd])->count();
-//
-//        $result['total101_current'] = Ticket101::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
-//        $result['total112_current'] = Card112::whereBetween('created_at', [$currentYearBegin, $currentYearEnd])->count();
-
-        foreach ($tripResults as $tripResult) {
-            $stat_previous = Ticket101::getStat($previousYearBegin, $previousYearEnd, $tripResult->id);
-            $stat_current = Ticket101::getStat($currentYearBegin, $currentYearEnd, $tripResult->id);
-            $results[] = [
-                'title' => $tripResult->name,
-                'emergency_count_previous' => $stat_previous['total'],
-                'emergency_count_current' => $stat_current['total'],
-                'emergency_different' => $cp->percent_difference($stat_previous['total'], $stat_current['total']),
-                'hurt_previous' => $stat_previous['hurt'],
-                'hurt_current' => $stat_current['hurt'],
-                'hurt_different' => $cp->percent_difference($stat_previous['total'], $stat_current['total']),
-                'died_previous' => $stat_previous['total'],
-                'died_current' => $stat_current['total'],
-                'died_different' => $cp->percent_difference($stat_previous['total'], $stat_current['total']),
-            ];
+        $quake = Quake::select('*')->latest()->first();
+        $quakeString = '';
+        if ($quake) {
+            $quakeString .= "Описание: {$quake->description}, ";
+            $quakeString .= "дата и время Алматинского времени: {$quake->date_almaty}, ";
+            $quakeString .= "эпицентр: {$quake->epicenter}, ";
+            $quakeString .= "магнитуда: {$quake->mpv}, ";
+            $quakeString .= "глубина: {$quake->deep}, ";
+            $quakeString .= "сведения об ощутимости: {$quake->information}, ";
+            $quakeString .= "энергетический класс: {$quake->energy_class}, ";
+            $quakeString .= "координаты эпицентра: {$quake->coordinates}. ";
+            $quakeString .= "Дата заполнения: {$quake->created_at->format('d.m.Y H:i')}, ";
         }
 
-        foreach ($incident_types as $type) {
-            $stat_previous_112 = Card112::getStat($previousYearBegin, $previousYearEnd, $type->id);
-            $stat_current_112 = Card112::getStat($currentYearBegin, $currentYearEnd, $type->id);
-            $results[] = [
-                'title' => $type->name,
-                'emergency_count_previous' => $stat_previous_112['total'],
-                'emergency_count_current' => $stat_current_112['total'],
-                'emergency_different' => $cp->percent_difference($stat_previous_112['total'], $stat_current_112['total']),
-                'hurt_previous' => $stat_previous_112['total'],
-                'hurt_current' => $stat_current_112['total'],
-                'hurt_different' => $cp->percent_difference($stat_previous_112['total'], $stat_current_112['total']),
-                'died_previous' => $stat_previous_112['total'],
-                'died_current' => $stat_current_112['total'],
-                'died_different' => $cp->percent_difference($stat_previous_112['total'], $stat_current_112['total']),
-            ];
+        $weather = Weather::select('*')->latest()->first();
+        $weatherString = '';
+
+        if($weather) {
+            $weatherString .= "Прогноз погоды: {$weather->forecast_city1}, дата заполнения: {$weather->created_at->format('d.m.Y')}";
         }
 
-        $results = json_encode($results);
-        $results112 = json_encode($results112);
+        $mudflowProtectionLatestDate = MudflowProtection::max('date');
+        $mudflowProtectionRecords = MudflowProtection::where('date', $mudflowProtectionLatestDate)
+            ->get()
+            ->keyBy('gauging_station_id');
 
-        $this->set('results', $results);
-        $this->set('results112', $results112);
-        $this->set('previous_year', $previousYearBegin->format('Y'));
-        $this->set('current_year', $currentYearBegin->format('Y'));
+        $data['services_infos'] = [
+            'SOME' => $quakeString,
+            'weather' => $weatherString,
+            'mudflow' => $mudflowProtectionRecords,
+        ];
 
-        if($request->ajax()){
-            return response()->json([
-                'results' => $results,
-                'results112' => $results112,
-                'previous_year' => $previousYearBegin,
-                'current_year' => $currentYearBegin,
-            ], 200);
+        $data['rivers'] = River::with([
+            'gaugingStations',
+            'gaugingStations.mudflowProtection'
+        ])->get();
+
+        if($request->ajax()) {
+            return response()->json(['data' => $data]);
         }
+
+        return view('home.index', $data);
     }
 
 }

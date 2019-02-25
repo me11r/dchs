@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use App\Models\FireDepartmentResult;
 use App\Models\Staff;
+use Faker\Provider\Base;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -41,7 +43,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101Other whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Ticket101Other extends Model
+class Ticket101Other extends BaseModel
 {
     protected $fillable = [
         'ride_type_id',
