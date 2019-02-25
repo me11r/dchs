@@ -12,7 +12,6 @@
                     {% endif %}
                 </div>
             </div>
-            <form>
                 <table class="table is-narrow is-striped is-hoverable is-selectable">
                     <thead>
                     <tr>
@@ -20,13 +19,16 @@
                         <th>
                             <p>ПЧ</p>
                             {% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101', 'Диспетчер ОД 101']) %}
+                            <form>
                                 <select name="filter_department" class="select control" onchange="this.form.submit()">
-                                    <option value="">Все ПЧ</option>
-                                    {% for f in fire_departments %}
-                                        <option {% if filter_department is defined and filter_department == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.title }}</option>
-                                    {% endfor %}
-                                </select>
-                            {% endif %}
+                                        <option value="">Все ПЧ</option>
+                                        {% for f in fire_departments %}
+                                            <option {% if filter_department is defined and filter_department == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+                            </form>
+
                         </th>
                         <th>Сумма спасенного имущества</th>
                         <th>&nbsp;</th>
@@ -57,7 +59,6 @@
 
 
                 </table>
-            </form>
 
             {% include "_templates/pagination" with {'items': items, 'per_page': per_page,'other': {'filter_department':filter_department}} %}
 
