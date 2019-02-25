@@ -728,6 +728,11 @@ class Ticket101 extends BaseModel
         return $q->where('drill_type_id', $search);
     }
 
+    public function scopeDrill($q)
+    {
+        return $q->whereNotNull('drill_type_id');
+    }
+
     public function scopeClosed($q, $search = true)
     {
         return $q->where('closed', $search);
@@ -780,18 +785,9 @@ class Ticket101 extends BaseModel
             'results',
             'results.tech',
             'results.tech.formation_tech_report',
-//            'notifications',
-//            'notifications.service',
-//            'popup_notifications',
-//            'popup_notifications.user',
-//            'popup_notifications.status',
-//            'popup_notifications.group',
-//            'notification_groups',
-//            'notifications.service',
             'operational_card',
             'operational_plan.special_plans'
         ])
-//            ->append(['trunks_count'])
             ->whereBetween('created_at',[$date_begin, $date_end]);
 
         if($result_id){
