@@ -84,7 +84,7 @@
                     </div>
                 </form>
                 <div class="section" v-for="(areaArray, cityArea) in response" :key="`table_${cityArea}`">
-                    <h3>{{ cityArea }}</h3>
+                    <h3>{{ cityArea }} - {{ areaArray.length }}</h3>
                     <table class="formation-record-table">
                         <thead>
                         <tr>
@@ -117,6 +117,9 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="section" v-if="incident_type_id === 36 && total !== 0">
+                    <h4>Общее количество подтоплений - {{ total }}</h4>
                 </div>
             </div>
 
@@ -162,6 +165,7 @@ export default {
             incident_type_id: '',
             emergencyNameId: null,
             cityAreaId: null,
+            total: 0,
             response: []
         };
     },
@@ -175,6 +179,7 @@ export default {
                 'city_area_id': this.cityAreaId,
             }).then((q) => {
                 this.response = q.data.data;
+                this.total = q.data.total;
             });
         }
     }

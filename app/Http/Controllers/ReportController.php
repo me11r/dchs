@@ -387,6 +387,7 @@ class ReportController extends AuthorizedController
                     '№' => $card->id,
                     'Адрес' => $card->location,
                     'Кол-во проживающих' => $card->living_count ?? 0,
+                    'Дата происшествия' => $card->created_at->format('d.m.Y'),
                     'Место подтопления' => $card->flooding_place->name ?? null,
                     'Причина подтопления' => $card->flooding_reason->name ?? null,
                     'Принятые меры' => $card->measures,
@@ -427,8 +428,13 @@ class ReportController extends AuthorizedController
             }
         }
 
+        $total = 0;
+        foreach ($preparedToExport as $item) {
+            $total += count($item);
+        }
+
         if($request->ajax()) {
-            return response()->json(['data' => $preparedToExport,]);
+            return response()->json(['data' => $preparedToExport, 'total' => $total]);
         }
 
         $spreadsheet = new Spreadsheet();
@@ -476,7 +482,8 @@ class ReportController extends AuthorizedController
 
             $rowIndex += 3;
             foreach ($preparedToExport as $key => $data) {
-                $activeSheet->getCell('E' . $rowIndex)->setValue($key)->getStyle()->getFont()->setBold(true);
+                $totalPerArea = count($data);
+                $activeSheet->getCell('E' . $rowIndex)->setValue("$key - {$totalPerArea}")->getStyle()->getFont()->setBold(true);
 
                 $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
                 $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
