@@ -1199,7 +1199,8 @@ class ReportController extends AuthorizedController
             ->whereNotNull('dispatch_time')
             ->with([
                 'tech',
-                'ticket',
+                'ticket.trip_result',
+                'ticket.drill_type',
                 'ticket_other',
                 'department',
             ]);

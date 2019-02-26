@@ -42,6 +42,8 @@ class FireDepartmentCheckController extends Controller
             return redirect(route('fire-department-checks.update-by-date', $date));
         }
 
+        $data['fire_dept_id'] = Auth::user()->fire_department_id ?? 0;
+
         $data['fire_depts'] = FireDepartment::all();
         return view('fire-department-checks.edit', $data);
     }

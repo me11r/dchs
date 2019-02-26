@@ -81,7 +81,7 @@ class Report101Resources
             foreach ($this->uniqueDepartments($dept->id) as $ride) {
 
                 //Общее колво карточек 101 по всем результатам выезда
-                $count = count($this->amountRides($dept->id, $ride['tech']['department']));
+                $count = count($this->amountReal($dept->id, $ride['tech']['department']));
                 //Колво Карточек с  результатом выезда ПОЖАР
                 $countFire = count($this->amountTrip($dept->id, $ride['tech']['department'], [1]));
                 //Колво Карточек с  результатом выезда АСР
@@ -133,6 +133,12 @@ class Report101Resources
         })->toArray();
     }
 
+    private function amountReal($deptId, $department)
+    {
+        return collect($this->amountRides($deptId, $department))->filter(function ($q) {
+            return $q['ticket'] && !$q['ticket']['drill_type_id'];
+        })->toArray();
+    }
 
     private function amountRidesOther($deptId, $department)
     {
