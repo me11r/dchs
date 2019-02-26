@@ -47,6 +47,13 @@
                 </b-tab-item>
             {% endif %}
 
+            {% if user.hasRight('QUAKES_REPORT_SHOW') %}
+                <b-tab-item label="Случаи землетрясения">
+                    <report-quakes
+                    ></report-quakes>
+                </b-tab-item>
+            {% endif %}
+
         </b-tabs>
 
     </div>

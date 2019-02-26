@@ -51,6 +51,27 @@ const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
+Object.defineProperty(Array.prototype, 'chunk', {
+    value: function(chunkSize) {
+        var R = [];
+        for (var i = 0; i < this.length; i += chunkSize)
+            R.push(this.slice(i, i + chunkSize));
+        return R;
+    }
+});
+
+Object.defineProperty(Array.prototype, 'inArray', {
+    value: function(key) {
+        return this.indexOf(key) !== -1;
+    }
+});
+
+Object.defineProperty(Array.prototype, 'clone', {
+    value: function() {
+        return JSON.parse(JSON.stringify(this));
+    }
+});
+
 Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
@@ -117,7 +138,7 @@ Vue.component('report-emergency-rescue-gu', require('./views/reports/emergency/R
 Vue.component('report-object-classification', require('./views/reports/emergency/ReportTicket101ObjectClassification'));
 Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
 Vue.component('report-water-consumption', require('./views/reports/emergency/ReportTicket101WaterConsumption'));
-
+Vue.component('report-quakes', require('./views/reports/emergency/ReportQuakes'));
 Vue.component('mudflow-date-selector', require('./views/mudflowProtection/SelectDate'));
 
 // трекер яндекс-запросов

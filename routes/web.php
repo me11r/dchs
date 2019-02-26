@@ -364,6 +364,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('reports/water-consumption/','ReportController@getReportWaterConsumption');//->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
     Route::get('reports/water-consumption/export/{type}','ReportController@exportReportWaterConsumption');//->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+    Route::get('reports/quakes','ReportController@getReportQuakes');
 
     Route::get('reports/daily-reports/{type}','ReportController@daily_reports');
 
