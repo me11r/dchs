@@ -66,6 +66,7 @@ export default {
             if (this.user.id !== 0) {
                 return api.get('/messages/list/' + this.user.id).then(response => {
                     this.messages = response.data.messages;
+                    this.messages = _.sortBy(this.messages, 'id',['asc'])
                     this.loading = false;
                     this.loaded = true;
                 }).then(() => {

@@ -2,7 +2,7 @@
     <div class="container" id="forces-resources-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Учет сил и средств
+                style="padding: 3px 15px">Учет выездов подразделений
             за {{ dateFromFormatted }} по {{ dateToFormatted }}
         </h4>
         <div class="panel">
