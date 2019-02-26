@@ -33,8 +33,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Quake whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Quake extends Model
+class Quake extends BaseModel
 {
+    protected $searchByDate = 'date_almaty';
+
     public $table = 'quakes';
 
     public $fillable = [
@@ -55,5 +57,18 @@ class Quake extends Model
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
         return $q->whereBetween('created_at', [$from, $to]);
+    }
+
+    public function getTotalInfoAttribute()
+    {
+        $result = '';
+        $result .= "Эпицентр землетрясения: {$this->epicenter}; ";
+        $result .= "магнитуда MPV: {$this->mpv}; ";
+        $result .= "глубина: {$this->deep}; ";
+        $result .= "сведения об ощутимости: {$this->information}; ";
+        $result .= "энергетический класс землетрясения: {$this->energy_class}; ";
+        $result .= "координаты эпицентра: {$this->coordinates}; ";
+
+        return $result;
     }
 }
