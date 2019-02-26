@@ -107,6 +107,7 @@ class Ticket101ResourcesExcelExport
         $sheet->getRowDimension(1)->setRowHeight(50);
         $sheet->getRowDimension(2)->setRowHeight(50);
         $sheet->getRowDimension(3)->setRowHeight(50);
+        $sheet->getRowDimension(4)->setRowHeight(50);
 
         $letters = range('A', 'Z');
 
@@ -163,7 +164,7 @@ class Ticket101ResourcesExcelExport
                     }
                     foreach ($rowVal as $department) {
                         $sheet->fromArray($department, null, "B$rowIndex");
-                        $sheet->getStyle("B$rowIndex:F$rowIndex")->applyFromArray(self::HStyle);
+                        $sheet->getStyle("B$rowIndex:L$rowIndex")->applyFromArray(self::HStyle);
                         $sheet->getRowDimension($rowIndex)->setRowHeight(50);
                         $rowIndex++;
                     }

@@ -48,7 +48,7 @@
                                 <label>ПЧ</label><br>
                                 <select v-model="fireDepartmentId"
                                         class="control">
-                                    <option value="">-</option>
+                                    <!--<option value="">-</option>-->
                                     <option v-for="i in fireDepartments"
                                             :key="`fire_department_id_${i.id}`"
                                             :value="i.id">{{ i.title }}
@@ -75,23 +75,39 @@
                             <tr v-for="dept in fireDepartments" v-if="uniqueDepartments(dept.id).length">
                                 <td>{{ dept.title }}</td>
                                 <td>
-                                    <div >
+                                    <div>
                                         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small is-bordered">
                                             <thead>
-                                                <tr>
-                                                    <td>Отделение</td>
-                                                    <td>Кол-во выездов за период</td>
-                                                    <td>Выезда по тревоге</td>
-                                                    <td>Учения</td>
-                                                    <td>Прочие выезда</td>
-                                                </tr>
+                                            <tr>
+                                                <td rowspan="2">Отделение</td>
+                                                <td colspan="7">Количество выездов по тревоге</td>
+                                                <td rowspan="2">Практические выезда (ПТЗ,ПТУ,ТСУ,РКШУ,Учения, ТДК)</td>
+                                                <td rowspan="2">Корректировки</td>
+                                                <td rowspan="2">Прочие Выезда</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Общее количество выездов по тревоге</td>
+                                                <td>Пожары</td>
+                                                <td>Проведение аварийно-спасательных работ</td>
+                                                <td>Ложные/Бдительность населения</td>
+                                                <td>Срабатывание сигнализации</td>
+                                                <td>Область</td>
+                                                <td>Случаи горения, не подлежащие учету как пожары</td>
+                                            </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="ride in uniqueDepartments(dept.id)">
                                                     <td>{{ ride.tech.department || ride.tech.reserve + ' резерв' }}</td>
-                                                    <td>{{ amountRides(dept.id, ride.tech.department).length }}</td>
                                                     <td>{{ amountRidesReal(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesFire(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesASR(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesFalse(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesAlarm(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesArea(dept.id, ride.tech.department).length }}</td>
+                                                    <!--<td>{{ amountRidesNonFire(dept.id, ride.tech.department).length }}</td>-->
+                                                    <td>{{ amountRidesReal(dept.id, ride.tech.department).length - (amountRidesFire(dept.id, ride.tech.department).length + amountRidesASR(dept.id, ride.tech.department).length + amountRidesFalse(dept.id, ride.tech.department).length + amountRidesAlarm(dept.id, ride.tech.department).length + amountRidesArea(dept.id, ride.tech.department).length) }}</td>
                                                     <td>{{ amountRidesDrill(dept.id, ride.tech.department).length }}</td>
+                                                    <td>{{ amountRidesCorrection(dept.id, ride.tech.department).length }}</td>
                                                     <td>{{ amountRidesOther(dept.id, ride.tech.department).length }}</td>
                                                 </tr>
                                             </tbody>
@@ -128,7 +144,7 @@ export default {
             reports_: this.reports,
             dateFrom: new Date,
             dateTo: new Date,
-            fireDepartmentId: 0,
+            fireDepartmentId: 1,
         };
     },
     computed: {
@@ -163,7 +179,7 @@ export default {
         },
         amountRidesReal(deptId, department) {
             return _.filter(this.amountRides(deptId, department), function (q) {
-                return q.ticket && q.ticket.form_type_drill === null;
+                return q.ticket && q.ticket.drill_type_id === null;
             });
         },
         amountRidesOther(deptId, department) {
@@ -173,7 +189,48 @@ export default {
         },
         amountRidesDrill(deptId, department) {
             return _.filter(this.amountRides(deptId, department), function (q) {
-                return q.ticket && q.ticket.form_type_drill !== null;
+                return q.ticket && q.ticket.drill_type_id !== null;
+            });
+        },
+        amountRidesFire(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.trip_result && q.ticket.trip_result.name === 'Пожар';
+            });
+        },
+        amountRidesCorrection(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.drill_type && q.ticket.drill_type.name === 'Корректировка';
+            });
+        },
+        amountRidesNonFire(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.trip_result
+                    && q.ticket.trip_result.name !== 'Пожар'
+                    && q.ticket.trip_result.name !== 'Ложный'
+                    && q.ticket.trip_result.name !== 'Бдительность населения'
+                    && q.ticket.trip_result.name !== 'Срабатывание сигнализации'
+                    && q.ticket.trip_result.name !== 'Область'
+                    && q.ticket.trip_result.name !== 'АСР';
+            });
+        },
+        amountRidesASR(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.trip_result && q.ticket.trip_result.name === 'АСР';
+            });
+        },
+        amountRidesFalse(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return (q.ticket && q.ticket.trip_result) && (q.ticket.trip_result.name === 'Ложный' || q.ticket.trip_result.name === 'Бдительность населения');
+            });
+        },
+        amountRidesAlarm(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.trip_result && q.ticket.trip_result.name === 'Срабатывание сигнализации';
+            });
+        },
+        amountRidesArea(deptId, department) {
+            return _.filter(this.amountRides(deptId, department), function (q) {
+                return q.ticket && q.ticket.trip_result && q.ticket.trip_result.name === 'Область';
             });
         },
         amountRides(deptId, department) {
