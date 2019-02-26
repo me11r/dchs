@@ -82,7 +82,7 @@ class MessengerController extends Controller
                 return $query->where('sender_id', $user_id)
                     ->where('reciever_id', $me->id);
             })
-            ->orderBy('id', 'asc')
+            ->orderBy('id', 'desc')
             ->limit(150)
             ->get();
 
