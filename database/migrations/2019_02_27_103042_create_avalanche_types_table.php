@@ -13,15 +13,17 @@ class CreateAvalancheTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('avalanche_types', function (Blueprint $table) {
-            $table->increments('id');
+        iF(!Schema::hasTable('avalanche_types')) {
+            Schema::create('avalanche_types', function (Blueprint $table) {
+                $table->increments('id');
 
-            $table->string('name')->index();
+                $table->string('name')->index();
 
-            $table->softDeletes();
+                $table->softDeletes();
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
 
         $newData = [
             ['name' => 'Профилактический'],
