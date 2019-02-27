@@ -69,6 +69,8 @@ class NormPspController extends Controller
                 'norm_number_id' => $request->norm_number_id,
                 'norm_type_id' => $request->norm_type_id,
                 'responsible_person' => $request->responsible_person,
+                'gdzs_included_30' => $request->gdzs_included_30,
+                'note' => $request->note,
             ]);
 
             if($request->departments) {
