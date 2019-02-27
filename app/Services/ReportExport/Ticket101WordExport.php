@@ -642,12 +642,14 @@ class Ticket101WordExport
             ['align' => Jc::BOTH]
         );
 
+        $techIndex = 1;
         foreach ($repairedTech as $fireDept => $tech) {
             $section->addText(
-                "{$fireDept}:\t\t" . implode(', ', $tech),
+                "{$techIndex}. {$fireDept}:\t\t" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
+            $techIndex++;
         }
 
         /*$section->addText(
