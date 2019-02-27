@@ -114,6 +114,24 @@
                     </div>
 
                 </div>
+                <div class="column">
+                    <div class="field">
+                        <p class="control">
+                            <label for="norm_number_id">С включением ГДЗС (30 минут)</label>
+                        </p>
+                        <div class="block">
+                            <b-radio name="gdzs_included_30" v-model="record_.gdzs_included_30"
+                                     native-value="1">
+                                Да
+                            </b-radio>
+                            <b-radio name="gdzs_included_30" v-model="record_.gdzs_included_30"
+                                     native-value="0">
+                                Нет
+                            </b-radio>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
         </div>
@@ -152,6 +170,10 @@
                 </div>
             </div>
         </div>
+        <div class="field">
+            <label for="">Примечание</label>
+            <textarea class="textarea" name="note" v-model="record_.note"></textarea>
+        </div>
         <br>
         <button v-if="fireDepartment_.id !== 0 || canSelectFd" type="submit" class="button is-success">Сохранить</button>
 
@@ -180,6 +202,8 @@
                         norm_number_id: 0,
                         fire_department_id: 0,
                         responsible_person: '',
+                        gdzs_included_30: 0,
+                        note: '',
                     }
                 }
             },
