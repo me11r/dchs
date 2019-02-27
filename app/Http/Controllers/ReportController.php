@@ -355,7 +355,7 @@ class ReportController extends AuthorizedController
             . '.xls';
 
         $cards = (new Card112())
-            ->skipNullValue('incident_type_id',  $request->get('incident_type_id'))
+            ->skipNullValue('additional_incident_type_id',  $request->get('incident_type_id'))
             ->skipNullValue('emergency_name_id',$emergency_name_id)
             ->skipNullValue('city_area_id',$cityAreaId)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
