@@ -45,6 +45,7 @@ use App\Repositories\Contracts\Ticket101Interface;
 use App\RideType;
 use App\Services\ReportExport\Daily112WordExport;
 use App\Services\ReportExport\DailyWordExport;
+use App\Services\ReportExport\ReportAvalanches;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\ReportQuakes;
 use App\Services\ReportExport\Ticket101ChronologyExcelExport;
@@ -949,8 +950,6 @@ class ReportController extends AuthorizedController
             $record->append('total_info');
         }
 
-//        Cache::put('quakes_data', $data, 3600);
-
         if($request->ajax()) {
             return response()->json($data);
         }
@@ -962,6 +961,30 @@ class ReportController extends AuthorizedController
         $dailyWordExport = new ReportQuakes($data);
         $writer = $dailyWordExport->getWriter('Word2007');
         $fileName = 'Случаи землетрясения в г. Алматы  - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
+    }
+
+    /// сход лавин
+    public function getReportAvalanches(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', (new Carbon('01/01/2019'))->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $avalanche_type_id = $request->input('avalancheTypeId', null);
+
+        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+            ->where('avalanche_type_id', $avalanche_type_id)
+            ->with(['avalanche_type'])
+            ->get();
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+
+        $dailyWordExport = new ReportAvalanches($data);
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Сход лавин - '.date('d-m-Y'). '.docx';
         $writer->save(public_path($fileName));
 
         return response()->download(public_path($fileName));

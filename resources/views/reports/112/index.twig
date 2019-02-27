@@ -54,6 +54,14 @@
                 </b-tab-item>
             {% endif %}
 
+            {% if user.hasRight('AVALANCHES_REPORT_SHOW') %}
+                <b-tab-item label="Сход лавин">
+                    <report-avalanches
+                        :avalanche-types="{{ avalanche_types }}"
+                    ></report-avalanches>
+                </b-tab-item>
+            {% endif %}
+
         </b-tabs>
 
     </div>

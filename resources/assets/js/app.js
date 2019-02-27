@@ -139,6 +139,7 @@ Vue.component('report-object-classification', require('./views/reports/emergency
 Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
 Vue.component('report-water-consumption', require('./views/reports/emergency/ReportTicket101WaterConsumption'));
 Vue.component('report-quakes', require('./views/reports/emergency/ReportQuakes'));
+Vue.component('report-avalanches', require('./views/reports/emergency/ReportAvalanches'));
 Vue.component('mudflow-date-selector', require('./views/mudflowProtection/SelectDate'));
 
 // трекер яндекс-запросов
