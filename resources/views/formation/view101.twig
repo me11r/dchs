@@ -501,9 +501,9 @@
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНАЯ ТЕХНИКА:</h3>
             <table class="table">
-                {% for item in inactive_tech %}
+                {% for index, item  in inactive_tech %}
                     <tr>
-                        <td><span class="has-text-weight-bold">{{ item.vehicle.fireDepartment.name }}</span></td>
+                        <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>
                         <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %} {{ item.comment ? ' - '~item.comment }} {{ item.date_from_formatted ? ' с '~item.date_from_formatted }}</td>
                     </tr>
                 {% endfor %}
