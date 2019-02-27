@@ -52,6 +52,9 @@ class Report
         $firstDate = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $secondDate = today()->addHours(7)->format('Y-m-d H:i:s');
 
+        $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
+        $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
+
         if($date) {
             $carbon = new Carbon($date);
             $firstDate = $carbon->addHours(7)->format('Y-m-d H:i:s');
@@ -524,12 +527,14 @@ class Report
         $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = today()->addHours(7)->format('Y-m-d H:i:s');
 
-        return (new FireDepartmentCheck())
+        $result = (new FireDepartmentCheck())
             ->whereIn('date', [
                 Carbon::parse($this->firstDate)->format('Y-m-d'),
                 Carbon::parse($this->secondDate)->format('Y-m-d')
             ])
             ->get();
+
+        return $result;
     }
 
     private function getDates()
