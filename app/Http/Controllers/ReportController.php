@@ -974,7 +974,14 @@ class ReportController extends AuthorizedController
         $avalanche_type_id = $request->input('avalancheTypeId', null);
 
         $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
-            ->where('avalanche_type_id', $avalanche_type_id)
+            ->where(function ($q) use ($avalanche_type_id) {
+                if($avalanche_type_id) {
+                    $q->where('avalanche_type_id', $avalanche_type_id);
+                }
+                else {
+                    $q->whereNotNull('avalanche_type_id');
+                }
+            })
             ->with(['avalanche_type'])
             ->get();
 

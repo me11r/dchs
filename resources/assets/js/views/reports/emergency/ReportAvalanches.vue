@@ -43,6 +43,7 @@
                     <div class="control">
                         <p>Тип схода снежных лавин</p>
                         <select class="control" id="avalancheTypeId" v-model="avalancheTypeId">
+                            <option value=""></option>
                             <option v-for="type in avalancheTypes" :value="type.id">{{ type.name }}</option>
                         </select>
                     </div>
