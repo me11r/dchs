@@ -13,10 +13,11 @@ class NormPsp extends Model
         'time_begin',
         'time_end',
         'fire_department_id',
-//        'department',
         'norm_number_id',
         'norm_type_id',
         'responsible_person',
+        'note',
+        'gdzs_included_30', //с включение гдзс (30 минут)
     ];
 
     public function norm_type()
