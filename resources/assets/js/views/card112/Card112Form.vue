@@ -353,7 +353,7 @@
                         <div
                                 class="control"
                                 style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                            <p class="control">
+                            <!--<p class="control">
                                 <label for="incident_type_id">Происшествие</label>
                             </p>
                             <div class="select">
@@ -366,6 +366,14 @@
                                             :value="incidentType.id">{{ incidentType.name }}
                                     </option>
                                 </select>
+                            </div>-->
+                            <div
+                                    class="control"
+                                    style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="incident_type_text">Происшествие</label>
+                                </p>
+                                <input disabled type="text" class="input" v-model="model.incident_type_text">
                             </div>
                         </div>
                         <br>
