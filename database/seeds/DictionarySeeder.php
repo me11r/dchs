@@ -211,6 +211,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'flooding_reasons',
                 'model' => \App\FloodingReason::class
             ],
+            [
+                'title' => "Тип схода снежных лавин",
+                'table' => 'avalanche_types',
+                'model' => \App\AvalancheType::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

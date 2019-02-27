@@ -471,6 +471,7 @@
                             </div>
                         </div>
 
+                        <!--Если тип происшествия: Подтопления-->
                         <div class="field is-grouped" v-if="model.additional_incident_type_id === 36">
                             <!--Место подтопления-->
                             <div
@@ -523,6 +524,42 @@
                                     name="living_count"
                                     id="living_count"
                                     v-model="model.living_count">
+                            </div>
+                        </div>
+
+                        <!--Если тип происшествия: Сход снежных лавин-->
+                        <div class="field is-grouped" v-if="model.additional_incident_type_id === 46">
+                            <!--Тип схода снежных лавин-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="avalanche_type_id">Тип схода снежных лавин</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="avalanche_type_id"
+                                        name="avalanche_type_id"
+                                        v-model="model.avalanche_type_id">
+                                        <option
+                                            v-for="avalancheType in avalancheTypes"
+                                            :key="`avalanche_type_${avalancheType.id}`"
+                                            :value="avalancheType.id">{{ avalancheType.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--куб/м-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="avalanche_volume">куб/м</label>
+                                </p>
+                                <input
+                                    type="number"
+                                    class="input"
+                                    name="avalanche_volume"
+                                    id="avalanche_volume"
+                                    v-model="model.avalanche_volume">
                             </div>
                         </div>
 
@@ -889,6 +926,7 @@ export default {
             services: [],
             floodingPlaces: [],
             floodingReasons: [],
+            avalancheTypes: [],
             servicesTabIndex: 0
         };
     },
@@ -1093,6 +1131,7 @@ export default {
                 this.servicePlans = window.card112FormData.servicePlans;
                 this.floodingPlaces = window.card112FormData.floodingPlaces;
                 this.floodingReasons = window.card112FormData.floodingReasons;
+                this.avalancheTypes = window.card112FormData.avalancheTypes;
 
                 globalBus.$emit('dateIsReady', this.model.custom_created_at);
 

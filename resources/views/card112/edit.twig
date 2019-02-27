@@ -17,6 +17,7 @@
             notificationGroups: {{ notificationGroups | json_encode() | raw }},
             floodingPlaces: {{ flooding_places | json_encode() | raw }},
             floodingReasons: {{ flooding_reasons | json_encode() | raw }},
+            avalancheTypes: {{ avalanche_types | json_encode() | raw }},
             formRoute: '{{ route('card112.update', model.id) }}'
         };
     </script>
