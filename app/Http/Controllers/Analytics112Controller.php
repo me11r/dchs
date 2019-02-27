@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\TripResult;
 use App\EmergencyName;
@@ -70,6 +71,7 @@ class Analytics112Controller extends Controller
 
     }
 
+    //Аналитика ДЧС
     public function index(Request $request)
     {
         $data = [];
@@ -82,6 +84,7 @@ class Analytics112Controller extends Controller
 
         $data['city_areas'] = CityArea::all();
         $data['emergency_names'] = EmergencyName::all();
+        $data['avalanche_types'] = AvalancheType::all();
 
         $data['tripResults'] = TripResult::all();
 
