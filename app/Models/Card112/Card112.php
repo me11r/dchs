@@ -147,6 +147,8 @@ class Card112 extends BaseModel
         'flooding_place_id',
         'flooding_reason_id',
         'living_count',
+        'avalanche_volume',
+        'avalanche_type_id',
     ];
 
     /**

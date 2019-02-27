@@ -72,6 +72,8 @@ class Card112Resource extends JsonResource
             'flooding_place_id' => $this->flooding_place_id,
             'flooding_reason_id' => $this->flooding_reason_id,
             'living_count' => $this->living_count,
+            'avalanche_type_id' => $this->avalanche_type_id,
+            'avalanche_volume' => $this->avalanche_volume,
         ];
     }
 }
