@@ -2,6 +2,7 @@
 
 namespace App\Models\Card112;
 
+use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\EmergencyName;
@@ -157,6 +158,11 @@ class Card112 extends BaseModel
     public function street()
     {
         return $this->hasOne(Street::class, 'id', 'street_id');
+    }
+
+    public function avalanche_type()
+    {
+        return $this->belongsTo(AvalancheType::class, 'avalanche_type_id');
     }
 
     public function flooding_place()
