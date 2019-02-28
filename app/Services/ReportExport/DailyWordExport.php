@@ -452,8 +452,13 @@ class DailyWordExport
         foreach ($this->data['tech'] as $item) {
             foreach ($item['formation_tech_items'] as $tech) {
                 if ($tech['status'] === 'repair') {
+                    $techString = $item['department']['title'] . ' ' . $tech['vehicle']['name'] . ' ' . $tech['vehicle']['base'] . ' ' . $tech['comment'];
+                    if($tech['date_from']) {
+                        $tech['date_from'] = Carbon::parse($tech['date_from'])->format('d.m.Y');
+                        $techString .= ", с {$tech['date_from']}";
+                    }
                     $section->addText(
-                        $item['department']['title'] . ' ' . $tech['vehicle']['name'] . ' ' . $tech['vehicle']['base'] . ' ' . $tech['comment'],
+                        $techString,
                         $generalBoldFontStyle8,
                         ['align' => Jc::BOTH]
                     );

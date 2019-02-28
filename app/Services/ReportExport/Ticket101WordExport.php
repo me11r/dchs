@@ -205,6 +205,7 @@ class Ticket101WordExport
         $od_depts_names = [
             'ipl' => 'ИПЛ',
             'kshm' => 'КШМ',
+            'dspt' => 'ДСПТ',
         ];
 
         $queryArr = [];
