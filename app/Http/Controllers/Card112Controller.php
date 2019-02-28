@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\DiseaseType;
 use App\ElevatorEmergencyType;
 use App\EmergencyName;
 use App\EmergencyType;
@@ -140,6 +141,7 @@ class Card112Controller extends Controller
             ->with('flooding_reasons', FloodingReason::all())
             ->with('avalanche_types', AvalancheType::all())
             ->with('elevator_emergency_types', ElevatorEmergencyType::all())
+            ->with('disease_types', DiseaseType::all())
             ->with('currentTabIndex', 0)
             ->render();
     }
@@ -206,6 +208,7 @@ class Card112Controller extends Controller
             ->with('flooding_reasons', FloodingReason::all())
             ->with('avalanche_types', AvalancheType::all())
             ->with('elevator_emergency_types', ElevatorEmergencyType::all())
+            ->with('disease_types', DiseaseType::all())
             ->with('model', $model);
     }
 
