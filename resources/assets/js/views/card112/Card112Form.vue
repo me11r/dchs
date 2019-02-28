@@ -521,7 +521,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <!--МЕСТО ПРОИСШЕСТВИЯ-->
+                            <!--Количество проживающих-->
                             <div class="control is-expanded">
                                 <p class="control">
                                     <label for="living_count">Количество проживающих</label>
@@ -532,6 +532,30 @@
                                     name="living_count"
                                     id="living_count"
                                     v-model="model.living_count">
+                            </div>
+                        </div>
+
+                        <!--Если тип происшествия: Происшествия на лифтах-->
+                        <div class="field is-grouped" v-if="incidentTypeText === 'Происшествия на лифтах'">
+                            <!--Тип происшествия на лифтах-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="elevator_emergency_type_id">Тип происшествия на лифтах</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="elevator_emergency_type_id"
+                                        name="elevator_emergency_type_id"
+                                        v-model="model.elevator_emergency_type_id">
+                                        <option
+                                            v-for="elevatorEmergency in elevatorEmergencyTypes"
+                                            :key="`elevatorEmergency_${elevatorEmergency.id}`"
+                                            :value="elevatorEmergency.id">{{ elevatorEmergency.name }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -935,6 +959,7 @@ export default {
             floodingPlaces: [],
             floodingReasons: [],
             avalancheTypes: [],
+            elevatorEmergencyTypes: [],
             servicesTabIndex: 0
         };
     },
@@ -957,6 +982,10 @@ export default {
         },
         cityAreasOptions() {
             return this.commonOptionsMapping(this.cityAreas);
+        },
+        incidentTypeText() {
+            let data = _.find(this.incidentTypes, {id: this.model.additional_incident_type_id});
+            return data ? data.name : null;
         }
     },
     methods: {
@@ -1140,6 +1169,7 @@ export default {
                 this.floodingPlaces = window.card112FormData.floodingPlaces;
                 this.floodingReasons = window.card112FormData.floodingReasons;
                 this.avalancheTypes = window.card112FormData.avalancheTypes;
+                this.elevatorEmergencyTypes = window.card112FormData.elevatorEmergencyTypes;
 
                 globalBus.$emit('dateIsReady', this.model.custom_created_at);
 

@@ -319,6 +319,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/emergency', 'ReportController@postReport112Emergency')->name('emergency112_post');
 
         Route::get('/avalanches', 'ReportController@getReportAvalanches')->name('avalanches_get');
+        Route::get('/elevators', 'ReportController@getReportElevators')->name('elevators_get');
 
         Route::get('/branches', 'ReportController@getReport112Branches')
             ->name('emergency112_get_branches');

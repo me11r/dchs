@@ -5,6 +5,7 @@ namespace App\Models\Card112;
 use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\ElevatorEmergencyType;
 use App\EmergencyName;
 use App\EmergencyType;
 use App\FloodingPlace;
@@ -150,6 +151,7 @@ class Card112 extends BaseModel
         'living_count',
         'avalanche_volume',
         'avalanche_type_id',
+        'elevator_emergency_type_id',
     ];
 
     /**
@@ -163,6 +165,11 @@ class Card112 extends BaseModel
     public function avalanche_type()
     {
         return $this->belongsTo(AvalancheType::class, 'avalanche_type_id');
+    }
+
+    public function elevator_emergency_type()
+    {
+        return $this->belongsTo(ElevatorEmergencyType::class, 'elevator_emergency_type_id');
     }
 
     public function flooding_place()
