@@ -216,6 +216,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'avalanche_types',
                 'model' => \App\AvalancheType::class
             ],
+            [
+                'title' => "Происшествия на лифтах",
+                'table' => 'elevator_emergency_types',
+                'model' => \App\ElevatorEmergencyType::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

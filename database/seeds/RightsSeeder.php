@@ -110,6 +110,7 @@ class RightsSeeder extends Seeder
 
             ['right_group_id' => 6, 'title' => 'Отчет по случаям землетрясения: просмотр', 'name' => 'QUAKES_REPORT_SHOW'],
             ['right_group_id' => 6, 'title' => 'Отчет профилактический и самопроизвольный сход лавин: просмотр', 'name' => 'AVALANCHES_REPORT_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Отчет Информация происшествия на лифтах: просмотр', 'name' => 'ELEVATOR_REPORT_SHOW'],
 
             ['right_group_id' => 7, 'title' => 'Ручной ввод хронометража', 'name' => 'CAN_ACCESS_MANUAL_INPUT_CHRONO'],
             ['right_group_id' => 7, 'title' => 'Расположение гидрантов', 'name' => 'CAN_ACCESS_HYDRANT'],

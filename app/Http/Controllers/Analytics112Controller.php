@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\TripResult;
+use App\ElevatorEmergencyType;
 use App\EmergencyName;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
@@ -85,6 +86,7 @@ class Analytics112Controller extends Controller
         $data['city_areas'] = CityArea::all();
         $data['emergency_names'] = EmergencyName::all();
         $data['avalanche_types'] = AvalancheType::all();
+        $data['elevator_emergency_types'] = ElevatorEmergencyType::all();
 
         $data['tripResults'] = TripResult::all();
 
