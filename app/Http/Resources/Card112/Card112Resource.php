@@ -75,6 +75,8 @@ class Card112Resource extends JsonResource
             'avalanche_type_id' => $this->avalanche_type_id,
             'avalanche_volume' => $this->avalanche_volume,
             'elevator_emergency_type_id' => $this->elevator_emergency_type_id,
+            'disease_type_id' => $this->disease_type_id,
+            'name_disease' => $this->name_disease,
         ];
     }
 }

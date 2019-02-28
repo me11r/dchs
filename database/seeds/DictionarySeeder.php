@@ -221,6 +221,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'elevator_emergency_types',
                 'model' => \App\ElevatorEmergencyType::class
             ],
+            [
+                'title' => "Типы заболеваний",
+                'table' => 'disease_types',
+                'model' => \App\DiseaseType::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

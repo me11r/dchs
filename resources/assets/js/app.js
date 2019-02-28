@@ -141,6 +141,7 @@ Vue.component('report-water-consumption', require('./views/reports/emergency/Rep
 Vue.component('report-quakes', require('./views/reports/emergency/ReportQuakes'));
 Vue.component('report-avalanches', require('./views/reports/emergency/ReportAvalanches'));
 Vue.component('report-elevators', require('./views/reports/emergency/ReportElevators'));
+Vue.component('report-disease', require('./views/reports/emergency/ReportDisease'));
 Vue.component('mudflow-date-selector', require('./views/mudflowProtection/SelectDate'));
 
 // трекер яндекс-запросов

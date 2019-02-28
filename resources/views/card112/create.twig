@@ -19,6 +19,7 @@
             floodingReasons: {{ flooding_reasons | json_encode() | raw }},
             avalancheTypes: {{ avalanche_types | json_encode() | raw }},
             elevatorEmergencyTypes: {{ elevator_emergency_types | json_encode() | raw }},
+            diseaseTypes: {{ disease_types | json_encode() | raw }},
             formRoute: '{{ route('card112.store') }}'
         };
     </script>

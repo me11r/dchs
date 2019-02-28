@@ -46,6 +46,7 @@ use App\RideType;
 use App\Services\ReportExport\Daily112WordExport;
 use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportAvalanches;
+use App\Services\ReportExport\ReportDisease;
 use App\Services\ReportExport\ReportElevators;
 use App\Services\ReportExport\ReportForcesExcelExport;
 use App\Services\ReportExport\ReportQuakes;
@@ -1029,6 +1030,45 @@ class ReportController extends AuthorizedController
         $dailyWordExport = new ReportElevators($data);
         $writer = $dailyWordExport->getWriter('Word2007');
         $fileName = 'Тип происшествия на лифтах - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
+    }
+
+    /// Инфекционные заболевания
+    public function getReportDisease(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', (new Carbon('01/01/2019'))->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+        $typeId = $request->input('diseaseTypeId', null);
+
+        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+            ->where(function ($q) use ($typeId) {
+                if($typeId) {
+                    $q->where('disease_type_id', $typeId);
+                }
+                else {
+                    $q->whereNotNull('disease_type_id');
+                }
+            })
+            ->with(['disease_type','emergency_name'])
+            ->get();
+
+
+        if($request->ajax()) {
+            return response()->json($data);
+        }
+
+        $data['footer'] = DailyReportPerson::where('report_type', 'diseases')
+            ->where('type', 'footer_first')
+            ->first();
+
+        $data['dateFrom'] = Carbon::parse($dateFrom)->format('d.m.Y');
+        $data['dateTo'] = Carbon::parse($dateTo)->format('d.m.Y');
+
+        $dailyWordExport = new ReportDisease($data);
+        $writer = $dailyWordExport->getWriter('Word2007');
+        $fileName = 'Инфекционные заболевания - '.date('d-m-Y'). '.docx';
         $writer->save(public_path($fileName));
 
         return response()->download(public_path($fileName));
