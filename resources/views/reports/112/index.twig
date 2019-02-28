@@ -62,6 +62,15 @@
                 </b-tab-item>
             {% endif %}
 
+            {% if user.hasRight('ELEVATOR_REPORT_SHOW') %}
+                <b-tab-item label="Информация происшествия на лифтах">
+                    <report-elevators
+                        :elevator-emergency-types="{{ elevator_emergency_types }}"
+                        :city-areas="{{ city_areas }}"
+                    ></report-elevators>
+                </b-tab-item>
+            {% endif %}
+
         </b-tabs>
 
     </div>
