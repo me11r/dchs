@@ -71,6 +71,14 @@
                 </b-tab-item>
             {% endif %}
 
+            {% if user.hasRight('DISEASE_REPORT_SHOW') %}
+                <b-tab-item label="Инфекционные заболевания">
+                    <report-disease
+                        :disease-types="{{ disease_types }}"
+                    ></report-disease>
+                </b-tab-item>
+            {% endif %}
+
         </b-tabs>
 
     </div>

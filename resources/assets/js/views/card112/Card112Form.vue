@@ -559,6 +559,42 @@
                             </div>
                         </div>
 
+                        <!--Если тип происшествия: Инфекционные заболевания-->
+                        <div class="field is-grouped" v-if="incidentTypeText === 'Инфекционные заболевания'">
+                            <!--Тип инфекционного заболевания-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="disease_type_id">Тип инфекционного заболевания</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="disease_type_id"
+                                        name="disease_type_id"
+                                        v-model="model.disease_type_id">
+                                        <option
+                                            v-for="option in diseaseTypes"
+                                            :key="`diseaseTypes_${option.id}`"
+                                            :value="option.id">{{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--ФИО-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="name_disease">ФИО</label>
+                                </p>
+                                <input
+                                        type="text"
+                                        class="input"
+                                        name="name_disease"
+                                        id="name_disease"
+                                        v-model="model.name_disease">
+                            </div>
+                        </div>
+
                         <!--Если тип происшествия: Сход снежных лавин-->
                         <div class="field is-grouped" v-if="model.additional_incident_type_id === 46">
                             <!--Тип схода снежных лавин-->
@@ -960,6 +996,7 @@ export default {
             floodingReasons: [],
             avalancheTypes: [],
             elevatorEmergencyTypes: [],
+            diseaseTypes: [],
             servicesTabIndex: 0
         };
     },
@@ -1170,6 +1207,7 @@ export default {
                 this.floodingReasons = window.card112FormData.floodingReasons;
                 this.avalancheTypes = window.card112FormData.avalancheTypes;
                 this.elevatorEmergencyTypes = window.card112FormData.elevatorEmergencyTypes;
+                this.diseaseTypes = window.card112FormData.diseaseTypes;
 
                 globalBus.$emit('dateIsReady', this.model.custom_created_at);
 
