@@ -15,9 +15,7 @@ class CallInfo extends Model
         'count_103',
         'count_info',
         'count_other',
-
-        'count_emergency',
-
+//        'count_emergency',
         'note',
     ];
 
@@ -40,7 +38,7 @@ class CallInfo extends Model
     {
         return
             $this->count_101 +
-            $this->count_emergency +
+//            $this->count_emergency +
             $this->count_102 +
             $this->count_103 +
             $this->count_info +

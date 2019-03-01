@@ -33,7 +33,7 @@
                             <td>{{ item.count_103 }}</td>
                             <td>{{ item.count_109 }}</td>
                             <td>{{ item.count_112 }}</td>
-                            <td>{{ item.created_at }}</td>
+                            <td>{{ item.date|date('d.m.Y') }}</td>
                             <td>
                                 <div class="field is-grouped">
                                 <a class="button is-basic is-small" href="{{ route('reports-call-infos.edit', {'id':item.id}) }}">
