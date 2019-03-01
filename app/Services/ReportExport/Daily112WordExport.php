@@ -152,17 +152,6 @@ class Daily112WordExport
         $resultString = 'ЧС – ' . ($this->data['cards112_emergency']->count() + $this->data['cards101_emergency']->count())
             .', пожары – '.($this->data['fires_count_101']->count() + $this->data['fires_count_112']->count()) .', ';
 
-//        foreach (TripResult::all() as $reason) {
-//
-//            $cnt = $this->data['cards101']->filter(function ($event) use ($reason) {
-//                return $event->trip_result_id == $reason->id;
-//            });
-//
-//            if($cnt->count()){
-//                $resultString .= "{$reason->name} – " . $cnt->count().', ';
-//            }
-//        }
-
         $resultString .= 'погиб – ' . $this->data['emergency_dead_count'].', ';
         $resultString .= 'спасено – ' . $this->data['emergency_saved_count'].', ';
         $resultString .= 'эвакуировано – ' . $this->data['evacuated_count'].', ';
@@ -208,9 +197,10 @@ class Daily112WordExport
             );
         }
 
+        //11 пункт
         $index++;
-        $this->addParagraph($section, "{$index}. ГУ «СП и АСР»: всего выездов – ", $this->data['cards101']->count());
-        $section->addText('Из них: ');
+        $guSpiasrString = "всего выездов – " . $this->data['cards101']->count();
+        $guSpiasrString .= " из них: ";
 
         $reasons = TripResult::dailyReportConst()->get();
         $secondIndex = 0;
@@ -230,11 +220,7 @@ class Daily112WordExport
 
             $upper = ucfirst($reason->name);
 
-            $section->addText(
-                "$index.$secondIndex"." {$upper} – " . $cnt->count(),
-                $generalBoldFontStyle,
-                ['align' => Jc::BOTH]
-            );
+            $guSpiasrString .= "{$upper} – {$cnt->count()}, ";
 
             $reasonsArr = array_unique($cnt->pluck('burn_object_id')->toArray());
 
@@ -248,11 +234,7 @@ class Daily112WordExport
                         return $event->burn_object_id == $fireObject->id && $event->trip_result_id == $reason->id;
                     })->count();
 
-                    $section->addText(
-                        "{$index}.{$secondIndex}.{$innerIterator}. {$fireObject->name} – " . $burntFireCount,
-                        $generalBoldFontStyle,
-                        ['indentation' => ['left' => 540]]
-                    );
+                    $guSpiasrString .= "{$fireObject->name} – $burntFireCount, ";
 
                     $innerIterator++;
                 }
@@ -261,84 +243,56 @@ class Daily112WordExport
         }
 
         if($this->data['poisoningCount'] != '0/0') {
-            $section->addText(
-                "{$index}.{$secondIndex}".'. Случаи отравления - ' . $this->data['poisoningCount'],
-                $generalBoldFontStyle,
-                ['align' => Jc::BOTH]
-            );
-            $section->addText(
-                $index.".{$subIndex}. Отравление угарным газом – " . $this->data['carbonPoisoningCount'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
-            $subIndex++;
-            $section->addText(
-                $index.".{$subIndex}. Отравление природным газом – " . $this->data['naturalPoisoningCount'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
+
+            $guSpiasrString .= "случаи отравления – {$this->data['poisoningCount']}, ";
+            $guSpiasrString .= "отравление угарным газом – {$this->data['carbonPoisoningCount']}, ";
+            $guSpiasrString .= "отравление природным газом – {$this->data['naturalPoisoningCount']}, ";
         }
 
         $subIndex = 1;
 
         if ($this->data['suicideCount'] && $this->data['suicideCount'] !== '0/0') {
-            $section->addText(
-                "{$index}.{$subIndex}. Попытка суицида - " . $this->data['suicideCount'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
+
+            $guSpiasrString .= "попытка суицида – {$this->data['suicideCount']}, ";
 
             $subIndex++;
         }
 
         if ($this->data['saved_count'] && $this->data['saved_count'] !== '0/0') {
-            $section->addText(
-                "{$index}.{$subIndex}. Спасено людей – " . $this->data['saved_count'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
+
+            $guSpiasrString .= "спасено людей – {$this->data['saved_count']}, ";
 
             $subIndex++;
         }
 
         if ($this->data['evacuated_count'] && $this->data['evacuated_count'] !== '0/0') {
-            $section->addText(
-                "{$index}.{$subIndex}. Эвакуировано людей – " . $this->data['evacuated_count'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
+
+            $guSpiasrString .= "эвакуировано людей – {$this->data['evacuated_count']}, ";
 
             $subIndex++;
         }
 
         if ($this->data['gptBurnsCount'] && $this->data['gptBurnsCount'] !== '0/0') {
-            $section->addText(
-                "{$index}.{$subIndex}. Получили ожоги – " . $this->data['gptBurnsCount'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
+
+            $guSpiasrString .= "получили ожоги – {$this->data['gptBurnsCount']}, ";
 
             $subIndex++;
         }
 
         if ($this->data['dead_count'] && $this->data['dead_count'] !== '0/0') {
-            $section->addText(
-                "{$index}.{$subIndex}. Гибель людей – " . $this->data['dead_count'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
+
+            $guSpiasrString .= "гибель людей – {$this->data['dead_count']}, ";
 
             $subIndex++;
         }
 
         if ($this->data['hospitalizedCount'] && $this->data['hospitalizedCount'] !== '0/0') {
-            $section->addText(
-                "{$index}.{$subIndex}. Госпитализировано – " . $this->data['hospitalizedCount'],
-                $generalBoldFontStyle,
-                ['indentation' => ['left' => 540]]
-            );
 
+            $guSpiasrString .= "госпитализировано – {$this->data['hospitalizedCount']}, ";
         }
+
+        $this->addParagraph($section, "{$index}. ГУ «СП и АСР»: ", $guSpiasrString);
+
 
         $index++;
 
@@ -396,8 +350,6 @@ class Daily112WordExport
                 ['align' => Jc::BOTH]
             );
         }
-
-
     }
 
     private function serviceInfo(&$section, $data, $style = ['indentation' => ['left' => 540]])
