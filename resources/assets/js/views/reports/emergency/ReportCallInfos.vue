@@ -83,11 +83,11 @@
                         <thead>
                             <tr>
                                 <th rowspan="2">Общее количество принятых сообщений</th>
-                                <th colspan="7">Из них</th>
+                                <th colspan="6">Из них</th>
                             </tr>
                             <tr>
                                 <th>По линии «101»</th>
-                                <th>По вопросам реагирования на ЧС природного и техногенного характера</th>
+                                <!--<th>По вопросам реагирования на ЧС природного и техногенного характера</th>-->
                                 <th>По линии «102»</th>
                                 <th>По линии «103»</th>
                                 <th>Информационно - справочного характера</th>
@@ -99,7 +99,7 @@
                             <tr>
                                 <td>{{ report.report101.total_101 }}</td>
                                 <td>{{ report.report101.count_101 }}</td>
-                                <td>{{ report.report101.count_emergency }}</td>
+                                <!--<td>{{ report.report101.count_emergency }}</td>-->
                                 <td>{{ report.report101.count_102 }}</td>
                                 <td>{{ report.report101.count_103 }}</td>
                                 <td>{{ report.report101.count_info }}</td>
@@ -154,7 +154,7 @@ export default {
                 },
                 report101: {
                     count_101: this.sumByField('count_101'),
-                    count_emergency: this.sumByField('count_emergency'),
+                    // count_emergency: this.sumByField('count_emergency'),
                     count_102: this.sumByField('count_102'),
                     count_103: this.sumByField('count_103'),
                     count_info: this.sumByField('count_info'),
