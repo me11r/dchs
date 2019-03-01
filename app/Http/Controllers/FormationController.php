@@ -756,7 +756,7 @@ class FormationController extends AuthorizedController
         })->where('status', 'repair')
             ->get();
 
-        $inactive_tech_cnt = [];
+        /*$inactive_tech_cnt = [];
         foreach ($inactive_tech as $inactive_tech_item){
             if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
                 $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
@@ -764,7 +764,12 @@ class FormationController extends AuthorizedController
             else{
                 $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
             }
-        }
+
+        }*/
+
+        $inactive_tech_cnt = $inactive_tech->groupBy(function ($q) {
+            return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
+        });
 
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($report){
             $q->where('name', 'Расстановка');

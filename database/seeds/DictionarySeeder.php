@@ -226,6 +226,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'disease_types',
                 'model' => \App\DiseaseType::class
             ],
+            [
+                'title' => "Виды техники",
+                'table' => 'vehicle_classes',
+                'model' => \App\VehicleClass::class
+            ],
         ];
         #Schema::disableForeignKeyConstraints();
         #(new App\Dictionary)->truncate();

@@ -510,7 +510,7 @@
             </table>
         </div>
         <div class="column">
-            <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Больничные:</h3>
