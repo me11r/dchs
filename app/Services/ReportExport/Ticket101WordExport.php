@@ -662,7 +662,7 @@ class Ticket101WordExport
         $inactive_tech_cnt = $this->data['inactive_tech_cnt'];
         $inactive_tech_cnt_str = '';
         foreach ($inactive_tech_cnt as $name => $count) {
-            $inactive_tech_cnt_str .= "{$name} - {$count}, ";
+            $inactive_tech_cnt_str .= "{$name} - {$count->count()}, ";
         }
         $section->addText(
             "Всего:\t\t" . $inactive_tech_cnt_str,
