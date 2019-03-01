@@ -38,15 +38,15 @@ class ReportCallInfoWord
 
     public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
-    public function __construct()
+    public function __construct($data)
     {
         $this->defineDomPdfWriter();
 
         $this->phpWord = new PhpWord();
-        $this->data = Cache::get('call_info_dates');
+        $this->data = $data;//Cache::get('call_info_dates');
         $this->dateFrom = $this->data['dateFrom'];
         $this->dateTo = $this->data['dateTo'];
-        $this->data = CallInfo::whereBetween('date', [$this->data['dateFrom'], $this->data['dateTo']])->get();
+        $this->data['records'] = CallInfo::whereBetween('date', [$this->data['dateFrom'], $this->data['dateTo']])->get();
 
         $this->prepareDocument();
     }
@@ -74,6 +74,20 @@ class ReportCallInfoWord
 
         $this->addSecondTable($section);
 
+        $section->addText($this->data['footer'] ? $this->data['footer']->position : "Начальник УЕДДС ДЧС г.Алматы",
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::START]
+        );
+
+        $section->addText($this->data['footer'] ? $this->data['footer']->post : "подполковник  ГЗ",
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::START]
+        );
+
+        $section->addText($this->data['footer'] ? $this->data['footer']->name : "А. Байдильдаев",
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::END]
+        );
 
     }
 
@@ -134,7 +148,7 @@ class ReportCallInfoWord
         $value = [
             $this->sumByField('total_101'),
             $this->sumByField('count_101'),
-            $this->sumByField('count_emergency'),
+//            $this->sumByField('count_emergency'),
             $this->sumByField('count_102'),
             $this->sumByField('count_103'),
             $this->sumByField('count_info'),
@@ -147,7 +161,7 @@ class ReportCallInfoWord
 
     private function sumByField($field)
     {
-        return $this->data->sum($field);
+        return $this->data['records']->sum($field);
     }
 
     private function addDataCellToRow(Row $row, $value, array $extraCellStyles = [], array $extraTextFStyles = [], array $extraTextPStyles = [])
@@ -193,10 +207,10 @@ class ReportCallInfoWord
 
         $table->addCell(null, $cellRowContinue);
 
-        $table->addCell(null, $cellRowSpan)->addText('По основной деятельности «112»', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('По линии «101»', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('По линии «102»', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('По линии «103»', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('По основной деятельности 112', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('По линии 101', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('По линии 102', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('По линии 103', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Информационно – справочного характера', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Прочее (проверка сотовых телефонов, шалость детей и т.д.)', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Примечание', $hcFontStyle, $hcAlignStyle);
@@ -213,16 +227,16 @@ class ReportCallInfoWord
         $table->addRow(700);
 
         $table->addCell(500, $cellRowSpan)->addText('Общее количество принятых сообщений', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 7, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Из них:', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Из них:', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow();
 
         $table->addCell(null, $cellRowContinue);
 
-        $table->addCell(null, $cellRowSpan)->addText('По линии «101»', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('По вопросам реагирования на ЧС природного и техногенного характера', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('По линии «102»', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('По линии «103»', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('По линии 101', $hcFontStyle, $hcAlignStyle);
+//        $table->addCell(null, $cellRowSpan)->addText('По вопросам реагирования на ЧС природного и техногенного характера', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('По линии 102', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('По линии 103', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Информационно – справочного характера', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Прочее (проверка сотовых телефонов, шалость детей и т.д.)', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Примечание', $hcFontStyle, $hcAlignStyle);
@@ -233,7 +247,22 @@ class ReportCallInfoWord
     private function addFirstPageTopData(Section $section)
     {
         // заголовок
-        $section->addText("Сведения о количестве звонков поступивших на номер «112» с 07.00 {$this->dateFrom}
+        $section->addText($this->data['header'] ? $this->data['header']->position : "Начальнику ЦУКС КЧС МВД РК",
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::END]
+        );
+
+        $section->addText($this->data['header'] ? $this->data['header']->post : "подполковнику гражданской защиты",
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::END]
+        );
+
+        $section->addText($this->data['header'] ? $this->data['header']->name : "М. Батыркулову",
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::END]
+        );
+
+        $section->addText("Сведения о количестве звонков поступивших на номер 112 с 07.00 {$this->dateFrom}
          до 07.00 {$this->dateTo} года УЕДДС ДЧС г. Алматы",
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
@@ -250,8 +279,8 @@ class ReportCallInfoWord
     private function addSecondPageTopData(Section $section)
     {
         // заголовок
-        $section->addText("Сведения о количестве звонков поступивших на номер «101» с 07.00 {$this->dateFrom}
-         до 07.00 {$this->dateTo} года ГУ «СПиАСР» г. Алматы",
+        $section->addText("Сведения о количестве звонков поступивших на номер 101 с 07.00 {$this->dateFrom}
+         до 07.00 {$this->dateTo} года ГУ СПиАСР г. Алматы",
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
