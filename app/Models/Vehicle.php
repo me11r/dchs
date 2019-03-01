@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\FireDepartment;
+use App\VehicleClass;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -51,6 +52,7 @@ class Vehicle extends Model
         'number_old',
         'reg_certificate',
         'note',
+        'vehicle_class_id',
     ];
 
 
@@ -62,5 +64,10 @@ class Vehicle extends Model
     public function vehicleType()
     {
         return $this->belongsTo(VehicleType::class, 'vehicle_type_id');
+    }
+
+    public function vehicleClass()
+    {
+        return $this->belongsTo(VehicleClass::class, 'vehicle_class_id');
     }
 }
