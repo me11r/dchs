@@ -166,7 +166,15 @@ export default {
                 axios.get('/api/hydrant')
                     .then((response) => {
                         this.hydrantList = response['data']['hydrants'];
-                        this.fireDepartments = response['data']['fireDepartments'];
+                        let fireDeptsFiltered = response['data']['fireDepartments'];
+
+                        if (window.userDeptRight !== 0 && window.userDeptRight !== null) {
+                            fireDeptsFiltered = fireDeptsFiltered.filter((item) => {
+                                return item.id === window.userDeptRight;
+                            });
+                        }
+
+                        this.fireDepartments = fireDeptsFiltered;
                         this.mapFireDepts();
                         this.hydrantsClusterer = this.getHydrantsClusterer(this.hydrantList.map((item) => {
                             return this.getHydrantPlaceMarkFromItem(item, this.onMarkClick, this.onMarkDragEnd);

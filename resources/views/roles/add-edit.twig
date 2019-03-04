@@ -15,6 +15,20 @@
                         <label for="title">Наименование</label>
                         <input type="text" class="input" name="title" id="title" value="{{ attribute(record, 'title')|default('') }}"/>
                     </div>
+                    {% if record.id|default(0) != 1 %}
+                        <div class="field">
+                            <div class="control">
+                                <p class="label">Доступ к гидрантам в рамках ПЧ</p>
+                                <select name="hydrant_access_id" id="hydrant_access_id">
+                                    <option value=""></option>
+                                    {% for item in fire_departments %}
+                                        <option {{ record.hydrant_access_id|default(0) == item.id ? 'selected' : '' }} value="{{ item.id }}">{{ item.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    {% endif %}
+
                     <div class="col-md">
                         <h5 class="subtitle">Разрешения и роли</h5>
                         {% for group in right_groups %}
@@ -24,6 +38,7 @@
                                     <label for="right_{{ r.id }}" class="form-check-label">
                                         <input {% if record is defined and record.hasRight(r.id) %} checked {% endif %} type="checkbox" id="right_{{ r.id }}" name="right[{{ r.id }}]" value="{{ r.id }}"
                                                class="form-check-input"> {{ r.title|default('-?-') }}
+                                        <input type="hidden" value="{{ r.name }}">
                                     </label>
                                 </div>
                             {% endfor %}
