@@ -14,11 +14,12 @@
             fire_levels: {{ fire_levels | json_encode()| raw }},
             water_sources: {{ water_sources | json_encode()| raw }},
             ticketInfo: {{ ticketInfo | json_encode() | raw }},
+            trunk_types: {{ trunk_types | json_encode() | raw }},
             fire_department_id: {{ departmentId }}
         }
     </script>
     <div class="section container">
-        <h4 class="title">Путевой лист №{{ trip.id }}: Иноформация от {{ trip.department.name }}</h4>
+        <h4 class="title">Путевой лист №{{ trip.id }}: Информация от {{ trip.department.name }}</h4>
         <div id="fire-department-data"></div>
     </div>
 {% endblock content %}

@@ -166,7 +166,15 @@ export default {
                 axios.get('/api/hydrant')
                     .then((response) => {
                         this.hydrantList = response['data']['hydrants'];
-                        this.fireDepartments = response['data']['fireDepartments'];
+                        let fireDeptsFiltered = response['data']['fireDepartments'];
+
+                        if (window.userDeptRight !== 0 && window.userDeptRight !== null) {
+                            fireDeptsFiltered = fireDeptsFiltered.filter((item) => {
+                                return item.id === window.userDeptRight;
+                            });
+                        }
+
+                        this.fireDepartments = fireDeptsFiltered;
                         this.mapFireDepts();
                         this.hydrantsClusterer = this.getHydrantsClusterer(this.hydrantList.map((item) => {
                             return this.getHydrantPlaceMarkFromItem(item, this.onMarkClick, this.onMarkDragEnd);
@@ -194,6 +202,8 @@ export default {
         },
         onMarkDragEnd(event, model) {
             if (this.canSaveOrUpdateHydrant(model)) {
+                globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.onMarkDragEnd()'});
+
                 const coords = event.originalEvent.target.geometry['getCoordinates']();
                 model.lat = coords[0];
                 model.long = coords[1];
@@ -202,6 +212,8 @@ export default {
             }
         },
         onMapDoubleClick(event) {
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.onMapDoubleClick()'});
+
             const coords = event.get('coords');
             let model = {...this.emptyModel};
             model.lat = coords[0];
@@ -255,6 +267,7 @@ export default {
                 gridSize: 100
             });
             clusterer.add(geoObjects);
+
             return clusterer;
         },
         getHydrantPlaceMarkFromItem(item, onClick, onDragEnd) {
@@ -278,6 +291,7 @@ export default {
             placemark.events.add('dragend', (event) => {
                 onDragEnd(event, item);
             });
+
             return placemark;
         },
         addHydrantClickListener() {
@@ -438,6 +452,9 @@ export default {
                 self.onMapDoubleClick(event);
             });
 
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.initMap()'});
+
+
             this.setMapData();
         },
         initCityAreas() {
@@ -457,6 +474,9 @@ export default {
             window.scrollTo(0,document.body.scrollHeight);
             this.map.setZoom(18);
             this.map.panTo([lat, long]);
+
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.zoomToObject()'});
+
 
             if (this.currentHydrantMark) {
                 this.currentHydrantMark.geometry.setCoordinates([lat, long]);

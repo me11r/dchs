@@ -7,6 +7,7 @@ use App\Aircraft;
 use App\AircraftType;
 use App\Dictionary;
 use App\DistrictManager;
+use App\EventInfoArrived;
 use App\FireDepartment;
 use App\IncidentTypeCategory;
 use App\Models\DailyReportPerson;
@@ -15,8 +16,10 @@ use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\ServiceType;
 use App\Models\SpecialPlan;
+use App\Models\Trunk;
 use App\OperationalCard;
 use App\Right;
+use App\TrunkType;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -63,6 +66,10 @@ class DictionaryController extends AuthorizedController
         [
             'title' => 'Персоны суточного отчета',
             'href' => '/dictionaries/daily-report-persons',
+        ],
+        [
+            'title' => 'Стволы',
+            'href' => '/dictionaries/event-info-arrived',
         ],
     ];
 
@@ -275,6 +282,16 @@ class DictionaryController extends AuthorizedController
             $data['records'] = $reports->paginate($data['per_page']);
             $data['title'] = "Персоны суточного отчета";
         }
+        elseif($name == 'event-info-arrived') {
+            $reports = EventInfoArrived::orderBy('id');
+
+            if($request->search){
+                $reports = $reports->where('name', 'like', "%$request->search%");
+            }
+
+            $data['records'] = $reports->paginate($data['per_page']);
+            $data['title'] = "Стволы";
+        }
 
 
         return view($view, $data);
@@ -364,6 +381,11 @@ class DictionaryController extends AuthorizedController
             $data['record'] = DistrictManager::find($id);
             $data['city_areas'] = Dictionary\CityArea::all();
             $data['title'] = "Ответственный по району";
+        }
+        elseif($name == 'event-info-arrived'){
+            $data['record'] = EventInfoArrived::find($id);
+            $data['types'] = TrunkType::all();
+            $data['title'] = "Стволы";
         }
         return view($view, $data);
     }
@@ -490,7 +512,15 @@ class DictionaryController extends AuthorizedController
             $record->title = $request->title;
             $record->city_area_id = $request->city_area_id;
             $record->recommend = $request->recommend;
+            $record->goes_in_formation_report = $request->goes_in_formation_report;
             $record->address = $request->address;
+
+            $record->save();
+        }
+        elseif($name == 'event-info-arrived'){
+            $record  = EventInfoArrived::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->trunk_type_id = $request->trunk_type_id;
 
             $record->save();
         }

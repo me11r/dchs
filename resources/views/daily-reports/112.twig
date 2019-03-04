@@ -1,0 +1,49 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section" id="vue">
+        <div class="level">
+            <div class="level-left">
+                <h4 style="" class="title">Суточные отчеты 112</h4>
+            </div>
+            <div class="level-right">
+                <a class="button is-big is-info" href="/reports/daily112/word">
+                    <i class="fas fa-file-word"></i>&nbsp; Скачать последний отчет</a>
+            </div>
+        </div>
+        <div class="panel">
+                <table class="table is-striped is-narrow is-hoverable is-selectable">
+                    <thead>
+                    <tr>
+                        <th>Дата и время</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.date|date('d.m.Y') }}</td>
+                            <td>
+                                <div class="field is-grouped">
+                                    <a class="button is-info is-small"
+                                       target="_blank"
+                                       href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'word'}) }}">
+                                        <i class="fas fa-file-word"></i>.DOCX</a>
+
+                                    <a class="button is-danger is-small"
+                                       target="_blank"
+                                       href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'pdf'}) }}">
+                                        <i class="fas fa-file-pdf"></i>.PDF</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><h3 class="is-danger">Нет данных в таблице</h3></tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+                {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+
+            </div>
+    </div>
+{% endblock %}

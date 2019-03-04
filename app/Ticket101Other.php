@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\Models\BaseModel;
+use App\Models\FireDepartmentResult;
 use App\Models\Staff;
+use Faker\Provider\Base;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -40,19 +43,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101Other whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Ticket101Other extends Model
+class Ticket101Other extends BaseModel
 {
     protected $fillable = [
         'ride_type_id',
-        'ticket_101_id',
-        'fire_department_id',
-        'department',
         'time_begin',
         'time_end',
         'object_name',
-        'staff_id',
         'note',
+        'formation_report_id',
+        'responsible_person',
         'direction',
+        'final_ride_type_id',
+        'final_responsible_person',
+        'final_direction',
+        'final_object_name',
     ];
 
     public function ride_type()
@@ -60,18 +65,53 @@ class Ticket101Other extends Model
         return $this->belongsTo(RideType::class,'ride_type_id');
     }
 
-    public function ticket101()
+    public function formation_report()
     {
-        return $this->belongsTo(Ticket101::class,'ticket_101_id');
+        return $this->belongsTo(FormationReport::class,'formation_report_id');
     }
 
-    public function fire_department()
+    public function results()
     {
-        return $this->belongsTo(FireDepartment::class,'fire_department_id');
+        return $this->hasMany(FireDepartmentResult::class, 'ticket101_other_id');
     }
 
-    public function staff()
+    public function setFinalRideTypeIdAttribute($value)
     {
-        return $this->belongsTo(Staff::class,'staff_id');
+        if(!$value) {
+            $this->attributes['final_ride_type_id'] = $this->attributes['ride_type_id'];
+        }
+        else {
+            $this->attributes['final_ride_type_id'] = $value;
+        }
+    }
+
+    public function setFinalResponsiblePersonAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['final_responsible_person'] = $this->attributes['responsible_person'];
+        }
+        else {
+            $this->attributes['final_responsible_person'] = $value;
+        }
+    }
+
+    public function setFinalDirectionAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['final_direction'] = $this->attributes['direction'];
+        }
+        else {
+            $this->attributes['final_direction'] = $value;
+        }
+    }
+
+    public function setFinalObjectNameAttribute($value)
+    {
+        if(!$value) {
+            $this->attributes['final_object_name'] = $this->attributes['object_name'];
+        }
+        else {
+            $this->attributes['final_object_name'] = $value;
+        }
     }
 }

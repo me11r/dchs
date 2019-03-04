@@ -33,7 +33,8 @@ export default {
                     position: 'is-top',
                     onAction: () => {
                         this.shown = false;
-                        window.location.href = '/roadtrip/view/' + this.plans[0].id;
+                        let url = (this.plans[0].ticket !== null ? '/roadtrip/view/' : '/roadtrip/view-other/') + this.plans[0].id;
+                        window.location.href = url;
                     }
                 });
                 const notify = window.Notification;

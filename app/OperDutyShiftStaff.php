@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\OperDutyShiftStaff
@@ -20,9 +21,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OperDutyShiftStaff extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'guard_number_id',
+        'position',
+        'city',
+        'rank',
+        'military_rank',
     ];
 
     public function shifts()

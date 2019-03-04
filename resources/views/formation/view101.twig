@@ -75,7 +75,7 @@
                         {% for ppl in people_fields %}
                             <td>
                                 {{ people[dept.id][ppl]|default('-') }}
-                                {#{% if people[dept.id]['trainee']|default(null) is not empty and people[dept.id].getTraineeCount(ppl) %}/{{ people[dept.id].getTraineeCount(ppl) }}{% endif %}#}
+                                {% if people[dept.id]['trainee']|default(null) is not empty and people[dept.id].getTraineeCount(ppl) %}/{{ people[dept.id].getTraineeCount(ppl) }}{% endif %}
                             </td>
                         {% endfor %}
 
@@ -501,16 +501,16 @@
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНАЯ ТЕХНИКА:</h3>
             <table class="table">
-                {% for item in inactive_tech %}
+                {% for index, item  in inactive_tech %}
                     <tr>
-                        <td><span class="has-text-weight-bold">{{ item.vehicle.fireDepartment.name }}</span></td>
+                        <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>
                         <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %} {{ item.comment ? ' - '~item.comment }} {{ item.date_from_formatted ? ' с '~item.date_from_formatted }}</td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
         <div class="column">
-            <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Больничные:</h3>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\TrunkType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -32,5 +33,8 @@ class Trunk extends Model
 
     public $table = 'dict_trunk';
 
-    public $fillable = ['name'];
+    public $fillable = [
+        'name',
+    ];
+
 }

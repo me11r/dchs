@@ -13,6 +13,7 @@
             :key="'block_' + index">
             <create-edit-check-item
                 :block="block"
+                :fire-dept-id="fireDeptId"
                 :fire-depts="fireDepts_"/>
 
             <div
@@ -60,6 +61,10 @@ export default {
         type: {
             type: String,
             required: true
+        },
+        fireDeptId: {
+            type: Number,
+            default: null
         }
     },
     data: function () {
@@ -89,7 +94,7 @@ export default {
         addEmptyItem() {
             this.firedeptBlocks.push({
                 id: moment().valueOf(),
-                fire_department_id: 1,
+                fire_department_id: this.fireDeptId,
                 note: '',
                 responsible_person: '',
                 time_begin: '00:00:00',

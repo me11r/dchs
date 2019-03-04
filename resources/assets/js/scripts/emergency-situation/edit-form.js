@@ -7,7 +7,9 @@ if (document.getElementById('emergency-situation-form')) {
         data() {
             return {
                 time: new Date(),
-                date: new Date()
+                date: new Date(),
+                months: ["Январь", "Февраль", "Март", "Апреть", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+                days: ["Вс","Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
             };
         },
         computed: {
@@ -23,6 +25,9 @@ if (document.getElementById('emergency-situation-form')) {
                 if (this.$refs['timepicker']) {
                     this.$refs['timepicker'].close();
                 }
+            },
+            formatDate(date) {
+                return moment(date).format('DD-MM-YYYY');
             }
         },
         beforeMount() {

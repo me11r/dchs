@@ -13,6 +13,8 @@ use App\Dictionary\FireObject;
 use App\Dictionary\LiquidationMethod;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
+use App\DistrictManager;
+use App\DrillType;
 use App\EmergencyType;
 use App\EventInfo;
 use App\EventInfoArrived;
@@ -35,6 +37,7 @@ use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\Trunk;
 use App\Models\WallMaterial;
+use App\ObjectClassification;
 use App\OperationalCard;
 use App\RideType;
 use App\Services\AnalyticsService;
@@ -44,6 +47,7 @@ use App\Ticket101Drill;
 use App\Ticket101HqRide;
 use App\Ticket101Other;
 use App\Ticket101ServicePlan;
+use App\TrunkType;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -65,6 +69,8 @@ class CardController extends AuthorizedController
         $this->set('fireDepartments', collect(FireDepartment::all(['id', 'title']))->toArray());
         $this->set('model', new HydrantResource(new Hydrant()));
 
+        $this->set('userDeptRight', Auth::user()->role->hydrant_access_id ?? 0);
+
         $this->set('isAdmin', $isAdmin);
         $this->set('canEditAllHydrants', $canEditAllHydrants);
         $this->set('canEditOwnHydrants', $canEditOwnHydrants);
@@ -84,6 +90,7 @@ class CardController extends AuthorizedController
         $data['fireDepartments'] = collect(FireDepartment::all(['id', 'title']))->toArray();
         $data['model'] = new HydrantResource(new Hydrant());
 
+        $data['userDeptRight'] = Auth::user()->role->hydrant_access_id ?? 0;
         $data['isAdmin'] = $isAdmin;
         $data['canEditOwnHydrants'] = $canEditOwnHydrants;
         $data['userDept'] = $userDept;
@@ -96,8 +103,6 @@ class CardController extends AuthorizedController
     {
         $perPage = $request->get('per_page', 10);
 
-        $f = $request->all();
-
         $search = trim($request->search);
 
         if(Auth::user()->hasRight('DELETE_CARD101')){
@@ -108,34 +113,29 @@ class CardController extends AuthorizedController
         $id = $request->input('filter.id', '');
         $city_area = $request->input('filter.city_area', '');
 
-        $city_areas = Ticket101::groupBy('city_area_id')
-            ->checkDrill($card_type)
-            ->get(['city_area_id'])
-            ->pluck('city_area_id')
-            ->toArray();
 
-        $city_areas = CityArea::whereIn('id', $city_areas)->get();
+        $city_areas = CityArea::all();
 
         if($id){
-            $tickets = Ticket101::with(['city_area'])
-                ->orderBy($sort,'desc')
-                ->checkDrill($card_type)
+            $tickets = Ticket101::
+                orderBy($sort,'desc')
+                ->real()
                 ->where('id',$id)
                 ->paginate($perPage);
         }
         elseif($city_area){
 
-            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                ->where('city_area_id', $city_area)
-                ->checkDrill($card_type)
+            $tickets = Ticket101::
+                where('city_area_id', $city_area)
+                ->real()
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
         elseif($search){
             if(is_numeric($search)){
-                $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                    ->where('id', $search)
-                    ->checkDrill($card_type)
+                $tickets = Ticket101::
+                    where('id', $search)
+                    ->real()
                     ->orderBy($sort,'desc')
                     ->paginate($perPage);
             }
@@ -146,8 +146,8 @@ class CardController extends AuthorizedController
                 catch (\Exception $e){
                     $date = null;
                 }
-                $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                    ->checkDrill($card_type)
+                $tickets = Ticket101::
+                    real()
                     ->where('location', "like", "$search%")
                     ->orWhereDate('created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
@@ -159,8 +159,8 @@ class CardController extends AuthorizedController
 
         }
         else{
-            $tickets = Ticket101::with(['crossroad_1', 'crossroad_2', 'city_area'])
-                ->checkDrill($card_type)
+            $tickets = Ticket101::
+                real()
                 ->orderBy($sort,'desc')
                 ->paginate($perPage);
         }
@@ -176,7 +176,7 @@ class CardController extends AuthorizedController
             ->set('per_page', $perPage);
     }
 
-    public function getAdd101(Request $request, $card_id = 0, $card_type = 'real')
+    public function getAdd101(Request $request, $card_id = 0, $card_type = null)
     {
         $gu_notify = [
             '100' => '100',
@@ -216,8 +216,7 @@ class CardController extends AuthorizedController
         $this->set('emergencyTypes', EmergencyType::all());
         $this->set('wall_materials', $wall_materials);
         $this->set('notification_get_back', session()->pull('notification.get_back', 0));
-        $this->set('wall_materials', $wall_materials);
-        $this->set('staff', Staff::all());
+//        $this->set('staff', Staff::all());
         $this->set('ride_types', RideType::all());
         $this->set('fire_departments_vue', FireDepartment::recommend()->get());
         $this->set('card_type', $card_type);
@@ -232,13 +231,15 @@ class CardController extends AuthorizedController
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::with(['fire_departments'])->get());
-        $this->set('fire_object', BurntObject::all());
+//        $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
+        $this->set('object_classifications', ObjectClassification::all());
         $this->set('living_sector_types', LivingSectorType::all());
         $this->set('burn_object', FireObject::all());
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
-        $this->set('fire_object_options', FireObject::all());
+//        $this->set('fire_object_options', FireObject::all());
+        $this->set('trunk_types', TrunkType::all());
         $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
             return [
                 'id' => $item->id,
@@ -254,35 +255,37 @@ class CardController extends AuthorizedController
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
         $ticket = Ticket101::with(
             [
-                'crossroad_1',
-                'crossroad_2',
+//                'crossroad_1',
+//                'crossroad_2',
                 'other_records',
-                'chronologies',
+//                'chronologies',
                 'chronologies.event_info',
                 'chronologies.event_info_arrived',
+//                'chronologies.event_info_arrived.trunk_type',
                 'chronologies.fire_department_result.tech',
                 'chronologies.fire_department_result.department',
                 'chronologiesFromFd',
                 'chronologiesFromFd.event_info',
                 'chronologiesFromFd.event_info_arrived',
+//                'chronologiesFromFd.event_info_arrived.trunk_type',
                 'chronologiesFromFd.fire_department_result.tech',
                 'chronologiesFromFd.fire_department_result.department',
-                'results',
-                'results.tech',
+//                'results',
+//                'results.tech',
                 'results.tech.formation_tech_report',
                 'results.department',
-                'notifications',
+//                'notifications',
                 'notifications.service',
-                'popup_notifications',
+//                'popup_notifications',
                 'popup_notifications.user',
                 'popup_notifications.status',
                 'popup_notifications.group',
                 'notification_groups',
-                'operational_card',
+//                'operational_card',
                 'operational_plan.special_plans',
-                'service_plans',
+//                'service_plans',
                 'service_plans.service_type',
-                'fireDepartmentsInfo',
+//                'fireDepartmentsInfo',
                 'fireDepartmentsInfo.fire_level',
                 'fireDepartmentsInfo.burn_object',
                 'fireDepartmentsInfo.trip_result',
@@ -343,6 +346,7 @@ class CardController extends AuthorizedController
         $this->set('max_square', $max_square);
         $this->set('ticket', $ticket);
         $this->set('other_records_unique', $other_records_unique);
+        $this->set('drill_types', DrillType::all());
     }
 
     private function saveAnalytics($ticket)
@@ -552,6 +556,7 @@ class CardController extends AuthorizedController
                 'file_4',
                 'hq',
                 'notification_services',
+                'district_manager_id',
                 '00:00', // дефолтное названия инпута из компонента timepicker
             ]);
             $deptsToGetBack = collect([]);
@@ -634,11 +639,11 @@ class CardController extends AuthorizedController
             if ($card->trip_result_id) {
                 $this->saveAnalytics($card);
             }
-            $card_type = ($ticket_other->drill_type ?? null) == null ? '' : '/drill';
+            $card_type = ($card->drill_type ?? null) == null ? '' : 'drill';
             if ($comeback) {
-                $back = "/card/add101/{$card->id}{$card_type}#return={$comeback}";
+                $back = "/card/add101/{$card->id}/{$card_type}#return={$comeback}";
             } else {
-                $back = "/card/add101/{$card->id}{$card_type}";
+                $back = "/card/add101/{$card->id}/{$card_type}";
             }
         }
 
@@ -651,13 +656,7 @@ class CardController extends AuthorizedController
         }
 
         $this->setEmergencyType($card);
-
-        /*todo: отключил, слишком много места сжирает*/
-        /*try{
-            $this->saveLog($card->id);
-        }
-        catch (\Exception $exception){
-        }*/
+        $this->setDistrictManager($card, $request);
 
         if ($request->ajax()) {
             return response()->json('ok', 200);
@@ -676,6 +675,18 @@ class CardController extends AuthorizedController
                 $ticket101->{'file_' . $i . '_id'} = $upload->id;
                 $ticket101->save();
             }
+        }
+    }
+
+    private function setDistrictManager(&$ticket101, Request $request)
+    {
+        if($request->district_manager_id) {
+            $cityAreaId = $ticket101->city_area_id;
+            $date = $ticket101->formation_report ? $ticket101->formation_report->report_date : null;
+
+            $ticket101->district_manager_id = DistrictManager::getDailyPerson($cityAreaId, $date)->id ?? null;
+
+            $ticket101->save();
         }
     }
 
@@ -722,10 +733,12 @@ class CardController extends AuthorizedController
     {
         foreach ($notificationServices as $id => $data) {
             $record = Ticket101Notification::find($id);
-            $record->name = $data['name'] ?? null;
-            $record->message_time = $data['message_time'] ?? null;
-            $record->arrive_time = $data['arrive_time'] ?? null;
-            $record->save();
+            if($record) {
+                $record->name = $data['name'] ?? null;
+                $record->message_time = $data['message_time'] ?? null;
+                $record->arrive_time = $data['arrive_time'] ?? null;
+                $record->save();
+            }
         }
     }
 

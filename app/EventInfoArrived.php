@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\EventInfoArrived
@@ -19,7 +20,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EventInfoArrived extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'name',
+        'trunk_type_id',
     ];
+
+    public function trunk_type()
+    {
+        return $this->belongsTo(TrunkType::class, 'trunk_type_id');
+    }
 }

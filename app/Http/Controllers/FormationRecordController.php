@@ -31,6 +31,7 @@ class FormationRecordController extends Controller
 
         return View::make('formation-record.single-index')
             ->with('per_page', $perPage)
+            ->with('organisation', $organisation)
             ->with('items',
                 (new FormationRecord)
                     ->where('organisation', '=', $organisation)
@@ -101,7 +102,7 @@ class FormationRecordController extends Controller
             ])
             ->get();
 
-        $airRescueReport = AirRescueReport::whereDate('created_at', $item->date)
+        $airRescueReport = AirRescueReport::byDate($item->date)
             ->with(['tech'])
             ->first();
 
@@ -115,8 +116,8 @@ class FormationRecordController extends Controller
                 $item->staff_action = $airRescueReport->staff_action;
                 $item->staff_duty_shift = $airRescueReport->staff_duty_shift;
                 $item->staff_duty_shift_8hours = $airRescueReport->staff_duty_shift_8hours;
-                $item->tech_main_action = $airRescueReport->tech()->where('status', 'action')->count();
-                $item->tech_main_reserve = $airRescueReport->tech()->where('status', 'reserve')->count();
+                $item->tech_main_action = $airRescueReport->getTechString('action');//$airRescueReport->tech()->where('status', 'action')->count();
+                $item->tech_main_reserve = $airRescueReport->getTechString('reserve');//$airRescueReport->tech()->where('status', 'reserve')->count();
                 $item->tech_special_action = 0;
                 $item->tech_special_reserve = 0;
                 $item->tech_additional_action = 0;
@@ -160,6 +161,8 @@ class FormationRecordController extends Controller
         $item = $request->get('items', [])[$id];
         $itemModel = (new FormationRecord())->findOrFail($id);
 
+        $item['date'] = Carbon::parse($request->date)->format('Y-m-d');
+
         if($itemModel->approved && !Auth::user()->hasRight(['CAN_EDIT_APPROVED_FORMATION_RECORD'])){
             $this->throwAccessDenied();
         }
@@ -178,22 +181,32 @@ class FormationRecordController extends Controller
         return redirect(route('formation-record.total-edit', ['id' => $id]));
     }
 
-    private function createTodayForOrganisation($organisation)
+    public function create(Request $request, $organisation)
     {
-        $today = Carbon::today();
+        if($request->isMethod('post')) {
+            $date = Carbon::parse($request->date)->format('Y-m-d');
+
+            $model = $this->createTodayForOrganisation($organisation, $date);
+
+            return redirect("/formation-record/{$model->id}/edit");
+        }
+        else {
+            $date = today();
+            $data['date'] = $date;
+            $data['organisation'] = $organisation;
+            $data['organisationName'] = FormationOrganisation::getNameByType($organisation);
+            return view('formation-record.single-create',$data);
+        }
+
+    }
+
+    private function createTodayForOrganisation($organisation, $date = null)
+    {
+        $today = $date ? $date : Carbon::today();
         $todayModel = FormationRecord::firstOrCreate([
             'organisation' => $organisation,
             'date' => $today,
         ]);
-        /*$todayModel = (new FormationRecord())->where('date', $today)->where('organisation', $organisation)->first();
-        if (!$todayModel) {
-            $todayModel = (new FormationRecord())
-                ->fill([
-                    'organisation' => $organisation,
-                    'date' => $today
-                ])
-                ->save();
-        }*/
         return $todayModel;
     }
 

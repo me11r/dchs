@@ -63,8 +63,16 @@ class FormationRecordWordExport
         $section->addPageBreak();
 
         $this->addSecondTable($section);
-//
-//        $this->addBottomText($section);
+
+        $section->addPageBreak();
+
+        $this->addDutyPersonsTable($section);
+
+        $this->addDutyPersonsServiceTable($section);
+
+        $section->addPageBreak();
+
+        $this->addFromationDistrictManagersTable($section);
 
     }
 
@@ -155,7 +163,6 @@ class FormationRecordWordExport
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
     {
-
         $this->secondTableFields = [
             'gsm_gasoline',
             'gsm_diesel',
@@ -196,17 +203,6 @@ class FormationRecordWordExport
         }
     }
 
-    private function addDataCellToRow(Row $row, $value, array $extraCellStyles = [], array $extraTextFStyles = [], array $extraTextPStyles = [])
-    {
-        $row
-            ->addCell(null, array_merge(['valign' => 'center', 'align' => 'center'], $extraCellStyles))
-            ->addText(
-                $value,
-                array_merge(['name' => 'Times New Roman', 'size' => 7], $extraTextFStyles),
-                array_merge(['valign' => 'center', 'align' => 'center'], $extraTextPStyles)
-            );
-    }
-
     private function addFirstTableHeaders(\PhpOffice\PhpWord\Element\Table $table)
     {
         $cellRowSpan = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
@@ -215,15 +211,15 @@ class FormationRecordWordExport
         $hcFontStyle = ['name' => 'Times New Roman', 'size' => 12, 'valign' => Jc::CENTER];
         $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
-        $table->addRow(700);
+        $table->addRow(1600);
 
         $table->addCell(900, $cellRowSpan)->addText('Наименование подразеления', $hcFontStyle, $hcAlignStyle);
 
         $table->addCell(3600, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Руководящий состав', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 4, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Личный состав', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 5, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Личный состав', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 8, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Техника', $hcFontStyle, $hcAlignStyle);
 
-        $table->addRow();
+        $table->addRow(1600);
 
         $table->addCell(null, $cellRowContinue);
 
@@ -232,20 +228,21 @@ class FormationRecordWordExport
         $table->addCell(null, $cellRowSpan)->addText('Телефон', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('По штату', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('В наличии', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На оперативном дежурстве', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(3600, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На оперативном дежурстве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Основная', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Специальная', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Вспомогательная', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Другая', $hcFontStyle, $hcAlignStyle);
 
-        $table->addRow();
+        $table->addRow(1600);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowSpan)->addText('суточном', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('ФИО Старшего смены', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Количество', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('8-ми часовом рабочем дне', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('На дежурстве(в боевом рассчете)', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('В резерве', $hcFontStyle, $hcAlignStyle);
@@ -274,6 +271,151 @@ class FormationRecordWordExport
         $tableStyle->setWidth(100 * 50);
     }
 
+    //Дежурная смена УЕДДС ДЧС г.Алматы КЧС МВД РК
+    private function addDutyPersonsTable(Section $section)
+    {
+        $cellRowSpan = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
+        $cellRowSpanThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
+        $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 12, 'valign' => Jc::CENTER];
+        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+
+        $section->addText(
+            'Дежурная смена УЕДДС ДЧС г.Алматы КЧС МВД РК',
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::CENTER]
+        );
+
+        $tableStyle = new Table;
+        $tableStyle->setBorderColor('black');
+        $tableStyle->setUnit(TblWidth::PERCENT);
+
+        $table = $section->addTable($tableStyle);
+
+        $headers = [
+            '№',
+            'ФИО',
+            'Должность',
+            'Направление',
+        ];
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 12, 'bold' => true];
+
+        $row = $table->addRow(1600);
+
+        $this->addDataCellToRow($row, $headers, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+
+        foreach ($this->data['dutyShiftItems'] as $dutyShiftItem) {
+
+            $row = $table->addRow(1600);
+
+            $arrData = [
+                $dutyShiftItem['shift']['name'],
+                $dutyShiftItem['staff']['name'],
+                $dutyShiftItem['rankHumanFormat'],
+                $dutyShiftItem['direction'],
+            ];
+            $fontStyle['bold'] = false;
+            $this->addDataCellToRow($row, $arrData, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+        }
+    }
+
+    //Дежурная смена служб взаимодействия
+    private function addDutyPersonsServiceTable(Section $section)
+    {
+        $section->addText(
+            'Дежурная смена служб взаимодействия',
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::CENTER]
+        );
+
+        $tableStyle = new Table;
+        $tableStyle->setBorderColor('black');
+        $tableStyle->setUnit(TblWidth::PERCENT);
+
+        $table = $section->addTable($tableStyle);
+
+        $headers = [
+            'Служба взаимодействия',
+            'ФИО дежурного',
+        ];
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 12, 'bold' => true];
+
+        $row = $table->addRow(1600);
+
+        $this->addDataCellToRow($row, $headers, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+
+        foreach ($this->data['dutyPersonsServiceArr'] as $item) {
+
+            $row = $table->addRow(1600);
+
+            $arrData = [
+                $item['name'],
+                $item['value'],
+            ];
+
+            $fontStyle['bold'] = false;
+            $this->addDataCellToRow($row, $arrData, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+        }
+    }
+
+    //Ответственные по районным отделам ЧС г.Алматы
+    private function addFromationDistrictManagersTable(Section $section)
+    {
+        $section->addText(
+            'Ответственные по районным отделам ЧС г.Алматы',
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::CENTER]
+        );
+
+        $tableStyle = new Table;
+        $tableStyle->setBorderColor('black');
+        $tableStyle->setUnit(TblWidth::PERCENT);
+
+        $table = $section->addTable($tableStyle);
+
+        $headers = [
+            'Районный отдел ЧС',
+            'Должность, звание, позывной',
+            'Ф.И.О., телефон',
+        ];
+
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 12, 'bold' => true];
+
+        $row = $table->addRow(1600);
+
+        $this->addDataCellToRow($row, $headers, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+
+        if($this->data['formationDistrictManager']) {
+            foreach ($this->data['cityAreas'] as $area) {
+
+                $row = $table->addRow(1600);
+
+                $this->addDataCellToRow($row, $area['name'], ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+                foreach ($this->data['formationDistrictManager']['items'] as $item) {
+                    if ($item['city_area_id'] === $area['id']) {
+                        $phones = '';
+                        foreach ($item['manager']['phones'] as $phone) {
+                            $phones .= $phone['phone'] . ' ';
+                        }
+                        $arrData = [
+                            $item['manager']['position'] .' '.$item['manager']['rank']. ' '.$item['manager']['nickname'],
+                            $item['manager']['name']. ' '.$phones,
+                        ];
+
+                        $fontStyle['bold'] = false;
+                        $this->addDataCellToRow($row, $arrData, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+                    }
+                }
+            }
+        }
+    }
+
     public function getWriter($name = 'Word2007')
     {
         return IOFactory::createWriter($this->phpWord, $name);
@@ -289,5 +431,25 @@ class FormationRecordWordExport
             'marginBottom' => 500
         ]);
     }
+
+    private function addDataCellToRow(Row $row, $value, array $extraCellStyles = [], array $extraTextFStyles = [], array $extraTextPStyles = [])
+    {
+        if(is_array($value)) {
+            foreach ($value as $item) {
+                $this->addDataCellToRow($row,$item,$extraCellStyles,$extraTextFStyles,$extraTextPStyles);
+            }
+        }
+        else {
+            $row
+                ->addCell(null, array_merge(['valign' => 'center', 'align' => 'center'], $extraCellStyles))
+                ->addText(
+                    $value,
+                    array_merge(['name' => 'Times New Roman', 'size' => 7], $extraTextFStyles),
+                    array_merge(['valign' => 'center', 'align' => 'center'], $extraTextPStyles)
+                );
+        }
+
+    }
+
 
 }

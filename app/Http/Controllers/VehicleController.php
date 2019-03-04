@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\FireDepartment;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\VehicleClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -80,8 +81,14 @@ class VehicleController extends Controller
         }
 
         $vehicle_types = VehicleType::all();
+        $vehicle_classes = VehicleClass::all();
         $title = 'Создать запись';
-        return view('vehicle.edit', compact('items', 'fire_departments', 'vehicle_types','title'));
+        return view('vehicle.edit', compact(
+            'items',
+            'fire_departments',
+            'vehicle_types',
+            'vehicle_classes',
+            'title'));
     }
 
     /**
@@ -122,9 +129,15 @@ class VehicleController extends Controller
             $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
         }
         $vehicle_types = VehicleType::all();
+        $vehicle_classes = VehicleClass::all();
         $title = 'Редактировать запись';
         $record = Vehicle::find($id);
-        return view('vehicle.edit', compact('items', 'fire_departments', 'vehicle_types','title', 'record'));
+        return view('vehicle.edit', compact('items',
+            'fire_departments',
+            'vehicle_types',
+            'vehicle_classes',
+            'title',
+            'record'));
     }
 
     /**

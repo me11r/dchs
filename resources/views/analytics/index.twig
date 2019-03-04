@@ -1,49 +1,178 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container section">
-        <div class="level">
-            <div class="level-left">
-                <h4 style="" class="title">Аналитика</h4>
-            </div>
-        </div>
-        <div class="panel">
-            <table class="table is-striped is-narrow is-hoverable is-selectable">
-                <thead>
-                <tr>
-                    <th>Дата и время</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for item in items %}
-                    <tr>
-                        <td>{{ item.date|date('d.m.Y') }}</td>
-                        <td>
-                            <div class="field is-grouped">
-                                <a class="button is-basic is-small" href="{{ route('reports.analytics101.edit', {'id':item.id}) }}">
-                                    <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+    <div class="container section" id="vue">
+        <b-tabs position="is-centered" class="block" id="other-rides-form">
+            {#{% if user.hasRight('ANALYTICS101_SHOW') %}#}
+                {#<b-tab-item label="Суточный отчет">#}
 
-                                <form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">
-                                    {{ csrf_field() }}
-                                    {{  method_field('DELETE') }}
-                                    <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
-                                        <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
-                                </form>
-                                <a class="button is-info is-small"
-                                   target="_blank"
-                                   href="{{ route('reports.analytics101.word', {'id':item.id}) }}">
-                                    <i class="fas fa-file-word"></i>.doc</a>
-                            </div>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr><h3 class="is-danger">Нет данных в таблице</h3></tr>
-                {% endfor %}
-                </tbody>
+                    {#<b-tabs position="is-centered" class="block" id="other-rides-form">#}
+                        {#<b-tab-item label="Отчет 101">#}
+                            {#<div class="level">#}
+                                {#<div class="level-left">#}
+                                    {#<h4 style="" class="title">Суточные отчеты 101</h4>#}
+                                {#</div>#}
+                                {#<div class="level-right">#}
+                                    {#<a class="button is-big is-info" href="/reports/daily101/word">#}
+                                        {#<i class="fas fa-file-word"></i>&nbsp; Скачать последний отчет</a>#}
+                                {#</div>#}
+                            {#</div>#}
+                            {#<div class="panel">#}
+                                {#<table class="table is-striped is-narrow is-hoverable is-selectable">#}
+                                    {#<thead>#}
+                                    {#<tr>#}
+                                        {#<th>Дата и время</th>#}
+                                        {#<th></th>#}
+                                    {#</tr>#}
+                                    {#</thead>#}
+                                    {#<tbody>#}
+                                    {#{% for item in items %}#}
+                                        {#<tr>#}
+                                            {#<td>{{ item.date|date('d.m.Y') }}</td>#}
+                                            {#<td>#}
+                                                {#<div class="field is-grouped">#}
+                                                    {#<a class="button is-basic is-small" href="{{ route('reports.analytics101.edit', {'id':item.id}) }}">#}
+                                                        {#<i class="fas fa-edit"></i>&nbsp;Редактировать</a>#}
 
-            </table>
-            {% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}
+                                                    {#<form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">#}
+                                                        {#{{ csrf_field() }}#}
+                                                        {#{{  method_field('DELETE') }}#}
+                                                        {#<button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">#}
+                                                            {#<i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>#}
+                                                    {#</form>#}
+                                                    {#<a class="button is-info is-small"#}
+                                                       {#target="_blank"#}
+                                                       {#href="{{ route('reports.analytics101.word', {'id':item.id}) }}">#}
+                                                        {#<i class="fas fa-file-word"></i>.doc</a>#}
+                                                {#</div>#}
+                                            {#</td>#}
+                                        {#</tr>#}
+                                    {#{% else %}#}
+                                        {#<tr><h3 class="is-danger">Нет данных в таблице</h3></tr>#}
+                                    {#{% endfor %}#}
+                                    {#</tbody>#}
 
-        </div>
+                                {#</table>#}
+                                {#{% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}#}
+
+                            {#</div>#}
+                        {#</b-tab-item>#}
+                        {#<b-tab-item label="Отчет 112">#}
+                            {#<div class="level">#}
+                                {#<div class="level-left">#}
+                                    {#<h4 style="" class="title">Суточные отчеты 112</h4>#}
+                                {#</div>#}
+                                {#<div class="level-right">#}
+                                    {#<a class="button is-big is-info" href="/reports/daily112/word">#}
+                                        {#<i class="fas fa-file-word"></i>&nbsp; Скачать последний отчет</a>#}
+                                {#</div>#}
+                            {#</div>#}
+                            {#<div class="panel">#}
+                                {#<table class="table is-striped is-narrow is-hoverable is-selectable">#}
+                                    {#<thead>#}
+                                    {#<tr>#}
+                                        {#<th>Дата и время</th>#}
+                                        {#<th></th>#}
+                                    {#</tr>#}
+                                    {#</thead>#}
+                                    {#<tbody>#}
+                                    {#{% for item in items %}#}
+                                        {#<tr>#}
+                                            {#<td>{{ item.date|date('d.m.Y') }}</td>#}
+                                            {#<td>#}
+                                                {#<div class="field is-grouped">#}
+                                                    {#<a class="button is-basic is-small" href="#">#}
+                                                        {#<i class="fas fa-edit"></i>&nbsp;Редактировать</a>#}
+
+                                                    {#<form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">#}
+                                                        {#{{ csrf_field() }}#}
+                                                        {#{{  method_field('DELETE') }}#}
+                                                        {#<button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">#}
+                                                            {#<i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>#}
+                                                    {#</form>#}
+                                                    {#<a class="button is-info is-small"#}
+                                                       {#target="_blank"#}
+                                                       {#href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'word'}) }}">#}
+                                                        {#<i class="fas fa-file-word"></i>.DOCX</a>#}
+
+                                                    {#<a class="button is-danger is-small"#}
+                                                       {#target="_blank"#}
+                                                       {#href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'pdf'}) }}">#}
+                                                        {#<i class="fas fa-file-pdf"></i>.PDF</a>#}
+                                                {#</div>#}
+                                            {#</td>#}
+                                        {#</tr>#}
+                                    {#{% else %}#}
+                                        {#<tr><h3 class="is-danger">Нет данных в таблице</h3></tr>#}
+                                    {#{% endfor %}#}
+                                    {#</tbody>#}
+
+                                {#</table>#}
+                                {#{% include "_templates/pagination" with {'items': items, 'per_page': per_page} %}#}
+
+                            {#</div>#}
+                        {#</b-tab-item>#}
+                    {#</b-tabs>#}
+
+
+                {#</b-tab-item>#}
+            {#{% endif %}#}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_OTHER_RIDES') %}
+                <b-tab-item label="Общий свод по прочим выездам">
+                    <report-other-rides-period
+                            {#:records="{{ records }}"#}
+                            :ride-types="{{ rideTypes }}"
+                            :fire-departments="{{ fireDepartments }}"
+                    >
+                    </report-other-rides-period>
+                </b-tab-item>
+            {% endif %}
+
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_DRILL_RIDES') %}
+                <b-tab-item label="Общий свод по учениям и занятиям">
+                    <report-drill-rides-period
+                            {#:records="{{ records|json_encode }}"#}
+                            :norm-types="{{ normTypes|json_encode }}"
+                            :fire-departments="{{ fireDepartments }}"
+                    >
+                    </report-drill-rides-period>
+                </b-tab-item>
+            {% endif %}
+
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES') %}
+                <b-tab-item label="Учет выездов подразделений">
+                    <report-forces-resources
+                            {#:reports="{{ reports }}"#}
+                            :fire-departments="{{ fireDepartments }}"
+                    ></report-forces-resources>
+                </b-tab-item>
+            {% endif %}
+
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION') %}
+                <b-tab-item label="Классификация объектов">
+                    <report-object-classification
+                            :records="{{ records|json_encode }}"
+                            :counts="{{ counts|json_encode }}"
+                            :object_classes="{{ object_classes }}"
+                    >
+                    </report-object-classification>
+                </b-tab-item>
+            {% endif %}
+
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU') %}
+                <b-tab-item label="Форма ЧС-051">
+                    <report-emergency-rescue-gu
+                            {#:record="{{ record|json_encode }}"#}
+                    >
+                    </report-emergency-rescue-gu>
+                </b-tab-item>
+            {% endif %}
+
+        </b-tabs>
+
     </div>
 {% endblock content %}

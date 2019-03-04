@@ -177,6 +177,10 @@ class Ticket101WordExport
 
             $fireDept = FireDepartment::find($dept_id);
 
+            if(!$fireDept) {
+                continue;
+            }
+
             $sickLeavePpl = $personSummary->formation_person_items()->rank(['sick_leave','sick'])->get();
 
             $result[$fireDept->title] = [
@@ -201,6 +205,7 @@ class Ticket101WordExport
         $od_depts_names = [
             'ipl' => 'ИПЛ',
             'kshm' => 'КШМ',
+            'dspt' => 'ДСПТ',
         ];
 
         $queryArr = [];
@@ -242,6 +247,10 @@ class Ticket101WordExport
         foreach ($people as $dept_id => $personSummary) {
 
             $fireDept = FireDepartment::find($dept_id);
+
+            if(!$fireDept) {
+                continue;
+            }
 
             $vacationPpl = $personSummary->formation_person_items()->rank('vacation')->get();
             $dispatchersPpl = $personSummary->formation_person_items()->rank('dispatchers')->get();
@@ -634,12 +643,14 @@ class Ticket101WordExport
             ['align' => Jc::BOTH]
         );
 
+        $techIndex = 1;
         foreach ($repairedTech as $fireDept => $tech) {
             $section->addText(
-                "{$fireDept}:\t\t" . implode(', ', $tech),
+                "{$techIndex}. {$fireDept}:\t\t" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
+            $techIndex++;
         }
 
         /*$section->addText(
@@ -651,7 +662,7 @@ class Ticket101WordExport
         $inactive_tech_cnt = $this->data['inactive_tech_cnt'];
         $inactive_tech_cnt_str = '';
         foreach ($inactive_tech_cnt as $name => $count) {
-            $inactive_tech_cnt_str .= "{$name} - {$count}, ";
+            $inactive_tech_cnt_str .= "{$name} - {$count->count()}, ";
         }
         $section->addText(
             "Всего:\t\t" . $inactive_tech_cnt_str,
@@ -940,8 +951,7 @@ class Ticket101WordExport
 
         $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На лицо личного состава', $hcFontStyle, $hcAlignStyle);
         $table->addCell(3600, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'])->addText('Отсутствуют', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(500, $cellRowSpan)->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(500, $cellRowSpan)->addText('Аппараты', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('ГДЗС', $hcFontStyle, $hcAlignStyle);
         $table->addCell(700, $cellRowSpan)->addText('Мотопомпы<w:br/>Водяная<w:br/>Грязевая', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, ['gridSpan' => 6, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Пожарная техника', $hcFontStyle, $hcAlignStyle);
 
@@ -963,8 +973,11 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpanThick)->addText('Командировка', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanThick)->addText('Др.причины', $hcFontStyle, $hcAlignStyle);
 
-        $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowContinue);
+        $table->addCell(null, $cellRowSpan)->addText('Газодымозащитники', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('АСВ/ДАСК', $hcFontStyle, $hcAlignStyle);
+
+//        $table->addCell(null, $cellRowContinue);
+//        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
 
         $table->addCell(null, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В боевом расчёте', $hcFontStyle, $hcAlignStyle);
@@ -973,6 +986,7 @@ class Ticket101WordExport
 
         $table->addRow(1200);
 
+//        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);

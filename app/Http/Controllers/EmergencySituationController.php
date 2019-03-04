@@ -7,6 +7,7 @@ use App\Http\Resources\EmergencySituationResource;
 use App\Models\EmergencySituation;
 use App\Repositories\Contracts\EmergencySituationRepositoryInterface;
 use App\Right;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -35,7 +36,7 @@ class EmergencySituationController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->hasRight([Right::CAN_SEE_ALL_EMERGENCY_SITUATIONS]) || Auth::user()->isAdmin()){
+        if(Auth::user()->hasRight([Right::CAN_SEE_ALL_EMERGENCY_SITUATIONS])){
             $items = $this->repository->with(['user', 'user.service_type'])->orderBy('id', 'DESC')->get();
         }
         else{
@@ -57,8 +58,10 @@ class EmergencySituationController extends Controller
      */
     public function create()
     {
+        if(!Auth::user()->hasRight(['CAN_CREATE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         return View::make('emergency-situation.edit')
-            ->with('cityAreas', collect((new CityArea)->orderBy('name')->get(['id', 'name']))->toArray())
             ->with('item', new EmergencySituation())
             ->with('title', 'Добавление оперативной информации')
             ->render();
@@ -70,7 +73,15 @@ class EmergencySituationController extends Controller
      */
     public function store(Request $request)
     {
-        $this->repository->create($request->all());
+        if(!Auth::user()->hasRight(['CAN_CREATE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
+        $all = $request->all();
+        $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
+        $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
+        $all['date_time'] = "$date $time";
+        unset($all['date'], $all['time']);
+        $this->repository->create($all);
         return redirect(route('emergency-situation.index'));
     }
 
@@ -81,6 +92,9 @@ class EmergencySituationController extends Controller
      */
     public function show($id)
     {
+        if(!Auth::user()->hasRight(['CAN_SEE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         $item = $this->repository->find($id);
 
         return View::make('emergency-situation.show')
@@ -94,8 +108,10 @@ class EmergencySituationController extends Controller
      */
     public function edit($id)
     {
+        if(!Auth::user()->hasRight(['CAN_EDIT_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         return View::make('emergency-situation.edit')
-            ->with('cityAreas', collect((new CityArea)->orderBy('name')->get(['id', 'name']))->toArray())
             ->with('item', $this->repository->with(['user', 'user.service_type'])->find($id))
             ->with('title', 'Изменение оперативной информации')
             ->render();
@@ -108,10 +124,16 @@ class EmergencySituationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!$request->has('can_fix_themselves')){
-            $request->request->add(['can_fix_themselves' => 0]);
+        if(!Auth::user()->hasRight(['CAN_EDIT_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
         }
-        $this->repository->update($request->all(), $id);
+        $all = $request->all();
+        $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
+        $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
+        $all['date_time'] = "$date $time";
+        unset($all['date'], $all['time']);
+
+        $this->repository->update($all, $id);
         return redirect(route('emergency-situation.edit', $id));
     }
 
@@ -121,6 +143,9 @@ class EmergencySituationController extends Controller
      */
     public function destroy($id)
     {
+        if(!Auth::user()->hasRight(['CAN_DELETE_EMERGENCY_SITUATION'])){
+            $this->throwAccessDenied();
+        }
         $this->repository->delete($id);
         return redirect(route('emergency-situation.index'));
     }

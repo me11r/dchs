@@ -12,4 +12,9 @@ class EmergencyType extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function scopeName($q, $search)
+    {
+        return $q->where('name', $search);
+    }
 }

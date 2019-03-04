@@ -22,19 +22,20 @@
 
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
-                    <tr>
-                        <th>Подразделение</th>
-                        <th>Отделения</th>
-                        <th>Принято в работу</th>
-                        <th>Время выезда</th>
-                        <th>Время прибытия</th>
-                        <th>Время возвращения</th>
-                        <th>Отправка</th>
-                        <th>Время оповещения</th>
-                    </tr>
+                        <tr>
+                            <th>Подразделение</th>
+                            <th>Отделения</th>
+                            <th>Принято в работу</th>
+                            <th>Время выезда</th>
+                            <th>Время прибытия</th>
+                            <th>Время возвращения</th>
+                            <th>Отправка</th>
+                            <th>Статус</th>
+                            <th>Время оповещения</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="department in departments_">
+                        <tr v-for="department in departments_">
 
                         <!--Подразделение-->
                         <td class=""
@@ -124,6 +125,14 @@
                                 </a>
                             </p>
                         </td>
+                        <!--Статус-->
+                        <td class="is-expanded">
+                            <input v-for="i in formActive[department.id]"
+                                   type="text"
+                                   readonly
+                                   :value="i.status"
+                                   class="input small-imput">
+                        </td>
 
                         <!--{#Время оповещения#}-->
                         <td class="is-expanded">
@@ -181,7 +190,7 @@
                             <td>
                                 <p v-for="i in formReserve[department.id]">
                                     <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'reserve')">-->
-                                        <label for="">
+                                    <label for="">
                                         <input v-model="i.promoted_at" type="text" class="input small-imput">
                                     </label>
                                 </p>
@@ -352,7 +361,6 @@
 
             </b-tab-item>
         </b-tabs>
-
     </div>
 </template>
 
@@ -530,7 +538,7 @@
                 if (ticket_id !== 0) {
                     axios.post('/api/card101/check-roadtrip', {id: ticket_id}).then((response) => {
                         if (response.data.recommendations !== undefined) {
-
+                            this.results_ = response.data.recommendations;
                             globalBus.$emit('checkedRoadtrips', response.data.recommendations);
 
                             // window.localStorage.setItem('checkedRoadtrips', JSON.stringify(response.data.recommendations));
@@ -652,7 +660,8 @@
             },
         },
         mounted() {
-            setTimeout(this.checkRoadtrips, this.time);
+            this.checkRoadtrips();
+            // setTimeout(this.checkRoadtrips, this.time);
             // this.formatHq();
 
             /*globalBus.$on('timeChangedUnique', (event) => {

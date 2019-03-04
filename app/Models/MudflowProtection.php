@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -57,7 +58,13 @@ class MudflowProtection extends Model
         'height_of_snow',
         'weather',
         'comment',
+        'date',
     ];
+
+    public function getDateHumanAttribute()
+    {
+        return $this->date ? Carbon::parse($this->date)->format('d.m.Y') : null;
+    }
 
     public function gaugingStation()
     {

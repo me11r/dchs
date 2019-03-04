@@ -1,0 +1,103 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="section container" id="vue1">
+        <h4 class="title">Нормативы по ПСП</h4>
+        <div class="columns is-gapless">
+            <div class="column">
+                <div class="tabs buttab">
+                    <ul class="">
+                        <li class="is-active"><a href="">Открытые</a></li>
+                        <li><a href="">Закрытые</a></li>
+                        <li><a href="">Все карточки</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column">
+                <div class="tabs buttab">
+                    <ul class="">
+                        <li class="{% if card_type == 'real' %}is-active{% endif %}"><a href="/card/101">Боевые</a></li>
+                        <li class="{% if card_type == 'other' %}is-active{% endif %}"><a href="/card101-other-rides">Прочие</a></li>
+                        <li class="{% if card_type == 'drill' %}is-active{% endif %}"><a href="/card101-drill-rides">Учебные</a></li>
+                        <li class="{% if card_type == 'norms-psp' %}is-active{% endif %}"><a href="/norms-psp">Нормативы по ПСП</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column is-narrow">
+                <div>
+                    <a href="/norms-psp/create" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка норматива</a>
+                </div>
+            </div>
+        </div>
+        {#<div>
+            <form action="" method="get">
+                <div class="field   has-addons">
+                    <div class="control is-expanded">
+                        <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
+                    </div>
+                    <div class="control">
+                    </div>
+
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                    </div>
+                    #}{#<div class="control">
+                        <v-datepicker-search></v-datepicker-search>
+                    </div>#}{#
+                </div>
+            </form>
+        </div>#}
+        <div class="panel">
+            <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
+                <thead>
+                <tr>
+                    <th>№ п/п</th>
+                    <th>
+                        <p href="?sort=location">Дата</p>
+                        {#<form>
+                            <select name="filter[id]" class="select control" onchange="this.form.submit()">
+                                {% for f in tickets %}
+                                    <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.location }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>#}
+                    </th>
+                    <th>
+                        <p href="?sort=city_area_id">Подразделение</p>
+                        {#<form>
+                            <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
+                                {% for f in city_areas %}
+                                    <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>#}
+                    </th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                {% for ticket in records %}
+                    <tr>
+                        <td class="has-text-right">{{ ticket.id }}</td>
+                        <td>{{ ticket.date|date('d.m.Y') }}</td>
+                        <td>{{ ticket.fire_department.title ?? '' }}</td>
+                        <td class="has-text-right">
+                            <a href="/norms-psp/{{ ticket.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+
+                            {% if can_delete %}
+                                <form onSubmit="if(!confirm('Удалить запись?')){return false;}" style="display: inline" action="/norms-psp/delete/{{ ticket.id }}" method="post">
+                                    {{ csrf_field() }}
+                                    {{ method_field('DELETE') }}
+                                    <button type="submit" class="button is-danger is-small"><i class="fas fa-eraser"></i>&nbsp; Удалить</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="is-centered"><h1 class="title">Нет карточек</h1></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+        </div>
+    </div>
+{% endblock content %}

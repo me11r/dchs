@@ -41,6 +41,12 @@ class RightsSeeder extends Seeder
 
             ['right_group_id' => 2, 'title' => 'Изменениие статуса карточки 101 (тип ЧС)', 'name' => 'CAN_CHANGE_CARD101_EMERGENCY_STATUS'],
 
+            ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: просмотр', 'name' => 'CAN_ACCESS_NORMS_PSP'],
+            ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: создание', 'name' => 'CAN_CREATE_NORMS_PSP'],
+            ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: редактирование', 'name' => 'CAN_EDIT_NORMS_PSP'],
+            ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: удаление', 'name' => 'CAN_DELETE_NORMS_PSP'],
+            ['right_group_id' => 2, 'title' => 'Нормативы по ПСП: выбор ПЧ', 'name' => 'CAN_SELECT_FD_NORMS_PSP'],
+
             ['right_group_id' => 3, 'title' => 'Управление пользователями системы', 'name' => 'CAN_MANAGE_USERS'],
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],
 
@@ -49,6 +55,9 @@ class RightsSeeder extends Seeder
 
             ['title' => 'СП и АСР', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_101'],
             ['title' => 'РОСО', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO'],
+            ['title' => 'РОСО - Характерные спасоперации', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO_EVENTS'],
+            ['title' => 'РОСО - Перемещение подразделений', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO_MIGRATIONS'],
+            ['title' => 'РОСО - Изменить оперативную информацию', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_ROSO_EDIT'],
             ['title' => 'ЦМК', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_CMK'],
             ['title' => 'ГУ "Казселезащита"', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION'],
             ['title' => 'АО"Казавиаспас"', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_AIR_RESCUE'],
@@ -69,6 +78,17 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 6, 'title' => 'Может смотреть отчет по ЛС', 'name' => 'CAN_ACCESS_PERORT_PERSONS'],
             ['right_group_id' => 6, 'title' => 'Может смотреть отчет по технике', 'name' => 'CAN_ACCESS_PERORT_TECH'],
 
+            ['right_group_id' => 6, 'title' => 'Доступ к вкладке "Отчетность"', 'name' => 'CAN_ACCESS_REPORTS_TAB'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет по карточке 112 за период', 'name' => 'CAN_ACCESS_REPORT_112_EMERGENCY_PERIOD'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет по карточке 101 за период', 'name' => 'CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Подтопления / Падение веток и деревьев"', 'name' => 'CAN_ACCESS_REPORT_BRANCHES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Учет сил и средств"', 'name' => 'CAN_ACCESS_REPORT_FORCES_RESOURCES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Отчет по ЧС"', 'name' => 'CAN_ACCESS_REPORT_112_EMERGENCY_REPORT'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Общий свод по прочим выездам"', 'name' => 'CAN_ACCESS_REPORT_OTHER_RIDES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Общий свод по учениям и занятиям"', 'name' => 'CAN_ACCESS_REPORT_DRILL_RIDES'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Классификация объектов"', 'name' => 'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'],
+            ['right_group_id' => 6, 'title' => 'Может смотреть отчет "Учет аварийно-спасательных работ ГУ "СПиАСР""', 'name' => 'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU'],
+
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: просмотр', 'name' => 'SIREN_SPEECH_TECH_SHOW'],
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: создание', 'name' => 'SIREN_SPEECH_TECH_CREATE'],
             ['right_group_id' => 6, 'title' => 'Данные по СРУ: редактирование', 'name' => 'SIREN_SPEECH_TECH_EDIT'],
@@ -83,6 +103,16 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 6, 'title' => 'Аналитика101: редактирование', 'name' => 'ANALYTICS101_EDIT'],
             ['right_group_id' => 6, 'title' => 'Аналитика101: удаление', 'name' => 'ANALYTICS101_DELETE'],
 
+            ['right_group_id' => 6, 'title' => 'Аналитика112: просмотр', 'name' => 'ANALYTICS112_SHOW'],
+
+            ['right_group_id' => 6, 'title' => 'АналитикаСПиАСП: просмотр', 'name' => 'ANALYTICS_SPIASR_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Отчет по расходу воды (101): просмотр', 'name' => 'WATER_CONSUMPTION_REPORT_SHOW'],
+
+            ['right_group_id' => 6, 'title' => 'Отчет по случаям землетрясения: просмотр', 'name' => 'QUAKES_REPORT_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Отчет профилактический и самопроизвольный сход лавин: просмотр', 'name' => 'AVALANCHES_REPORT_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Отчет Информация происшествия на лифтах: просмотр', 'name' => 'ELEVATOR_REPORT_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Отчет Инфекционные заболевания: просмотр', 'name' => 'DISEASE_REPORT_SHOW'],
+
             ['right_group_id' => 7, 'title' => 'Ручной ввод хронометража', 'name' => 'CAN_ACCESS_MANUAL_INPUT_CHRONO'],
             ['right_group_id' => 7, 'title' => 'Расположение гидрантов', 'name' => 'CAN_ACCESS_HYDRANT'],
             ['right_group_id' => 7, 'title' => 'Транспортные средства', 'name' => 'CAN_ACCESS_TECH'],
@@ -93,6 +123,9 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Может изменять список гидрантов', 'name' => 'CAN_EDIT_HYDRANT_LOCATIONS'],
             ['right_group_id' => 7, 'title' => 'Личный состав: полный просмотр', 'name' => 'STAFF_FULL_VIEW_ACCESS'],
             ['right_group_id' => 7, 'title' => 'Транспортные средства: полный просмотр', 'name' => 'VEHICLES_FULL_VIEW_ACCESS'],
+            ['right_group_id' => 7, 'title' => 'Сумма спасенного имущества', 'name' => 'CAN_ACCESS_SALVAGE'],
+            ['right_group_id' => 7, 'title' => 'Проверка пожарных частей: создание', 'name' => 'CAN_CREATE_CHECK_FD'],
+            ['right_group_id' => 7, 'title' => 'Проверка пожарных частей: редактирование', 'name' => 'CAN_EDIT_CHECK_FD'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 
@@ -106,6 +139,11 @@ class RightsSeeder extends Seeder
 
             ['right_group_id' => 6, 'title' => 'Просмотр оперативной информации (все службы)', 'name' => 'CAN_SEE_ALL_EMERGENCY_SITUATIONS'],
         ];
+
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: просмотр', 'name' => 'CAN_SEE_EMERGENCY_SITUATION'];
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: создание', 'name' => 'CAN_CREATE_EMERGENCY_SITUATION'];
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: редактирование', 'name' => 'CAN_EDIT_EMERGENCY_SITUATION'];
+        $rights[] = ['right_group_id' => 6, 'title' => 'Оперативная информация: удаление', 'name' => 'CAN_DELETE_EMERGENCY_SITUATION'];
 
         $rights[] = ['right_group_id' => 8, 'title' => 'Пожарные части (справочник)', 'name' => 'DICT_FIRE_DEPARTMENTS'];
         $rights[] = ['right_group_id' => 8, 'title' => 'Типы инцидентов', 'name' => 'DICT_INCIDENT_TYPES'];

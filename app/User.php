@@ -4,6 +4,7 @@ namespace App;
 
 use App\Exceptions\AccessDeniedException;
 use App\Models\Messenger\Message;
+use App\Models\Salvage;
 use App\Models\ServiceType;
 use App\Models\Staff;
 use App\Models\Vehicle;
@@ -213,7 +214,6 @@ class User extends Authenticatable
         }
 
         if (!isset($user) || ($user->fire_department_id != $dept)) {
-//            throw new AccessDeniedException();
             false;
         }
 
@@ -238,6 +238,11 @@ class User extends Authenticatable
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class, 'fire_department_id', 'fire_department_id');
+    }
+
+    public function salvage()
+    {
+        return $this->hasMany(Salvage::class, 'fire_department_id', 'fire_department_id');
     }
 
     public function currentRole()

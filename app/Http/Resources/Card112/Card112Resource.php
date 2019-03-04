@@ -64,6 +64,19 @@ class Card112Resource extends JsonResource
             'emergency_type_id' => (int) $this->emergency_type_id,
             'emergency_feature' => (string) $this->emergency_feature,
             'service_plans' => $this->service_plans,
+            'emergency_name_id' => $this->emergency_name_id,
+            'incident_type_text' => $this->incident_type_text,
+            'custom_created_at' => $this->custom_created_at,
+            'created_at' => $this->created_at,
+            'kui' => $this->kui ? $this->kui : $this->id,
+            'flooding_place_id' => $this->flooding_place_id,
+            'flooding_reason_id' => $this->flooding_reason_id,
+            'living_count' => $this->living_count,
+            'avalanche_type_id' => $this->avalanche_type_id,
+            'avalanche_volume' => $this->avalanche_volume,
+            'elevator_emergency_type_id' => $this->elevator_emergency_type_id,
+            'disease_type_id' => $this->disease_type_id,
+            'name_disease' => $this->name_disease,
         ];
     }
 }

@@ -18,7 +18,7 @@
                         <option
                             :value="item.id"
                             :key="'fire_dept_' + item.id + '_' + subIndex"
-                            v-for="(item, subIndex) in fireDepts">{{ item.title }}
+                            v-for="(item, subIndex) in fireDeptsByDivision">{{ item.title }}
                         </option>
                     </select>
                 </div>
@@ -86,6 +86,10 @@ export default {
         fireDepts: {
             type: Array,
             required: true
+        },
+        fireDeptId: {
+            type: Number,
+            default: null
         }
     },
     name: 'CreateEditCheckItem',
@@ -93,6 +97,28 @@ export default {
         setName(item, block) {
             return `items[${block.id}][${item}]`;
         }
+    },
+    computed: {
+        fireDeptsByDivision() {
+            if(this.fireDeptId) {
+                if (this.block.created_at) {
+                    return window._.filter(this.fireDepts, (item) => {
+                        return item.id === this.block.fire_department_id;
+                    });
+                } else {
+                    return window._.filter(this.fireDepts, (item) => {
+                        return item.id === this.fireDeptId;
+                    });
+                }
+            }
+            else {
+                return this.fireDepts;
+            }
+
+
+        }
+    },
+    created() {
     }
 };
 </script>

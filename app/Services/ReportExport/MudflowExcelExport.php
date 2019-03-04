@@ -29,7 +29,7 @@ class MudflowExcelExport
      */
     private $spreadsheet;
 
-    private $model;
+    private $models;
 
     const HStyle = [
         'alignment' => [
@@ -58,10 +58,12 @@ class MudflowExcelExport
         ]
     ];
 
-    public function __construct($model_id = null)
+    public function __construct($date)
     {
         $this->spreadsheet = new Spreadsheet();
-        $this->model = MudflowProtection::find($model_id);
+        $this->models = MudflowProtection::whereDate('created_at', $date)
+            ->get()
+            ->keyBy('gauging_station_id');
 
         $this->prepareSpreadsheet();
     }
@@ -129,19 +131,19 @@ class MudflowExcelExport
                 $arr = [
                     ++$key,
                     $river->name,
-                    $gaugingStation->mudflowProtection->information,
+                    $this->models[$gaugingStation->id]->information ?? null,
                     $gaugingStation->name,
-                    $gaugingStation->mudflowProtection->water_flow_rate,
-                    $gaugingStation->mudflowProtection->critical_water_flow_rate,
-                    $gaugingStation->mudflowProtection->turbidity_of_water,
-                    $gaugingStation->mudflowProtection->max_turbidity_of_water,
-                    $gaugingStation->mudflowProtection->air_temperature,
-                    $gaugingStation->mudflowProtection->water_temperature,
-                    $gaugingStation->mudflowProtection->precipitation,
-                    $gaugingStation->mudflowProtection->height_of_snow,
-                    $gaugingStation->mudflowProtection->weather,
-                    $gaugingStation->mudflowProtection->comment,
-                    $gaugingStation->mudflowProtection->updated_at->format('d.m.Y H:i:s'),
+                    $this->models[$gaugingStation->id]->water_flow_rate ?? null,
+                    $this->models[$gaugingStation->id]->ritical_water_flow_rate ?? null,
+                    $this->models[$gaugingStation->id]->turbidity_of_water ?? null,
+                    $this->models[$gaugingStation->id]->max_turbidity_of_water ?? null,
+                    $this->models[$gaugingStation->id]->air_temperature ?? null,
+                    $this->models[$gaugingStation->id]->water_temperature ?? null,
+                    $this->models[$gaugingStation->id]->precipitation ?? null,
+                    $this->models[$gaugingStation->id]->height_of_snow ?? null,
+                    $this->models[$gaugingStation->id]->weather ?? null,
+                    $this->models[$gaugingStation->id]->comment ?? null,
+                    ($this->models[$gaugingStation->id]->updated_at ?? null) ? $this->models[$gaugingStation->id]->updated_at->format('d.m.Y H:i:s') : '',
                 ];
 
                 $sheet->fromArray($arr, null, "A$rowIndex");

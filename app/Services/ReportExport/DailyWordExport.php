@@ -300,6 +300,7 @@ class DailyWordExport
 
                 $item['analytics'] = "<div><span style='float: left;font-weight: bold; margin-right: 10px;'>{$number}</span>".$item['analytics']."</div> <br/>";
                 $item['analytics'] = str_replace('<br>', "<br/>", $item['analytics']);
+                $item['analytics'] = str_replace(['&amp;','&gt;','&lt;'], '', $item['analytics']);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($section, $item['analytics'], false, false);
             }
         }
@@ -451,8 +452,13 @@ class DailyWordExport
         foreach ($this->data['tech'] as $item) {
             foreach ($item['formation_tech_items'] as $tech) {
                 if ($tech['status'] === 'repair') {
+                    $techString = $item['department']['title'] . ' ' . $tech['vehicle']['name'] . ' ' . $tech['vehicle']['base'] . ' ' . $tech['comment'];
+                    if($tech['date_from']) {
+                        $tech['date_from'] = Carbon::parse($tech['date_from'])->format('d.m.Y');
+                        $techString .= ", с {$tech['date_from']}";
+                    }
                     $section->addText(
-                        $item['department']['title'] . ' ' . $tech['vehicle']['name'] . ' ' . $tech['vehicle']['base'] . ' ' . $tech['comment'],
+                        $techString,
                         $generalBoldFontStyle8,
                         ['align' => Jc::BOTH]
                     );

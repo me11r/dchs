@@ -81,6 +81,22 @@ class FormationController extends AuthorizedController
             ->set('reports', (new FormationReport)->orderBy('report_date','desc')->paginate($perpage));
     }
 
+    public function create(Request $request)
+    {
+        if($request->isMethod('post')) {
+            $date = Carbon::parse($request->date)->format('Y-m-d');
+
+            $model = FormationReport::firstOrCreate(['report_date' => $date]);
+
+            return redirect("/formation/101");
+        }
+        else {
+            $date = today();
+            $data['date'] = $date;
+            return view('formation.create',$data);
+        }
+    }
+
     public function getAirRescue(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 10);
@@ -135,7 +151,7 @@ class FormationController extends AuthorizedController
     {
         $id = $request->id;
 
-        $f = $request->all();
+        $date = Carbon::parse($request->date)->format('Y-m-d');
 
         $report = AirRescueReport::firstOrNew(['id' => $id]);
         $report->jet_fuel_action = $request->jet_fuel_action;
@@ -152,6 +168,7 @@ class FormationController extends AuthorizedController
         $report->staff_head = $request->staff_head;
         $report->staff_head_count = $request->staff_head_count;
         $report->staff_head_phone = $request->staff_head_phone;
+        $report->date = $date;
 
         $report->save();
 
@@ -235,14 +252,13 @@ class FormationController extends AuthorizedController
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
         $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION, false);
-//        $read_only = Auth::user()->hasRight(Right::CAN_READ_ONLY_FORMATION) && !Auth::user()->isAdmin();
 
         $belongsToDept = Auth::user()->fire_department_id;
 
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::where('id', '<>', 19)->get();
+            $departments = FireDepartment::usingInFormationReport()->get();
         }
 
         $fieldlist = [
@@ -311,9 +327,6 @@ class FormationController extends AuthorizedController
             $model = new FormationPersonsReport();
         }
 
-        $f = $request->all();
-
-
         if($request->dept_id == 13) {
             $active = count($request->input('staff.post1_president_residence.staff_id', [])) +
                 count($request->input('staff.post2_president_archive.staff_id', [])) +
@@ -372,6 +385,8 @@ class FormationController extends AuthorizedController
             'business_trip' => count($request->input('staff.business_trip.staff_id', [])),
             'other' => count($request->input('staff.other.staff_id', [])),
             'gas_smoke_protection_service' => $request->gas_smoke_protection_service,
+            'asv' => $request->asv,
+            'dask' => $request->dask,
         ];
         $model->fill($all)->save();
 
@@ -458,7 +473,7 @@ class FormationController extends AuthorizedController
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::where('id', '!=', 19)->get();
+            $departments = FireDepartment::usingInFormationReport()->get();
         }
 
         $model = (new FormationTechReport)->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
@@ -580,12 +595,13 @@ class FormationController extends AuthorizedController
                 'Командировка',
                 'Другие причины',
             ],
-            'ГДЗС'
+            'ГДЗС' => [
+                'Газодымозащитники',
+                'АСВ/ДАСК',
+            ]
         ];
 
         $tech_fieldlist = [
-//            null,
-            'Аппараты',
             'Мотопомпы' => [
                 'Водяная',
                 'Грязевая',
@@ -663,11 +679,9 @@ class FormationController extends AuthorizedController
             'business_trip',
             'other',
             'gas_smoke_protection_service',
-//            'sick_leave',
         ];
         $tech_fields = [
-//            null,
-            'device',
+            'asv_dask',
             'motor_water_pump',
             'motor_mud_pump',
         ];
@@ -702,13 +716,12 @@ class FormationController extends AuthorizedController
             'exhauster',
             'girs',
             'iup',
-//            'head_guard_id',
         ];
 
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
 
         $departments = new FireDepartment();
-        $departments = $departments->whereNotIn('title', ['ОД']);
+        $departments = $departments->usingInFormationReport();
         if (auth()->user()->fire_department_id){
             $departments = $departments->where('id', '=', auth()->user()->fire_department_id);
         }
@@ -743,7 +756,7 @@ class FormationController extends AuthorizedController
         })->where('status', 'repair')
             ->get();
 
-        $inactive_tech_cnt = [];
+        /*$inactive_tech_cnt = [];
         foreach ($inactive_tech as $inactive_tech_item){
             if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
                 $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
@@ -751,7 +764,12 @@ class FormationController extends AuthorizedController
             else{
                 $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
             }
-        }
+
+        }*/
+
+        $inactive_tech_cnt = $inactive_tech->groupBy(function ($q) {
+            return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
+        });
 
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($report){
             $q->where('name', 'Расстановка');
@@ -864,7 +882,10 @@ class FormationController extends AuthorizedController
             }
         }
 
-        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech);
+        $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech, $report);
+
+
+
         $user = Auth::user();
         $totalTraineeCount = $report->sumTrainee();
 
@@ -1034,15 +1055,19 @@ class FormationController extends AuthorizedController
                 ->fill(['report_date' => $today])
                 ->save();
         }
-        $this->set('reports', FormationSaversReport::orderBy('created_at')->paginate($perPage))
+        $this->set('reports', FormationSaversReport::orderBy('created_at', 'desc')->paginate($perPage))
             ->set('today', $today)
             ->set('per_page', $perPage)
+            ->set('auth', Auth::user())
         ;
     }
 
     public function getEditSavers(Request $request, $id)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+        if(!Auth::user()->hasRight(['CAN_ACCESS_FORMATION_REPORT_ROSO_EDIT'])){
+            $this->throwAccessDenied();
+        }
 
         $this->set('report', FormationSaversReport::findOrFail($id));
     }
@@ -1062,7 +1087,9 @@ class FormationController extends AuthorizedController
     public function getSaversOperationsList(Request $request, $id)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
-
+        if(!Auth::user()->hasRight(['CAN_ACCESS_FORMATION_REPORT_ROSO_EVENTS'])){
+            $this->throwAccessDenied();
+        }
         $report = FormationSaversReport::with('operations')->findOrFail($id);
         $operations = $report->operations;
         $this->set('parent', $report)
@@ -1095,6 +1122,9 @@ class FormationController extends AuthorizedController
     public function getSaversMigrationsList(Request $request, $id)
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
+        if(!Auth::user()->hasRight(['CAN_ACCESS_FORMATION_REPORT_ROSO_MIGRATIONS'])){
+            $this->throwAccessDenied();
+        }
 
         $report = FormationSaversReport::with('migrations')->findOrFail($id);
         $operations = $report->migrations;

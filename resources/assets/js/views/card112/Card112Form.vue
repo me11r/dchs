@@ -126,23 +126,26 @@
                                 class="control"
                                 style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
                                 <p class="control">
-                                    <label for="incident_type_id">Происшествие</label>
+                                    <label for="incident_type_text">Происшествие</label>
                                 </p>
-                                <div class="select">
-                                    <select
-                                        id="incident_type_id"
-                                        name="incident_type_id"
-                                        required
-                                        v-model="model.incident_type_id"
-                                    >
-                                        <option
-                                            v-for="incidentType in incidentTypes"
-                                            :key="incidentType.id"
-                                            :value="incidentType.id">{{ incidentType.name }}
-                                        </option>
-                                    </select>
-                                </div>
+                                <input type="text" class="input" name="incident_type_text" v-model="model.incident_type_text">
+                                <!--<div class="select">-->
+                                    <!--<select-->
+                                        <!--id="incident_type_id"-->
+                                        <!--name="incident_type_id"-->
+                                        <!--required-->
+                                        <!--v-model="model.incident_type_id"-->
+                                    <!--&gt;-->
+                                        <!--<option-->
+                                            <!--v-for="incidentType in incidentTypes"-->
+                                            <!--:key="incidentType.id"-->
+                                            <!--:value="incidentType.id">{{ incidentType.name }}-->
+                                        <!--</option>-->
+                                    <!--</select>-->
+                                <!--</div>-->
                             </div>
+
+
                             <!--МЕСТО ПРОИСШЕСТВИЯ-->
                             <div class="control is-expanded">
                                 <p class="control">
@@ -325,6 +328,16 @@
                     </div>
                     <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
 
+                        <v-datepicker-search
+                                v-model="model.custom_created_at"
+                                :date="model.custom_created_at"
+                                name="custom_created_at"
+                                :include-time="true"
+                                class="control"
+                                @dateChanged="model.custom_created_at = $event"
+                                label="Дата и время создания карточки">
+                        </v-datepicker-search>
+
                         <h5 class="subtitle">Первоначальная информация:</h5>
 
                         <div class="field">
@@ -340,11 +353,12 @@
                         <div
                                 class="control"
                                 style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                            <p class="control">
+                            <!--<p class="control">
                                 <label for="incident_type_id">Происшествие</label>
                             </p>
                             <div class="select">
-                                <select disabled
+                                <select
+                                        name="incident_type_id"
                                         v-model="model.incident_type_id">
                                     <option
                                             v-for="incidentType in incidentTypes"
@@ -352,6 +366,14 @@
                                             :value="incidentType.id">{{ incidentType.name }}
                                     </option>
                                 </select>
+                            </div>-->
+                            <div
+                                    class="control"
+                                    style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="incident_type_text">Происшествие</label>
+                                </p>
+                                <input disabled type="text" class="input" v-model="model.incident_type_text">
                             </div>
                         </div>
                         <br>
@@ -380,7 +402,7 @@
                         </div>
 
                         <!--ТИП ПРОИСШЕСТВИЯ-->
-                        <div class="field">
+                        <div class="field" style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
                             <p class="control">
                                 <label for="emergency_type_id">Тип происшествия</label>
                             </p>
@@ -398,13 +420,37 @@
                                 </select>
                             </div>
                         </div>
+
+                        <!--Название ЧС-->
+                        <div
+                                class="field"
+                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                            <p class="control">
+                                <label for="emergency_name_id">Название ЧС</label>
+                            </p>
+                            <div class="select">
+                                <select
+                                        id="emergency_name_id"
+                                        name="emergency_name_id"
+                                        v-model="model.emergency_name_id"
+                                >
+                                    <option value="">-</option>
+                                    <option
+                                            v-for="name in emergencyNames"
+                                            :key="`emergency_name_${name.id}`"
+                                            :value="name.id">{{ name.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="field is-grouped">
                             <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
                             <div
                                 class="control"
                                 style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
                                 <p class="control">
-                                    <label for="additional_incident_type_id">Происшествие</label>
+                                    <label for="additional_incident_type_id">Происшествие (уточненное)</label>
                                 </p>
                                 <div class="select">
                                     <select
@@ -430,6 +476,158 @@
                                     name="additional_incident_place"
                                     id="additional_incident_place"
                                     v-model="model.additional_incident_place">
+                            </div>
+                        </div>
+
+                        <!--Если тип происшествия: Подтопления-->
+                        <div class="field is-grouped" v-if="model.additional_incident_type_id === 36">
+                            <!--Место подтопления-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="flooding_place_id">Место подтопления</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="flooding_place_id"
+                                        name="flooding_place_id"
+                                        v-model="model.flooding_place_id">
+                                        <option
+                                            v-for="place in floodingPlaces"
+                                            :key="`flooding_place_${place.id}`"
+                                            :value="place.id">{{ place.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--Причина подтопления-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="flooding_reason_id">Причина подтопления</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="flooding_reason_id"
+                                        name="flooding_reason_id"
+                                        v-model="model.flooding_reason_id">
+                                        <option
+                                            v-for="flood in floodingReasons"
+                                            :key="`flooding_reason_${flood.id}`"
+                                            :value="flood.id">{{ flood.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--Количество проживающих-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="living_count">Количество проживающих</label>
+                                </p>
+                                <input
+                                    type="number"
+                                    class="input"
+                                    name="living_count"
+                                    id="living_count"
+                                    v-model="model.living_count">
+                            </div>
+                        </div>
+
+                        <!--Если тип происшествия: Происшествия на лифтах-->
+                        <div class="field is-grouped" v-if="incidentTypeText === 'Происшествия на лифтах'">
+                            <!--Тип происшествия на лифтах-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="elevator_emergency_type_id">Тип происшествия на лифтах</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="elevator_emergency_type_id"
+                                        name="elevator_emergency_type_id"
+                                        v-model="model.elevator_emergency_type_id">
+                                        <option
+                                            v-for="elevatorEmergency in elevatorEmergencyTypes"
+                                            :key="`elevatorEmergency_${elevatorEmergency.id}`"
+                                            :value="elevatorEmergency.id">{{ elevatorEmergency.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Если тип происшествия: Инфекционные заболевания-->
+                        <div class="field is-grouped" v-if="incidentTypeText === 'Инфекционные заболевания'">
+                            <!--Тип инфекционного заболевания-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="disease_type_id">Тип инфекционного заболевания</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="disease_type_id"
+                                        name="disease_type_id"
+                                        v-model="model.disease_type_id">
+                                        <option
+                                            v-for="option in diseaseTypes"
+                                            :key="`diseaseTypes_${option.id}`"
+                                            :value="option.id">{{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--ФИО-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="name_disease">ФИО</label>
+                                </p>
+                                <input
+                                        type="text"
+                                        class="input"
+                                        name="name_disease"
+                                        id="name_disease"
+                                        v-model="model.name_disease">
+                            </div>
+                        </div>
+
+                        <!--Если тип происшествия: Сход снежных лавин-->
+                        <div class="field is-grouped" v-if="model.additional_incident_type_id === 46">
+                            <!--Тип схода снежных лавин-->
+                            <div
+                                class="control"
+                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="avalanche_type_id">Тип схода снежных лавин</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                        id="avalanche_type_id"
+                                        name="avalanche_type_id"
+                                        v-model="model.avalanche_type_id">
+                                        <option
+                                            v-for="avalancheType in avalancheTypes"
+                                            :key="`avalanche_type_${avalancheType.id}`"
+                                            :value="avalancheType.id">{{ avalancheType.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--куб/м-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="avalanche_volume">куб/м</label>
+                                </p>
+                                <input
+                                    type="number"
+                                    class="input"
+                                    name="avalanche_volume"
+                                    id="avalanche_volume"
+                                    v-model="model.avalanche_volume">
                             </div>
                         </div>
 
@@ -479,6 +677,18 @@
                                 rows="3"
                                 v-model="model.resources"></textarea>
                         </div>
+
+                        <!--ЗАДЕЙСТВОВАННЫЕ РЕСУРСЫ-->
+                        <div class="field">
+                            <label for="resources">№ КУИ</label>
+                            <input
+                                name="kui"
+                                type="number"
+                                id="kui"
+                                class="input"
+                                v-model="model.kui">
+                        </div>
+
                         <div class="field is-grouped">
                             <!--ПОСТРАДАВШИХ ЛЮДЕЙ/ДЕТЕЙ-->
                             <div class="group_25">
@@ -764,6 +974,7 @@ export default {
             time: new Date(),
             streets: [],
             incidentTypes: [],
+            emergencyNames: [],
             serviceTypes: [],
             cityAreas: [],
             emergencyTypes: [],
@@ -781,6 +992,11 @@ export default {
             currentCity: 'Алматы',
             servicePlans: [],
             services: [],
+            floodingPlaces: [],
+            floodingReasons: [],
+            avalancheTypes: [],
+            elevatorEmergencyTypes: [],
+            diseaseTypes: [],
             servicesTabIndex: 0
         };
     },
@@ -803,6 +1019,10 @@ export default {
         },
         cityAreasOptions() {
             return this.commonOptionsMapping(this.cityAreas);
+        },
+        incidentTypeText() {
+            let data = _.find(this.incidentTypes, {id: this.model.additional_incident_type_id});
+            return data ? data.name : null;
         }
     },
     methods: {
@@ -838,26 +1058,6 @@ export default {
                                                 name_accepted: plan.name_accepted || '',
                                                 arrive_time: plan.arrive_time || ''
                                             };
-                                            // let name = document.getElementById(serviceType.id + '_name');
-                                            // let created_at = document.getElementById(serviceType.id + '_created_at');
-                                            // let arrived_at = document.getElementById(serviceType.id + '_arrived_at');
-                                            // let dispatched_time = document.getElementById(serviceType.id + '_dispatched_time');
-                                            //
-                                            // if (name.value === '') {
-                                            //     name.value = plan.name_accepted || '';
-                                            // }
-                                            //
-                                            // if (created_at.value === '') {
-                                            //     created_at.value = plan.dispatched_time || '';
-                                            // }
-                                            //
-                                            // if (arrived_at.value === '') {
-                                            //     arrived_at.value = plan.arrive_time || '';
-                                            // }
-                                            //
-                                            // if (dispatched_time.value === '') {
-                                            //     dispatched_time.value = plan.dispatched_time || '';
-                                            // }
                                         }
                                     });
                                 });
@@ -986,19 +1186,6 @@ export default {
             this.notifyMap();
         }
     },
-    beforeMount() {
-        // if (window.card112FormData) {
-        //     this.streets = window.card112FormData.streets;
-        //     this.cityAreas = window.card112FormData.cityAreas;
-        //     this.incidentTypes = window.card112FormData.incidentTypes;
-        //     this.serviceTypes = window.card112FormData.serviceTypes;
-        //     this.method = window.card112FormData.method;
-        //     this.formRoute = window.card112FormData.formRoute;
-        //     this.model = window.card112FormData.model;
-        //     this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
-        //     this.servicePlans = window.card112FormData.servicePlans;
-        // }
-    },
     mounted() {
         this.getTabIndex();
         (new YandexMapsBus())
@@ -1010,11 +1197,19 @@ export default {
                 this.emergencyTypes = window.card112FormData.emergencyTypes;
                 this.incidentTypes = window.card112FormData.incidentTypes;
                 this.serviceTypes = window.card112FormData.serviceTypes;
+                this.emergencyNames = window.card112FormData.emergencyNames;
                 this.method = window.card112FormData.method;
                 this.formRoute = window.card112FormData.formRoute;
                 this.model = window.card112FormData.model;
                 this.model = this.card112Utils.prepareModel(this.model, this.serviceTypes);
                 this.servicePlans = window.card112FormData.servicePlans;
+                this.floodingPlaces = window.card112FormData.floodingPlaces;
+                this.floodingReasons = window.card112FormData.floodingReasons;
+                this.avalancheTypes = window.card112FormData.avalancheTypes;
+                this.elevatorEmergencyTypes = window.card112FormData.elevatorEmergencyTypes;
+                this.diseaseTypes = window.card112FormData.diseaseTypes;
+
+                globalBus.$emit('dateIsReady', this.model.custom_created_at);
 
                 this.serviceTypes.forEach((item) => {
                     this.services[item.id] = {
@@ -1049,13 +1244,15 @@ export default {
                     }
 
                     window.addEventListener('storage', (event) => {
-                        if (event.key === AREA_ID_FOUND) {
+                        if (event.key === AREA_ID_FOUND && !this.model.id) {
                             this.model.city_area_id = parseInt(event.newValue);
                         }
                     });
                 });
                 globalBus.$on(AREA_ID_FOUND, (value) => {
-                    this.model.city_area_id = value;
+                    if (!this.model.id) {
+                        this.model.city_area_id = value;
+                    }
                 });
             });
     }

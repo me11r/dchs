@@ -37,6 +37,7 @@
 <script>
 
 import axios from 'axios';
+import {globalBus} from '../../scripts/global-bus';
 
 export default {
     name: 'RoadTripViewMap',
@@ -69,8 +70,9 @@ export default {
                 let hydrants = [];
                 let lastInserted = null;
 
-                this.route
-                    .getPaths()
+                let paths = this.route.getPaths();
+
+                paths
                     .each((path) => {
                         path.geometry.getCoordinates().map((coordinatesPair, index) => {
                             const P1 = this.getCoordinatesFromPoint(coordinatesPair);
@@ -170,7 +172,9 @@ export default {
                 }
                 this.map.geoObjects.add(self.hydrantsGeoObjects);
                 this.map.setBounds(self.hydrantsGeoObjects.getBounds(), {checkZoomRange: true});
+
             }
+
 
             this.drawMainRoute();
         },
@@ -196,6 +200,7 @@ export default {
                 zoom: 15,
                 behaviors: ['drag', 'scrollZoom']
             });
+            globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'RoadTripViewMap.initMap()'});
             self.setMapCenter();
         },
         drawMainRoute() {
@@ -210,6 +215,8 @@ export default {
 
                     self.route = route;
                     self.map.geoObjects.add(route);
+
+                    globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'RoadTripViewMap.drawMainRoute()'});
                 })
                 .catch((error) => {
                     this.loader = false;
@@ -226,6 +233,8 @@ export default {
                     self.emergencyCoordinates = firstGeoObject.geometry.getCoordinates();
                     self.map.setCenter(self.emergencyCoordinates, 13);
                     self.setHydrants();
+
+                    globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'RoadTripViewMap.setMapCenter()'});
                 })
                 .catch(() => {
                     this.loader = false;

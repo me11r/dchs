@@ -1,32 +1,88 @@
-    <b style="text-decoration: underline;"> {{ date }}. {{ city_area }}, {{ address }}:</b> (заявитель: {{ caller_name }}, тел: {{ caller_phone }}).
-    {% if detailed_address %}<b>Уточненный адрес:</b> <span>{{ detailed_address }}</span>{% endif %}
-    <b style="text-decoration: underline; font-style: italic;">{{ pre_information }} S={{ square_max }} м2</b>
-    <b>На место прибыли: </b>
-    {% for item in deptsArrived %}
-        <span>{{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }};</span>
-    {% endfor %}
+    <span><b style="text-decoration: underline;">{{ date }} {{ city_area }}, {% if detailed_address %}<b> Уточненный адрес:</b> <span>{{ detailed_address }}</span>{% else %}{{ address }}{% endif %}</b>(заявитель: {{ caller_name }}, тел: {{ caller_phone }}).</span>
+    <span><b>Итог выезда:</b> <span>{{ ticket.ticket_result }}</span></span>
+    <span><b style="text-decoration: underline; font-style: italic;">{{ pre_information }} S={{ square_max }} м2</b></span>
+    <span><b>На место прибыли: </b> {% for item in deptsArrived %}<span>{{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }} ({{ item.arrive_time_minutes ? item.arrive_time_minutes ~ ' мин., ' : '' }}{{ item.distance ? item.distance ~ ' км, ' : '' }}{{ item.staff_count ? item.staff_count ~ ' человек л/с, ' : '' }}{{ item.chronology_on_way_string }});</span>{% endfor %}
     {% for item in deptsArrivedHq %}
-        <span>{{ item.name }} прибыло в {{ item.arrive_time }};</span>
+    <span>{{ item.name }} прибыло в {{ item.arrive_time }};</span>
     {% endfor %}
-    <b>Итог выезда:</b> <span>{{ ticket.ticket_result }}</span>
-    <b>Дополнительная информация:</b> <span>{{ ticket.more_info }}</span>
-    <b>Ликвидация достигнута:</b> <span>{{ ticket.liquidation_method.name|default('') }}</span>
-    <b>Источник противопожарного водоснабжения:</b> <span>{{ ticket.water_supply_source.name|default('') }}</span>
-    <b>Расстояние до места:</b> <span>{{ ticket.distance }}</span>
-    <b>Владелец:</b> <span>{{ ticket.owner }}</span>
-    <b>Информация по использованным стволам:</b>
+    </span>
+    <span><b>Ответственный за сбор информации:</b> </span>
+    <span><b>Время локализации: </b><span>{{ ticket.loc_time }}</span></span>
+
+    <span><b>Время ликвидации: </b><span>{{ ticket.liqv_time }}</span></span>
+
+    <span><b>Использованные стволы: </b>{% for item in ticket.chronologies %}{% if item.event_info_arrived and item.event_info_arrived.name != 'ГДЗС' %}<span>{{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
+
+    <span><b>На место ЧС выезжали службы взаимодействия:</b> <span>{{ service_plans_str }}.</span></span>
+
+    <span>КУИ №{{ kui }} от {{ date2 }}.</span>
+
+    {% if ticket.more_info %}
+    <span><b>Дополнительная информация:</b> <span>{{ ticket.more_info }}</span></span>
+    {% endif %}
+    {#<b>Ликвидация достигнута:</b> <span>{{ ticket.liquidation_method.name|default('') }}</span>#}
+    {#<b>Источник противопожарного водоснабжения:</b> <span>{{ ticket.water_supply_source.name|default('') }}</span>#}
+    {#<b>Расстояние до места:</b> <span>{{ ticket.distance }}</span>#}
+    {#<b>Владелец:</b> <span>{{ ticket.owner }}</span>#}
     {% if ticket.vu_found %}
-        <b>Обнаружено ВУ</b>
+    <span><b>Обнаружено ВУ</b></span>
     {% endif %}
     {% if ticket.animal_death %}
-        <b>Гибель животных</b>
+    <span><b>Гибель животных</b></span>
     {% endif %}
     {% if ticket.car_crash %}
-        <b>Авария А/М при следовании на пожар</b>
+    <span><b>Авария А/М при следовании на пожар</b></span>
     {% endif %}
-    {% for item in ticket.chronologies %}
-        {% if item.event_info_arrived %}
-            <span>{{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}</span>
-        {% endif %}
-    {% endfor %}
-    <span>Пожар локализован в {{ loc_time }} и ликвидирован в {{ liqv_time }}, {{ chronology_str }}. На место пожара выезжал л/с: {{ depts_out }}. {% if service_plans_str %}На место ЧС выезжали службы взаимодействия: {{ service_plans_str }}.{% endif %} Материал зарегистрирован в КУИ №{{ kui }} от {{ date2 }}.</span>
+    {% if ticket.rescued_count %}
+    <span><b>Спасено людей:</b><span>{{  ticket.rescued_count }}</span></span>
+    {% endif %}
+    {% if ticket.saved_children %}
+    <span><b>Спасено детей:</b><span>{{  ticket.saved_children }}</span></span>
+    {% endif %}
+    {% if ticket.evac_count %}
+    <span><b>Эвакуировано людей:</b><span>{{  ticket.evac_count }}</span></span>
+    {% endif %}
+    {% if ticket.co2_poisoned_count %}
+    <span><b>Получили отравления угарным газом:</b><span>{{  ticket.co2_poisoned_count }}</span></span>
+    {% endif %}
+    {% if ticket.ch4_poisoned_count %}
+    <span><b>Получили отравления природным газом:</b><span>{{  ticket.ch4_poisoned_count }}</span></span>
+    {% endif %}
+    {% if ticket.gpt_burns_count %}
+    <span><b>Получили ожоги:</b><span>{{  ticket.gpt_burns_count }}</span></span>
+    {% endif %}
+    {% if ticket.people_death_count %}
+    <span><b>Гибель людей:</b><span>{{  ticket.people_death_count }}</span></span>
+    {% endif %}
+    {% if ticket.children_death_count %}
+    <span><b>Гибель детей:</b><span>{{  ticket.children_death_count }}</span></span>
+    {% endif %}
+    {% if ticket.hospitalized_count %}
+    <span><b>Госпитализировано:</b><span>{{  ticket.hospitalized_count }}</span></span>
+    {% endif %}
+    {% if ticket.saved_vehicles %}
+    <span><b>Количество освобожденных а/м при заносах:</b><span>{{  ticket.saved_vehicles }}</span></span>
+    {% endif %}
+    {% if ticket.saved_children %}
+    <span><b>Спасено детей:</b><span>{{  ticket.saved_children }}</span></span>
+    {% endif %}
+    {% if ticket.bodies_extracted %}
+    <span><b>Извлечено тел:</b><span>{{  ticket.bodies_extracted }}</span></span>
+    {% endif %}
+    {% if ticket.children_bodies_extracted %}
+    <span><b>Извлечено тел (детей):</b><span>{{  ticket.children_bodies_extracted }}</span></span>
+    {% endif %}
+    {% if ticket.medical_care_provided %}
+    <span><b>Оказана мед. помощь:</b><span>{{  ticket.medical_care_provided }}</span></span>
+    {% endif %}
+    {% if ticket.children_medical_care_provided %}
+    <span><b>Оказана мед. помощь (детям):</b><span>{{  ticket.children_medical_care_provided }}</span></span>
+    {% endif %}
+    {% if ticket.children_evacuated %}
+    <span><b>Кол-во эвакуированных детей:</b><span>{{  ticket.children_evacuated }}</span></span>
+    {% endif %}
+
+    {% if ticket.year_of_development %}
+    <span><b>Год постройки:</b><span>{{  ticket.year_of_development }}</span></span>
+    {% endif %}
+    {#Пожар локализован в {{ loc_time }} и ликвидирован в {{ liqv_time }}, {{ chronology_str }}. На место пожара выезжал л/с: {{ depts_out }}.#}

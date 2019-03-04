@@ -36,10 +36,9 @@ trait CommonExportTools
             $this->sumPeople['other'], // Отсутствуют -> Др. причины
 
             $this->sumPeople['gas_smoke_protection_service'], // ГДЗС
+            $this->data['sumArray']['tech']['asv_dask'] ?? null, // АСВ + ДАСК
 
-            $this->data['sumArray']['tech']['device'], //'-', // Аппараты
-
-            $this->data['sumArray']['tech']['motor_water_pump'] + $this->data['sumArray']['tech']['motor_mud_pump'], //'-', // Мотопомпы Водяная/Грязевая
+            $this->data['sumArray']['tech']['motor_water_pump'] ."/". $this->data['sumArray']['tech']['motor_mud_pump'], //'-', // Мотопомпы Водяная/Грязевая
 
             $this->data['tech_items_count']['tech_action_type_1'], // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
             $this->data['tech_items_count']['tech_action_type_2'], // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
@@ -107,8 +106,7 @@ trait CommonExportTools
             array_get($peopleData, 'other', 0), // Отсутствуют -> Др. причины
 
             array_get($peopleData, 'gas_smoke_protection_service', 0), // ГДЗС
-
-            isset($this->tech[$id]) ? (int)array_get($techData, 'device', 0) : '-', // Аппараты
+            array_get($techData, 'asv_dask', 0), // АСВ + ДАСК
 
             isset($this->tech[$id]) ? (int)array_get($techData, 'motor_water_pump', 0) . '/' . (int)array_get($techData, 'motor_mud_pump', 0) : '0/0', // Мотопомпы Водяная/Грязевая
 

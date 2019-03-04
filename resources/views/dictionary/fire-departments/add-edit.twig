@@ -21,8 +21,18 @@
 
                         <div class="select">
                             <select required name="recommend" id="recommend" class="control">
-                                    <option {{ 1 == record.recommend|default(0) ? 'selected' : '' }} value="1">Да</option>
-                                    <option {{ 0 == record.recommend|default(0) ? 'selected' : '' }} value="0">Нет</option>
+                                <option {{ 1 == record.recommend|default(0) ? 'selected' : '' }} value="1">Да</option>
+                                <option {{ 0 == record.recommend|default(0) ? 'selected' : '' }} value="0">Нет</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <p class="control" for="goes_in_formation_report">Использовать в строевых</p>
+
+                        <div class="select">
+                            <select required name="goes_in_formation_report" id="goes_in_formation_report" class="control">
+                                <option {{ 1 == record.goes_in_formation_report|default(0) ? 'selected' : '' }} value="1">Да</option>
+                                <option {{ 0 == record.goes_in_formation_report|default(0) ? 'selected' : '' }} value="0">Нет</option>
                             </select>
                         </div>
                     </div>

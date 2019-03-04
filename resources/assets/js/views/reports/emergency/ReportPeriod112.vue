@@ -1,9 +1,9 @@
 <template>
-    <div class="container">
+    <div class="">
         <div class="panel">
             <div
                 class="box"
-                style="margin-top: 20px">
+                style="margin-top: 20px; min-height:1000px;">
                 <div class="level">
                     <div class="level-left">
                         <h4 class="title">Отчет по карточке 112 за период</h4>
@@ -16,7 +16,7 @@
                     </div>
                     <div class="level-right has-text-right">
                         <a
-                            href="/xls/report112/emergency"
+                            :href="getHref"
                             class="button is-primary"
                         ><i class="fas fa-print"></i>&nbsp;Сохранить в XLS
                         </a>
@@ -30,10 +30,10 @@
                             @change="selectReason"
                             class="select"
                             name=""
+                            v-model="reason_id"
                             id="reason">
                             <option value=""></option>
                             <option
-                                v-model="reason_id"
                                 v-for="item in reasons_"
                                 :value="item.id"
                                 :key="item.id">{{ item.name }}
@@ -41,21 +41,55 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="">Начало периода</label>
-                        <input
-                            @blur="selectPeriod"
-                            v-model="date_begin_"
-                            type="date"
-                            class="date">
+                        <label for="reason">Район города</label>
+                        <select
+                            class="select"
+                            name="city_area_id"
+                            v-model="cityAreaId"
+                            id="city_area_id">
+                            <option value=""></option>
+                            <option
+                                v-for="item in cityAreas"
+                                :value="item.id"
+                                :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
                     </div>
                     <div class="field">
-                        <label for="">Конец периода</label>
-                        <input
-                            @blur="selectPeriod"
-                            v-model="date_end_"
-                            class="date"
-                            type="date">
+                        <label for="reason">Название ЧС</label>
+                        <select
+                            class="select"
+                            name="emergencyNameId"
+                            v-model="emergencyNameId"
+                        >
+                            <option value=""></option>
+                            <option
+                                v-for="item in emergencyNames"
+                                :value="item.id"
+                                :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
                     </div>
+                    <div class="field is-grouped">
+                        <v-datepicker-search
+                                v-model="date_begin_"
+                                :date="date_begin_"
+                                class="control"
+                                @dateChanged="date_begin_ = $event"
+                                label="С">
+                        </v-datepicker-search>
+                        <v-datepicker-search
+                                v-model="date_end_"
+                                :date="date_end_"
+                                @dateChanged="date_end_ = $event"
+                                class="control"
+                                label="По">
+                        </v-datepicker-search>
+                    </div>
+                    <div class="field">
+                        <button @click.prevent="selectPeriod" class="button is-success">Поиск</button>
+                    </div>
+
                     <table class="formation-record-table">
                         <thead>
                             <tr>
@@ -102,9 +136,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <!--<div class="buttons has-text-right is-grouped is-right" style="">-->
-                    <!--<button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>-->
-                    <!--</div>-->
                 </form>
             </div>
         </div>
@@ -113,6 +144,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 export default {
     name: 'ReportPeriod101',
     props: {
@@ -127,15 +159,25 @@ export default {
         reasons: {
             type: Array,
             default: () => {}
-        }
+        },
+        cityAreas: {
+            type: Array,
+            default: () => {}
+        },
+        emergencyNames: {
+            type: Array,
+            default: () => {}
+        },
     },
     data: function () {
         return {
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            date_begin_: this.date_begin,
-            date_end_: this.date_end,
+            date_begin_: new Date("01/01/2019"),//this.date_begin,
+            date_end_: new Date,//this.date_end,
             report_summary: {},
             reason_id: null,
+            cityAreaId: null,
+            emergencyNameId: null,
             reasons_: this.reasons
         };
     },
@@ -143,36 +185,49 @@ export default {
         selectReason(event) {
             this.reason_id = event.target.value;
 
-            window.history.pushState('page2', 'Title', '/reports/112/emergency?reason=' + this.reason_id);
-
-            this.post_data(this.reason_id);
+            // this.post_data(this.reason_id);
         },
         print() {
             window.print();
         },
         post_data() {
             let self = this;
+
+            let form = document.getElementById('vue');
+            let loadingComponent = this.$loading.open({
+                container: form
+            });
+
             axios.post('/reports/112/emergency', {
-                date_begin: self.date_begin_,
-                date_end: self.date_end_,
-                reason_id: self.reason_id
+                date_begin: moment(self.date_begin_).format('YYYY-MM-DD'),
+                date_end: moment(self.date_end_).format('YYYY-MM-DD'),
+                reason_id: self.reason_id,
+                city_area_id: self.cityAreaId,
+                emergency_name_id: self.emergencyNameId,
             }).then((resp) => {
                 self.report_summary = resp.data;
-                console.dir(self.report_summary);
+                loadingComponent.close();
             });
         },
 
         selectPeriod() {
             this.post_data();
-            console.dir(this.report_summary);
         }
+    },
+    computed: {
+        getHref() {
+            return '/xls/report112/emergency' +
+                '?date_begin=' + moment(this.date_begin_).format('YYYY-MM-DD') +
+                '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
+                '&result_id=' + this.reason_id +
+                '&city_area_id=' + this.cityAreaId;
+        }
+    },
+    watch: {
+
     },
 
     created () {
-        // const token = document.head.querySelector('meta[name="csrf-token"]');
-        // axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        // axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-        // this.post_data();
     }
 };
 </script>

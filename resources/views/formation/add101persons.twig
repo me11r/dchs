@@ -243,12 +243,16 @@
                                    block_type="other"></staff-101>
                     </div>
                 </fieldset>
-                <div class="field"><label for="field_1">ГДЗС</label>
-                    <div class="control">
-                        <input min=0 oninput="validity.valid||(value='');" type="number" step="1" data-value="" name="gas_smoke_protection_service" id="gas_smoke_protection_service" value="{{ model.gas_smoke_protection_service ?? 0 }}"
-                               class="input add101persons-input">
+                <fieldset>
+                    <legend>ГДЗС</legend>
+                    <div class="field"><label for="field_1">Газодымозащитники</label>
+                        <div class="control">
+                            <input min=0 oninput="validity.valid||(value='');" type="number" step="1" data-value="" name="gas_smoke_protection_service" id="gas_smoke_protection_service" value="{{ model.gas_smoke_protection_service ?? 0 }}"
+                                   class="input add101persons-input">
+                        </div>
                     </div>
-                </div>
+                </fieldset>
+
                 <div class="field">
                     <label for="field_2_0">Всего</label>
                     <div class="control">

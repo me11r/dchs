@@ -19,7 +19,6 @@ import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
 import Roadtrip103DeptBtn from './views/roadtrip103-map/RoadtripDeptBtn';
 import Roadtrip102DeptBtn from './views/roadtrip102-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
-// import Ticket101OnWay from './components/ticket101/OnWayInfo';
 
 import AdditionalData from './views/fire-departments/AdditionalData';
 import Add101Functions from './scripts/add101/add101';
@@ -50,10 +49,32 @@ import VueMessenger from './ui/messenger/Messenger';
 import PopupNotifier from './ui/PopupNotifier';
 import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
+import {globalBus} from './scripts/global-bus';
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+
+Object.defineProperty(Array.prototype, 'chunk', {
+    value: function(chunkSize) {
+        var R = [];
+        for (var i = 0; i < this.length; i += chunkSize)
+            R.push(this.slice(i, i + chunkSize));
+        return R;
+    }
+});
+
+Object.defineProperty(Array.prototype, 'inArray', {
+    value: function(key) {
+        return this.indexOf(key) !== -1;
+    }
+});
+
+Object.defineProperty(Array.prototype, 'clone', {
+    value: function() {
+        return JSON.parse(JSON.stringify(this));
+    }
+});
 
 Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
@@ -116,7 +137,30 @@ Vue.component('ticket101-save-btn', require('./components/ticket101/SaveBtn'));
 Vue.component('quakes-form', require('./views/quakes/CreateEditForm'));
 Vue.component('messenger-permissions', require('./views/messenger-permissions/MessengerPermissions'));
 Vue.component('report-emergency-type-period', require('./views/reports/emergency/ReportEmergencyTypePeriod'));
+Vue.component('report-other-rides-period', require('./views/reports/emergency/ReportTicket101OtherRidesPeriod'));
+Vue.component('report-drill-rides-period', require('./views/reports/emergency/ReportTicket101DrillRidesPeriod'));
 Vue.component('card-notification-services', require('./components/ticket101/NotificationServices'));
+Vue.component('norm-psp-form', require('./components/norms-psp/CreateEdit'));
+Vue.component('report-forces-resources', require('./views/reports/emergency/ReportForcesResources'));
+Vue.component('report-emergency-rescue-gu', require('./views/reports/emergency/ReportTicket101EmergencyRescueGu'));
+Vue.component('report-object-classification', require('./views/reports/emergency/ReportTicket101ObjectClassification'));
+Vue.component('report-call-infos', require('./views/reports/emergency/ReportCallInfos'));
+Vue.component('report-water-consumption', require('./views/reports/emergency/ReportTicket101WaterConsumption'));
+Vue.component('report-quakes', require('./views/reports/emergency/ReportQuakes'));
+Vue.component('report-avalanches', require('./views/reports/emergency/ReportAvalanches'));
+Vue.component('report-elevators', require('./views/reports/emergency/ReportElevators'));
+Vue.component('report-disease', require('./views/reports/emergency/ReportDisease'));
+Vue.component('mudflow-date-selector', require('./views/mudflowProtection/SelectDate'));
+Vue.component('call-info-create-edit', require('./views/call-infos/CreateEdit'));
+
+// трекер яндекс-запросов
+globalBus.$on('api-map-request', (r) => {
+    if (r.request_count !== null && r.request_count !== undefined) {
+        axios.post('/increment-map-request', {description: r.description, count: r.request_count}).then((rr) => {
+        });
+    }
+});
+
 // верхнее меню
 if (document.getElementById('navbar')) {
     new Vue({
@@ -184,7 +228,6 @@ if (document.getElementById('cardadd101')) {
         document.getElementById('preload_pane').style.display = 'none';
         const ret = window.location.hash.match(/#return=(\d+)/);
         if (ret !== null) {
-            // console.dir(parseInt(ret[1]))
             window.add101tabs.setTab(parseInt(ret[1]));
         } else {
             window.add101tabs.setTab(0);
@@ -192,11 +235,6 @@ if (document.getElementById('cardadd101')) {
         /* document.getElementById('nexttab').addEventListener('click', (e) => {
             e.preventDefault();
             tabs.nextTab();
-        }); */
-
-        /* document.getElementById('truck_tab_button').addEventListener('click', (e) => {
-            e.preventDefault();
-            window.add101tabs.setTab(1);
         }); */
     });
 }
@@ -210,13 +248,6 @@ if (add101personsFormElement) {
 const add101techFormElement = document.getElementById('add-101-tech-form');
 if (add101techFormElement) {
     (new Add101Tech()).createApp(add101techFormElement);
-}
-
-if (document.getElementById('mudflowProtection-form-block')) {
-    new Vue({
-        el: '#mudflowProtection-form-block',
-        render: h => h(MudflowProtectionForm)
-    });
 }
 
 if (document.getElementById('roadtrip_notifier')) {

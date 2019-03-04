@@ -1,0 +1,79 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="section" id="vue">
+        <b-tabs position="is-centered" class="block" id="other-rides-form">
+            {% if user.hasRight('CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD') %}
+                <b-tab-item label="Отчет-1">
+                    <report101-emergency
+                            :results="{{ reasons }}"
+                            :burnt_objects="{{ burntObjects }}"
+                            :city_areas="{{ cityAreas }}">
+                    </report101-emergency>
+                </b-tab-item>
+            {% endif %}
+
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU') %}
+                <b-tab-item label="Форма ЧС-051">
+                    <report-emergency-rescue-gu
+                            {#:record="{{ record|json_encode }}"#}
+                    >
+                    </report-emergency-rescue-gu>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES') %}
+                <b-tab-item label="Учет выездов подразделений">
+                    <report-forces-resources
+                            {#:reports="{{ reports }}"#}
+                         :fire-departments="{{ fireDepartments }}">
+                    </report-forces-resources>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_DRILL_RIDES') %}
+                <b-tab-item label="Общий свод по учениям и занятиям">
+                    <report-drill-rides-period
+                            {#:records="{{ records|json_encode }}"#}
+                            :norm-types="{{ normTypes|json_encode }}"
+                            :fire-departments="{{ fireDepartments }}"
+                    >
+                    </report-drill-rides-period>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_OTHER_RIDES') %}
+                <b-tab-item label="Общий свод по прочим выездам">
+                    <report-other-rides-period
+                            {#:records="{{ records }}"#}
+                            :ride-types="{{ rideTypes }}"
+                            :fire-departments="{{ fireDepartments }}"
+                    >
+                    </report-other-rides-period>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION') %}
+                <b-tab-item label="Классификация объектов">
+                    <report-object-classification
+                            :records="{{ records|json_encode }}"
+                            :counts="{{ counts|json_encode }}"
+                            :object_classes="{{ object_classes }}"
+                    >
+                    </report-object-classification>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('WATER_CONSUMPTION_REPORT_SHOW') %}
+                <b-tab-item label="Расход воды">
+                    <report-water-consumption
+                            {#:records="{{ records|json_encode }}"#}
+                    >
+                    </report-water-consumption>
+                </b-tab-item>
+            {% endif %}
+        </b-tabs>
+
+
+    </div>
+{% endblock content %}

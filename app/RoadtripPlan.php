@@ -42,6 +42,7 @@ class RoadtripPlan extends Model
     protected $fillable = [
         'department_id',
         'card_id',
+        'card101_other_id',
         'return_time',
         'is_closed',
         'is_accepted',
@@ -51,6 +52,11 @@ class RoadtripPlan extends Model
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'card_id');
+    }
+
+    public function ticket101_other()
+    {
+        return $this->belongsTo(Ticket101Other::class, 'card101_other_id');
     }
 
     public function department()

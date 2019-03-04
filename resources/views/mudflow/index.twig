@@ -2,14 +2,23 @@
 {% block content %}
     <div class="">
         <h4 class="title"
-            style="padding: 3px 15px">ГУ "Казселезащита"
+            style="padding: 3px 15px">ГУ "Казселезащита" за {{ dateHuman }}
         </h4>
     </div>
 
+    <div id="vue">
+        <mudflow-date-selector
+            date="{{ date }}"
+        ></mudflow-date-selector>
+    </div>
+
     <div class="panel">
-        <div class="levels">
+        <div class="level">
+            <div class="level-left">
+                <a href="/mudflow-protection" class="button is-info">Назад</a>
+            </div>
             <div class="level-right">
-                <a href="/mudflowProtection/export/xls" class="button is-success">Сохранить в XLS</a>
+                <a href="/mudflowProtection/export/xls/{{ date }}" class="button is-success">Сохранить в XLS</a>
             </div>
         </div>
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
@@ -40,27 +49,44 @@
                 {% for gaugingStation in river.gaugingStations %}
                     <tr>
                         <td class="has-text-right">{{ index }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.information }}</td>
+                        <td>{{ records[gaugingStation.id].information|default('') }}</td>
                         <td>{{ gaugingStation.name }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.water_flow_rate }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.critical_water_flow_rate }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.turbidity_of_water }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.max_turbidity_of_water }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.air_temperature }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.water_temperature }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.precipitation }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.height_of_snow }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.weather }}</td>
-                        <td>{{ gaugingStation.mudflowProtection.comment }}</td>
-                        <td class="has-text-right">{{ gaugingStation.mudflowProtection.updated_at | date('d.m.Y H:i:s') }}</td>
+                        <td>{{ records[gaugingStation.id].water_flow_rate|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].critical_water_flow_rate|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].turbidity_of_water|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].max_turbidity_of_water|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].air_temperature|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].water_temperature|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].precipitation|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].height_of_snow |default('')}}</td>
+                        <td>{{ records[gaugingStation.id].weather|default('') }}</td>
+                        <td>{{ records[gaugingStation.id].comment|default('') }}</td>
+                        <td class="has-text-right">{{ records[gaugingStation.id].updated_at|default('') }}</td>
                         <td class="has-text-right">
-                            <a href="{{ route('mudflowProtection.edit', gaugingStation.mudflowProtection.id) }}"
-                               class="button is-small is-outlined is-primary">
-                                <i class="fas fa-pencil-alt"></i>&nbsp;
-                                Редактировать
-                            </a>
+                            {% if records[gaugingStation.id].id is defined %}
+                                <a href="/mudflow-protection/{{ date }}/{{ records[gaugingStation.id].id }}/edit"
+                                   class="button is-small is-outlined is-info">
+                                    <i class="fas fa-pencil-alt"></i>&nbsp;
+                                    Редактировать
+                                </a>
+                                <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');" action="/mudflow-protection/{{ date }}/{{ records[gaugingStation.id].id }}/delete" method="post">
+                                    {{ csrf_field() }}
+                                    <button
+                                       class="button is-small is-outlined is-danger">
+                                        <i class="fas fa-times"></i>&nbsp;
+                                        Удалить
+                                    </button>
+                                </form>
+                            {% else %}
+                                <a href="/mudflow-protection/{{ date }}/{{ gaugingStation.id }}/create"
+                                   class="button is-small is-outlined is-primary">
+                                    <i class="fas fa-pencil-alt"></i>&nbsp;
+                                    Создать запись
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
+
                     {% set index = index + 1 %}
                 {% endfor %}
             {% endfor %}

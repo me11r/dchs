@@ -1,0 +1,85 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section" id="vue">
+        <h1 class="title">Аналитика ДЧС</h1>
+        <b-tabs position="is-centered" class="block" id="other-rides-block">
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_PERIOD') %}
+                <b-tab-item label="Отчет 112 за период">
+                    <report112-emergency
+                            :reasons="{{ incident_types }}"
+                            :emergency-names="{{ emergency_names }}"
+                            :city-areas="{{ city_areas }}"
+                    ></report112-emergency>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_BRANCHES') %}
+                <b-tab-item label="Подтопления / падения веток">
+                    <report112-branches
+                            :incident-types="{{ branches }}"
+                            :emergency-names="{{ emergency_names }}"
+                            :city-areas="{{ city_areas }}"
+                    />
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_REPORT') %}
+                <b-tab-item label="Чрезвычайные ситуации">
+                    <report-emergency-type-period
+                            :records="{{ records }}"
+                            :incident-types="{{ incidentTypes }}"
+                            :trip-results="{{ tripResults }}"
+                            :emergency-names="{{ emergency_names }}"
+                            :city-areas="{{ city_areas }}"
+                    >
+                    </report-emergency-type-period>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CAN_ACCESS_REPORT_BRANCHES') %}
+                <b-tab-item label="Отчет 112 По происшествиям">
+                    <report112-branches
+                            :incident-types="{{ incident_types }}"
+                            :emergency-names="{{ emergency_names }}"
+                            :city-areas="{{ city_areas }}"
+                    />
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('QUAKES_REPORT_SHOW') %}
+                <b-tab-item label="Случаи землетрясения">
+                    <report-quakes
+                    ></report-quakes>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('AVALANCHES_REPORT_SHOW') %}
+                <b-tab-item label="Сход лавин">
+                    <report-avalanches
+                        :avalanche-types="{{ avalanche_types }}"
+                    ></report-avalanches>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('ELEVATOR_REPORT_SHOW') %}
+                <b-tab-item label="Информация происшествия на лифтах">
+                    <report-elevators
+                        :elevator-emergency-types="{{ elevator_emergency_types }}"
+                        :city-areas="{{ city_areas }}"
+                    ></report-elevators>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('DISEASE_REPORT_SHOW') %}
+                <b-tab-item label="Инфекционные заболевания">
+                    <report-disease
+                        :disease-types="{{ disease_types }}"
+                    ></report-disease>
+                </b-tab-item>
+            {% endif %}
+
+        </b-tabs>
+
+    </div>
+{% endblock %}

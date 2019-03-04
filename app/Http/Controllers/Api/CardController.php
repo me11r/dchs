@@ -6,15 +6,18 @@ use App\Arrived101;
 use App\Chronology101;
 use App\Chronology101FromFd;
 use App\EventInfo;
+use App\EventInfoArrived;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use App\NormPsp;
 use App\OnWay101;
 use App\Services\Ticket101\NotificationService;
 use App\Ticket101;
 use App\Ticket101HqRide;
 use App\Ticket101InfoFromFd;
+use App\Ticket101Other;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,7 +31,6 @@ class CardController extends Controller
 
     public function postPromoteToAction(Request $request)
     {
-        $all = $request->all();
         $reserved_item = FireDepartmentResult::find($request->id);
         $reserved_item->promoted_at = now();
         $reserved_item->promoted_department = $request->promoted_department;
@@ -141,17 +143,19 @@ class CardController extends Controller
         }
 
         $resp = [];
+        $eventInfoArrived = EventInfoArrived::find($request->input('record.event_info_arrived_id', null));
         if($request->record){
             $resp = Chronology101::updateOrCreate(['id' => $request->record['id']],[
                 'ticket101_id' => $request->ticket_id,
                 'time' => $time,
+                'water_delivery_distance' => $request->input('record.water_delivery_distance', null),
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
                 'fire_department_result_id' => $request->input('record.fire_department_result.id'),
 
                 'working_time' => $request->input('record.working_time', null),
                 'quantity' => $request->input('record.quantity', null),
-                'event_info_arrived_id' => $request->input('record.event_info_arrived_id', null),
+                'event_info_arrived_id' => $eventInfoArrived->id ?? null,
             ]);
 
             $resp = Chronology101::with([
@@ -181,16 +185,18 @@ class CardController extends Controller
 
         $resp = [];
         if($request->record){
+            $eventInfoArrived = EventInfoArrived::find($request->input('record.event_info_arrived_id', null));
             $resp = Chronology101FromFd::updateOrCreate(['id' => $request->record['id']],[
                 'ticket101_id' => $request->ticket_id,
                 'time' => $time,
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
                 'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+                'water_delivery_distance' => $request->input('record.water_delivery_distance', null),
 
                 'working_time' => $request->input('record.working_time', null),
                 'quantity' => $request->input('record.quantity', null),
-                'event_info_arrived_id' => $request->input('record.event_info_arrived_id', null),
+                'event_info_arrived_id' => $eventInfoArrived->id ?? null,
             ]);
 
             $resp = Chronology101FromFd::with([
@@ -227,6 +233,7 @@ class CardController extends Controller
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
                 'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+                'water_delivery_distance' => $request->input('record.water_delivery_distance', null),
 
                 'working_time' => $request->input('record.working_time', null),
                 'quantity' => $request->input('record.quantity', null),
@@ -344,17 +351,51 @@ class CardController extends Controller
     public function checkRoadtrip(Request $request)
     {
         $id = $request->id;
-        $ticket = Ticket101::find($id);
+        $otherId = $request->ticket_other_id;
+
+        if($id) {
+            $ticket = Ticket101::find($id);
+        }
+        else {
+            return $this->checkTicket101Other($otherId);
+        }
 
         if (!$ticket) {
             return response()->json([], 200);
         }
 
-        $data['recommendations'] = $ticket->results()->with([
-            'tech',
-            'tech.formation_tech_report',
-            'department',
-        ])->get();
+        //*новый вариант/
+        $currentRidesTechIds = $ticket->results()->pluck('tech_id')->toArray();
+
+        $techNotAvailableIds = FireDepartmentResult::whereIn('tech_id', $currentRidesTechIds)
+            ->whereHas('ticket', function ($q){
+                $q->real();
+            })
+            ->where(function ($q) {
+                $q->whereNotNull('dispatch_time')
+                    ->whereNull('ret_time');
+
+            })
+            ->where('ticket101_id', '<>', $ticket->id)
+            ->get()
+            ->pluck('tech_id')
+            ->toArray();
+
+        $data['recommendations'] = $ticket->results()
+            ->whereNotIn('tech_id', $techNotAvailableIds)
+            ->with([
+                'tech',
+                'tech.formation_tech_report',
+                'department',
+            ])->get();
+        //*/
+
+//старый вариант
+//        $data['recommendations'] = $ticket->results()->with([
+//            'tech',
+//            'tech.formation_tech_report',
+//            'department',
+//        ])->get();
 
         $data['service_plans'] = $ticket->service_plans;
         $data['departmentsOnWay'] = FireDepartmentResult::with(['department', 'tech'])
@@ -363,4 +404,78 @@ class CardController extends Controller
 
         return response()->json($data);
     }
+
+    private function checkTicket101Other($id)
+    {
+        if (!$ticket = Ticket101Other::find($id)) {
+            return response()->json([], 200);
+        }
+
+        $currentRidesTechIds = $ticket->results()->pluck('tech_id')->toArray();
+
+        $techNotAvailableIds = FireDepartmentResult::whereIn('tech_id', $currentRidesTechIds)
+            ->whereHas('ticket', function ($q){
+                $q->real();
+            })
+            ->where(function ($q) {
+                $q->whereNotNull('dispatch_time')
+                    ->whereNull('ret_time');
+
+            })
+            ->whereNotNull('dispatch_time')
+            ->get()
+            ->pluck('tech_id')
+            ->toArray();
+
+        $data['recommendations'] = $ticket->results()
+            ->whereNotIn('tech_id', $techNotAvailableIds)
+            ->with([
+            'tech',
+            'tech.formation_tech_report',
+            'department',
+        ])->get();
+
+
+
+        //старый вариант
+        /*$data['recommendations'] = $ticket->results()->with([
+            'tech',
+            'tech.formation_tech_report',
+            'department',
+        ])->get();*/
+
+
+
+        return response()->json($data);
+    }
+
+    public function postUpdateFireDepartmentResult(Request $request)
+    {
+        $fireDeptResult = FireDepartmentResult::find($request->id);
+        if($fireDeptResult) {
+            $fireDeptResult->staff_count = $request->staff_count;
+            $fireDeptResult->save();
+        }
+
+        if($ticket = $fireDeptResult->ticket) {
+            $sum = FireDepartmentResult::where('ticket101_id', $fireDeptResult->ticket->id)->sum('staff_count');
+
+            $ticket->total_staff_count = $sum;
+            $ticket->save();
+        }
+
+        return response()->json(['ok']);
+    }
+
+    public function postUpdateFireDepartmentResultDistance(Request $request)
+    {
+        $fireDeptResult = FireDepartmentResult::find($request->id);
+        if($fireDeptResult) {
+            $fireDeptResult->distance = $request->distance;
+            $fireDeptResult->save();
+        }
+
+        return response()->json(['ok']);
+    }
+
 }

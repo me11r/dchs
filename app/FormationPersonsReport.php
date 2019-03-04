@@ -109,6 +109,8 @@ class FormationPersonsReport extends Model
         'gas_smoke_protection_service',
         'trainee',
         'sick_leave',
+        'asv',
+        'dask',
     ];
     
     public $od_staff = [
@@ -125,6 +127,7 @@ class FormationPersonsReport extends Model
         'water_supply' => StaffWaterCanal::class,
         'zhalin' => StaffZhalin::class,
     ];
+
 
     public function report()
     {
@@ -171,29 +174,29 @@ class FormationPersonsReport extends Model
         $od_people = $this->od_staff;
         $result = [];
         foreach ($od_people as $key => $od_person) {
-            $result[$key] = $od_person::all();
+            $result[$key] = $od_person::withTrashed()->get();
             foreach ($result[$key] as $item) {
                 $item->staff;
             }
         }
 
-        $result['dspt_vacation'] = StaffDspt::all();
-        $result['dspt_sick'] = StaffDspt::all();
-        $result['dspt_business_trip'] = StaffDspt::all();
+        $result['dspt_vacation'] = StaffDspt::withTrashed()->get();
+        $result['dspt_sick'] = StaffDspt::withTrashed()->get();
+        $result['dspt_business_trip'] = StaffDspt::withTrashed()->get();
 
-        $result['ipl_vacation'] = StaffIpl::all();
-        $result['ipl_other'] = StaffIpl::all();
-        $result['ipl_study'] = StaffIpl::all();
-        $result['ipl_maternity'] = StaffIpl::all();
-        $result['ipl_business_trip'] = StaffIpl::all();
-        $result['ipl_sick'] = StaffIpl::all();
+        $result['ipl_vacation'] = StaffIpl::withTrashed()->get();
+        $result['ipl_other'] = StaffIpl::withTrashed()->get();
+        $result['ipl_study'] = StaffIpl::withTrashed()->get();
+        $result['ipl_maternity'] = StaffIpl::withTrashed()->get();
+        $result['ipl_business_trip'] = StaffIpl::withTrashed()->get();
+        $result['ipl_sick'] = StaffIpl::withTrashed()->get();
 
-        $result['kshm_vacation'] = StaffKshm::all();
-        $result['kshm_other'] = StaffKshm::all();
-        $result['kshm_study'] = StaffKshm::all();
-        $result['kshm_maternity'] = StaffKshm::all();
-        $result['kshm_business_trip'] = StaffKshm::all();
-        $result['kshm_sick'] = StaffKshm::all();
+        $result['kshm_vacation'] = StaffKshm::withTrashed()->get();
+        $result['kshm_other'] = StaffKshm::withTrashed()->get();
+        $result['kshm_study'] = StaffKshm::withTrashed()->get();
+        $result['kshm_maternity'] = StaffKshm::withTrashed()->get();
+        $result['kshm_business_trip'] = StaffKshm::withTrashed()->get();
+        $result['kshm_sick'] = StaffKshm::withTrashed()->get();
 
         return $result;
     }

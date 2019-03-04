@@ -1,0 +1,7 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div id="vue" class="container section">
+        <report-forces-resources :reports="{{ reports }}"
+                                 :fire-departments="{{ fireDepartments }}"></report-forces-resources>
+    </div>
+{% endblock content %}

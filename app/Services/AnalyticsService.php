@@ -36,7 +36,6 @@ class AnalyticsService
             $deptsNumbers = implode(',', $deptsNumbers);
 
             $depts_out_str .= "{$item->title}($deptsNumbers), ";
-
         }
 
         $max_square = $ticket->max_square ?? Ticket101OtherRecord::where('ticket101_id', $ticket->id)
@@ -45,6 +44,10 @@ class AnalyticsService
         $service_plans_str = '';
         foreach ($ticket->service_plans()->whereNotNull('dispatched_time')->get() as $service_plan) {
             $service_plans_str .= $service_plan->service_type->name . ', ';
+        }
+
+        if($ticket->district_manager) {
+            $service_plans_str .= "ОЧС ({$ticket->district_manager->city_area->name} район, {$ticket->district_manager->position} {$ticket->district_manager->name})";
         }
 
         $chronology_str = '';
@@ -88,7 +91,6 @@ class AnalyticsService
         $text = str_replace('<br>', '<br/>', $text);
 
         $dataToSave = [
-//            'text' => $ticket->analytics ? $ticket->analytics->text : $text, оставил на случай если нужно будет вернуть
             'text' => $text,
             'trip_result_id' => $ticket->trip_result_id,
             'ticket101_id' => $ticket->id,
@@ -101,7 +103,7 @@ class AnalyticsService
             $exist->save();
         }
         else{
-            $latestAnalytics = Analytics101::where('date', $ticket->created_at->format('d-m-Y'))->first();
+            $latestAnalytics = Analytics101::where('date', $ticket->created_at->format('Y-m-d'))->first();
             if(!$latestAnalytics){
                 $latestAnalytics = Analytics101::select('*')->latest()->first();
             }

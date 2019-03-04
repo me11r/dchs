@@ -38,10 +38,20 @@ class ServiceType extends Model
 
     public $timestamps = false;
 
-    public $fillable = ['name', 'head_user_id', 'priority'];
+    public $fillable = [
+        'name',
+        'head_user_id',
+        'priority',
+        'report112_daily',
+    ];
 
     public function headUser()
     {
         return $this->belongsTo(User::class, 'head_user_id');
+    }
+
+    public function scopeDailyServices112($q, $search = true)
+    {
+        return $q->where('report112_daily', $search);
     }
 }

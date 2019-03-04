@@ -5,6 +5,7 @@ namespace App\Models;
 use App\FireDepartment;
 use App\GuardNumber;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Staff
@@ -36,6 +37,8 @@ class Staff extends Model
     protected $table = 'staff';
 
     protected $appends = ['unique', 'initials'];
+
+    use SoftDeletes;
 
     protected $fillable = [
         'department_id',

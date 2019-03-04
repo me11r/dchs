@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Chronology101;
 use App\FireDepartment;
+use App\NormPsp;
 use App\RoadtripPlan;
 use App\Ticket101;
+use App\Ticket101Other;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -78,6 +80,13 @@ class FireDepartmentResult extends Model
         'get_back',
         'promoted_at',
         'promoted_department',
+        'ticket101_other_id',
+        'staff_count',
+        'distance', //Расстояние до места
+    ];
+
+    protected $appends = [
+        'status',
     ];
 
     public function chronology()
@@ -111,9 +120,44 @@ class FireDepartmentResult extends Model
         return $value;
     }
 
+    //время прибытия в минутах
+    public function getArriveTimeMinutesAttribute()
+    {
+        if($this->accept_time && $this->arrive_time) {
+            return Carbon::parse($this->accept_time)->diffInMinutes($this->arrive_time);
+        }
+
+        return null;
+    }
+
+    //хронология в пути: 1 затяжной автозатор,2 раза красный свет
+    public function getChronologyOnWayStringAttribute()
+    {
+        try {
+            $result = '';
+
+            $eventInfos = $this->chronology()->whereNotNull('event_info_id')->get()->groupBy('event_info_id');
+
+            foreach ($eventInfos as $name => $eventInfo) {
+                $result .= "{$eventInfo->count()} {$eventInfo[0]->event_info->name}, ";
+            }
+
+            return $result;
+        }
+        catch (\Exception $e) {
+            return '';
+        }
+
+    }
+
     public function ticket()
     {
         return $this->belongsTo(Ticket101::class, 'ticket101_id');
+    }
+
+    public function ticket_other()
+    {
+        return $this->belongsTo(Ticket101Other::class, 'ticket101_other_id');
     }
 
     public function tech()
@@ -156,6 +200,72 @@ class FireDepartmentResult extends Model
         }
 
         return 'Нет результата';
+    }
+
+    public function getStatusAttribute()
+    {
+        $resultStatus = "ПЧ";
+
+        //проверка в общей таблице выездов
+        $deptOnRide = FireDepartmentResult::where('tech_id', $this->tech_id)
+            ->where('id', '<>', $this->id)
+            ->latest()
+            ->first();
+
+        //проверка в таблице нормативы по ПСП
+        if($this->tech) {
+            $norm = NormPsp::whereNull('time_end')
+                ->whereNotNull('time_begin')
+                ->where('fire_department_id', $this->fire_department_id)
+                ->whereHas('departments', function ($q) {
+                    $q->where('name', $this->tech->department);
+                })
+                ->first();
+
+            if($norm) {
+                return "Нормативы по ПСП";
+            }
+        }
+
+        if(!$deptOnRide || $deptOnRide->ret_time !== null || $deptOnRide->dispatch_time === null) {
+            return $resultStatus;
+        }
+
+        return $deptOnRide->ticket_other ? ($deptOnRide->ticket_other->ride_type->name ?? null) : null;
+
+    }
+
+    public function scopeShiftRecords($q, $hoursBegin = 7, $hoursEnd = 7)
+    {
+        $nowHours = now()->hour;
+
+        //если текущее время от 00:00 до 07:00, берем интервал с 07:00 прошлого дня по 07:00 текущего
+
+        //если текущее время от 07:00, интервал = 07:00 текущего дня по 07:00 следующего дня
+        if($nowHours < 7) {
+
+            $finalDateBegin = today()
+                ->addDay(-1)
+                ->addHours($hoursBegin)
+                ->format('Y-m-d H:i:s');
+
+            $finalDateEnd = today()
+                ->addHours($hoursEnd)
+                ->format('Y-m-d H:i:s');
+        }
+        else {
+
+            $finalDateBegin = today()
+                ->addHours($hoursBegin)
+                ->format('Y-m-d H:i:s');
+
+            $finalDateEnd = today()
+                ->addDay(1)
+                ->addHours($hoursEnd)
+                ->format('Y-m-d H:i:s');
+        }
+
+        return $q->whereBetween('created_at', [$finalDateBegin, $finalDateEnd]);
     }
 
 }

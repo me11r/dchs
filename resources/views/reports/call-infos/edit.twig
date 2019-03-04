@@ -5,36 +5,16 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
-                <form action="{{ record is defined ? route('reports-call-infos.update', {'id':record.id}) : route('reports-call-infos.store')}}" method="post">
-                    {% if record is defined %}
+                <form action="{{ record.id is defined ? route('reports-call-infos.update', {'id':record.id}) : route('reports-call-infos.store')}}" method="post">
+                    {% if record.id is defined %}
                         {{  method_field('PUT') }}
                     {% endif %}
                     {{ csrf_field() }}
 
-                    <div class="field">
-                        <label for="">Дата</label>
-                        {% if record is defined %}
-                            <input value="{{ record.date }}" type="text" class="input" disabled>
-                        {% else %}
-                            <input type="datetime-local" class="input" value="" name="date">
-                        {% endif %}
-                    </div>
-
-                    <div class="field">
-                        <label for="">112</label>
-                        <input type="text" class="input" value="{{ record.count_112|default('') }}" name="count_112">
-                    </div>
-
-                    <div class="field">
-                        <label for="">101</label>
-                        <input type="text" class="input" value="{{ record.count_101|default('') }}" name="count_101">
-                    </div>
-
-                    <div class="field">
-                        <label for="">109</label>
-                        <input type="text" class="input" value="{{ record.count_109|default('') }}" name="count_109">
-                    </div>
-
+                    <call-info-create-edit
+                        :input-record="{{ record }}"
+                    >
+                    </call-info-create-edit>
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>

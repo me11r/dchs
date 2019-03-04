@@ -8,6 +8,7 @@ use App\Card103;
 use App\Card103RoadtripPlan;
 use App\Dictionary\Street;
 use App\FireDepartment;
+use App\MapCount;
 use App\Models\Building;
 use App\Models\OperationalPlan;
 use App\Models\SpecialPlan;
@@ -141,7 +142,7 @@ class AjaxController extends AuthorizedController
             return response()->json([], 200);
         }
 
-        $trips = RoadtripPlan::with(['department', 'ticket']);
+        $trips = RoadtripPlan::with(['department', 'ticket', 'ticket101_other']);
         $trips = $trips
             ->where('is_closed', false)
             ->where('department_id', $dept->id)
@@ -150,7 +151,22 @@ class AjaxController extends AuthorizedController
                     ->whereNotNull('dispatch_time');
             })
             ->has('ticket')
+//            ->orHas('ticket101_other')
             ->get();
+
+        if(!$trips->count()) {
+            $trips = RoadtripPlan::with(['department', 'ticket', 'ticket101_other']);
+            $trips = $trips
+                ->where('is_closed', false)
+                ->where('department_id', $dept->id)
+                ->whereHas('results', function ($q){
+                    $q->whereNull('accept_time')
+                        ->whereNotNull('dispatch_time');
+                })
+                ->has('ticket101_other')
+                ->get();
+        }
+
         return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 
@@ -224,5 +240,16 @@ class AjaxController extends AuthorizedController
         }
 
         return response()->json(['notifications' => $notifications]);
+    }
+
+    public function incrementMapRequest(Request $request)
+    {
+
+        MapCount::create([
+            'description' => $request->description,
+            'request' => $request->count,
+        ]);
+
+        return response()->json([]);
     }
 }

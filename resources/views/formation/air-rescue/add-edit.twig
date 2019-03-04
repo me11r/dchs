@@ -3,7 +3,7 @@
     <div class="container section" id="add-101-persons-form">
         <div class="level" style="margin-top: 20px">
             <div class="level-left">
-                <h4 class="title">Личный состав и техника АО "Казавиаспас" от {{ model.created_at ?? 'now'|date('d.m.Y') }}</h4>
+                <h4 class="title">Личный состав и техника АО "Казавиаспас" от {{ model.date_human_format ?? 'now'|date('d.m.Y') }}</h4>
             </div>
         </div>
         <input type="hidden" :value="fieldsComputed">
@@ -11,6 +11,25 @@
             {{ csrf_field() }}
 
             <input type="hidden" name="id" value="{{ model.id ?? '' }}">
+
+            {% if model.id is defined %}
+                <v-datepicker-search
+                        class="control"
+                        name="date"
+                        date-string="{{ model.date }}"
+                        :disabled="true"
+                        label="Дата">
+                </v-datepicker-search>
+            {% else %}
+                <v-datepicker-search
+                        class="control"
+                        name="date"
+                        :disabled="false"
+                        label="Дата">
+                </v-datepicker-search>
+            {% endif %}
+
+
 
             <fieldset>
                 <legend>Руководящий состав (Ф.И.О.)</legend>

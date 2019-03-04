@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\MudflowProtectionResource;
+use App\Models\GaugingStation;
+use App\Models\MudflowProtection;
+use App\Models\River;
 use App\Repositories\Contracts\MudflowProtectionInterface;
 use App\Repositories\Contracts\RiverInterface;
 use App\Services\ReportExport\MudflowExcelExport;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 
@@ -22,7 +27,7 @@ class MudflowProtectionController extends Controller
         $this->mudflowProtection = $mudflowProtection;
     }
 
-    public function exportExcel()
+    public function exportExcel($date)
     {
         $fileName = 'Казселезащита.xls';
 
@@ -30,30 +35,52 @@ class MudflowProtectionController extends Controller
         header('Content-Disposition: attachment;filename="' . $fileName . '"');
         header('Cache-Control: max-age=0');
 
-        $exportService = new MudflowExcelExport();
+        $exportService = new MudflowExcelExport($date);
         $writer = $exportService->getXlsWriter();
         $writer->save('php://output');
     }
 
-    public function index()
+    public function indexByDate($date)
     {
-        if(!Auth::user()->hasRight(['CAN_VIEW_MUDFLOW_PROTECTION'])){
-            $this->throwAccessDenied();
-        }
-
         $rivers = $this->repository->with([
             'gaugingStations',
             'gaugingStations.mudflowProtection'
         ])->get();
 
+        $records = MudflowProtection::where('date', $date)
+            ->get()
+            ->keyBy('gauging_station_id');
+
+        $dateHuman = Carbon::parse($date)->format('d.m.Y');
+
         return View::make('mudflow.index')
             ->with('rivers', $rivers)
+            ->with('records', $records)
+            ->with('date', $date)
+            ->with('dateHuman', $dateHuman)
             ->render();
     }
 
-    public function create()
+    public function list(Request $request)
     {
-        abort(418, 'Раздел в разработке');
+        $data['now'] = now()->format('Y-m-d');
+        $data['per_page'] = $request->per_page ?? 15;
+
+        $data['records'] = MudflowProtection::groupBy('date')
+            ->orderBy('date', 'desc')
+            ->paginate($data['per_page']);
+
+        return view('mudflow.list', $data);
+    }
+
+    public function create($date, $gaugingStationId)
+    {
+        $data['date'] = $date;
+        $data['model'] = json_encode(null);
+        $data['formRoute'] = "/mudflow-protection/{$date}/{$gaugingStationId}/store";
+        $data['gaugingStation'] = GaugingStation::find($gaugingStationId);
+
+        return view('mudflow.edit',$data);
     }
 
     public function show($id)
@@ -61,29 +88,46 @@ class MudflowProtectionController extends Controller
         abort(418, 'Раздел в разработке');
     }
 
-    public function edit($id)
+    public function edit($date, $id)
     {
-        return View::make('mudflow.edit')
-            ->with('model', new MudflowProtectionResource($this->mudflowProtection->with(['gaugingStation'])->find($id)))
-            ->render();
+        $data['date'] = $date;
+        $data['model'] = MudflowProtection::findOrFail($id);
+        $data['formRoute'] = "/mudflow-protection/{$date}/{$id}/update";
+        $data['gaugingStation'] = $data['model']->gaugingStation;
+
+        return view('mudflow.edit', $data);
     }
 
-    public function store(Request $request)
+    public function delete($date, $id)
     {
-        abort(418, 'Раздел в разработке');
+        $data['model'] = MudflowProtection::destroy($id);
+
+        return redirect("/mudflow-protection/{$date}");
     }
 
-    public function update(Request $request, $id)
+    public function store(Request $request, $date, $id)
     {
         if(!Auth::user()->hasRight(['CAN_EDIT_MUDFLOW_PROTECTION'])){
             $this->throwAccessDenied();
         }
-        $this->mudflowProtection->update($request->all(), $id);
-        return redirect(route('mudflowProtection.index'));
+
+        $all = $request->all();
+        $all['date'] = Carbon::parse($all['date'])->format('Y-m-d');
+
+        $data = MudflowProtection::create($all);
+
+        return redirect("/mudflow-protection/{$date}");
     }
 
-    public function destroy($id)
+    public function update(Request $request, $date, $id)
     {
-        abort(418, 'Раздел в разработке');
+        if(!Auth::user()->hasRight(['CAN_EDIT_MUDFLOW_PROTECTION'])){
+            $this->throwAccessDenied();
+        }
+
+        $all = $request->all();
+        $all['date'] = Carbon::parse($all['date'])->format('Y-m-d');
+        $this->mudflowProtection->update($all, $id);
+        return back();
     }
 }

@@ -65,4 +65,9 @@ class Aircraft extends Model
     {
         return $this->belongsTo(AircraftType::class, 'aircraft_type_id');
     }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->name} {$this->number}";
+    }
 }

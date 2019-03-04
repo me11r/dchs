@@ -2,13 +2,21 @@
 
 namespace App\Models\Card112;
 
+use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\DiseaseType;
+use App\ElevatorEmergencyType;
+use App\EmergencyName;
 use App\EmergencyType;
+use App\FloodingPlace;
+use App\FloodingReason;
+use App\Models\BaseModel;
 use App\Models\IncidentType;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
 use App\Ticket101ServicePlan;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -33,6 +41,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $notifications_sent
  * @property string $notification_message
  * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $custom_created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $additional_comment
  * @property int $city_area_id
@@ -92,8 +101,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereIncidentPlace($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card112\Card112 whereReason($value)
  */
-class Card112 extends Model
+class Card112 extends BaseModel
 {
+    protected $searchByDate = 'custom_created_at';
     /**
      * @var string
      */
@@ -133,6 +143,18 @@ class Card112 extends Model
         'chronology_end_time',
         'emergency_feature',
         'emergency_type_id',
+        'emergency_name_id',
+        'incident_type_text',
+        'kui',
+        'custom_created_at', //клон created_at, можно править в карточке
+        'flooding_place_id',
+        'flooding_reason_id',
+        'living_count',
+        'avalanche_volume',
+        'avalanche_type_id',
+        'elevator_emergency_type_id',
+        'disease_type_id',
+        'name_disease',
     ];
 
     /**
@@ -141,6 +163,39 @@ class Card112 extends Model
     public function street()
     {
         return $this->hasOne(Street::class, 'id', 'street_id');
+    }
+
+    public function disease_type()
+    {
+        return $this->belongsTo(DiseaseType::class, 'disease_type_id');
+    }
+
+    public function avalanche_type()
+    {
+        return $this->belongsTo(AvalancheType::class, 'avalanche_type_id');
+    }
+
+    public function elevator_emergency_type()
+    {
+        return $this->belongsTo(ElevatorEmergencyType::class, 'elevator_emergency_type_id');
+    }
+
+    public function flooding_place()
+    {
+        return $this->belongsTo(FloodingPlace::class, 'flooding_place_id');
+    }
+
+    public function flooding_reason()
+    {
+        return $this->belongsTo(FloodingReason::class, 'flooding_reason_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function emergency_name()
+    {
+        return $this->hasOne(EmergencyName::class, 'id', 'emergency_name_id');
     }
 
     public function emergency_type()
@@ -243,10 +298,10 @@ class Card112 extends Model
 
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
     {
-        $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);
+        $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end]);
 
         if($reason_id){
-            $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+            $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end])
                 ->where('additional_incident_type_id', $reason_id);
         }
 
@@ -273,10 +328,15 @@ class Card112 extends Model
         return $result;
     }
 
-    public function scopeGetDetailedStat($q, $date_begin, $date_end, $reason_id = null)
+    public function scopeGetDetailedStat($q, $date_begin, $date_end, $reason_id = null, $cityAreaId = null, $emergencyNameId = null)
     {
         $result = [];
-        $areas = CityArea::all();
+        if(!$cityAreaId) {
+            $areas = CityArea::all();
+        }
+        else {
+            $areas = CityArea::where('id', $cityAreaId)->get();
+        }
 
         $date_begin = $date_begin ? $date_begin: now()->subYear();
         $date_end = $date_end ? $date_end : now();
@@ -291,9 +351,13 @@ class Card112 extends Model
         foreach ($reasons as $reason) {
             foreach ($areas as $area) {
 
-                $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+                $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end])
                     ->where('additional_incident_type_id', $reason->id)
                     ->where('city_area_id', $area->id);
+
+                if($emergencyNameId) {
+                    $baseQuery = $baseQuery->where('emergency_name_id', $emergencyNameId);
+                }
 
                 $result[$reason->name][$area->name]['total'] = $baseQuery->count();
                 $types = [
@@ -341,7 +405,7 @@ class Card112 extends Model
         $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
-        return $q->whereBetween('created_at', [$from, $to]);
+        return $q->whereBetween('custom_created_at', [$from, $to]);
     }
 
     public function setDetailedAddressAttribute($value)
@@ -352,5 +416,26 @@ class Card112 extends Model
         else {
             $this->attributes['detailed_address'] = $value;
         }
+    }
+
+    public function getDateAttribute()
+    {
+        $format = 'd.m.Y';
+        if ($this->custom_created_at) {
+            return Carbon::parse($this->custom_created_at)->format($format);
+        }
+        if ($this->created_at) {
+            return $this->created_at->format($format);
+        }
+
+        return null;
+    }
+
+    public function setCustomCreatedAtAttribute($value)
+    {
+        if(!$value) {
+            $value = now();
+        }
+        $this->attributes['custom_created_at'] = $value;
     }
 }

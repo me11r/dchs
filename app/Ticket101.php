@@ -12,6 +12,7 @@ use App\Dictionary\LiquidationMethod;
 use App\Dictionary\Street;
 use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
+use App\Models\BaseModel;
 use App\Models\FireDepartmentResult;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
@@ -23,6 +24,7 @@ use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\UploadedFile;
 use App\Models\WallMaterial;
 use Carbon\Carbon;
+use function foo\func;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -266,7 +268,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 checkDrill($search)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Ticket101 whereDrillType($value)
  */
-class Ticket101 extends Model
+class Ticket101 extends BaseModel
 {
     use SoftDeletes;
     protected $table = 'ticket101';
@@ -276,16 +278,155 @@ class Ticket101 extends Model
     protected $appends = [
         'loc_time_total',
         'liqv_time_total',
+        'on_way_category',
+        'liqv_category',
+        'gdzs_count',
+        'gdzs_count_type',
+        'gdzs_count_time',
     ];
+
+    public function getTrucks()
+    {
+        return $this->chronologies ? $this->chronologies()
+            ->whereDoesntHave('event_info_arrived', function ($q) {
+                $q->where('name', 'ГДЗС');
+            })->get() : [];
+    }
+
+    public function getGdzs()
+    {
+        return $this->chronologies ? $this->chronologies()
+            ->whereHas('event_info_arrived', function ($q) {
+                $q->where('name', 'ГДЗС');
+            })
+            ->with('event_info_arrived')
+            ->get() : [];
+    }
+
+    public function getGdzsCountTypeAttribute()
+    {
+        $count = $this->gdzs_count;
+
+        if($count === 1) {
+            return 'one';
+        }
+        elseif ($count > 1) {
+            return 'many';
+        }
+
+        return null;
+    }
+
+    public function getGdzsCountTimeAttribute()
+    {
+        return $this->chronologies ? $this->chronologies()
+            ->whereHas('event_info_arrived', function ($q) {
+                $q->where('name', 'ГДЗС');
+            })
+            ->with('event_info_arrived')
+            ->sum('working_time') : 0;
+    }
+
+    //время следования
+    public function getOnWayCategoryAttribute()
+    {
+        if($first_arrived = $this->first_department_arrived()) {
+
+            $minutes = $first_arrived->on_way_time;
+
+            if($minutes !== null && $minutes !== '0') {
+                if($minutes < 5) {
+                    return 'less_5';
+                }
+                elseif($minutes > 5 && $minutes < 10) {
+                    return 'less_10';
+                }
+                elseif($minutes > 10) {
+                    return 'more_10';
+                }
+            }
+        }
+
+        return null;
+    }
+
+    //время ликвидации
+    public function getLiqvCategoryAttribute()
+    {
+        if($this->liqv_time_total !== '00:00:00' && $this->liqv_time_total !== null) {
+            $time = Carbon::parse($this->liqv_time_total)->diffInMinutes('00:00:00');
+            if($time < 15) {
+                return 'less_15';
+            }
+            elseif($time > 15 && $time < 30) {
+                return 'less_30';
+            }
+            elseif($time > 30 && $time < 60){
+                return 'less_60';
+            }
+            elseif($time > 60 && $time < 120) {
+                return 'less_120';
+            }
+            elseif($time > 120) {
+                return 'more_120';
+            }
+        }
+
+        return null;
+    }
+
+    //время ликвидации
+    public function getGdzsCountAttribute()
+    {
+        if($this->chronologies) {
+            $count = $this->chronologies()
+                ->whereDoesntHave('event_info_arrived', function ($q) {
+                    $q->where('name', 'ГДЗС');
+                })->get();
+
+            $count2 = $this->chronologies()
+                ->whereDoesntHave('event_info_arrived', function ($q) {
+                    $q->where('name', 'ГДЗС');
+                })->sum('quantity');
+
+            if($count->count() == 1 || $count2 == 1) {
+
+                return 1;
+            }
+            elseif($count->count() > 1 || $count2 > 1) {
+                return max($count->count(), $count2);
+            }
+        }
+
+        return 0;
+    }
 
     public function emergency_type()
     {
         return $this->belongsTo(EmergencyType::class, 'emergency_type_id');
     }
 
+    public function object_classification()
+    {
+        return $this->belongsTo(ObjectClassification::class, 'object_classification_id');
+    }
+
     public function chronologies()
     {
         return $this->hasMany(Chronology101::class, 'ticket101_id');
+    }
+
+    public function chronologies_arrived()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id')->whereNotNull('event_info_arrived_id');
+    }
+
+    public function chronologies_trucks()
+    {
+        return $this->hasMany(Chronology101::class, 'ticket101_id')
+            ->whereDoesntHave('event_info_arrived', function ($q){
+                $q->where('name', 'ГДЗС');
+            });
     }
 
     public function chronologiesFromFd()
@@ -296,6 +437,11 @@ class Ticket101 extends Model
     public function crossroad_1()
     {
         return $this->hasOne(Street::class, 'id', 'crossroad_1_id');
+    }
+
+    public function district_manager()
+    {
+        return $this->belongsTo(DistrictManager::class, 'district_manager_id');
     }
 
     public function analytics()
@@ -388,11 +534,24 @@ class Ticket101 extends Model
 
     public function first_department_arrived()
     {
-        return $this->results()
+        $first_arrived = $this->results()
             ->selectRaw('arrive_time, id, out_time, out_time - arrive_time as on_way_time')
             ->groupBy('id')
             ->havingRaw('min(arrive_time)')
             ->first();
+
+        if($first_arrived) {
+            try {
+                $arrive_time = Carbon::parse($first_arrived->arrive_time);
+                $first_arrived->on_way_time = $arrive_time->diffInMinutes($first_arrived->out_time);
+            }
+            catch (\Exception $e) {
+
+            }
+
+        }
+
+        return $first_arrived;
     }
 
     public function departments_arrived()
@@ -433,6 +592,7 @@ class Ticket101 extends Model
 
     }
 
+    //liqv_time_total
     public function getLiqvTimeTotalAttribute()
     {
         try {
@@ -444,6 +604,26 @@ class Ticket101 extends Model
                     $time2 = Carbon::parse($first_arrived->arrive_time);
 
                     return $time1->diff($time2)->format('%H:%I:%S');
+                }
+            }
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    //liqv_time_total_minutes
+    public function getLiqvTimeTotalMinutesAttribute()
+    {
+        try {
+            if ($this->liqv_time) {
+                $first_arrived = $this->first_department_arrived();
+                if ($first_arrived && $first_arrived->arrive_time) {
+
+                    $time1 = Carbon::parse($this->liqv_time);
+                    $time2 = Carbon::parse($first_arrived->arrive_time);
+
+                    return $time1->diffInMinutes($time2);
                 }
             }
             return null;
@@ -538,9 +718,19 @@ class Ticket101 extends Model
         return $this->hasMany(Ticket101ServicePlan::class, 'card_id');
     }
 
+    public function drill_type()
+    {
+        return $this->belongsTo(DrillType::class,'drill_type_id');
+    }
+
     public function scopeReal($q, $search = null)
     {
-        return $q->where('drill_type', $search);
+        return $q->where('drill_type_id', $search);
+    }
+
+    public function scopeDrill($q)
+    {
+        return $q->whereNotNull('drill_type_id');
     }
 
     public function scopeClosed($q, $search = true)
@@ -577,9 +767,6 @@ class Ticket101 extends Model
 
     public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null, $burnt_id = null, $city_area_id = null)
     {
-        $result = [];
-        $areas = CityArea::all();
-
         $date_begin = $date_begin ? $date_begin: now()->subMonth();
         $date_end = $date_end ? $date_end : now();
 
@@ -598,21 +785,12 @@ class Ticket101 extends Model
             'results',
             'results.tech',
             'results.tech.formation_tech_report',
-            'notifications',
-            'notifications.service',
-            'popup_notifications',
-            'popup_notifications.user',
-            'popup_notifications.status',
-            'popup_notifications.group',
-            'notification_groups',
-            'notifications.service',
             'operational_card',
             'operational_plan.special_plans'
         ])
             ->whereBetween('created_at',[$date_begin, $date_end]);
 
         if($result_id){
-            $reasons = TripResult::where('id', $result_id)->get();
             $tickets = $tickets->where('trip_result_id', $result_id);
         }
 
@@ -624,47 +802,29 @@ class Ticket101 extends Model
             $tickets = $tickets->where('city_area_id', $city_area_id);
         }
 
-        $result = $tickets->orderBy('id', 'desc')->get();
+        $result = $tickets->orderBy('id', 'desc')
+            ->get()
+        ;
 
         foreach ($result as $key => $ticket) {
             $first_arrived = $ticket->first_department_arrived();
 
-            if($first_arrived){
-                $first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
-                    ->format('H:i:s');
+            if($first_arrived) {
+//                $first_arrived->arrive_time = Carbon::parse($first_arrived->arrive_time);
+
+//                $first_arrived->on_way_time = $first_arrived->arrive_time->diffInMinutes($first_arrived->out_time);
+
+                /*$first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
+                    ->format('H:i:s');*/
 
                 $result[$key]->first_arrived_time = $first_arrived->arrive_time;
                 $result[$key]->on_way_time = $first_arrived->on_way_time;
 
+                $result[$key]->detailed_staff_count = $ticket->getDetailedStaffCount();
+                $result[$key]->gdzs_items = $ticket->getGdzs();
+
             }
         }
-
-        /*foreach ($reasons as $reason) {
-            foreach ($areas as $area) {
-                $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
-                    ->where('trip_result_id', $reason->id)
-                    ->where('city_area_id', $area->id);
-
-                $for_period = $baseQuery->get();
-
-                $result[$reason->name][$area->name]['total'] = $baseQuery->count();
-                $result[$reason->name][$area->name]['rescued_count'] = $baseQuery->sum('rescued_count');
-                $result[$reason->name][$area->name]['evac_count'] = $baseQuery->sum('evac_count');
-                $result[$reason->name][$area->name]['co2_poisoned_count'] = $baseQuery->sum('co2_poisoned_count');
-                $ticket$result[$reason->name][$area->name]['ch4_poisoned_count'] = $baseQuery->sum('ch4_poisoned_count');
-                $result[$reason->name][$area->name]['gpt_burns_count'] = $baseQuery->sum('gpt_burns_count');
-                $result[$reason->name][$area->name]['people_death_count'] = $baseQuery->sum('people_death_count');
-                $result[$reason->name][$area->name]['children_death_count'] = $baseQuery->sum('children_death_count');
-                $result[$reason->name][$area->name]['hospitalized_count'] = $baseQuery->sum('hospitalized_count');
-
-                $result[$reason->name][$area->name]['hurt'] = $baseQuery->sum('co2_poisoned_count')
-                    + $baseQuery->sum('ch4_poisoned_count')
-                    + $baseQuery->sum('gpt_burns_count')
-                    + $baseQuery->sum('hospitalized_count');
-            }
-        }*/
-
-
 
         return $result;
     }
@@ -718,5 +878,66 @@ class Ticket101 extends Model
     public function fireDepartmentsInfo()
     {
         return $this->hasMany(Ticket101InfoFromFd::class, 'ticket_id');
+    }
+
+    public function formation_report()
+    {
+        return $this->belongsTo(FormationReport::class, 'formation_report_id');
+    }
+
+    public function getDetailedStaffCount()
+    {
+        if($this->results->count()) {
+            $depts_out = $this->results()->whereNotNull('dispatch_time')->get();
+            $deptsArr = array_unique($depts_out->pluck('fire_department_id')->toArray());
+
+            foreach (FireDepartment::whereIn('id', $deptsArr)->get() as $item) {
+
+                $deptsNumbers = $depts_out->filter(function ($q) use ($item){
+                    return $q->fire_department_id === $item->id;
+                })->pluck('tech.department')->toArray();
+
+                $deptsStaffCounts = $depts_out->filter(function ($q) use ($item){
+                    return $q->fire_department_id === $item->id;
+                })->pluck('staff_count')->toArray();
+
+                $res = [];
+                foreach ($deptsNumbers as $key => $deptsNumber) {
+                    $res[] = "{$deptsNumber}:{$deptsStaffCounts[$key]} чел.";
+                }
+
+                $deptsNumbers = implode(',', $res);
+
+                $this->detailed_staff_count .= "{$item->title}($deptsNumbers), ";
+
+            }
+        }
+        return $this->detailed_staff_count;
+    }
+
+    public function setTotalStaffCountAttribute($value)
+    {
+        if(!$value) {
+            $results = $this->results;
+
+            if($results && $results->count()) {
+                $value = $this->results()->sum('staff_count');
+            }
+        }
+
+        $this->attributes['total_staff_count'] = $value;
+    }
+
+    public function getTotalStaffCountAttribute($value)
+    {
+        if(!$value) {
+            $results = $this->results;
+
+            if($results && $results->count()) {
+                $value = $this->results()->sum('staff_count');
+            }
+        }
+
+        return $value;
     }
 }

@@ -16,8 +16,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('messenger-rights', 'AjaxController@getMessengerPermissions');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
-        Route::get('roadtrips-103', 'AjaxController@getRoadtrip103Plans');
-        Route::get('roadtrips-102', 'AjaxController@getRoadtrip102Plans');
         Route::get('service-plans', 'AjaxController@getServicePlans');
         Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
     });
@@ -68,41 +66,22 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('delete/{id}', 'DrillRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_DRILL_RIDES,CARD101_DRILL_RIDES_CAN_DELETE']);
     });
 
-    #Route::get('/card/add101-other/{card_id?}/{card_type?}', 'CardController@getAdd101')->name('card101add')->where(['card_id' => '[0-9]+']);
     Route::post('/card/add101/{card_id?}/{card_type?}', 'CardController@postAdd101')->name('card101save')->where(['user_id' => '[0-9]+','card_type' => '[A-Za-z]+']);
     Route::post('/card/add101/{card_id}/switch-state', 'CardController@postSwitchStateCard')->name('card101save')->where(['user_id' => '[0-9]+']);
     Route::post('/card/101/delete', 'CardController@postDelete')->name('card101.delete');
+
+    Route::group(['prefix' => 'norms-psp', 'as' => 'norms-psp.'], function (){
+        Route::get('/', 'NormPspController@index')->name('index')->middleware(['right:CAN_ACCESS_NORMS_PSP']);
+        Route::get('{id}/edit', 'NormPspController@edit')->name('edit')->middleware(['right:CAN_ACCESS_NORMS_PSP']);
+        Route::delete('delete/{id}', 'NormPspController@delete')->name('delete')->middleware(['right:CAN_DELETE_NORMS_PSP']);
+        Route::post('{id}/update', 'NormPspController@update')->name('update')->middleware(['right:CAN_EDIT_NORMS_PSP']);
+        Route::match(['get','post'],'create', 'NormPspController@create')->name('create')->middleware(['right:CAN_CREATE_NORMS_PSP']);
+    });
 
     Route::get('/card/mapscreen', 'CardController@getMapscreen')->name('card101.mapscreen');
     Route::get('/hydrants', 'CardController@hydrants')->name('hydrants')->middleware(['right:CAN_ACCESS_HYDRANT']);
 
     Route::resource('/card112', 'Card112Controller');
-
-    Route::resource('/card103', 'Card103Controller');
-    Route::post('/card103/send-department', 'Card103Controller@sendDepartment');
-    Route::post('/card103/service-plans/check', 'Card103Controller@checkServicePlans');
-    Route::group(['prefix' => 'roadtrip-103'], function () {
-        Route::get('/', 'Roadtrip103Controller@index');
-        Route::get('{id}', 'Roadtrip103Controller@show');
-        Route::post('/accept/{id}', 'Roadtrip103Controller@accept')->where('id', '[0-9]+');
-        Route::post('/dispatch', 'Roadtrip103Controller@postDispatch');
-        Route::post('/arrived', 'Roadtrip103Controller@postArrived');
-        Route::post('/return', 'Roadtrip103Controller@postReturn');
-    });
-
-    Route::resource('/card102', 'Card102Controller');
-    Route::post('/card102/send-department', 'Card102Controller@sendDepartment');
-    Route::post('/card102/service-plans/check', 'Card102Controller@checkServicePlans');
-    Route::group(['prefix' => 'roadtrip-102'], function () {
-        Route::get('/', 'Roadtrip102Controller@index');
-        Route::get('{id}', 'Roadtrip102Controller@show');
-        Route::post('/accept/{id}', 'Roadtrip102Controller@accept')->where('id', '[0-9]+');
-        Route::post('/dispatch', 'Roadtrip102Controller@postDispatch');
-        Route::post('/arrived', 'Roadtrip102Controller@postArrived');
-        Route::post('/return', 'Roadtrip102Controller@postReturn');
-    });
-
-//    Route::get('/hydrant', 'HydrantController@index')->name('hydrant.index');//->middleware(['right:right1,right2']);
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
 
@@ -114,6 +93,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'formation'], function () {
         Route::get('/', 'FormationController@getServicesList');
         Route::get('101', 'FormationController@get101');
+        Route::match(['get', 'post'],'create', 'FormationController@create');
         Route::group(['prefix' => 'air-rescue'], function (){
             Route::get('/', 'FormationController@getAirRescue');
             Route::get('/create', 'FormationController@getAirRescueCreate');
@@ -192,8 +172,10 @@ Route::group(['middleware' => 'auth'], function () {
             Route::resource('formation-record', 'FormationRecordController');
             Route::post('formation-record/approve/{id}', 'FormationRecordController@approve');
             Route::get('formation-record/total-edit/word', 'FormationRecordController@saveTotalAsDocx');
-        }
-    );
+
+            Route::match(['get', 'post'],'formation-record/{organisation}/create', 'FormationRecordController@create');
+
+    });
 
     Route::group(['prefix' => 'roadtrip'], function () {
         Route::get('/', 'RoadtripController@getIndex');
@@ -201,6 +183,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/force-out/{id}', 'RoadtripController@postForceOut')->where('id', '[0-9]+');
         Route::get('/view/{plan_id}', 'RoadtripController@getView')
             ->name('roadtrip.plan.view')
+            ->where('plan_id', '[0-9]+');
+        Route::get('/view-other/{plan_id}', 'RoadtripController@getViewOther')
+            ->name('roadtrip.plan.view.other')
             ->where('plan_id', '[0-9]+');
         Route::get('/print/{id}', 'RoadtripController@getPrint')
             ->where('id', '[0-9]+')
@@ -215,11 +200,14 @@ Route::group(['middleware' => 'auth'], function () {
             ->where('ticket_id', '[0-9]+')
             ->where('departments', '[0-9]+');
         Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
+        Route::post('other/send-all/{ticket_id}', 'RoadtripController@postSendAllOther');
+        Route::post('other/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@postSendOther');
         Route::post('recommend', 'RoadtripController@postRecommend');
 
         Route::get('/additional/{id}', 'RoadtripController@getAdditional')
             ->name('roadtrip.additional')
             ->where('id', '[0-9]+');
+
     });
 
     Route::group(['prefix' => 'service-plans'], function (){
@@ -281,8 +269,19 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('fire-department-checks.update-by-date')->where(['date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']);
 
     Route::resource('/fire-department-checks', 'FireDepartmentCheckController');
-    Route::resource('/mudflowProtection', 'MudflowProtectionController');
-    Route::get('/mudflowProtection/export/xls', 'MudflowProtectionController@exportExcel');
+
+    Route::get('/mudflowProtection/export/xls/{date}', 'MudflowProtectionController@exportExcel');
+
+    Route::group(['prefix' => 'mudflow-protection'], function () {
+        Route::get('/', 'MudflowProtectionController@list')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
+        Route::get('{date}', 'MudflowProtectionController@indexByDate')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
+        Route::get('{date}/{id}/edit', 'MudflowProtectionController@edit')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
+        Route::get('{date}/{id}/create', 'MudflowProtectionController@create')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+        Route::post('{date}/{id}/update', 'MudflowProtectionController@update')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+        Route::post('{date}/{id}/store', 'MudflowProtectionController@store')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+        Route::post('{date}/{id}/delete', 'MudflowProtectionController@delete')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+    });
+
     Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);
     Route::resource('/quakes', 'QuakeController');
     Route::get('/quakes/export/xls', 'QuakeController@exportExcel');
@@ -295,6 +294,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/notification-groups', 'NotificationGroupsController');
     Route::get('/morainic-lakes-reports/{date}', 'MorainicLakeReportController@index');
     Route::post('/morainic-lakes-reports/{date}/update', 'MorainicLakeReportController@update');
+    Route::resource('/salvage', 'SalvageController');
 
     Route::group(['prefix' => 'reports/101', 'as' => 'reports.'], function () {
         Route::get('/staff', 'ReportController@getReport101Staff')->name('staff');
@@ -309,6 +309,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'reports/112', 'as' => 'reports112.'], function () {
+        Route::get('/', 'Analytics112Controller@index')->name('index');
         Route::get('/staff', 'ReportController@getReport112Staff')->name('staff');
         Route::post('/staff', 'ReportController@postReport112Staff')->name('staff_post');
         Route::get('/vehicles', 'ReportController@getReport112Vehicles')->name('vehicles');
@@ -317,9 +318,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/emergency', 'ReportController@getReport112Emergency')->name('emergency112_get');
         Route::post('/emergency', 'ReportController@postReport112Emergency')->name('emergency112_post');
 
+        Route::get('/avalanches', 'ReportController@getReportAvalanches')->name('avalanches_get');
+        Route::get('/elevators', 'ReportController@getReportElevators')->name('elevators_get');
+        Route::get('/disease', 'ReportController@getReportDisease')->name('disease_get');
+
         Route::get('/branches', 'ReportController@getReport112Branches')
             ->name('emergency112_get_branches');
-        Route::get('/branches_export', 'ReportController@getReport112BranchesExport')
+        Route::match(['get','post'],'/branches_export', 'ReportController@getReport112BranchesExport')
             ->name('emergency112_get_branches_export');
     });
 
@@ -339,10 +344,36 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/update/{id}', 'CallInfoController@update')->name('update')->middleware(['right:CALL_INFO_EDIT']);
         Route::post('/store', 'CallInfoController@store')->name('store')->middleware(['right:CALL_INFO_CREATE']);
         Route::delete('/delete/{id}', 'CallInfoController@delete')->name('delete')->middleware(['right:CALL_INFO_DELETE']);
+        Route::get('/show', 'CallInfoController@show')->name('show');//->middleware(['right:CALL_INFO_DELETE']);
+        Route::get('/download/{format}', 'CallInfoController@download')->name('download');//->middleware(['right:CALL_INFO_DELETE']);
     });
 
-    Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType');
-    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency');
+    Route::get('reports/112-emergency-report','ReportController@getReport112EmergencyType')->middleware(['right:CAN_ACCESS_REPORT_112_EMERGENCY_REPORT']);
+    Route::get('reports/112-emergency-report/export/{type}','ReportController@exportReport112Emergency')->middleware(['right:CAN_ACCESS_REPORT_112_EMERGENCY_REPORT']);
+
+    Route::get('reports/other-rides-report','ReportController@getReportOtherRides')->middleware(['right:CAN_ACCESS_REPORT_OTHER_RIDES']);
+    Route::get('reports/other-rides-report/export/{type}','ReportController@exportReportOtherRides')->middleware(['right:CAN_ACCESS_REPORT_OTHER_RIDES']);
+
+    Route::get('reports/forces-resources','ReportController@getReportForcesResources')->middleware(['right:CAN_ACCESS_REPORT_FORCES_RESOURCES']);
+    Route::get('reports/forces-resources/export/{type}','ReportController@exportReportForcesResources')->middleware(['right:CAN_ACCESS_REPORT_FORCES_RESOURCES']);
+
+    Route::get('reports/drill-rides-report','ReportController@getReportDrillRides')->middleware(['right:CAN_ACCESS_REPORT_DRILL_RIDES']);
+    Route::get('reports/drill-rides-report/export/{type}','ReportController@exportReportDrillRides')->middleware(['right:CAN_ACCESS_REPORT_DRILL_RIDES']);
+
+    Route::get('reports/emergency-rescue-gu/','ReportController@getReportEmergencyRescueGu')->middleware(['right:CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU']);
+    Route::get('reports/emergency-rescue-gu/export/{type}','ReportController@exportReportEmergencyRescueGu')->middleware(['right:CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU']);
+
+    Route::get('reports/object-classifications/','ReportController@getReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+    Route::get('reports/object-classifications/export/{type}','ReportController@exportReportObjectClassification')->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+
+    Route::get('reports/water-consumption/','ReportController@getReportWaterConsumption');//->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+    Route::get('reports/water-consumption/export/{type}','ReportController@exportReportWaterConsumption');//->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
+    Route::get('reports/quakes','ReportController@getReportQuakes');
+
+    Route::get('reports/daily-reports/{type}','ReportController@daily_reports');
+
+    Route::get('reports/analytics-spiasr', 'AnalyticsSpiasrController@index');
+
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
@@ -372,14 +403,23 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'reports/analytics101', 'as' => 'reports.analytics101.'], function (){
-        Route::get('/', 'AnalyticsController@index')->name('index')->middleware(['right:ANALYTICS101_SHOW']);
+        Route::get('/', 'AnalyticsController@index')->name('index'); //->middleware(['right:ANALYTICS101_SHOW']);
         Route::get('{id}/edit', 'AnalyticsController@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
         Route::post('update/{id}', 'AnalyticsController@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
         Route::delete('delete/{id}', 'AnalyticsController@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
-        Route::get('word/{id}', 'AnalyticsController@word')->name('word')->middleware(['right:ANALYTICS101_EDIT']);
+        Route::get('word/{id}', 'AnalyticsController@word')->name('word');//->middleware(['right:ANALYTICS101_EDIT']);
+    });
+
+    Route::group(['prefix' => 'reports/analytics112', 'as' => 'reports.analytics112.'], function (){
+        Route::get('/', 'Analytics112Controller@index')->name('index'); //->middleware(['right:ANALYTICS101_SHOW']);
+        Route::get('{id}/edit', 'Analytics112Controller@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
+        Route::post('update/{id}', 'Analytics112Controller@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
+        Route::delete('delete/{id}', 'Analytics112Controller@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
+        Route::get('download/{date}/{type?}', 'Analytics112Controller@download')->name('download');//->middleware(['right:ANALYTICS101_EDIT']);
     });
 
     Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
+    Route::post('increment-map-request', 'AjaxController@incrementMapRequest');
 
 
     Route::get('/', 'HomeController@getIndex')->name('home');

@@ -85,6 +85,12 @@
                             {{ liquidation_method.name }}
                         </option>
                     </select>
+                    <div class="control">
+                        <label for="">Количество привлеченного л/с: {{ originalTicket.getDetailedStaffCount }}</label>
+                    </div>
+                    <div class="control">
+                        <label for="">Количество привлеченного л/с (сумма): {{ originalTicket.total_staff_count }}</label>
+                    </div>
                 </div>
             </div>
             <div class="control">
@@ -415,6 +421,10 @@ export default {
         fire_department_id: {
             type: Number,
             default: null
+        },
+        originalTicket: {
+            type: Object,
+            default: () => {}
         }
     },
     data() {
@@ -446,12 +456,14 @@ export default {
                 distance: this.ticket.distance || null,
                 owner: this.ticket.owner || null,
                 ticket_id: this.ticket.ticket_id,
-                fire_department_id: this.ticket.fire_department_id
+                fire_department_id: this.ticket.fire_department_id,
+                total_staff_count: this.ticket.total_staff_count
             }
         };
     },
 
     mounted() {
+        console.dir(this.ticket)
         let token = document.head.querySelector('meta[name="csrf-token"]');
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';

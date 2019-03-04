@@ -16,6 +16,7 @@ class Chronology101FromFd extends Model
         'working_time',
         'event_info_arrived_id',
         'quantity',
+        'water_delivery_distance',
     ];
 
     public function ticket101()

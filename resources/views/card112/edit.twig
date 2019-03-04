@@ -2,19 +2,24 @@
 
 {% block content %}
     {% include "layout/yandex-maps-bus.twig" with {areas: cityAreas} %}
-    {#{{ dump(session('currentTabIndex')) }}#}
     <script>
         window.card112FormData = {
             streets: {{ streets | json_encode() | raw }},
             emergencyTypes: {{ emergencyTypes | json_encode() | raw }},
             cityAreas: {{ cityAreas | json_encode() | raw }},
             incidentTypes: {{ incidentTypes | json_encode() | raw }},
+            emergencyNames: {{ emergencyNames | json_encode() | raw }},
             serviceTypes: {{ serviceTypes | json_encode() | raw }},
             model: {{ model | json_encode() | raw }},
             servicePlans: {{ service_plans | json_encode() | raw }},
             method: 'PATCH',
             currentTabIndex: {{ session('currentTabIndex') != null ? session('currentTabIndex') : currentTabIndex }},
             notificationGroups: {{ notificationGroups | json_encode() | raw }},
+            floodingPlaces: {{ flooding_places | json_encode() | raw }},
+            floodingReasons: {{ flooding_reasons | json_encode() | raw }},
+            avalancheTypes: {{ avalanche_types | json_encode() | raw }},
+            elevatorEmergencyTypes: {{ elevator_emergency_types | json_encode() | raw }},
+            diseaseTypes: {{ disease_types | json_encode() | raw }},
             formRoute: '{{ route('card112.update', model.id) }}'
         };
     </script>

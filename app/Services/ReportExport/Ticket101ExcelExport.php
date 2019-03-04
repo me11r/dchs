@@ -299,9 +299,11 @@ class Ticket101ExcelExport
         $this->setCell($sheet, 'Командировка', 'M7', 'M9', self::VStyle);
         $this->setCell($sheet, 'Др. причины', 'N7', 'N9', self::VStyle);
 
-        $this->setCell($sheet, 'ГДЗС', 'O6', 'O9', self::VStyle);
+        $this->setCell($sheet, 'ГДЗС', 'O6', 'P6', self::HStyle);
 
-        $this->setCell($sheet, 'Аппараты', 'P6', 'P9', self::VStyle);
+        $this->setCell($sheet, 'Газодымозащитники', 'O7', 'O9', self::VStyle);
+        $this->setCell($sheet, 'АСВ/ДАСК', 'P7', 'P9', self::VStyle);
+
         $this->setCell($sheet, "Мотопомпы\nВодяная/Грязевая", 'Q6', 'Q9', self::VStyle);
 
 
@@ -309,7 +311,7 @@ class Ticket101ExcelExport
 
         $this->setCell($sheet, 'В боевом расчёте', 'R7', 'S7', self::HStyle);
         $this->setCell($sheet, 'Тип основ пожарного а/м', 'R8', 'R9', self::VStyle);
-        $this->setCell($sheet, 'Марка спец. пожарного а/м Мотоциклы', 'S8', 'S9', self::VStyle);
+        $this->setCell($sheet, 'Марка спец. пожарного а/м Мотоциклы', 'T8', 'T9', self::VStyle);
 
         $this->setCell($sheet, 'В резерве', 'T7', 'U7', self::HStyle);
         $this->setCell($sheet, 'Тип основ пожарного а/м', 'T8', 'T9', self::VStyle);
@@ -326,6 +328,7 @@ class Ticket101ExcelExport
         $sheet->getColumnDimension('U')->setWidth(20);
         $sheet->getColumnDimension('V')->setWidth(20);
         $sheet->getColumnDimension('W')->setWidth(20);
+        $sheet->getColumnDimension('X')->setWidth(20);
     }
 
     /**

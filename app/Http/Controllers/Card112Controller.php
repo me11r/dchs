@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
+use App\DiseaseType;
+use App\ElevatorEmergencyType;
+use App\EmergencyName;
 use App\EmergencyType;
+use App\FloodingPlace;
+use App\FloodingReason;
 use App\Http\Resources\Card112\Card112Resource;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
@@ -130,6 +136,12 @@ class Card112Controller extends Controller
             ->with('model', new Card112Resource(new Card112()))
             ->with('service_plans', $ticket101_service_plans)
             ->with('emergencyTypes', EmergencyType::all())
+            ->with('emergencyNames', EmergencyName::all())
+            ->with('flooding_places', FloodingPlace::all())
+            ->with('flooding_reasons', FloodingReason::all())
+            ->with('avalanche_types', AvalancheType::all())
+            ->with('elevator_emergency_types', ElevatorEmergencyType::all())
+            ->with('disease_types', DiseaseType::all())
             ->with('currentTabIndex', 0)
             ->render();
     }
@@ -139,9 +151,9 @@ class Card112Controller extends Controller
         $index = $request->currentTabIndex;
 
         $req = $request->except([
-            'notification_services'
+            'notification_services',
+            'custom_created_at',
         ]);
-
         $data = $this->repository->createFilledWithRelations($req);
 
         if ($index) {
@@ -178,6 +190,10 @@ class Card112Controller extends Controller
             ])
             ->first());
 
+        if(!$model->resource) {
+            return redirect('/card112/create');
+        }
+
         return View::make('card112.edit')
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
@@ -187,6 +203,12 @@ class Card112Controller extends Controller
             ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('currentTabIndex', $request->input('currentTabIndex', 0))
             ->with('emergencyTypes', EmergencyType::all())
+            ->with('emergencyNames', EmergencyName::all())
+            ->with('flooding_places', FloodingPlace::all())
+            ->with('flooding_reasons', FloodingReason::all())
+            ->with('avalanche_types', AvalancheType::all())
+            ->with('elevator_emergency_types', ElevatorEmergencyType::all())
+            ->with('disease_types', DiseaseType::all())
             ->with('model', $model);
     }
 
@@ -194,8 +216,9 @@ class Card112Controller extends Controller
     {
         $index = $request->currentTabIndex;
         $data = $request->except([
-            'notification_services'
+            'notification_services',
         ]);
+        $data['custom_created_at'] = $data['custom_created_at'] ? Carbon::parse($data['custom_created_at'])->format('Y-m-d H:i') : null;
         $this->repository->updateFilledWithRelations($data, $id);
         $this->repository->updateServicePlans($request->input('notification_services', []), $id);
         return redirect(route('card112.edit', $id))->with('currentTabIndex', $index);

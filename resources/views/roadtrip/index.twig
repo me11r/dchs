@@ -19,14 +19,14 @@
             <tr>
                 <td>{{ trip.id }}</td>
                 <td>{{ trip.department.name|default('-') }}</td>
-                <td>{{ trip.ticket.location|default('-') }} {% if trip.ticket.crossroad_1_id is defined %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>
+                <td>{{ trip.ticket.location|default('') ~ trip.ticket101_other.direction|default('') }} {% if trip.ticket.crossroad_1_id is defined %}({{ trip.ticket.crossroad_1.name|default('-') }} &times; {{ trip.ticket.crossroad_2.name|default('-') }}){% endif %}</td>
                 <td>{{ trip.created_at|date('d.m.Y H:i') }}</td>
-                <td>{{ trip.ticket.is_real|default(1) ? 'Боевой' : 'Учебный' }}</td>
-                <td class="has-text-right"><a href="{{ url('/roadtrip/view/' ~ trip.id) }}" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой
+                <td>{{ trip.ticket.drill_type|default(null) ? 'Учебный' : (trip.ticket101_other|default(null) ? 'Прочие' : 'Боевой') }}</td>
+                <td class="has-text-right"><a href="{{ url(trip.ticket ? ('/roadtrip/view/' ~ trip.id) : ('/roadtrip/view-other/' ~ trip.id)) }}" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой
                         лист</a></td>
-                {% if user.role_id == 3 %}
+                {% if user.role_id == 3 or user.id == 1 %}
                 <td class="has-text-right">
-                    <a href="{{ url('/roadtrip/additional/' ~ trip.id) }}" class="button is-outlined is-primary">
+                    <a href="{{  url('/roadtrip/additional/' ~ trip.id) }}" class="button is-outlined is-primary">
                         <i class="far fa-list-alt"></i>
                         &nbsp;Дополнительно
                     </a>

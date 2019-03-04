@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Dictionary\CityArea;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -85,17 +86,48 @@ class EmergencySituation extends Model
      */
     public $guarded = ['id'];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function cityArea()
-    {
-        return $this->hasOne(CityArea::class, 'id', 'city_area_id');
-    }
+    protected $appends = [
+        'date',
+        'time',
+    ];
 
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function getDateAttribute()
+    {
+        if($this->date_time) {
+            return Carbon::parse($this->date_time)->format('Y-m-d');
+        }
+
+        return null;
+    }
+
+    public function getTimeAttribute()
+    {
+        if($this->date_time) {
+            return Carbon::parse($this->date_time)->format('H:i:s');
+        }
+
+        return null;
+    }
+
+    public function getTimeHumanFormatAttribute()
+    {
+        if($this->time) {
+            return Carbon::parse($this->time)->format('H') . ' час ' . Carbon::parse($this->time)->format('i') . ' мин.';
+        }
+        return null;
+    }
+
+    public function getDateHumanFormatAttribute()
+    {
+        if($this->date) {
+            return Carbon::parse($this->date)->format('d.m.Y');
+        }
+        return null;
     }
 
     public function scopeDailyRecords($q, $from = null, $to = null)
@@ -103,6 +135,6 @@ class EmergencySituation extends Model
         $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
-        return $q->whereBetween('created_at', [$from, $to]);
+        return $q->whereBetween('date_time', [$from, $to]);
     }
 }

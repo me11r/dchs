@@ -126,11 +126,11 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'table' => 'event_infos',
                 'model' => \App\EventInfo::class
             ],
-            [
-                'title' => 'Нормативно-справочная информация: на месте',
-                'table' => 'event_info_arriveds',
-                'model' => \App\EventInfoArrived::class
-            ],
+//            [
+//                'title' => 'Нормативно-справочная информация: на месте',
+//                'table' => 'event_info_arriveds',
+//                'model' => \App\EventInfoArrived::class
+//            ],
             [
                 'title' => 'Типы выездов',
                 'table' => 'ride_types',
@@ -170,6 +170,66 @@ class DictionarySeeder extends \Illuminate\Database\Seeder
                 'title' => "Тип происшествия",
                 'table' => 'emergency_types',
                 'model' => \App\EmergencyType::class
+            ],
+            [
+                'title' => "Номер норматива",
+                'table' => 'norm_numbers',
+                'model' => \App\NormNumber::class
+            ],
+            [
+                'title' => "Тип норматива",
+                'table' => 'norm_types',
+                'model' => \App\NormType::class
+            ],
+            [
+                'title' => "Классификация объектов",
+                'table' => 'object_classifications',
+                'model' => \App\ObjectClassification::class
+            ],
+            [
+                'title' => "Типы учений",
+                'table' => 'drill_types',
+                'model' => \App\DrillType::class
+            ],
+            [
+                'title' => "Название ЧС",
+                'table' => 'emergency_names',
+                'model' => \App\EmergencyName::class
+            ],
+            [
+                'title' => "Типы стволов",
+                'table' => 'trunk_types',
+                'model' => \App\TrunkType::class
+            ],
+            [
+                'title' => "Место подтопления",
+                'table' => 'flooding_places',
+                'model' => \App\FloodingPlace::class
+            ],
+            [
+                'title' => "Причина подтопления",
+                'table' => 'flooding_reasons',
+                'model' => \App\FloodingReason::class
+            ],
+            [
+                'title' => "Тип схода снежных лавин",
+                'table' => 'avalanche_types',
+                'model' => \App\AvalancheType::class
+            ],
+            [
+                'title' => "Происшествия на лифтах",
+                'table' => 'elevator_emergency_types',
+                'model' => \App\ElevatorEmergencyType::class
+            ],
+            [
+                'title' => "Типы заболеваний",
+                'table' => 'disease_types',
+                'model' => \App\DiseaseType::class
+            ],
+            [
+                'title' => "Виды техники",
+                'table' => 'vehicle_classes',
+                'model' => \App\VehicleClass::class
             ],
         ];
         #Schema::disableForeignKeyConstraints();
