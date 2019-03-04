@@ -54,7 +54,6 @@ class Ticket101ServicePlan extends Model
         'service_type_id',
         'card_id',
         'card112_id',
-        'card103_id',
         'return_time',
         'is_closed',
         'is_accepted',
