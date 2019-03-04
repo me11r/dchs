@@ -69,6 +69,8 @@ class CardController extends AuthorizedController
         $this->set('fireDepartments', collect(FireDepartment::all(['id', 'title']))->toArray());
         $this->set('model', new HydrantResource(new Hydrant()));
 
+        $this->set('userDeptRight', Auth::user()->role->hydrant_access_id ?? 0);
+
         $this->set('isAdmin', $isAdmin);
         $this->set('canEditAllHydrants', $canEditAllHydrants);
         $this->set('canEditOwnHydrants', $canEditOwnHydrants);
@@ -88,6 +90,7 @@ class CardController extends AuthorizedController
         $data['fireDepartments'] = collect(FireDepartment::all(['id', 'title']))->toArray();
         $data['model'] = new HydrantResource(new Hydrant());
 
+        $data['userDeptRight'] = Auth::user()->role->hydrant_access_id ?? 0;
         $data['isAdmin'] = $isAdmin;
         $data['canEditOwnHydrants'] = $canEditOwnHydrants;
         $data['userDept'] = $userDept;

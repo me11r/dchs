@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Hydrant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,6 +28,7 @@ class Role extends Model
 {
     protected $fillable = [
         'name',
+        'hydrant_access_id',
         'title',
     ];
 
@@ -64,6 +66,11 @@ class Role extends Model
     public function users()
     {
         return $this->hasMany(User::class, 'role_id');
+    }
+
+    public function hydrant_access()
+    {
+        return $this->belongsTo(FireDepartment::class, 'hydrant_access_id');
     }
 
     public function scopeName($q, $search)

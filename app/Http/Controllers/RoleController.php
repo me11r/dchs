@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AccessDeniedException;
+use App\FireDepartment;
 use App\Right;
 use App\Rights\Group;
 use App\Role;
@@ -35,6 +36,7 @@ class RoleController extends Controller
         ];
         $data['store_path'] = "/admin/{$this->view}/add-edit";
         $data['back_path'] = "/admin/{$this->view}";
+        $data['fire_departments'] = FireDepartment::all();
 
         return view("{$this->view}.add-edit", $data);
     }
@@ -51,6 +53,7 @@ class RoleController extends Controller
         ];
         $data['store_path'] = "/admin/{$this->view}/add-edit";
         $data['back_path'] = "/admin/{$this->view}";
+        $data['fire_departments'] = FireDepartment::all();
 
         return view("{$this->view}.add-edit", $data);
     }
