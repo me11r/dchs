@@ -21,8 +21,6 @@ class HydrantController extends Controller
     {
         $hydrants = $this->repository->with(['fireDepartment'])->get();
 
-//        return HydrantResource::collection($hydrants);
-
         $fireDepts = FireDepartment::all();
 
         return response()->json(['hydrants' => $hydrants, 'fireDepartments' => $fireDepts]);
