@@ -415,7 +415,6 @@ class RoadtripController extends AuthorizedController
 
     public function postRecommend(Request $request)
     {
-        $f = $request->all();
         $result = FireDepartmentResult::find($request->id);
         $result->recommended = $request->recommended;
         $result->save();

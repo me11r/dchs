@@ -57,6 +57,42 @@
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;102</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            v-if="hasRight(2)"
+                            href="/card102/create"
+                            class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Путевка 102
+                        </a>
+                        <a
+                                v-if="hasRight(2)"
+                                href="/card102"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 102
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
+                    <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;103</a>
+                    <div class="navbar-dropdown">
+                        <a
+                            v-if="hasRight(2)"
+                            href="/card103/create"
+                            class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Путевка 103
+                        </a>
+                        <a
+                                v-if="hasRight(2)"
+                                href="/card103"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 103
+                        </a>
+                    </div>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;112</a>
                     <div class="navbar-dropdown">
                         <a
@@ -71,6 +107,18 @@
                                 class="dropdown-item is-small"><i
                                 class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточки 112
+                        </a>
+                        <a
+                                href="/card103"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 103
+                        </a>
+                        <a
+                                href="/card102"
+                                class="dropdown-item is-small"><i
+                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            Карточки 102
                         </a>
                     </div>
                 </div>
@@ -382,6 +430,18 @@
                             class="dropdown-item">
                             <i class="fas fa-archway fa-fw"></i>&nbsp;
                             Путевые листы служб взаимодействия
+                        </a>
+                        <a
+                            href="/roadtrip-103/"
+                            class="dropdown-item">
+                            <i class="fas fa-archway fa-fw"></i>&nbsp;
+                            Путевые листы 103
+                        </a>
+                        <a
+                            href="/roadtrip-102/"
+                            class="dropdown-item">
+                            <i class="fas fa-archway fa-fw"></i>&nbsp;
+                            Путевые листы 102
                         </a>
 
                     </div>
