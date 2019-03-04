@@ -5,8 +5,6 @@ import axios from 'axios';
 
 import Navbar from './ui/Navbar';
 import {Card112Form} from './views/card112';
-import {Card103Form} from './views/card103';
-import {Card102Form} from './views/card102';
 import {MudflowProtectionForm} from './views/mudflowProtection';
 // import {HydrantMapList} from './views/hydrant-map';
 import {CommonMapScreen} from './views/mapscreen';
@@ -16,8 +14,6 @@ import AddEdit101Tech from './views/101tech/AddEdit101Tech.vue';
 import Schedule from './views/schedule/Schedule.vue';
 import RoadTripViewMap from './views/roadtrip-map/RoadTripViewMap';
 import RoadtripDeptBtn from './views/roadtrip-map/RoadtripDeptBtn';
-import Roadtrip103DeptBtn from './views/roadtrip103-map/RoadtripDeptBtn';
-import Roadtrip102DeptBtn from './views/roadtrip102-map/RoadtripDeptBtn';
 import ReportForces from './views/reports/emergency/ReportForces';
 
 import AdditionalData from './views/fire-departments/AdditionalData';
@@ -81,8 +77,6 @@ Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
 Vue.component('card112', Card112Form);
-Vue.component('card103', Card103Form);
-Vue.component('card102', Card102Form);
 Vue.component('mudflow-protection-form', MudflowProtectionForm);
 // Vue.component('hydrants-map', HydrantMapList);
 Vue.component('common-map', CommonMapScreen);
@@ -94,8 +88,6 @@ Vue.component('fire-object', FireObject);
 Vue.component('report101-staff', Report101Staff);
 Vue.component('report101-vehicles', Report101Vehicles);
 Vue.component('roadtrip-dept-btn', RoadtripDeptBtn);
-Vue.component('roadtrip103-dept-btn', Roadtrip103DeptBtn);
-Vue.component('roadtrip102-dept-btn', Roadtrip102DeptBtn);
 Vue.component('report101-emergency', Report101Emergency);
 Vue.component('report-forces', ReportForces);
 Vue.component('report112-emergency', Report112Emergency);
@@ -173,22 +165,6 @@ const card112FormBlockId = 'card112-form-block';
 if (document.getElementById(card112FormBlockId)) {
     window.addEventListener('load', () => {
         new Vue({el: '#' + card112FormBlockId, render: h => h(Card112Form)});
-    });
-}
-
-// Карточка 103 (форма добавления/редактировани)
-const card103FormBlockId = 'card103-form-block';
-if (document.getElementById(card103FormBlockId)) {
-    window.addEventListener('load', () => {
-        new Vue({el: '#' + card103FormBlockId, render: h => h(Card103Form)});
-    });
-}
-
-// Карточка 102 (форма добавления/редактировани)
-const card102FormBlockId = 'card102-form-block';
-if (document.getElementById(card102FormBlockId)) {
-    window.addEventListener('load', () => {
-        new Vue({el: '#' + card102FormBlockId, render: h => h(Card102Form)});
     });
 }
 
