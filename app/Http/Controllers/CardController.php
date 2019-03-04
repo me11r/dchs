@@ -733,10 +733,12 @@ class CardController extends AuthorizedController
     {
         foreach ($notificationServices as $id => $data) {
             $record = Ticket101Notification::find($id);
-            $record->name = $data['name'] ?? null;
-            $record->message_time = $data['message_time'] ?? null;
-            $record->arrive_time = $data['arrive_time'] ?? null;
-            $record->save();
+            if($record) {
+                $record->name = $data['name'] ?? null;
+                $record->message_time = $data['message_time'] ?? null;
+                $record->arrive_time = $data['arrive_time'] ?? null;
+                $record->save();
+            }
         }
     }
 
