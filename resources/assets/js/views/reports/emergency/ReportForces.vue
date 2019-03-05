@@ -119,13 +119,14 @@ export default {
             window.print();
         },
         sync() {
-            setInterval(() => {
+            setTimeout(() => {
                 this.getReports();
             }, 10000);
         },
         getReports() {
             axios.get('/reports/101/forces-resources').then((response) => {
                 this.reports_ = response.data.reports;
+                this.sync();
             });
         },
         isNull(data, property) {
