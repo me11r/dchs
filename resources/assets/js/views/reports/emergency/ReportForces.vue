@@ -121,7 +121,7 @@ export default {
         sync() {
             setTimeout(() => {
                 this.getReports();
-            }, 10000);
+            }, 1000 * 2 * 60);
         },
         getReports() {
             axios.get('/reports/101/forces-resources').then((response) => {
@@ -158,7 +158,7 @@ export default {
         }
     },
     mounted() {
-        this.sync();
+        this.getReports();
     }
 
 };

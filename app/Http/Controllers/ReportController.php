@@ -30,6 +30,7 @@ use App\NormPsp;
 use App\NormType;
 use App\ObjectClassification;
 use App\OperationalCard;
+use App\ReportCache;
 use App\Reports\Report;
 use App\Reports\Report101DrillRides;
 use App\Reports\Report101EmergencyRescueGu;
@@ -619,7 +620,15 @@ class ReportController extends AuthorizedController
 
     public function getForces(Request $request)
     {
-        $today = Carbon::today();
+        if($request->ajax()){
+            //плавно мигрируем в сторону очередей
+            if($data = Cache::get('report_forces_data')) {
+                return response()->json($data);
+            }
+            elseif ($data = ReportCache::getData('main_page_forces')) {
+                return response()->json($data);
+            }
+        }
 
         $data = [];
 

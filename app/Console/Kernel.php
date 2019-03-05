@@ -37,6 +37,10 @@ class Kernel extends ConsoleKernel
          $schedule->command('create:operational_group')
             ->daily()
             ->at('18:00');
+
+         //забиваем отчет на главной странице
+         $schedule->command('fill:main:reports')
+            ->everyFiveMinutes();
     }
 
     /**
