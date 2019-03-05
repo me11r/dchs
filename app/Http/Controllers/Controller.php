@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exceptions\AccessDeniedException;
 use App\Page\Metadata;
 use App\Right;
+use App\Services\CommonHelper;
+use App\Services\FileHelper;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Routing\Controller as BaseController;
@@ -133,6 +135,23 @@ abstract class Controller extends BaseController
         }
 
         $this->after();
+
+        //замер жора памяти
+        if(!in_array($method, [
+            'getAnyUnread',
+            'getServicePlans',
+            'getRoadtripPlans',
+            'getRightIds',
+            'getMessengerPermissions',
+            'checkPopupNotifications'])) {
+            $memoryUsed = (new CommonHelper())->getMemoryUsed();
+            $log = Request::url(). " -- {$memoryUsed} Mb";
+            $log .= $memoryUsed > 50 ? ' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' : '';
+            $today = today()->format('d-m-Y');
+            (new FileHelper())->log($log, "logs/memory_info_{$today}.log");
+        }
+
+
         return $response;
     }
 

@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\EmergencyType;
 use App\Models\Card112\Card112;
 use App\Models\Card112\Card112Chronology;
 use App\Models\Card112\Card112ServiceReaction;
+use App\Models\IncidentType;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
 use App\Ticket101ServicePlan;
@@ -61,6 +63,26 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
             $card112->custom_created_at = $data['custom_created_at'];
             $card112->save();
         }
+
+        /*если тип происшествия один из указанных ниже, проставляем признак ЧС*/
+        $emergencyType = EmergencyType::where('name', 'ЧС')->first();
+
+        if($emergencyType) {
+            $tripResult = IncidentType::find($card112->additional_incident_type_id);
+            $isFire = $tripResult ? in_array($tripResult->name,[
+                'Отравление угарным газом',
+                'Пожар',
+                'Отравление природным газом',
+                'Инфекционные заболевания',
+            ]) : false;
+
+            if($emergencyType && $isFire) {
+                $card112->emergency_type_id = $emergencyType->id;
+                $card112->save();
+            }
+        }
+
+        /**/
 
         foreach ($serviceReactions as $serviceReaction){
             $fill = [
