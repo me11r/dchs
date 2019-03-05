@@ -43,6 +43,8 @@ use App\Repositories\Contracts\BurntObjectInterface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Repositories\Contracts\Ticket101Interface;
 use App\RideType;
+use App\Services\CommonHelper;
+use App\Services\FileHelper;
 use App\Services\ReportExport\Daily112WordExport;
 use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportAvalanches;
@@ -398,10 +400,6 @@ class ReportController extends AuthorizedController
                     'Причина подтопления' => $card->flooding_reason->name ?? null,
                     'Принятые меры' => $card->measures,
                     'Количество задействованных сил и средств' => $card->resources,
-//                    'Начало и завершение работ' => [
-//                        'Начало' => Carbon::parse($card->chronology_start_time)->format('H:i'),
-//                        'Оконч.' => Carbon::parse($card->chronology_end_time)->format('H:i'),
-//                    ],
 
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .

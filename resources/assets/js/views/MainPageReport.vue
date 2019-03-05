@@ -63,17 +63,16 @@
                 </h4>
                 <div class="panel">
                     <table class="formation-record-table">
-                        <thead>
                         <tr>
-                            <th>СОМЭ</th>
-                            <th>Казгидромет</th>
-                            <th>Казселезащита</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
+                            <td><b>СОМЭ</b></td>
                             <td class="text-top">{{ servicesInfos_.SOME }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Казгидромет</b></td>
                             <td class="text-top">{{ servicesInfos_.weather }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-top"><b>Казселезащита</b></td>
                             <td>
                                 <table v-for="river in rivers" :key="`rivers_${river.id}`" class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
                                     <thead>
