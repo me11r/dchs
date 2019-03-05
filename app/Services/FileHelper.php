@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Storage;
+
 class FileHelper
 {
     /**
@@ -357,6 +359,21 @@ class FileHelper
 
         return null;
 
+    }
+
+    public function log($data, $file = "memory_leaks.log")
+    {
+        try {
+            $date = now()->format('d.m.Y H:i:s');
+
+            Storage::prepend($file, "\n");
+            Storage::prepend($file, "***********{$date}*************");
+            Storage::prepend($file, $data);
+            Storage::prepend($file, "***********{$date}*************");
+        }
+        catch (\Exception $e) {
+
+        }
     }
 
 
