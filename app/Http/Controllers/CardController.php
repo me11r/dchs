@@ -216,7 +216,6 @@ class CardController extends AuthorizedController
         $this->set('emergencyTypes', EmergencyType::all());
         $this->set('wall_materials', $wall_materials);
         $this->set('notification_get_back', session()->pull('notification.get_back', 0));
-//        $this->set('staff', Staff::all());
         $this->set('ride_types', RideType::all());
         $this->set('fire_departments_vue', FireDepartment::recommend()->get());
         $this->set('card_type', $card_type);
@@ -231,14 +230,12 @@ class CardController extends AuthorizedController
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::with(['fire_departments'])->get());
-//        $this->set('fire_object', BurntObject::all());
         $this->set('fire_levels', FireLevel::all());
         $this->set('object_classifications', ObjectClassification::all());
         $this->set('living_sector_types', LivingSectorType::all());
         $this->set('burn_object', FireObject::all());
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
-//        $this->set('fire_object_options', FireObject::all());
         $this->set('trunk_types', TrunkType::all());
         $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
             return [
@@ -255,37 +252,25 @@ class CardController extends AuthorizedController
         $this->set('trunks', Trunk::orderBy('id', 'ASC')->get());
         $ticket = Ticket101::with(
             [
-//                'crossroad_1',
-//                'crossroad_2',
                 'other_records',
-//                'chronologies',
                 'chronologies.event_info',
                 'chronologies.event_info_arrived',
-//                'chronologies.event_info_arrived.trunk_type',
                 'chronologies.fire_department_result.tech',
                 'chronologies.fire_department_result.department',
                 'chronologiesFromFd',
                 'chronologiesFromFd.event_info',
                 'chronologiesFromFd.event_info_arrived',
-//                'chronologiesFromFd.event_info_arrived.trunk_type',
                 'chronologiesFromFd.fire_department_result.tech',
                 'chronologiesFromFd.fire_department_result.department',
-//                'results',
-//                'results.tech',
                 'results.tech.formation_tech_report',
                 'results.department',
-//                'notifications',
                 'notifications.service',
-//                'popup_notifications',
                 'popup_notifications.user',
                 'popup_notifications.status',
                 'popup_notifications.group',
                 'notification_groups',
-//                'operational_card',
                 'operational_plan.special_plans',
-//                'service_plans',
                 'service_plans.service_type',
-//                'fireDepartmentsInfo',
                 'fireDepartmentsInfo.fire_level',
                 'fireDepartmentsInfo.burn_object',
                 'fireDepartmentsInfo.trip_result',
