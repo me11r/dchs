@@ -118,7 +118,6 @@
                             <div class="column is-half">
                                 <div class="bd-notification is-primary">
                                     <div class="field">
-                                        {#<label for="fireplace">Жилые комнаты пожара</label>#}
                                         <label for="fireplace">Место пожара</label>
                                         <input
                                                 id="fireplace"
@@ -372,8 +371,6 @@
                                                         {% if ticket.people_in_danger %}checked{% endif %}>
                                             Неизвестно - <input tabindex="16" type="radio" name="people_in_danger" value="0"
                                                                 {% if not ticket.people_in_danger %}checked{% endif %}>
-                                            {#<input type="checkbox" name="people_in_danger" value="1" id="people_in_danger"#}
-                                            {#{% if ticket.people_in_danger %}checked{% endif %}/>#}
                                         </div>
                                     </div>
                                 </div>
@@ -395,7 +392,6 @@
                                                         {% endfor %}
                                                     </select>
                                                 </div>
-                                                {#<input type="hidden" name="drill_type" value="drill">#}
                                             {% else %}
                                                 <label for="caller_phone">Телефон заявителя</label>
                                                 <input tabindex="10" type="text" class="input" name="caller_phone" id="caller_phone"
@@ -642,10 +638,6 @@
                                 </select>
                             </div>
                         </div>
-
-                        {#{% if (card_type == 'drill') %}#}
-
-                        {#{% endif %}#}
 
                         <div class="field">
                             <div class="control">

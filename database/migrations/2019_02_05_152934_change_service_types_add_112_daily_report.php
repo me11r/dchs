@@ -18,9 +18,13 @@ class ChangeServiceTypesAdd112DailyReport extends Migration
         });
 
         foreach (['ЦМК', 'ГУ РОСО', 'Служба спасения-109 г. Алматы', 'Өрт сөндіруші', 'РГП Казавиаспас'] as $item) {
+
             $record = \App\Models\ServiceType::where('name', $item)->first();
-            $record->report112_daily = true;
-            $record->save();
+
+            if($record) {
+                $record->report112_daily = true;
+                $record->save();
+            }
         }
     }
 
