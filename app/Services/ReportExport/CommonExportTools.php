@@ -168,7 +168,7 @@ trait CommonExportTools
             (int)array_get($techData, 'life_rope', 0), // Имеется на автомобилях в боевом расчете -> Спасательные веревки
             (int)array_get($techData, 'foamer', 0), // Имеется на автомобилях в боевом расчете -> Пенообразователя
 
-            (int)array_get($techData, 'foamer_in_stock', 0), // Пенообразователя на складе
+            (int)array_get($techData, 'foamer_reserved') . '/'. (int)array_get($techData, 'foamer_in_stock'), // Пенообразователя на складе
 
             (int)array_get($techData, 'damaged_hydrant_street', 0), // Количество неисправных водоисточников -> ПГ -> уличный
             (int)array_get($techData, 'damaged_hydrant_object', 0), // Количество неисправных водоисточников -> ПГ -> объектовый
@@ -230,7 +230,7 @@ trait CommonExportTools
             (int)array_get($sumArray, 'life_rope'), // Имеется на автомобилях в боевом расчете -> Спасательные веревки
             (int)array_get($sumArray, 'foamer'), // Имеется на автомобилях в боевом расчете -> Пенообразователя
 
-            (int)array_get($sumArray, 'foamer_in_stock'), // Пенообразователя на складе
+            (int)array_get($sumArray, 'foamer_reserved') . '/'. (int)array_get($sumArray, 'foamer_in_stock'), // Пенообразователя на складе
 
             (int)array_get($sumArray, 'damaged_hydrant_street'), // Количество неисправных водоисточников -> ПГ -> уличный
             (int)array_get($sumArray, 'damaged_hydrant_object'), // Количество неисправных водоисточников -> ПГ -> объектовый

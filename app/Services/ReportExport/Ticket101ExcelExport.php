@@ -212,7 +212,7 @@ class Ticket101ExcelExport
         $this->setCell($sheet, 'Спасательные веревки', 'Q2', 'Q3', self::VStyle);
         $this->setCell($sheet, 'Пенообразователя', 'R2', 'R3', self::VStyle);
 
-        $this->setCell($sheet, 'Пенообразователя на складе', 'S1', 'S3', self::VStyle);
+        $this->setCell($sheet, 'Пенообразователя в резерве / на складе', 'S1', 'S3', self::VStyle);
 
         $this->setCell($sheet, 'Количество неисправных водоисточников', 'T1', 'V1', self::HStyle);
         $this->setCell($sheet, 'ПГ', 'T2', 'U2', self::HStyle);
