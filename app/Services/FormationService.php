@@ -56,7 +56,7 @@ class FormationService
         }
         // сумма АСВ/ДАСК
         if($report) {
-            $sumArray['tech']['asv_dask'] = $report->sumGdzs();
+            $sumArray['tech']['asv_dask'] = $report->sumTechTwo('asv','dask');
         }
 
         return $sumArray;

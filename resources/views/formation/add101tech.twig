@@ -173,20 +173,29 @@
                             <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '11')" step="1" data-value="" class="input add101persons-input" name="life_rope" id="field_5_11" value="{{ model.life_rope }}">
                         </div>
                     </div>
+                </fieldset>
+
+                <fieldset class="">
+                    <legend>Пенообразователя</legend>
                     <div class="field">
-                        <label for="field_5_12">Пенообразователя</label>
+                        <label for="field_5_12">Пенообразователя в расчете</label>
                         <div class="control">
                             <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('_5', '12')" step="1" data-value="" class="input add101persons-input" name="foamer" id="field_5_12" value="{{ model.foamer }}">
                         </div>
                     </div>
-                </fieldset>
-
-                <div class="field">
-                    <label for="field_2">Пенообразователя на складе</label>
-                    <div class="control">
-                        <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '2')" step="1" data-value="" class="input add101persons-input" name="foamer_in_stock" id="field_2" value="{{ model.foamer_in_stock }}">
+                    <div class="field">
+                        <label for="field_2">Пенообразователя в резерве</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '2')" step="1" data-value="" class="input add101persons-input" name="foamer_reserved" id="field_2" value="{{ model.foamer_reserved }}">
+                        </div>
                     </div>
-                </div>
+                    <div class="field">
+                        <label for="field_2">Пенообразователя на складе</label>
+                        <div class="control">
+                            <input type="number" min=0 oninput="validity.valid||(value='');" :readonly="isReadonly('', '2')" step="1" data-value="" class="input add101persons-input" name="foamer_in_stock" id="field_2" value="{{ model.foamer_in_stock }}">
+                        </div>
+                    </div>
+                </fieldset>
 
                 <fieldset class="">
                     <legend>количество неисправных водоисточников</legend>
