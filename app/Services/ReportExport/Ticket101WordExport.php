@@ -787,7 +787,7 @@ class Ticket101WordExport
         $table->addRow(700);
         $table->addCell(1200, $cellRowSpanV)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
         $table->addCell(9000, ['gridSpan' => 17, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Имеется на автомобилях в боевом расчете', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(600, $cellRowSpanV)->addText('Пенообразователя на складе', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText('Пенообразователя в резерве / на складе', $hcFontStyle, $hcAlignStyle);
         $table->addCell(1400, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'])->addText('Количество неисправных водоисточников', $hcFontStyle, $hcAlignStyle);
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderLeftSize' => 10, 'borderColor' => '000000'])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);

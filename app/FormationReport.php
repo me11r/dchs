@@ -110,8 +110,8 @@ class FormationReport extends Model
         return $data;
     }
 
-    public function scopeSumGdzs($q)
+    public function scopeSumTechTwo($q, $first, $second)
     {
-        return $this->tech_reports()->sum('asv'). '/'.$this->tech_reports()->sum('dask');
+        return $this->tech_reports()->sum($first). '/'.$this->tech_reports()->sum($second);
     }
 }

@@ -179,6 +179,9 @@ class FormationTechReport extends Model
 {
     protected $table = 'formation_tech_report';
     protected $guarded = ['id'];
+    protected $appends = [
+        'foamer_in_stock_reserved'
+    ];
     protected $fillable = [
         'form_id',
         'dept_id',
@@ -204,6 +207,7 @@ class FormationTechReport extends Model
         'life_rope',
         'foamer',
         'foamer_in_stock',
+        'foamer_reserved',
         'damaged_hydrant_street',
         'damaged_hydrant_object',
         'damaged_pv',
@@ -224,6 +228,11 @@ class FormationTechReport extends Model
     public function getAsvDaskAttribute()
     {
         return "$this->asv/$this->dask";
+    }
+
+    public function getFoamerInStockReservedAttribute()
+    {
+        return "$this->foamer_reserved/$this->foamer_in_stock";
     }
 
     public function scopeTodayRecords($q)

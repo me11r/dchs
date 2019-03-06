@@ -506,7 +506,6 @@ class FormationController extends AuthorizedController
     {
         $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_101);
 
-        $all = $request->all();
         $except = $request->except('tech');
         $formationReport = FormationReport::find($form_id);
         $canEditReport = $formationReport->canEditReport();
@@ -642,7 +641,7 @@ class FormationController extends AuthorizedController
                 'Спасательные  веревки',
                 'Пенообразователя',
             ],
-            'Пенообразователя на складе',
+            'Пенообразователя в резерве / на складе',
             'количество неисправных водоисточников' => [
                 'Пожарные гидранты' => [
                     'Уличный',
@@ -704,7 +703,7 @@ class FormationController extends AuthorizedController
             'flapper',
             'life_rope',
             'foamer',
-            'foamer_in_stock',
+            'foamer_in_stock_reserved',
             'damaged_hydrant_street',
             'damaged_hydrant_object',
             'damaged_pv',
@@ -827,7 +826,7 @@ class FormationController extends AuthorizedController
         $tech_fields_temp[] = 'flapper';
         $tech_fields_temp[] = 'life_rope';
         $tech_fields_temp[] = 'foamer';
-        $tech_fields_temp[] = 'foamer_in_stock';
+        $tech_fields_temp[] = 'foamer_in_stock_reserved';
         $tech_fields_temp[] = 'damaged_hydrant_street';
         $tech_fields_temp[] = 'damaged_hydrant_object';
         $tech_fields_temp[] = 'damaged_pv';
@@ -881,9 +880,9 @@ class FormationController extends AuthorizedController
                 }
             }
         }
+        $ttl_count['foamer_in_stock_reserved'] = $report->sumTechTwo('foamer_reserved','foamer_in_stock');
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech, $report);
-
 
 
         $user = Auth::user();
