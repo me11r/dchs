@@ -14,6 +14,8 @@ export default {
             checking: false,
             alarming: false,
             shown: false,
+            shownRetreat: false,
+            retreatNotify: null,
             plans: []
         };
     },
@@ -57,13 +59,21 @@ export default {
         check: function () {
             this.checking = true;
             axios.get('/ajax/roadtrips').then(response => {
-                this.plans = response.data;
+
+                this.plans = response.data.plans;
+                this.retreatNotify = response.data.retreatNotify;
+
                 if (this.plans.length > 0) {
                     this.notify();
                     this.alertSound(true);
                 } else {
                     this.alertSound(false);
                 }
+
+                if (this.retreatNotify !== null) {
+                    this.notifyRetreat();
+                }
+
                 this.checking = false;
             }).catch(reason => {
                 this.$snackbar.open({
@@ -73,6 +83,23 @@ export default {
                 });
                 this.checking = false;
             });
+        },
+        notifyRetreat: function () {
+            if (!this.shownRetreat) {
+                this.shownRetreat = true;
+                this.$snackbar.open({
+                    message: `Отбой произведен, ${this.retreatNotify.department.title}: ${this.retreatNotify.tech.department}`,
+                    indefinite: true,
+                    type: 'is-warning',
+                    position: 'is-top',
+                    onAction: () => {
+                        this.shownRetreat = false;
+                        axios.post('/ajax/roadtrips-submit-notify-retreat101', {id: this.retreatNotify.id})
+                            .then((r) => {
+                            });
+                    }
+                });
+            }
         },
         alertSound: function (play) {
             if (play && !this.alarming) {

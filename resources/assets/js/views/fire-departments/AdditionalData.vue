@@ -1,5 +1,23 @@
 <template>
     <div>
+        <table v-if="departmentsArrived.length" class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>ПЧ</th>
+                    <th>Отделение</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in departmentsArrived">
+                    <td>{{ item.department.title }}</td>
+                    <td>{{ item.tech.department }}</td>
+                    <td>
+                        <button @click.prevent="retreat(item)" class="button is-warning">Отбой</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <form action="">
             <input
                 type="hidden"
@@ -46,6 +64,8 @@
 </template>
 
 <script>
+import {globalBus} from '../../scripts/global-bus'
+import axios from 'axios';
 export default {
     data () {
         return {
@@ -63,13 +83,40 @@ export default {
             water_sources: window.ticket101fd.water_sources,
             ticketInfo: window.ticket101fd.ticketInfo,
             fire_department_id: window.ticket101fd.fire_department_id,
+            departmentsArrived: window.ticket101fd.departmentsArrived,
             trunkTypes: window.ticket101fd.trunk_types
         };
     },
     methods: {
         setTab(tabIndex) {
             this.currentTabIndex = tabIndex;
-        }
+        },
+        retreat(result) {
+
+            //признак того, что мы отзываем отделение из вкладки "Высылка"
+            //время прибытия обнуляется
+            let props = {
+                force: false
+            };
+
+            let ticketId = result.ticket101_id;
+            let fire_department_id = result.fire_department_id;
+            let dept_number = result.tech.id;
+
+            axios.post('/roadtrip/retreat/' + fire_department_id + '/' + ticketId + '/' + dept_number, props)
+                .then((response) => {
+                    alert(`Отбой произведен`);
+                    this.departmentsArrived = this.departmentsArrived.filter((item) => {
+                        return item.id !== result.id;
+                    });
+
+                    globalBus.$emit('retreated-from-roadtrip', {item: response.data.fd_chronology_item});
+
+
+                }).catch((e) => {
+                    console.dir(e);
+                });
+        },
     }
 };
 </script>

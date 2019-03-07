@@ -339,6 +339,15 @@ class CardController extends Controller
         return response()->json($resp);
     }
 
+    public function deleteChronologyFromFdRecord101card(Request $request)
+    {
+        $data = $request->all();
+        $record = Chronology101FromFd::destroy($request->id);
+        $resp = [];
+
+        return response()->json($resp);
+    }
+
     public function deleteArrivedRecord101card(Request $request)
     {
         $data = $request->all();
@@ -373,6 +382,7 @@ class CardController extends Controller
             })
             ->where(function ($q) {
                 $q->whereNotNull('dispatch_time')
+                    ->whereNull('retreat_time')
                     ->whereNull('ret_time');
 
             })

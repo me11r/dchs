@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Chronology101FromFd;
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireLevel;
@@ -204,6 +205,7 @@ class RoadtripController extends AuthorizedController
             ],
             [
                 'dispatched' => true,
+                'retreat_time' => null,
                 'dispatch_time' => now(),
                 'dispatch_id' => $plan->id,
                 'tech_id' => $tech_id,
@@ -223,6 +225,48 @@ class RoadtripController extends AuthorizedController
                 'type' => 'success',
                 'text' => 'В подразделение отправлен путевой лист'
             ]);
+    }
+
+    /*retreat dept from 101 card view*/
+    public function postRetreat(Request $request, $dept_id, $ticket_id, $tech_id)
+    {
+        //признак того, что мы отзываем отделение из вкладки "Высылка" или "Хронология"
+        $force = $request->force;
+
+        $result = FireDepartmentResult::where('tech_id', $tech_id)
+            ->where('ticket101_id', $ticket_id)
+            ->firstOrFail();
+
+        $result->retreat_time = now();
+
+        $data = [];
+
+        //время прибытия обнуляется, если высылали из "Хронологии"
+        if ($force) {
+            $result->dispatched = null;
+            $result->dispatch_time = null;
+            $result->arrive_time = null;
+            $result->need_check_retreat = true;
+        }
+
+        $data['fd_chronology_item'] = Chronology101FromFd::create([
+            'ticket101_id' => $ticket_id,
+            'event_info_id',
+            'time' => $result->retreat_time,
+            'information' => 'отбой',
+            'fire_department_result_id' => $result->id,
+        ]);
+
+        $data['fd_chronology_item'] = Chronology101FromFd::with([
+            'fire_department_result.department',
+            'fire_department_result.tech',
+        ])->find($data['fd_chronology_item']->id);
+
+        $result->save();
+
+        if($request->ajax()){
+            return response()->json($data);
+        }
     }
 
     //отправить отделение (прочие выезды)
@@ -445,7 +489,6 @@ class RoadtripController extends AuthorizedController
                 'text' => 'Невозможно открыть путевой лист. Карточка была удалена'
             ]);
         }
-//        $service_notify = ServiceType::all();
         $eventInfos = EventInfo::all();
         $eventInfosArrived = EventInfoArrived::all();
         $departmentsOnWay = FireDepartmentResult::with(['department', 'tech'])
@@ -456,6 +499,8 @@ class RoadtripController extends AuthorizedController
         $departmentsArrived = FireDepartmentResult::with(['department', 'tech'])
             ->arrived($trip->ticket->id)
             ->where('fire_department_id', Auth::user()->fire_department_id ?? 1)
+            ->whereNull('retreat_time')
+            ->orderBy('fire_department_id')
             ->get();
 
         $ticket = $trip->ticket;
