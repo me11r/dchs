@@ -137,7 +137,10 @@ class AjaxController extends AuthorizedController
     {
         $dept = (Auth::user())->department;
         if ($dept === null) {
-            return response()->json([], 200);
+            return response()->json([
+                'plans' => [],
+                'retreatNotify' => null,
+            ], 200);
         }
 
         $trips = RoadtripPlan::with(['department', 'ticket', 'ticket101_other']);
