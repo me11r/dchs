@@ -95,7 +95,25 @@ html, body {
   margin: 0 25px;
 }
 
+.snackbar.is-info.is-top {
+  background-color: #009eff;
+  color: #000000;
+  min-height: 100px;
+  min-width: 600px;
+}
+
+.snackbar.is-info.is-top .button {
+  background-color: #fff;
+  color: #000000 !important;
+  padding: 0 30px;
+  margin: 0 25px;
+}
+
 .snackbar.is-warning.is-top .text {
+  font-size: 30px;
+}
+
+.snackbar.is-warning.is-info .text {
   font-size: 30px;
 }
 

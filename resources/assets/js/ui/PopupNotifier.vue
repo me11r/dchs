@@ -21,6 +21,9 @@
                                 position: notifications[i].popup_position ? notifications[i].popup_position : 'is-bottom-left',
                                 type: notifications[i].popup_type ? notifications[i].popup_type : 'is-info',
                                 duration: 10000,
+                                // onAction: () => {
+                                //     window.location.href = notifications[i].popup_type
+                                // }
                             });
                         }
                     }
