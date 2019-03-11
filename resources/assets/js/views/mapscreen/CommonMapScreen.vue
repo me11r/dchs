@@ -63,7 +63,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(hydrant, key) in hydrantFireDepts" @click="zoomToObject(hydrant.lat,hydrant.long)">
+                            <tr v-for="(hydrant, key) in hydrantFireDepts" :key="`tableItem_${key}`" @click="zoomToObject(hydrant, hydrant.lat, hydrant.long)">
                                 <td>{{ ++key }}</td>
                                 <td>{{ hydrant.fire_department.title }}</td>
                                 <td>{{ hydrant.address }}</td>
@@ -276,8 +276,8 @@ export default {
                 [item.lat, item.long],
                 {
                     id: id,
-                    hintContent: item['outputDescription'],
-                    clusterCaption: item['outputDescription'],
+                    hintContent: item['address'],
+                    clusterCaption: item['address'],
                     balloonContentBody: '<button class="button is-success edit-hydrant-button is-small" data-id="' + id + '">Редактировать</button>'
                 },
                 {
@@ -297,7 +297,7 @@ export default {
         addHydrantClickListener() {
             document.addEventListener('click', (event) => {
                 if (event.target.matches('.edit-hydrant-button')) {
-                    this.onMarkClick(_.find(this.list, {id: parseInt(event.target.dataset.id)}));
+                    this.onMarkClick(_.find(this.hydrantList, {id: parseInt(event.target.dataset.id)}));
                 }
             });
         },
@@ -470,31 +470,36 @@ export default {
                 this.map.geoObjects.add(polygons[polygon]);
             }
         },
-        zoomToObject(lat, long) {
+        zoomToObject(hydrant, lat, long) {
             window.scrollTo(0,document.body.scrollHeight);
             this.map.setZoom(18);
+            lat = parseFloat(lat);
+            long = parseFloat(long);
             this.map.panTo([lat, long]);
 
             globalBus.$emit('api-map-request', {'request_count': 1, 'description': 'CommonMapScreen.zoomToObject()'});
 
-
             if (this.currentHydrantMark) {
-                this.currentHydrantMark.geometry.setCoordinates([lat, long]);
+                this.map.geoObjects.remove(this.currentHydrantMark);
             }
-            else {
-                this.currentHydrantMark = new this.ymaps.Placemark([lat, long], {
-                    iconCaption: [lat, long].join(', ')
-                }, {
-                    preset: 'islands#violetDotIconWithCaption',
-                    draggable: true
-                });
+            this.currentHydrantMark = new this.ymaps.Placemark([lat, long], {
+                // iconCaption: [lat, long].join(', ')
+                iconCaption: hydrant.address
+            }, {
+                preset: 'islands#violetDotIconWithCaption',
+                draggable: true
+            });
 
-                this.map.geoObjects.add(this.currentHydrantMark);
-                // Слушаем событие окончания перетаскивания на метке.
-                // this.currentHydrantMark.events.add('dragend', function () {
-                //     getAddress(myPlacemark.geometry.getCoordinates());
-                // });
-            }
+            this.currentHydrantMark.events.add('click', (event) => {
+                event.preventDefault();
+                this.onMarkClick(hydrant);
+            });
+
+            this.map.geoObjects.add(this.currentHydrantMark);
+            // Слушаем событие окончания перетаскивания на метке.
+            // this.currentHydrantMark.events.add('dragend', function () {
+            //     getAddress(myPlacemark.geometry.getCoordinates());
+            // });
         }
     },
     computed: {
