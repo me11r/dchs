@@ -55,6 +55,9 @@ class Handler extends ExceptionHandler
             //@TODO: Log access violations
             return redirect('/')->with('_message', ['type' => 'danger', 'text' => 'У вас нет прав для выполнения этой операции!']);
         }
+        if ($exception instanceof UserBlockedException) {
+            return response()->view('errors.user-blocked', ['message' => $exception->getMessage()]);
+        }
         return parent::render($request, $exception);
     }
 }
