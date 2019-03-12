@@ -1,0 +1,12 @@
+{% extends 'layout/empty' %}
+{% block content %}
+    <section class="page-body">
+        <div class="section">
+            <h1 class="title">{{ message }}</h1>
+            <form action="/logout" method="post">
+                {{ csrf_field() }}
+                <button class="button is-black">Войти</button>
+            </form>
+        </div>
+    </section>
+{% endblock %}
