@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'rights.formation.record' => \App\Http\Middleware\Rights\FormationRecord::class,
         'role' => \App\Http\Middleware\CheckRole::class,
         'right' => \App\Http\Middleware\CheckRight::class,
+        'check.blocked' => \App\Http\Middleware\CheckBlocked::class,
     ];
 }

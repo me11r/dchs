@@ -122,10 +122,10 @@ class FormationRecordWordExport
         $cellRowSpanVThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
         $cellRowSpanH = ['vMerge' => 'restart', 'valign' => Jc::CENTER];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
-        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 12, 'valign' => Jc::CENTER];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 10, 'valign' => Jc::CENTER];
         $hcAlignStyle = array_merge(['align' => Jc::CENTER, 'valign' => Jc::CENTER], self::$noPaddingPS);
 
-        $table->addRow(700);
+        $table->addRow(1500);
         $table->addCell(1500, $cellRowSpanV)->addText('Наименование подразеления', $hcFontStyle, $hcAlignStyle);
 
         $table->addCell(3000, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('ГСМ', $hcFontStyle, $hcAlignStyle);
@@ -188,7 +188,7 @@ class FormationRecordWordExport
                     $fontStyle['bold'] = true;
                 }
 
-                $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
+                $this->addDataCellToRow($row, $value, $fontStyle, self::$noPaddingPS);
             }
         }
 
@@ -208,18 +208,18 @@ class FormationRecordWordExport
         $cellRowSpan = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
         $cellRowSpanThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
-        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 12, 'valign' => Jc::CENTER];
-        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 10, 'valign' => Jc::CENTER];
+        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0, 'line' => 230], 'indentation' => ['left' => 0, 'right' => 0]];
 
-        $table->addRow(1600);
+        $table->addRow(500);
 
-        $table->addCell(900, $cellRowSpan)->addText('Наименование подразеления', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, $cellRowSpan)->addText('Наименование подразеления', $hcFontStyle, $hcAlignStyle);
 
-        $table->addCell(3600, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Руководящий состав', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 5, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Личный состав', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 8, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Техника', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Руководящий состав', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 5, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Личный состав', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 8, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Техника', $hcFontStyle, $hcAlignStyle);
 
-        $table->addRow(1600);
+        $table->addRow(500);
 
         $table->addCell(null, $cellRowContinue);
 
@@ -228,13 +228,13 @@ class FormationRecordWordExport
         $table->addCell(null, $cellRowSpan)->addText('Телефон', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('По штату', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('В наличии', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На оперативном дежурстве', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Основная', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Специальная', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Вспомогательная', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(3600, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Другая', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('На оперативном дежурстве', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Основная', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Специальная', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Вспомогательная', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Другая', $hcFontStyle, $hcAlignStyle);
 
-        $table->addRow(1600);
+        $table->addRow(3000);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
@@ -432,7 +432,7 @@ class FormationRecordWordExport
         ]);
     }
 
-    private function addDataCellToRow(Row $row, $value, array $extraCellStyles = [], array $extraTextFStyles = [], array $extraTextPStyles = [])
+    private function addDataCellToRow(Row $row, $value, array $extraCellStyles = [], array $extraTextFStyles = [], array $extraTextPStyles = [], $width = null)
     {
         if(is_array($value)) {
             foreach ($value as $item) {
@@ -441,10 +441,10 @@ class FormationRecordWordExport
         }
         else {
             $row
-                ->addCell(null, array_merge(['valign' => 'center', 'align' => 'center'], $extraCellStyles))
+                ->addCell($width, array_merge(['valign' => 'center', 'align' => 'center'], $extraCellStyles))
                 ->addText(
                     $value,
-                    array_merge(['name' => 'Times New Roman', 'size' => 7], $extraTextFStyles),
+                    array_merge(['name' => 'Times New Roman', 'size' => 12], $extraTextFStyles),
                     array_merge(['valign' => 'center', 'align' => 'center'], $extraTextPStyles)
                 );
         }

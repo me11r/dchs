@@ -185,4 +185,10 @@ class AdminController extends AuthorizedController
         return redirect('admin/users')->with('_message', ['type' => 'success', 'text' => 'Пароль пользователя успешно изменен']);
     }
 
+    public function delete($user_id)
+    {
+        $user = User::destroy($user_id);
+        return redirect('admin/users')->with('_message', ['type' => 'success', 'text' => 'Пароль пользователя успешно удален']);
+    }
+
 }

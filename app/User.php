@@ -102,11 +102,6 @@ class User extends Authenticatable
 
     protected $appends = ['full_username'];
 
-    /*    public function rights_()
-        {
-            return $this->hasManyThrough(\App\Right::class, \App\User\Right::class, 'right_id', 'id', 'id');
-        }*/
-
     public function getFullUsernameAttribute()
     {
         return $this->name .
@@ -122,6 +117,11 @@ class User extends Authenticatable
     public function rights()
     {
         return $this->belongsToMany(\App\Right::class, 'user_rights');
+    }
+
+    public function scopeCanLogin($q)
+    {
+        return $this->rights()->where('right_id', 1)->exists();
     }
 
     public function messenger_rights()
