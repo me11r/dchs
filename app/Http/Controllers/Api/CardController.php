@@ -400,14 +400,13 @@ class CardController extends Controller
             ])->get();
         //*/
 
-//старый вариант
-//        $data['recommendations'] = $ticket->results()->with([
-//            'tech',
-//            'tech.formation_tech_report',
-//            'department',
-//        ])->get();
-
         $data['service_plans'] = $ticket->service_plans;
+        $data['chronologies_fd'] = $ticket->chronologiesFromFd()->with([
+            'event_info',
+            'event_info_arrived',
+            'fire_department_result.tech',
+            'fire_department_result.department',
+        ])->get();
         $data['departmentsOnWay'] = FireDepartmentResult::with(['department', 'tech'])
             ->onWay($id)
             ->get();

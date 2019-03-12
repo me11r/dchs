@@ -545,10 +545,10 @@ class CardController extends AuthorizedController
                 'hq',
                 'notification_services',
                 'district_manager_id',
+                'time_retreat',
                 '00:00', // дефолтное названия инпута из компонента timepicker
             ]);
             $deptsToGetBack = collect([]);
-            $r = $request->all();
             unset($data['comeback']);
             $back = '/card/101';
             $comeback = $request->get('comeback', false);

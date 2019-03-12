@@ -119,7 +119,7 @@
                         <td>
                             <p v-for="i in formActive[department.id]">
                                 <a :id="`ret_time_${i.id }`"
-                                       v-if="(i.dispatched)"
+                                       v-if="(i.dispatched && !i.retreat_time && !i.ret_time)"
                                        type="text"
                                         @click="retreat($event, department.id, i.tech.id, i.id)"
                                        :value="i.ret_time"
@@ -128,7 +128,7 @@
                                 </a>
 
                                 <a :id="`ret_time_${i.id }`"
-                                       v-else-if="(!i.dispatched)"
+                                       v-else-if="(!i.dispatched || i.retreat_time) || i.ret_time"
                                         @click="sendOneCheck($event, department.id, i.tech.id, i.id)"
                                        type="text"
                                        :value="i.ret_time"
@@ -566,8 +566,6 @@
                             this.results_ = response.data.recommendations;
                             globalBus.$emit('checkedRoadtrips', response.data.recommendations);
 
-                            // window.localStorage.setItem('checkedRoadtrips', JSON.stringify(response.data.recommendations));
-
                             response.data.recommendations.forEach((item) => {
                                 let accepted_time = 'accept_time_' + item.id;
                                 let out_time = 'out_time_' + item.id;
@@ -605,20 +603,14 @@
 
                                 globalBus.$emit('checkedServicePlans', response.data.service_plans);
 
-                                // response.data.service_plans.forEach((item) => {
-                                //     let accepted_name = item.id + '_name';
-                                //     let message_time = item.id + '_message_time';
-                                //     let arrive_time = item.id + '_arrive_time';
-                                //
-                                //     let accepted_name_item = document.getElementById(accepted_name);
-                                //     let message_time_item = document.getElementById(message_time);
-                                //     let arrive_time_item = document.getElementById(arrive_time);
-                                //
-                                // });
                             }
 
-                            if(response.data.departmentsOnWay) {
+                            if (response.data.departmentsOnWay) {
                                 globalBus.$emit('checkDepartmentsOnWay', response.data.departmentsOnWay);
+                            }
+
+                            if (response.data.chronologies_fd) {
+                                globalBus.$emit('checkChronologies_fd', response.data.chronologies_fd);
                             }
 
                         }

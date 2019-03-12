@@ -3,6 +3,7 @@
     <script>
         window.ticket101fd = {
             ticket: {{ ticket | json_encode() | raw }},
+            trip: {{ trip | json_encode() | raw }},
             departmentsOnWay: {{ departmentsOnWay | json_encode() | raw }},
             eventInfos: {{ eventInfos | json_encode() | raw }},
             eventInfosArrived: {{ eventInfosArrived | json_encode() | raw }},
@@ -16,11 +17,12 @@
             ticketInfo: {{ ticketInfo | json_encode() | raw }},
             trunk_types: {{ trunk_types | json_encode() | raw }},
             departmentsArrived: {{ departmentsArrived | json_encode() | raw }},
+            results: {{ results | json_encode() | raw }},
             fire_department_id: {{ departmentId }}
         }
     </script>
     <div class="section container">
-        <h4 class="title">Путевой лист №{{ trip.id }}: Информация от {{ trip.department.name }}</h4>
+        <h4 class="title"><a href="/roadtrip/view/{{ trip.id }}">Путевой лист №{{ trip.id }}: </a>Информация от {{ trip.department.name }}</h4>
         <div id="fire-department-data"></div>
     </div>
 {% endblock content %}

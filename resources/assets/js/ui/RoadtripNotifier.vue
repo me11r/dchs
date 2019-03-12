@@ -16,6 +16,7 @@ export default {
             shown: false,
             shownRetreat: false,
             retreatNotify: null,
+            roadTrip: null,
             plans: []
         };
     },
@@ -62,6 +63,7 @@ export default {
 
                 this.plans = response.data.plans;
                 this.retreatNotify = response.data.retreatNotify;
+                this.roadTrip = response.data.roadTrip;
 
                 if (this.plans.length > 0) {
                     this.notify();
@@ -96,6 +98,12 @@ export default {
                         this.shownRetreat = false;
                         axios.post('/ajax/roadtrips-submit-notify-retreat101', {id: this.retreatNotify.id})
                             .then((r) => {
+                                window.localStorage.setItem('DEPARTMENT_WAS_RETREATED', this.retreatNotify.id);
+                                this.shown = false;
+                                if (this.roadTrip) {
+                                    let url = `/roadtrip/additional/` + this.roadTrip.id;
+                                    window.location.href = url;
+                                }
                             });
                     }
                 });

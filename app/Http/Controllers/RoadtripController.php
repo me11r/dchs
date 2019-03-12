@@ -211,6 +211,12 @@ class RoadtripController extends AuthorizedController
                 'tech_id' => $tech_id,
                 'ticket101_id' => $ticket_id,
                 'fire_department_id' => $dept_id,
+
+                'accept_time' => null,
+                'out_time' => null,
+                'arrive_time' => null,
+                'loc_time' => null,
+                'ret_time' => null,
             ]
         );
 
@@ -243,9 +249,9 @@ class RoadtripController extends AuthorizedController
 
         //время прибытия обнуляется, если высылали из "Хронологии"
         if ($force) {
-            $result->dispatched = null;
-            $result->dispatch_time = null;
-            $result->arrive_time = null;
+//            $result->dispatched = null;
+//            $result->dispatch_time = null;
+            //$result->arrive_time = null;
             $result->need_check_retreat = true;
         }
 
@@ -446,7 +452,7 @@ class RoadtripController extends AuthorizedController
     public function postReturn(Request $request)
     {
         $result = FireDepartmentResult::find($request->dept_id);
-        if($result->out_time !== null && $result->arrive_time != null) {
+        if($result->out_time !== null && ($result->arrive_time != null || $result->retreat_time !== null)) {
             $result->ret_time = now()->format('H:i:s');
             $result->save();
         }
@@ -505,6 +511,14 @@ class RoadtripController extends AuthorizedController
         $ticket = $trip->ticket;
         $ticket->getDetailedStaffCount = $ticket->getDetailedStaffCount();
 
+        $results = $trip
+            ->ticket
+            ->results()
+            ->isDispatched()
+            ->with(['tech', 'department'])
+            ->where('fire_department_id', $trip->department_id)
+            ->get();
+
         $this->set('eventInfos', $eventInfos);
         $this->set('eventInfosArrived', $eventInfosArrived);
         $this->set('departmentsOnWay', $departmentsOnWay);
@@ -552,6 +566,7 @@ class RoadtripController extends AuthorizedController
         $this->set('max_square', $max_square);
         $this->set('ticketInfo', $ticketInfo);
         $this->set('trunk_types', TrunkType::all());
+        $this->set('results', $results);
         $this->set('departmentId', Auth::user()->fire_department_id ?? 1);
 
     }

@@ -140,6 +140,7 @@ class AjaxController extends AuthorizedController
             return response()->json([
                 'plans' => [],
                 'retreatNotify' => null,
+                'roadTrip' => null
             ], 200);
         }
 
@@ -177,9 +178,12 @@ class AjaxController extends AuthorizedController
             ])
             ->first();
 
+        $roadTrip = $retreatDept ? $retreatDept->road_trip_plan : null;
+
         $data = [
             'plans' => $trips,
             'retreatNotify' => $retreatDept,
+            'roadTrip' => $roadTrip
         ];
 
         return response()->json($data, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
