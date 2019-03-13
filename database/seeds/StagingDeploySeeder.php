@@ -24,5 +24,6 @@ class StagingDeploySeeder extends Seeder
         $this->call(RightsSeeder::class);
         $this->call(RolesSeeder::class);
         $this->call(DictionarySeeder::class);
+        $this->call(SchedulesSeeder::class);
     }
 }

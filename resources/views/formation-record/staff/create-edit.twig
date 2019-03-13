@@ -16,13 +16,51 @@
 
                     <div class="field">
                         <label for="field_2_1">Оперативный дежурный</label>
-                        <staff-formation-record112 :shift-id="{{ shift_id }}" date-input="{{ date }}" :model-id="{{ model.id ?? 0 }}" :active="true" :staff="{{ staff }}"
-                                   block_type="duty_officer"></staff-formation-record112>
+                        <staff-formation-record112 :shift-id="{{ shift_id }}"
+                                                   date-input="{{ date }}"
+                                                   :model-id="{{ model.id ?? 0 }}"
+                                                   :active="true"
+                                                   inactiveType="active"
+                                                   :staff="{{ staff }}"
+                                                    block_type="duty_officer"
+                        ></staff-formation-record112>
                     </div>
                     <div class="field">
                         <label for="field_2_1">Помощник оперативного дежурного</label>
-                        <staff-formation-record112 :shift-id="{{ shift_id }}" date-input="{{ date }}" :active="true" :staff="{{ staff }}"
-                                   block_type="duty_officer_assistant"></staff-formation-record112>
+                        <staff-formation-record112 :shift-id="{{ shift_id }}"
+                                                   date-input="{{ date }}"
+                                                   :active="true"
+                                                   inactiveType="active"
+                                                   :staff="{{ staff }}"
+                                                    block_type="duty_officer_assistant"
+                        ></staff-formation-record112>
+                    </div>
+
+                </fieldset>
+
+                <fieldset>
+                    <legend>Отсутствующие</legend>
+
+                    <div class="field">
+                        <label for="field_2_1">Оперативный дежурный</label>
+                        <staff-formation-record112 :shift-id="{{ shift_id }}"
+                                                   date-input="{{ date }}"
+                                                   :model-id="{{ model.id ?? 0 }}"
+                                                   :active="true"
+                                                   inactive-type="inactive"
+                                                   :staff="{{ staff }}"
+                                                   block_type="duty_officer"
+                        ></staff-formation-record112>
+                    </div>
+                    <div class="field">
+                        <label for="field_2_1">Помощник оперативного дежурного</label>
+                        <staff-formation-record112 :shift-id="{{ shift_id }}"
+                                                   date-input="{{ date }}"
+                                                   :active="true"
+                                                   inactive-type="inactive"
+                                                   :staff="{{ staff }}"
+                                                   block_type="duty_officer_assistant"
+                        ></staff-formation-record112>
                     </div>
 
                 </fieldset>
@@ -39,8 +77,7 @@
                         <p class="level-left">
                         </p>
                         <p class="level-right">
-                            <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
-                            </button>
+                            <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
                         </p>
                     </div>
                 </div>

@@ -287,7 +287,7 @@ class Ticket101ExcelExport
         $this->setCell($sheet, 'Всего', 'C7', 'C9', self::VStyle);
         $this->setCell($sheet, 'Нач. караулов', 'D7', 'D9', self::VStyle);
         $this->setCell($sheet, 'Ком. отделений', 'E7', 'E9', self::VStyle);
-        $this->setCell($sheet, 'Шоферы', 'F7', 'F9', self::VStyle);
+        $this->setCell($sheet, 'Водители', 'F7', 'F9', self::VStyle);
         $this->setCell($sheet, 'Ряд. состав', 'G7', 'G9', self::VStyle);
         $this->setCell($sheet, 'Диспетчеров', 'H7', 'H9', self::VStyle);
 

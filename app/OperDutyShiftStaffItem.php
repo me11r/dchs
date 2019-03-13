@@ -36,11 +36,22 @@ class OperDutyShiftStaffItem extends Model
         'staff_id',
         'rank',
         'date',
+        'inactive_type',
+        'date_from',
+        'date_to',
+        'comment',
     ];
 
     private $ranks = [
         'duty_officer' => 'Оперативный дежурный',
         'duty_officer_assistant' => 'Помощник ОД',
+    ];
+
+    public $inactiveTypes = [
+        'vacation' => 'Отпуск',
+        'business_trip' => 'Командировка',
+        'maternity' => 'Декрет',
+        'sick_leave' => 'Больничный',
     ];
 
     public function staff()

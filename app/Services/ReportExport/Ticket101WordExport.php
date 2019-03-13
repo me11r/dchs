@@ -963,7 +963,7 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpan)->addText('Всего', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Нач.кар', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Ком.отд', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpan)->addText('Шоферы', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowSpan)->addText('Водители', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Ряд.состав', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpan)->addText('Ряд.Диспетчеров', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanThick)->addText('Отпуск', $hcFontStyle, $hcAlignStyle);

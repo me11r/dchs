@@ -31,6 +31,17 @@ class FormationDistrictManagerItem extends Model
         'report_id',
         'manager_id',
         'city_area_id',
+        'inactive_type',
+        'date_from',
+        'date_to',
+        'comment',
+    ];
+
+    public $inactiveTypes = [
+        'vacation' => 'Отпуск',
+        'business_trip' => 'Командировка',
+        'maternity' => 'Декрет',
+        'sick_leave' => 'Больничный',
     ];
 
     public function report()

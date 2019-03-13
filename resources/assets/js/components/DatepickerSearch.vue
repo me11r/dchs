@@ -86,7 +86,7 @@ export default {
         },
         date: {
             type: Date,
-            default: () => {return new Date}
+            default: () => new Date
         },
     },
     data: function () {
@@ -116,7 +116,7 @@ export default {
 
     },
     created() {
-        if (this.dateString !== '') {
+        if (this.dateString !== '' && this.dateString !== null) {
             this.date_ = moment(this.dateString).toDate();
         }
 
