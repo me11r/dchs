@@ -1218,7 +1218,7 @@ class ReportController extends AuthorizedController
         $data['fireDepartments'] = FireDepartment::all();
 
         $data['drill'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
-            ->real('drill');
+            ->drill();
 
         $data['psp'] = NormPsp::whereBetween('created_at', [$dateFrom, $dateTo]);
 
@@ -1231,7 +1231,9 @@ class ReportController extends AuthorizedController
         }
 
         if($type) {
-            $data['drill'] = $data['drill']->where('drill_type_id', $type);
+            $data['drill'] = $data['drill']->whereHas('drill_type', function ($q) use ($type) {
+                $q->where('name', $type);
+            });
             $data['psp'] = $data['psp']->whereHas('norm_type', function ($q) use ($type) {
                 $q->where('name',$type);
             });

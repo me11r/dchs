@@ -348,7 +348,7 @@ export default {
         selectResult(event) {
             this.result_id = event.target.value;
 
-            window.history.pushState('page2', 'Title', '/reports/101/emergency?reason=' + this.result_id);
+            // window.history.pushState('page2', 'Title', '/reports/101/emergency?reason=' + this.result_id);
 
             // this.post_data();
         },
