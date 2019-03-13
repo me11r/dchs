@@ -12,8 +12,9 @@ trait MessengerTrait
 {
     /**
      * @param null $message
+     * @param null $url
      */
-    public function sendMessageAboutFormationAction($message = null): void
+    public function sendMessageAboutFormationAction($message = null, $url = null): void
     {
         if (Auth::user() && $this->isUserHaveToSendMessageAboutFormationAction()) {
             $users = $this->getUsersToNoticeAboutFormationAction();
@@ -35,6 +36,7 @@ trait MessengerTrait
                         'sender_id' => \Auth::user()->id,
                         'receiver_id' => $user->id,
                         'message' => $message,
+                        'url' => $url,
                         'is_viewed' => false,
                     ]);
                 }
