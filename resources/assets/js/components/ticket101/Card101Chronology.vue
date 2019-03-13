@@ -942,6 +942,10 @@ export default {
             this.departmentsHq_.push(department);
         });
 
+        globalBus.$on('checkChronologies_fd', (eventData) => {
+            this.card_.chronologies_from_fd = eventData;
+        });
+
         // todo временно отключено, возможно вообще не пригодится в дальнейшем
         /* globalBus.$on('departmentHasSent', (data) => {
             this.departments_.push(data.result);

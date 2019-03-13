@@ -377,7 +377,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <span v-else>{{ record.event_info.name }}</span>
+                            <span v-else>{{ record.event_info ? record.event_info.name : '' }}</span>
 
                         </td>
                         <td v-else >
@@ -450,6 +450,7 @@ import axios from 'axios';
 import moment from 'moment';
 import Timepicker from '../../components/Timepicker';
 import _ from 'lodash';
+import {globalBus} from '../../scripts/global-bus'
 export default {
     name: 'Card101Chronology',
     components: {
@@ -727,6 +728,11 @@ export default {
         });
 
         this.sortByTime();
+
+        globalBus.$on('retreated-from-roadtrip', (eventData) => {
+            this.tableRecords.push(eventData.item);
+            this.tableRecords = this.sortByTime();
+        });
     }
 };
 </script>

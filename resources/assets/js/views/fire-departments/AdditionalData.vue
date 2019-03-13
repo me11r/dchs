@@ -1,5 +1,41 @@
 <template>
     <div>
+        <table v-if="results.length" class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>ПЧ</th>
+                    <th>Отделение</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in results">
+                    <td>{{ item.department.title }}</td>
+                    <td>{{ item.tech.department }}</td>
+                    <td>
+                        <a
+                                @click.prevent="markDeptArrived(item)"
+                                v-if="item.dispatched === 1 && item.arrive_time === null && item.retreat_time === null"
+                                class="button is-warning is-outlined"
+                                href=""><i class="fas fa-retweet"></i>&nbsp;Отметить прибытие: отделение -  {{ item.tech.department ? item.tech.department : item.promoted_department }}</a>
+                        <a
+                                @click.prevent="markDeptReturned(item)"
+                                v-else-if="(item.arrive_time !== null || item.retreat_time !== null) && item.ret_time === null"
+                                class="button is-success is-outlined"
+                                href=""><i class="fas fa-retweet"></i>&nbsp;Отметить возвращение: отделение -  {{ item.tech.department ? item.tech.department : item.promoted_department }}</a>
+                        <a
+                                v-else-if="item.ret_time !== null"
+                                class="button is-disabled"
+                                href="#"><i class="fas fa-retweet"></i>&nbsp;Отделение вернулось: {{ item.tech.department ? item.tech.department : item.promoted_department }}</a>
+                        <button
+                                v-if="item.retreat_time === null && item.arrive_time !== null && item.ret_time === null"
+                                @click.prevent="retreat(item)"
+                                class="button is-warning"
+                        >Отбой</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <form action="">
             <input
                 type="hidden"
@@ -46,11 +82,15 @@
 </template>
 
 <script>
+import {globalBus} from '../../scripts/global-bus';
+import axios from 'axios';
 export default {
     data () {
         return {
             currentTabIndex: 0,
             ticket: window.ticket101fd.ticket,
+            results: window.ticket101fd.results,
+            trip: window.ticket101fd.trip,
             csrf: window.csrf_token,
             eventInfosArrived: window.ticket101fd.eventInfosArrived,
             eventInfos: window.ticket101fd.eventInfos,
@@ -63,12 +103,63 @@ export default {
             water_sources: window.ticket101fd.water_sources,
             ticketInfo: window.ticket101fd.ticketInfo,
             fire_department_id: window.ticket101fd.fire_department_id,
+            departmentsArrived: window.ticket101fd.departmentsArrived,
             trunkTypes: window.ticket101fd.trunk_types
         };
     },
     methods: {
         setTab(tabIndex) {
             this.currentTabIndex = tabIndex;
+        },
+        retreat(result) {
+
+            //признак того, что мы отзываем отделение из вкладки "Высылка"
+            //время прибытия обнуляется
+            let props = {
+                force: false
+            };
+
+            let ticketId = result.ticket101_id;
+            let fire_department_id = result.fire_department_id;
+            let dept_number = result.tech.id;
+
+            axios.post('/roadtrip/retreat/' + fire_department_id + '/' + ticketId + '/' + dept_number, props)
+                .then((response) => {
+                    alert(`Отбой произведен`);
+                    result.retreat_time = new Date();
+                    this.departmentsArrived = this.departmentsArrived.filter((item) => {
+                        return item.id !== result.id;
+                    });
+
+                    globalBus.$emit('retreated-from-roadtrip', {item: response.data.fd_chronology_item});
+
+
+                }).catch((e) => {
+                    console.dir(e);
+                });
+        },
+
+        dispatchDept() {
+            let self = this;
+            axios.post('/roadtrip/dispatch', {
+                dept_id: self.dep_.id
+            }).then((resp) => {
+                self.is_dispatched_ = 1;
+            });
+        },
+        markDeptArrived(dept) {
+            axios.post('/roadtrip/arrived', {
+                dept_id: dept.id
+            }).then((resp) => {
+                dept.arrive_time = new Date();
+            });
+        },
+        markDeptReturned(dept) {
+            axios.post('/roadtrip/return', {
+                dept_id: dept.id
+            }).then((resp) => {
+                dept.ret_time = new Date ();
+            });
         }
     }
 };
