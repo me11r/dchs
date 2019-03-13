@@ -82,6 +82,8 @@ class FireDepartmentResult extends Model
         'promoted_department',
         'ticket101_other_id',
         'staff_count',
+        'retreat_time',
+        'need_check_retreat', //нужно отправить уведомление об отбое
         'distance', //Расстояние до места
     ];
 
@@ -98,6 +100,14 @@ class FireDepartmentResult extends Model
     {
         return $q->where('ticket101_id', $ticket_id)
             ->whereNotNull('out_time');
+    }
+
+    //отделения, которые были отозваны и завершили выезд
+    public function scopeDoneWithEmergency($q)
+    {
+        return $q->whereNotNull('retreat_time')
+            ->whereNotNull('arrive_time')
+            ;
     }
 
     public function scopeMarkToGetBack($q)
@@ -204,11 +214,10 @@ class FireDepartmentResult extends Model
 
     public function getStatusAttribute()
     {
-        $resultStatus = "ПЧ";
-
-        //проверка в общей таблице выездов
+        $defaultStatus = 'ПЧ';
+        //проверка в общей таблице выездов, задействовано ли текущая техника
         $deptOnRide = FireDepartmentResult::where('tech_id', $this->tech_id)
-            ->where('id', '<>', $this->id)
+//            ->where('id', '<>', $this->id)
             ->latest()
             ->first();
 
@@ -227,12 +236,22 @@ class FireDepartmentResult extends Model
             }
         }
 
-        if(!$deptOnRide || $deptOnRide->ret_time !== null || $deptOnRide->dispatch_time === null) {
-            return $resultStatus;
+        //если выезда с текущей техникой не было найдено, считаем, что отделение в ПЧ
+        if(!$deptOnRide) {
+            return $defaultStatus;
         }
 
-        return $deptOnRide->ticket_other ? ($deptOnRide->ticket_other->ride_type->name ?? null) : null;
+        //если это "прочий выезд", возвращаем его тип
+        if($deptOnRide->ticket_other) {
+            return $deptOnRide->ticket_other->ride_type->name ?? null;
+        }
 
+        //если отделение было возвращено по отбою по завершению выезда, статус == "возвращение"
+        if ($deptOnRide->retreat_time && $deptOnRide->arrive_time && !$deptOnRide->ret_time) {
+            return 'Возвращение';
+        }
+
+        return $defaultStatus;
     }
 
     public function scopeShiftRecords($q, $hoursBegin = 7, $hoursEnd = 7)

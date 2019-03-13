@@ -445,7 +445,10 @@ class CardController extends AuthorizedController
                 /*если подразделение еще не вернулось с прошлого происшествия*/
                 /*и прошлое происшествие не является учебным*/
                 $notAvailable = FireDepartmentResult::where('tech_id', $tech_item->id)
-                    ->whereNotNull('accept_time')
+                    ->where(function ($qq) {
+                        $qq->whereNotNull('accept_time')
+                            ->whereNull('retreat_time');
+                    })
                     ->whereHas('ticket', function ($q){
                         $q->real();
                     })
@@ -542,10 +545,10 @@ class CardController extends AuthorizedController
                 'hq',
                 'notification_services',
                 'district_manager_id',
+                'time_retreat',
                 '00:00', // дефолтное названия инпута из компонента timepicker
             ]);
             $deptsToGetBack = collect([]);
-            $r = $request->all();
             unset($data['comeback']);
             $back = '/card/101';
             $comeback = $request->get('comeback', false);

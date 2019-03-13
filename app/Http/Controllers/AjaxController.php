@@ -7,6 +7,7 @@ use App\Dictionary\Street;
 use App\FireDepartment;
 use App\MapCount;
 use App\Models\Building;
+use App\Models\FireDepartmentResult;
 use App\Models\OperationalPlan;
 use App\Models\SpecialPlan;
 use App\OperationalCard;
@@ -136,7 +137,11 @@ class AjaxController extends AuthorizedController
     {
         $dept = (Auth::user())->department;
         if ($dept === null) {
-            return response()->json([], 200);
+            return response()->json([
+                'plans' => [],
+                'retreatNotify' => null,
+                'roadTrip' => null
+            ], 200);
         }
 
         $trips = RoadtripPlan::with(['department', 'ticket', 'ticket101_other']);
@@ -164,7 +169,33 @@ class AjaxController extends AuthorizedController
                 ->get();
         }
 
-        return response()->json($trips, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+        $retreatDept = FireDepartmentResult::whereNotNull('retreat_time')
+            ->where('need_check_retreat', true)
+            ->where('fire_department_id', $dept->id)
+            ->with([
+                'department',
+                'tech',
+            ])
+            ->first();
+
+        $roadTrip = $retreatDept ? $retreatDept->road_trip_plan : null;
+
+        $data = [
+            'plans' => $trips,
+            'retreatNotify' => $retreatDept,
+            'roadTrip' => $roadTrip
+        ];
+
+        return response()->json($data, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function postSubmitNotifyRetreat(Request $request)
+    {
+        $retreatDept = FireDepartmentResult::findOrFail($request->id);
+        $retreatDept->need_check_retreat = false;
+        $retreatDept->save();
+
+        return response()->json([]);
     }
 
     public function getServicePlans(Request $request)

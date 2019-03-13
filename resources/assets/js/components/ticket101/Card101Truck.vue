@@ -13,23 +13,23 @@
                             >
                         </div>
                     </div>
-                    <div class="level-right">
-                        <a @click="sendAllTripPlans()"
-                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
-                        </a>
-                    </div>
                 </div>
 
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th>Подразделение</th>
-                            <th>Отделения</th>
+                            <th>ПЧ</th>
+                            <th>Отд</th>
                             <th>Принято в работу</th>
                             <th>Время выезда</th>
                             <th>Время прибытия</th>
+                            <th>Время отбоя</th>
                             <th>Время возвращения</th>
-                            <th>Отправка</th>
+                            <th>
+                                <a @click="sendAllTripPlans()"
+                                   class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
+                                </a>
+                            </th>
                             <th>Статус</th>
                             <th>Время оповещения</th>
                         </tr>
@@ -93,6 +93,17 @@
                             </p>
                         </td>
 
+                        <!--{#Время отбоя#}-->
+                        <td>
+                            <p v-for="i in formActive[department.id]">
+                                <timepicker-input :name="`time_retreat[${i.id}]`"
+                                      class="small-imput"
+                                      :value="formatDate(i.retreat_time, 'HH:mm')"
+                                >
+                                </timepicker-input>
+                            </p>
+                        </td>
+
                         <!--{#Время возвращения#}-->
                         <td>
                             <p v-for="i in formActive[department.id]">
@@ -108,15 +119,16 @@
                         <td>
                             <p v-for="i in formActive[department.id]">
                                 <a :id="`ret_time_${i.id }`"
-                                       v-if="(i.dispatched)"
+                                       v-if="(i.dispatched && !i.retreat_time && !i.ret_time)"
                                        type="text"
+                                        @click="retreat($event, department.id, i.tech.id, i.id)"
                                        :value="i.ret_time"
-                                       class="button is-primary small is-outlined small-a">
-                                    <i class="fas fa-bus"></i>&nbsp;Подразделение отправлено
+                                       class="button is-danger small is-outlined small-a">
+                                    <i class="fas fa-times"></i>&nbsp;Отбой
                                 </a>
 
                                 <a :id="`ret_time_${i.id }`"
-                                       v-else-if="(!i.dispatched)"
+                                       v-else-if="(!i.dispatched || i.retreat_time) || i.ret_time"
                                         @click="sendOneCheck($event, department.id, i.tech.id, i.id)"
                                        type="text"
                                        :value="i.ret_time"
@@ -153,8 +165,8 @@
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                         <tr>
-                            <th>Подразделение</th>
-                            <th>Отделения</th>
+                            <th>ПЧ</th>
+                            <th>Отд</th>
                             <th>Время ввода в боевой расчет</th>
                             <th>Номер отделения</th>
                             <th>Ввести в боевой расчет</th>
@@ -239,19 +251,12 @@
                             >
                         </div>
                     </div>
-                    <!--<div class="level-right">
-                        <a @click="sendAllTripPlans()"
-                           class="button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Отправка
-                        </a>
-                    </div>-->
                 </div>
 
                 <table class="table is-hoverable is-fullwidth">
                     <thead>
                     <tr>
                         <th>Подразделение</th>
-                        <!--<th>Отделения</th>-->
-                        <!--<th>Принято в работу</th>-->
                         <th>Время выезда</th>
                         <th>Время прибытия</th>
                         <th>Время возвращения</th>
@@ -505,6 +510,25 @@
                 });
             },
 
+            retreat(event, dept_id, dept_number, res_id) {
+                /* проставляем галочки в чекбосах */
+                let object = document.getElementById(`dept_${res_id}`);
+                let is_checked = object.checked;
+                object.checked = !is_checked;
+
+                //признак того, что мы отзываем отделение из вкладки "Высылка"
+                //время прибытия обнуляется
+                let props = {
+                    force: true
+                };
+
+                axios.post('/roadtrip/retreat/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number, props).then((response) => {
+                    event.target.classList.remove('is-danger');
+                }).catch((e) => {
+                    console.dir(e);
+                });
+            },
+
             selectToSend(event, id) {
                 let recommended = event.target.checked;
 
@@ -540,8 +564,6 @@
                         if (response.data.recommendations !== undefined) {
                             this.results_ = response.data.recommendations;
                             globalBus.$emit('checkedRoadtrips', response.data.recommendations);
-
-                            // window.localStorage.setItem('checkedRoadtrips', JSON.stringify(response.data.recommendations));
 
                             response.data.recommendations.forEach((item) => {
                                 let accepted_time = 'accept_time_' + item.id;
@@ -580,34 +602,14 @@
 
                                 globalBus.$emit('checkedServicePlans', response.data.service_plans);
 
-                                // window.localStorage.setItem('checkedServicePlans', JSON.stringify(response.data.service_plans));
-
-                                response.data.service_plans.forEach((item) => {
-                                    let accepted_name = item.id + '_name';
-                                    let message_time = item.id + '_message_time';
-                                    let arrive_time = item.id + '_arrive_time';
-
-                                    let accepted_name_item = document.getElementById(accepted_name);
-                                    let message_time_item = document.getElementById(message_time);
-                                    let arrive_time_item = document.getElementById(arrive_time);
-
-                                    if (accepted_name_item.value === '') {
-                                        // accepted_name_item.value = item.name_accepted;
-                                    }
-
-                                    if (message_time_item && item.dispatched_time && message_time_item.value === '') {
-                                        // message_time_item.value = item.dispatched_time;
-                                    }
-
-                                    // if (item.arrive_time && arrive_time_item.value === '') {
-                                    //     // arrive_time_item.value = item.arrive_time;
-                                    // }
-
-                                });
                             }
 
-                            if(response.data.departmentsOnWay) {
+                            if (response.data.departmentsOnWay) {
                                 globalBus.$emit('checkDepartmentsOnWay', response.data.departmentsOnWay);
+                            }
+
+                            if (response.data.chronologies_fd) {
+                                globalBus.$emit('checkChronologies_fd', response.data.chronologies_fd);
                             }
 
                         }
@@ -661,14 +663,6 @@
         },
         mounted() {
             this.checkRoadtrips();
-            // setTimeout(this.checkRoadtrips, this.time);
-            // this.formatHq();
-
-            /*globalBus.$on('timeChangedUnique', (event) => {
-                this.hq[0].accept_time = event.value;
-                // document.getElementById('tpicker_123').value = event.value;
-                // console.dir(event);
-            });*/
         }
     }
 </script>

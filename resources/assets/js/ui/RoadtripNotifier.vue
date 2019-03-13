@@ -14,6 +14,9 @@ export default {
             checking: false,
             alarming: false,
             shown: false,
+            shownRetreat: false,
+            retreatNotify: null,
+            roadTrip: null,
             plans: []
         };
     },
@@ -57,13 +60,22 @@ export default {
         check: function () {
             this.checking = true;
             axios.get('/ajax/roadtrips').then(response => {
-                this.plans = response.data;
+
+                this.plans = response.data.plans;
+                this.retreatNotify = response.data.retreatNotify;
+                this.roadTrip = response.data.roadTrip;
+
                 if (this.plans.length > 0) {
                     this.notify();
                     this.alertSound(true);
                 } else {
                     this.alertSound(false);
                 }
+
+                if (this.retreatNotify !== null) {
+                    this.notifyRetreat();
+                }
+
                 this.checking = false;
             }).catch(reason => {
                 this.$snackbar.open({
@@ -73,6 +85,29 @@ export default {
                 });
                 this.checking = false;
             });
+        },
+        notifyRetreat: function () {
+            if (!this.shownRetreat) {
+                this.shownRetreat = true;
+                this.$snackbar.open({
+                    message: `Отбой произведен, ${this.retreatNotify.department.title}: ${this.retreatNotify.tech.department}`,
+                    indefinite: true,
+                    type: 'is-warning',
+                    position: 'is-top',
+                    onAction: () => {
+                        this.shownRetreat = false;
+                        axios.post('/ajax/roadtrips-submit-notify-retreat101', {id: this.retreatNotify.id})
+                            .then((r) => {
+                                window.localStorage.setItem('DEPARTMENT_WAS_RETREATED', this.retreatNotify.id);
+                                this.shown = false;
+                                if (this.roadTrip) {
+                                    let url = `/roadtrip/additional/` + this.roadTrip.id;
+                                    window.location.href = url;
+                                }
+                            });
+                    }
+                });
+            }
         },
         alertSound: function (play) {
             if (play && !this.alarming) {

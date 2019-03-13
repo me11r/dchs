@@ -16,6 +16,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::get('rights/list', 'AjaxController@getRightIds');
         Route::get('messenger-rights', 'AjaxController@getMessengerPermissions');
         Route::get('roadtrips', 'AjaxController@getRoadtripPlans');
+        Route::post('roadtrips-submit-notify-retreat101', 'AjaxController@postSubmitNotifyRetreat');
         Route::get('service-plans', 'AjaxController@getServicePlans');
         Route::post('roadrip-notify-token', 'AjaxController@postRoadtripNotificationToken');
     });
@@ -196,10 +197,17 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::post('return', 'RoadtripController@postReturn');
         Route::post('/save/{plan_id}', 'RoadtripController@postPlan')
             ->where('plan_id', '[0-9]+');
+
         Route::get('/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@getSend')
             ->where('dept_id', '[0-9]+')
             ->where('ticket_id', '[0-9]+')
             ->where('departments', '[0-9]+');
+
+        Route::post('/retreat/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@postRetreat')
+            ->where('dept_id', '[0-9]+')
+            ->where('ticket_id', '[0-9]+')
+            ->where('departments', '[0-9]+');
+
         Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
         Route::post('other/send-all/{ticket_id}', 'RoadtripController@postSendAllOther');
         Route::post('other/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@postSendOther');
