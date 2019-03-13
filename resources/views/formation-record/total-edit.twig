@@ -143,7 +143,7 @@
                                         <tr>
                                             <td>{{ area.name }}</td>
 
-                                            {% for item in formationDistrictManager.items %}
+                                            {% for item in formationDistrictManager.items_active().get() %}
                                                 {% if item.city_area_id == area.id %}
                                                     <td>
                                                         {{ item.manager.position }}<br>

@@ -14,7 +14,7 @@
                 <h4 class="title">Строевая записка от {{ report.report_date|date('d.m.Y') }} {{ operGroup }}</h4>
             </div>
             <div class="level-right has-text-left">
-                {% if user.hasRight(20) %}
+                {% if user.hasRight('CAN_APPROVE_FORMATION_REPORT_101') %}
                     <form method="post" action="/formation/approve101/{{ report.id }}">
                         {{ csrf_field() }}
                         <button type="submit" class="button {{ report.is_approved ? 'is-disabled' : 'is-primary' }}"><i class="fas fa-adjust"></i>&nbsp; {{ report.is_approved ? 'Отменить утверждение' : 'Утвердить' }}</button>

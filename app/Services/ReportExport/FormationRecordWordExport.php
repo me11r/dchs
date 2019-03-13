@@ -4,6 +4,7 @@
 namespace App\Services\ReportExport;
 
 use App\FireDepartment;
+use App\FormationDistrictManager;
 use App\FormationOdPersonItem;
 use App\FormationPersonsReport;
 use App\FormationReport;
@@ -391,13 +392,14 @@ class FormationRecordWordExport
 
 
         if($this->data['formationDistrictManager']) {
+            $this->data['formationDistrictManager'] = FormationDistrictManager::find($this->data['formationDistrictManager']->id);
             foreach ($this->data['cityAreas'] as $area) {
 
                 $row = $table->addRow(1600);
 
                 $this->addDataCellToRow($row, $area['name'], ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
 
-                foreach ($this->data['formationDistrictManager']['items'] as $item) {
+                foreach ($this->data['formationDistrictManager']->items_active()->get() as $item) {
                     if ($item['city_area_id'] === $area['id']) {
                         $phones = '';
                         foreach ($item['manager']['phones'] as $phone) {

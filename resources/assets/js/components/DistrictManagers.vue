@@ -47,6 +47,58 @@
                     </button>
                 </div>
             </div>
+            <div v-if="blockType !== 'active'" class="field is-grouped">
+                <div class="field is-grouped">
+                    <div class="control column">
+                        <label :for="getNameInactive('inactive_type', item.manager_id)">Тип</label><br>
+
+                        <div class="select">
+                            <select
+                                    required
+                                    title=""
+                                    :name="getNameInactive('inactive_type',item.manager_id)"
+                                    :id="getNameInactive('inactive_type',item.manager_id)"
+                                    v-model="item.inactive_type">
+                                <option
+                                        v-for="s in inactiveTypes"
+                                        :key="'inactive_type_' + s.id"
+                                        :value="s.id">{{ s.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="control column">
+                        <v-datepicker-search
+                                label="С"
+                                :name="getNameInactive('date_from',item.manager_id)"
+                                :date-string="item.date_from"
+                                @dateChanged="item.date_from = $event"
+                                v-model="item.date_from"
+                        ></v-datepicker-search>
+                    </div>
+                    <div class="control column">
+                        <v-datepicker-search
+                                label="По"
+                                :name="getNameInactive('date_to',item.manager_id)"
+                                :date-string="item.date_to"
+                                @dateChanged="item.date_to = $event"
+                                v-model="item.date_to"
+                        ></v-datepicker-search>
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control column">
+                        <label>Комментарий</label>
+                        <textarea v-model="item.comment"
+                                  class="textarea"
+                                  :name="getNameInactive('comment',item.manager_id)"
+                                  :id="getNameInactive('comment',item.manager_id)"
+                                  ></textarea>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -59,9 +111,13 @@ import _ from 'lodash';
 export default {
     name: 'DistrictManagers',
     props: {
-        block_type: {
+        cityAreaId: {
             type: Number,
             default: 0
+        },
+        blockType: {
+            type: String,
+            default: ''
         },
         model_id: {
             type: Number,
@@ -80,7 +136,13 @@ export default {
         return {
             records_: this.records,
             staff_: this.staff,
-            block_type_: this.block_type,
+            cityAreaId_: this.cityAreaId,
+            inactiveTypes: [
+                {id: 'vacation', name: 'Отпуск'},
+                {id: 'business_trip', name: 'Командировка'},
+                {id: 'maternity', name: 'Декрет'},
+                {id: 'sick_leave', name: 'Больничный'},
+                ],
             model_id_: this.model_id
         };
     },
@@ -95,7 +157,10 @@ export default {
             });
         },
         getName(control) {
-            return control + `[${this.block_type_}][]`;
+            return control + `[${this.cityAreaId_}][]`;
+        },
+        getNameInactive(control, userId) {
+            return control + `[${this.cityAreaId_}][${userId}]`;
         },
         addEmptyItem() {
             this.addItem({
@@ -116,13 +181,13 @@ export default {
             let self = this;
             axios.get('/api/district-managers/get-staff', {
                 params: {
-                    city_area_id: self.block_type_,
-                    report_id: self.model_id_
+                    city_area_id: self.cityAreaId_,
+                    report_id: self.model_id_,
+                    block_type: self.blockType === 'active' ? null : 'inactive',
                 }
             }).then((resp) => {
                 self.records_ = resp.data;
-                // console.dir(resp.data)
-                // console.dir(this.staff_)
+
                 self.$parent.$emit('totalSet', resp.data.length);
 
                 if (self.isActive_ === true) {

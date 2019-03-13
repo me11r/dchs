@@ -22,8 +22,8 @@
                             @change="selectStaff"
                             required
                             title=""
-                            :name="getName('staff_id', item.id)"
-                            :id="getName('staff_id', item.id)"
+                            :name="inactiveType === 'active' ? getName('staff_id', item.id) : getNameInactive('staff_id', item.id)"
+                            :id="inactiveType === 'active' ? getName('staff_id', item.id) : getNameInactive('staff_id', item.id)"
                             v-model="item.staff_id">
                             <option
                                 v-for="s in getStaffFilter(item.staff_id)"
@@ -47,6 +47,57 @@
                     </button>
                 </div>
             </div>
+            <div v-if="inactiveType !== 'active'" class="field is-grouped">
+                <div class="field is-grouped">
+                    <div class="control column">
+                        <label :for="getNameInactive('inactive_type', item.id)">Тип</label><br>
+
+                        <div class="select">
+                            <select
+                                    required
+                                    title=""
+                                    :name="getNameInactive('inactive_type',item.id)"
+                                    :id="getNameInactive('inactive_type',item.id)"
+                                    v-model="item.inactive_type">
+                                <option
+                                        v-for="s in inactiveTypes"
+                                        :key="'inactive_type_' + s.id"
+                                        :value="s.id">{{ s.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="control column">
+                        <v-datepicker-search
+                                label="С"
+                                :name="getNameInactive('date_from',item.id)"
+                                :date-string="item.date_from"
+                                @dateChanged="item.date_from = $event"
+                                v-model="item.date_from"
+                        ></v-datepicker-search>
+                    </div>
+                    <div class="control column">
+                        <v-datepicker-search
+                                label="По"
+                                :name="getNameInactive('date_to',item.id)"
+                                :date-string="item.date_to"
+                                @dateChanged="item.date_to = $event"
+                                v-model="item.date_to"
+                        ></v-datepicker-search>
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control column">
+                        <label>Комментарий</label>
+                        <textarea v-model="item.comment"
+                                  class="textarea"
+                                  :name="getNameInactive('comment',item.id)"
+                                  :id="getNameInactive('comment',item.id)"
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -61,6 +112,10 @@ export default {
         block_type: {
             type: String,
             default: ''
+        },
+        inactiveType: {
+            type: String,
+            default: 'active'
         },
         active: {
             type: Boolean,
@@ -96,7 +151,13 @@ export default {
             shiftId_: this.shiftId,
             dateInput_: this.dateInput,
             total: 0,
-            isActive_: this.active
+            isActive_: this.active,
+            inactiveTypes: [
+                {id: 'vacation', name: 'Отпуск'},
+                {id: 'business_trip', name: 'Командировка'},
+                {id: 'maternity', name: 'Декрет'},
+                {id: 'sick_leave', name: 'Больничный'},
+            ],
         };
     },
     methods: {
@@ -107,7 +168,10 @@ export default {
             });
         },
         getName(control, id) {
-            return 'staff' + `[${this.block_type_}]` + `[${control}][${id}]`;
+            return 'staff' + `[${this.block_type_}][${control}][${id}]`;
+        },
+        getNameInactive(control, userId) {
+            return 'staff_inactive' + `[${this.block_type_}][${control}][${userId}]`;
         },
         selectStaff($event) {
             console.dir($event.target.value);
@@ -118,8 +182,6 @@ export default {
             if (this.isActive_ === true) {
                 this.$parent.$emit('activeChange', 1);
             }
-            // this.staff_ = _.filter(this.staff_, {id: 123});
-            // console.dir(_.filter(this.staff_, {id: 123}))
         },
         addItem(item) {
             this.records_.push(item);
@@ -171,6 +233,7 @@ export default {
                 params: {
                     rank: self.block_type_,
                     shift_id: self.shiftId,
+                    inactive: self.inactiveType === 'active' ? null : 'inactive',
                     date: self.dateInput_
                 }
             }).then((resp) => {

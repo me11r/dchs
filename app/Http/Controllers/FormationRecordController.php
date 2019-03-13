@@ -88,13 +88,16 @@ class FormationRecordController extends Controller
 
         if($formationDistrictManager){
             foreach ($cityAreas as $key => $area) {
-                foreach ($formationDistrictManager->items as $ppl) {
+                foreach ($formationDistrictManager->items_active()->get() as $ppl) {
                     $cityAreas[$key] = $area;
                 }
             }
         }
 
-        $dutyShiftItems = OperDutyShiftStaffItem::date($date)->with(['staff', 'shift'])->get();
+        $dutyShiftItems = OperDutyShiftStaffItem::date($date)
+            ->whereNull('inactive_type')
+            ->with(['staff', 'shift'])
+            ->get();
         $items = (new FormationRecord())->where('date', '=', $item->date)
             ->whereNotIn('organisation', [
                 FormationOrganisation::DCHS_ALMATY,
@@ -242,6 +245,27 @@ class FormationRecordController extends Controller
                     ]);
                 }
             }
+
+            foreach ($request->input('staff_inactive', []) as $rank => $staff_arr) {
+                foreach ($staff_arr['staff_id'] as $key => $id) {
+
+                    $inactiveType = $request->input("staff_inactive.{$rank}.inactive_type.{$key}", null);
+                    $dateFrom = $request->input("staff_inactive.{$rank}.date_from.{$key}", null);
+                    $dateTo = $request->input("staff_inactive.{$rank}.date_to.{$key}", null);
+                    $comment = $request->input("staff_inactive.{$rank}.comment.{$key}", null);
+
+                    OperDutyShiftStaffItem::create([
+                        'shift_id' => $operShift_id,
+                        'staff_id' => $id,
+                        'rank' => $rank,
+                        'date' => $date,
+                        'inactive_type' => $inactiveType,
+                        'date_from' => $dateFrom ? Carbon::parse($dateFrom)->format('Y-m-d') : null,
+                        'date_to' => $dateTo ? Carbon::parse($dateTo)->format('Y-m-d') : null,
+                        'comment' => $comment,
+                    ]);
+                }
+            }
         }
 
         return \view('formation-record.staff.create-edit', $data);
@@ -266,10 +290,20 @@ class FormationRecordController extends Controller
             $report->items()->delete();
 
             foreach ($request->input('manager_id', []) as $city_area_id => $staff_arr) {
-                foreach ($staff_arr as $id) {
+                foreach ($staff_arr as $key => $id) {
+
+                    $inactiveType = $request->input("inactive_type.{$city_area_id}.$id", null);
+                    $dateFrom = $request->input("date_from.{$city_area_id}.$id", null);
+                    $dateTo = $request->input("date_to.{$city_area_id}.$id", null);
+                    $comment = $request->input("comment.{$city_area_id}.$id", null);
+
                     $report->items()->create([
                         'manager_id' => $id,
                         'city_area_id' => $city_area_id,
+                        'inactive_type' => $inactiveType,
+                        'date_from' => $dateFrom ? Carbon::parse($dateFrom)->format('Y-m-d') : null,
+                        'date_to' => $dateTo ? Carbon::parse($dateTo)->format('Y-m-d') : null,
+                        'comment' => $comment,
                     ]);
                 }
             }
