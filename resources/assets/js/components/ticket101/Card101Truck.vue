@@ -523,7 +523,6 @@
                 };
 
                 axios.post('/roadtrip/retreat/' + dept_id + '/' + window.ticket101add.ticketId + '/' + dept_number, props).then((response) => {
-                    alert(`Отбой произведен`);
                     event.target.classList.remove('is-danger');
                 }).catch((e) => {
                     console.dir(e);
