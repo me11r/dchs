@@ -31,12 +31,12 @@
         {#<td class="column">#}
             <table class="table is-fullwidth is-striped is-narrow is-hoverable">
                 {% for user in users %}
-                    <tr class="{{ user.isBlocked()?'is-warning' }}">
-                        <td class="is-expanded">
+                    <tr>
+                        <td class="is-expanded {{ not user.canLogin() ? 'is-warning' }}">
                             <i class="fas {{ user.isBlocked()?'fa-lock':'fa-user' }}"></i>&nbsp;{{ user.name }}&nbsp;({{ user.email }})
                         </td>
-                        <td>{{ user.role.title|default('') }}</td>
-                        <td class="has-text-right">
+                        <td class="{{ not user.canLogin() ? 'is-warning' }}">{{ user.role.title|default('') }}</td>
+                        <td class="has-text-right {{ not user.canLogin() ? 'is-warning' }}">
                             <a href="{{ url('admin/users/edit/' ~ user.id) }}" class="button is-outlined is-primary"><i
                                         class="fa fa-edit"></i><span
                                         class="hidden-md-down">&nbsp;Изменить</span></a>
@@ -50,13 +50,16 @@
                                             class="hidden-lg-down">&nbsp;Изменить пароль</span></a>
                             {% endif %}
                             {% if (user.id != 1) %}
-                                {% if user.hasRight(1) %}
-                                    <a href="{{ url('admin/users/lock/' ~ user.id) }}" class="button is-danger"><i
-                                                class="fa fa-lock"></i></a>
-                                {% else %}
-                                    <a href="{{ url('admin/users/lock/' ~ user.id) }}" class="button is-success"><i
-                                                class="fa fa-lock"></i></a>
-                                {% endif %}
+                                <a href="{{ url('admin/users/lock/' ~ user.id) }}" class="button {{ user.canLogin() ? 'is-danger' : 'is-success' }}"><i
+                                            class="fa fa-lock"></i></a>
+                                <form onsubmit="return confirm('Удалить пользователя?');" style="display: inline" action="/admin/users/delete/{{ user.id }}" method="post">
+                                    {{ csrf_field() }}
+                                    {{ method_field('DELETE') }}
+                                    <button class="button is-black">
+                                        <i
+                                                class="fa fa-times"></i>
+                                    </button>
+                                </form>
                             {% endif %}
                         </td>
                     </tr>

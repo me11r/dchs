@@ -9,11 +9,11 @@ class FormationPersonsReportObserver
 {
     use MessengerTrait;
 
-    public function creating(FormationPersonsReport $report)
+    public function created(FormationPersonsReport $report)
     {
         if (\Auth::user()) {
             $url = $this->generateUrl($report);
-            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в личном составе строевой записки');
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в личном составе строевой записки', $url);
         }
     }
 
@@ -21,7 +21,7 @@ class FormationPersonsReportObserver
     {
         if (\Auth::user()) {
             $url = $this->generateUrl($report);
-            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в личном составе строевой записки');
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в личном составе строевой записки', $url);
         }
     }
 
