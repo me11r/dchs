@@ -3,22 +3,30 @@
 namespace App\Observers;
 
 use App\Messenger\MessengerTrait;
+use App\Models\Weather;
 
 class WeatherObserver
 {
     use MessengerTrait;
 
-    public function creating()
+    public function created(Weather $report)
     {
         if (\Auth::user()) {
-            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"');
+            $url = $this->generateUrl($report);
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"',$url);
         }
     }
 
-    public function updating()
+    public function updating(Weather $report)
     {
         if (\Auth::user()) {
-            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"');
+            $url = $this->generateUrl($report);
+            $this->sendMessageAboutFormationAction('Пользователь ' . \Auth::user()->full_username . ' произвёл изменения в разделе "Информация"',$url);
         }
+    }
+
+    private function generateUrl($model)
+    {
+        return "/weather/{$model->id}/edit";
     }
 }
