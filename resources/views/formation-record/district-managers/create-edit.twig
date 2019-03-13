@@ -15,9 +15,26 @@
 
                 {% for district in districts %}
                     <div class="field">
-                        <label for="field_2_1">{{ district.name }} район</label>
+                        <label>{{ district.name }} район</label>
                         <district-managers :staff="{{ district.district_managers }}"
-                                           :block_type="{{ district.id }}"
+                                           :city-area-id="{{ district.id }}"
+                                           block-type="active"
+                                           :model_id="{{ report.id ?? 0 }}">
+                        </district-managers>
+                    </div>
+                {% endfor %}
+
+            </fieldset>
+
+            <fieldset>
+                <legend>Отсутствующие</legend>
+
+                {% for district in districts %}
+                    <div class="field">
+                        <label>{{ district.name }} район</label>
+                        <district-managers :staff="{{ district.district_managers }}"
+                                           :city-area-id="{{ district.id }}"
+                                           block-type="inactive"
                                            :model_id="{{ report.id ?? 0 }}">
                         </district-managers>
                     </div>

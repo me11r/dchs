@@ -34,4 +34,9 @@ class FormationDistrictManager extends Model
     {
         return $this->hasMany(FormationDistrictManagerItem::class, 'report_id');
     }
+
+    public function items_active()
+    {
+        return $this->hasMany(FormationDistrictManagerItem::class, 'report_id')->whereNull('inactive_type');
+    }
 }
