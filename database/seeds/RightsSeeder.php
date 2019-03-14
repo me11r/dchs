@@ -66,6 +66,13 @@ class RightsSeeder extends Seeder
             ['title' => 'Служба спасения г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_EMERGENCY_ALMATY'],
             ['title' => 'СП и АСР: редактирование ОД', 'right_group_id' => 5, 'name' => 'CAN_EDIT_OD_FORMATION'],
 
+            ['title' => 'ГУ «РОСО КЧС МВД РК»: удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_ROSO'],
+            ['title' => 'ГУ «Казселезащита»: удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_MUDFLOW_PROTECTION'],
+            ['title' => 'ГУ «Центр медицины катастроф»: удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_MEDICAL'],
+            ['title' => 'АО "Казавиаспас": удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_AIR_RESCUE'],
+            ['title' => 'АО "Өртсөндіруші": удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_ORT_SERT'],
+            ['title' => 'Служба спасения г.Алматы": удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_EMERGENCY'],
+
             ['title' => 'Может одобрять суточный отчет', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_REPORT_101'],
             ['title' => 'Может утверждать Журнал строевых записок ДЧС г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_RECORD'],
             ['title' => 'Может редактировать Журнал строевых записок ДЧС г.Алматы после утверждения', 'right_group_id' => 5, 'name' => 'CAN_EDIT_APPROVED_FORMATION_RECORD'],
@@ -185,6 +192,9 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 9, 'title' => 'СОМЭ: создание', 'name' => 'CAN_CREATE_QUAKES'];
         $rights[] = ['right_group_id' => 9, 'title' => 'СОМЭ: редактирование', 'name' => 'CAN_EDIT_QUAKES'];
         $rights[] = ['right_group_id' => 9, 'title' => 'СОМЭ: удаление', 'name' => 'CAN_DELETE_QUAKES'];
+
+        $rights[] = ['right_group_id' => 9, 'title' => 'Сводная информация по мореным озерам: удаление', 'name' => 'CAN_DELETE_REPORT_MORAINIC_LAKES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'РГП Казгидромет: удаление', 'name' => 'CAN_DELETE_INFO_WEATHER'];
 
         $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": просмотр', 'name' => 'CAN_VIEW_MUDFLOW_PROTECTION'];
         $rights[] = ['right_group_id' => 9, 'title' => 'ГУ "Казселезащита": редактирование', 'name' => 'CAN_EDIT_MUDFLOW_PROTECTION'];

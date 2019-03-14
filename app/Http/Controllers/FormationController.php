@@ -102,8 +102,15 @@ class FormationController extends AuthorizedController
         $data['per_page'] = $request->get('per_page', 10);
         $data['reports'] = AirRescueReport::orderBy('id', 'desc')->paginate($data['per_page']);
         $data['today'] = now();
+        $data['user'] = Auth::user();
 
         return view('formation.air-rescue.index', $data);
+    }
+
+    public function deleteAirRescue($id)
+    {
+        $airRescue = AirRescueReport::destroy($id);
+        return back();
     }
 
     public function getAirRescueView(Request $request, $id)
@@ -1063,18 +1070,11 @@ class FormationController extends AuthorizedController
 
     public function getEditSavers(Request $request, $id)
     {
-        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
-        if(!Auth::user()->hasRight(['CAN_ACCESS_FORMATION_REPORT_ROSO_EDIT'])){
-            $this->throwAccessDenied();
-        }
-
         $this->set('report', FormationSaversReport::findOrFail($id));
     }
 
     public function postEditSavers(Request $request, $id)
     {
-        $this->needRight(Right::CAN_ACCESS_FORMATION_REPORT_ROSO);
-
         $report = FormationSaversReport::findOrFail($id);
         $report->fill($request->all())->saveOrFail();
         return redirect('/formation/savers')->with('_message', [

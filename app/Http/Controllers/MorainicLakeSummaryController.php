@@ -30,9 +30,9 @@ class MorainicLakeSummaryController extends Controller
         $per_page = 20;
 
         $items = MorainicLakeReport::orderBy('date', 'desc')->paginate($per_page);
-//        $items = $this->repository->orderBy('date', 'desc')->paginate($per_page)->unique('date');
+        $user = Auth::user();
 
-        return view("$this->table.index", compact('items', 'per_page'));
+        return view("$this->table.index", compact('items', 'per_page','user'));
     }
 
     /**
@@ -45,8 +45,6 @@ class MorainicLakeSummaryController extends Controller
         $items = $this->repository->all();
         $lakes = MorainicLake::all();
         $title = 'Создать запись';
-//        $tech = (new FormationTechReport)->with('formation_tech_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
-
 
         return view("$this->table.edit", compact('items', 'title', 'lakes'));
     }
@@ -204,8 +202,9 @@ class MorainicLakeSummaryController extends Controller
      */
     public function destroy($id)
     {
-        $repo = $this->repository->find($id);
+        $repo = $this->repository->where('date', $id);
         $repo->delete();
+        $morainicLakeReport = MorainicLakeReport::where('date', $id)->delete();
         return back();
     }
 }

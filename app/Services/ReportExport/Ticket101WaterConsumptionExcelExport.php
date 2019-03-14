@@ -103,7 +103,7 @@ class Ticket101WaterConsumptionExcelExport
         // заголовки таблицы
         $sheet->getCell('B1')
             ->setValue("Расход воды за {$this->data['dateFrom']} по {$this->data['dateTo']}");
-        $sheet->mergeCells('B1:I1');
+        $sheet->mergeCells('B1:J1');
         $sheet->getRowDimension(1)->setRowHeight(50);
         $sheet->getRowDimension(2)->setRowHeight(100);
 
@@ -128,7 +128,7 @@ class Ticket101WaterConsumptionExcelExport
         foreach ($this->data['values'] as $rowVal) {
 
             $sheet->fromArray($rowVal, null, "A$rowIndex");
-            $sheet->getStyle("A$rowIndex:I$rowIndex")->applyFromArray(self::HStyle);
+            $sheet->getStyle("A$rowIndex:J$rowIndex")->applyFromArray(self::HStyle);
             $sheet->getRowDimension($rowIndex)->setRowHeight(50);
             $rowIndex++;
 

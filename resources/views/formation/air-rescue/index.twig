@@ -41,8 +41,18 @@
                     {% endif %}
                     <a href="{{ url('formation/air-rescue/' ~ report.id ~ '/edit') }}" class="button is-basic is-small"><i class="fas fa-user"></i>&nbsp;Редактировать</a>
                     <a href="{{ url('formation/air-rescue/' ~ report.id) }}" class="button is-info is-small"><i class="fas fa-glasses"></i>&nbsp;Просмотр</a>
-                    {#<a href="{{ url('formation/add101tech/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-outlined"><i class="fas fa-truck"></i>&nbsp; Указать технику</a>#}
-                    {#<a href="{{ url('/formation/view101/' ~ report.id) }}" class="button is-primary"><i class="fas fa-receipt"></i>&nbsp; Смотреть строевую записку</a>#}
+
+                    {% if user and user.hasRight('CAN_DELETE_FORMATION_RECORD_AIR_RESCUE') %}
+                        <form method="post" action="/formation/air-rescue/{{ report.id }}" style="display: inline">
+                            {{ csrf_field() }}
+                            {{ method_field('DELETE') }}
+                            <button onclick="return confirm('Удалить?');"
+                                    class="button is-small is-danger">
+                                <i class="fas fa-times"></i>&nbsp;
+                                Удалить
+                            </button>
+                        </form>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
