@@ -133,22 +133,35 @@
                             </option>
                         </select>
                     </div>
-                    <div class="field">
-                        <label for="startPeriod">Начало периода:</label>
-                        <input
-                                v-model="date_begin_"
-                                type="date"
-                                class="date"
-                                id="startPeriod">
-                    </div>
-                    <div class="field">
-                        <label for="endPeriod">Конец периода:</label>
-                        <input
-                                v-model="date_end_"
-                                class="date"
-                                type="date"
-                                id="endPeriod">
-                    </div>
+                    <v-datepicker-search
+                            :date-string="date_begin_"
+                            v-model="date_begin_"
+                            @dateChanged="date_begin_ = $event"
+                            label="Начало периода"
+                    ></v-datepicker-search>
+                    <v-datepicker-search
+                            :date-string="date_end_"
+                            @dateChanged="date_end_ = $event"
+                            v-model="date_end_"
+                            label="Конец периода"
+                    ></v-datepicker-search>
+                    <!--<div class="field">-->
+                        <!--<label for="startPeriod">Начало периода:</label>-->
+                        <!---->
+                        <!--<input-->
+                                <!--v-model="date_begin_"-->
+                                <!--type="date"-->
+                                <!--class="date"-->
+                                <!--id="startPeriod">-->
+                    <!--</div>-->
+                    <!--<div class="field">-->
+                        <!--<label for="endPeriod">Конец периода:</label>-->
+                        <!--<input-->
+                                <!--v-model="date_end_"-->
+                                <!--class="date"-->
+                                <!--type="date"-->
+                                <!--id="endPeriod">-->
+                    <!--</div>-->
                     <div class="field">
                         <h4 class="title">Звенья ГДЗС</h4>
 
@@ -362,7 +375,7 @@
                     });
                 }
 
-                this.timerId = setTimeout(this.post_data, 3 * 1000);
+                this.timerId = setTimeout(this.post_data, 30 * 1000);
             },
             stopCheck() {
                 this.loadingComponent.close();
@@ -386,7 +399,7 @@
 
                     if (resp.data.result !== undefined) {
                         self.report_summary = resp.data.result;
-                        console.dir(resp.data.result)
+                        // console.dir(resp.data.result)
                         this.stopCheck();
 
                         _.find(this.time_onway_summary, {type: 'less_5'}).value = _.filter(this.report_summary, {on_way_category: 'less_5'}).length;

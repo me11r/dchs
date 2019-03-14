@@ -12,16 +12,25 @@ use App\Models\FireDepartmentResult;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\ReportCache;
 use App\Ticket101;
+use Illuminate\Support\Facades\Auth;
 
 class ReportProcessor
 {
     private $queue = null;
 
+    //запускаем метод из команды, передаем параметры отчета
     public function fire(CustomQueue $queue)
     {
         if(method_exists($this, $queue->name)) {
-            $this->queue = $queue;
-            $this->{$queue->name}($queue->options_decoded);
+            try {
+                $this->queue = $queue;
+                $this->{$queue->name}($queue->options_decoded);
+            }
+            catch (\Exception $exception) {
+                if(!Auth::user()) {
+                    echo str_limit($exception->getMessage(), 1000);
+                }
+            }
             CustomQueue::destroy($queue->id);
         }
     }

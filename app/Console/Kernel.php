@@ -41,6 +41,10 @@ class Kernel extends ConsoleKernel
          //забиваем отчет на главной странице
          $schedule->command('fill:main:reports')
             ->everyFiveMinutes();
+
+         //очередь отчетов
+         $schedule->command('process:queue')
+            ->everyMinute();
     }
 
     /**
