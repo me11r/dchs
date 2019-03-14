@@ -25,14 +25,18 @@
             <tr class="{% if report.report_date == today %}is-primary{% else %}{% endif %}">
                 <td>{{ report.report_date }}</td>
                 <td class="has-text-right">
+
                     {% if auth.hasRight('CAN_ACCESS_FORMATION_REPORT_ROSO_EVENTS') %}
                         <a href="{{ url('/formation/savers/events/' ~ report.id) }}" class="button is-info is-small"><i class="fas fa-receipt"></i>&nbsp; Характерные спасоперации</a>
                     {% endif %}
+
                     {% if auth.hasRight('CAN_ACCESS_FORMATION_REPORT_ROSO_MIGRATIONS') %}
                         <a href="{{ url('/formation/savers/migrations/' ~ report.id) }}" class="button is-info is-small"><i class="fas fa-receipt"></i>&nbsp; Перемещение подразделений</a>
                     {#<a href="{{ url('/formation/savers/resources/' ~ report.id) }}" class="button is-primary"><i class="fas fa-receipt"></i>&nbsp; Изменить строевую записку</a>#}
                     {% endif %}
+
                     <a href="{{ url('formation-record/roso') }}" class="button is-basic is-small"><i class="fas fa-receipt"></i>&nbsp; Строевые записки</a>
+
                     {% if auth.hasRight('CAN_ACCESS_FORMATION_REPORT_ROSO_EDIT') %}
                         <a href="{{ url('/formation/editsavers/' ~ report.id) }}" class="button is-basic is-small"><i class="fas fa-receipt"></i>&nbsp; Изменить оперативную информацию</a>
                     {% endif %}

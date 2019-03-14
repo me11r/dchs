@@ -27,10 +27,12 @@ class FormationRecordController extends Controller
     public function singleIndex(Request $request, $organisation)
     {
         $perPage = $request->get('per_page', 10);
+        $user = Auth::user();
         $this->createTodayForOrganisation($organisation);
 
         return View::make('formation-record.single-index')
             ->with('per_page', $perPage)
+            ->with('user', $user)
             ->with('organisation', $organisation)
             ->with('items',
                 (new FormationRecord)
@@ -381,5 +383,11 @@ class FormationRecordController extends Controller
         }
 
         return dd('Кеш не заполнен');
+    }
+
+    public function destroy($id)
+    {
+        FormationRecord::destroy($id);
+        return back();
     }
 }

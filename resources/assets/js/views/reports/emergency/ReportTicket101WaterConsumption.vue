@@ -51,6 +51,7 @@
                         <th>Подручными средствами</th>
                         <th>До прибытия</th>
                         <th>Время тушения</th>
+                        <th>Дата</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,6 +65,7 @@
                         <td>{{ record['liquidation_method_id'][4] }}</td>
                         <td>{{ record['liquidation_method_id'][5] }}</td>
                         <td>{{ record.time }}</td>
+                        <td>{{ record.date }}</td>
                     </tr>
                 </tbody>
             </table>

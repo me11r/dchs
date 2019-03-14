@@ -34,6 +34,17 @@
                             <i class="fas fa-file-upload"></i>&nbsp;
                             Редактировать
                         </a>
+                        {% if user and user.hasRight('CAN_DELETE_INFO_WEATHER') %}
+                            <form method="post" action="/weather/{{ item.id }}" style="display: inline">
+                                {{ csrf_field() }}
+                                {{ method_field('DELETE') }}
+                                <button onclick="return confirm('Удалить?');"
+                                        class="button is-small is-danger">
+                                    <i class="fas fa-times"></i>&nbsp;
+                                    Удалить
+                                </button>
+                            </form>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

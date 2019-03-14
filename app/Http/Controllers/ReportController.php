@@ -1604,6 +1604,12 @@ class ReportController extends AuthorizedController
 
             if(in_array($card->liquidation_method_id, $tripResultIdsWeCount)) {
                 foreach ($card->chronologies_arrived as $chronology) {
+
+                    //пропускаем ГДЗС в разделе "С установкой пож.автомобилей на водоисточники, ПГ" (ARM-523)
+                    if($card->liquidation_method_id == 2 && $chronology->event_info_arrived->name == 'ГДЗС') {
+                        continue;
+                    }
+
                     $str .= $chronology->fire_department_result->department->title;
                     $str .= " ({$chronology->fire_department_result->tech->department}: {$chronology->event_info_arrived->name}: {$chronology->working_time} мин;) ";
                 }
@@ -1617,6 +1623,7 @@ class ReportController extends AuthorizedController
             }
 
             $result['time'] = $card->liqv_time_total_minutes;
+            $result['date'] = $card->created_at->format('d.m.Y H:i');
 
             $data['records'][] = $result;
         }

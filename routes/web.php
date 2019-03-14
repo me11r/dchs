@@ -102,6 +102,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
             Route::get('/{id}/edit', 'FormationController@getAirRescueEdit');
             Route::post('/edit-create', 'FormationController@getAirRescueEditCreate');
             Route::post('/approve/{id}', 'FormationController@approveAirRescue');
+            Route::delete('{id}', 'FormationController@deleteAirRescue');
         });
         Route::get('addToday', 'FormationController@getAddToday');
         Route::post('addToday', 'FormationController@postAddToday');
@@ -131,8 +132,8 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::get('editmedical/{id}', 'FormationController@getEditMedical')->where('id', '[0-9]+');
         Route::post('editmedical/{id}', 'FormationController@postEditMedical')->where('id', '[0-9]+');
 
-        Route::get('editsavers/{id}', 'FormationController@getEditSavers')->where('id', '[0-9]+');
-        Route::post('editsavers/{id}', 'FormationController@postEditSavers')->where('id', '[0-9]+');
+        Route::get('editsavers/{id}', 'FormationController@getEditSavers')->where('id', '[0-9]+')->middleware(['right:CAN_ACCESS_FORMATION_REPORT_ROSO_EDIT']);
+        Route::post('editsavers/{id}', 'FormationController@postEditSavers')->where('id', '[0-9]+')->middleware(['right:CAN_ACCESS_FORMATION_REPORT_ROSO']);
         // ГУ РОСО спасоперации итд
         Route::group(['prefix' => 'savers'], function () {
             //спасоперации

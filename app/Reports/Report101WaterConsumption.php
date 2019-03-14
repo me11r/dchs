@@ -51,6 +51,7 @@ class Report101WaterConsumption
             'Подручными средствами',
             'До прибытия',
             'Время тушения',
+            'Дата',
         ];
 
         $data['dateFrom'] = Carbon::parse($this->data['dateFrom'])->format('d.m.Y');
@@ -70,6 +71,7 @@ class Report101WaterConsumption
                 $record['liquidation_method_id'][4],
                 $record['liquidation_method_id'][5],
                 $record['time'],
+                $record['date'],
             ];
         }
 

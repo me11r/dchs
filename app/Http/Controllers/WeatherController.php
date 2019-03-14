@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Weather;
 use App\Repositories\Contracts\WeatherInterface;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 
@@ -21,9 +22,11 @@ class WeatherController extends Controller
     public function index()
     {
         $items = $this->repository->orderBy('date', 'DESC')->get();
+        $user = Auth::user();
 
         return View::make('weather.index')
             ->with('items', $items)
+            ->with('user', $user)
             ->render();
     }
 
@@ -60,6 +63,7 @@ class WeatherController extends Controller
 
     public function destroy($id)
     {
-        abort(418, 'Раздел в разработке');
+        $weather = Weather::destroy($id);
+        return back();
     }
 }
