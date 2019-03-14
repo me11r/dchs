@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AirRescueReport;
 use App\Analytics101;
 use App\CallInfo;
+use App\CustomQueue;
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
@@ -305,6 +306,38 @@ class ReportController extends AuthorizedController
         $result_id = $request->result_id;
         $burnt_id = $request->burnt_id;
         $city_area_id = $request->city_area_id;
+
+        $data = [
+            'date_begin' => $request->date_begin,
+            'date_end' => $request->date_end,
+            'result_id' => $request->result_id,
+            'burnt_id' => $request->burnt_id,
+            'city_area_id' => $request->city_area_id,
+        ];
+
+        $data = json_encode($data);
+
+        CustomQueue::updateOrCreate([
+            'name' => 'report1',
+            'user_id' => Auth::id(),
+            'options' => $data,
+
+        ],[
+            'name' => 'report1',
+            'user_id' => Auth::id(),
+            'options' => $data,
+        ]);
+
+        $final = ReportCache::name("report1_".Auth::id())->first();
+        $result = [];
+
+        if($final) {
+            $result = $final->data_decoded;
+            $final->delete();
+            $result = ['result' => $result];
+        }
+
+        return response()->json($result);
 
         $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
 
