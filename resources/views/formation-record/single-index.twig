@@ -49,6 +49,17 @@
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             Редактировать
                         </a>
+                        {% if user and user.hasRight('CAN_DELETE_FORMATION_RECORD_' ~ organisation) %}
+                            <form method="post" action="/formation-record/{{ item.id }}" style="display: inline">
+                                {{ csrf_field() }}
+                                {{ method_field('DELETE') }}
+                                <button onclick="return confirm('Удалить?');"
+                                        class="button is-small is-danger">
+                                    <i class="fas fa-times"></i>&nbsp;
+                                    Удалить
+                                </button>
+                            </form>
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
