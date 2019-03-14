@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AirRescueReport;
 use App\Analytics101;
 use App\CallInfo;
+use App\CustomQueue;
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
@@ -298,17 +299,51 @@ class ReportController extends AuthorizedController
         return view('reports.101.emergency', compact('reasons', 'burntObjects', 'cityAreas'));
     }
 
+    //отчет-1
     public function postReport101Emergency(Request $request)
     {
-        $date_begin = $request->date_begin;
-        $date_end = $request->date_end;
+        $date_begin = $request->date_begin ? Carbon::parse($request->date_begin)->format('Y-m-d') : now()->format('Y-m-d');
+        $date_end = $request->date_end ? Carbon::parse($request->date_end)->format('Y-m-d') : now()->format('Y-m-d');
         $result_id = $request->result_id;
         $burnt_id = $request->burnt_id;
         $city_area_id = $request->city_area_id;
 
-        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
+        $data = [
+            'date_begin' => $date_begin,
+            'date_end' => $date_end,
+            'result_id' => $result_id,
+            'burnt_id' => $burnt_id,
+            'city_area_id' => $city_area_id,
+        ];
+
+        $data = json_encode($data);
+
+        CustomQueue::updateOrCreate([
+            'name' => 'report1',
+            'user_id' => Auth::id(),
+            'options' => $data,
+
+        ],[
+            'name' => 'report1',
+            'user_id' => Auth::id(),
+            'options' => $data,
+        ]);
+
+        $final = ReportCache::name("report1_".Auth::id())->first();
+        $result = [];
+
+        if($final) {
+            $result = $final->data_decoded;
+            $final->delete();
+            Cache::put('report_1_data', $result, 3600);
+            $result = ['result' => $result];
+        }
+
+//        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
 
         return response()->json($result);
+
+
     }
 
     public function getReport112Emergency()
@@ -736,6 +771,7 @@ class ReportController extends AuthorizedController
 
     }
 
+    //Отчет-1
     public function exportEmergency101Xls(Request $request)
     {
         $date_begin = $request->date_begin;
@@ -744,6 +780,11 @@ class ReportController extends AuthorizedController
         $burnt_id = $request->burnt_id;
         $city_area_id = $request->city_area_id;
 
+        //todo: сделать доступ к данным через кеш
+//        $stat = Cache::get('report_1_data');
+//        if(!$stat) {
+//            dd('Кеш пуст, обновите страницу');
+//        }
         $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
 
         $exportService = new Ticket101PeriodExcelExport($stat);

@@ -14,7 +14,8 @@ class ReportCache extends Model
     public function scopeGetData($q, $name)
     {
         $data = $q->name($name)->first();
-        return $data ? $data->data_decoded : null;
+        $result = $data ? $data->data_decoded : null;
+        return $result;
     }
 
     public function scopeName($q, $s)

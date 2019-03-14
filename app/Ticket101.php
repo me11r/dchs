@@ -535,6 +535,7 @@ class Ticket101 extends BaseModel
     public function first_department_arrived()
     {
         $first_arrived = $this->results()
+            ->whereNotNull('arrive_time')
             ->selectRaw('arrive_time, id, out_time, out_time - arrive_time as on_way_time')
             ->groupBy('id')
             ->havingRaw('min(arrive_time)')
@@ -767,7 +768,7 @@ class Ticket101 extends BaseModel
 
     public function scopeGetDetailedStat($q, $date_begin, $date_end, $result_id = null, $burnt_id = null, $city_area_id = null)
     {
-        $date_begin = $date_begin ? $date_begin: now()->subMonth();
+        $date_begin = $date_begin ? $date_begin: now()->subDays(3);
         $date_end = $date_end ? $date_end : now();
 
         $tickets = $q->with([
@@ -778,6 +779,7 @@ class Ticket101 extends BaseModel
             'crossroad_2',
             'other_records',
             'chronologies',
+            'chronologies_trucks',
             'chronologies.event_info',
             'chronologies.event_info_arrived',
             'chronologies.fire_department_result.tech',
@@ -810,12 +812,6 @@ class Ticket101 extends BaseModel
             $first_arrived = $ticket->first_department_arrived();
 
             if($first_arrived) {
-//                $first_arrived->arrive_time = Carbon::parse($first_arrived->arrive_time);
-
-//                $first_arrived->on_way_time = $first_arrived->arrive_time->diffInMinutes($first_arrived->out_time);
-
-                /*$first_arrived->on_way_time = Carbon::createFromTimestamp($first_arrived->on_way_time)
-                    ->format('H:i:s');*/
 
                 $result[$key]->first_arrived_time = $first_arrived->arrive_time;
                 $result[$key]->on_way_time = $first_arrived->on_way_time;
