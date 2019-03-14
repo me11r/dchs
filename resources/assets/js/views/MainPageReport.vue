@@ -61,7 +61,7 @@
                         class="title"
                         style="padding: 3px 15px">Информация от служб
                 </h4>
-                <div class="panel">
+                <div class="panel" style="overflow-x: scroll;">
                     <table class="formation-record-table">
                         <tr>
                             <td><b>СОМЭ</b></td>
