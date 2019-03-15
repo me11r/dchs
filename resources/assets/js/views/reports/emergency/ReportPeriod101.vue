@@ -9,10 +9,10 @@
                         <h4 class="title">Отчет-1</h4>
                     </div>
                     <div class="level-right has-text-right">
-                        <div class="field">
-                            <button class="button is-info"
-                                    @click.prevent="post_data">Поиск</button>
-                        </div>
+                        <!--<div class="field">-->
+                            <!--<button class="button is-info"-->
+                                    <!--@click.prevent="post_data">Поиск</button>-->
+                        <!--</div>-->
                     </div>
                     <div class="level-right has-text-right">
                         <button
