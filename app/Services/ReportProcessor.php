@@ -24,11 +24,14 @@ class ReportProcessor
         if(method_exists($this, $queue->name)) {
             try {
                 $this->queue = $queue;
+
+                $this->echo($queue->options);
+
                 $this->{$queue->name}($queue->options_decoded);
             }
             catch (\Exception $exception) {
                 if(!Auth::user()) {
-                    echo str_limit($exception->getMessage(), 1000);
+                    $this->echo(str_limit($exception->getMessage(), 1000));
                 }
             }
             CustomQueue::destroy($queue->id);
@@ -44,6 +47,8 @@ class ReportProcessor
     /*Report methods*/
     private function report1($options)
     {
+        ini_set('max_execution_time', 1200) ; // time in seconds
+
         $date_begin = $options['date_begin'] ?? null;
         $date_end = $options['date_end'];
         $result_id = $options['result_id'];
@@ -54,11 +59,26 @@ class ReportProcessor
 
         $nameGenerated = $this->generateName();
 
+        $before = memory_get_usage();
+
+        $encoded = json_encode($result);
+
+        $after = memory_get_usage();
+
+        $diff = ($after - $before) / 1024 / 1024;
+
+        $this->echo("Report size ".$diff." MB");
+
         $reportCache = ReportCache::updateOrCreate([
             'name' => $nameGenerated,
         ],[
             'name' => $nameGenerated,
-            'data' => json_encode($result),
+            'data' => $encoded,
         ]);
+    }
+
+    private function echo($string)
+    {
+        echo $string."\n\r";
     }
 }
