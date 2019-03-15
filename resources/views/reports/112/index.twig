@@ -79,6 +79,14 @@
                 </b-tab-item>
             {% endif %}
 
+            {% if user.hasRight('STAFF_MANAGERS_ODS_REPORT_SHOW') %}
+                <b-tab-item label="Отчет по личному составу ДЧС">
+                    <report-staff-managers-ods
+                        :staff="{{ dchs_staff }}"
+                    ></report-staff-managers-ods>
+                </b-tab-item>
+            {% endif %}
+
         </b-tabs>
 
     </div>

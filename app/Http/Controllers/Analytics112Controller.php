@@ -6,15 +6,18 @@ use App\AvalancheType;
 use App\Dictionary\CityArea;
 use App\Dictionary\TripResult;
 use App\DiseaseType;
+use App\DistrictManager;
 use App\ElevatorEmergencyType;
 use App\EmergencyName;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
+use App\OperDutyShiftStaff;
 use App\Reports\Report112;
 use App\Services\ReportExport\Daily112WordExport;
 use App\Ticket101;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
+use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -73,7 +76,7 @@ class Analytics112Controller extends Controller
 
     }
 
-    //Аналитика ДЧС
+    //Аналитика ДЧС: reports/112
     public function index(Request $request)
     {
         $data = [];
@@ -151,6 +154,24 @@ class Analytics112Controller extends Controller
         $data['dateTo'] = $dateTo;
         $data['incidentTypes'] = IncidentType::all();
         $data['tripResults'] = TripResult::all();
+
+        //Отчет по личному составу ДЧС
+        $oper = OperDutyShiftStaff::all()->map(function ($q) {
+            return [
+                'name' => $q->name,
+                'id' => "od_{$q->id}",
+            ];
+        });
+
+        $dms = DistrictManager::all()->map(function ($q) {
+            return [
+                'name' => $q->name,
+                'id' => "dm_{$q->id}",
+            ];
+        });
+
+        $data['dchs_staff'] = $oper->merge($dms);
+        //Отчет по личному составу ДЧС [end]
 
         return view('reports.112.index',$data);
     }
