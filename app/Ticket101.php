@@ -274,6 +274,7 @@ class Ticket101 extends BaseModel
     protected $table = 'ticket101';
     protected $fillable = [];
     protected $guarded = ['id'];
+    protected $searchByDate = 'custom_created_at';
 
     protected $appends = [
         'loc_time_total',
@@ -741,10 +742,10 @@ class Ticket101 extends BaseModel
 
     public function scopeGetStat($q, $date_begin, $date_end, $reason_id = null)
     {
-        $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end]);
+        $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end]);
 
         if($reason_id){
-            $baseQuery = $q->whereBetween('created_at',[$date_begin, $date_end])
+            $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end])
                 ->where('trip_result_id', $reason_id);
         }
 
@@ -790,7 +791,7 @@ class Ticket101 extends BaseModel
             'operational_card',
             'operational_plan.special_plans'
         ])
-            ->whereBetween('created_at',[$date_begin, $date_end]);
+            ->whereBetween('custom_created_at',[$date_begin, $date_end]);
 
         if($result_id){
             $tickets = $tickets->where('trip_result_id', $result_id);
@@ -867,7 +868,7 @@ class Ticket101 extends BaseModel
         $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
-        return $q->whereBetween('created_at', [$from, $to])
+        return $q->whereBetween('custom_created_at', [$from, $to])
             ->with('city_area', 'departments', 'trip_result', 'liquidation_method');
     }
 
@@ -935,5 +936,18 @@ class Ticket101 extends BaseModel
         }
 
         return $value;
+    }
+
+    public function setCustomCreatedAtAttribute($value)
+    {
+        if(!$value) {
+            $value = now();
+        }
+        $this->attributes['custom_created_at'] = $value;
+    }
+
+    public function getCreatedAtAttribute()
+    {
+        return $this->custom_created_at ? Carbon::parse($this->custom_created_at) : $this->created_at;
     }
 }

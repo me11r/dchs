@@ -453,8 +453,8 @@ class Report
 
                     $result = [
                         'result_title' => $trip_result->name,
-                        'date' => $ticket->created_at->format('d.m.Y H:i'),
-                        'date2' => $ticket->created_at->format('d.m.Y'),
+                        'date' => Carbon::parse($ticket->custom_created_at)->format('d.m.Y H:i'),
+                        'date2' => Carbon::parse($ticket->custom_created_at)->format('d.m.Y'),
                         'city_area' => $ticket->city_area->name ?? null,
                         'address' => $ticket->location,
                         'caller_name' => $ticket->caller_name,

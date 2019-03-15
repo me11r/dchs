@@ -331,6 +331,7 @@
                         <v-datepicker-search
                                 v-model="model.custom_created_at"
                                 :date="model.custom_created_at"
+                                :disabled="!canChangeCreatedAt"
                                 name="custom_created_at"
                                 :include-time="true"
                                 class="control"
@@ -997,6 +998,7 @@ export default {
             avalancheTypes: [],
             elevatorEmergencyTypes: [],
             diseaseTypes: [],
+            canChangeCreatedAt: false,
             servicesTabIndex: 0
         };
     },
@@ -1208,6 +1210,8 @@ export default {
                 this.avalancheTypes = window.card112FormData.avalancheTypes;
                 this.elevatorEmergencyTypes = window.card112FormData.elevatorEmergencyTypes;
                 this.diseaseTypes = window.card112FormData.diseaseTypes;
+                this.canChangeCreatedAt = window.card112FormData.canChangeCreatedAt;
+                console.dir(this.canChangeCreatedAt)
 
                 globalBus.$emit('dateIsReady', this.model.custom_created_at);
 

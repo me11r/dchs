@@ -35,7 +35,9 @@
                         <td class="is-expanded {{ not user.canLogin() ? 'is-warning' }}">
                             <i class="fas {{ user.isBlocked()?'fa-lock':'fa-user' }}"></i>&nbsp;{{ user.name }}&nbsp;({{ user.email }})
                         </td>
-                        <td class="{{ not user.canLogin() ? 'is-warning' }}">{{ user.role.title|default('') }}</td>
+                        <td class="{{ not user.canLogin() ? 'is-warning' }}">
+                            <a href="/admin/roles/edit/{{ user.role.id|default('') }}">{{ user.role.title|default('') }}</a>
+                        </td>
                         <td class="has-text-right {{ not user.canLogin() ? 'is-warning' }}">
                             <a href="{{ url('admin/users/edit/' ~ user.id) }}" class="button is-outlined is-primary"><i
                                         class="fa fa-edit"></i><span

@@ -109,7 +109,7 @@ class CardController extends AuthorizedController
             $can_delete = true;
         }
 
-        $sort = $request->get('sort', 'created_at');
+        $sort = $request->get('sort', 'custom_created_at');
         $id = $request->input('filter.id', '');
         $city_area = $request->input('filter.city_area', '');
 
@@ -149,7 +149,7 @@ class CardController extends AuthorizedController
                 $tickets = Ticket101::
                     real()
                     ->where('location', "like", "$search%")
-                    ->orWhereDate('created_at', $date)
+                    ->orWhereDate('custom_created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
                         $q->where('name', "like", "$search%");
                     })
@@ -237,6 +237,10 @@ class CardController extends AuthorizedController
         $this->set('trip_result', TripResult::all());
         $this->set('liquidation_methods', LiquidationMethod::all());
         $this->set('trunk_types', TrunkType::all());
+
+        // право на редактирование даты создания карточки
+        $this->set('canChangeCreatedAt', Auth::user()->hasRight('CAN_CHANGE_CARD101_DATE'));
+
         $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
             return [
                 'id' => $item->id,
@@ -548,6 +552,9 @@ class CardController extends AuthorizedController
                 'time_retreat',
                 '00:00', // дефолтное названия инпута из компонента timepicker
             ]);
+            if(isset($data['custom_created_at'])) {
+                $data['custom_created_at'] = Carbon::parse($data['custom_created_at'])->format('Y-m-d H:i');
+            }
             $deptsToGetBack = collect([]);
             unset($data['comeback']);
             $back = '/card/101';
@@ -601,6 +608,10 @@ class CardController extends AuthorizedController
             }
             $card->fill($data);
             $card->save();
+            if(!$card->custom_created_at) {
+                $card->custom_created_at = $card->created_at;
+                $card->save();
+            }
             $this->saveOtherRecords($card, $otherRecords);
             if ($card_id) {
                 $this->updateNotificationServices($request->input('notification_services', []));

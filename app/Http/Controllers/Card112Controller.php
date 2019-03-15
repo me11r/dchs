@@ -20,6 +20,7 @@ use App\Repositories\Contracts\Card112RepositoryInterface;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
 class Card112Controller extends Controller
@@ -143,6 +144,7 @@ class Card112Controller extends Controller
             ->with('elevator_emergency_types', ElevatorEmergencyType::all())
             ->with('disease_types', DiseaseType::all())
             ->with('currentTabIndex', 0)
+            ->with('canChangeCreatedAt', Auth::user()->hasRight('CAN_CHANGE_CARD112_DATE'))
             ->render();
     }
 
@@ -209,6 +211,7 @@ class Card112Controller extends Controller
             ->with('avalanche_types', AvalancheType::all())
             ->with('elevator_emergency_types', ElevatorEmergencyType::all())
             ->with('disease_types', DiseaseType::all())
+            ->with('canChangeCreatedAt', Auth::user()->hasRight('CAN_CHANGE_CARD112_DATE'))
             ->with('model', $model);
     }
 
@@ -218,7 +221,7 @@ class Card112Controller extends Controller
         $data = $request->except([
             'notification_services',
         ]);
-        $data['custom_created_at'] = $data['custom_created_at'] ? Carbon::parse($data['custom_created_at'])->format('Y-m-d H:i') : null;
+        $data['custom_created_at'] = isset($data['custom_created_at']) ? Carbon::parse($data['custom_created_at'])->format('Y-m-d H:i') : null;
         $this->repository->updateFilledWithRelations($data, $id);
         $this->repository->updateServicePlans($request->input('notification_services', []), $id);
         return redirect(route('card112.edit', $id))->with('currentTabIndex', $index);

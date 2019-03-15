@@ -125,10 +125,10 @@ class ReportController extends AuthorizedController
         $data['yesterday'] = now()->subHours(24);
         $data['today'] = now();
 
-        $card112_day = Card112::whereDate('created_at', '>=', $data['yesterday'])
+        $card112_day = Card112::whereDate('custom_created_at', '>=', $data['yesterday'])
             ->whereDate('created_at', '<=', $data['today']);
-        $card101_day = Ticket101::whereDate('created_at', '>=', $data['yesterday'])
-            ->whereDate('created_at', '<=', $data['today']);
+        $card101_day = Ticket101::whereDate('custom_created_at', '>=', $data['yesterday'])
+            ->whereDate('custom_created_at', '<=', $data['today']);
 
         $card112_roadtrips = Ticket101ServicePlan::with(['service_type'])
             ->whereDate('created_at', '>=', $data['yesterday'])
@@ -921,10 +921,10 @@ class ReportController extends AuthorizedController
         $emergency_name_id = $request->emergency_name_id;
         $cityAreaId = $request->city_area_id;
 
-        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+        $data['records'] = Card112::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->skipNullValue('city_area_id',$cityAreaId)
             ->skipNullValue('emergency_name_id',$emergency_name_id);
-        $data['records101'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+        $data['records101'] = Ticket101::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->skipNullValue('city_area_id',$cityAreaId);
 
         if($incidentTypeId) {
@@ -944,7 +944,7 @@ class ReportController extends AuthorizedController
 
         $data['records'] = $data['records']->map(function ($item) {
             return [
-                'created_at' => $item->created_at->format('d.m.Y H:i'),
+                'created_at' => $item->custom_created_at->format('d.m.Y H:i'),
                 'detailed_address' => $item->detailed_address,
                 'emergency_feature' => $item->emergency_feature,
                 'dead' => $item->dead,
@@ -961,7 +961,7 @@ class ReportController extends AuthorizedController
 
         $data['records101'] = $data['records101']->map(function ($item) {
             return [
-                'created_at' => $item->created_at->format('d.m.Y H:i'),
+                'created_at' => $item->custom_created_at->format('d.m.Y H:i'),
                 'detailed_address' => $item->detailed_address ?? $item->location,
                 'emergency_feature' => $item->ticket_result,
                 'dead' => $item->children_death_count + $item->people_death_count,
@@ -1023,7 +1023,7 @@ class ReportController extends AuthorizedController
         $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
         $avalanche_type_id = $request->input('avalancheTypeId', null);
 
-        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+        $data['records'] = Card112::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->where(function ($q) use ($avalanche_type_id) {
                 if($avalanche_type_id) {
                     $q->where('avalanche_type_id', $avalanche_type_id);
@@ -1055,7 +1055,7 @@ class ReportController extends AuthorizedController
         $elevatorEmergencyTypeId = $request->input('elevatorEmergencyTypeId', null);
         $cityAreaId = $request->input('cityAreaId', null);
 
-        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+        $data['records'] = Card112::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->where(function ($q) use ($elevatorEmergencyTypeId) {
                 if($elevatorEmergencyTypeId) {
                     $q->where('elevator_emergency_type_id', $elevatorEmergencyTypeId);
@@ -1090,7 +1090,7 @@ class ReportController extends AuthorizedController
         $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
         $typeId = $request->input('diseaseTypeId', null);
 
-        $data['records'] = Card112::whereBetween('created_at', [$dateFrom, $dateTo])
+        $data['records'] = Card112::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->where(function ($q) use ($typeId) {
                 if($typeId) {
                     $q->where('disease_type_id', $typeId);
@@ -1258,7 +1258,7 @@ class ReportController extends AuthorizedController
         $data['normTypes'] = $normTypes;
         $data['fireDepartments'] = FireDepartment::all();
 
-        $data['drill'] = Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+        $data['drill'] = Ticket101::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->drill();
 
         $data['psp'] = NormPsp::whereBetween('created_at', [$dateFrom, $dateTo]);
@@ -1286,7 +1286,7 @@ class ReportController extends AuthorizedController
 
         $drills = $data['drill']->get()->map(function ($q) {
            return [
-               'date' => $q->created_at->format('d.m.Y H:i'),
+               'date' => $q->custom_created_at->format('d.m.Y H:i'),
                'fire_departments' => $q->results()->whereNotNull('dispatch_time')->get()->map(function ($q) {
                    return [
                        'name' => $q->department->title ?? null,
@@ -1450,7 +1450,7 @@ class ReportController extends AuthorizedController
         $data['dateTo'] = $dateTo;
 
         $reportData = Ticket101::
-            whereBetween('created_at', [$dateFrom, $dateTo])
+            whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->whereNull('drill_type_id');
 
         $reportDataASR = (clone $reportData)->whereHas('trip_result', function ($q) {
@@ -1459,19 +1459,19 @@ class ReportController extends AuthorizedController
 
         $data['record'] = [
             'rides_count' => $reportData->count(),
-            'rides_asr_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+            'rides_asr_count' => Ticket101::whereBetween('custom_created_at', [$dateFrom, $dateTo])
                 ->whereNull('drill_type_id')
                 ->whereHas('trip_result', function ($q) {
                     $q->where('name', 'АСР');
                 })
                 ->count(),
-            'rides_false_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+            'rides_false_count' => Ticket101::whereBetween('custom_created_at', [$dateFrom, $dateTo])
                 ->whereNull('drill_type_id')
                 ->whereHas('trip_result', function ($q) {
                     $q->where('name', 'Ложный');
                 })
                 ->count(),
-            'total_staff_count' => Ticket101::whereBetween('created_at', [$dateFrom, $dateTo])
+            'total_staff_count' => Ticket101::whereBetween('custom_created_at', [$dateFrom, $dateTo])
                     ->whereNull('drill_type_id')
                     ->whereHas('trip_result', function ($q) {
                         $q->where('name', 'АСР');
@@ -1545,19 +1545,19 @@ class ReportController extends AuthorizedController
 
             foreach (range(1, 12) as $month) {
 
-                $data['counts'][$type->name]['per_month'][$month] = Ticket101::whereYear('created_at', $year)
-                    ->whereMonth('created_at', $month)
+                $data['counts'][$type->name]['per_month'][$month] = Ticket101::whereYear('custom_created_at', $year)
+                    ->whereMonth('custom_created_at', $month)
                     ->where('drill_type_id',$type->id)
                     ->count();
 
                 foreach ($data['object_classes'] as $object_class) {
 
-                    $data['records'][$type->name][$object_class->name][$month] = Ticket101::whereYear('created_at', $year)
+                    $data['records'][$type->name][$object_class->name][$month] = Ticket101::whereYear('custom_created_at', $year)
                         ->where('object_classification_id', $object_class->id)
-                        ->whereMonth('created_at', $month)
+                        ->whereMonth('custom_created_at', $month)
                         ->where('drill_type_id',$type->id)->count();
 
-                    $data['counts'][$type->name]['per_object'][$object_class->name] = Ticket101::whereYear('created_at', $year)
+                    $data['counts'][$type->name]['per_object'][$object_class->name] = Ticket101::whereYear('custom_created_at', $year)
                         ->where('drill_type_id',$type->id)
                         ->where('object_classification_id', $object_class->id)
                         ->count();
@@ -1623,7 +1623,7 @@ class ReportController extends AuthorizedController
             ->where(function ($qq){
                 $qq->has('liquidation_method');
             })
-            ->whereBetween('created_at', [$dateFrom, $dateTo])
+            ->whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->get()
         ;
 
