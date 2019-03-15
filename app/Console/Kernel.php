@@ -43,8 +43,8 @@ class Kernel extends ConsoleKernel
             ->everyFiveMinutes();
 
          //очередь отчетов
-         $schedule->command('process:queue')
-            ->everyMinute();
+//         $schedule->command('process:queue')
+//            ->everyMinute();
     }
 
     /**

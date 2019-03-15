@@ -78,4 +78,18 @@ class OperDutyShiftStaffItem extends Model
     {
         return $this->ranks[$this->rank] ?? '';
     }
+
+    public function scopeGetStat($q, $manager_id, $date_begin, $date_end, $inactive_type)
+    {
+        return $q->where('staff_id', $manager_id)
+            ->where(function ($qq) use ($inactive_type) {
+                if($inactive_type === null) {
+                    $qq->whereNull('inactive_type');
+                }
+                else {
+                    $qq->whereNotNull('inactive_type');
+                }
+            })
+            ->whereBetween('date',[$date_begin, $date_end]);
+    }
 }

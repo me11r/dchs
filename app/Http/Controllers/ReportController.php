@@ -13,6 +13,7 @@ use App\Dictionary\TripResult;
 use App\DrillType;
 use App\FireDepartment;
 use App\FloodingReason;
+use App\FormationDistrictManagerItem;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\Card112\Card112;
@@ -31,6 +32,7 @@ use App\NormPsp;
 use App\NormType;
 use App\ObjectClassification;
 use App\OperationalCard;
+use App\OperDutyShiftStaffItem;
 use App\ReportCache;
 use App\Reports\Report;
 use App\Reports\Report101DrillRides;
@@ -263,6 +265,36 @@ class ReportController extends AuthorizedController
         $result['sick_count'] = $inactive->where('rank', 'sick')->count();
         $result['business_trip_count'] = $inactive->where('rank', 'business_trip')->count();
         $result['other_count'] = $inactive->where('rank', 'other')->count();
+
+        return response()->json($result);
+    }
+
+    public function postReportStaffManagersOSDStaff(Request $request)
+    {
+        $staff_id = $request->staff_id;
+        $date_begin = $request->date_begin;
+        $date_end = $request->date_end;
+
+        //фильтруем ЛС Менеджеров по районам от ЛС ОД по профиксам (od_1)
+        if (str_contains($staff_id, 'dm_')) {
+            $staff_id = str_replace('dm_', '', $staff_id);
+            $active = FormationDistrictManagerItem::getStat($staff_id, $date_begin, $date_end, null);
+            $inactive = FormationDistrictManagerItem::getStat($staff_id, $date_begin, $date_end, 'inactive');
+        }
+        else {
+            $staff_id = str_replace('od_', '', $staff_id);
+            $active = OperDutyShiftStaffItem::getStat($staff_id, $date_begin, $date_end, null);
+            $inactive = OperDutyShiftStaffItem::getStat($staff_id, $date_begin, $date_end, 'inactive');
+        }
+
+
+        $result['active'] = $active->get();
+        $result['inactive'] = (clone $inactive)->get();
+        $result['vacation'] = (clone $inactive)->where('inactive_type', 'vacation')->get();
+        $result['maternity'] = (clone $inactive)->where('inactive_type', 'maternity')->get();
+        $result['sick_leave'] = (clone $inactive)->where('inactive_type', 'sick_leave')->get();
+        $result['business_trip'] = (clone $inactive)->where('inactive_type', 'business_trip')->get();
+        $result['other'] = (clone $inactive)->where('inactive_type', 'other')->get();
 
         return response()->json($result);
     }

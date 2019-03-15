@@ -145,6 +145,7 @@ Vue.component('report-elevators', require('./views/reports/emergency/ReportEleva
 Vue.component('report-disease', require('./views/reports/emergency/ReportDisease'));
 Vue.component('mudflow-date-selector', require('./views/mudflowProtection/SelectDate'));
 Vue.component('call-info-create-edit', require('./views/call-infos/CreateEdit'));
+Vue.component('report-staff-managers-ods', require('./views/reports/emergency/ReportStaffManagersODS'));
 
 // трекер яндекс-запросов
 globalBus.$on('api-map-request', (r) => {
