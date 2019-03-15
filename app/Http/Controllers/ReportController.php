@@ -976,7 +976,7 @@ class ReportController extends AuthorizedController
 
         $data['records'] = $data['records']->map(function ($item) {
             return [
-                'created_at' => $item->custom_created_at->format('d.m.Y H:i'),
+                'created_at' => $item->created_at->format('d.m.Y H:i'),
                 'detailed_address' => $item->detailed_address,
                 'emergency_feature' => $item->emergency_feature,
                 'dead' => $item->dead,
@@ -993,7 +993,7 @@ class ReportController extends AuthorizedController
 
         $data['records101'] = $data['records101']->map(function ($item) {
             return [
-                'created_at' => $item->custom_created_at->format('d.m.Y H:i'),
+                'created_at' => $item->created_at->format('d.m.Y H:i'),
                 'detailed_address' => $item->detailed_address ?? $item->location,
                 'emergency_feature' => $item->ticket_result,
                 'dead' => $item->children_death_count + $item->people_death_count,
@@ -1318,7 +1318,7 @@ class ReportController extends AuthorizedController
 
         $drills = $data['drill']->get()->map(function ($q) {
            return [
-               'date' => $q->custom_created_at->format('d.m.Y H:i'),
+               'date' => $q->created_at->format('d.m.Y H:i'),
                'fire_departments' => $q->results()->whereNotNull('dispatch_time')->get()->map(function ($q) {
                    return [
                        'name' => $q->department->title ?? null,
