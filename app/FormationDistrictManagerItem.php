@@ -58,4 +58,25 @@ class FormationDistrictManagerItem extends Model
     {
         return $this->belongsTo(CityArea::class, 'city_area_id');
     }
+
+    public function scopeGetStat($q, $manager_id, $date_begin, $date_end, $inactive_type)
+    {
+        return $q->where('manager_id', $manager_id)
+            ->where(function ($qq) use ($inactive_type) {
+                if($inactive_type === null) {
+                    $qq->whereNull('inactive_type');
+                }
+                else {
+                    $qq->whereNotNull('inactive_type');
+                }
+            })
+            ->whereHas('report', function ($qqq) use ($date_begin, $date_end) {
+                $qqq->whereBetween('date',[$date_begin, $date_end]);
+            });
+    }
+
+    public function getInactiveTypeTitleAttribute()
+    {
+        return $this->inactive_type ? $this->inactiveTypes[$this->inactive_type] : null;
+    }
 }
