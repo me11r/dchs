@@ -6,11 +6,21 @@
                     <div class="level-left">
                         <div class="control">
                             <label for="">Время регистрации</label>
-                            <input type="text"
-                                   :value="formatDate(ticket_.created_at, 'HH:mm:SS DD-MM-YYYY')"
+                            <input v-if="!canChangeCreatedAt" type="text"
+                                   :value="formatDate(ticket_.custom_created_at, 'HH:mm:SS DD-MM-YYYY')"
                                    readonly="readonly"
                                    class="input"
                             >
+                            <v-datepicker-search
+                                    v-else
+                                    v-model="ticket_.custom_created_at"
+                                    :date-string="ticket_.custom_created_at"
+                                    name="custom_created_at"
+                                    :include-time="true"
+                                    class="control"
+                                    @dateChanged="ticket_.custom_created_at = $event"
+                                    label="Дата и время создания карточки">
+                            </v-datepicker-search>
                         </div>
                     </div>
                 </div>
@@ -245,7 +255,7 @@
                         <div class="control">
                             <label for="">Время регистрации</label>
                             <input type="text"
-                                   :value="formatDate(ticket_.created_at, 'HH:mm:SS DD-MM-YYYY')"
+                                   :value="formatDate(ticket_.custom_created_at, 'HH:mm:SS DD-MM-YYYY')"
                                    readonly="readonly"
                                    class="input"
                             >
@@ -397,6 +407,10 @@
                 default: () => {
                     return {};
                 }
+            },
+            canChangeCreatedAt: {
+                type: Boolean,
+                default: () => false,
             },
 
         },

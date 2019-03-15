@@ -420,6 +420,7 @@
                     <div id="tab-truck-vue">
                         <ticket101-truck
                             :departments="{{ ssv_out|raw|json_encode }}"
+                            :can-change-created-at="{{ canChangeCreatedAt|raw|json_encode }}"
                             :results="{{ ticket.results }}"
                             :ticket="{{ ticket }}"
                         >
