@@ -13,7 +13,7 @@ class ChangeTicket101AddCustomCreatedAt extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('ticket101')) {
+        if(!Schema::hasColumn('ticket101', 'custom_created_at')) {
             Schema::table('ticket101', function (Blueprint $table) {
                 $table->timestamp('custom_created_at')
                     ->after('created_at')
