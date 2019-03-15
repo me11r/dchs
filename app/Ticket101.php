@@ -938,16 +938,16 @@ class Ticket101 extends BaseModel
         return $value;
     }
 
-    public function setCustomCreatedAtAttribute($value)
-    {
-        if(!$value) {
-            $value = now();
-        }
-        $this->attributes['custom_created_at'] = $value;
-    }
-
-    public function getCreatedAtAttribute()
-    {
-        return $this->custom_created_at ? Carbon::parse($this->custom_created_at) : $this->created_at;
-    }
+//    public function setCustomCreatedAtAttribute($value)
+//    {
+//        if(!$value) {
+//            $value = now();
+//        }
+//        $this->attributes['custom_created_at'] = $value;
+//    }
+//
+//    public function getCreatedAtAttribute()
+//    {
+//        return $this->custom_created_at ? Carbon::parse($this->custom_created_at) : $this->created_at;
+//    }
 }

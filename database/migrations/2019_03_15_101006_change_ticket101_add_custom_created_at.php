@@ -13,12 +13,14 @@ class ChangeTicket101AddCustomCreatedAt extends Migration
      */
     public function up()
     {
-        Schema::table('ticket101', function (Blueprint $table) {
-            $table->timestamp('custom_created_at')
-                ->after('created_at')
-                ->nullable()
-                ->index();
-        });
+        if(!Schema::hasColumn('ticket101')) {
+            Schema::table('ticket101', function (Blueprint $table) {
+                $table->timestamp('custom_created_at')
+                    ->after('created_at')
+                    ->nullable()
+                    ->index();
+            });
+        }
 
         $cards = \App\Ticket101::all();
 
