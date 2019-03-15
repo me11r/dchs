@@ -946,8 +946,8 @@ class Ticket101 extends BaseModel
         $this->attributes['custom_created_at'] = $value;
     }
 
-    public function getCreatedAtAttribute()
-    {
-        return $this->custom_created_at ? Carbon::parse($this->custom_created_at) : $this->created_at;
-    }
+//    public function getCreatedAtAttribute()
+//    {
+//        return $this->custom_created_at ? Carbon::parse($this->custom_created_at) : $this->created_at;
+//    }
 }
