@@ -21,6 +21,7 @@
                     :ref="`${name_}_time`"
                     type="text"
                     @input="$emit('dateChanged',date_)"
+                    :disabled="disabled"
                     :value="date_"
                     v-model="date_">
                 <div

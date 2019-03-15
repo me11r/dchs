@@ -222,8 +222,8 @@
                                     v-for="(item, idx) in summaryFiltered"
                                     :key="`rpt_smm_${idx}`">
 
-                                <td>{{ item.created_at|dateFilter('DD.MM.YYYY') }}</td>
-                                <td>{{ item.created_at|dateFilter('HH:mm') }}</td>
+                                <td>{{ item.custom_created_at|dateFilter('DD.MM.YYYY') }}</td>
+                                <td>{{ item.custom_created_at|dateFilter('HH:mm') }}</td>
                                 <td>{{ item.caller_name }}</td>
                                 <td>{{ item.caller_phone }}</td>
                                 <td>{{ item.city_area ? item.city_area.name : '' }}</td>
