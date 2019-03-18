@@ -13,18 +13,18 @@ class ChangeDictionariesAddCategoryId extends Migration
      */
     public function up()
     {
-        Schema::table('dictionaries', function (Blueprint $table) {
-            $table->unsignedInteger('dictionary_category_id')->after('id')->nullable();
-            $table->foreign('dictionary_category_id')
-                ->references('id')
-                ->on('dictionary_categories')
-                ->onDelete('SET NULL');
-
-            $table->integer('sort_order')->index()->after('id')->nullable()->default(10);
-            $table->string('url')->after('id')->nullable();
-
-            $table->softDeletes()->after('updated_at');
-        });
+//        Schema::table('dictionaries', function (Blueprint $table) {
+//            $table->unsignedInteger('dictionary_category_id')->after('id')->nullable();
+//            $table->foreign('dictionary_category_id')
+//                ->references('id')
+//                ->on('dictionary_categories')
+//                ->onDelete('SET NULL');
+//
+//            $table->integer('sort_order')->index()->after('id')->nullable()->default(10);
+//            $table->string('url')->after('id')->nullable();
+//
+//            $table->softDeletes()->after('updated_at');
+//        });
 
         $dictionaryToRename = \App\Dictionary::name('Нормативно-справочная информация')->first();
         $dictionaryToRename->title = 'События в пути';
