@@ -27,12 +27,17 @@ class ChangeDictionariesAddCategoryId extends Migration
         });
 
         $dictionaryToRename = \App\Dictionary::name('Нормативно-справочная информация')->first();
-        $dictionaryToRename->title = 'События в пути';
-        $dictionaryToRename->save();
+        if($dictionaryToRename) {
+            $dictionaryToRename->title = 'События в пути';
+            $dictionaryToRename->save();
+        }
 
         $dictionaryToRename = \App\Dictionary::name('ЛС - Страший мастер связи')->first();
-        $dictionaryToRename->title = 'ЛС - Старший мастер связи';
-        $dictionaryToRename->save();
+
+        if($dictionaryToRename) {
+            $dictionaryToRename->title = 'ЛС - Старший мастер связи';
+            $dictionaryToRename->save();
+        }
 
         $setCategoryItems = [
             ['category' => '101', 'dict' => 'Объект возгорания'],
