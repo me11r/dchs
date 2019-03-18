@@ -26,13 +26,13 @@ class ChangeDictionariesAddCategoryId extends Migration
 //            $table->softDeletes()->after('updated_at');
 //        });
 
-        $dictionaryToRename = \App\Dictionary::name('Нормативно-справочная информация')->first();
-        $dictionaryToRename->title = 'События в пути';
-        $dictionaryToRename->save();
-
-        $dictionaryToRename = \App\Dictionary::name('ЛС - Страший мастер связи')->first();
-        $dictionaryToRename->title = 'ЛС - Старший мастер связи';
-        $dictionaryToRename->save();
+//        $dictionaryToRename = \App\Dictionary::name('Нормативно-справочная информация')->first();
+//        $dictionaryToRename->title = 'События в пути';
+//        $dictionaryToRename->save();
+//
+//        $dictionaryToRename = \App\Dictionary::name('ЛС - Страший мастер связи')->first();
+//        $dictionaryToRename->title = 'ЛС - Старший мастер связи';
+//        $dictionaryToRename->save();
 
         $setCategoryItems = [
             ['category' => '101', 'dict' => 'Объект возгорания'],
