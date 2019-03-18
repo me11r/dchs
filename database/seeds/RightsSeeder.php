@@ -177,6 +177,8 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ИПЛ "Жалын"', 'name' => 'DICT_ZHALIN'];
         $rights[] = ['right_group_id' => 8, 'title' => 'ЛС - ДСПТ', 'name' => 'DICT_DSPT'];
 
+        $rights[] = ['right_group_id' => 8, 'title' => 'Редактирование сущности справочника', 'name' => 'CAN_ACCESS_DICTIONARY_ENTITY'];
+
         $rights[] = ['right_group_id' => 6, 'title' => 'РГП Казгидромет (заполнение данных)', 'name' => 'KAZGIDROMET_FILLING'];
 
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: редактирование после закрытия', 'name' => 'CARD101_EDIT_CLOSED'];

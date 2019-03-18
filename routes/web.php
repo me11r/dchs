@@ -236,6 +236,12 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
 
     Route::get('/dictionaries', 'DictionaryController@getIndex');
 
+    Route::group(['prefix' => 'dictionaries-entity', 'as' => 'dictionaries-entity.', 'middleware' => ['right:CAN_ACCESS_DICTIONARY_ENTITY']], function () {
+        Route::get('{id}/edit', 'DictionaryEntityController@edit');
+        Route::post('create-edit', 'DictionaryEntityController@createEdit');
+        Route::get('create', 'DictionaryEntityController@create');
+    });
+
     Route::get('/dictionaries/{name}', 'DictionaryController@getIndexByName');
     Route::get('/dictionaries/{name}/create', 'DictionaryController@getEditByName');
     Route::get('/dictionaries/{name}/{id}/edit', 'DictionaryController@getEditByName')->where('dict_id', '[0-9]+');

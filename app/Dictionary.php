@@ -10,6 +10,7 @@ namespace App;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Dictionary
@@ -17,6 +18,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $table
  * @property string $title
+ * @property string $url
+ * @property integer $sort_order
+ * @property integer $dictionary_category_id
  * @property string $model
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -30,7 +34,26 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Dictionary extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'dictionaries';
     protected $guarded = ['id'];
-    protected $fillable = ['name', 'table', 'title', 'model'];
+    protected $fillable = [
+//        'name',
+        'table',
+        'title',
+        'url',
+        'dictionary_category_id',
+        'sort_order',
+        'model'
+    ];
+
+    public function scopeName($q, $search)
+    {
+        return $q->where('title', $search)
+            ->orWhere('table', $search)
+            ->orWhere('model', $search)
+            ;
+    }
+
 }
