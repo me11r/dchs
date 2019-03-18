@@ -1,45 +1,43 @@
 {% extends "layout/html" %}
 {% block content %}
     <div class="container section">
-        <div class="panel">
-            <h4 style="" class="title">Справочники</h4>
+        <h4 style="" class="title">Справочники</h4>
 
-            <table class="table is-narrow is-striped is-hoverable is-selectable">
-                <thead>
-                <tr>
-                    <th>Справочник</th>
-                    <th></th>
-                </tr>
-                </thead>
-                {% for dict in dictionaries %}
+        {% for category in categories %}
+            <div class="panel">
+                <h4 style="" class="title">{{ category.name }}</h4>
+
+                <table class="table is-narrow is-striped is-hoverable is-selectable">
+                    <thead>
                     <tr>
-                        <td><i class="fas fa-list-ol">
-                            </i>&nbsp;{{ dict.title }}</td>
-                        <td><a class="button is-basic is-small" href="{{ url('dictionaries/list/' ~ dict.id) }}">
-                                <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
+                        <th>Справочник</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
+                    </thead>
+                    {% for dict in category.dictionaries if user.hasRight(dict.title) %}
+                        <tr>
+                            <td style="width: 450px;"><i class="fas fa-list-ol">
+                                </i>&nbsp;{{ dict.title }}</td>
+                            <td>
+                                {% if dict.url is not null %}
+                                    <a class="button is-basic is-small" href="{{ dict.url }}">
+                                        <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+                                {% else %}
+                                    <a class="button is-basic is-small" href="{{ url('dictionaries/list/' ~ dict.id) }}">
+                                        <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+                                {% endif %}
 
-                {#доп. справочники, для которых нужны связи, плюшки и кастомные вьюшки#}
-                {% for dict in additional_dicts %}
-                    <tr>
-                        <td><i class="fas fa-list-ol">
-                            </i>&nbsp; {{ dict.title }}</td>
-                        <td><a class="button is-basic is-small" href="{{ dict.href }}">
-                                <i class="fas fa-edit"></i>&nbsp;Редактировать</a></td>
-                    </tr>
-                {% endfor %}
+                                {% if user.hasRight('CAN_ACCESS_DICTIONARY_ENTITY') %}
+                                    <a class="button is-warning is-small" href="/dictionaries-entity/{{ dict.id }}/edit">
+                                        <i class="fas fa-edit"></i></a>
+                                {% endif %}
 
-                <tr>
-                    <td>
-                        <i class="fas fa-list-ol"></i>&nbsp; Группы личного состава</td>
-                    <td>
-                        <a class="button is-basic is-small" href="{{ route('notification-groups.index') }}">
-                            <i class="fas fa-edit"></i> Редактировать
-                        </a>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endfor %}
+
     </div>
 {% endblock content %}

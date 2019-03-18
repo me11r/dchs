@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Aircraft;
 use App\AircraftType;
 use App\Dictionary;
+use App\DictionaryCategory;
 use App\DistrictManager;
 use App\EventInfoArrived;
 use App\FireDepartment;
@@ -570,21 +571,28 @@ class DictionaryController extends AuthorizedController
     {
         $dicts = $this->dictionaries;
 
-        $user = $this->user;
-
-        $additional_dicts = [];
-
-        foreach ($this->additional_dicts as $dict) {
-            if(!$user->isAdmin() && !$user->hasRight($dict['title'])){
-                continue;
-            }
-            else{
-                $additional_dicts[] = $dict;
-            }
+        $categories = DictionaryCategory::orderBy('sort_order')->get();
+        foreach ($categories as $key => $category) {
+            $categories[$key]->dictionaries = $categories[$key]->dictionaries()->orderBy('sort_order')->get();
         }
 
+        $user = $this->user;
+
+//        $additional_dicts = [];
+//
+//        foreach ($this->additional_dicts as $dict) {
+//            if(!$user->isAdmin() && !$user->hasRight($dict['title'])){
+//                continue;
+//            }
+//            else{
+//                $additional_dicts[] = $dict;
+//            }
+//        }
+
         $this->set('dictionaries', $dicts)
-            ->set('additional_dicts', $additional_dicts)
+//            ->set('additional_dicts', $additional_dicts)
+            ->set('user', $user)
+            ->set('categories', $categories)
         ;
     }
 

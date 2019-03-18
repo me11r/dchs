@@ -1,0 +1,47 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ dictionary.id|default(null) ? 'Редактировать' : 'Создать' }} справочник: {{ dictionary.title|default() }}</h4>
+                <form action="/dictionaries-entity/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ dictionary.id|default() }}"/>
+                    <div class="field">
+                        <label for="name">Название</label>
+                        <input required type="text" class="input" name="title" id="title" value="{{ attribute(dictionary, 'title')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Таблица</label>
+                        <input required type="text" class="input" name="table" id="table" value="{{ attribute(dictionary, 'table')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Модель</label>
+                        <input required type="text" class="input" name="model" id="model" value="{{ attribute(dictionary, 'model')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">Порядок сортировки</label>
+                        <input required type="text" class="input" name="sort_order" id="sort_order" value="{{ attribute(dictionary, 'sort_order')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="name">URL</label>
+                        <input type="text" class="input" name="url" id="url" value="{{ attribute(dictionary, 'url')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="category_id">Категория</label>
+                        <select name="dictionary_category_id" id="dictionary_category_id" class="select">
+                            <option value=""></option>
+                            {% for item in dictionary_categories %}
+                                <option {{ item.id == dictionary.dictionary_category_id|default(0) ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
