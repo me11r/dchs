@@ -6,7 +6,7 @@
     <span>{{ item.name }} прибыло в {{ item.arrive_time }};</span>
     {% endfor %}
     </span>
-    <span><b>Ответственный за сбор информации:</b> </span>
+    <span><b>Ответственный за сбор информации: </b>{{ ticket.district_manager ? ticket.district_manager.name : '' }} </span>
     <span><b>Время локализации: </b><span>{{ ticket.loc_time }}</span></span>
 
     <span><b>Время ликвидации: </b><span>{{ ticket.liqv_time }}</span></span>

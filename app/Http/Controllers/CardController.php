@@ -635,6 +635,9 @@ class CardController extends AuthorizedController
             }
             $this->saveArriveTimes($request);
             $this->saveFiles($card, $request);
+
+            $this->setDistrictManager($card, $request);
+
             if ($card->trip_result_id) {
                 $this->saveAnalytics($card);
             }
@@ -655,7 +658,6 @@ class CardController extends AuthorizedController
         }
 
         $this->setEmergencyType($card);
-        $this->setDistrictManager($card, $request);
 
         if ($request->ajax()) {
             return response()->json('ok', 200);
