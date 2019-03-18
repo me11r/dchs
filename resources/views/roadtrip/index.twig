@@ -25,13 +25,13 @@
                 <td class="has-text-right"><a href="{{ url(trip.ticket ? ('/roadtrip/view/' ~ trip.id) : ('/roadtrip/view-other/' ~ trip.id)) }}" class="button is-outlined is-primary"><i class="far fa-address-card"></i>&nbsp;Путевой
                         лист</a></td>
                 {#если роль == Диспетчер ПЧ или юзер == админ#}
-                {% if user.role_id == 3 or user.id == 1 %}
-                <td class="has-text-right">
-                    <a href="{{  url('/roadtrip/additional/' ~ trip.id) }}" class="button is-outlined is-primary">
-                        <i class="far fa-list-alt"></i>
-                        &nbsp;Дополнительно
-                    </a>
-                </td>
+                {% if (user.role_id == 3 or user.id == 1) and (not trip.ticket.drill_type|default(null) and not trip.ticket101_other|default(null)) %}
+                    <td class="has-text-right">
+                        <a href="{{  url('/roadtrip/additional/' ~ trip.id) }}" class="button is-outlined is-primary">
+                            <i class="far fa-list-alt"></i>
+                            &nbsp;Дополнительно
+                        </a>
+                    </td>
                 {% endif %}
             </tr>
         {% else %}
