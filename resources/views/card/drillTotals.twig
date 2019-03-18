@@ -1,4 +1,49 @@
 
+<div class="field">
+    <div data-component="timepicker"
+         data-value="{{ attribute(ticket, 'drill_begin')|default('') }}">
+        <label for="loc_time">Время начала</label>
+        <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
+                      style="max-width: 6rem;" name="drill_begin" :value="value">
+            <div class="field is-grouped" style="justify-content: space-between">
+                <p class="control">
+                    <a class="button is-primary is-small"
+                       @click="()=> {value = new Date(); close();}">
+                        <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                        <span>Сейчас</span>
+                    </a>
+                </p>
+                <p class="control">
+                    <a class="button is-outlined is-small" @click="close()">
+                        <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                    </a>
+                </p>
+            </div>
+        </b-timepicker>
+    </div>
+    <div data-component="timepicker"
+         data-value="{{ attribute(ticket, 'drill_end')|default('') }}">
+        <label for="liqv_time">Время окончания</label>
+        <b-timepicker icon="clock" icon-pack="far" @focus="closeAll()" type="text" v-model="value"
+                      style="max-width: 6rem;" name="drill_end" :value="value">
+            <div class="field is-grouped" style="justify-content: space-between">
+                <p class="control">
+                    <a class="button is-primary is-small"
+                       @click="()=> {value = new Date(); close();}">
+                        <b-icon pack="far" icon="clock"></b-icon>&nbsp;
+                        <span>Сейчас</span>
+                    </a>
+                </p>
+                <p class="control">
+                    <a class="button is-outlined is-small" @click="close()">
+                        <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
+                    </a>
+                </p>
+            </div>
+        </b-timepicker>
+    </div>
+</div>
+
 <div class="control">
     <label for="drill_type_total">
         Тип учения
