@@ -406,13 +406,6 @@ class Report
             foreach ($this->report as $ticket) {
                 if ($ticket->trip_result_id === $trip_result->id) {
 
-                    /*$analytics = Analytics101Item::where('ticket101_id', $ticket->id)
-                        ->where('trip_result_id', $trip_result->id)
-                        ->whereHas('analytics', function ($q) {
-                            $q->whereDate('date', today()->subDay());
-                        })
-                        ->first();*/
-
                     $analytics = $ticket->analytics;
 
                     $firstDeptArrived = $ticket->first_department_arrived();
@@ -472,11 +465,6 @@ class Report
                         'ticket' => $ticket,
                         'service_plans_str' => $service_plans_str,
                     ];
-
-                    /*if ($analytics && !$analytics->text) {
-                        $analytics->text = view('_templates.report101-analytics', $result)->render();
-                        $analytics->save();
-                    }*/
 
                     $result['analytics'] = $analytics->text ?? null;
                     $results[$trip_result->name][] = $result;

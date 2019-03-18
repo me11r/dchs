@@ -5,6 +5,7 @@ namespace App\Services\ReportExport;
 
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
+use App\DrillType;
 use App\FireDepartment;
 use App\FormationPersonsReport;
 use App\FormationReport;
@@ -381,6 +382,76 @@ class DailyWordExport
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
+
+
+        /*учебные выезды [begin]*/
+
+        foreach (DrillType::all() as $key => $drillType) {
+            $ticketsWithDrillType = $this->data['tickets']->where('drill_type_id', $drillType->id);
+            if($ticketsWithDrillType->count()) {
+
+                $counterDepts = 1;
+
+                $section->addText(
+                    "{$drillType->name}:",
+                    $generalBoldUnderlineFontStyle,
+                    ['align' => Jc::BOTH]
+                );
+
+                foreach ($ticketsWithDrillType as $drillTicket) {
+
+                    $drillResults = $drillTicket->results()->whereNotNull('dispatch_time')->get();
+
+                    foreach ($drillResults as $drillResult) {
+                        $textRun = $section->addTextRun(self::$noPaddingPS);
+
+                        $textRun->addText(
+                            ($counterDepts) . '. ' . ($drillResult['department'] ? $drillResult['department']['title'] : '') . ' ',
+                            $generalBoldFontStyle,
+                            ['align' => Jc::BOTH]
+                        );
+
+                        $textRun->addText(
+                            $drillTicket['drill_begin'] . ' - ' . $drillTicket['drill_end'] . ' ',
+                            $simpleFontStyle,
+                            ['align' => Jc::BOTH]
+                        );
+
+                        $textRun->addText(
+                            ($drillTicket['operational_plan'] ? $drillTicket['operational_plan']['name'] : '') .' '.$drillTicket['drill_name_total'].' ',
+                            $simpleFontStyle,
+                            ['align' => Jc::BOTH]
+                        );
+
+                        $textRun->addText(
+                            $drillTicket['owner'],
+                            $simpleFontStyle,
+                            ['align' => Jc::BOTH]
+                        );
+
+                        $counterDepts++;
+                    }
+
+                }
+
+                $section->addText(
+                    '',
+                    $generalBoldFontStyle,
+                    ['align' => Jc::BOTH]
+                );
+
+            }
+
+        }
+
+        /*учебные выезды [end]*/
+
+        $section->addText(
+            '',
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
         $section->addText(
             'Расстановка на ' . $this->data['dates']['from'] . 'г: ' . (count($this->data['arrangementYesterday']) === 0 ? 'нет' : ''),
             $generalBoldUnderlineFontStyle,
@@ -396,7 +467,6 @@ class DailyWordExport
                 ['align' => Jc::BOTH]
             );
             $textRun->addText(
-//                $item['note'],
                 "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]
