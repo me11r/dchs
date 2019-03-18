@@ -13,18 +13,18 @@ class CreateDictionaryCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dictionary_categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name')->index();
-            $table->integer('sort_order')->index()->nullable()->default(10);
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('dictionary_categories')) {
+            Schema::create('dictionary_categories', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name')->index();
+                $table->integer('sort_order')->index()->nullable()->default(10);
+                $table->timestamps();
+            });
 
-        \Illuminate\Support\Facades\Artisan::call('db:seed', [
-            '--class' => DictionaryCategorySeeder::class,
-        ]);
-
-
+            \Illuminate\Support\Facades\Artisan::call('db:seed', [
+                '--class' => DictionaryCategorySeeder::class,
+            ]);
+        }
     }
 
     /**
