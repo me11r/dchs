@@ -362,7 +362,7 @@
                     {% if (previous == false) %}
                         <tr>
                             <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                            <td><b>{{ item.rank == 'vacation' ? 'Трудовой' : 'Декрет' }} - </b>{{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
+                            <td><b>{{ item.inactive_title }} - </b>{{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
                     {% elseif (previous.staff.department.name != item.staff.department.name) or (item.rank != previous.rank) %}
                             </td>
                         </tr>
@@ -372,7 +372,7 @@
                                     {{ previous.staff.department.name == item.staff.department.name ? '' : item.staff.department.name }}
                                 </span>
                             </td>
-                            <td><b>{{ item.rank == 'vacation' ? 'Трудовой' : 'Декрет' }} - </b>{{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
+                            <td><b>{{ item.inactive_title }} - </b>{{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
                     {% else %}
                         , {{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
                     {% endif %}
@@ -487,6 +487,34 @@
                 </persons101-multiselect>
             </p>
         {% endfor %}
+
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">Другие причины:</h3>
+            <table class="table">
+                {% set previous = false %}
+                {% for item in other_reasons %}
+                    {% if (previous == false) %}
+                        <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                    {% elseif (previous.staff.department.name != item.staff.department.name) %}
+                        </td>
+                        </tr>
+                        <tr>
+                        <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
+                        <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                    {% else %}
+                        , {{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                    {% endif %}
+                    {% if (loop.last) %}
+                        </td>
+                        </tr>
+                    {% endif %}
+                    {% set previous = item %}
+                {% endfor %}
+            </table>
+        </div>
+
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Расстановка на {{ report.report_date|date('d-m-Y') }}:</h3>
             <table class="table">

@@ -253,6 +253,8 @@ class Ticket101WordExport
             }
 
             $vacationPpl = $personSummary->formation_person_items()->rank('vacation')->get();
+            $studyPpl = $personSummary->formation_person_items()->rank('study')->get();
+            $other_reasons = $personSummary->formation_person_items()->rank('other')->get();
             $dispatchersPpl = $personSummary->formation_person_items()->rank('dispatchers')->get();
             $sickPpl = $personSummary->formation_person_items()->rank('sick')->get();
             $sickLeavePpl = $personSummary->formation_person_items()->rank('sick_leave')->get();
@@ -290,6 +292,9 @@ class Ticket101WordExport
                 'vacation' => $vacationPpl->map(function ($item) {
                     return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
+                'study' => $studyPpl->map(function ($item) {
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                })->toArray(),
                 'maternity' => $maternityPpl->map(function ($item) {
                     return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
@@ -303,6 +308,9 @@ class Ticket101WordExport
                     return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                })->toArray(),
+                'other_reasons' => $other_reasons->map(function ($item) {
                     return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
 
@@ -433,6 +441,7 @@ class Ticket101WordExport
             'maternity_title' => '',
             'sick' => 'Больничный: ',
             'business_trip' => 'Командировка: ',
+            'other_reasons' => 'Другие причины: ',
             'crb' => 'ЦРБ: ',
             'gdzs_base' => 'База ГДЗС: ',
             'doctor' => 'Врач: ',
@@ -512,7 +521,7 @@ class Ticket101WordExport
                 }
 
                 foreach ($people as $fireDept => $persons) {
-                    if ((isset($persons[$sectionName]) && count($persons[$sectionName])) || ($sectionName == 'vacation' && count($persons['maternity']))) {
+                    if ((isset($persons[$sectionName]) && count($persons[$sectionName])) || ($sectionName == 'vacation' && (count($persons['maternity']) || count($persons['study'])) )) {
 
                         $peopleByComma = count($persons[$sectionName]) ? implode(', ', array_unique($persons[$sectionName])) : '-';
 
@@ -531,6 +540,12 @@ class Ticket101WordExport
                         if ($sectionName == 'vacation') {
                             if (count($persons['vacation'])) {
                                 $prefix = 'Трудовой-';
+                                $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
+                                $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
+                            }
+                            if (count($persons['study'])) {
+                                $prefix = 'Учебный-';
+                                $textRun = $section->addTextRun(['indentation' => ['left' => 1430]]);
                                 $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
                                 $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
                             }
