@@ -261,6 +261,7 @@ class CardController extends AuthorizedController
                 'chronologies.event_info_arrived',
                 'chronologies.fire_department_result.tech',
                 'chronologies.fire_department_result.department',
+                'chronologies.hq_ride',
                 'chronologiesFromFd',
                 'chronologiesFromFd.event_info',
                 'chronologiesFromFd.event_info_arrived',
