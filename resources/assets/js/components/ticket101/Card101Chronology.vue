@@ -35,7 +35,6 @@
                                         <i class="fa fa-plus"></i>&nbsp;Добавить
                                     </button>
                                 </div>
-
                             </td>
                             <td>
                                 <div
@@ -128,15 +127,105 @@
                             <td>{{ dept.name }}</td>
                             <td>{{ dept.department }}</td>
                             <td>
+                                <input type="number"
+                                       v-model="dept.staff_count"
+                                       @change="changeStaffCount(dept, true)"
+                                       class="input">
+                            </td>
+                            <td>
                                 <div class="add_button">
                                     <button
                                         class="button is-small is-outlined is-success"
                                         type="button"
-                                        @click.prevent="createNewItemOnWay(dept)">
+                                        @click.prevent="createNewItemOnWay(dept, dept.id)">
                                         <i class="fa fa-plus"></i>&nbsp;Добавить
                                     </button>
                                 </div>
 
+                            </td>
+                            <td>
+                                <div
+                                        class="columns"
+                                        v-for="item in records_onway"
+                                        v-if="item.hq"
+                                        :key="`hq_onway_${item.id}`">
+                                    <div class="column">
+                                        <input
+                                                type="hidden"
+                                                v-model="item.id"
+                                        >
+                                    </div>
+
+                                    <div class="column">
+                                        <label>ПЧ</label>
+                                        <input
+                                                disabled
+                                                class="input"
+                                                type="text"
+                                                :value="`${item.fire_department_result.name}`"
+                                        >
+                                    </div>
+                                    <div class="column">
+                                        <label>Время</label>
+                                        <timepicker
+                                                :inputdate="item.time"
+                                                v-model="item.time"
+                                                @timeChanged="item.time = $event"
+                                                :value="item.time"
+                                        />
+                                    </div>
+
+                                    <div class="column">
+                                        <label>Ситуация</label>
+                                        <div class="select">
+                                            <select
+                                                    required
+                                                    title="Ситуация"
+                                                    v-model="item.event_info_id">
+                                                <option
+                                                        v-for="e in eventInfo_"
+                                                        :key="'event_' + e.id"
+                                                        :value="e.id">{{ e.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="column">
+                                        <label>Информация</label>
+                                        <textarea
+                                                v-model="item.information"
+                                                :id="'on_way['+item.id+'][information]'"
+                                                class="textarea"
+                                                cols="1"
+                                                rows="1"></textarea>
+                                    </div>
+
+                                    <div class="column">
+
+                                        <div class="control is-narrow">
+                                            <button
+                                                    class="button is-small is-outlined is-success square-button-36"
+                                                    @click.prevent="addToTableOnWay(item)"
+                                                    type="button"
+                                                    title="Добавить">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <br>
+                                        <div class="control is-narrow">
+                                            <button
+                                                    class="button is-small is-outlined is-danger square-button-36"
+                                                    @click.prevent="removeItemOnWay(item.id)"
+                                                    type="button"
+                                                    title="Удалить">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -313,14 +402,20 @@
                             <td>{{ dept.name }}</td>
                             <td>{{ dept.department }}</td>
                             <td>
-                                <div class="add_button">
-                                    <button
-                                        class="button is-small is-outlined is-success"
-                                        type="button"
-                                        @click.prevent="createNewItemOnWay(dept)">
-                                        <i class="fa fa-plus"></i>&nbsp;Добавить
-                                    </button>
-                                </div>
+                                <input type="number"
+                                       v-model="dept.distance"
+                                       @change="changeDistanceCount(dept, true)"
+                                       class="input">
+                            </td>
+                            <td>
+                                <!--<div class="add_button">-->
+                                    <!--<button-->
+                                        <!--class="button is-small is-outlined is-success"-->
+                                        <!--type="button"-->
+                                        <!--@click.prevent="createNewItemOnWay(dept)">-->
+                                        <!--<i class="fa fa-plus"></i>&nbsp;Добавить-->
+                                    <!--</button>-->
+                                <!--</div>-->
 
                             </td>
                         </tr>
@@ -421,35 +516,6 @@
                                 <p v-else>{{ record.information }}</p>
                             </td>
                             <td>
-                                <!--<div class="control is-narrow">-->
-                                <!--<button-->
-                                <!--class="button is-small is-outlined is-danger square-button-36"-->
-                                <!--@click.prevent="removeItemFromTable(record.id)"-->
-                                <!--type="button"-->
-                                <!--title="Удалить">-->
-                                <!--<i class="fa fa-trash"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
-                                <!--<div class="control is-narrow">-->
-                                <!--<button-->
-                                <!--class="button is-small is-outlined is-info square-button-36"-->
-                                <!--@click.prevent="editData(record.id)"-->
-                                <!--type="button"-->
-                                <!--title="Удалить">-->
-                                <!--<i class="fa fa-pen"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
-                                <!--<div-->
-                                <!--v-if="canEdit(record.id) === true"-->
-                                <!--class="control is-narrow">-->
-                                <!--<button-->
-                                <!--class="button is-small is-outlined is-success square-button-36"-->
-                                <!--@click.prevent="updateItem(record)"-->
-                                <!--type="button"-->
-                                <!--title="Обновить">-->
-                                <!--<i class="fa fa-anchor"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
                                 <div
                                     class="control is-narrow">
                                     <button
@@ -497,8 +563,8 @@
                     <tr
                         v-for="record in tableRecords"
                         :key="record.id">
-                        <td>{{ record.fire_department_result.department.title }}</td>
-                        <td>{{ record.fire_department_result.tech.department }}</td>
+                        <td>{{ record.fire_department_result ? record.fire_department_result.department.title : record.hq_ride.name }}</td>
+                        <td>{{ record.fire_department_result ? record.fire_department_result.tech.department : '' }}</td>
                         <td><input
                                 v-if="canEdit(record.id) === true"
                                 class="input"
@@ -697,24 +763,25 @@ export default {
                 return false;
             }
         },
-        changeStaffCount(dept) {
+        changeStaffCount(dept, isHq) {
+            let hq = isHq !== undefined;
             document.getElementById('total_staff_count').value = '';
             axios.post('/api/101card/update-fire-department-result', {
                 id: dept.id,
+                hq: hq,
                 staff_count: dept.staff_count,
             });
         },
-        changeDistanceCount(dept) {
+        changeDistanceCount(dept, isHq) {
+            let hq = isHq !== undefined;
+
             axios.post('/api/101card/update-fire-department-result-distance', {
                 id: dept.id,
                 distance: dept.distance,
+                hq: hq,
             });
         },
-        createNewItemOnWay(dept) {
-            let token = document.head.querySelector('meta[name="csrf-token"]');
-            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-            let card_data = window.ticket101add;
+        createNewItemOnWay(dept, hq) {
 
             axios.post('/api/101card/update-fire-department-result', {
                 id: dept.id,
@@ -726,6 +793,7 @@ export default {
                 time: '00:00',
                 information: '',
                 event_info_id: 1,
+                hq: hq,
                 fire_department_result: dept,
                 editable: false,
                 event_info: {
@@ -734,10 +802,6 @@ export default {
             });
         },
         createNewItemArrived(dept, gdzs) {
-            /*let token = document.head.querySelector('meta[name="csrf-token"]');
-            axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-            let card_data = window.ticket101add;*/
 
             this.records_arrived.push({
                 id: moment().valueOf(),

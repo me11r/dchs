@@ -49,11 +49,17 @@ class Chronology101 extends Model
         'event_info_arrived_id',
         'quantity',
         'water_delivery_distance',
+        'hq_ride_id',
     ];
 
     public function ticket101()
     {
         return $this->belongsTo(Ticket101::class, 'ticket101_id');
+    }
+
+    public function hq_ride()
+    {
+        return $this->belongsTo(Ticket101HqRide::class, 'hq_ride_id');
     }
 
     public function event_info()
