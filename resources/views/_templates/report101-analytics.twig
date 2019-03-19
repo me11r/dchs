@@ -3,7 +3,7 @@
     <span><b style="text-decoration: underline; font-style: italic;">{{ pre_information }} S={{ square_max }} м2</b></span>
     <span><b>На место прибыли: </b> {% for item in deptsArrived %}<span>{{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }} ({{ item.arrive_time_minutes ? item.arrive_time_minutes ~ ' мин., ' : '' }}{{ item.distance ? item.distance ~ ' км, ' : '' }}{{ item.staff_count ? item.staff_count ~ ' человек л/с, ' : '' }}{{ item.chronology_on_way_string }});</span>{% endfor %}
     {% for item in deptsArrivedHq %}
-    <span>{{ item.name }} прибыло в {{ item.arrive_time }};</span>
+    <span>{{ item.name }} прибыло в {{ item.arrive_time }}; лс: {{ item.staff_count }}; расстояние до места: {{ item.distance }}</span>
     {% endfor %}
     </span>
     <span><b>Ответственный за сбор информации: </b>{{ ticket.district_manager ? ticket.district_manager.name : '' }} </span>
