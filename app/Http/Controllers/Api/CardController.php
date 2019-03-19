@@ -151,8 +151,8 @@ class CardController extends Controller
                 'water_delivery_distance' => $request->input('record.water_delivery_distance', null),
                 'information' => $request->input('record.information', null),
                 'event_info_id' => $request->input('record.event_info_id', null),
-                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
-
+                'fire_department_result_id' => $request->input('record.hq', null) ? null : $request->input('record.fire_department_result.id'),
+                'hq_ride_id' => $request->input('record.hq', null),
                 'working_time' => $request->input('record.working_time', null),
                 'quantity' => $request->input('record.quantity', null),
                 'event_info_arrived_id' => $eventInfoArrived->id ?? null,
@@ -160,6 +160,7 @@ class CardController extends Controller
 
             $resp = Chronology101::with([
                 'event_info',
+                'hq_ride',
                 'event_info_arrived',
                 'fire_department_result.tech',
                 'fire_department_result.department',])
@@ -460,7 +461,13 @@ class CardController extends Controller
 
     public function postUpdateFireDepartmentResult(Request $request)
     {
-        $fireDeptResult = FireDepartmentResult::find($request->id);
+        if ($request->hq) {
+            $fireDeptResult = Ticket101HqRide::find($request->id);
+        }
+        else {
+            $fireDeptResult = FireDepartmentResult::find($request->id);
+        }
+
         if($fireDeptResult) {
             $fireDeptResult->staff_count = $request->staff_count;
             $fireDeptResult->save();
@@ -478,7 +485,13 @@ class CardController extends Controller
 
     public function postUpdateFireDepartmentResultDistance(Request $request)
     {
-        $fireDeptResult = FireDepartmentResult::find($request->id);
+        if ($request->hq) {
+            $fireDeptResult = Ticket101HqRide::find($request->id);
+        }
+        else {
+            $fireDeptResult = FireDepartmentResult::find($request->id);
+        }
+
         if($fireDeptResult) {
             $fireDeptResult->distance = $request->distance;
             $fireDeptResult->save();
