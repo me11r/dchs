@@ -744,7 +744,10 @@ class FormationController extends AuthorizedController
         $dispatchers = FormationPersonsItem::byRankAndForm('dispatchers', $form_id)->get()->sortBy(function ($q){
             return $q->staff->department_id;
         });
-        $vacation = FormationPersonsItem::byRanksAndForm(['vacation', 'maternity'], $form_id)->get()->sortBy(function ($q){
+        $vacation = FormationPersonsItem::byRanksAndForm(['vacation', 'maternity','study'], $form_id)->get()->sortBy(function ($q){
+            return $q->staff->department_id;
+        });
+        $other_reasons = FormationPersonsItem::byRanksAndForm(['other'], $form_id)->get()->sortBy(function ($q){
             return $q->staff->department_id;
         });
         $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
@@ -944,6 +947,7 @@ class FormationController extends AuthorizedController
             ->set('sick_leave', $sick_leave)
             ->set('guard_numbers', GuardNumber::all())
             ->set('business_trip', $business_trip)
+            ->set('other_reasons', $other_reasons)
             ->set('inactive_tech', $inactive_tech)
             ->set('inactive_tech_cnt', $inactive_tech_cnt)
             ->set('canEditOd', Auth::user()->hasRight('CAN_EDIT_OD_FORMATION'))

@@ -99,4 +99,21 @@ class FormationPersonsItem extends Model
             $q->where('form_id', $form_id);
         })->whereIn('rank', $rank);
     }
+
+    //@attribute
+    //inactive_title
+    public function getInactiveTitleAttribute()
+    {
+        if ($this->rank === 'vacation') {
+            return 'Трудовой';
+        }
+        elseif ($this->rank === 'maternity') {
+            return 'Декрет';
+        }
+        elseif ($this->rank === 'study') {
+            return 'Учебный';
+        }
+
+        return '';
+    }
 }
