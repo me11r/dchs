@@ -46,31 +46,44 @@ import PopupNotifier from './ui/PopupNotifier';
 import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
 import {globalBus} from './scripts/global-bus';
+import EditPolygonMapScreen from './views/polygons/EditPolygonMapScreen';
+
+import Echo from 'laravel-echo';
+
 window.globalBus = new Vue({ });
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
+window.io = require('socket.io-client');
+
+window.Echo = new Echo({
+    broadcaster: 'socket.io',
+    host: window.location.hostname + ':6001'
+});
+
 Object.defineProperty(Array.prototype, 'chunk', {
     value: function(chunkSize) {
         var R = [];
-        for (var i = 0; i < this.length; i += chunkSize)
-            R.push(this.slice(i, i + chunkSize));
+        for (var i = 0; i < this.length; i += chunkSize) { R.push(this.slice(i, i + chunkSize)); }
         return R;
-    }
+    },
+    configurable: true
 });
 
 Object.defineProperty(Array.prototype, 'inArray', {
     value: function(key) {
         return this.indexOf(key) !== -1;
-    }
+    },
+    configurable: true
 });
 
 Object.defineProperty(Array.prototype, 'clone', {
     value: function() {
         return JSON.parse(JSON.stringify(this));
-    }
+    },
+    configurable: true
 });
 
 Vue.filter('dateFilter', VueDateFilter);
@@ -193,6 +206,12 @@ if (document.getElementById(roadTripViewYandexMapBlockId)) {
 const commonMapScreenBlockId = 'common-map-screen-block';
 window.initCommonMapScreen = () => {
     new Vue({el: '#' + commonMapScreenBlockId, render: h => h(CommonMapScreen)});
+};
+
+// Карта для редактирвоания границ микроучастков
+const editPolygonsMapScreenBlockId = 'edit-polygons-map-screen-block';
+window.initPolygonsMapScreenBlock = () => {
+    new Vue({el: '#' + editPolygonsMapScreenBlockId, render: h => h(EditPolygonMapScreen)});
 };
 
 // 101 карточка
@@ -336,3 +355,12 @@ if (document.getElementById('fire-department-data')) {
 
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');
+
+window.addEventListener('load', () => {
+    console.log('ready to listen vor events');
+    window.Echo.channel('Reports')
+        .listen('ReportUpdated', (e) => {
+            console.log('Event on reports channel', e);
+            alert('ololo report updated on server');
+        });
+});

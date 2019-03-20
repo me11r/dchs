@@ -33,6 +33,9 @@ services:
       DB_USERNAME: emergency
       DB_PASSWORD: emergency
       DB_DATABASE: emergency
+      BROADCAST_DRIVER: redis
+      REDIS_HOST: app-redis
+      REDIS_PORT: 6379
 
   app-db:
     image: mysql:5.7
@@ -40,7 +43,8 @@ services:
     ports:
       - "33306:3306"
     volumes:
-      - ./database/dumps/emergency-25-12-2018.sql.gz:/docker-entrypoint-initdb.d/init.sql.gz
+      - ./database/dumps/emergency-20-03-2019.sql.gz:/docker-entrypoint-initdb.d/01-init.sql.gz
+      - ./database/dumps/report_cache_structure.sql:/docker-entrypoint-initdb.d/02-report-cache-structure.sql.gz
       - app-db-data:/var/lib/mysql
     networks:
       - app-network
@@ -49,6 +53,43 @@ services:
       MYSQL_PASSWORD: emergency
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: emergency
+
+  app-queue:
+    image: ogorbunov/php:7.2-fpm-mysql
+    volumes:
+      - ./:/current
+    networks:
+      - app-network
+    environment:
+      APP_ENV: local
+      APP_DEBUG: 1
+      APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
+      DB_CONNECTION: mysql
+      DB_HOST: app-db
+      DB_PORT: 3306
+      DB_USERNAME: emergency
+      DB_PASSWORD: emergency
+      DB_DATABASE: emergency
+      BROADCAST_DRIVER: redis
+      REDIS_HOST: app-redis
+      REDIS_PORT: 6379
+    command: php /current/artisan queue:work
+
+  app-redis:
+    image: redis:latest
+    networks:
+      - app-network
+
+  app-broadcast:
+    image: node:10
+    networks:
+      - app-network
+    volumes:
+      - ./echo-server:/app
+    ports:
+      - 6001:6001
+    working_dir: /app
+    command: ./start.sh
 
 volumes:
   app-db-data:
