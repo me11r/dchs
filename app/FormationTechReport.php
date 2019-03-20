@@ -180,8 +180,10 @@ class FormationTechReport extends Model
     protected $table = 'formation_tech_report';
     protected $guarded = ['id'];
     protected $appends = [
-        'foamer_in_stock_reserved'
+        'foamer_in_stock_reserved',
+        'dvr',
     ];
+
     protected $fillable = [
         'form_id',
         'dept_id',
@@ -228,6 +230,26 @@ class FormationTechReport extends Model
     public function getAsvDaskAttribute()
     {
         return "$this->asv/$this->dask";
+    }
+
+    //dvr
+    public function getDvrAttribute()
+    {
+        $action = $this->formation_tech_items()
+            ->status('action')
+            ->dvr(true)
+            ->count();
+
+        $reserve = $this->formation_tech_items()
+            ->status('reserve')
+            ->dvr(true)
+            ->count();
+
+        $broken = $this->formation_tech_items()
+            ->dvr(false)
+            ->count();
+
+        return "{$action}/{$reserve}/{$broken}";
     }
 
     public function getFoamerInStockReservedAttribute()

@@ -59,6 +59,10 @@ class FormationService
             $sumArray['tech']['asv_dask'] = $report->sumTechTwo('asv','dask');
         }
 
+        if($report) {
+            $sumArray['tech']['dvr'] = $report->sumDvr();
+        }
+
         return $sumArray;
     }
 }
