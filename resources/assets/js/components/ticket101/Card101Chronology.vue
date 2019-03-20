@@ -122,8 +122,8 @@
                             </td>
                         </tr>
                         <tr
-                            v-for="dept in departmentsHq_"
-                            :key="`dept_hq__idx__${dept.id}`">
+                            v-for="dept, key in departmentsHq_"
+                            :key="`dept_hq__idx__${dept.id} ${key}`">
                             <td>{{ dept.name }}</td>
                             <td>{{ dept.department }}</td>
                             <td>
