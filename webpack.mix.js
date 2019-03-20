@@ -3,6 +3,7 @@ let mix = require('laravel-mix');
 mix
     .sass('resources/assets/sass/app.scss', 'public/assets/app.css')
     .js('resources/assets/js/app.js', 'public/assets/app.js')
+    .copy('resources/fonts', 'public/fonts')
     .copy('resources/static', 'public/assets');
 
 mix.webpackConfig({
