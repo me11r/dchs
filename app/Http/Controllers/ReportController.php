@@ -287,6 +287,16 @@ class ReportController extends AuthorizedController
             $inactive = OperDutyShiftStaffItem::getStat($staff_id, $date_begin, $date_end, 'inactive');
         }
 
+        if ($request->ogId) {
+            $result['ogCount'] = OperDutyShiftStaffItem::where('shift_id', $request->ogId)
+                ->whereBetween('date',[$date_begin, $date_end])
+                ->count();
+            ;
+        }
+        else {
+            $result['ogCount'] = null;
+        }
+
 
         $result['active'] = $active->get();
         $result['inactive'] = (clone $inactive)->get();
