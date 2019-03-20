@@ -209,6 +209,8 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
             ->where('ticket_id', '[0-9]+')
             ->where('departments', '[0-9]+');
 
+        Route::post('/retreat-hq', 'RoadtripController@postRetreatHq');
+
         Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
         Route::post('other/send-all/{ticket_id}', 'RoadtripController@postSendAllOther');
         Route::post('other/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@postSendOther');
