@@ -269,6 +269,7 @@
                         <th>Подразделение</th>
                         <th>Время выезда</th>
                         <th>Время прибытия</th>
+                        <th>Время отбоя</th>
                         <th>Время возвращения</th>
                         <th>Отправка</th>
                         <th>Время оповещения</th>
@@ -282,9 +283,9 @@
                             <!--{#Время выезда#}-->
                             <td>
                                 <b-timepicker style="max-width: 6rem;"
+                                      :name="`hq[out_time][${hq_dept.name}][]`"
                                         v-model="hq_dept.out_time"
                                         editable
-                                        :name="`hq[out_time][${hq_dept.name}][]`"
                                 >
                                     <div class="field is-grouped" style="justify-content: space-between">
                                         <p class="control">
@@ -294,14 +295,9 @@
                                                 <span>Сейчас</span>
                                             </a>
                                         </p>
-                                        <!--todo: как закрыть виджет?-->
-                                        <!--<p class="control">
-                                            <a class="button is-outlined is-small" @click.prevent="close($event, $refs)">
-                                                <i class="fas fa-check"></i>&nbsp;<span>Принять</span>
-                                            </a>
-                                        </p>-->
                                     </div>
                                 </b-timepicker>
+
                             </td>
 
                             <!--{#Время прибытия#}-->
@@ -315,6 +311,25 @@
                                         <p class="control">
                                             <a class="button is-primary is-small"
                                                @click="()=> {hq_dept.arrive_time = new Date();}">
+                                                <b-icon pack="far" icon="clock"></b-icon>
+                                                <span>Сейчас</span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </b-timepicker>
+                            </td>
+
+                            <!--{#Время отбоя#}-->
+                            <td>
+                                <b-timepicker style="max-width: 6rem;"
+                                              editable
+                                              v-model="hq_dept.retreat_time"
+                                              :name="`hq[retreat_time][${hq_dept.name}][]`"
+                                >
+                                    <div class="field is-grouped" style="justify-content: space-between">
+                                        <p class="control">
+                                            <a class="button is-primary is-small"
+                                               @click="()=> {hq_dept.retreat_time = new Date();}">
                                                 <b-icon pack="far" icon="clock"></b-icon>
                                                 <span>Сейчас</span>
                                             </a>
@@ -348,6 +363,11 @@
                                     @click.prevent="sendHqDept(hq_dept)"
                                    class="button is-primary is-outlined">
                                     <i class="fas fa-bus"></i>&nbsp;Выслать
+                                </a>
+                                <a v-else-if="!hq_dept.retreated"
+                                    @click.prevent="retreatHqDept(hq_dept)"
+                                   class="button is-danger is-outlined">
+                                    <i class="fas fa-times"></i>&nbsp;Отбой
                                 </a>
                             </td>
 
@@ -384,10 +404,12 @@
     import moment from 'moment';
     import _ from 'lodash';
     import {globalBus} from '../../scripts/global-bus';
+    import Timepicker from '../../components/Timepicker';
 
     export default {
         name: "Card101Truck",
         components: {
+            Timepicker
         },
         props: {
             departments: {
@@ -543,6 +565,21 @@
                 });
             },
 
+            retreatHqDept(hq) {
+
+                let props = {
+                    force: true,
+                    id: hq.id
+                };
+
+                axios.post('/roadtrip/retreat-hq', props).then((response) => {
+                    hq.retreat_time = this.formatTime(moment().format('HH:mm'));
+                    hq.retreated = true;
+                }).catch((e) => {
+                    console.dir(e);
+                });
+            },
+
             selectToSend(event, id) {
                 let recommended = event.target.checked;
 
@@ -637,9 +674,39 @@
 
                 if(hq.length === 0) {
                     hq = [
-                        {name: 'ДСПТ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: '',dispatched: false},
-                        {name: 'КШМ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: '',dispatched: false},
-                        {name: 'ИПЛ', accept_time: '',out_time: '',arrive_time: '',ret_time: '',dispatch_time: '',department: '',dispatched: false}
+                        {
+                            name: 'ДСПТ',
+                            accept_time: '',
+                            out_time: '',
+                            arrive_time: '',
+                            ret_time: '',
+                            retreat_time: '',
+                            dispatch_time: '',
+                            department: '',
+                            dispatched: false,
+                        },
+                        {
+                            name: 'КШМ',
+                            accept_time: '',
+                            out_time: '',
+                            arrive_time: '',
+                            ret_time: '',
+                            retreat_time: '',
+                            dispatch_time: '',
+                            department: '',
+                            dispatched: false,
+                        },
+                        {
+                            name: 'ИПЛ',
+                            accept_time: '',
+                            out_time: '',
+                            arrive_time: '',
+                            ret_time: '',
+                            retreat_time: '',
+                            dispatch_time: '',
+                            department: '',
+                            dispatched: false,
+                        },
                     ];
                 }
 
@@ -649,9 +716,20 @@
                     item.arrive_time = this.formatTime(item.arrive_time);
                     item.ret_time = this.formatTime(item.ret_time);
                     item.dispatch_time = this.formatTime(item.dispatch_time);
+                    item.retreat_time = this.formatTime(item.retreat_time);
                 });
 
                 return hq;
+            },
+            isHQRetreated(hq) {
+                if (moment(hq.retreat_time).format('HH:mm') !== '00:00') {
+                    return true;
+                }
+
+                return false;
+            },
+            formatFinal(time) {
+                return moment(time).format('HH:mm');
             }
         },
         computed: {

@@ -27,6 +27,7 @@ use App\OperationalCard;
 use App\RoadtripPlan;
 use App\RoadtripSubscription;
 use App\Ticket101;
+use App\Ticket101HqRide;
 use App\Ticket101InfoFromFd;
 use App\Ticket101Other;
 use App\TrunkType;
@@ -273,6 +274,26 @@ class RoadtripController extends AuthorizedController
         if($request->ajax()){
             return response()->json($data);
         }
+    }
+
+    /*retreat HQ dept from 101 card view*/
+    public function postRetreatHq(Request $request)
+    {
+        //признак того, что мы отзываем отделение из вкладки "Высылка" или "Хронология"
+        $force = $request->force;
+        $hqRideId = $request->id;
+
+        $result = Ticket101HqRide::find($hqRideId);
+
+        if($result) {
+
+            $result->retreat_time = now()->format('H:i');
+            $result->save();
+        }
+
+
+
+        return response()->json([]);
     }
 
     //отправить отделение (прочие выезды)
