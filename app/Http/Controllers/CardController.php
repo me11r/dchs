@@ -517,6 +517,21 @@ class CardController extends AuthorizedController
         if($data){
             foreach ($data as $fieldName => $departments) {
                 foreach ($departments as $deptName => $inputName) {
+
+                    $times = [
+                        'accept_time' => null,
+                        'out_time' => null,
+                        'arrive_time' => null,
+                        'ret_time' => null,
+                        'dispatch_time' => null,
+                        'retreat_time' => null,
+                    ];
+
+                    foreach ($times as $key => $time) {
+                        $times[$key] = $request->input("hq.{$key}.{$deptName}.0", null) ? Carbon::parse($request->input("hq.{$key}.{$deptName}.0", null))->format('H:i') : null;
+                    }
+
+
                     Ticket101HqRide::updateOrCreate([
                         'name' => $deptName,
                         'ticket101_id' => $card->id,
@@ -524,11 +539,20 @@ class CardController extends AuthorizedController
                         'ticket101_id' => $card->id,
                         'name' => $deptName,
                         'department' => $request->input("hq.dept.{$deptName}.0", null),
-                        'accept_time' => $request->input("hq.accept_time.{$deptName}.0", null),
-                        'out_time' => $request->input("hq.out_time.{$deptName}.0", null),
-                        'arrive_time' => $request->input("hq.arrive_time.{$deptName}.0", null),
-                        'ret_time' => $request->input("hq.ret_time.{$deptName}.0", null),
-                        'dispatch_time' => $request->input("hq.dispatch_time.{$deptName}.0", null),
+
+                        'accept_time' => $times['accept_time'],
+                        'out_time' => $times['out_time'],
+                        'arrive_time' => $times['arrive_time'],
+                        'ret_time' => $times['ret_time'],
+                        'dispatch_time' => $times['dispatch_time'],
+                        'retreat_time' => $times['retreat_time'],
+
+//                        'accept_time' => $request->input("hq.accept_time.{$deptName}.0", null),
+//                        'out_time' => $request->input("hq.out_time.{$deptName}.0", null),
+//                        'arrive_time' => $request->input("hq.arrive_time.{$deptName}.0", null),
+//                        'ret_time' => $request->input("hq.ret_time.{$deptName}.0", null),
+//                        'dispatch_time' => $request->input("hq.dispatch_time.{$deptName}.0", null),
+//                        'retreat_time' => $request->input("hq.retreat_time.{$deptName}.0", null),
                     ]);
                 }
             }
