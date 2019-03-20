@@ -64,8 +64,7 @@ window.Echo = new Echo({
 Object.defineProperty(Array.prototype, 'chunk', {
     value: function(chunkSize) {
         var R = [];
-        for (var i = 0; i < this.length; i += chunkSize)
-            R.push(this.slice(i, i + chunkSize));
+        for (var i = 0; i < this.length; i += chunkSize) { R.push(this.slice(i, i + chunkSize)); }
         return R;
     }
 });
@@ -346,7 +345,11 @@ if (document.getElementById('fire-department-data')) {
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');
 
-Echo.channel('Reports')
-    .listen('ReportUpdated', (e) => {
-        console.log('Event on reports channel', e);
-    });
+window.addEventListener('load', () => {
+    console.log('ready to listen vor events');
+    window.Echo.channel('Reports')
+        .listen('ReportUpdated', (e) => {
+            console.log('Event on reports channel', e);
+            alert('ololo report updated on server');
+        });
+});

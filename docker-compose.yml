@@ -80,6 +80,16 @@ services:
     networks:
       - app-network
 
+  app-broadcast:
+    image: node:10
+    networks:
+      - app-network
+    volumes:
+      - ./echo-server:/app
+    ports:
+      - 6001:6001
+    working_dir: /app
+    command: ./start.sh
 
 volumes:
   app-db-data:
