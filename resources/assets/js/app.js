@@ -46,11 +46,20 @@ import PopupNotifier from './ui/PopupNotifier';
 import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
 import {globalBus} from './scripts/global-bus';
-window.globalBus = new Vue({ });
+import Echo from 'laravel-echo';
+
+window.globalBus = globalBus;
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
+
+window.io = require('socket.io-client');
+
+window.Echo = new Echo({
+    broadcaster: 'socket.io',
+    host: window.location.hostname + ':6001'
+});
 
 Object.defineProperty(Array.prototype, 'chunk', {
     value: function(chunkSize) {
@@ -336,3 +345,8 @@ if (document.getElementById('fire-department-data')) {
 
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');
+
+Echo.channel('Reports')
+    .listen('ReportUpdated', (e) => {
+        console.log('Event on reports channel', e);
+    });
