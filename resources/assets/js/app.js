@@ -46,9 +46,11 @@ import PopupNotifier from './ui/PopupNotifier';
 import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
 import {globalBus} from './scripts/global-bus';
+import EditPolygonMapScreen from './views/polygons/EditPolygonMapScreen';
+
 import Echo from 'laravel-echo';
 
-window.globalBus = globalBus;
+window.globalBus = new Vue({ });
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -66,19 +68,22 @@ Object.defineProperty(Array.prototype, 'chunk', {
         var R = [];
         for (var i = 0; i < this.length; i += chunkSize) { R.push(this.slice(i, i + chunkSize)); }
         return R;
-    }
+    },
+    configurable: true
 });
 
 Object.defineProperty(Array.prototype, 'inArray', {
     value: function(key) {
         return this.indexOf(key) !== -1;
-    }
+    },
+    configurable: true
 });
 
 Object.defineProperty(Array.prototype, 'clone', {
     value: function() {
         return JSON.parse(JSON.stringify(this));
-    }
+    },
+    configurable: true
 });
 
 Vue.filter('dateFilter', VueDateFilter);
@@ -201,6 +206,12 @@ if (document.getElementById(roadTripViewYandexMapBlockId)) {
 const commonMapScreenBlockId = 'common-map-screen-block';
 window.initCommonMapScreen = () => {
     new Vue({el: '#' + commonMapScreenBlockId, render: h => h(CommonMapScreen)});
+};
+
+// Карта для редактирвоания границ микроучастков
+const editPolygonsMapScreenBlockId = 'edit-polygons-map-screen-block';
+window.initPolygonsMapScreenBlock = () => {
+    new Vue({el: '#' + editPolygonsMapScreenBlockId, render: h => h(EditPolygonMapScreen)});
 };
 
 // 101 карточка

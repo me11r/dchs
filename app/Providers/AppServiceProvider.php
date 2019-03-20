@@ -21,6 +21,7 @@ use App\Observers\FormationTechReportObserver;
 use App\Observers\MorainicLakeReportObserver;
 use App\Observers\QuakeObserver;
 use App\Observers\WeatherObserver;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Request $request)
     {
         EmergencySituation::observe(EmergencySituationObserver::class);
         FormationReport::observe(FormationReportObserver::class);
@@ -44,6 +45,8 @@ class AppServiceProvider extends ServiceProvider
         AirRescueReport::observe(AirRescueReportObserver::class);
 
         Paginator::defaultView('pagination::default');
+
+        view()->share('protocol', $request->isSecure() ? 'https' : 'http');
     }
 
     /**

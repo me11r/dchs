@@ -443,7 +443,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
 
     Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
     Route::post('increment-map-request', 'AjaxController@incrementMapRequest');
-
+    Route::get('polygons', 'PolygonsController@index')->name('polygons.index');
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });
