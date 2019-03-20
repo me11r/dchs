@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Dictionary\CityArea;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -78,5 +79,27 @@ class FormationDistrictManagerItem extends Model
     public function getInactiveTypeTitleAttribute()
     {
         return $this->inactive_type ? $this->inactiveTypes[$this->inactive_type] : null;
+    }
+
+    //inactive_staff_info
+    public function getInactiveStaffInfoAttribute()
+    {
+        if($this->inactive_type && $this->manager) {
+
+            $dateFrom = $this->date_from ? Carbon::parse($this->date_from)->format('d-m-Y') : null;
+            $dateTo = $this->date_to ? Carbon::parse($this->date_to)->format('d-m-Y') : null;
+
+            $str = '';
+            $str .= "{$this->manager->name} ";
+            $str .= $this->inactiveTypes[$this->inactive_type] ?? null;
+            $str .= ' ';
+            $str .= $dateFrom ? "c {$dateFrom} " : "";
+            $str .= $dateTo ? "по {$dateTo} " : "";
+            $str .= $this->comment;
+
+            return $str;
+        }
+
+        return null;
     }
 }

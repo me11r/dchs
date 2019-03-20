@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Staff;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -91,5 +92,27 @@ class OperDutyShiftStaffItem extends Model
                 }
             })
             ->whereBetween('date',[$date_begin, $date_end]);
+    }
+
+    //inactive_staff_info
+    public function getInactiveStaffInfoAttribute()
+    {
+        if($this->inactive_type && $this->staff) {
+
+            $dateFrom = $this->date_from ? Carbon::parse($this->date_from)->format('d-m-Y') : null;
+            $dateTo = $this->date_to ? Carbon::parse($this->date_to)->format('d-m-Y') : null;
+
+            $str = '';
+            $str .= "{$this->staff->name} ";
+            $str .= $this->inactiveTypes[$this->inactive_type] ?? null;
+            $str .= ' ';
+            $str .= $dateFrom ? "c {$dateFrom} " : "";
+            $str .= $dateTo ? "по {$dateTo} " : "";
+            $str .= $this->comment;
+
+            return $str;
+        }
+
+        return null;
     }
 }
