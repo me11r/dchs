@@ -117,6 +117,7 @@
                         {% for tch in tech_fields2 %}
                             <td>{{ tech[dept.id][tch]|default('-') }}</td>
                         {% endfor %}
+                        <td>{{ tech[dept.id].dvr|default('-') }}</td>
                         <td>{{ tech[dept.id].head_guard.initials|default('-') }}</td>
                     </tr>
                 {% endfor %}
@@ -532,7 +533,7 @@
                 {% for index, item  in inactive_tech %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>
-                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %} {{ item.comment ? ' - '~item.comment }} {{ item.date_from_formatted ? ' с '~item.date_from_formatted }}</td>
+                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %} {{ item.comment ? ' - '~item.comment : '' }} {{ item.date_from_formatted ? ' с '~item.date_from_formatted }}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -540,6 +541,23 @@
         <div class="column">
             <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_tech_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
+
+        <div class="column">
+            <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНЫЕ ВИДЕОРЕГИСТРАТОРЫ:</h3>
+            <table class="table">
+                {% for index, item  in inactive_dvrs %}
+                    <tr>
+                        <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>
+                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %} {{ item.comment ? ' - '~item.comment : '' }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="column">
+            <p><span class="has-text-weight-bold">Всего: _____________________</span> {% for name, count in inactive_dvrs_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+        </div>
+
+
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Больничные:</h3>
             {% for guard_number in guard_numbers %}

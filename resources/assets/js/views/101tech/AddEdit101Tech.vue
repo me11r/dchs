@@ -16,7 +16,7 @@
 
             <div class="field is-grouped">
                 <div class="control column">
-                    <label :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
+                    <label class="is-size-7" :for="getName('vehicle_id', item.id)">Тип основного пожарного а/М</label><br>
                     <div class="select">
                         <select
                             required
@@ -48,8 +48,6 @@
                         @change="departmentCheck($event)"
                         :name="getName('department', item.id)">
                 </div>
-
-
 
                 <div
                     v-if="block_type === 'reserve'"
@@ -91,6 +89,24 @@
 
                 </div>
 
+                <div v-if="block_type === 'reserve' || block_type === 'action'"
+                     class="control column">
+                    <label class="is-size-7" :for="getName('dvr', item.id)">Статус видеорегистратора</label><br>
+                    <div class="select">
+                        <select
+                                :name="getName('dvr', item.id)"
+                                :id="getName('dvr', item.id)"
+                                v-model="item.dvr">
+                            <option
+                                    v-for="dvr, key in dvrs"
+                                    :key="'dvr_' + key"
+                                    :value="key">{{ dvr }}
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
                 <div class="control column">
                     <label>Удалить</label>
 
@@ -105,7 +121,7 @@
             </div>
 
             <div
-                v-if="block_type === 'repair'"
+                v-if="block_type === 'repair' || item.dvr === 0"
                 class="field is-grouped">
                 <div class="control column">
                     <label :for="getName('comment', item.id)">Комментарий</label>
@@ -117,7 +133,8 @@
                         cols="10"
                         rows="1"></textarea>
                 </div>
-                <div class="control column">
+
+                <div v-if="block_type === 'repair'" class="control column">
                     <label :for="getName('date_from', item.id)">С</label><br>
                     <input
                         v-model="item.date_from"
@@ -126,7 +143,8 @@
                         class="control"
                         type="date">
                 </div>
-                <div class="control column">
+
+                <div v-if="block_type === 'repair'" class="control column">
                     <label :for="getName('date_to', item.id)">По</label><br>
                     <input
                         v-model="item.date_to"
@@ -134,17 +152,6 @@
                         :id="getName('date_to', item.id)"
                         class="control"
                         type="date">
-                        <!--todo: при использовании bulma datepicker - ошибка при отображении даты -->
-                        <!--<b-datepicker-->
-                        <!--:name="getName('date_to', item.id)"-->
-                        <!--v-model="item.date_to"-->
-                        <!--:first-day-of-week="1"-->
-                        <!--:month-names="month_names"-->
-                        <!--:day-names="day_names"-->
-                        <!--placeholder=""-->
-                        <!--icon="calendar-today"-->
-                        <!--:readonly="false">-->
-                        <!--</b-datepicker>-->
                 </div>
             </div>
         </div>
@@ -192,6 +199,10 @@ export default {
             vehicles_: this.vehicles,
             fire_dep_id_: this.fire_dep_id,
             report_id_: this.report_id,
+            dvrs: [
+                'неисправен',
+                'исправен',
+            ],
             month_names: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
             day_names: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 

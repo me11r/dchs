@@ -184,6 +184,7 @@ trait CommonExportTools
             (int)array_get($techData, 'exhauster', 0) . '/' .
             (int)array_get($techData, 'girs', 0) . '/' .
             (int)array_get($techData, 'iup', 0), // 1 генератор 2 дымосос 3 гирсы
+            array_get($techData, 'dvr', 0), // Видеорегистраторы
 
             $headGuard ? $headGuard->initials : '' // Ф.И.О Начальника караула или лица его подменяющего
         ];
@@ -207,6 +208,8 @@ trait CommonExportTools
                 }
             }
         });
+
+        $sumArray['dvr'] = $this->formationReport->sumDvr();
 
         return [
             'Итого', // Наименование пожарных подразделений
@@ -246,6 +249,7 @@ trait CommonExportTools
             (int)(int)array_get($sumArray, 'exhauster') . '/' .
             (int)(int)array_get($sumArray, 'girs') . '/' .
             (int)(int)array_get($sumArray, 'iup'), // 1 генератор 2 дымосос 3 гирсы
+            array_get($sumArray, 'dvr'), // Видеорегистраторы 1/2/3
 
             '-' // Ф.И.О Начальника караула или лица его подменяющего
         ];
