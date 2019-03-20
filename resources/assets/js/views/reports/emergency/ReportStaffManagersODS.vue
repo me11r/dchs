@@ -34,6 +34,20 @@
                             </option>
                         </select>
                     </div>
+                    <div class="field">
+                        <label for="staff">ОДС</label>
+                        <select
+                            class="select"
+                            v-model="ogId"
+                            id="og">
+                            <option value=""></option>
+                            <option
+                                v-for="num in og"
+                                :value="num.id"
+                                :key="`num_${num.id}`">{{ num.name }}
+                            </option>
+                        </select>
+                    </div>
                     <div class="field is-grouped">
                         <v-datepicker-search
                             label="Начало периода"
@@ -60,6 +74,7 @@
                                 <td>Отсутствие: Декрет</td>
                                 <td>Отсутствие: Больничный</td>
                                 <td>Отсутствие: Командировка</td>
+                                <td>ОДС</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,6 +97,9 @@
                                     {{ report_summary.business_trip.length }}
                                     <p v-for="(item, key) in report_summary.business_trip">{{ ++key }}. {{ item.date_from|dateFilter('DD.MM.YYYY') }} - {{ item.date_to|dateFilter('DD.MM.YYYY') }}, {{ item.comment }}</p>
                                 </td>
+                                <td>
+                                    {{ report_summary ? report_summary.ogCount : null }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -101,12 +119,17 @@ export default {
             type: Array,
             default: () => []
         },
+        og: {
+            type: Array,
+            default: () => []
+        },
     },
     data: function () {
         return {
             staff_: this.staff,
             person_id: '',
             date_begin_: new Date,
+            ogId: null,
             date_end_: new Date,
             report_summary: null
         };
@@ -119,6 +142,7 @@ export default {
             axios.post('/reports/101/staff-managers-ods', {
                 date_begin: this.dates.from,
                 date_end: this.dates.to,
+                ogId: this.ogId,
                 staff_id: this.person_id
             }).then((resp) => {
                 this.report_summary = resp.data;

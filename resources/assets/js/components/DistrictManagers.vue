@@ -72,6 +72,7 @@
                         <v-datepicker-search
                                 label="С"
                                 :name="getNameInactive('date_from',item.manager_id)"
+                                :id="getNameInactive('date_from',item.manager_id)"
                                 :date-string="item.date_from"
                                 @dateChanged="item.date_from = $event"
                                 v-model="item.date_from"
@@ -80,7 +81,8 @@
                     <div class="control column">
                         <v-datepicker-search
                                 label="По"
-                                :name="getNameInactive('date_to',item.manager_id)"
+                                :name="getNameInactive('date_to',manager_id)"
+                                :id="getNameInactive('date_to',item.manager_id)"
                                 :date-string="item.date_to"
                                 @dateChanged="item.date_to = $event"
                                 v-model="item.date_to"
@@ -160,11 +162,12 @@ export default {
             return control + `[${this.cityAreaId_}][]`;
         },
         getNameInactive(control, userId) {
+            console.dir(userId)
             return control + `[${this.cityAreaId_}][${userId}]`;
         },
         addEmptyItem() {
             this.addItem({
-                id: moment().valueOf()
+                id: moment().valueOf(),
             });
         },
         addItem(item) {
