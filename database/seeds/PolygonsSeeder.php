@@ -1495,36 +1495,7 @@ class PolygonsSeeder extends Seeder
                 'line_color' => 'rgba(204,0,0,0.5)',
                 'fill_color' => 'rgba(204,0,0,0.5)',
                 'opacity' => 0.7
-            ],
-            [
-                'points' => [],
-                'title' => '',
-                'line_color' => '',
-                'fill_color' => '',
-                'opacity' => 0.5
-            ],
-            [
-                'points' => [],
-                'title' => '',
-                'line_color' => '',
-                'fill_color' => '',
-                'opacity' => 0.5
-            ],
-            [
-                'points' => [],
-                'title' => '',
-                'line_color' => '',
-                'fill_color' => '',
-                'opacity' => 0.5
-            ],
-            [
-                'points' => [],
-                'title' => '',
-                'line_color' => '',
-                'fill_color' => '',
-                'opacity' => 0.5
-            ],
-
+            ]
         ];
 
         foreach ($items as $item) {
