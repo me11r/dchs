@@ -208,7 +208,6 @@ class CardController extends AuthorizedController
             }
         }
 
-        $dep_results = FireDepartmentResult::all();
         $operational_cards = OperationalCard::all();
         $special_plans = SpecialPlan::all();
 
@@ -226,7 +225,6 @@ class CardController extends AuthorizedController
         $this->set('eventInfos', $eventInfos);
         $this->set('eventInfosArrived', $eventInfosArrived);
         $this->set('ssv_out', $ssv_out);
-        $this->set('dep_results', $dep_results);
         $this->set('gu_notify', $gu_notify);
         $this->set('service_notify', $service_notify);
         $this->set('city_area', CityArea::with(['fire_departments'])->get());
