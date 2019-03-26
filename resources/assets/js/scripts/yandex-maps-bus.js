@@ -110,7 +110,7 @@ export default class YandexMapsBus {
 
             if (area.geometry.contains([lat, long])) {
                 map.geoObjects.remove(area);
-                return polygon;
+                return ++polygon;
             }
             map.geoObjects.remove(area);
         }

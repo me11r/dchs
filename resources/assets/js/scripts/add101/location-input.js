@@ -122,7 +122,7 @@ export default function bindLocationInputApp() {
                     this.location = event.newValue;
                 } else if (event.key === YANDEX_FIRE_DEPT_FOUND) {
                     this.fire_department_id = event.newValue;
-                    // this.fire_department();
+
                     if(!document.getElementById('fire_level_id1').value){
                         document.getElementById('fire_level_id1').value = 1;
                     }
