@@ -111,13 +111,13 @@ trait CommonExportTools
             isset($this->tech[$id]) ? (int)array_get($techData, 'motor_water_pump', 0) . '/' . (int)array_get($techData, 'motor_mud_pump', 0) : '0/0', // Мотопомпы Водяная/Грязевая
 
             $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Тип основ пожарного а/м
-            $department->tech_action ? implode($delimiter, $department->tech_action->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
+            $department->tech_action ? implode($delimiter, $department->tech_action->whereIn('vehicle.vehicle_type_id', [2,3])->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В боевом расчёте -> Марка спец. пожарного а/м Мотоциклы
 
             $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В резерве -> Тип основ пожарного а/м
-            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
+            $department->tech_reserve ? implode($delimiter, $department->tech_reserve->whereIn('vehicle.vehicle_type_id', [2,3])->pluck('vehicle_name_status')->toArray()) : '', // Пожарная техника ->  В резерве -> Марка спец. пожарных а/м
 
             $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 1)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Тип основ пожарного а/м
-            $department->tech_repair ? implode($delimiter, $department->tech_repair->where('vehicle.vehicle_type_id', '=', 2)->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
+            $department->tech_repair ? implode($delimiter, $department->tech_repair->whereIn('vehicle.vehicle_type_id', [2,3])->pluck('vehicle.name')->toArray()) : '', // Пожарная техника ->  На ремонте -> Марка спец. пожарных а/м
         ];
     }
 
@@ -184,6 +184,7 @@ trait CommonExportTools
             (int)array_get($techData, 'exhauster', 0) . '/' .
             (int)array_get($techData, 'girs', 0) . '/' .
             (int)array_get($techData, 'iup', 0), // 1 генератор 2 дымосос 3 гирсы
+            array_get($techData, 'dvr', 0), // Видеорегистраторы
 
             $headGuard ? $headGuard->initials : '' // Ф.И.О Начальника караула или лица его подменяющего
         ];
@@ -207,6 +208,8 @@ trait CommonExportTools
                 }
             }
         });
+
+        $sumArray['dvr'] = $this->formationReport->sumDvr();
 
         return [
             'Итого', // Наименование пожарных подразделений
@@ -246,6 +249,7 @@ trait CommonExportTools
             (int)(int)array_get($sumArray, 'exhauster') . '/' .
             (int)(int)array_get($sumArray, 'girs') . '/' .
             (int)(int)array_get($sumArray, 'iup'), // 1 генератор 2 дымосос 3 гирсы
+            array_get($sumArray, 'dvr'), // Видеорегистраторы 1/2/3
 
             '-' // Ф.И.О Начальника караула или лица его подменяющего
         ];

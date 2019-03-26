@@ -52,6 +52,7 @@ class FormationTechItem extends Model
         'comment',
         'date_from',
         'date_to',
+        'dvr',
     ];
 
     protected $appends = [
@@ -63,6 +64,11 @@ class FormationTechItem extends Model
     public function scopeStatus($q, $status)
     {
         return $q->where('status', $status);
+    }
+
+    public function scopeDvr($q, $search = true)
+    {
+        return $q->where('dvr', $search);
     }
 
     public function vehicle()
@@ -101,7 +107,9 @@ class FormationTechItem extends Model
     {
         $vehicle = $this->vehicle->name ?? null;
         $status = $this->vehicle_status->name ?? null;
+        $type = $this->vehicle->vehicle_type_id ?? null;
         $result = $vehicle . ' '.($status ? "($status)" : '');
+        $result .= $type === 3 ? ' (вс.т)' : ''; //вспомогательная техника
         return $result;
     }
 

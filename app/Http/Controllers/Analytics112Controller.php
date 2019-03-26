@@ -11,6 +11,8 @@ use App\ElevatorEmergencyType;
 use App\EmergencyName;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
+use App\OperationalGroup;
+use App\OperDutyShift;
 use App\OperDutyShiftStaff;
 use App\Reports\Report112;
 use App\Services\ReportExport\Daily112WordExport;
@@ -94,6 +96,7 @@ class Analytics112Controller extends Controller
         $data['disease_types'] = DiseaseType::all();
 
         $data['tripResults'] = TripResult::all();
+        $data['og'] = OperDutyShift::all();
 
         $dateFrom = $request->input('dateFrom', (new Carbon('01/01/2019'))->format('Y-m-d'));
         $dateTo = $request->input('dateTo', now()->format('Y-m-d'));

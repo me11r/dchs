@@ -100,6 +100,12 @@ class FormationRecordController extends Controller
             ->whereNull('inactive_type')
             ->with(['staff', 'shift'])
             ->get();
+
+        $dutyShiftItemsInactive = OperDutyShiftStaffItem::date($date)
+            ->whereNotNull('inactive_type')
+            ->with(['staff', 'shift'])
+            ->get();
+
         $items = (new FormationRecord())->where('date', '=', $item->date)
             ->whereNotIn('organisation', [
                 FormationOrganisation::DCHS_ALMATY,
@@ -157,6 +163,7 @@ class FormationRecordController extends Controller
             ->with('cityAreas', $cityAreas)
             ->with('formationDistrictManager', $formationDistrictManager)
             ->with('dutyShiftItems', $dutyShiftItems)
+            ->with('dutyShiftItemsInactive', $dutyShiftItemsInactive)
             ->with('dutyPersonsServiceArr', $dutyPersonsServiceArr)
             ->with('items', $items);
     }

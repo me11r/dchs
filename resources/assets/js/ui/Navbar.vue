@@ -203,12 +203,12 @@
 
                                 <div class="level-right">
                                     <div class="buttons is-right">
-                                        <a
+                                        <!--<a
                                             href="/pdf/dailyReport"
                                             target="_blank"
                                             class=" button is-small">
                                             <i class="fas fa-file-pdf"></i>.pdf
-                                        </a>
+                                        </a>-->
                                         <a
                                             href="/reports/daily101/word"
                                             target="_blank"
@@ -233,12 +233,12 @@
 
                                 <div class="level-right">
                                     <div class="buttons is-right">
-                                        <a
-                                            href="/pdf/operational-report"
-                                            target="_blank"
-                                            class=" button is-small">
-                                            <i class="fas fa-file-pdf"></i>.pdf
-                                        </a>
+                                        <!--<a-->
+                                            <!--href="/pdf/operational-report"-->
+                                            <!--target="_blank"-->
+                                            <!--class=" button is-small">-->
+                                            <!--<i class="fas fa-file-pdf"></i>.pdf-->
+                                        <!--</a>-->
                                         <a
                                             href="/reports/daily112/word"
                                             target="_blank"
@@ -640,7 +640,7 @@ export default {
     }
 
     .report-dropdown {
-        width: 400px;
+        width: 350px;
     }
 
 </style>

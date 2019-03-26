@@ -415,6 +415,19 @@ class Ticket101WordExport
         return $result;
     }
 
+    private function getRepairedDvr()
+    {
+        $dvrs = $this->data['inactive_dvrs'];
+
+        $result = [];
+        foreach ($dvrs as $item) {
+            $vehicle = Vehicle::find($item['vehicle_id']);
+            $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . ($vehicle->base ? "($vehicle->base) " : '') .' - '. $item['comment'];
+        }
+
+        return $result;
+    }
+
     private function addBottomText(Section $section)
     {
         $people = $this->peopleByDept();
@@ -430,6 +443,7 @@ class Ticket101WordExport
         $sickPeople = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $sickPeople); // сортируем
 
         $repairedTech = $this->getRepairedTech();
+        $repairedDvr = $this->getRepairedDvr();
 
         $odInactivePeople = $this->peopleOdInactive();
 
@@ -668,12 +682,6 @@ class Ticket101WordExport
             $techIndex++;
         }
 
-        /*$section->addText(
-            '',
-            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
-            ['align' => Jc::BOTH]
-        );*/
-
         $inactive_tech_cnt = $this->data['inactive_tech_cnt'];
         $inactive_tech_cnt_str = '';
         foreach ($inactive_tech_cnt as $name => $count) {
@@ -681,6 +689,33 @@ class Ticket101WordExport
         }
         $section->addText(
             "Всего:\t\t" . $inactive_tech_cnt_str,
+            $redFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $section->addText(
+            'Неисправные видеорегистраторы',
+            $redFontStyle,
+            ['align' => Jc::BOTH]
+        );
+
+        $techIndex = 1;
+        foreach ($repairedDvr as $fireDept => $tech) {
+            $section->addText(
+                "{$techIndex}. {$fireDept}:\t\t" . implode(', ', $tech),
+                ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
+                ['align' => Jc::BOTH]
+            );
+            $techIndex++;
+        }
+
+        $inactive_dvr_cnt = $this->data['inactive_dvrs_cnt'];
+        $inactive_dvr_cnt_str = '';
+        foreach ($inactive_dvr_cnt as $name => $count) {
+            $inactive_dvr_cnt_str .= "{$name} - {$count->count()}, ";
+        }
+        $section->addText(
+            "Всего:\t\t" . $inactive_dvr_cnt_str,
             $redFontStyle,
             ['align' => Jc::BOTH]
         );
@@ -800,6 +835,7 @@ class Ticket101WordExport
         $hcAlignStyle = array_merge(['align' => Jc::CENTER, 'valign' => Jc::CENTER], self::$noPaddingPS);
 
         $table->addRow(700);
+
         $table->addCell(1200, $cellRowSpanV)->addText('Наименование пожарных подразделений', $hcFontStyle, $hcAlignStyle);
         $table->addCell(9000, ['gridSpan' => 17, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Имеется на автомобилях в боевом расчете', $hcFontStyle, $hcAlignStyle);
         $table->addCell(600, $cellRowSpanV)->addText('Пенообразователя в резерве / на складе', $hcFontStyle, $hcAlignStyle);
@@ -807,7 +843,8 @@ class Ticket101WordExport
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderLeftSize' => 10, 'borderColor' => '000000'])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(600, $cellRowSpanV)->addText("1 генератор<w:br/>2 дымосос<w:br/>3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
-        $table->addCell(null, $cellRowSpanH)->addText('Ф.И.О Начальника караула или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, ['align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText("Видео<w:br/>регистраторы", $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText('Ф.И.О Начальника караула или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow(1250);
         $table->addCell(null, $cellRowContinue);
@@ -833,7 +870,8 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowSpanV)->addText('бензин', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('дизель', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowContinue);
+//        $table->addCell(null, $cellRowContinue);
+        $table->addCell(null, $cellRowSpanV)->addText('В расчете<w:br/>В резерве<w:br/>Неисправные', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow(1250);
         $table->addCell(null, $cellRowContinue);
@@ -857,6 +895,8 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowSpanVThick)->addText('уличный', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanVThick)->addText('объектовый', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowContinue);
+        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);

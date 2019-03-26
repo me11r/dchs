@@ -1,9 +1,13 @@
 import {_} from 'vue-underscore';
 import Vue from '../../VueInstance';
+import Persons101Multiselect from '../../components/formation/Persons101Multiselect';
 
 export default class Add101Persons {
     createApp(element) {
         this.app = new Vue({
+            components: {
+                Persons101Multiselect
+            },
             'el': element,
             data: {
                 departmentId: '',
@@ -25,7 +29,12 @@ export default class Add101Persons {
                 total: 0,
                 totalActive: 0,
                 selectedPersons: [],
-                selectedTech: []
+                selectedTech: [],
+
+                people: window.people,
+                odStaff: window.odStaff,
+                selectedStaff: {},
+                formId: window.formId
             },
             computed: {
                 fieldsComputed() {
@@ -65,6 +74,21 @@ export default class Add101Persons {
                 isReadonly(prefix, index) {
                     const fieldName = 'field' + prefix + '_' + index;
                     return fieldName === 'field_0' || fieldName === 'field_2_0';
+                },
+                setSelectedStaff() {
+                    let selectedStaff = {};
+                    if (this.people && this.people[19] && this.people[19]['formation_person_items_od']) {
+                        this.people[19]['formation_person_items_od'].map((item) => {
+                            if (!selectedStaff[item['rank']]) {
+                                selectedStaff[item['rank']] = [];
+                            }
+                            if (item['staff']) {
+                                item['staff']['gsm_count'] = item['gsm_count'];
+                                selectedStaff[item['rank']].push(item['staff']);
+                            }
+                        });
+                    }
+                    this.selectedStaff = selectedStaff;
                 }
             },
             beforeMount() {
@@ -74,6 +98,9 @@ export default class Add101Persons {
                         this.inputs[inputElement.id] = parseInt(inputElement.dataset.value);
                     }
                 });
+
+                this.setSelectedStaff();
+
                 this.calculateTotalSum();
 
                 this.$on('totalChange', function (change) {

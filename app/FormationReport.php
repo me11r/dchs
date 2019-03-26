@@ -5,6 +5,7 @@ namespace App;
 
 
 use App\Models\FormationPersonsItem;
+use App\Models\FormationTechItem;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -113,5 +114,30 @@ class FormationReport extends Model
     public function scopeSumTechTwo($q, $first, $second)
     {
         return $this->tech_reports()->sum($first). '/'.$this->tech_reports()->sum($second);
+    }
+
+    public function scopeSumDvr($q)
+    {
+        $action = FormationTechItem::whereHas('formation_tech_report.report', function ($q) {
+            $q->where('id', $this->id);
+        })
+            ->status('action')
+            ->dvr(true)
+            ->count();
+
+        $reserve = FormationTechItem::whereHas('formation_tech_report.report', function ($q) {
+            $q->where('id', $this->id);
+        })
+            ->status('reserve')
+            ->dvr(true)
+            ->count();
+
+        $broken = FormationTechItem::whereHas('formation_tech_report.report', function ($q) {
+            $q->where('id', $this->id);
+        })
+            ->dvr(false)
+            ->count();
+
+        return "{$action}/{$reserve}/{$broken}";
     }
 }

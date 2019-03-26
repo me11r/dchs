@@ -303,12 +303,28 @@ class FormationController extends AuthorizedController
             $staff_table['total_inactive'] = $model->formation_person_items()->where('status', '!=','active')->count();
         }
 
+        $people = (new FormationPersonsReport)
+            ->with('formation_person_items')
+            ->where('form_id', $form_id)
+            ->get()
+            ->keyBy('dept_id');
+
+        // лс ОД
+        if(isset($people[19])){
+            foreach ($people[19]->formation_person_items_od as $item) {
+                if($item->status == 'active'){
+                    $dept_od_people[$item->rank][] = $item->staff();
+                }
+            }
+        }
+
         $this->set('departments', $departments)
             ->set('report', (new FormationReport)->find($form_id))
             ->set('form_id', $form_id)
             ->set('od_staff', $od_staff)
             ->set('staff_table', $staff_table ?? null)
             ->set('read_only', $read_only)
+            ->set('people', $people)
             ->set('guardNumbers', $guardNumbers)
             ->set('dept_id', $dept_id);
     }
@@ -547,6 +563,7 @@ class FormationController extends AuthorizedController
                         'date_from' => $date_from,
                         'date_to' => $date_to,
                         'vehicle_status_id' => $inputs['vehicle_status_id'][$input_key] ?? null,
+                        'dvr' => $inputs['dvr'][$input_key] ?? null,
                     ]);
                 }
 
@@ -722,6 +739,7 @@ class FormationController extends AuthorizedController
             'exhauster',
             'girs',
             'iup',
+//            'dvr',
         ];
 
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
@@ -765,18 +783,16 @@ class FormationController extends AuthorizedController
         })->where('status', 'repair')
             ->get();
 
-        /*$inactive_tech_cnt = [];
-        foreach ($inactive_tech as $inactive_tech_item){
-            if(in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)){
-                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
-            }
-            else{
-                $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
-            }
-
-        }*/
-
         $inactive_tech_cnt = $inactive_tech->groupBy(function ($q) {
+            return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
+        });
+
+        $inactive_dvrs = $rawPeople = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($form_id){
+            $q->where('form_id', $form_id);
+        })->dvr(false)
+            ->get();
+
+        $inactive_dvrs_cnt = $inactive_dvrs->groupBy(function ($q) {
             return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
         });
 
@@ -848,6 +864,7 @@ class FormationController extends AuthorizedController
         $tech_fields_temp[] = 'exhauster';
         $tech_fields_temp[] = 'girs';
         $tech_fields_temp[] = 'iup';
+        $tech_fields_temp[] = 'dvr';
         $tech_fields_temp[] = 'head_guard_id';
 
         foreach ($departments as $dep) {
@@ -856,19 +873,19 @@ class FormationController extends AuthorizedController
                     $query->where('vehicle_type_id', '=', 1);
                 })->get());
                 $tech_items_count['tech_action_type_2'] += count($tech[$dep->id]->formation_tech_items()->status('action')->whereHas('vehicle', function ($query) {
-                    $query->where('vehicle_type_id', '=', 2);
+                    $query->whereIn('vehicle_type_id', [2,3]);
                 })->get());
                 $tech_items_count['tech_reserve_type_1'] += count($tech[$dep->id]->formation_tech_items()->status('reserve')->whereHas('vehicle', function ($query) {
                     $query->where('vehicle_type_id', '=', 1);
                 })->get());
                 $tech_items_count['tech_reserve_type_2'] += count($tech[$dep->id]->formation_tech_items()->status('reserve')->whereHas('vehicle', function ($query) {
-                    $query->where('vehicle_type_id', '=', 2);
+                    $query->whereIn('vehicle_type_id', [2,3]);
                 })->get());
                 $tech_items_count['tech_repair_type_1'] += count($tech[$dep->id]->formation_tech_items()->status('repair')->whereHas('vehicle', function ($query) {
                     $query->where('vehicle_type_id', '=', 1);
                 })->get());
                 $tech_items_count['tech_repair_type_2'] += count($tech[$dep->id]->formation_tech_items()->status('repair')->whereHas('vehicle', function ($query) {
-                    $query->where('vehicle_type_id', '=', 2);
+                    $query->whereIn('vehicle_type_id', [2,3]);
                 })->get());
             }
 
@@ -891,6 +908,7 @@ class FormationController extends AuthorizedController
             }
         }
         $ttl_count['foamer_in_stock_reserved'] = $report->sumTechTwo('foamer_reserved','foamer_in_stock');
+        $ttl_count['dvr'] = $report->sumDvr();
 
         $sumArray = $formationService->getSumArrayByDepartmentsArray($departments->where('id', '!=', 13), $people_fields, $tech_fields, $people, $tech, $report);
 
@@ -916,6 +934,8 @@ class FormationController extends AuthorizedController
             'report' => $report,
             'inactive_tech_cnt' => $inactive_tech_cnt,
             'inactive_tech' => $inactive_tech,
+            'inactive_dvrs' => $inactive_dvrs,
+            'inactive_dvrs_cnt' => $inactive_dvrs_cnt,
             'formationCard101Others' => $formationCard101Others,
         ];
 
@@ -950,6 +970,8 @@ class FormationController extends AuthorizedController
             ->set('other_reasons', $other_reasons)
             ->set('inactive_tech', $inactive_tech)
             ->set('inactive_tech_cnt', $inactive_tech_cnt)
+            ->set('inactive_dvrs', $inactive_dvrs)
+            ->set('inactive_dvrs_cnt', $inactive_dvrs_cnt)
             ->set('canEditOd', Auth::user()->hasRight('CAN_EDIT_OD_FORMATION'))
             ->set('sumArray', $sumArray);
     }
