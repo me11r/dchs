@@ -107,7 +107,9 @@ class FormationTechItem extends Model
     {
         $vehicle = $this->vehicle->name ?? null;
         $status = $this->vehicle_status->name ?? null;
+        $type = $this->vehicle->vehicle_type_id ?? null;
         $result = $vehicle . ' '.($status ? "($status)" : '');
+        $result .= $type === 3 ? ' (вс.т)' : ''; //вспомогательная техника
         return $result;
     }
 

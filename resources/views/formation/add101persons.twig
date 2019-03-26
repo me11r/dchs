@@ -1,5 +1,10 @@
 {% extends "layout/html" %}
 {% block content %}
+    <script>
+        window.odStaff = {{ od_staff | json_encode() | raw }};
+        window.people = {{ people | json_encode() | raw }};
+        window.formId = '{{ form_id }}';
+    </script>
     <div class="container section" id="add-101-persons-form" data-department_value="{{ dept_id }}">
         <div class="level" style="margin-top: 20px">
             <div class="level-left">
@@ -252,6 +257,33 @@
                         </div>
                     </div>
                 </fieldset>
+
+                {#СО#}
+                {% if dept_id == 18 %}
+                    <fieldset>
+                        <legend>База ГДЗС</legend>
+                        <div class="field">
+                            <persons101-multiselect
+                                    :title-class="'has-text-weight-bold'"
+                                    :name="'База ГДЗС'"
+                                    :rank="'gdzs_base'">
+                            </persons101-multiselect>
+                        </div>
+                    </fieldset>
+                {% endif %}
+
+                {% if dept_id == 5 %}
+                    <fieldset>
+                        <legend>ЦРБ</legend>
+                        <div class="field">
+                            <persons101-multiselect
+                                    :title-class="'has-text-weight-bold'"
+                                    :name="'ЦРБ'"
+                                    :rank="'crb'">
+                            </persons101-multiselect>
+                        </div>
+                    </fieldset>
+                {% endif %}
 
                 <div class="field">
                     <label for="field_2_0">Всего</label>

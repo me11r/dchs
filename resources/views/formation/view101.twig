@@ -89,8 +89,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 2 %}
-                                {{ action.vehicle.name|default('-') }} {{ action.vehicle_status ? '('~action.vehicle_status.name~')' : '' }}<br>
+                            {% for action in dept.tech_action if action.vehicle.vehicle_type_id == 2 or action.vehicle.vehicle_type_id == 3 %}
+                                {{ action.vehicle.name|default('-') }} {{ action.vehicle.vehicle_type_id == 3  ? '(вс.т)' : ''}} {{ action.vehicle_status ? '('~action.vehicle_status.name~')' : '' }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -99,8 +99,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 2 %}
-                                {{ tech_reserve.vehicle.name|default('-') }} {{ tech_reserve.vehicle_status ? '('~tech_reserve.vehicle_status.name~')' : '' }}<br>
+                            {% for tech_reserve in dept.tech_reserve if tech_reserve.vehicle.vehicle_type_id == 2 or tech_reserve.vehicle.vehicle_type_id == 3 %}
+                                {{ tech_reserve.vehicle.name|default('-') }} {{ tech_reserve.vehicle.vehicle_type_id == 3  ? '(вс.т)' : ''}} {{ tech_reserve.vehicle_status ? '('~tech_reserve.vehicle_status.name~')' : '' }}<br>
                             {% endfor %}
                         </td>
                         <td>
@@ -109,8 +109,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 2 %}
-                                {{ tech_repair.vehicle.name|default('-') }}<br>
+                            {% for tech_repair in dept.tech_repair if tech_repair.vehicle.vehicle_type_id == 2 or tech_repair.vehicle.vehicle_type_id == 3 %}
+                                {{ tech_repair.vehicle.name|default('-') }} {{ tech_repair.vehicle.vehicle_type_id == 3  ? '(вс.т)' : ''}} <br>
                             {% endfor %}
                         </td>
 
