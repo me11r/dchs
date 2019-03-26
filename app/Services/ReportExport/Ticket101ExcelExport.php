@@ -311,7 +311,7 @@ class Ticket101ExcelExport
 
         $this->setCell($sheet, 'В боевом расчёте', 'R7', 'S7', self::HStyle);
         $this->setCell($sheet, 'Тип основ пожарного а/м', 'R8', 'R9', self::VStyle);
-        $this->setCell($sheet, 'Марка спец. пожарного а/м Мотоциклы', 'T8', 'T9', self::VStyle);
+        $this->setCell($sheet, 'Марка спец. пожарного а/м Мотоциклы', 'S8', 'S9', self::VStyle);
 
         $this->setCell($sheet, 'В резерве', 'T7', 'U7', self::HStyle);
         $this->setCell($sheet, 'Тип основ пожарного а/м', 'T8', 'T9', self::VStyle);
