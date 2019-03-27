@@ -11,8 +11,11 @@ class FormationController extends Controller
 {
     public function staff_page(Request $request)
     {
+        $f = $request->all();
         $resp = OperDutyShiftStaffItem::rank($request->rank)
-            ->where('shift_id', $request->shift_id)
+            ->wherehas('report', function ($q) use ($request) {
+                $q->where('shift_id', $request->shift_id);
+            })
             ->with(['staff'])
             ->date($request->date);
 
@@ -22,6 +25,7 @@ class FormationController extends Controller
         else {
             $resp = $resp->whereNull('inactive_type');
         }
+
         $resp = $resp->get();
 
         return response()->json($resp);

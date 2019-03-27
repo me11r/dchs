@@ -12,7 +12,7 @@
         <div
             class="panels"
             v-for="item in records_"
-            :key="item.id">
+            :key="`records_${item.id}`">
 
             <div class="field is-grouped">
                 <div class="control column is-four-fifths">
@@ -21,7 +21,6 @@
                         <select
                             @change="selectStaff"
                             required
-                            title=""
                             :name="inactiveType === 'active' ? getName('staff_id', item.id) : getNameInactive('staff_id', item.id)"
                             :id="inactiveType === 'active' ? getName('staff_id', item.id) : getNameInactive('staff_id', item.id)"
                             v-model="item.staff_id">
@@ -163,6 +162,8 @@ export default {
     methods: {
         getStaffFilter(selectedId) {
             let scope = this;
+            console.dir(this.records_)
+
             return this.staff_.filter(function (item) {
                 return scope.$parent.selectedPersons.indexOf(item.id) === -1 || item.id === selectedId;
             });

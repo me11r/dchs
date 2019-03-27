@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
 class OperDutyShiftStaffItem extends Model
 {
     protected $fillable = [
-        'shift_id',
+//        'shift_id',
         'staff_id',
         'rank',
         'date',
@@ -41,6 +41,7 @@ class OperDutyShiftStaffItem extends Model
         'date_from',
         'date_to',
         'comment',
+        'report_id',
     ];
 
     private $ranks = [
@@ -60,9 +61,14 @@ class OperDutyShiftStaffItem extends Model
         return $this->belongsTo(OperDutyShiftStaff::class, 'staff_id');
     }
 
-    public function shift()
+//    public function shift()
+//    {
+//        return $this->belongsTo(OperDutyShift::class, 'shift_id');
+//    }
+
+    public function report()
     {
-        return $this->belongsTo(OperDutyShift::class, 'shift_id');
+        return $this->belongsTo(OperDutyShiftStaffReport::class, 'report_id');
     }
 
     public function scopeRank($q, $rank)

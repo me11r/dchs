@@ -269,6 +269,7 @@ class ReportController extends AuthorizedController
         return response()->json($result);
     }
 
+    //Отчет по личному составу ДЧС
     public function postReportStaffManagersOSDStaff(Request $request)
     {
         $staff_id = $request->staff_id;
@@ -288,7 +289,9 @@ class ReportController extends AuthorizedController
         }
 
         if ($request->ogId) {
-            $result['ogCount'] = OperDutyShiftStaffItem::where('shift_id', $request->ogId)
+            $result['ogCount'] = OperDutyShiftStaffItem::whereHas('report', function ($q) use ($request) {
+                $q->where('shift_id', $request->ogId);
+            })
                 ->whereBetween('date',[$date_begin, $date_end])
                 ->count();
             ;
