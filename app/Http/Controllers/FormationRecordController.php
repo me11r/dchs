@@ -15,6 +15,7 @@ use App\Models\Staff;
 use App\OperDutyShift;
 use App\OperDutyShiftStaff;
 use App\OperDutyShiftStaffItem;
+use App\OperDutyShiftStaffReport;
 use App\Services\ReportExport\FormationRecordWordExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -98,12 +99,12 @@ class FormationRecordController extends Controller
 
         $dutyShiftItems = OperDutyShiftStaffItem::date($date)
             ->whereNull('inactive_type')
-            ->with(['staff', 'shift'])
+            ->with(['staff'])
             ->get();
 
         $dutyShiftItemsInactive = OperDutyShiftStaffItem::date($date)
             ->whereNotNull('inactive_type')
-            ->with(['staff', 'shift'])
+            ->with(['staff'])
             ->get();
 
         $items = (new FormationRecord())->where('date', '=', $item->date)
@@ -225,7 +226,9 @@ class FormationRecordController extends Controller
     public function staffCreateEdit(Request $request, $date, $operShift_id = 1)
     {
         $busyStaff = OperDutyShiftStaffItem::date($date)
-            ->where('shift_id', '<>', $operShift_id)
+            ->whereHas('report', function ($q) use ($operShift_id) {
+                $q->where('shift_id', '<>', $operShift_id);
+            })
             ->pluck('staff_id')
             ->toArray();
 
@@ -234,21 +237,33 @@ class FormationRecordController extends Controller
         $data['ods'] = OperDutyShift::all();
         $data['shift_id'] = $operShift_id;
         $data['date'] = $date;
+        $data['report'] = OperDutyShiftStaffReport::date($date)
+            ->where('shift_id', $operShift_id)
+            ->first();
 
         if($request->isMethod('post')){
             $all = $request->all();
 
             $this->hasRightToEdit();
 
-            OperDutyShiftStaffItem::date($date)
-                ->where('shift_id', $operShift_id)
-                ->delete();
+            $report = OperDutyShiftStaffReport::firstOrCreate([
+                'date' => $date,
+                'shift_id' => $operShift_id,
+            ]);
+
+            $report->items()->delete();
+
+//            OperDutyShiftStaffItem::date($date)
+//                ->where('shift_id', $operShift_id)
+//                ->where('report_id', $operShift_id)
+//                ->delete();
 
             foreach ($request->input('staff', []) as $rank => $staff_arr) {
                 foreach ($staff_arr['staff_id'] as $id) {
                     OperDutyShiftStaffItem::create([
-                        'shift_id' => $operShift_id,
+//                        'shift_id' => $operShift_id,
                         'staff_id' => $id,
+                        'report_id' => $report->id,
                         'rank' => $rank,
                         'date' => $date,
                     ]);
@@ -264,7 +279,8 @@ class FormationRecordController extends Controller
                     $comment = $request->input("staff_inactive.{$rank}.comment.{$key}", null);
 
                     OperDutyShiftStaffItem::create([
-                        'shift_id' => $operShift_id,
+//                        'shift_id' => $operShift_id,
+                        'report_id' => $report->id,
                         'staff_id' => $id,
                         'rank' => $rank,
                         'date' => $date,
@@ -275,6 +291,9 @@ class FormationRecordController extends Controller
                     ]);
                 }
             }
+
+            $report->note = $request->note;
+            $report->save();
         }
 
         return \view('formation-record.staff.create-edit', $data);

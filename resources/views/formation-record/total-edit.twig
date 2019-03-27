@@ -91,7 +91,7 @@
                                 <tbody>
                                     {% for i in dutyShiftItems %}
                                         <tr>
-                                            <td>{{ i.shift.name }}</td>
+                                            <td>{{ i.report.shift.name|default() }}</td>
                                             <td>{{ i.staff.name }}</td>
                                             <td>{{ i.rankHumanFormat}}</td>
                                             <td>
@@ -99,7 +99,7 @@
                                                     <p>{{ inactive.inactive_staff_info }}</p>
                                                 {% endfor %}
                                             </td>
-                                            <td>{{ i.direction }}</td>
+                                            <td>{{ i.report.note|default() }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
