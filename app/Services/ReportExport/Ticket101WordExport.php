@@ -843,10 +843,11 @@ class Ticket101WordExport
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderLeftSize' => 10, 'borderColor' => '000000'])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(600, $cellRowSpanV)->addText("1 генератор<w:br/>2 дымосос<w:br/>3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
-        $table->addCell(600, ['align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText("Видео<w:br/>регистраторы", $hcFontStyle, $hcAlignStyle);
-        $table->addCell(600, $cellRowSpanV)->addText('Ф.И.О Начальника караула или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, ['align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText("Видео<w:br/>регистр.", $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText('Ф.И.О Нач. караула<w:br/>или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow(1250);
+
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, ['gridSpan' => 4, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Рукавов', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('Лафетн. Ств. стац', $hcFontStyle, $hcAlignStyle);
@@ -872,8 +873,11 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
 //        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowSpanV)->addText('В расчете<w:br/>В резерве<w:br/>Неисправные', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowContinue);
+
 
         $table->addRow(1250);
+
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowSpanV)->addText('125мм', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('75мм', $hcFontStyle, $hcAlignStyle);
@@ -903,7 +907,7 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowContinue);
+//        $table->addCell(null, $cellRowContinue);
     }
 
     private function addFirstTable(Section $section)
