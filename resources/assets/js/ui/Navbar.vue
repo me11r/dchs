@@ -347,6 +347,12 @@
                             class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
                             &nbsp; Информация по звонкам
                         </a>
+                        <a
+                            v-if="hasRight('ALERT_SYSTEM_CHECK_SHOW')"
+                            href="/reports/alert-system-checks/"
+                            class="dropdown-item is-small"><i class="fas fa-blender"></i>
+                            &nbsp; Тех.проверка системы оповещения
+                        </a>
                     </div>
                 </div>
                 <div

@@ -162,7 +162,6 @@ export default {
     methods: {
         getStaffFilter(selectedId) {
             let scope = this;
-            console.dir(this.records_)
 
             return this.staff_.filter(function (item) {
                 return scope.$parent.selectedPersons.indexOf(item.id) === -1 || item.id === selectedId;
