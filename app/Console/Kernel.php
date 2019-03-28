@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
              ->daily()
              ->at('18:00');
 
-        //создание записи аналитики
+         //создание записи аналитики
          $schedule->command('create:analytics101report')
              ->daily()
              ->at('07:00');
@@ -41,6 +41,11 @@ class Kernel extends ConsoleKernel
          //забиваем отчет на главной странице
          $schedule->command('fill:main:reports')
             ->everyFiveMinutes();
+
+        //создание записи "Тех.проверка системы оповещения"
+        $schedule->command('create:alert_system_check')
+            ->daily()
+            ->at('07:00');
 
          //очередь отчетов
 //         $schedule->command('process:queue')
