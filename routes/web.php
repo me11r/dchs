@@ -443,6 +443,13 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::get('download/{date}/{type?}', 'Analytics112Controller@download')->name('download');//->middleware(['right:ANALYTICS101_EDIT']);
     });
 
+    Route::group(['prefix' => 'reports/alert-system-checks', 'as' => 'reports.alert-system-checks.'], function (){
+        Route::get('/', 'AlertSystemCheckController@index')->name('index')->middleware(['right:ALERT_SYSTEM_CHECK_SHOW']);
+        Route::get('{id}/edit', 'AlertSystemCheckController@edit')->name('edit')->middleware(['right:ALERT_SYSTEM_CHECK_EDIT']);
+        Route::patch('update/{id}', 'AlertSystemCheckController@update')->name('update')->middleware(['right:ALERT_SYSTEM_CHECK_EDIT']);
+        Route::get('download', 'AlertSystemCheckController@download')->name('download')->middleware(['right:ALERT_SYSTEM_DOWNLOAD']);
+    });
+
     Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
     Route::post('increment-map-request', 'AjaxController@incrementMapRequest');
 

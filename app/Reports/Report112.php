@@ -76,7 +76,9 @@ class Report112
         $data['today'] = $this->today;
 
         $cards112 = $this->tickets112->get();
-        $cards101 = $this->tickets101->get();
+        $cards101 = $this->tickets101
+            ->whereNull('drill_type_id')
+            ->get();
 
         $cards112_emergency = (clone $this->tickets112)->whereHas('emergency_type',function ($q) {
             $q->name('ЧС');

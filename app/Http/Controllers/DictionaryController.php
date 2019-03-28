@@ -7,6 +7,7 @@ use App\Aircraft;
 use App\AircraftType;
 use App\Dictionary;
 use App\DictionaryCategory;
+use App\Direction;
 use App\DistrictManager;
 use App\EventInfoArrived;
 use App\FireDepartment;
@@ -293,6 +294,16 @@ class DictionaryController extends AuthorizedController
             $data['records'] = $reports->paginate($data['per_page']);
             $data['title'] = "Стволы";
         }
+        elseif($name == 'directions') {
+            $reports = Direction::orderBy('sort_order');
+
+            if($request->search){
+                $reports = $reports->where('name', 'like', "%$request->search%");
+            }
+
+            $data['records'] = $reports->paginate($data['per_page']);
+            $data['title'] = "Направления";
+        }
 
 
         return view($view, $data);
@@ -387,6 +398,10 @@ class DictionaryController extends AuthorizedController
             $data['record'] = EventInfoArrived::find($id);
             $data['types'] = TrunkType::all();
             $data['title'] = "Стволы";
+        }
+        elseif($name == 'directions'){
+            $data['record'] = Direction::find($id);
+            $data['title'] = "Направления";
         }
         return view($view, $data);
     }
@@ -522,6 +537,14 @@ class DictionaryController extends AuthorizedController
             $record  = EventInfoArrived::firstOrNew(['id' => $request->id]);
             $record->name = $request->name;
             $record->trunk_type_id = $request->trunk_type_id;
+
+            $record->save();
+        }
+        elseif($name == 'directions'){
+            $record  = Direction::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->sort_order = $request->sort_order;
+            $record->reserved = $request->reserved;
 
             $record->save();
         }
@@ -705,6 +728,9 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'aircrafts':
                 $dict = Aircraft::class;
+                break;
+            case 'direction':
+                $dict = Direction::class;
                 break;
         }
 

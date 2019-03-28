@@ -1,0 +1,131 @@
+{% extends "layout/html" %}
+
+{% block content %}
+    <div class="section {#container#}" id="vue">
+    <h4 class="title" style="padding: 3px 15px">Тех.проверка системы оповещения: {{ check.date_human_format }}</h4>
+
+        {% if user.hasRight('ALERT_SYSTEM_DOWNLOAD') %}
+            <form action="{{ route('reports.alert-system-checks.download', check.id) }}">
+                <p class="title">Скачать отчет</p>
+                <v-datepicker-search
+                        class="column is-2"
+                        name="date_from"
+                        date-string="{{ check.date }}"
+                        label="С">
+                </v-datepicker-search>
+                <v-datepicker-search
+                        class="column is-2"
+                        name="date_to"
+                        date-string="{{ check.date }}"
+                        label="По">
+                </v-datepicker-search>
+                <button class="button is-success" type="submit">Скачать</button>
+            </form>
+        {% endif %}
+
+    <form action="{{ route('reports.alert-system-checks.update', check.id) }}" method="POST">
+        <input type="hidden" name="_method" value="PATCH">
+        {{ csrf_field() }}
+        <v-datepicker-search
+                class="column is-2"
+                name="date"
+                date-string="{{ check.date }}"
+                :disabled="{{ true }}"
+                label="Дата отчета">
+        </v-datepicker-search>
+        <div class="big-table-container">
+            <table class="formation-record-table">
+                <thead>
+                    <tr>
+                        <th>№п/п</th>
+                        <th>Направление</th>
+                        <th>09:30</th>
+                        <th>15:00</th>
+                        <th>18:00</th>
+                    </tr>
+                    <tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for direction in directions %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ direction.name }}</td>
+                            <td>
+                                <select name="directions[{{ direction.id }}][check1]">
+                                    {% for option in select_items %}
+                                        <option {{ check_items[direction.id].check1 is same as (option.id) ? 'selected' : '' }} value="{{ option.id }}">{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select name="directions[{{ direction.id }}][check2]">
+                                    {% for option in select_items %}
+                                        <option {{ check_items[direction.id].check2 is same as (option.id) ? 'selected' : '' }} value="{{ option.id }}">{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select name="directions[{{ direction.id }}][check3]">
+                                    {% for option in select_items %}
+                                        <option {{ check_items[direction.id].check3 is same as (option.id) ? 'selected' : '' }} value="{{ option.id }}">{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="5"><h3 class="title">ЗПУ</h3></td>
+                    </tr>
+                    {% for direction in directions_reserved %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ direction.name }}</td>
+                            <td>
+                                {#{{ check_items[direction.id].check1 }}#}
+                                <select name="directions[{{ direction.id }}][check1]">
+                                    {% for option in select_items %}
+                                        <option {{ check_items[direction.id].check1 is same as (option.id) ? 'selected' : '' }} value="{{ option.id }}">{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select name="directions[{{ direction.id }}][check2]">
+                                    {% for option in select_items %}
+                                        <option {{ check_items[direction.id].check2 is same as (option.id) ? 'selected' : '' }} value="{{ option.id }}">{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select name="directions[{{ direction.id }}][check3]">
+                                    {% for option in select_items %}
+                                        <option {{ check_items[direction.id].check3 is same as (option.id) ? 'selected' : '' }} value="{{ option.id }}">{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+        <div class="panel bottom_panel">
+            <div class="level" style="padding-top: 2rem">
+                <div class="level-left">&nbsp;</div>
+                <div class="level-right">
+                    <a href="/reports/alert-system-checks"
+                       style="margin-right: 10px"
+                       class="button is-light">Назад</a>
+                    <button
+                            type="submit"
+                            class="button is-success">
+                        <i class="fas fa-check"></i>Сохранить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    </div>
+{% endblock content %}
