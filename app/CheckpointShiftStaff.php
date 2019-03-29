@@ -9,6 +9,7 @@ class CheckpointShiftStaff extends Model
 {
     use SoftDeletes;
 
+    //ЛС Дежурная смена контрольно-пропускного режима Департамента
     protected $fillable = [
         'name',
         'guard_number_id',
