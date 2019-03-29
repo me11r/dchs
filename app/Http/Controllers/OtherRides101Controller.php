@@ -40,11 +40,12 @@ class OtherRides101Controller extends Controller
                 ->has('tech_reports')
                 ->max('id');
 
-//            $dataToSave['time_begin'] = Carbon::parse($dataToSave['time_begin'] ?? null)->subHours(18)->format('H:i');
-//            $dataToSave['time_end'] = Carbon::parse($dataToSave['time_end'] ?? null)->subHours(18)->format('H:i');
+            $dataToSave['custom_created_at'] = now();
 
             $record = Ticket101Other::create($dataToSave);
             $techItems = $this->recommend($record);
+
+            $record->custom_created_at = Carbon::parse($record->custom_created_at)->format('Y-m-d H:i');
 
             if($request->ajax()) {
                 return response()->json(['record' => $record, 'techItems' => $techItems]);
@@ -58,6 +59,7 @@ class OtherRides101Controller extends Controller
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
             $data['techItems'] = json_encode([]);
+            $data['canChangeCreatedAt'] = json_encode(Auth::user()->hasRight('CAN_CHANGE_CARD101_OTHER_RIDES_DATE'));
             return view('card.card101-other-rides.create-edit', $data);
         }
     }
@@ -67,8 +69,6 @@ class OtherRides101Controller extends Controller
         $data['record'] = Ticket101Other::find($id);
         $all = $request->all();
         if($request->isMethod('POST')){
-//            $all['time_begin'] = Carbon::parse($all['time_begin'] ?? null)->subHours(18)->format('H:i');
-//            $all['time_end'] = Carbon::parse($all['time_end'] ?? null)->subHours(18)->format('H:i');
             $data['record']->update($all);
 
             $techItems = $data['record']->results()->with([
@@ -84,6 +84,7 @@ class OtherRides101Controller extends Controller
             $data['fire_departments'] = FireDepartment::recommend()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
+            $data['canChangeCreatedAt'] = json_encode(Auth::user()->hasRight('CAN_CHANGE_CARD101_OTHER_RIDES_DATE'));
             $data['techItems'] = FireDepartmentResult::where('ticket101_other_id', $id)
                 ->with([
                     'tech',

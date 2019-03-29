@@ -79,12 +79,22 @@
                                     <div class="field is-grouped">
                                         <div class="field">
                                             <div class="control">
-                                                <label for="">Время регистрации</label>
-                                                <input type="text"
-                                                       :value="otherRide_.created_at|dateFilter('DD.MM.YYYY H:m')"
-                                                       readonly="readonly"
-                                                       class="input"
-                                                >
+                                                <!--<label for="">Время регистрации</label>-->
+                                                <!--<input type="text"-->
+                                                       <!--:value="otherRide_.created_at|dateFilter('DD.MM.YYYY H:m')"-->
+                                                       <!--readonly="readonly"-->
+                                                       <!--class="input"-->
+                                                <!--&gt;-->
+                                                <v-datepicker-search
+                                                        v-model="otherRide_.custom_created_at"
+                                                        :date="otherRide_.custom_created_at"
+                                                        :disabled="!canChangeCreatedAt"
+                                                        name="custom_created_at"
+                                                        :include-time="true"
+                                                        class="control"
+                                                        @dateChanged="otherRide_.custom_created_at = $event"
+                                                        label="Дата и время создания карточки">
+                                                </v-datepicker-search>
                                             </div>
                                         </div>
                                     </div>
@@ -478,6 +488,10 @@
                     return [];
                 }
             },
+            canChangeCreatedAt: {
+                type: Boolean,
+                default: false
+            },
         },
         data: function () {
             return {
@@ -503,7 +517,8 @@
                     final_responsible_person: '',
                     final_direction: '',
                     final_object_name: '',
-                    created_at: ''
+                    created_at: '',
+                    custom_created_at: new Date(),
                 }
             }
         },
@@ -620,6 +635,7 @@
                 record.time_begin = record.time_begin !== null ? moment("2019-01-01 "+record.time_begin).toDate() : null;
                 record.time_end = record.time_end !== null ? moment("2019-01-01 "+record.time_end).toDate() : null;
 
+                record.custom_created_at = record.custom_created_at !== null ? moment(record.custom_created_at).toDate() : new Date();
                 return record;
             },
             checkRoadtrips() {
@@ -644,8 +660,9 @@
             },
             dataToSave() {
                 let data = JSON.parse(JSON.stringify(this.otherRide_));
-                data.time_begin = moment(data.time_begin).format('H:m');
-                data.time_end = moment(data.time_end).format('H:m');
+                data.time_begin = moment(data.time_begin).format('HH:mm');
+                data.time_end = moment(data.time_end).format('HH:mm');
+                data.custom_created_at = moment(data.custom_created_at).format('YYYY-DD-MM HH:mm:SS');
 
                 return data;
             },
@@ -679,7 +696,6 @@
             this.checkRoadtrips();
 
             // setTimeout(this.checkRoadtrips, this.time);
-
             this.prepareRecord(this.otherRide_);
         }
     }
