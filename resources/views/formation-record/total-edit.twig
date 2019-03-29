@@ -109,6 +109,39 @@
                     </div>
                     <div class="level-left">
                         <div class="column">
+                            <h6 class="title" style="padding: 3px 15px">Дежурная смена контрольно-пропускного режима Департамента</h6>
+                            <br>
+                            <table class="formation-record-table">
+                                <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>ФИО</th>
+                                    <th>Должность</th>
+                                    <th>Отсутствующие</th>
+                                    <th>Направление</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in dutyShiftCheckpointItems %}
+                                        <tr>
+                                            <td>{{ i.report.shift.name|default() }}</td>
+                                            <td>{{ i.staff.name }}</td>
+                                            <td>{{ i.rankHumanFormat}}</td>
+                                            <td>
+                                                {% for inactive in dutyShiftCheckpointItemsInactive %}
+                                                    <p>{{ inactive.inactive_staff_info }}</p>
+                                                {% endfor %}
+                                            </td>
+                                            <td>{{ i.report.note|default() }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="level-left">
+                        <div class="column">
                             <h6 class="title" style="padding: 3px 15px">Дежурная смена служб взаимодействия</h6>
                             <br>
                             <table class="formation-record-table">

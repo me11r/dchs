@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\CheckpointShiftStaffItem;
 use App\FormationDistrictManagerItem;
 use App\OperDutyShiftStaffItem;
 use Illuminate\Http\Request;
@@ -12,7 +13,8 @@ class FormationController extends Controller
     public function staff_page(Request $request)
     {
         $f = $request->all();
-        $resp = OperDutyShiftStaffItem::rank($request->rank)
+        $model = $request->staffType === 'od' ? OperDutyShiftStaffItem::class : CheckpointShiftStaffItem::class;
+        $resp = $model::rank($request->rank)
             ->wherehas('report', function ($q) use ($request) {
                 $q->where('shift_id', $request->shift_id);
             })

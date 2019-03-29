@@ -174,6 +174,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
             Route::get('formation-record/{id}/total-edit', 'FormationRecordController@totalEdit')->name('formation-record.total-edit');
             Route::post('formation-record/{id}/total-update', 'FormationRecordController@totalUpdate')->name('formation-record.total-update');
             Route::match(['get', 'post'],'formation-record/staff/{date}/{ods}', 'FormationRecordController@staffCreateEdit')->name('formation-record.staff_CreateEdit');
+            Route::match(['get', 'post'],'formation-record/staff-checkpoint/{date}/{ods}', 'FormationRecordController@staffCheckpointCreateEdit')->name('formation-record.staff-checkpoint');
             Route::match(['get', 'post'],'formation-record/district-managers/{date}', 'FormationRecordController@districtManagersCreateEdit')->name('formation-record.districtManagers_CreateEdit');
             Route::match(['get', 'post'],'formation-record/duty-persons-services/{date}', 'FormationRecordController@dutyPersonsServicesCreateEdit')->name('formation-record.dutyPersonsServicesCreateEdit_CreateEdit');
             Route::resource('formation-record', 'FormationRecordController');

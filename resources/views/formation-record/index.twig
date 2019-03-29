@@ -57,6 +57,11 @@
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             ЛС ОДС
                         </a>
+                        <a href="/formation-record/staff-checkpoint/{{ item.date|date('Y-m-d') }}/1"
+                           class="button is-small is-basic">
+                            <i class="fas fa-pencil-alt"></i>&nbsp;
+                            Дежурная смена к-п режима
+                        </a>
                         <a href="{{ route('formation-record.total-edit', item.id) }}"
                            class="button is-small is-info">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
