@@ -128,6 +128,10 @@ export default {
             type: String,
             default: ''
         },
+        staff_type: {
+            type: String,
+            default: 'od'
+        },
         shiftId: {
             type: Number,
             default: 0
@@ -234,7 +238,8 @@ export default {
                     rank: self.block_type_,
                     shift_id: self.shiftId,
                     inactive: self.inactiveType === 'active' ? null : 'inactive',
-                    date: self.dateInput_
+                    date: self.dateInput_,
+                    staffType: self.staff_type,
                 }
             }).then((resp) => {
                 self.records_ = resp.data;
