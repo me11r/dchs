@@ -481,7 +481,7 @@ class Report
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
-            ->whereDate('created_at', $date)
+            ->whereDate('custom_created_at', $date)
             ->get();
 
         return $formationCard101Others;
@@ -494,7 +494,7 @@ class Report
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
-            ->whereDate('created_at', $date)
+            ->whereDate('custom_created_at', $date)
             ->get();
 
         return $formationCard101Others;
