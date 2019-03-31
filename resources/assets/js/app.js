@@ -364,3 +364,6 @@ window.addEventListener('load', () => {
             alert('ololo report updated on server');
         });
 });
+
+console.dir(123)
+
