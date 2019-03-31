@@ -64,9 +64,9 @@ class PolygonController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, $id){
+        (Polygon::find($id))->fill($request->only(['points', 'title', 'line_color', 'fill_color', 'opacity']))->save();
+        return response()->json(['success' => true]);
     }
 
     /**
