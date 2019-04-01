@@ -82,6 +82,9 @@ class Weather extends Model
         'forecast_water',
         'forecast_atmosphere',
         'note',
+        'storm_warning_number',
+        'storm_warning_date',
+        'storm_warning_text',
     ];
 
     public function scopeDate($q, $search)

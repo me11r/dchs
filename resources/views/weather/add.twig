@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <div class="container section" xmlns="http://www.w3.org/1999/html">
+    <div class="container section" id="vue" xmlns="http://www.w3.org/1999/html">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{% if record.id is defined %}
@@ -112,6 +112,25 @@
                                 <label for="date">Прогноз метеорологических условий загрязнения воздуха по г. Алматы {{ next_date|date('d-m-Y') }}</label>
                                 <textarea class="textarea" rows="1" name="forecast_atmosphere" id="forecast_atmosphere">{{ record.forecast_atmosphere ?? '' }}</textarea>
                             </div>
+
+                            <p class="title">Штормовое предупреждение</p>
+                            <div class="field">
+                                <label for="date">Номер</label>
+                                <input class="input" type="number" value="{{ record.storm_warning_number ?? '' }}" name="storm_warning_number" id="storm_warning_number">
+                            </div>
+                            <div class="field">
+                                <v-datepicker-search
+                                        :date-string="{{ record.storm_warning_date|default(null)|json_encode }}"
+                                        class="control"
+                                        :include-hidden="true"
+                                        name="storm_warning_date"
+                                        label="Дата">
+                                </v-datepicker-search>
+                            </div>
+                            <div class="field">
+                                <textarea class="textarea" rows="5" name="storm_warning_text" id="storm_warning_text">{{ record.storm_warning_text ?? '' }}</textarea>
+                            </div>
+
                         </div>
                     </div>
 
