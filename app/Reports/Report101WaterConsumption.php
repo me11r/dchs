@@ -44,6 +44,7 @@ class Report101WaterConsumption
         $data['headers'] = [
             '№',
             '№ карточки',
+            'Дата',
             'Первым стволом (стволами от емкости автоцистерны)',
             'С установкой пож.автомобилей на водоисточники, ПГ',
             'От емкости нескольких автоцистерн (подвозом воды)',
@@ -51,7 +52,6 @@ class Report101WaterConsumption
             'Подручными средствами',
             'До прибытия',
             'Время тушения',
-            'Дата',
         ];
 
         $data['dateFrom'] = Carbon::parse($this->data['dateFrom'])->format('d.m.Y');
@@ -64,6 +64,7 @@ class Report101WaterConsumption
             $data['values'][] = [
                 ++$index,
                 $record['id'],
+                $record['date'],
                 $record['liquidation_method_id'][1],
                 $record['liquidation_method_id'][2],
                 $record['liquidation_method_id'][3],
@@ -71,7 +72,6 @@ class Report101WaterConsumption
                 $record['liquidation_method_id'][4],
                 $record['liquidation_method_id'][5],
                 $record['time'],
-                $record['date'],
             ];
         }
 
