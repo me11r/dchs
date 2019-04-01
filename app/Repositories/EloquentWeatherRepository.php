@@ -41,6 +41,9 @@ class EloquentWeatherRepository extends Repository implements WeatherInterface
             'forecast_water' => $request->forecast_water,
             'forecast_atmosphere' => $request->forecast_atmosphere,
             'note' => $request->note,
+            'storm_warning_number' => $request->storm_warning_number,
+            'storm_warning_date' => $request->storm_warning_date,
+            'storm_warning_text' => $request->storm_warning_text,
         ]);
     }
 
@@ -65,6 +68,9 @@ class EloquentWeatherRepository extends Repository implements WeatherInterface
             'forecast_water' => $request->forecast_water,
             'forecast_atmosphere' => $request->forecast_atmosphere,
             'note' => $request->note,
+            'storm_warning_number' => $request->storm_warning_number,
+            'storm_warning_date' => $request->storm_warning_date,
+            'storm_warning_text' => $request->storm_warning_text,
         ]);
     }
 }
