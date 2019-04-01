@@ -165,6 +165,9 @@ class FormationRecordController extends Controller
             'cityAreas' => $cityAreas,
             'formationDistrictManager' => $formationDistrictManager,
             'dutyShiftItems' => $dutyShiftItems,
+            'dutyShiftItemsInactive' => $dutyShiftItemsInactive,
+            'dutyShiftCheckpointItems' => $dutyShiftCheckpointItems,
+            'dutyShiftCheckpointItemsInactive' => $dutyShiftCheckpointItemsInactive,
             'formationRecords' => $items,
             'dutyPersonsServiceArr' => $dutyPersonsServiceArr,
         ];
