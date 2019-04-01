@@ -2,9 +2,10 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 
-class SirenSpeechTech extends Model
+class SirenSpeechTech extends BaseModel
 {
     protected $with = [
         'items'
