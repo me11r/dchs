@@ -38,10 +38,11 @@
                 <thead>
                     <tr>
                         <th>№п/п</th>
-                        <th>Направление</th>
+                        <th>Регион (Узел связи)</th>
                         <th>09:30</th>
                         <th>15:00</th>
                         <th>18:00</th>
+                        <th>Примечание</th>
                     </tr>
                     <tr>
                     </tr>
@@ -72,10 +73,13 @@
                                     {% endfor %}
                                 </select>
                             </td>
+                            <td>
+                                <input type="text" name="directions[{{ direction.id }}][note]" value="{{ check_items[direction.id].note }}">
+                            </td>
                         </tr>
                     {% endfor %}
                     <tr>
-                        <td colspan="5"><h3 class="title">ЗПУ</h3></td>
+                        <td colspan="6"><h3 class="title">ЗПУ</h3></td>
                     </tr>
                     {% for direction in directions_reserved %}
                         <tr>
@@ -102,6 +106,9 @@
                                         <option {{ check_items[direction.id].check3 is same as (option.id) ? 'selected' : '' }} value="{{ option.id }}">{{ option.name }}</option>
                                     {% endfor %}
                                 </select>
+                            </td>
+                            <td>
+                                <input type="text" name="directions[{{ direction.id }}][note]" value="{{ check_items[direction.id].note }}">
                             </td>
                         </tr>
                     {% endfor %}
