@@ -47,6 +47,7 @@
                 </div>
             </b-timepicker>
         </b-field>
+        <input v-if="includeHidden" type="hidden" :name="name_" :value="dateYYYYMMDD">
     </div>
 
 </template>
@@ -66,6 +67,10 @@ export default {
             default: false,
         },
         includeTime: {
+            type: Boolean,
+            default: false,
+        },
+        includeHidden: {
             type: Boolean,
             default: false,
         },
@@ -115,6 +120,11 @@ export default {
             }
         },
 
+    },
+    computed: {
+        dateYYYYMMDD() {
+            return this.date_ ? moment(this.date_).format('YYYY-MM-DD') : null;
+        }
     },
     created() {
         if (this.dateString !== '' && this.dateString !== null) {

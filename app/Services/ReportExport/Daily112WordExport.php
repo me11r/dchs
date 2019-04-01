@@ -327,6 +327,11 @@ class Daily112WordExport
         $index++;
         $this->addParagraph($section, "$index. Мониторинг интернет пространства – ", 'негативная информация не зарегистрирована.');
 
+        if ($this->data['weather_forecast']->storm_warning_text ?? null) {
+            $index++;
+            $this->addParagraph($section, "$index. Штормовое предупреждение – ", $this->data['weather_forecast']->storm_info);
+        }
+
         $section->addText(
             '',
             $generalBoldFontStyle,
