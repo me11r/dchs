@@ -90,7 +90,7 @@ class Report112
 
         $air_rescue_report = AirRescueReport::dailyRecords($this->today, $this->tomorrow);
 
-        $callInfo = CallInfo::latest()->first();
+        $callInfo = CallInfo::whereBetween('date', [$this->today, $this->tomorrow])->first();
 
         $data['fires_count_112'] = (clone $this->tickets112)->whereHas('emergency_type',function ($q) {
             $q->name('ЧС');
@@ -158,10 +158,10 @@ class Report112
         $data['mudflow_emergency_count'] = $this->tickets112->filterByServiceType('ГУ Казселезащита')->count();
         $data['roso_count'] = $this->tickets112->filterByServiceType('ГУ РОСО')->count();
         $data['cmk_count'] = $this->tickets112->filterByServiceType('ЦМК')->count();
-        $data['SOME'] = Quake::latest()->first();
+        $data['SOME'] = Quake::dailyRecords($this->today, $this->tomorrow)->get();
         $data['flooding_count'] = $this->tickets112->filterByIncidentType('Подтопления')->count();
-        $data['siren_speech_tech'] = SirenSpeechTech::latest()->first();
-        $data['weather_forecast'] = Weather::latest()->first();
+        $data['siren_speech_tech'] = SirenSpeechTech::shiftRecords($this->today, $this->tomorrow)->first();
+        $data['weather_forecast'] = Weather::whereBetween('date', [$this->today, $this->tomorrow])->first();
         $data['emergency_situations'] = EmergencySituation::dailyRecords()->get();
         $data['call_info'] = $callInfo;
 

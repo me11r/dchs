@@ -172,8 +172,13 @@ class Daily112WordExport
             ['align' => Jc::BOTH]
         );
 
-        $this->addParagraph($section, '- ГУ «СОМЭ КН МОН РК»: ', ($this->data['SOME']->epicenter ?? null).($this->data['SOME']->mpv ? (' магнитуда: '.$this->data['SOME']->mpv ?? null) : ''), ['indentation' => ['left' => 540]]);
-        $this->addParagraph($section, '- РГП «Казгидромет»: ', $this->data['weather_forecast']->forecast_city1, ['indentation' => ['left' => 540]]);
+        $some = "";
+        foreach ($this->data['SOME'] as $someItem) {
+            $some .= ($someItem->epicenter ?? null).($someItem->mpv ? (' магнитуда: '.$someItem->mpv ?? null) : '').'; ';
+        }
+
+        $this->addParagraph($section, '- ГУ «СОМЭ КН МОН РК»: ', $some ? $some : 'не зарегистрировано', ['indentation' => ['left' => 540]]);
+        $this->addParagraph($section, '- РГП «Казгидромет»: ', $this->data['weather_forecast']->forecast_city1 ?? 'не зарегистрировано', ['indentation' => ['left' => 540]]);
         $this->addParagraph($section, '- АГЭУ ГУ «Казселезащита: ', $this->data['mudflow_emergency_count'] ? $this->data['mudflow_emergency_count'] : 'не зарегистрировано', ['indentation' => ['left' => 540]]);
         $this->addParagraph($section, '3. Системы жизнеобеспечения города: ', 'не зарегистрировано');
         $this->addParagraph($section, '4. Подтопления: ', $this->data['flooding_count']);
@@ -316,7 +321,9 @@ class Daily112WordExport
         $this->addParagraph($section, "$index. Отработано всего выездов Службой Спасения г. Алматы – ", $this->data['cards112']->count());
         $index++;
 
-        $this->addParagraph($section, "$index. Данные по СРУ: ", $this->data['siren_speech_tech']->total .":". "С-40 (моторные) – {$this->data['siren_speech_tech']->motor}, СРУ-{$this->data['siren_speech_tech']->sst}:  из них  в нерабочем – {$this->data['siren_speech_tech']->broken}");
+        $sirenSpeechTech = $this->data['siren_speech_tech'] ? $this->data['siren_speech_tech']->total .":". "С-40 (моторные) – {$this->data['siren_speech_tech']->motor}, СРУ-{$this->data['siren_speech_tech']->sst}:  из них  в нерабочем – {$this->data['siren_speech_tech']->broken}" : 'не зарегистрировано';
+        $this->addParagraph($section, "$index. Данные по СРУ: ", $sirenSpeechTech);
+
         $index++;
         $this->addParagraph($section, "$index. Мониторинг интернет пространства – ", 'негативная информация не зарегистрирована.');
 
