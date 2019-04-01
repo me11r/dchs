@@ -38,7 +38,6 @@ class CallInfo extends Model
     {
         return
             $this->count_101 +
-//            $this->count_emergency +
             $this->count_102 +
             $this->count_103 +
             $this->count_info +
