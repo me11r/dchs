@@ -44,6 +44,7 @@
                     <tr>
                         <th>№</th>
                         <th>№ карточки</th>
+                        <th>Дата</th>
                         <th>Первым стволом (стволами от емкости автоцистерны)</th>
                         <th>С установкой пож.автомобилей на водоисточники, ПГ</th>
                         <th>От емкости нескольких автоцистерн (подвозом воды)</th>
@@ -51,13 +52,13 @@
                         <th>Подручными средствами</th>
                         <th>До прибытия</th>
                         <th>Время тушения</th>
-                        <th>Дата</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(record, key) in records_" :key="`records_${key}`">
                         <td>{{ ++key }}</td>
                         <td>{{ record.id }}</td>
+                        <td>{{ record.date }}</td>
                         <td>{{ record['liquidation_method_id'][1] }}</td>
                         <td>{{ record['liquidation_method_id'][2] }}</td>
                         <td>{{ record['liquidation_method_id'][3] }}</td>
@@ -65,7 +66,6 @@
                         <td>{{ record['liquidation_method_id'][4] }}</td>
                         <td>{{ record['liquidation_method_id'][5] }}</td>
                         <td>{{ record.time }}</td>
-                        <td>{{ record.date }}</td>
                     </tr>
                 </tbody>
             </table>
