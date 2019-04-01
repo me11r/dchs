@@ -161,7 +161,7 @@ class Report112
         $data['SOME'] = Quake::dailyRecords($this->today, $this->tomorrow)->get();
         $data['flooding_count'] = $this->tickets112->filterByIncidentType('Подтопления')->count();
         $data['siren_speech_tech'] = SirenSpeechTech::shiftRecords($this->today, $this->tomorrow)->first();
-        $data['weather_forecast'] = Weather::whereBetween('date', [$this->today, $this->tomorrow])->first();
+        $data['weather_forecast'] = Weather::whereDate('date', Carbon::parse($this->yesterday)->format('Y-m-d'))->first();
         $data['emergency_situations'] = EmergencySituation::dailyRecords()->get();
         $data['call_info'] = $callInfo;
 
