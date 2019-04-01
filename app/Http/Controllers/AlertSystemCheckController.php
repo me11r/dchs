@@ -50,6 +50,7 @@ class AlertSystemCheckController extends Controller
                 'check1' => $request->input("directions.{$directionId}.check1", null),
                 'check2' => $request->input("directions.{$directionId}.check2", null),
                 'check3' => $request->input("directions.{$directionId}.check3", null),
+                'note' => $request->input("directions.{$directionId}.note", null),
                 'direction_id' => $directionId,
             ]);
         }
@@ -87,9 +88,10 @@ class AlertSystemCheckController extends Controller
                 $data['tables'][$portionNum]['rows'][$directionKey][] = $rowNum;
                 $data['tables'][$portionNum]['rows'][$directionKey][] = $direction->name;
                 foreach ($portion as $check_) {
-                    $data['tables'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check1'];
-                    $data['tables'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check2'];
-                    $data['tables'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check3'];
+                    $data['tables'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check1_title'];
+                    $data['tables'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check2_title'];
+                    $data['tables'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check3_title'];
+//                    $data['tables'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['note'];
                 }
             }
         }
@@ -103,6 +105,7 @@ class AlertSystemCheckController extends Controller
                     $data['tables_reserved'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check1'];
                     $data['tables_reserved'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check2'];
                     $data['tables_reserved'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['check3'];
+//                    $data['tables_reserved'][$portionNum]['rows'][$directionKey][] = $data['check_items'][$check_->id][$direction->id]['note'];
                 }
             }
         }

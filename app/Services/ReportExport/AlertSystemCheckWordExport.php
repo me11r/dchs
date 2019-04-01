@@ -76,7 +76,7 @@ class AlertSystemCheckWordExport
             $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
             //шиирна столбца ЗПУ
-            $reserveSpan = count($dates) * 3 + 2;
+            $reserveSpan = count($dates) * 3 + 3;
 
             $table->addCell(5000, ['gridSpan' => $reserveSpan, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('ЗПУ', $hcFontStyle, $hcAlignStyle);
 
@@ -85,8 +85,6 @@ class AlertSystemCheckWordExport
             $this->addBottomText($section);
 
         }
-
-
     }
 
     private function addBottomText(Section $section)
@@ -128,10 +126,11 @@ class AlertSystemCheckWordExport
 
         $table->addRow(700);
 
-        $table->addCell(900, $cellRowSpan)->addText('№п/п', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(900, $cellRowSpan)->addText('Направление', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(900, $cellRowSpan)->addText('№ п/п', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(900, $cellRowSpan)->addText('Регион (Узел связи)', $hcFontStyle, $hcAlignStyle);
 
         $table->addCell(5000, ['gridSpan' => $dateSpan, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Дата', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(300, $cellRowSpan)->addText('Примечание', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow();
 
@@ -142,6 +141,8 @@ class AlertSystemCheckWordExport
             $table->addCell(300, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText($date, $hcFontStyle, $hcAlignStyle);
         }
 
+        $table->addCell(null, $cellRowContinue);
+
         $table->addRow();
 
         $table->addCell(null, $cellRowContinue);
@@ -151,6 +152,8 @@ class AlertSystemCheckWordExport
             $table->addCell(300, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText("09-30;<w:br/>15-00;<w:br/>18-00", $hcFontStyle, $hcAlignStyle);
         }
 
+        $table->addCell(null, $cellRowContinue);
+
         $table->addRow();
 
         $table->addCell(null, $cellRowContinue);
@@ -159,18 +162,22 @@ class AlertSystemCheckWordExport
         foreach ($dates as $date) {
             $table->addCell(300, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText("Ответ", $hcFontStyle, $hcAlignStyle);
         }
+        $table->addCell(null, $cellRowContinue);
+
     }
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table, $data)
     {
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+
         foreach ($data as $check) {
 
             foreach ($check as $rows) {
                 $row = $table->addRow();
                 foreach ($rows as $item) {
-                    $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
                     $this->addDataCellToRow($row, $item, [], $fontStyle, self::$noPaddingPS);
                 }
+                $this->addDataCellToRow($row, '', [], $fontStyle, self::$noPaddingPS);
             }
         }
     }
