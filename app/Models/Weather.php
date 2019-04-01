@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -95,5 +96,12 @@ class Weather extends Model
     public function scopeToday($q)
     {
         return $q->date(today());
+    }
+
+    //attribute: storm_info
+    public function getStormInfoAttribute()
+    {
+        $date = $this->storm_warning_date ? Carbon::parse($this->storm_warning_date)->format('d.m.Y') : '';
+        return "Номер: {$this->storm_warning_number}, дата: {$date}, {$this->storm_warning_text}";
     }
 }
