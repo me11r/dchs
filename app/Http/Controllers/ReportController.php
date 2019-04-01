@@ -1680,19 +1680,19 @@ class ReportController extends AuthorizedController
             $str = '';
 
             $result['id'] = $card->id;
-            $result['liquidation_method_id'][1] = null;
-            $result['liquidation_method_id'][2] = null;
-            $result['liquidation_method_id'][3] = null;
-            $result['liquidation_method_id'][9] = null;
+            $result['liquidation_method_id'][1] = null; //первым стволом (стволами от емкости автоцистерны)
+            $result['liquidation_method_id'][2] = null; //с установкой пож. автомобилей на водоисточники
+            $result['liquidation_method_id'][3] = null; //от емкости нескольких автоцистерн (подвозом воды)
+            $result['liquidation_method_id'][9] = null; //Пенными стволами
 
-            $result['liquidation_method_id'][4] = null;
-            $result['liquidation_method_id'][5] = null;
+            $result['liquidation_method_id'][4] = null; //подручными средствами
+            $result['liquidation_method_id'][5] = null; //до прибытия
 
             if(in_array($card->liquidation_method_id, $tripResultIdsWeCount)) {
                 foreach ($card->chronologies_arrived as $chronology) {
 
                     //пропускаем ГДЗС в разделе "С установкой пож.автомобилей на водоисточники, ПГ" (ARM-523)
-                    if($card->liquidation_method_id == 2 && $chronology->event_info_arrived->name == 'ГДЗС') {
+                    if($chronology->event_info_arrived->name == 'ГДЗС') {
                         continue;
                     }
 
