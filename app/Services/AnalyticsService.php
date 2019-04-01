@@ -9,6 +9,7 @@ use App\Chronology101;
 use App\FireDepartment;
 use App\Models\FireDepartmentResult;
 use App\Models\Ticket101\Ticket101OtherRecord;
+use Carbon\Carbon;
 
 class AnalyticsService
 {
@@ -65,8 +66,8 @@ class AnalyticsService
         $result = [
             'result_title' => $ticket->trip_result->name,
             'detailed_address' => $ticket->detailed_address,
-            'date' => $ticket->created_at->format('d.m.Y H:i'),
-            'date2' => $ticket->created_at->format('d.m.Y'),
+            'date' => Carbon::parse($ticket->custom_created_at)->format('d.m.Y H:i'),
+            'date2' => Carbon::parse($ticket->custom_created_at)->format('d.m.Y'),
             'city_area' => $ticket->city_area->name ?? null,
             'address' => $ticket->location,
             'deptsArrived' => $deptsArrived,
