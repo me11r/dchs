@@ -68,6 +68,7 @@ class FormationRecordWordExport
         $section->addPageBreak();
 
         $this->addDutyPersonsTable($section);
+        $this->addCheckpointPersonsTable($section);
 
         $this->addDutyPersonsServiceTable($section);
 
@@ -297,7 +298,8 @@ class FormationRecordWordExport
             '№',
             'ФИО',
             'Должность',
-            'Направление',
+            'Отсутствующие',
+            'Примечание',
         ];
         $fontStyle = ['name' => 'Times New Roman', 'size' => 12, 'bold' => true];
 
@@ -310,11 +312,74 @@ class FormationRecordWordExport
 
             $row = $table->addRow(1600);
 
+            $inactiveItems = ''; //отсутствующие
+            foreach ($this->data['dutyShiftItemsInactive'] as $inactiveItem) {
+                $inactiveItems .= $inactiveItem['inactive_staff_info'];
+            }
+
             $arrData = [
-                $dutyShiftItem['shift']['name'],
+                $dutyShiftItem['report']['shift']['name'],
                 $dutyShiftItem['staff']['name'],
                 $dutyShiftItem['rankHumanFormat'],
-                $dutyShiftItem['direction'],
+                $inactiveItems,
+                $dutyShiftItem['report']->note,
+            ];
+            $fontStyle['bold'] = false;
+            $this->addDataCellToRow($row, $arrData, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+        }
+    }
+
+    //Дежурная смена контрольно-пропускного режима Департамента
+    private function addCheckpointPersonsTable(Section $section)
+    {
+        $cellRowSpan = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
+        $cellRowSpanThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
+        $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 12, 'valign' => Jc::CENTER];
+        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+
+        $section->addText(
+            'Дежурная смена контрольно-пропускного режима Департамента',
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::CENTER]
+        );
+
+        $tableStyle = new Table;
+        $tableStyle->setBorderColor('black');
+        $tableStyle->setUnit(TblWidth::PERCENT);
+
+        $table = $section->addTable($tableStyle);
+
+        $headers = [
+            '№',
+            'ФИО',
+            'Должность',
+            'Отсутствующие',
+            'Примечание',
+        ];
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 12, 'bold' => true];
+
+        $row = $table->addRow(1600);
+
+        $this->addDataCellToRow($row, $headers, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
+
+
+        foreach ($this->data['dutyShiftCheckpointItems'] as $dutyShiftItem) {
+
+            $row = $table->addRow(1600);
+
+            $inactiveItems = ''; //отсутствующие
+            foreach ($this->data['dutyShiftCheckpointItemsInactive'] as $inactiveItem) {
+                $inactiveItems .= $inactiveItem['inactive_staff_info'];
+            }
+
+            $arrData = [
+                $dutyShiftItem['report']['shift']['name'],
+                $dutyShiftItem['staff']['name'],
+                $dutyShiftItem['rankHumanFormat'],
+                $inactiveItems,
+                $dutyShiftItem['report']->note
             ];
             $fontStyle['bold'] = false;
             $this->addDataCellToRow($row, $arrData, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
