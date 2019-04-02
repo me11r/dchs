@@ -61,6 +61,17 @@ class FormationTechItem extends Model
         'date_to_formatted',
     ];
 
+    public $statuses = [
+        'vacation' => 'Отпуск',
+        'business_trip' => 'Командировка',
+        'maternity' => 'Декрет',
+        'sick_leave' => 'Больничный',
+        'other' => 'Другие причины',
+        'action' => 'в расчете',
+        'reserve' => 'в резерве',
+        'repair' => 'в ремонте',
+    ];
+
     public function scopeStatus($q, $status)
     {
         return $q->where('status', $status);
@@ -141,5 +152,11 @@ class FormationTechItem extends Model
 
         return $result;
 
+    }
+
+    //attr:status_title
+    public function getStatusTitleAttribute()
+    {
+        return $this->statuses[$this->status] ?? null;
     }
 }
