@@ -179,6 +179,13 @@ class Daily112WordExport
 
         $this->addParagraph($section, '- ГУ «СОМЭ КН МОН РК»: ', $some ? $some : 'не зарегистрировано', ['indentation' => ['left' => 540]]);
         $this->addParagraph($section, '- РГП «Казгидромет»: ', $this->data['weather_forecast']->forecast_city1 ?? 'не зарегистрировано', ['indentation' => ['left' => 540]]);
+
+        if ($this->data['weather_forecast']->storm_warning_text ?? null) {
+            $this->addParagraph($section, "Штормовое предупреждение №{$this->data['weather_forecast']->storm_warning_number} от {$this->data['weather_forecast']->storm_date_formatted}: ",
+                $this->data['weather_forecast']->storm_warning_text,
+                ['indentation' => ['left' => 540]]);
+        }
+
         $this->addParagraph($section, '- АГЭУ ГУ «Казселезащита: ', $this->data['mudflow_emergency_count'] ? $this->data['mudflow_emergency_count'] : 'не зарегистрировано', ['indentation' => ['left' => 540]]);
         $this->addParagraph($section, '3. Системы жизнеобеспечения города: ', 'не зарегистрировано');
         $this->addParagraph($section, '4. Подтопления: ', $this->data['flooding_count']);
@@ -327,10 +334,6 @@ class Daily112WordExport
         $index++;
         $this->addParagraph($section, "$index. Мониторинг интернет пространства – ", 'негативная информация не зарегистрирована.');
 
-        if ($this->data['weather_forecast']->storm_warning_text ?? null) {
-            $index++;
-            $this->addParagraph($section, "$index. Штормовое предупреждение – ", $this->data['weather_forecast']->storm_info);
-        }
 
         $section->addText(
             '',
