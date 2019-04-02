@@ -128,7 +128,7 @@ class FormationReport extends Model
         $reserve = FormationTechItem::whereHas('formation_tech_report.report', function ($q) {
             $q->where('id', $this->id);
         })
-            ->status('reserve')
+            ->whereIn('status',['reserve','repair'])
             ->dvr(true)
             ->count();
 
