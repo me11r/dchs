@@ -28,6 +28,7 @@ class CheckpointShiftStaffItem extends Model
         'business_trip' => 'Командировка',
         'maternity' => 'Декрет',
         'sick_leave' => 'Больничный',
+        'other' => 'Другие причины',
     ];
 
     public function staff()
