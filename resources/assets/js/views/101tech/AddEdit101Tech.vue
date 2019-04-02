@@ -89,7 +89,7 @@
 
                 </div>
 
-                <div v-if="block_type === 'reserve' || block_type === 'action'"
+                <div
                      class="control column">
                     <label class="is-size-7" :for="getName('dvr', item.id)">Статус видеорегистратора</label><br>
                     <div class="select">
