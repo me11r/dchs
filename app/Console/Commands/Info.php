@@ -18,7 +18,7 @@ class Info extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'найти топ процессов упорядоченных по используемой памяти, в мегабайтах (MB):';
 
     /**
      * Create a new command instance.

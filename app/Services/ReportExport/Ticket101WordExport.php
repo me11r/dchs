@@ -290,28 +290,28 @@ class Ticket101WordExport
 
             $result[$fireDept->title] = [
                 'vacation' => $vacationPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'study' => $studyPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'maternity' => $maternityPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'dispatchers' => $dispatchersPpl->map(function ($item) {
                     return ($item->staff->initials ?? null) . "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick' => $sickPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick_leave' => $sickLeavePpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'other_reasons' => $other_reasons->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
 
                 'gdzs_base' => $gdzs_base->map(function ($item) {
@@ -675,7 +675,8 @@ class Ticket101WordExport
 
         $techIndex = 1;
         foreach ($repairedTech as $fireDept => $tech) {
-            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
+//            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
+            $tabs = "\t\t\t";
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
@@ -703,7 +704,8 @@ class Ticket101WordExport
 
         $techIndex = 1;
         foreach ($repairedDvr as $fireDept => $tech) {
-            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
+//            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
+            $tabs = "\t\t\t";
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
