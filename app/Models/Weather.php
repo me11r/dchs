@@ -104,4 +104,10 @@ class Weather extends Model
         $date = $this->storm_warning_date ? Carbon::parse($this->storm_warning_date)->format('d.m.Y') : '';
         return "Номер: {$this->storm_warning_number}, дата: {$date}, {$this->storm_warning_text}";
     }
+
+    //attribute: storm_date_formatted
+    public function getStormDateFormattedAttribute()
+    {
+        return $this->storm_warning_date ? Carbon::parse($this->storm_warning_date)->format('d.m.Y') : null;
+    }
 }
