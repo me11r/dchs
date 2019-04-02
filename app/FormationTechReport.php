@@ -241,7 +241,7 @@ class FormationTechReport extends Model
             ->count();
 
         $reserve = $this->formation_tech_items()
-            ->status('reserve')
+            ->whereIn('status',['reserve','repair'])
             ->dvr(true)
             ->count();
 
