@@ -160,6 +160,7 @@ export default {
                 {id: 'business_trip', name: 'Командировка'},
                 {id: 'maternity', name: 'Декрет'},
                 {id: 'sick_leave', name: 'Больничный'},
+                {id: 'other', name: 'Другие причины'},
             ],
         };
     },
