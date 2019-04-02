@@ -308,14 +308,17 @@ class FormationRecordWordExport
         $this->addDataCellToRow($row, $headers, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
 
 
-        foreach ($this->data['dutyShiftItems'] as $dutyShiftItem) {
+        foreach ($this->data['dutyShiftItems'] as $key => $dutyShiftItem) {
 
             $row = $table->addRow(1600);
 
-            $inactiveItems = ''; //отсутствующие
-            foreach ($this->data['dutyShiftItemsInactive'] as $inactiveItem) {
-                $inactiveItems .= $inactiveItem['inactive_staff_info'];
+            $inactiveItems = ''; //отсутствующие, только в первой строчке
+            if($key === 0) {
+                foreach ($this->data['dutyShiftItemsInactive'] as $inactiveItem) {
+                    $inactiveItems .= $inactiveItem['inactive_staff_info'];
+                }
             }
+
 
             $arrData = [
                 $dutyShiftItem['report']['shift']['name'],
@@ -365,13 +368,15 @@ class FormationRecordWordExport
         $this->addDataCellToRow($row, $headers, ['borderSize' => 10, 'borderColor' => '000000'], $fontStyle, self::$noPaddingPS);
 
 
-        foreach ($this->data['dutyShiftCheckpointItems'] as $dutyShiftItem) {
+        foreach ($this->data['dutyShiftCheckpointItems'] as $key => $dutyShiftItem) {
 
             $row = $table->addRow(1600);
 
-            $inactiveItems = ''; //отсутствующие
-            foreach ($this->data['dutyShiftCheckpointItemsInactive'] as $inactiveItem) {
-                $inactiveItems .= $inactiveItem['inactive_staff_info'];
+            $inactiveItems = ''; //отсутствующие, только в первой строчке
+            if ($key === 0) {
+                foreach ($this->data['dutyShiftCheckpointItemsInactive'] as $inactiveItem) {
+                    $inactiveItems .= $inactiveItem['inactive_staff_info'];
+                }
             }
 
             $arrData = [

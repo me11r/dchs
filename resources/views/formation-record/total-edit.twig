@@ -89,13 +89,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    {% for i in dutyShiftItems %}
+                                    {% for key, i in dutyShiftItems %}
                                         <tr>
                                             <td>{{ i.report.shift.name|default() }}</td>
                                             <td>{{ i.staff.name }}</td>
                                             <td>{{ i.rankHumanFormat}}</td>
                                             <td>
-                                                {% for inactive in dutyShiftItemsInactive %}
+                                                {% for inactive in dutyShiftItemsInactive if key == 0 %}
                                                     <p>{{ inactive.inactive_staff_info }}</p>
                                                 {% endfor %}
                                             </td>
@@ -122,13 +122,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    {% for i in dutyShiftCheckpointItems %}
+                                    {% for key, i in dutyShiftCheckpointItems %}
                                         <tr>
                                             <td>{{ i.report.shift.name|default() }}</td>
                                             <td>{{ i.staff.name }}</td>
                                             <td>{{ i.rankHumanFormat}}</td>
                                             <td>
-                                                {% for inactive in dutyShiftCheckpointItemsInactive %}
+                                                {% for inactive in dutyShiftCheckpointItemsInactive if key == 0 %}
                                                     <p>{{ inactive.inactive_staff_info }}</p>
                                                 {% endfor %}
                                             </td>
