@@ -363,7 +363,7 @@
                     {% if (previous == false) %}
                         <tr>
                             <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                            <td><b>{{ item.inactive_title }} - </b>{{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
+                            <td><b>{{ item.inactive_title }} - </b>{{ item.inactive_staff_info }}
                     {% elseif (previous.staff.department.name != item.staff.department.name) or (item.rank != previous.rank) %}
                             </td>
                         </tr>
@@ -373,9 +373,9 @@
                                     {{ previous.staff.department.name == item.staff.department.name ? '' : item.staff.department.name }}
                                 </span>
                             </td>
-                            <td><b>{{ item.inactive_title }} - </b>{{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
+                            <td><b>{{ item.inactive_title }} - </b>{{ item.inactive_staff_info }}
                     {% else %}
-                        , {{ item.staff.initials }} ({{ item.staff.rank }} {{ item.staff.position }})
+                        , {{ item.inactive_staff_info }}
                     {% endif %}
                     {% if (loop.last) %}
                         </td>
@@ -456,15 +456,15 @@
                     {% if (previous == false) %}
                         <tr>
                             <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                            <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                            <td>{{ item.inactive_staff_info }}
                     {% elseif (previous.staff.department.name != item.staff.department.name) %}
                             </td>
                         </tr>
                         <tr>
                             <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                            <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                            <td>{{ item.inactive_staff_info }})
                     {% else %}
-                           , {{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                           , {{ item.inactive_staff_info }} {{ item.inactive_staff_info }}
                     {% endif %}
                     {% if (loop.last) %}
                             </td>
@@ -497,15 +497,15 @@
                     {% if (previous == false) %}
                         <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                        <td>{{ item.inactive_staff_info }}
                     {% elseif (previous.staff.department.name != item.staff.department.name) %}
                         </td>
                         </tr>
                         <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
-                        <td>{{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                        <td>{{ item.inactive_staff_info }}
                     {% else %}
-                        , {{ item.staff.initials }} {% if item.comment%} ({{ item.comment }}) {% endif %} ({{ item.staff.rank }} {{ item.staff.position }})
+                        , {{ item.inactive_staff_info }}
                     {% endif %}
                     {% if (loop.last) %}
                         </td>
