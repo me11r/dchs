@@ -79,6 +79,7 @@ class CheckpointShiftStaffItem extends Model
 
             $str = '';
             $str .= "{$this->staff->name} ";
+            $str .= "{$this->staff->position}, ";
             $str .= $this->inactiveTypes[$this->inactive_type] ?? null;
             $str .= ' ';
             $str .= $dateFrom ? "c {$dateFrom} " : "";

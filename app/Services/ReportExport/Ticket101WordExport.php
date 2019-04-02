@@ -674,8 +674,9 @@ class Ticket101WordExport
 
         $techIndex = 1;
         foreach ($repairedTech as $fireDept => $tech) {
+            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
             $section->addText(
-                "{$techIndex}. {$fireDept}:\t\t" . implode(', ', $tech),
+                "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
