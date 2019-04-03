@@ -644,7 +644,8 @@ class CardController extends AuthorizedController
             $this->createServicePlans($card);
             $this->updateServicePlans($request->input('notification_services', []));
             $this->recommend($request, $card);
-            $this->saveHqRides($request, $card);//если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
+            $this->saveHqRides($request, $card);
+            // если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
             // надо вернуть
             if ($deptsToGetBack->count()) {
                 $getBackArray = $deptsToGetBack->pluck('tech_id')->toArray();

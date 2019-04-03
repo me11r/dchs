@@ -1197,6 +1197,7 @@ class ReportController extends AuthorizedController
         dd('Кеш устарел, обновите страницу');
     }
 
+    //Общий свод по прочим выездам
     public function getReportOtherRides(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
@@ -1232,11 +1233,23 @@ class ReportController extends AuthorizedController
         $data['records'] = $data['records']
             ->with([
                 'ride_type',
-                'results',
-                'results.department',
-                'results.tech',
+//                'results',
+//                'results.department',
+//                'results.tech',
+//                'hqRides',
             ])
             ->get();
+
+        foreach ($data['records'] as $record) {
+            $record->results = $record->results()->whereNotNull('dispatch_time')->with([
+                'department',
+                'tech',
+            ])->get();
+
+            $record->hq_rides = $record->hqRides()
+                ->whereNotNull('dispatched')
+                ->get();
+        }
 
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;

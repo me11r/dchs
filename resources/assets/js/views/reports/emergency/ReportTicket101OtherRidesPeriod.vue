@@ -90,10 +90,11 @@
                         <td>{{ ++key }}</td>
                         <td>{{ record.created_at|dateFilter('DD.MM.YYYY H:m') }}</td>
                         <td>
-                            <p v-for="result in record.results" v-if="result.dispatch_time !== null" :key="`results_dept_title_${result.id}`">{{ result.department.title }}</p>
+                            <p v-for="result in record.results" :key="`results_dept_title_${result.id}`">{{ result.department.title }}</p>
+                            <p v-for="hq_ride in record.hq_rides" :key="`hq_ride_title_${hq_ride.id}`">{{ hq_ride.name }}</p>
                         </td>
                         <td>
-                            <p v-for="result in record.results" v-if="result.dispatch_time !== null" :key="`results_dept_number_${result.id}`">{{ result.tech.department }}</p>
+                            <p v-for="result in record.results" :key="`results_dept_number_${result.id}`">{{ result.tech.department }}</p>
                         </td>
                         <td>{{ record.ride_type ? record.ride_type.name : '' }}</td>
                         <td>{{ record.direction }}</td>

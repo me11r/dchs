@@ -18,6 +18,7 @@ use App\Ticket101;
 use App\Ticket101HqRide;
 use App\Ticket101InfoFromFd;
 use App\Ticket101Other;
+use App\Ticket101OtherHqRide;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -122,10 +123,13 @@ class CardController extends Controller
         $ride = $request->ride;
         $ride['dispatch_time'] = now()->format('H:i');
         $ride['dispatched'] = true;
-        $ride = Ticket101HqRide::updateOrCreate([
+        $model = $request->type === 'other' ? Ticket101OtherHqRide::class : Ticket101HqRide::class;
+        $ride = $model::updateOrCreate([
             'ticket101_id' => $ride['ticket101_id'],
             'name' => $ride['name'],
         ],$ride);
+
+        $ride = $model::find($ride->id);
 
         return response()->json($ride, 200);
     }

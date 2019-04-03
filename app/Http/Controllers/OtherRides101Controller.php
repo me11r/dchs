@@ -10,7 +10,9 @@ use App\Models\FormationTechItem;
 use App\Models\Schedule;
 use App\Models\Staff;
 use App\RideType;
+use App\Ticket101HqRide;
 use App\Ticket101Other;
+use App\Ticket101OtherHqRide;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +49,22 @@ class OtherRides101Controller extends Controller
 
             $record->custom_created_at = Carbon::parse($record->custom_created_at)->format('Y-m-d H:i');
 
+            foreach (['ДСПТ', 'КШМ', 'ИПЛ'] as $deptName) {
+                Ticket101OtherHqRide::updateOrCreate([
+                    'name' => $deptName,
+                    'ticket101_id' => $record->id,
+                ],[
+                    'ticket101_id' => $record->id,
+                    'name' => $deptName,
+                    'accept_time' => '00:00',
+                    'out_time' => '00:00',
+                    'arrive_time' => '00:00',
+                    'ret_time' => '00:00',
+                    'dispatch_time' => '00:00',
+                    'retreat_time' => '00:00',
+                ]);
+            }
+
             if($request->ajax()) {
                 return response()->json(['record' => $record, 'techItems' => $techItems]);
                 #return response()->json(['record' => ["id" => 1, 'created_at' => now()->toDateString()]]);
@@ -59,6 +77,7 @@ class OtherRides101Controller extends Controller
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
             $data['techItems'] = json_encode([]);
+            $data['hq'] = json_encode([]);
             $data['canChangeCreatedAt'] = json_encode(Auth::user()->hasRight('CAN_CHANGE_CARD101_OTHER_RIDES_DATE'));
             return view('card.card101-other-rides.create-edit', $data);
         }
@@ -76,6 +95,8 @@ class OtherRides101Controller extends Controller
                 'tech.formation_tech_report',
             ])->get();
 
+            $this->saveHqRides($request, $data['record']);
+
             return response()->json(['record' => $data['record'], 'techItems' => $techItems]);
 
         }
@@ -84,6 +105,7 @@ class OtherRides101Controller extends Controller
             $data['fire_departments'] = FireDepartment::recommend()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
+            $data['hq'] = $data['record']->hqRides;
             $data['canChangeCreatedAt'] = json_encode(Auth::user()->hasRight('CAN_CHANGE_CARD101_OTHER_RIDES_DATE'));
             $data['techItems'] = FireDepartmentResult::where('ticket101_other_id', $id)
                 ->with([
@@ -92,6 +114,32 @@ class OtherRides101Controller extends Controller
                 ])
                 ->get();;
             return view('card.card101-other-rides.create-edit', $data);
+        }
+    }
+
+    private function saveHqRides(Request $request, $card)
+    {
+        $data = $request->hq_rides;
+
+        if($data){
+            foreach ($data as $fieldName => $ride) {
+
+                Ticket101OtherHqRide::updateOrCreate([
+                    'name' => $ride['name'],
+                    'ticket101_id' => $card->id,
+                ],[
+                    'ticket101_id' => $card->id,
+                    'name' => $ride['name'],
+                    'department' => $ride['department'],
+
+                    'accept_time' => $ride['accept_time'],
+                    'out_time' => $ride['out_time'],
+                    'arrive_time' => $ride['arrive_time'],
+                    'ret_time' => $ride['ret_time'],
+                    'dispatch_time' => $ride['dispatch_time'],
+                    'retreat_time' => $ride['retreat_time'],
+                ]);
+            }
         }
     }
 
