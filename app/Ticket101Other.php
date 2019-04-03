@@ -79,6 +79,11 @@ class Ticket101Other extends BaseModel
         return $this->hasMany(FireDepartmentResult::class, 'ticket101_other_id');
     }
 
+    public function hqRides()
+    {
+        return $this->hasMany(Ticket101OtherHqRide::class, 'ticket101_id');
+    }
+
     public function setFinalRideTypeIdAttribute($value)
     {
         if(!$value) {
