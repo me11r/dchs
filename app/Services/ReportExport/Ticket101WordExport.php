@@ -676,7 +676,7 @@ class Ticket101WordExport
         $techIndex = 1;
         foreach ($repairedTech as $fireDept => $tech) {
 //            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
-            $tabs = "\t\t\t";
+            $tabs = "\t";
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
@@ -705,7 +705,7 @@ class Ticket101WordExport
         $techIndex = 1;
         foreach ($repairedDvr as $fireDept => $tech) {
 //            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
-            $tabs = "\t\t\t";
+            $tabs = "\t";
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
