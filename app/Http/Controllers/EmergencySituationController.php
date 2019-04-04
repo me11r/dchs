@@ -77,6 +77,7 @@ class EmergencySituationController extends Controller
             $this->throwAccessDenied();
         }
         $all = $request->all();
+        $all['user_id'] = Auth::id();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
         $all['date_time'] = "$date $time";
@@ -128,6 +129,7 @@ class EmergencySituationController extends Controller
             $this->throwAccessDenied();
         }
         $all = $request->all();
+        $all['user_id'] = Auth::id();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
         $all['date_time'] = "$date $time";
