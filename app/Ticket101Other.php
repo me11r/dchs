@@ -137,6 +137,18 @@ class Ticket101Other extends BaseModel
         return null;
     }
 
+    public function getDispatchedFdsAttribute()
+    {
+        $results = $this->results()->whereNotNull('dispatch_id')->get();
+        $fd = '';
+        foreach ($results as $key => $result) {
+            $fd .= $result->department ? $result->department->title : '';
+            $fd .= ++$key !== $results->count() ? ', ' : '';
+        }
+
+        return $fd;
+    }
+
     public function setCustomCreatedAtAttribute($value)
     {
         if(!$value) {
