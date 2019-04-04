@@ -304,6 +304,16 @@ class DictionaryController extends AuthorizedController
             $data['records'] = $reports->paginate($data['per_page']);
             $data['title'] = "Направления";
         }
+        elseif($name == 'service-types') {
+            $reports = ServiceType::orderBy('sort_order');
+
+            if($request->search){
+                $reports = $reports->where('name', 'like', "%$request->search%");
+            }
+
+            $data['records'] = $reports->paginate($data['per_page']);
+            $data['title'] = "Типы служб";
+        }
 
 
         return view($view, $data);
@@ -402,6 +412,11 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'directions'){
             $data['record'] = Direction::find($id);
             $data['title'] = "Направления";
+        }
+        elseif($name == 'service-types'){
+            $data['record'] = ServiceType::find($id);
+            $data['users'] = User::all();
+            $data['title'] = "Типы служб";
         }
         return view($view, $data);
     }
@@ -548,6 +563,19 @@ class DictionaryController extends AuthorizedController
 
             $record->save();
         }
+        elseif($name == 'service-types'){
+            $record  = ServiceType::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->head_user_id = $request->head_user_id;
+            $record->priority = $request->priority;
+            $record->report112_daily = $request->report112_daily;
+            $record->in_card112 = $request->in_card112;
+            $record->in_card101 = $request->in_card101;
+            $record->sort_order = $request->sort_order;
+            $record->info = $request->info;
+
+            $record->save();
+        }
         elseif($name == 'district-managers'){
             $record  = DistrictManager::firstOrNew(['id' => $request->id]);
             $record->name = $request->name;
@@ -601,19 +629,7 @@ class DictionaryController extends AuthorizedController
 
         $user = $this->user;
 
-//        $additional_dicts = [];
-//
-//        foreach ($this->additional_dicts as $dict) {
-//            if(!$user->isAdmin() && !$user->hasRight($dict['title'])){
-//                continue;
-//            }
-//            else{
-//                $additional_dicts[] = $dict;
-//            }
-//        }
-
         $this->set('dictionaries', $dicts)
-//            ->set('additional_dicts', $additional_dicts)
             ->set('user', $user)
             ->set('categories', $categories)
         ;
@@ -731,6 +747,9 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'direction':
                 $dict = Direction::class;
+                break;
+            case 'service-types':
+                $dict = ServiceType::class;
                 break;
         }
 

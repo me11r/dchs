@@ -21,15 +21,42 @@ class OtherRides101Controller extends Controller
 {
     public function index(Request $request)
     {
-        $data['per_page'] = $request->get('per_page', 10);
-        $data['can_delete'] = false;
+        $data['per_page'] = $request->get('per_page', 20);
+        $data['can_delete'] = Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_DELETE');
         $data['card_type'] = 'other';
+        $data['ride_types'] = RideType::all();
+        $data['fire_departments'] = FireDepartment::recommend()->get();
+        $data['filter_fd'] = $request->filter_fd;
+        $data['filter_ride_type'] = $request->filter_ride_type;
 
-        if(Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_DELETE')){
-            $data['can_delete'] = true;
+        $model = Ticket101Other::orderBy('id', 'desc');
+
+        if ($request->filter_fd) {
+            $model = $model->whereHas('results', function ($q) use ($request) {
+               $q->where('fire_department_id', $request->filter_fd)
+                   ->whereNotNull('dispatch_id')
+               ;
+            });
         }
 
-        $data['records'] = Ticket101Other::orderBy('id', 'desc')->paginate($data['per_page']);
+        if ($request->filter_ride_type) {
+            $model = $model->where('ride_type_id', $request->filter_ride_type)
+                ->orWhere('final_ride_type_id', $request->filter_ride_type)
+            ;
+        }
+
+        if ($request->search) {
+            $model = $model->where('final_object_name', "like", "%{$request->search}%")
+                ->orWhere('final_direction', "like", "%{$request->search}%")
+                ->orWhere('object_name', "like", "%{$request->search}%")
+                ->orWhere('final_responsible_person', "like", "%{$request->search}%")
+                ->orWhere('responsible_person', "like", "%{$request->search}%")
+                ->orWhere('direction', "like", "%{$request->search}%")
+            ;
+        }
+
+        $data['records'] = $model->paginate($data['per_page']);
+
 
         return view('card.card101-other-rides.index', $data);
     }

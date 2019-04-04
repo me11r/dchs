@@ -12,12 +12,13 @@ class NotificationController extends Controller
 
     public function ticket101Send(Request $request)
     {
-        $id = (int)$request->get('notification_id');
         $model = (new Ticket101Notification())
-            ->where('id', '=', $id)
+            ->where('ticket101_id', '=', $request->card_id)
+            ->where('notification_service_id', '=', $request->service_id)
             ->with(['service', 'service.headUser', 'ticket101'])
             ->first();
-        if ($model && $model->service->headUser && $model->service->headUser->device_token) {
+
+        if ($model && $model->service->headUser && $model->service->headUser->device_token && $model->ticket101->location) {
             $user = $model->service->headUser;
 
             dispatch(new SendFcmMessages(

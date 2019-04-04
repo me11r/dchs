@@ -29,24 +29,21 @@
                 </div>
             </div>
         </div>
-        {#<div>
+        <div>
             <form action="" method="get">
-                <div class="field   has-addons">
+                <div class="field has-addons">
                     <div class="control is-expanded">
-                        <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
+                        <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
                     </div>
                     <div class="control">
                     </div>
-
                     <div class="control">
                         <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                     </div>
-                    #}{#<div class="control">
-                        <v-datepicker-search></v-datepicker-search>
-                    </div>#}{#
                 </div>
+
             </form>
-        </div>#}
+        </div>
         <div class="panel">
             <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
                 <thead>
@@ -64,13 +61,14 @@
                     </th>
                     <th>
                         <p href="?sort=city_area_id">Тип выезда</p>
-                        {#<form>
-                            <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
-                                {% for f in city_areas %}
-                                    <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                        <form>
+                            <select onchange="this.form.submit()" class="select" name="filter_ride_type" id="">
+                                <option value=""></option>
+                                {% for item in ride_types %}
+                                    <option {{ item.id == filter_ride_type ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
                                 {% endfor %}
                             </select>
-                        </form>#}
+                        </form>
                     </th>
                     <th class="has-text-right">
                         <p href="?sort=created_at">Дата и время</p>
@@ -82,6 +80,17 @@
                             </select>
                         </form>#}
                     </th>
+                    <th>
+                        <p>ПЧ</p>
+                        <form>
+                            <select onchange="this.form.submit()" class="select" name="filter_fd" id="">
+                                <option value=""></option>
+                                {% for item in fire_departments %}
+                                    <option {{ item.id == filter_fd ? 'selected' : '' }} value="{{ item.id }}">{{ item.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </th>
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
@@ -91,6 +100,7 @@
                         <td>{{ ticket.direction }}</td>
                         <td>{{ ticket.ride_type.name ?? '' }}</td>
                         <td class="has-text-right">{{ ticket.created_at|date('H:i d.m.Y') }}</td>
+                        <td>{{ ticket.dispatched_fds }}</td>
                         <td class="has-text-right">
                             <a href="/card101-other-rides/{{ ticket.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
 
