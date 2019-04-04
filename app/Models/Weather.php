@@ -110,4 +110,17 @@ class Weather extends Model
     {
         return $this->storm_warning_date ? Carbon::parse($this->storm_warning_date)->format('d.m.Y') : null;
     }
+
+    public function scopeStormRecords($q, $hasStorm)
+    {
+        if($hasStorm === "0") {
+            return $q->whereNull('storm_warning_text');
+        }
+
+        if($hasStorm === "1") {
+            return $q->whereNotNull('storm_warning_text');
+        }
+
+        return $q;
+    }
 }
