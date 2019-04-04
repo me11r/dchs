@@ -122,7 +122,9 @@ class Card112Controller extends Controller
     public function create()
     {
         $ticket101_service_plans = [];
-        $serviceTypes = ServiceType::orderBy('name')->get(['id', 'name']);
+        $serviceTypes = ServiceType::inCard112()
+            ->orderBy('sort_order')
+            ->get(['id', 'name']);
         foreach ($serviceTypes as $item) {
             $ticket101_service_plans[] = new Ticket101ServicePlan();
         }
@@ -177,7 +179,9 @@ class Card112Controller extends Controller
     public function edit(Request $request, $id)
     {
         $ticket101_service_plans = Ticket101ServicePlan::where('card112_id', $id)->get();
-        $serviceTypes = ServiceType::orderBy('name')->get(['id', 'name']);
+        $serviceTypes = ServiceType::inCard112()
+            ->orderBy('sort_order')
+            ->get(['id', 'name']);
         $model = new Card112Resource($this->repository->where('id', '=', $id)
             ->with([
                 'serviceReactions',

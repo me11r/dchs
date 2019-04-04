@@ -43,6 +43,10 @@ class ServiceType extends Model
         'head_user_id',
         'priority',
         'report112_daily',
+        'in_card101',
+        'in_card112',
+        'info',
+        'sort_order',
     ];
 
     public function headUser()
@@ -53,5 +57,15 @@ class ServiceType extends Model
     public function scopeDailyServices112($q, $search = true)
     {
         return $q->where('report112_daily', $search);
+    }
+
+    public function scopeInCard112($q, $search = true)
+    {
+        return $q->where('in_card112', $search);
+    }
+
+    public function scopeInCard101($q, $search = true)
+    {
+        return $q->where('in_card101', $search);
     }
 }

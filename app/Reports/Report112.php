@@ -166,7 +166,10 @@ class Report112
         $data['call_info'] = $callInfo;
 
         //РОСО,ЦМК,109,Өрт сөндіруші, РГП Казавиаспас
-        $dailyServices = ServiceType::dailyServices112()->get();
+        $dailyServices = ServiceType::dailyServices112()
+            ->orderBy('sort_order')
+            ->get();
+
         foreach ($dailyServices as $item) {
             $data['services'][$item->name] = $this->getServiceInfo($item->name);
         }
