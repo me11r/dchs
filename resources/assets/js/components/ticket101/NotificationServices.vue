@@ -160,8 +160,9 @@
 
                     axios
                         .post('/api/notification/ticket101send', {
-                            notification_id: notificationId,
-                            cardType: this.ticketType,
+                            card_id: cardId,
+                            service_id: service,
+                            cardType: this.ticketType
                         })
                         .then((response) => {
                             let data = response.data;

@@ -28,24 +28,21 @@
                 </div>
             </div>
         </div>
-        {#<div>
+        <div>
             <form action="" method="get">
-                <div class="field   has-addons">
+                <div class="field has-addons">
                     <div class="control is-expanded">
-                        <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
+                        <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
                     </div>
                     <div class="control">
                     </div>
-
                     <div class="control">
                         <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                     </div>
-                    #}{#<div class="control">
-                        <v-datepicker-search></v-datepicker-search>
-                    </div>#}{#
                 </div>
+
             </form>
-        </div>#}
+        </div>
         <div class="panel">
             <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
                 <thead>
@@ -61,15 +58,18 @@
                             </select>
                         </form>#}
                     </th>
+                    <th>№ норматива</th>
+                    <th>Тип норматива</th>
                     <th>
                         <p href="?sort=city_area_id">Подразделение</p>
-                        {#<form>
-                            <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
-                                {% for f in city_areas %}
-                                    <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                        <form>
+                            <select onchange="this.form.submit()" class="select" name="filter_fd" id="">
+                                <option value=""></option>
+                                {% for item in fire_departments %}
+                                    <option {{ item.id == filter_fd ? 'selected' : '' }} value="{{ item.id }}">{{ item.title }}</option>
                                 {% endfor %}
                             </select>
-                        </form>#}
+                        </form>
                     </th>
                     <th>&nbsp;</th>
                 </tr>
@@ -78,6 +78,8 @@
                     <tr>
                         <td class="has-text-right">{{ ticket.id }}</td>
                         <td>{{ ticket.date|date('d.m.Y') }}</td>
+                        <td class="has-text-right">{{ ticket.norm_number.name|default() }}</td>
+                        <td class="has-text-right">{{ ticket.norm_type.name|default() }}</td>
                         <td>{{ ticket.fire_department.title ?? '' }}</td>
                         <td class="has-text-right">
                             <a href="/norms-psp/{{ ticket.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
@@ -97,7 +99,7 @@
                     </tr>
                 {% endfor %}
             </table>
-            {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+            {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_fd': filter_fd}, "search": search } %}
         </div>
     </div>
 {% endblock content %}

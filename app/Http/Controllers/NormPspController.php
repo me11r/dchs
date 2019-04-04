@@ -16,10 +16,37 @@ class NormPspController extends Controller
 
     public function index(Request $request)
     {
-        $records = NormPsp::select('*');
-        $data['per_page'] = $request->get('per_page', 10);
+        $records = NormPsp::orderBy('id', 'desc');
+
+        $data['per_page'] = $request->get('per_page', 20);
         $data['card_type'] = $this->view;
-        $data['records'] = $records->orderBy('id', 'desc')->paginate($data['per_page']);
+        $data['fire_departments'] = FireDepartment::recommend()->get();
+        $data['filter_fd'] = $request->filter_fd;
+        $data['search'] = $request->search;
+
+        if ($request->filter_fd) {
+            $records = $records->where('fire_department_id', $request->filter_fd);
+        }
+
+        if ($request->filter_norm_type) {
+            $records = $records->where('norm_type_id', $request->filter_norm_type);
+        }
+
+        if ($request->search) {
+            $records = $records->where('responsible_person', "like", "%{$request->search}%")
+                ->orWhere(function ($q) use ($request) {
+                    $q->whereHas('norm_number', function ($qq) use ($request) {
+                        $qq->where('name', "like", "%{$request->search}%");
+                    })->orWhereHas('norm_type', function ($qqq) use ($request) {
+                        $qqq->where('name', "like", "%{$request->search}%");
+                    })
+                    ;
+                })
+            ;
+        }
+
+
+        $data['records'] = $records->paginate($data['per_page']);
         $data['can_delete'] = Auth::user()->hasRight('CAN_DELETE_NORMS_PSP');
         return view("card.$this->view.index", $data);
     }
