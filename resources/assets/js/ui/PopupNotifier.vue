@@ -70,7 +70,7 @@
             if(window._global_ajax_timers.popup_notifications === true){
                 setInterval(() => {
                     this.checkNotifications();
-                }, 3000);
+                }, 30000);
             }
         }
     }

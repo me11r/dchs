@@ -19,8 +19,8 @@ class CheckpointShiftStaffItem extends Model
     ];
 
     private $ranks = [
-        'duty_officer' => 'Оперативный дежурный',
-        'duty_officer_assistant' => 'Помощник ОД',
+        'duty_officer' => 'Помощник оперативного офицера',
+        'duty_officer_assistant' => 'Дежурный по КПП',
     ];
 
     public $inactiveTypes = [
