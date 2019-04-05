@@ -90,14 +90,15 @@
                         <button @click.prevent="selectPeriod" class="button is-success">Поиск</button>
                     </div>
 
-                    <table class="formation-record-table">
-                        <thead>
+                    <div class="field" style="overflow: scroll">
+                        <table class="formation-record-table">
+                            <thead>
                             <tr>
                                 <td class="is-narrow">Происшествие</td>
                                 <td></td>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             <tr v-for="(record, title) in report_summary">
                                 <td class="is-narrow">{{ title }}</td>
                                 <td>
@@ -134,8 +135,10 @@
                                 </td>
 
                             </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </form>
             </div>
         </div>

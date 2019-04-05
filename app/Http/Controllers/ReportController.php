@@ -425,6 +425,7 @@ class ReportController extends AuthorizedController
     //Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
+        $f = $request->get('incident_type_id');
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
         $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
         $emergency_name_id = $request->emergency_name_id;
@@ -453,6 +454,10 @@ class ReportController extends AuthorizedController
         foreach ($cards as $card) {
             if (!isset($preparedToExport[$card->cityArea->name])) {
                 $preparedToExport[$card->cityArea->name] = [];
+            }
+
+            if(!$card->incident) {
+                continue;
             }
 
             if($card->incident->name == 'Падение веток и деревьев') {
