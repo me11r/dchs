@@ -109,6 +109,11 @@ export default {
                     const data = response['data'];
                     this.items = data['data'];
                     this.totalPages = parseInt(data['total']);
+                    this.$snackbar.open({
+                        message: 'Список обновлен',
+                        type: 'is-success',
+                        duration: 3000
+                    });
                 })
                 .catch(() => {
                     this.$snackbar.open({
