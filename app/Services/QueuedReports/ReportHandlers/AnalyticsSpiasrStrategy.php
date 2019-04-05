@@ -56,6 +56,8 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
             Carbon::parse($queuedReport->date_start)->format('d.m.Y') .
             '_' .
             Carbon::parse($queuedReport->date_end)->format('d.m.Y') .
+            '_' .
+            $queuedReport->id .
             '.xls';
     }
 
