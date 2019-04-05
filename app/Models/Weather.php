@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -82,6 +83,9 @@ class Weather extends Model
         'forecast_water',
         'forecast_atmosphere',
         'note',
+        'storm_warning_number',
+        'storm_warning_date',
+        'storm_warning_text',
     ];
 
     public function scopeDate($q, $search)
@@ -92,5 +96,31 @@ class Weather extends Model
     public function scopeToday($q)
     {
         return $q->date(today());
+    }
+
+    //attribute: storm_info
+    public function getStormInfoAttribute()
+    {
+        $date = $this->storm_warning_date ? Carbon::parse($this->storm_warning_date)->format('d.m.Y') : '';
+        return "Номер: {$this->storm_warning_number}, дата: {$date}, {$this->storm_warning_text}";
+    }
+
+    //attribute: storm_date_formatted
+    public function getStormDateFormattedAttribute()
+    {
+        return $this->storm_warning_date ? Carbon::parse($this->storm_warning_date)->format('d.m.Y') : null;
+    }
+
+    public function scopeStormRecords($q, $hasStorm)
+    {
+        if($hasStorm === "0") {
+            return $q->whereNull('storm_warning_text');
+        }
+
+        if($hasStorm === "1") {
+            return $q->whereNotNull('storm_warning_text');
+        }
+
+        return $q;
     }
 }

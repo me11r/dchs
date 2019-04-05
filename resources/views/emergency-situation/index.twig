@@ -32,6 +32,10 @@
                     <td>{{ item.location }}</td>
                     <td>{{ item.size }}</td>
                     <td class="has-text-right">
+                        <a href="/emergency-situation/{{ item.id }}/download"
+                           class="button is-small is-success">
+                            <i class="fas fa-download"></i>&nbsp;
+                        </a>
                         <a href="{{ route('emergency-situation.show', item.id) }}"
                            class="button is-small is-info">
                             <i class="fas fa-eye"></i>&nbsp;
@@ -42,7 +46,7 @@
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             Редактировать
                         </a>
-                        <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                        <form style="display: inline;" onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
                               method="POST"
                               action="{{ route('emergency-situation.destroy', item.id) }}">
                             {{ csrf_field() }}

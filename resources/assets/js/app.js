@@ -91,6 +91,7 @@ Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
+Vue.component('delete-button', require('./components/DeleteButton'));
 Vue.component('card112', Card112Form);
 Vue.component('mudflow-protection-form', MudflowProtectionForm);
 // Vue.component('hydrants-map', HydrantMapList);

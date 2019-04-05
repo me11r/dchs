@@ -49,6 +49,7 @@ class RightsSeeder extends Seeder
 
             ['right_group_id' => 2, 'title' => 'Карточка 101: изменение даты', 'name' => 'CAN_CHANGE_CARD101_DATE'],
             ['right_group_id' => 2, 'title' => 'Карточка 112: изменение даты', 'name' => 'CAN_CHANGE_CARD112_DATE'],
+            ['right_group_id' => 2, 'title' => 'Карточка 101: прочие выезда: изменение даты', 'name' => 'CAN_CHANGE_CARD101_OTHER_RIDES_DATE'],
 
             ['right_group_id' => 3, 'title' => 'Управление пользователями системы', 'name' => 'CAN_MANAGE_USERS'],
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],
@@ -117,6 +118,10 @@ class RightsSeeder extends Seeder
 
             ['right_group_id' => 6, 'title' => 'АналитикаСПиАСП: просмотр', 'name' => 'ANALYTICS_SPIASR_SHOW'],
             ['right_group_id' => 6, 'title' => 'Отчет по расходу воды (101): просмотр', 'name' => 'WATER_CONSUMPTION_REPORT_SHOW'],
+
+            ['right_group_id' => 6, 'title' => 'Тех.проверка системы оповещения: просмотр', 'name' => 'ALERT_SYSTEM_CHECK_SHOW'],
+            ['right_group_id' => 6, 'title' => 'Тех.проверка системы оповещения: редактирование', 'name' => 'ALERT_SYSTEM_CHECK_EDIT'],
+            ['right_group_id' => 6, 'title' => 'Тех.проверка системы оповещения: экспорт', 'name' => 'ALERT_SYSTEM_DOWNLOAD'],
 
             ['right_group_id' => 6, 'title' => 'Отчет по случаям землетрясения: просмотр', 'name' => 'QUAKES_REPORT_SHOW'],
             ['right_group_id' => 6, 'title' => 'Отчет профилактический и самопроизвольный сход лавин: просмотр', 'name' => 'AVALANCHES_REPORT_SHOW'],

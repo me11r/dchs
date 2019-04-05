@@ -41,17 +41,17 @@
                             Учения
                         </a>
                         <a
-                                v-if="hasRight('CAN_ACCESS_NORMS_PSP')"
-                                href="/norms-psp"
-                                class="dropdown-item is-small"><i
-                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            v-if="hasRight('CAN_ACCESS_NORMS_PSP')"
+                            href="/norms-psp"
+                            class="dropdown-item is-small"><i
+                            class="fas fa-address-card fa-fw"></i>&nbsp;
                             Нормативы ПСП
                         </a>
                         <a
-                                v-if="hasRight(2)"
-                                href="/card/101"
-                                class="dropdown-item is-small"><i
-                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            v-if="hasRight(2)"
+                            href="/card/101"
+                            class="dropdown-item is-small"><i
+                            class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточки 101
                         </a>
                     </div>
@@ -60,16 +60,16 @@
                     <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;112</a>
                     <div class="navbar-dropdown">
                         <a
-                                v-if="hasRight(33)"
-                                href="/card112/create"
-                                class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
+                            v-if="hasRight(33)"
+                            href="/card112/create"
+                            class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Путевка 112
                         </a>
                         <a
-                                v-if="hasRight(33)"
-                                href="/card112"
-                                class="dropdown-item is-small"><i
-                                class="fas fa-address-card fa-fw"></i>&nbsp;
+                            v-if="hasRight(33)"
+                            href="/card112"
+                            class="dropdown-item is-small"><i
+                            class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточки 112
                         </a>
                     </div>
@@ -184,16 +184,19 @@
                             Сумма спасенного имущества</a>
                     </div>
                 </div>
-                <div class="navbar-item has-dropdown is-hoverable is-small"
+                <div
+                    class="navbar-item has-dropdown is-hoverable is-small"
                     v-if="hasAnyRight('CAN_ACCESS_REPORTS_TAB')">
                     <a class="navbar-link is-small"><i class="fas fa-receipt fa-fw"></i>&nbsp;Отчетность</a>
                     <div class="navbar-dropdown report-dropdown">
                         <div
-                                v-if="hasRight('CAN_SEE_DAILY_REPORT')"
-                                class="dropdown-item">
+                            v-if="hasRight('CAN_SEE_DAILY_REPORT')"
+                            class="dropdown-item">
                             <div class="level is-mobile">
                                 <div class="level-left">
-                                    <a class="button is-bordered" href="/reports/daily-reports/101">
+                                    <a
+                                        class="button is-bordered"
+                                        href="/reports/daily-reports/101">
                                         <i class="fas fa-receipt fa-fw"></i>&nbsp;Суточный отчет
                                     </a>
                                 </div>
@@ -201,15 +204,15 @@
                                 <div class="level-right">
                                     <div class="buttons is-right">
                                         <!--<a
-                                                href="/pdf/dailyReport"
-                                                target="_blank"
-                                                class=" button is-small">
+                                            href="/pdf/dailyReport"
+                                            target="_blank"
+                                            class=" button is-small">
                                             <i class="fas fa-file-pdf"></i>.pdf
                                         </a>-->
                                         <a
-                                                href="/reports/daily101/word"
-                                                target="_blank"
-                                                class=" button is-small">
+                                            href="/reports/daily101/word"
+                                            target="_blank"
+                                            class=" button is-small">
                                             <i class="fas fa-file-word"></i>.doc
                                         </a>
                                     </div>
@@ -217,11 +220,13 @@
                             </div>
                         </div>
                         <div
-                                v-if="hasRight('CAN_SEE_DAILY_REPORT')"
-                                class="dropdown-item">
+                            v-if="hasRight('CAN_SEE_DAILY_REPORT')"
+                            class="dropdown-item">
                             <div class="level is-mobile">
                                 <div class="level-left">
-                                    <a class="button is-bordered" href="/reports/daily-reports/112">
+                                    <a
+                                        class="button is-bordered"
+                                        href="/reports/daily-reports/112">
                                         <i class="fas fa-receipt fa-fw"></i>&nbsp;Суточный отчет 112
                                     </a>
                                 </div>
@@ -229,15 +234,15 @@
                                 <div class="level-right">
                                     <div class="buttons is-right">
                                         <!--<a-->
-                                                <!--href="/pdf/operational-report"-->
-                                                <!--target="_blank"-->
-                                                <!--class=" button is-small">-->
+                                            <!--href="/pdf/operational-report"-->
+                                            <!--target="_blank"-->
+                                            <!--class=" button is-small">-->
                                             <!--<i class="fas fa-file-pdf"></i>.pdf-->
                                         <!--</a>-->
                                         <a
-                                                href="/reports/daily112/word"
-                                                target="_blank"
-                                                class=" button is-small">
+                                            href="/reports/daily112/word"
+                                            target="_blank"
+                                            class=" button is-small">
                                             <i class="fas fa-file-word"></i>.doc
                                         </a>
                                     </div>
@@ -245,73 +250,73 @@
                             </div>
                         </div>
                         <a
-                                v-if="hasAnyRight('CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD',
-                                'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU',
-                                'CAN_ACCESS_REPORT_FORCES_RESOURCES',
-                                'CAN_ACCESS_REPORT_DRILL_RIDES',
-                                'CAN_ACCESS_REPORT_OTHER_RIDES',
-                                'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
-                                'WATER_CONSUMPTION_REPORT_SHOW'
-                                )"
-                                href="/reports/analytics-spiasr"
-                                class="dropdown-item is-small"><i class="fas fa-database"></i>
+                            v-if="hasAnyRight('CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD',
+                                              'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU',
+                                              'CAN_ACCESS_REPORT_FORCES_RESOURCES',
+                                              'CAN_ACCESS_REPORT_DRILL_RIDES',
+                                              'CAN_ACCESS_REPORT_OTHER_RIDES',
+                                              'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
+                                              'WATER_CONSUMPTION_REPORT_SHOW'
+                            )"
+                            href="/reports/analytics-spiasr"
+                            class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Аналитика СПиАСР
                         </a>
 
                         <a
-                                v-if="hasAnyRight('ANALYTICS101_SHOW',
-                                'CAN_ACCESS_REPORT_112_EMERGENCY_REPORT',
-                                'CAN_ACCESS_REPORT_OTHER_RIDES',
-                                'CAN_ACCESS_REPORT_DRILL_RIDES',
-                                'CAN_ACCESS_REPORT_FORCES_RESOURCES',
-                                'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
-                                'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU',
-                                'CAN_SEE_DAILY_REPORT',
-                                'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'
-                                )"
-                                href="/reports/analytics101/"
-                                class="dropdown-item is-small"><i class="fas fa-database"></i>
+                            v-if="hasAnyRight('ANALYTICS101_SHOW',
+                                              'CAN_ACCESS_REPORT_112_EMERGENCY_REPORT',
+                                              'CAN_ACCESS_REPORT_OTHER_RIDES',
+                                              'CAN_ACCESS_REPORT_DRILL_RIDES',
+                                              'CAN_ACCESS_REPORT_FORCES_RESOURCES',
+                                              'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
+                                              'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU',
+                                              'CAN_SEE_DAILY_REPORT',
+                                              'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'
+                            )"
+                            href="/reports/analytics101/"
+                            class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Суточные отчеты
                         </a>
                         <!--<a class="dropdown-item is-small"-->
-                           <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')"-->
-                           <!--href="/reports/daily-reports/101">-->
-                            <!--<i class="fas fa-database"></i>&nbsp; Суточный отчет 101</a>-->
+                        <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')"-->
+                        <!--href="/reports/daily-reports/101">-->
+                        <!--<i class="fas fa-database"></i>&nbsp; Суточный отчет 101</a>-->
                         <!--<a class="dropdown-item is-small"-->
-                           <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')"-->
-                           <!--href="/reports/daily-reports/112">-->
-                            <!--<i class="fas fa-database"></i>&nbsp; Суточный отчет 112</a>-->
+                        <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')"-->
+                        <!--href="/reports/daily-reports/112">-->
+                        <!--<i class="fas fa-database"></i>&nbsp; Суточный отчет 112</a>-->
 
-                        <a class="dropdown-item is-small"
-                           v-if="hasRight('ANALYTICS112_SHOW')"
-                           href="/reports/112">
-                            <i class="fas fa-database"></i>&nbsp; Аналитика ДЧС</a>
-
+                        <a
+                            class="dropdown-item is-small"
+                            v-if="hasRight('ANALYTICS112_SHOW')"
+                            href="/reports/112">
+                        <i class="fas fa-database"></i>&nbsp; Аналитика ДЧС</a>
 
                         <!--<div-->
-                            <!--class="dropdown-item"-->
-                            <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')">-->
-                            <!--<div class="level is-mobile">-->
-                                <!--<div class="level-left">-->
-                                    <!--<i class="fas fa-receipt fa-fw"></i>&nbsp;-->
-                                    <!--Суточный отчет 112-->
-                                <!--</div>-->
-                                <!--<div class="level-right">-->
-                                    <!--<div class="buttons">-->
-                                        <!--<a-->
-                                            <!--href="/pdf/operational-report"-->
-                                            <!--target="_blank"-->
-                                            <!--class="button is-small"><i class="fas fa-file-pdf"></i>.pdf-->
-                                        <!--</a>-->
-                                        <!--<a-->
-                                            <!--href="/reports/daily112/word"-->
-                                            <!--target="_blank"-->
-                                            <!--class=" button is-small">-->
-                                            <!--<i class="fas fa-file-word"></i>.doc-->
-                                        <!--</a>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
+                        <!--class="dropdown-item"-->
+                        <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')">-->
+                        <!--<div class="level is-mobile">-->
+                        <!--<div class="level-left">-->
+                        <!--<i class="fas fa-receipt fa-fw"></i>&nbsp;-->
+                        <!--Суточный отчет 112-->
+                        <!--</div>-->
+                        <!--<div class="level-right">-->
+                        <!--<div class="buttons">-->
+                        <!--<a-->
+                        <!--href="/pdf/operational-report"-->
+                        <!--target="_blank"-->
+                        <!--class="button is-small"><i class="fas fa-file-pdf"></i>.pdf-->
+                        <!--</a>-->
+                        <!--<a-->
+                        <!--href="/reports/daily112/word"-->
+                        <!--target="_blank"-->
+                        <!--class=" button is-small">-->
+                        <!--<i class="fas fa-file-word"></i>.doc-->
+                        <!--</a>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
 
                         <!--</div>-->
                         <!--<a
@@ -346,6 +351,12 @@
                             href="/reports/call-infos/"
                             class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
                             &nbsp; Информация по звонкам
+                        </a>
+                        <a
+                            v-if="hasRight('ALERT_SYSTEM_CHECK_SHOW')"
+                            href="/reports/alert-system-checks/"
+                            class="dropdown-item is-small"><i class="fas fa-blender"></i>
+                            &nbsp; Тех.проверка системы оповещения
                         </a>
                     </div>
                 </div>
@@ -412,6 +423,10 @@
                             href="/admin/roles"
                             class="dropdown-item"><i class="fas fa-balance-scale fa-fw"></i>&nbsp;Роли</a>
                         <a
+                            v-if="hasRight(7)"
+                            href="/admin/polygons"
+                            class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Границы микроучастков</a>
+                        <a
                             href="/import"
                             class="dropdown-item"><i class="fas fa-arrow-down fa-fw"></i>&nbsp;Импорт</a>
                     </div>
@@ -434,22 +449,30 @@
         </div>
 
         <!--Карточка 101: прочие выезда-->
-        <div class="modal"
+        <div
+            class="modal"
             :class="opened_modal101">
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">101 карточка</p>
-                    <button class="delete" aria-label="close" @click.prevent="toggleOpenModal101"></button>
+                    <button
+                        class="delete"
+                        aria-label="close"
+                        @click.prevent="toggleOpenModal101"></button>
                 </header>
                 <section class="modal-card-body">
                     <div class="level">
                         <div class="level-left">
-                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-other-rides/">Прочие выезда</a>
+                            <a
+                                class="is-inline-block-widescreen is-block button is-primary"
+                                href="/card/add101-other-rides/">Прочие выезда</a>
                         </div>
                         <div class="level-right">
                             <!--<a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>-->
-                            <a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101-drill-rides/">Учения</a>
+                            <a
+                                class="is-inline-block-widescreen is-block button is-primary"
+                                href="/card/add101-drill-rides/">Учения</a>
                         </div>
                     </div>
                 </section>
@@ -466,17 +489,16 @@
 import axios from 'axios';
 import rights from '../scripts/rights';
 function getLocalRights() {
-
     return rights.rightsList();
 
-    //todo: depricated: moved to rights.js
-    /*let rights = window.localStorage.getItem('preloaded_rights');
+    // todo: depricated: moved to rights.js
+    /* let rights = window.localStorage.getItem('preloaded_rights');
     if (rights !== undefined) {
         rights = JSON.parse(rights);
     } else {
         rights = [];
     }
-    return rights;*/
+    return rights; */
 }
 export default {
     name: 'Navbar',
@@ -519,7 +541,6 @@ export default {
 
     },
     mounted: function () {
-
         // тащим права из базы
         let rightsPromise = rights.getRights();
         rightsPromise.then((list) => {

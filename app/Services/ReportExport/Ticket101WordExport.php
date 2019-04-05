@@ -290,28 +290,28 @@ class Ticket101WordExport
 
             $result[$fireDept->title] = [
                 'vacation' => $vacationPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'study' => $studyPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'maternity' => $maternityPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'dispatchers' => $dispatchersPpl->map(function ($item) {
                     return ($item->staff->initials ?? null) . "({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick' => $sickPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'sick_leave' => $sickLeavePpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'business_trip' => $businessPpl->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
                 'other_reasons' => $other_reasons->map(function ($item) {
-                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). "({$item->staff->rank} {$item->staff->position})";
+                    return ($item->staff->initials ?? null) . " $item->comment" . ($item->date_from ? " с $item->date_from" : '') . ($item->date_to ? " по $item->date_to" : ''). " ({$item->staff->rank} {$item->staff->position})";
                 })->toArray(),
 
                 'gdzs_base' => $gdzs_base->map(function ($item) {
@@ -422,7 +422,8 @@ class Ticket101WordExport
         $result = [];
         foreach ($dvrs as $item) {
             $vehicle = Vehicle::find($item['vehicle_id']);
-            $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . ($vehicle->base ? "($vehicle->base) " : '') .' - '. $item['comment'];
+            $status = $item['status_title'];
+            $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . ($vehicle->base ? "($vehicle->base) " : '')."($status)" .' - '. $item['comment'];
         }
 
         return $result;
@@ -674,8 +675,10 @@ class Ticket101WordExport
 
         $techIndex = 1;
         foreach ($repairedTech as $fireDept => $tech) {
+//            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
+            $tabs = "\t";
             $section->addText(
-                "{$techIndex}. {$fireDept}:\t\t" . implode(', ', $tech),
+                "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
@@ -701,8 +704,10 @@ class Ticket101WordExport
 
         $techIndex = 1;
         foreach ($repairedDvr as $fireDept => $tech) {
+//            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
+            $tabs = "\t";
             $section->addText(
-                "{$techIndex}. {$fireDept}:\t\t" . implode(', ', $tech),
+                "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
@@ -843,10 +848,11 @@ class Ticket101WordExport
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER, 'borderLeftSize' => 10, 'borderColor' => '000000'])->addText('В боевом расчете', $hcFontStyle, $hcAlignStyle);
         $table->addCell(800, ['gridSpan' => 2, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('В резерве', $hcFontStyle, $hcAlignStyle);
         $table->addCell(600, $cellRowSpanV)->addText("1 генератор<w:br/>2 дымосос<w:br/>3 гирсы,  ИУП", $hcFontStyle, $hcAlignStyle);
-        $table->addCell(600, ['align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText("Видео<w:br/>регистраторы", $hcFontStyle, $hcAlignStyle);
-        $table->addCell(600, $cellRowSpanV)->addText('Ф.И.О Начальника караула или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, ['align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText("Видео<w:br/>регистр.", $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText('Ф.И.О Нач. караула<w:br/>или лица его подменяющего', $hcFontStyle, $hcAlignStyle);
 
         $table->addRow(1250);
+
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, ['gridSpan' => 4, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Рукавов', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('Лафетн. Ств. стац', $hcFontStyle, $hcAlignStyle);
@@ -872,8 +878,11 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
 //        $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowSpanV)->addText('В расчете<w:br/>В резерве<w:br/>Неисправные', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(null, $cellRowContinue);
+
 
         $table->addRow(1250);
+
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowSpanV)->addText('125мм', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowSpanV)->addText('75мм', $hcFontStyle, $hcAlignStyle);
@@ -903,7 +912,7 @@ class Ticket101WordExport
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowContinue);
+//        $table->addCell(null, $cellRowContinue);
     }
 
     private function addFirstTable(Section $section)

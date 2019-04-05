@@ -7,6 +7,7 @@ use App\Http\Resources\EmergencySituationResource;
 use App\Models\EmergencySituation;
 use App\Repositories\Contracts\EmergencySituationRepositoryInterface;
 use App\Right;
+use App\Services\ReportExport\EmergencySituationWordExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,6 +78,7 @@ class EmergencySituationController extends Controller
             $this->throwAccessDenied();
         }
         $all = $request->all();
+        $all['user_id'] = Auth::id();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
         $all['date_time'] = "$date $time";
@@ -128,6 +130,7 @@ class EmergencySituationController extends Controller
             $this->throwAccessDenied();
         }
         $all = $request->all();
+        $all['user_id'] = Auth::id();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
         $all['date_time'] = "$date $time";
@@ -148,5 +151,18 @@ class EmergencySituationController extends Controller
         }
         $this->repository->delete($id);
         return redirect(route('emergency-situation.index'));
+    }
+
+    public function download($id)
+    {
+        $item = $this->repository->find($id);
+        $arrayData = (new EmergencySituationResource($item))->toArray($item);
+        $word = new EmergencySituationWordExport($arrayData);
+
+        $writer = $word->getWriter('Word2007');
+        $fileName = 'Информация по ЧС - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
+
+        return response()->download(public_path($fileName));
     }
 }

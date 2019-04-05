@@ -14,6 +14,19 @@ class EloquentWeatherRepository extends Repository implements WeatherInterface
         return Weather::class;
     }
 
+    public function stormRecords($hasStorm)
+    {
+        if($hasStorm === "0") {
+            return $this->model->whereNull('storm_warning_text');
+        }
+
+        if($hasStorm === "1") {
+            return $this->model->whereNotNull('storm_warning_text');
+        }
+
+        return $this->model;
+    }
+
 
     public function createModel(Request $request): Weather
     {
@@ -41,6 +54,9 @@ class EloquentWeatherRepository extends Repository implements WeatherInterface
             'forecast_water' => $request->forecast_water,
             'forecast_atmosphere' => $request->forecast_atmosphere,
             'note' => $request->note,
+            'storm_warning_number' => $request->storm_warning_number,
+            'storm_warning_date' => $request->storm_warning_date,
+            'storm_warning_text' => $request->storm_warning_text,
         ]);
     }
 
@@ -65,6 +81,9 @@ class EloquentWeatherRepository extends Repository implements WeatherInterface
             'forecast_water' => $request->forecast_water,
             'forecast_atmosphere' => $request->forecast_atmosphere,
             'note' => $request->note,
+            'storm_warning_number' => $request->storm_warning_number,
+            'storm_warning_date' => $request->storm_warning_date,
+            'storm_warning_text' => $request->storm_warning_text,
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\CheckpointShiftStaffItem;
 use App\FormationDistrictManagerItem;
 use App\OperDutyShiftStaffItem;
 use Illuminate\Http\Request;
@@ -11,8 +12,12 @@ class FormationController extends Controller
 {
     public function staff_page(Request $request)
     {
-        $resp = OperDutyShiftStaffItem::rank($request->rank)
-            ->where('shift_id', $request->shift_id)
+        $f = $request->all();
+        $model = $request->staffType === 'od' ? OperDutyShiftStaffItem::class : CheckpointShiftStaffItem::class;
+        $resp = $model::rank($request->rank)
+            ->wherehas('report', function ($q) use ($request) {
+                $q->where('shift_id', $request->shift_id);
+            })
             ->with(['staff'])
             ->date($request->date);
 
@@ -22,6 +27,7 @@ class FormationController extends Controller
         else {
             $resp = $resp->whereNull('inactive_type');
         }
+
         $resp = $resp->get();
 
         return response()->json($resp);

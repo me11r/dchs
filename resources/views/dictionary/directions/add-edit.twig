@@ -1,0 +1,36 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="panel">
+            <div class="box">
+                <h4 class="title">{{ title }}</h4>
+                <form action="/dictionaries/{{ type }}/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="name">Наименование</label>
+                        <input required type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+
+                    <div class="field">
+                        <label for="name">Сортировка</label>
+                        <input required type="number" class="input" name="sort_order" id="sort_order" value="{{ attribute(record, 'sort_order')|default('') }}"/>
+                    </div>
+
+                    <div class="field">
+                        <label for="category_id">ЗПУ</label>
+                        <select required name="reserved" id="reserved" class="select">
+                            <option {{ record.reserved|default(0) == 1 ? 'selected' : '' }} value="1">Да</option>
+                            <option {{ record.reserved|default(0) == 0 ? 'selected' : '' }} value="0">Нет</option>
+                        </select>
+                    </div>
+
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries/{{ type }}/" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

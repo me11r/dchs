@@ -20,6 +20,16 @@
             <tr>
                 <th>№</th>
                 <th>Дата и время</th>
+                <th>
+                    <p>Штормовое предупреждение</p>
+                    <form>
+                        <select onchange="this.form.submit()" name="filter_storm">
+                            <option value=""></option>
+                            <option {{ filter_storm == 1 ? 'selected' : '' }} value="1">Да</option>
+                            <option {{ filter_storm is same as("0") ? 'selected' : '' }} value="0">Нет</option>
+                        </select>
+                    </form>
+                </th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
@@ -28,6 +38,9 @@
                     <td class="has-text-right">{{ loop.index }}</td>
                     <td>
                         {{ item.date | date('d.m.Y') }}
+                    </td>
+                    <td>
+                        {{ item.storm_warning_text ? item.storm_info : '' }}
                     </td>
                     <td class="has-text-right">
                         <a href="/weather/{{ item.id }}/edit" class="button is-info is-small">
@@ -49,6 +62,8 @@
                 </tr>
             {% endfor %}
         </table>
+        {% include "_templates/pagination" with {'items': items, 'per_page': per_page, 'other': {'filter_storm':filter_storm }} %}
+
     </div>
     </div>
 {% endblock content %}

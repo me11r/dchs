@@ -5,6 +5,7 @@ namespace App\Models;
 use App\FormationPersonsReport;
 use App\GuardNumber;
 use App\OperationalGroup;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -115,5 +116,28 @@ class FormationPersonsItem extends Model
         }
 
         return '';
+    }
+
+    //inactive_staff_info
+    public function getInactiveStaffInfoAttribute()
+    {
+        if($this->staff) {
+
+            $dateFrom = $this->date_from ? Carbon::parse($this->date_from)->format('d-m-Y') : null;
+            $dateTo = $this->date_to ? Carbon::parse($this->date_to)->format('d-m-Y') : null;
+
+            $str = '';
+            $str .= "{$this->staff->initials} ";
+            $str .= "{$this->staff->position}, ";
+            $str .= $this->inactiveTypes[$this->inactive_type] ?? null;
+            $str .= ' ';
+            $str .= $dateFrom ? "c {$dateFrom} " : "";
+            $str .= $dateTo ? "по {$dateTo} " : "";
+            $str .= $this->comment;
+
+            return $str;
+        }
+
+        return null;
     }
 }

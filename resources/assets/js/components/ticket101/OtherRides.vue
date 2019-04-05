@@ -79,12 +79,22 @@
                                     <div class="field is-grouped">
                                         <div class="field">
                                             <div class="control">
-                                                <label for="">Время регистрации</label>
-                                                <input type="text"
-                                                       :value="otherRide_.created_at|dateFilter('DD.MM.YYYY H:m')"
-                                                       readonly="readonly"
-                                                       class="input"
-                                                >
+                                                <!--<label for="">Время регистрации</label>-->
+                                                <!--<input type="text"-->
+                                                       <!--:value="otherRide_.created_at|dateFilter('DD.MM.YYYY H:m')"-->
+                                                       <!--readonly="readonly"-->
+                                                       <!--class="input"-->
+                                                <!--&gt;-->
+                                                <v-datepicker-search
+                                                        v-model="otherRide_.custom_created_at"
+                                                        :date="otherRide_.custom_created_at"
+                                                        :disabled="!canChangeCreatedAt"
+                                                        name="custom_created_at"
+                                                        :include-time="true"
+                                                        class="control"
+                                                        @dateChanged="otherRide_.custom_created_at = $event"
+                                                        label="Дата и время создания карточки">
+                                                </v-datepicker-search>
                                             </div>
                                         </div>
                                     </div>
@@ -297,6 +307,140 @@
                             </tbody>
                         </table>
                     </b-tab-item>
+                    <b-tab-item label="Штаб" icon="fa fa-truck-moving">
+
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                            <tr>
+                                <th>Подразделение</th>
+                                <th>Время выезда</th>
+                                <th>Время прибытия</th>
+                                <th>Время отбоя</th>
+                                <th>Время возвращения</th>
+                                <th>Отправка</th>
+                                <th>Время оповещения</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="hq_dept in hq">
+                                <!--Подразделение-->
+                                <td>{{ hq_dept.name }}</td>
+
+                                <!--{#Время выезда#}-->
+                                <td>
+                                    <b-timepicker style="max-width: 6rem;"
+                                                  :name="`hq[out_time][${hq_dept.name}][]`"
+                                                  v-model="hq_dept.out_time"
+                                                  editable
+                                    >
+                                        <div class="field is-grouped" style="justify-content: space-between">
+                                            <p class="control">
+                                                <a class="button is-primary is-small"
+                                                   @click="()=> {hq_dept.out_time = new Date();}">
+                                                    <b-icon pack="far" icon="clock"></b-icon>
+                                                    <span>Сейчас</span>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </b-timepicker>
+
+                                </td>
+
+                                <!--{#Время прибытия#}-->
+                                <td>
+                                    <b-timepicker style="max-width: 6rem;"
+                                                  editable
+                                                  v-model="hq_dept.arrive_time"
+                                                  :name="`hq[arrive_time][${hq_dept.name}][]`"
+                                    >
+                                        <div class="field is-grouped" style="justify-content: space-between">
+                                            <p class="control">
+                                                <a class="button is-primary is-small"
+                                                   @click="()=> {hq_dept.arrive_time = new Date();}">
+                                                    <b-icon pack="far" icon="clock"></b-icon>
+                                                    <span>Сейчас</span>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </b-timepicker>
+                                </td>
+
+                                <!--{#Время отбоя#}-->
+                                <td>
+                                    <b-timepicker style="max-width: 6rem;"
+                                                  editable
+                                                  v-model="hq_dept.retreat_time"
+                                                  :name="`hq[retreat_time][${hq_dept.name}][]`"
+                                    >
+                                        <div class="field is-grouped" style="justify-content: space-between">
+                                            <p class="control">
+                                                <a class="button is-primary is-small"
+                                                   @click="()=> {hq_dept.retreat_time = new Date();}">
+                                                    <b-icon pack="far" icon="clock"></b-icon>
+                                                    <span>Сейчас</span>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </b-timepicker>
+                                </td>
+
+                                <!--{#Время возвращения#}-->
+                                <td>
+                                    <b-timepicker style="max-width: 6rem;"
+                                                  editable
+                                                  v-model="hq_dept.ret_time"
+                                                  :name="`hq[ret_time][${hq_dept.name}][]`"
+                                    >
+                                        <div class="field is-grouped" style="justify-content: space-between">
+                                            <p class="control">
+                                                <a class="button is-primary is-small"
+                                                   @click="()=> {hq_dept.ret_time = new Date();}">
+                                                    <b-icon pack="far" icon="clock"></b-icon>
+                                                    <span>Сейчас</span>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </b-timepicker>
+                                </td>
+
+                                <!--{#Отправка HQ (Штаб)#}-->
+                                <td>
+                                    <a v-if="!hq_dept.dispatched || (hq_dept.retreated && hq_dept.dispatched)"
+                                       @click.prevent="sendHqDept(hq_dept)"
+                                       class="button is-primary is-outlined">
+                                        <i class="fas fa-bus"></i>&nbsp;Выслать
+                                    </a>
+                                    <a v-else-if="!hq_dept.retreated"
+                                       @click.prevent="retreatHqDept(hq_dept)"
+                                       class="button is-danger is-outlined">
+                                        <i class="fas fa-times"></i>&nbsp;Отбой
+                                    </a>
+                                </td>
+
+                                <!--{#Время оповещения#}-->
+                                <td class="is-expanded">
+                                    <b-timepicker style="max-width: 6rem;"
+                                                  v-model="hq_dept.dispatch_time"
+                                                  editable
+                                                  :name="`hq[dispatch_time][${hq_dept.name}][]`"
+                                    >
+                                        <div class="field is-grouped" style="justify-content: space-between">
+                                            <p class="control">
+                                                <a class="button is-primary is-small"
+                                                   @click="()=> {hq_dept.dispatch_time = new Date();}">
+                                                    <b-icon pack="far" icon="clock"></b-icon>
+                                                    <span>Сейчас</span>
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </b-timepicker>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <br><br><br>
+
+                    </b-tab-item>
 
                 </b-tabs>
             </b-tab-item>
@@ -478,6 +622,16 @@
                     return [];
                 }
             },
+            hqItems: {
+                type: Array,
+                default: () => {
+                    return [];
+                }
+            },
+            canChangeCreatedAt: {
+                type: Boolean,
+                default: false
+            },
         },
         data: function () {
             return {
@@ -487,9 +641,9 @@
                 ticket_: this.ticket,
                 techItems_: this.techItems,
                 active: [],
-                hq: [],
                 reserve: [],
                 time: 1000 * 10,
+                hq: this.formatHq(),
                 otherRide_: {
                     id: 0,
                     ride_type_id: null,
@@ -503,7 +657,8 @@
                     final_responsible_person: '',
                     final_direction: '',
                     final_object_name: '',
-                    created_at: ''
+                    created_at: '',
+                    custom_created_at: new Date(),
                 }
             }
         },
@@ -514,7 +669,9 @@
                     container: form
                 });
                 let urlToSave = this.urlToSave;
-                // console.dir(this.otherRide_)
+
+                // console.dir(this.dataToSave)
+                // return null;
 
                 axios.post(urlToSave, this.dataToSave).then((r) => {
                     this.otherRide_ = this.prepareRecord(r.data.record);
@@ -587,6 +744,18 @@
 
                 return '';
             },
+            formatTime(time) {
+                let dt = new Date('01-01-1970 00:00');
+                if (time !== '' && time !== null) {
+                    const tm = time.split(':');
+                    if (tm.length > 1) {
+                        dt.setHours(tm[0]);
+                        dt.setMinutes(tm[1]);
+                    }
+                }
+
+                return dt;
+            },
             sendOneCheck(event, dept_id, dept_number, res_id) {
 
                 /* проставляем галочки в чекбосах */
@@ -620,6 +789,7 @@
                 record.time_begin = record.time_begin !== null ? moment("2019-01-01 "+record.time_begin).toDate() : null;
                 record.time_end = record.time_end !== null ? moment("2019-01-01 "+record.time_end).toDate() : null;
 
+                record.custom_created_at = record.custom_created_at !== null ? moment(record.custom_created_at).toDate() : new Date();
                 return record;
             },
             checkRoadtrips() {
@@ -637,6 +807,79 @@
                     });
                 }
             },
+            sendHqDept(dept) {
+                dept.ticket101_id = this.otherRide_.id;
+                dept.dispatch_time = this.formatTime(moment().format('HH:mm'));
+                dept.dispatched = true;
+                axios.post('/api/101card/send-hq-ride',{ride: dept, type: 'other'});
+                // globalBus.$emit('hqDeptSent', dept);
+            },
+            retreatHqDept(hq) {
+
+                let props = {
+                    force: true,
+                    id: hq.id
+                };
+
+                axios.post('/roadtrip/retreat-hq', props).then((response) => {
+                    hq.retreat_time = this.formatTime(moment().format('HH:mm'));
+                    hq.retreated = true;
+                }).catch((e) => {
+                    console.dir(e);
+                });
+            },
+            formatHq() {
+                let hq = this.hqItems;
+
+                if(hq.length === 0) {
+                    hq = [
+                        {
+                            name: 'ДСПТ',
+                            accept_time: '',
+                            out_time: '',
+                            arrive_time: '',
+                            ret_time: '',
+                            retreat_time: '',
+                            dispatch_time: '',
+                            department: '',
+                            dispatched: false,
+                        },
+                        {
+                            name: 'КШМ',
+                            accept_time: '',
+                            out_time: '',
+                            arrive_time: '',
+                            ret_time: '',
+                            retreat_time: '',
+                            dispatch_time: '',
+                            department: '',
+                            dispatched: false,
+                        },
+                        {
+                            name: 'ИПЛ',
+                            accept_time: '',
+                            out_time: '',
+                            arrive_time: '',
+                            ret_time: '',
+                            retreat_time: '',
+                            dispatch_time: '',
+                            department: '',
+                            dispatched: false,
+                        },
+                    ];
+                }
+
+                hq.forEach((item) => {
+                    item.accept_time = this.formatTime(item.accept_time);
+                    item.out_time = this.formatTime(item.out_time);
+                    item.arrive_time = this.formatTime(item.arrive_time);
+                    item.ret_time = this.formatTime(item.ret_time);
+                    item.dispatch_time = this.formatTime(item.dispatch_time);
+                    item.retreat_time = this.formatTime(item.retreat_time);
+                });
+
+                return hq;
+            },
         },
         computed: {
             urlToSave() {
@@ -644,8 +887,18 @@
             },
             dataToSave() {
                 let data = JSON.parse(JSON.stringify(this.otherRide_));
-                data.time_begin = moment(data.time_begin).format('H:m');
-                data.time_end = moment(data.time_end).format('H:m');
+                data.time_begin = moment(data.time_begin).format('HH:mm');
+                data.time_end = moment(data.time_end).format('HH:mm');
+                data.custom_created_at = moment(data.custom_created_at).format('YYYY-DD-MM HH:mm:SS');
+                data.hq_rides = JSON.parse(JSON.stringify(this.hq));
+                data.hq_rides.forEach((item) => {
+                    item.accept_time = moment(item.accept_time).format('HH:mm');
+                    item.out_time = moment(item.out_time).format('HH:mm');
+                    item.arrive_time = moment(item.arrive_time).format('HH:mm');
+                    item.retreat_time = moment(item.retreat_time).format('HH:mm');
+                    item.ret_time = moment(item.ret_time).format('HH:mm');
+                    item.dispatch_time = moment(item.dispatch_time).format('HH:mm');
+                });
 
                 return data;
             },
@@ -676,10 +929,10 @@
             if(this.otherRide !== null) {
                 this.otherRide_ = this.otherRide;
             }
+
             this.checkRoadtrips();
 
             // setTimeout(this.checkRoadtrips, this.time);
-
             this.prepareRecord(this.otherRide_);
         }
     }

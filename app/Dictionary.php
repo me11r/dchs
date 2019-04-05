@@ -56,4 +56,9 @@ class Dictionary extends Model
             ;
     }
 
+    public function category()
+    {
+        return $this->belongsTo(DictionaryCategory::class,'dictionary_category_id');
+    }
+
 }

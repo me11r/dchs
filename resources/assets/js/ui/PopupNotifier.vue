@@ -20,6 +20,7 @@
 <script>
     import axios from 'axios';
     import _ from 'lodash';
+    import NotifySound from './GetNotifySoundContext';
     export default {
         name: "PopupNotifier",
         data: function () {
@@ -32,23 +33,10 @@
             checkNotifications() {
                 axios.get('/check-popup-notifications').then((r) => {
                     this.notifications = r.data.notifications;
-                    //todo старый вариант попапа (изменено в ARM-513)
-                    // let notifications = r.data.notifications;
-                    // if(notifications.length){
-                    //     for (let i = 0; i < notifications.length; i++){
-                    //
-                    //         this.$snackbar.open({
-                    //             message: notifications[i].message,
-                    //             position: notifications[i].popup_position ? notifications[i].popup_position : 'is-bottom-left',
-                    //             type: notifications[i].popup_type ? notifications[i].popup_type : 'is-info',
-                    //             duration: 10000,
-                    //             actionText: 'Перейти',
-                    //             onAction: () => {
-                    //                 window.location.href = notifications[i].url;
-                    //             }
-                    //         });
-                    //     }
-                    // }
+
+                    if(this.notifications.length > 0) {
+                        this.loadAndPlaySound();
+                    }
 
                 }).catch((e) => {
                     console.dir(e.message);
@@ -61,7 +49,15 @@
                 } else {
                     this.$refs[id][0].close();
                 }
-            }
+
+            },
+            loadAndPlaySound: function () {
+                return NotifySound().getContext().then((audio) => {
+                    audio.start();
+                }).catch(error => {
+                    console.log(error, 'errored');
+                });
+            },
         },
         computed: {
             notificationsParsed() {

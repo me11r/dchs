@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\AirRescueReport;
+use App\CheckpointShiftStaff;
+use App\CheckpointShiftStaffItem;
+use App\CheckpointShiftStaffReport;
 use App\Dictionary\CityArea;
 use App\DistrictManager;
 use App\DutyPersonsService;
@@ -15,6 +18,7 @@ use App\Models\Staff;
 use App\OperDutyShift;
 use App\OperDutyShiftStaff;
 use App\OperDutyShiftStaffItem;
+use App\OperDutyShiftStaffReport;
 use App\Services\ReportExport\FormationRecordWordExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -98,12 +102,22 @@ class FormationRecordController extends Controller
 
         $dutyShiftItems = OperDutyShiftStaffItem::date($date)
             ->whereNull('inactive_type')
-            ->with(['staff', 'shift'])
+            ->with(['staff'])
             ->get();
 
         $dutyShiftItemsInactive = OperDutyShiftStaffItem::date($date)
             ->whereNotNull('inactive_type')
-            ->with(['staff', 'shift'])
+            ->with(['staff'])
+            ->get();
+
+        $dutyShiftCheckpointItems = CheckpointShiftStaffItem::date($date)
+            ->whereNull('inactive_type')
+            ->with(['staff'])
+            ->get();
+
+        $dutyShiftCheckpointItemsInactive = CheckpointShiftStaffItem::date($date)
+            ->whereNotNull('inactive_type')
+            ->with(['staff'])
             ->get();
 
         $items = (new FormationRecord())->where('date', '=', $item->date)
@@ -151,6 +165,9 @@ class FormationRecordController extends Controller
             'cityAreas' => $cityAreas,
             'formationDistrictManager' => $formationDistrictManager,
             'dutyShiftItems' => $dutyShiftItems,
+            'dutyShiftItemsInactive' => $dutyShiftItemsInactive,
+            'dutyShiftCheckpointItems' => $dutyShiftCheckpointItems,
+            'dutyShiftCheckpointItemsInactive' => $dutyShiftCheckpointItemsInactive,
             'formationRecords' => $items,
             'dutyPersonsServiceArr' => $dutyPersonsServiceArr,
         ];
@@ -164,6 +181,8 @@ class FormationRecordController extends Controller
             ->with('formationDistrictManager', $formationDistrictManager)
             ->with('dutyShiftItems', $dutyShiftItems)
             ->with('dutyShiftItemsInactive', $dutyShiftItemsInactive)
+            ->with('dutyShiftCheckpointItems', $dutyShiftCheckpointItems)
+            ->with('dutyShiftCheckpointItemsInactive', $dutyShiftCheckpointItemsInactive)
             ->with('dutyPersonsServiceArr', $dutyPersonsServiceArr)
             ->with('items', $items);
     }
@@ -225,7 +244,9 @@ class FormationRecordController extends Controller
     public function staffCreateEdit(Request $request, $date, $operShift_id = 1)
     {
         $busyStaff = OperDutyShiftStaffItem::date($date)
-            ->where('shift_id', '<>', $operShift_id)
+            ->whereHas('report', function ($q) use ($operShift_id) {
+                $q->where('shift_id', '<>', $operShift_id);
+            })
             ->pluck('staff_id')
             ->toArray();
 
@@ -234,21 +255,33 @@ class FormationRecordController extends Controller
         $data['ods'] = OperDutyShift::all();
         $data['shift_id'] = $operShift_id;
         $data['date'] = $date;
+        $data['report'] = OperDutyShiftStaffReport::date($date)
+            ->where('shift_id', $operShift_id)
+            ->first();
 
         if($request->isMethod('post')){
             $all = $request->all();
 
             $this->hasRightToEdit();
 
-            OperDutyShiftStaffItem::date($date)
-                ->where('shift_id', $operShift_id)
-                ->delete();
+            $report = OperDutyShiftStaffReport::firstOrCreate([
+                'date' => $date,
+                'shift_id' => $operShift_id,
+            ]);
+
+            $report->items()->delete();
+
+//            OperDutyShiftStaffItem::date($date)
+//                ->where('shift_id', $operShift_id)
+//                ->where('report_id', $operShift_id)
+//                ->delete();
 
             foreach ($request->input('staff', []) as $rank => $staff_arr) {
                 foreach ($staff_arr['staff_id'] as $id) {
                     OperDutyShiftStaffItem::create([
-                        'shift_id' => $operShift_id,
+//                        'shift_id' => $operShift_id,
                         'staff_id' => $id,
+                        'report_id' => $report->id,
                         'rank' => $rank,
                         'date' => $date,
                     ]);
@@ -264,7 +297,8 @@ class FormationRecordController extends Controller
                     $comment = $request->input("staff_inactive.{$rank}.comment.{$key}", null);
 
                     OperDutyShiftStaffItem::create([
-                        'shift_id' => $operShift_id,
+//                        'shift_id' => $operShift_id,
+                        'report_id' => $report->id,
                         'staff_id' => $id,
                         'rank' => $rank,
                         'date' => $date,
@@ -275,9 +309,81 @@ class FormationRecordController extends Controller
                     ]);
                 }
             }
+
+            $report->note = $request->note;
+            $report->save();
         }
 
         return \view('formation-record.staff.create-edit', $data);
+    }
+
+    public function staffCheckpointCreateEdit(Request $request, $date, $operShift_id = 1)
+    {
+        $busyStaff = CheckpointShiftStaffItem::date($date)
+            ->whereHas('report', function ($q) use ($operShift_id) {
+                $q->where('shift_id', '<>', $operShift_id);
+            })
+            ->pluck('staff_id')
+            ->toArray();
+
+        $data['staff'] = CheckpointShiftStaff::whereNotIn('id', $busyStaff)->get();
+        $data['shift'] = OperDutyShift::find($operShift_id);
+        $data['ods'] = OperDutyShift::all();
+        $data['shift_id'] = $operShift_id;
+        $data['date'] = $date;
+        $data['report'] = CheckpointShiftStaffReport::date($date)
+            ->where('shift_id', $operShift_id)
+            ->first();
+
+        if($request->isMethod('post')){
+            $all = $request->all();
+
+            $this->hasRightToEdit();
+
+            $report = CheckpointShiftStaffReport::firstOrCreate([
+                'date' => $date,
+                'shift_id' => $operShift_id,
+            ]);
+
+            $report->items()->delete();
+
+            foreach ($request->input('staff', []) as $rank => $staff_arr) {
+                foreach ($staff_arr['staff_id'] as $id) {
+                    CheckpointShiftStaffItem::create([
+                        'staff_id' => $id,
+                        'report_id' => $report->id,
+                        'rank' => $rank,
+                        'date' => $date,
+                    ]);
+                }
+            }
+
+            foreach ($request->input('staff_inactive', []) as $rank => $staff_arr) {
+                foreach ($staff_arr['staff_id'] as $key => $id) {
+
+                    $inactiveType = $request->input("staff_inactive.{$rank}.inactive_type.{$key}", null);
+                    $dateFrom = $request->input("staff_inactive.{$rank}.date_from.{$key}", null);
+                    $dateTo = $request->input("staff_inactive.{$rank}.date_to.{$key}", null);
+                    $comment = $request->input("staff_inactive.{$rank}.comment.{$key}", null);
+
+                    CheckpointShiftStaffItem::create([
+                        'report_id' => $report->id,
+                        'staff_id' => $id,
+                        'rank' => $rank,
+                        'date' => $date,
+                        'inactive_type' => $inactiveType,
+                        'date_from' => $dateFrom ? Carbon::parse($dateFrom)->format('Y-m-d') : null,
+                        'date_to' => $dateTo ? Carbon::parse($dateTo)->format('Y-m-d') : null,
+                        'comment' => $comment,
+                    ]);
+                }
+            }
+
+            $report->note = $request->note;
+            $report->save();
+        }
+
+        return \view('formation-record.staff-checkpoint.create-edit', $data);
     }
 
     public function districtManagersCreateEdit(Request $request, $date)

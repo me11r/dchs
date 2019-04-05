@@ -45,17 +45,22 @@
                         <a href="/formation-record/duty-persons-services/{{ item.date|date('Y-m-d') }}"
                            class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
-                            Редактировать дежурных СВ
+                            Дежурные СВ
                         </a>
                         <a href="/formation-record/district-managers/{{ item.date|date('Y-m-d') }}"
                            class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
-                            Редактировать ответственных по районам
+                            Ответственные по районам
                         </a>
                         <a href="/formation-record/staff/{{ item.date|date('Y-m-d') }}/1"
                            class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
-                            Редактировать личный состав
+                            ЛС ОДС
+                        </a>
+                        <a href="/formation-record/staff-checkpoint/{{ item.date|date('Y-m-d') }}/1"
+                           class="button is-small is-basic">
+                            <i class="fas fa-pencil-alt"></i>&nbsp;
+                            Дежурная смена к-п режима
                         </a>
                         <a href="{{ route('formation-record.total-edit', item.id) }}"
                            class="button is-small is-info">

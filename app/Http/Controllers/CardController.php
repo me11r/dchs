@@ -188,7 +188,9 @@ class CardController extends AuthorizedController
             'b04' => 'ДЧС "Байкал-04"',
         ];
 
-        $service_notify = ServiceType::all();
+        $service_notify = ServiceType::inCard101()
+            ->orderBy('sort_order')
+            ->get();
         $eventInfos = EventInfo::all();
         $eventInfosArrived = EventInfoArrived::all();
         $departmentsOnWay = FireDepartmentResult::with(['department', 'tech'])
@@ -644,7 +646,8 @@ class CardController extends AuthorizedController
             $this->createServicePlans($card);
             $this->updateServicePlans($request->input('notification_services', []));
             $this->recommend($request, $card);
-            $this->saveHqRides($request, $card);//если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
+            $this->saveHqRides($request, $card);
+            // если ранг пожара понизили, отделения которые выехали на пожар, но не входят в новые рекомендации,
             // надо вернуть
             if ($deptsToGetBack->count()) {
                 $getBackArray = $deptsToGetBack->pluck('tech_id')->toArray();
@@ -724,7 +727,7 @@ class CardController extends AuthorizedController
 
     private function createNotificationServices(Ticket101 $ticket101): void
     {
-        foreach (ServiceType::all() as $service) {
+        foreach (ServiceType::inCard101()->get() as $service) {
             Ticket101Notification::create([
                 'notification_service_id' => $service->id,
                 'ticket101_id' => $ticket101->id,
@@ -734,7 +737,7 @@ class CardController extends AuthorizedController
 
     private function createServicePlans(Ticket101 $ticket101): void
     {
-        foreach (ServiceType::all() as $service) {
+        foreach (ServiceType::inCard101()->get() as $service) {
             Ticket101ServicePlan::firstOrCreate([
                 'service_type_id' => $service->id,
                 'card_id' => $ticket101->id,

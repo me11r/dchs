@@ -5,6 +5,7 @@ namespace App;
 use App\Models\BaseModel;
 use App\Models\FireDepartmentResult;
 use App\Models\Staff;
+use Carbon\Carbon;
 use Faker\Provider\Base;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,6 +46,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Ticket101Other extends BaseModel
 {
+    protected $searchByDate = 'custom_created_at';
+
     protected $fillable = [
         'ride_type_id',
         'time_begin',
@@ -58,6 +61,7 @@ class Ticket101Other extends BaseModel
         'final_responsible_person',
         'final_direction',
         'final_object_name',
+        'custom_created_at', //клон created_at, можно править в карточке
     ];
 
     public function ride_type()
@@ -73,6 +77,11 @@ class Ticket101Other extends BaseModel
     public function results()
     {
         return $this->hasMany(FireDepartmentResult::class, 'ticket101_other_id');
+    }
+
+    public function hqRides()
+    {
+        return $this->hasMany(Ticket101OtherHqRide::class, 'ticket101_id');
     }
 
     public function setFinalRideTypeIdAttribute($value)
@@ -113,5 +122,38 @@ class Ticket101Other extends BaseModel
         else {
             $this->attributes['final_object_name'] = $value;
         }
+    }
+
+    public function getDateAttribute()
+    {
+        $format = 'd.m.Y';
+        if ($this->custom_created_at) {
+            return Carbon::parse($this->custom_created_at)->format($format);
+        }
+        if ($this->created_at) {
+            return $this->created_at->format($format);
+        }
+
+        return null;
+    }
+
+    public function getDispatchedFdsAttribute()
+    {
+        $results = $this->results()->whereNotNull('dispatch_id')->get();
+        $fd = '';
+        foreach ($results as $key => $result) {
+            $fd .= $result->department ? $result->department->title : '';
+            $fd .= ++$key !== $results->count() ? ', ' : '';
+        }
+
+        return $fd;
+    }
+
+    public function setCustomCreatedAtAttribute($value)
+    {
+        if(!$value) {
+            $value = now();
+        }
+        $this->attributes['custom_created_at'] = $value;
     }
 }

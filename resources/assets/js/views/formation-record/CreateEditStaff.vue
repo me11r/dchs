@@ -12,7 +12,7 @@
         <div
             class="panels"
             v-for="item in records_"
-            :key="item.id">
+            :key="`records_${item.id}`">
 
             <div class="field is-grouped">
                 <div class="control column is-four-fifths">
@@ -21,7 +21,6 @@
                         <select
                             @change="selectStaff"
                             required
-                            title=""
                             :name="inactiveType === 'active' ? getName('staff_id', item.id) : getNameInactive('staff_id', item.id)"
                             :id="inactiveType === 'active' ? getName('staff_id', item.id) : getNameInactive('staff_id', item.id)"
                             v-model="item.staff_id">
@@ -129,6 +128,10 @@ export default {
             type: String,
             default: ''
         },
+        staff_type: {
+            type: String,
+            default: 'od'
+        },
         shiftId: {
             type: Number,
             default: 0
@@ -157,12 +160,14 @@ export default {
                 {id: 'business_trip', name: 'Командировка'},
                 {id: 'maternity', name: 'Декрет'},
                 {id: 'sick_leave', name: 'Больничный'},
+                {id: 'other', name: 'Другие причины'},
             ],
         };
     },
     methods: {
         getStaffFilter(selectedId) {
             let scope = this;
+
             return this.staff_.filter(function (item) {
                 return scope.$parent.selectedPersons.indexOf(item.id) === -1 || item.id === selectedId;
             });
@@ -234,7 +239,8 @@ export default {
                     rank: self.block_type_,
                     shift_id: self.shiftId,
                     inactive: self.inactiveType === 'active' ? null : 'inactive',
-                    date: self.dateInput_
+                    date: self.dateInput_,
+                    staffType: self.staff_type,
                 }
             }).then((resp) => {
                 self.records_ = resp.data;

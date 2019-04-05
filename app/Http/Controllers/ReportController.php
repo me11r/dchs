@@ -271,6 +271,7 @@ class ReportController extends AuthorizedController
         return response()->json($result);
     }
 
+    //Отчет по личному составу ДЧС
     public function postReportStaffManagersOSDStaff(Request $request)
     {
         $staff_id = $request->staff_id;
@@ -290,7 +291,9 @@ class ReportController extends AuthorizedController
         }
 
         if ($request->ogId) {
-            $result['ogCount'] = OperDutyShiftStaffItem::where('shift_id', $request->ogId)
+            $result['ogCount'] = OperDutyShiftStaffItem::whereHas('report', function ($q) use ($request) {
+                $q->where('shift_id', $request->ogId);
+            })
                 ->whereBetween('date',[$date_begin, $date_end])
                 ->count();
             ;
@@ -424,6 +427,7 @@ class ReportController extends AuthorizedController
     //Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
+        $f = $request->get('incident_type_id');
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
         $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
         $emergency_name_id = $request->emergency_name_id;
@@ -452,6 +456,10 @@ class ReportController extends AuthorizedController
         foreach ($cards as $card) {
             if (!isset($preparedToExport[$card->cityArea->name])) {
                 $preparedToExport[$card->cityArea->name] = [];
+            }
+
+            if(!$card->incident) {
+                continue;
             }
 
             if($card->incident->name == 'Падение веток и деревьев') {
@@ -1204,6 +1212,7 @@ class ReportController extends AuthorizedController
         dd('Кеш устарел, обновите страницу');
     }
 
+    //Общий свод по прочим выездам
     public function getReportOtherRides(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
@@ -1239,11 +1248,23 @@ class ReportController extends AuthorizedController
         $data['records'] = $data['records']
             ->with([
                 'ride_type',
-                'results',
-                'results.department',
-                'results.tech',
+//                'results',
+//                'results.department',
+//                'results.tech',
+//                'hqRides',
             ])
             ->get();
+
+        foreach ($data['records'] as $record) {
+            $record->results = $record->results()->whereNotNull('dispatch_time')->with([
+                'department',
+                'tech',
+            ])->get();
+
+            $record->hq_rides = $record->hqRides()
+                ->whereNotNull('dispatched')
+                ->get();
+        }
 
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
@@ -1687,19 +1708,19 @@ class ReportController extends AuthorizedController
             $str = '';
 
             $result['id'] = $card->id;
-            $result['liquidation_method_id'][1] = null;
-            $result['liquidation_method_id'][2] = null;
-            $result['liquidation_method_id'][3] = null;
-            $result['liquidation_method_id'][9] = null;
+            $result['liquidation_method_id'][1] = null; //первым стволом (стволами от емкости автоцистерны)
+            $result['liquidation_method_id'][2] = null; //с установкой пож. автомобилей на водоисточники
+            $result['liquidation_method_id'][3] = null; //от емкости нескольких автоцистерн (подвозом воды)
+            $result['liquidation_method_id'][9] = null; //Пенными стволами
 
-            $result['liquidation_method_id'][4] = null;
-            $result['liquidation_method_id'][5] = null;
+            $result['liquidation_method_id'][4] = null; //подручными средствами
+            $result['liquidation_method_id'][5] = null; //до прибытия
 
             if(in_array($card->liquidation_method_id, $tripResultIdsWeCount)) {
                 foreach ($card->chronologies_arrived as $chronology) {
 
                     //пропускаем ГДЗС в разделе "С установкой пож.автомобилей на водоисточники, ПГ" (ARM-523)
-                    if($card->liquidation_method_id == 2 && $chronology->event_info_arrived->name == 'ГДЗС') {
+                    if($chronology->event_info_arrived->name == 'ГДЗС') {
                         continue;
                     }
 
