@@ -19,14 +19,21 @@ class WeatherController extends Controller
         $this->repository = $repository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $items = $this->repository->orderBy('date', 'DESC')->get();
+        $items = Weather::orderBy('date', 'DESC');
+        $items = $items->stormRecords($request->filter_storm);
+
+        $per_page = $request->input('per_page', 50);
+
+        $items = $items->paginate($per_page);
         $user = Auth::user();
 
         return View::make('weather.index')
             ->with('items', $items)
             ->with('user', $user)
+            ->with('per_page', $per_page)
+            ->with('filter_storm', $request->filter_storm)
             ->render();
     }
 
