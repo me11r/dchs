@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
     Route::resource('/card112', 'Card112Controller');
 
     Route::resource('/emergency-situation', 'EmergencySituationController');
+    Route::get('emergency-situation/{id}/download', 'EmergencySituationController@download')->name('emergency-situation.download');
 
     Route::get('/import', 'ImportController@index')->name('import.index');
     Route::post('/import/special_plans', 'ImportController@specialPlans')->name('import.special_plans');
