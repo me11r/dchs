@@ -47,6 +47,7 @@ import Vue from './VueInstance';
 import VueDateFilter from './scripts/DateFilter';
 import {globalBus} from './scripts/global-bus';
 import EditPolygonMapScreen from './views/polygons/EditPolygonMapScreen';
+import QueudReports from './views/queued-reports/QueuedReports';
 
 import Echo from 'laravel-echo';
 
@@ -180,6 +181,14 @@ const card112FormBlockId = 'card112-form-block';
 if (document.getElementById(card112FormBlockId)) {
     window.addEventListener('load', () => {
         new Vue({el: '#' + card112FormBlockId, render: h => h(Card112Form)});
+    });
+}
+
+// Карточка 112 (форма добавления/редактировани)
+const queuedReportsBlock = 'queued-reports-block';
+if (document.getElementById(queuedReportsBlock)) {
+    window.addEventListener('load', () => {
+        new Vue({el: '#' + queuedReportsBlock, render: h => h(QueudReports)});
     });
 }
 

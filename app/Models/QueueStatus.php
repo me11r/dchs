@@ -25,4 +25,9 @@ class QueueStatus extends Model
     public $table = 'queue_statuses';
 
     protected $guarded = ['id'];
+
+    public static function getBySlug($slug)
+    {
+        return self::where('slug', '=', $slug)->firstOrFail();
+    }
 }

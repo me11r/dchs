@@ -397,6 +397,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
 
     Route::get('reports/analytics-spiasr', 'AnalyticsSpiasrController@index');
 
+    Route::get('reports/queued-reports', 'ReportController@queuedReports')->name('reports.queued-reports');
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
@@ -423,6 +424,9 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::get('file/download/{file_id}', 'FileUploadController@getFile')
             ->where('file_id', '[0-9]+')
             ->name('storage.file.download');
+        Route::get('queued-report/file/download/{report_id}', 'FileUploadController@getQueuedReportFile')
+            ->where('report_id', '[0-9]+')
+            ->name('storage.queued-report.file.download');
     });
 
     Route::group(['prefix' => 'reports/analytics101', 'as' => 'reports.analytics101.'], function (){

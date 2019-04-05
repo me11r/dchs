@@ -11,6 +11,7 @@ use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\DrillType;
+use App\Enums\ReportType;
 use App\FireDepartment;
 use App\FloodingReason;
 use App\FormationDistrictManagerItem;
@@ -49,6 +50,7 @@ use App\Repositories\Contracts\Ticket101Interface;
 use App\RideType;
 use App\Services\CommonHelper;
 use App\Services\FileHelper;
+use App\Services\QueuedReports\QueuedReportsService;
 use App\Services\ReportExport\Daily112WordExport;
 use App\Services\ReportExport\DailyWordExport;
 use App\Services\ReportExport\ReportAvalanches;
@@ -814,30 +816,38 @@ class ReportController extends AuthorizedController
     }
 
     //Отчет-1
-    public function exportEmergency101Xls(Request $request)
+    public function exportEmergency101Xls(Request $request, QueuedReportsService $queuedReportsService)
     {
-        $date_begin = $request->date_begin;
-        $date_end = $request->date_end;
-        $result_id = $request->result_id;
-        $burnt_id = $request->burnt_id;
-        $city_area_id = $request->city_area_id;
+        $dateStart = Carbon::parse(strtotime($request->date_begin));
+        $dateEnd = Carbon::parse(strtotime($request->date_end));
+        $queuedReport = $queuedReportsService->registerNewReport(
+            $dateStart,
+            $dateEnd,
+            ReportType::ANALYTICS_SPIASR,
+            $request->all()
+        );
 
-        //todo: сделать доступ к данным через кеш
-//        $stat = Cache::get('report_1_data');
-//        if(!$stat) {
-//            dd('Кеш пуст, обновите страницу');
-//        }
-        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
+        $result = $queuedReportsService->sendToQueue($queuedReport->id);
 
-        $exportService = new Ticket101PeriodExcelExport($stat);
-        $writer = $exportService->getXlsWriter();
-        $fileName = 'Отчет-1.xls';
+        return redirect()->to(route('reports.queued-reports'));
 
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $fileName . '"');
-        header('Cache-Control: max-age=0');
-
-        $writer->save('php://output');
+//        $date_begin = $request->date_begin;
+//        $date_end = $request->date_end;
+//        $result_id = $request->result_id;
+//        $burnt_id = $request->burnt_id;
+//        $city_area_id = $request->city_area_id;
+//
+//        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
+//
+//        $exportService = new Ticket101PeriodExcelExport($stat);
+//        $writer = $exportService->getXlsWriter();
+//        $fileName = 'Отчет-1.xls';
+//
+//        header('Content-Type: application/vnd.ms-excel');
+//        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+//        header('Cache-Control: max-age=0');
+//
+//        $writer->save('php://output');
 
     }
 
@@ -1752,5 +1762,10 @@ class ReportController extends AuthorizedController
         $data['user'] = Auth::user();
 
         return view("daily-reports.$type",$data);
+    }
+
+    public function queuedReports()
+    {
+        return view('reports.queued-reports');
     }
 }

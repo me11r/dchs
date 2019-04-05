@@ -25,4 +25,9 @@ class ReportType extends Model
     public $table = 'report_types';
 
     protected $guarded = ['id'];
+
+    public static function getBySlug($slug)
+    {
+        return self::where('slug', '=', $slug)->firstOrFail();
+    }
 }
