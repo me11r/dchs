@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\Upload;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\QueuedReport;
 use App\Models\UploadedFile;
 use App\Services\FileUploadService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -40,6 +42,16 @@ class FileUploadController extends Controller
         $path = \Storage::path($upload->filepath);
         $response = new BinaryFileResponse($path);
         $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $upload->filename, sha1($upload->filename));
+        return $response;
+    }
+
+    public function getQueuedReportFile($report_id)
+    {
+        $report = QueuedReport::find($report_id);
+        $path = $report->file_path;
+        $fileName = Arr::last(explode(DIRECTORY_SEPARATOR, $path));
+        $response = new BinaryFileResponse($path);
+        $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $fileName, sha1($fileName));
         return $response;
     }
 }

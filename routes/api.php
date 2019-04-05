@@ -19,6 +19,10 @@ Route::group(
 
         Route::apiResource('hydrant', 'HydrantController');
         Route::apiResource('polygon', 'PolygonController');
+
+        Route::apiResource('queued-reports', 'QueuedReportsController');
+        Route::post('queued-reports/send-to-queue', 'QueuedReportsController@sendToQueue');
+
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
         Route::post('101card/save-chronology', 'CardController@createChronologyRecord101card');
         Route::post('101card/save-chronology-from-fd', 'CardController@createChronologyRecord101cardFromFd');

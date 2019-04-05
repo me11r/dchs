@@ -358,6 +358,12 @@
                             class="dropdown-item is-small"><i class="fas fa-blender"></i>
                             &nbsp; Тех.проверка системы оповещения
                         </a>
+
+                        <a
+                            href="/reports/queued-reports"
+                            class="dropdown-item is-small"><i class="fas fa-list"></i>
+                            &nbsp; Очередь отчетов
+                        </a>
                     </div>
                 </div>
                 <div
