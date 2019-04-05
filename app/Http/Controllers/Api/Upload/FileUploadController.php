@@ -49,7 +49,7 @@ class FileUploadController extends Controller
     {
         $report = QueuedReport::find($report_id);
         $path = $report->file_path;
-        $fileName = Arr::last(explode(DIRECTORY_SEPARATOR, $path));
+        $fileName = $report->file_name;
         $response = new BinaryFileResponse($path);
         $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $fileName, sha1($fileName));
         return $response;

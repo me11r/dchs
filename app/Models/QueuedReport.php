@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 /**
  * App\Models\QueuedReport
@@ -48,6 +49,13 @@ class QueuedReport extends Model
     /**
      * @var array
      */
+    protected $appends = [
+        'file_name'
+    ];
+
+    /**
+     * @var array
+     */
     protected $casts = [
         'report_data' => 'array',
     ];
@@ -66,6 +74,11 @@ class QueuedReport extends Model
     public function status()
     {
         return $this->hasOne(QueueStatus::class, 'id', 'queue_status_id');
+    }
+
+    public function getFileNameAttribute()
+    {
+        return Arr::last(explode(DIRECTORY_SEPARATOR, $this->file_path));
     }
 
 }
