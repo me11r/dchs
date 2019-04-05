@@ -43,7 +43,7 @@ class QueuedReportsService
     public function sendToQueue(int $queuedReportId)
     {
         $result = $this->changeStatus($queuedReportId, QueueStatusType::QUEUED);
-        dispatch(new HandleQueuedReport($queuedReportId));
+        HandleQueuedReport::dispatch($queuedReportId);
         return $result;
     }
 }
