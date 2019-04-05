@@ -56,7 +56,7 @@
                         <a
                             v-if="item.status.slug === 'ENDED'"
                             :href="'/api/upload/queued-report/file/download/' + item.id"
-                            download
+                            :download="item.file_name"
                             type="button"
                             class="button is-success is-small">Скачать</a>
                     </td>
