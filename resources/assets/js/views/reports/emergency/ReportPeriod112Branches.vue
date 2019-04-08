@@ -155,6 +155,7 @@ export default {
                 '?date_start=' + moment(this.date_begin_).format('YYYY-MM-DD') +
                 '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
                 '&incident_type_id=' + this.incident_type_id +
+                '&city_area_id=' + this.cityAreaId +
                 '&csrf-token=' + this.csrf;
         }
     },
