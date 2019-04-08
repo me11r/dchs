@@ -182,8 +182,8 @@ class Ticket101PeriodExcelExport
 
         foreach ($this->stat as $stat) {
             $arr = [
-                $stat->created_at->format('d.m.Y'),
-                $stat->created_at->format('H:i'),
+                Carbon::parse($stat->custom_created_at)->format('d.m.Y'),//$stat->created_at->format('d.m.Y'),
+                Carbon::parse($stat->custom_created_at)->format('H:i'),//$stat->created_at->format('H:i'),
                 $stat->caller_name,
                 $stat->caller_phone,
                 @$stat->city_area->name,
@@ -221,7 +221,13 @@ class Ticket101PeriodExcelExport
                 $stat->max_square,
                 $stat->storey_count,
             ];
+
             $sheet->fromArray($arr, null, "A$rowIndex");
+
+            $url = env('APP_URL','http://emergency.iteamsolutions.kz')."/card/add101/{$stat->id}#return=0";
+
+            $sheet->getCell("F{$rowIndex}")->setValue($arr[5])->getHyperlink()->setUrl($url);
+
             $sheet->getStyle("A$rowIndex:Z$rowIndex")->applyFromArray(self::HStyle);
             $rowIndex++;
         }

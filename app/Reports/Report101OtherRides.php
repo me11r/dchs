@@ -68,7 +68,7 @@ class Report101OtherRides
 //            foreach ($results as $ride) {
                 $data['values'][] = [
                     ++$index, //'№',
-                    $record['created_at'], //'Дата',
+                    $record['custom_created_at'] ? Carbon::parse($record['custom_created_at'])->format('d.m.Y H:i') : '', //'Дата',
                     implode(',', $results->map(function ($item) {
                         return $item->department->title;
                     })->toArray()), //'Подразделение',
@@ -80,6 +80,7 @@ class Report101OtherRides
                     $record['time_begin'], //'Время начала',
                     $record['time_end'], // 'Время окончания',
                     $record['final_responsible_person'], // 'Ответственный',
+                    "/card101-other-rides/{$record['id']}/edit", // 'id',
                 ];
 //            }
         }

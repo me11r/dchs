@@ -57,7 +57,8 @@
                 <tbody>
                     <tr v-for="(record, key) in records_" :key="`records_${key}`">
                         <td>{{ ++key }}</td>
-                        <td>{{ record.id }}</td>
+<!--                        <td>{{ record.id }}</td>-->
+                        <td><a target="_blank" :href="`/card/add101/${record.id}#return=0`">{{ record.id }}</a></td>
                         <td>{{ record.date }}</td>
                         <td>{{ record['liquidation_method_id'][1] }}</td>
                         <td>{{ record['liquidation_method_id'][2] }}</td>

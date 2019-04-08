@@ -427,11 +427,12 @@ class ReportController extends AuthorizedController
     //Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
-        $f = $request->get('incident_type_id');
+        $f = $request->all();
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
         $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
         $emergency_name_id = $request->emergency_name_id;
-        $cityAreaId = $request->city_area_id;
+        $cityAreaId = $request->city_area_id === 'null' ? null : $request->city_area_id;
+        $incident_type_id = $request->incident_type_id === 'null' ? null : $request->incident_type_id;
 
         $dateStartHuman = Carbon::parse($request->get('date_start'))->format('d.m.Y');
         $dateEndHuman = Carbon::parse($request->get('date_end'))->format('d.m.Y');
@@ -443,14 +444,22 @@ class ReportController extends AuthorizedController
             . '.xls';
 
         $cards = (new Card112())
-            ->skipNullValue('additional_incident_type_id',  $request->get('incident_type_id'))
+            ->where(function ($q) use ($request) {
+                if($request->incident_type_id != 'null' && $request->incident_type_id !== null) {
+                    $q->where('additional_incident_type_id', $request->incident_type_id);
+                }
+                else {
+                    $q->whereNotNull('additional_incident_type_id');
+                }
+            })
+//            ->skipNullValue('additional_incident_type_id',  $request->get('incident_type_id'))
             ->skipNullValue('emergency_name_id',$emergency_name_id)
             ->skipNullValue('city_area_id',$cityAreaId)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
             ->with(['cityArea'])
             ->get();
 
-        $incidentType = IncidentType::find($request->get('incident_type_id', 1));
+        $incidentType = IncidentType::find($incident_type_id ?? 1);
 
         $preparedToExport = [];
         foreach ($cards as $card) {
@@ -458,11 +467,7 @@ class ReportController extends AuthorizedController
                 $preparedToExport[$card->cityArea->name] = [];
             }
 
-            if(!$card->incident) {
-                continue;
-            }
-
-            if($card->incident->name == 'Падение веток и деревьев') {
+            if($card->additionalIncident->name == 'Падение веток и деревьев') {
                 $preparedToExport[$card->cityArea->name][] = [
                     '№' => $card->id,
                     'Адрес' => $card->location,
@@ -475,10 +480,11 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+//                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
-            elseif ($card->incident->name == 'Подтопления') {
+            elseif ($card->additionalIncident->name == 'Подтопления') {
                 $preparedToExport[$card->cityArea->name][] = [
                     '№' => $card->id,
                     'Адрес' => $card->location,
@@ -492,7 +498,8 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+//                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
             else {
@@ -508,7 +515,8 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+//                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
         }
@@ -539,7 +547,8 @@ class ReportController extends AuthorizedController
             $floodingReasonsCountArr = [];
             $floodingReasonsCountStr = '';
             foreach (FloodingReason::all() as $floodingReason) {
-                $floodingReasonsCountArr[$floodingReason->name] = $cards->filter(function ($q) use ($floodingReason) {
+
+                $floodingReasonsCountArr[$floodingReason->name] = (clone $cards)->filter(function ($q) use ($floodingReason) {
                     return $q->flooding_reason_id === $floodingReason->id;
                 })->count();
 
@@ -572,13 +581,30 @@ class ReportController extends AuthorizedController
                 ->getFont()
                 ->setBold(true);
 
-            $rowIndex += 3;
+            $rowIndex += 3; //7
             foreach ($preparedToExport as $key => $data) {
+
+                $t = CityArea::find($cityAreaId)->name ?? null;
+
+                if(!count($preparedToExport[$key])) {
+                    unset($preparedToExport[$key]);
+                    continue;
+                }
+
+                if($t !== null && $key != $t) {
+                    continue;
+                }
+
                 $totalPerArea = count($data);
+                //Медеуский - 4
                 $activeSheet->getCell('E' . $rowIndex)->setValue("$key - {$totalPerArea}")->getStyle()->getFont()->setBold(true);
+
+//                $url = env('APP_URL','http://emergency.iteamsolutions.kz').$data[0]['href'];
+//                unset($data[0]['href']);
 
                 $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
                 $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
+//                $activeSheet->getCell("B{$rowIndex}")->setValue($data[0]['Адрес'])->getHyperlink()->setUrl($url);
 
                 $activeSheet
                     ->getStyle('A'.($rowIndex + 1).':I'. $activeSheet->getHighestRow())
@@ -1248,10 +1274,6 @@ class ReportController extends AuthorizedController
         $data['records'] = $data['records']
             ->with([
                 'ride_type',
-//                'results',
-//                'results.department',
-//                'results.tech',
-//                'hqRides',
             ])
             ->get();
 

@@ -88,7 +88,8 @@
                 <tbody>
                     <tr v-for="(record, key) in records_" :key="`records_${record.id}`">
                         <td>{{ ++key }}</td>
-                        <td>{{ record.created_at|dateFilter('DD.MM.YYYY H:m') }}</td>
+<!--                        <td>{{ record.created_at|dateFilter('DD.MM.YYYY H:m') }}</td>-->
+                        <td><a target="_blank" :href="`/card101-other-rides/${record.id}/edit`">{{ record.created_at|dateFilter('DD.MM.YYYY H:m') }}</a></td>
                         <td>
                             <p v-for="result in record.results" :key="`results_dept_title_${result.id}`">{{ result.department.title }}</p>
                             <p v-for="hq_ride in record.hq_rides" :key="`hq_ride_title_${hq_ride.id}`">{{ hq_ride.name }}</p>
