@@ -71,7 +71,7 @@
         components: {BField},
         props: {
             records: {
-                type: Array,
+                type: Array | Object,
                 default: () => { return []; }
             },
             counts: {
