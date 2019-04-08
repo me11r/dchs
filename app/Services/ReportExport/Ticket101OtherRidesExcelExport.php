@@ -127,8 +127,13 @@ class Ticket101OtherRidesExcelExport
 
         foreach ($this->data['values'] as $rowVal) {
 
+            $url = env('APP_URL','http://emergency.iteamsolutions.kz').$rowVal[9];
+            unset($rowVal[9]);
+
             $sheet->fromArray($rowVal, null, "A$rowIndex");
+            $sheet->getCell("B{$rowIndex}")->setValue($rowVal[1])->getHyperlink()->setUrl($url);
             $sheet->getStyle("A$rowIndex:I$rowIndex")->applyFromArray(self::HStyle);
+
             $sheet->getRowDimension($rowIndex)->setRowHeight(50);
             $rowIndex++;
 
