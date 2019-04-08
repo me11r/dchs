@@ -127,7 +127,12 @@ class Ticket101WaterConsumptionExcelExport
 
         foreach ($this->data['values'] as $rowVal) {
 
+            $url = env('APP_URL','http://emergency.iteamsolutions.kz').$rowVal[10];
+            unset($rowVal[10]);
+
             $sheet->fromArray($rowVal, null, "A$rowIndex");
+            $sheet->getCell("B{$rowIndex}")->setValue($rowVal[1])->getHyperlink()->setUrl($url);
+
             $sheet->getStyle("A$rowIndex:J$rowIndex")->applyFromArray(self::HStyle);
             $sheet->getRowDimension($rowIndex)->setRowHeight(50);
             $rowIndex++;

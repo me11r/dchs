@@ -72,6 +72,7 @@ class Report101WaterConsumption
                 $record['liquidation_method_id'][4],
                 $record['liquidation_method_id'][5],
                 $record['time'],
+                "/card/add101/{$record['id']}#return=0`",
             ];
         }
 

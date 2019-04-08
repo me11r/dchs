@@ -427,7 +427,7 @@ class ReportController extends AuthorizedController
     //Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
-        $f = $request->get('incident_type_id');
+        $f = $request->all();
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
         $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
         $emergency_name_id = $request->emergency_name_id;
@@ -475,7 +475,8 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+//                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
             elseif ($card->incident->name == 'Подтопления') {
@@ -492,7 +493,8 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+//                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
             else {
@@ -508,7 +510,8 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i')
+                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+//                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
         }
@@ -572,13 +575,24 @@ class ReportController extends AuthorizedController
                 ->getFont()
                 ->setBold(true);
 
-            $rowIndex += 3;
+            $rowIndex += 3; //7
             foreach ($preparedToExport as $key => $data) {
+
+                if(!count($preparedToExport[$key])) {
+                    unset($preparedToExport[$key]);
+                    continue;
+                }
+
                 $totalPerArea = count($data);
+                //Медеуский - 4
                 $activeSheet->getCell('E' . $rowIndex)->setValue("$key - {$totalPerArea}")->getStyle()->getFont()->setBold(true);
+
+                $url = env('APP_URL','http://emergency.iteamsolutions.kz').$data[0]['href'];
+                unset($data[0]['href']);
 
                 $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
                 $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
+                $activeSheet->getCell("B{$rowIndex}")->setValue($data[0]['Адрес'])->getHyperlink()->setUrl($url);
 
                 $activeSheet
                     ->getStyle('A'.($rowIndex + 1).':I'. $activeSheet->getHighestRow())
@@ -1248,10 +1262,6 @@ class ReportController extends AuthorizedController
         $data['records'] = $data['records']
             ->with([
                 'ride_type',
-//                'results',
-//                'results.department',
-//                'results.tech',
-//                'hqRides',
             ])
             ->get();
 

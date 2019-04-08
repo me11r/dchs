@@ -105,6 +105,7 @@
                         <tr v-for="(item, key) in areaArray" :key="`row_`+item['Адрес']+item['Дата происшествия']+key">
                             <th>{{ ++key }}</th>
                             <th>{{ cityArea }}</th>
+<!--                            <th><a target="_blank" :href="item['href']">{{ item['Адрес'] }}</a></th>-->
                             <th>{{ item['Адрес'] }}</th>
                             <th v-if="incident_type_id === 36">{{ item['Кол-во проживающих'] }}</th>
                             <th>{{ item['Дата происшествия'] }}</th>
