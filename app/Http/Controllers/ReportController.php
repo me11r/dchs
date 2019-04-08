@@ -1382,6 +1382,7 @@ class ReportController extends AuthorizedController
                'out_pv_total' => $q->drill_out_pv_total,
                'corrected_op_total' => $q->drill_corrected_op_total,
                'corrected_ok_total' => $q->drill_corrected_ok_total,
+               'href' => "/card/add101/{$q->id}/drill#return=0",
            ];
         })->toArray();
 
@@ -1406,6 +1407,7 @@ class ReportController extends AuthorizedController
                 'out_pv_total' => '',
                 'corrected_op_total' => '',
                 'corrected_ok_total' => '',
+                'href' => "/norms-psp/{$q->id}/edit",
             ];
         })->toArray();
 
@@ -1673,6 +1675,7 @@ class ReportController extends AuthorizedController
         dd('Кеш устарел, обновите страницу');
     }
 
+    //    Расход воды
     public function getReportWaterConsumption(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
@@ -1690,9 +1693,9 @@ class ReportController extends AuthorizedController
             ->whereHas('trip_result', function ($q) {
                 $q->where('name','Пожар');
             })
-            ->whereHas('chronologies', function ($b) {
-                $b->whereNotNull('event_info_arrived_id');
-            })
+//            ->whereHas('chronologies', function ($b) {
+//                $b->whereNotNull('event_info_arrived_id');
+//            })
             ->where(function ($qq){
                 $qq->has('liquidation_method');
             })
