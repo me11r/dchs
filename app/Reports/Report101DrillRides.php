@@ -67,6 +67,7 @@ class Report101DrillRides
 
         foreach ($this->data['records'] as $index => $record) {
 
+            $record['departments'] = !is_array($record['departments']) ? $record['departments']->toArray() : $record['departments'];
             $data['values'][] = [
                 ++$index, //'№',
                 $record['date'], //'Дата',
@@ -74,20 +75,19 @@ class Report101DrillRides
                     return $item['name'];
                 },$record['fire_departments'])), //'Подразделение',
                 $record['type'], //'Дата',
-                implode(',', array_map(function ($item) {
-                    return $item['name'];
-                },$record['departments']->toArray())),
+                implode(',', array_map(function ($item) {return $item['name'];},$record['departments'])),
                 $record['name'], //'Куда',
                 $record['location'], //'Адрес',
                 $record['time_begin'], //'Время начала',
                 $record['time_end'], // 'Время окончания',
                 $record['responsible_person'], // 'Ответственный',
-                $record['checked_pg_total'], // 'Ответственный',
-                $record['out_pg_total'], // 'Ответственный',
-                $record['checked_pv_total'], // 'Ответственный',
-                $record['out_pv_total'], // 'Ответственный',
-                $record['corrected_op_total'], // 'Ответственный',
-                $record['corrected_ok_total'], // 'Ответственный',
+                $record['checked_pg_total'], // 'ПровПГ',
+                $record['out_pg_total'], // 'НеиспПГ',
+                $record['checked_pv_total'], // 'ПровПВ',
+                $record['out_pv_total'], // 'НеиспПВ',
+                $record['corrected_op_total'], // 'ОП',
+                $record['corrected_ok_total'], // 'ОК',
+                $record['href'],
             ];
         }
 

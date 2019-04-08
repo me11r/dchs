@@ -96,7 +96,7 @@
                 <tbody>
                     <tr v-for="(record, key) in records_" :key="`records_${key}`">
                         <td>{{ ++key }}</td>
-                        <td>{{ record.date }}</td>
+                        <td><a target="_blank" :href="record.href">{{ record.date }}</a></td>
                         <td>
                             <p v-for="result in record.fire_departments">{{ result.name }}</p>
                         </td>

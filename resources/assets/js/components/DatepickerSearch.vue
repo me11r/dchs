@@ -87,7 +87,7 @@ export default {
             default: 'Выберите дату'
         },
         dateString: {
-            type: String,
+            type: String | Date,
             default: ''
         },
         date: {
