@@ -125,6 +125,7 @@ class Card112Controller extends Controller
         $serviceTypes = ServiceType::inCard112()
             ->orderBy('sort_order')
             ->get(['id', 'name']);
+
         foreach ($serviceTypes as $item) {
             $ticket101_service_plans[] = new Ticket101ServicePlan();
         }

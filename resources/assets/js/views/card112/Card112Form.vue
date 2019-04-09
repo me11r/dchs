@@ -630,6 +630,17 @@
                                     id="avalanche_volume"
                                     v-model="model.avalanche_volume">
                             </div>
+                            <!--примечание-->
+                            <div class="control is-expanded">
+                                <p class="control">
+                                    <label for="avalanche_volume">Примечание (сход лавин)</label>
+                                </p>
+                                <textarea
+                                    class="textarea"
+                                    name="avalanche_note"
+                                    id="avalanche_note"
+                                    v-model="model.avalanche_note"></textarea>
+                            </div>
                         </div>
 
                         <!--ХАРАКТЕРИСТИКА ПРОИСШЕСТВИЯ-->

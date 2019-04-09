@@ -65,16 +65,18 @@
                         <th>Тип схода лавин</th>
                         <th>Описание происшествия</th>
                         <th>Куб/м</th>
+                        <th>Примечание</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(record, index) in records">
                         <td>{{ ++index }}</td>
-                        <td>{{ record.created_at|dateFilter('DD/MM/YYYY') }}</td>
+                        <td>{{ record.custom_created_at|dateFilter('DD/MM/YYYY') }}</td>
                         <td>{{ record.detailed_address ? record.detailed_address : record.location }}</td>
                         <td>{{ record.avalanche_type.name }}</td>
                         <td>{{ record.emergency_feature }}</td>
                         <td>{{ record.avalanche_volume }}</td>
+                        <td>{{ record.avalanche_note }}</td>
                     </tr>
                 </tbody>
             </table>
