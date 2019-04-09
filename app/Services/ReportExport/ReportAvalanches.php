@@ -84,7 +84,7 @@ class ReportAvalanches
                 $record->avalanche_type->name,
                 $record->emergency_feature,
                 $record->avalanche_volume,
-                '',
+                $record->avalanche_note,
             ];
             $row = $table->addRow();
             foreach ($rowVal as $key => $value) {
