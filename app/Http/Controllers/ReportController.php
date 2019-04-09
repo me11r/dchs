@@ -1125,6 +1125,9 @@ class ReportController extends AuthorizedController
             return response()->json($data);
         }
 
+        $data['date_from'] = Carbon::parse($dateFrom)->format('d.m.Y');
+        $data['date_to'] = Carbon::parse($dateTo)->format('d.m.Y');
+
         $dailyWordExport = new ReportAvalanches($data);
         $writer = $dailyWordExport->getWriter('Word2007');
         $fileName = 'Сход лавин - '.date('d-m-Y'). '.docx';
