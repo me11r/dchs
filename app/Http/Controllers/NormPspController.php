@@ -21,15 +21,30 @@ class NormPspController extends Controller
         $data['per_page'] = $request->get('per_page', 20);
         $data['card_type'] = $this->view;
         $data['fire_departments'] = FireDepartment::recommend()->get();
+        $data['norm_types'] = NormType::all();
+        $data['norm_numbers'] = NormNumber::all();
         $data['filter_fd'] = $request->filter_fd;
         $data['search'] = $request->search;
+        $data['can_delete'] = Auth::user()->hasRight('CAN_DELETE_NORMS_PSP');
+        $data['date_from'] = $request->date_from;
+        $data['date_to'] = $request->date_to;
+        $data['norm_type_id'] = $request->norm_type_id;
+        $data['norm_number_id'] = $request->norm_number_id;
 
         if ($request->filter_fd) {
             $records = $records->where('fire_department_id', $request->filter_fd);
         }
 
-        if ($request->filter_norm_type) {
-            $records = $records->where('norm_type_id', $request->filter_norm_type);
+        if ($request->norm_type_id) {
+            $records = $records->where('norm_type_id', $request->norm_type_id);
+        }
+
+        if ($request->norm_number_id) {
+            $records = $records->where('norm_number_id', $request->norm_number_id);
+        }
+
+        if($data['date_from'] && $data['date_to']) {
+            $records = $records->whereBetween('date', [$data['date_from'], $data['date_to']]);
         }
 
         if ($request->search) {
@@ -47,7 +62,6 @@ class NormPspController extends Controller
 
 
         $data['records'] = $records->paginate($data['per_page']);
-        $data['can_delete'] = Auth::user()->hasRight('CAN_DELETE_NORMS_PSP');
         return view("card.$this->view.index", $data);
     }
 

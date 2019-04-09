@@ -101,43 +101,37 @@ class CardController extends AuthorizedController
 
     public function get101(Request $request, $card_type = null)
     {
+        $can_delete = Auth::user()->hasRight('DELETE_CARD101');
+
         $perPage = $request->get('per_page', 10);
 
         $search = trim($request->search);
 
-        if(Auth::user()->hasRight('DELETE_CARD101')){
-            $can_delete = true;
-        }
-
         $sort = $request->get('sort', 'custom_created_at');
+
         $id = $request->input('filter.id', '');
         $city_area = $request->input('filter.city_area', '');
+        $from = $request->input('date_from', null);
+        $to = $request->input('date_to', null);
 
+        $tickets = Ticket101::real()->orderBy($sort,'desc');
 
         $city_areas = CityArea::all();
 
-        if($id){
-            $tickets = Ticket101::
-                orderBy($sort,'desc')
-                ->real()
-                ->where('id',$id)
-                ->paginate($perPage);
+        if ($from && $to) {
+            $tickets = $tickets->whereBetween('custom_created_at', [$from, $to]);
         }
-        elseif($city_area){
 
-            $tickets = Ticket101::
-                where('city_area_id', $city_area)
-                ->real()
-                ->orderBy($sort,'desc')
-                ->paginate($perPage);
+        if($city_area){
+
+            $tickets = $tickets->
+                where('city_area_id', $city_area);
         }
-        elseif($search){
+
+        if($search){
             if(is_numeric($search)){
-                $tickets = Ticket101::
-                    where('id', $search)
-                    ->real()
-                    ->orderBy($sort,'desc')
-                    ->paginate($perPage);
+                $tickets = $tickets->
+                    where('id', $search);
             }
             else{
                 try{
@@ -146,31 +140,25 @@ class CardController extends AuthorizedController
                 catch (\Exception $e){
                     $date = null;
                 }
-                $tickets = Ticket101::
-                    real()
+                $tickets = $tickets
                     ->where('location', "like", "$search%")
                     ->orWhereDate('custom_created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
                         $q->where('name', "like", "$search%");
-                    })
-                    ->orderBy($sort,'desc')
-                    ->paginate($perPage);
+                    });
             }
+        }
 
-        }
-        else{
-            $tickets = Ticket101::
-                real()
-                ->orderBy($sort,'desc')
-                ->paginate($perPage);
-        }
+        $tickets = $tickets->paginate($perPage);
 
         $this->set('tickets', $tickets)
             ->set('city_areas', $city_areas)
             ->set('id', $id)
+            ->set('date_from', $from)
+            ->set('date_to', $to)
             ->set('card_type', 'real')
             ->set('search', $search)
-            ->set('can_delete', $can_delete ?? false)
+            ->set('can_delete', $can_delete)
             ->set('type', $card_type)
             ->set('city_area', $city_area)
             ->set('per_page', $perPage);
