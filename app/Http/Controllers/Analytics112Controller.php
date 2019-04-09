@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\AvalancheType;
+use App\BranchFallReason;
 use App\Dictionary\CityArea;
 use App\Dictionary\TripResult;
 use App\DiseaseType;
 use App\DistrictManager;
 use App\ElevatorEmergencyType;
 use App\EmergencyName;
+use App\FloodingReason;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
 use App\OperationalGroup;
@@ -94,6 +96,8 @@ class Analytics112Controller extends Controller
         $data['avalanche_types'] = AvalancheType::all();
         $data['elevator_emergency_types'] = ElevatorEmergencyType::all();
         $data['disease_types'] = DiseaseType::all();
+        $data['reasons_branches'] = BranchFallReason::all();
+        $data['reasons_flooding'] = FloodingReason::all();
 
         $data['tripResults'] = TripResult::all();
         $data['og'] = OperDutyShift::all();
