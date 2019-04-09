@@ -25,7 +25,7 @@
             <div class="column is-narrow">
                 <div>
                     <a href="/card/add101/0/drill" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
-                    {#<a href="/card101-other-rides" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>#}
+                    <a href="/card101-drill-rides" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
                 </div>
             </div>
         </div>
@@ -41,11 +41,30 @@
                     <div class="control">
                         <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                     </div>
-                    {#<div class="control">
-                        <v-datepicker-search></v-datepicker-search>
-                    </div>#}
                 </div>
             </form>
+            <div id="vue">
+                <form action="">
+                    <div class="field is-grouped">
+                        <v-datepicker-search
+                                name="date_from"
+                                date-string="{{ date_from }}"
+                                :include-hidden="true"
+                                label="С"
+                        ></v-datepicker-search>
+                        <v-datepicker-search
+                                name="date_to"
+                                date-string="{{ date_to }}"
+                                :include-hidden="true"
+                                label="По"
+                        ></v-datepicker-search>
+
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="panel">
             <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
@@ -67,23 +86,24 @@
                     <th>
                         <a href="?sort=city_area_id">Район</a>
                         <form>
-                            <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
+                            <select name="filter[city_area_id]" class="select control" onchange="this.form.submit()">
                                 {% for f in city_areas %}
-                                    <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                                    <option {% if city_area_id is defined and city_area_id == f.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
                                 {% endfor %}
                             </select>
                         </form>
                     </th>
-                    <th class="has-text-right">
-                        <a href="?sort=created_at">Дата и время</a>
+                    <th>
+                        <a href="?sort=city_area_id">Тип учений</a>
                         <form>
-                            <select name="filter[id]" class="select control" onchange="this.form.submit()">
-                                {% for f in tickets %}
-                                    <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.created_at|date('H:i d.m.Y') }}</option>
+                            <select name="filter[drill_type_id]" class="select control" onchange="this.form.submit()">
+                                {% for f in drill_types %}
+                                    <option {% if drill_type_id is defined and drill_type_id == f.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
                                 {% endfor %}
                             </select>
                         </form>
                     </th>
+                    <th class="has-text-right"><a href="?sort=created_at">Дата и время</a></th>
                     <th>Тип ЧС</th>
                     <th>&nbsp;</th>
                 </tr>
@@ -93,6 +113,7 @@
                         <td class="has-text-right">{{ ticket.id }}</td>
                         <td>{{ ticket.location ?? ticket.fireplace }}</td>
                         <td>{{ ticket.city_area.name|default('-') }} {% if ticket.crossroad_1_id %}({{ ticket.crossroad_1.name|default('-') }} &times; {{ ticket.crossroad_2.name|default('-') }}){% endif %}</td>
+                        <td class="has-text-right">{{ ticket.drill_type.name|default() }}</td>
                         <td class="has-text-right">{{ ticket.created_at|date('H:i d.m.Y') }}</td>
                         <td class="has-text-right">{{ ticket.emergency_type ? ticket.emergency_type.name : '' }}</td>
                         <td class="has-text-right">
@@ -107,7 +128,7 @@
                     </tr>
                 {% endfor %}
             </table>
-            {% include "_templates/pagination" with {'items': tickets, 'per_page': per_page} %}
+            {% include "_templates/pagination" with {'items': tickets, 'per_page': per_page, 'other': {'date_from':date_from, 'date_to': date_to, 'search': search}} %}
         </div>
     </div>
 {% endblock content %}

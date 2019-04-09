@@ -41,11 +41,31 @@
                     <div class="control">
                         <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                     </div>
-                    {#<div class="control">
-                        <v-datepicker-search></v-datepicker-search>
-                    </div>#}
+
                 </div>
             </form>
+            <div id="vue">
+                <form action="">
+                    <div class="field is-grouped">
+                        <v-datepicker-search
+                                name="date_from"
+                                date-string="{{ date_from }}"
+                                :include-hidden="true"
+                                label="С"
+                        ></v-datepicker-search>
+                        <v-datepicker-search
+                                name="date_to"
+                                date-string="{{ date_to }}"
+                                :include-hidden="true"
+                                label="По"
+                        ></v-datepicker-search>
+
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="panel">
             <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
@@ -76,13 +96,6 @@
                     </th>
                     <th class="has-text-right">
                         <a href="?sort=created_at">Дата и время</a>
-                        <form>
-                            <select name="filter[id]" class="select control" onchange="this.form.submit()">
-                                {% for f in tickets %}
-                                    <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.created_at|date('H:i d.m.Y') }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
                     </th>
                     <th>Тип ЧС</th>
                     <th>&nbsp;</th>
@@ -107,7 +120,7 @@
                     </tr>
                 {% endfor %}
             </table>
-            {% include "_templates/pagination" with {'items': tickets, 'per_page': per_page} %}
+            {% include "_templates/pagination" with {'items': tickets, 'per_page': per_page, 'other': {'date_from':date_from, 'date_to': date_to, 'search': search}} %}
         </div>
     </div>
 {% endblock content %}

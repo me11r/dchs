@@ -445,7 +445,7 @@ class ReportController extends AuthorizedController
 
         $cards = (new Card112())
             ->where(function ($q) use ($request) {
-                if($request->incident_type_id != 'null' && $request->incident_type_id !== null) {
+                if($request->incident_type_id !== 'null' && $request->incident_type_id !== null) {
                     $q->where('additional_incident_type_id', $request->incident_type_id);
                 }
                 else {
@@ -456,7 +456,7 @@ class ReportController extends AuthorizedController
             ->skipNullValue('emergency_name_id',$emergency_name_id)
             ->skipNullValue('city_area_id',$cityAreaId)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
-            ->with(['cityArea'])
+            ->with(['cityArea', 'flooding_place', 'flooding_reason'])
             ->get();
 
         $incidentType = IncidentType::find($incident_type_id ?? 1);
