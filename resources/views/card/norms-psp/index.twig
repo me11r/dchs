@@ -42,6 +42,28 @@
                 </div>
 
             </form>
+            <div id="vue">
+                <form action="">
+                    <div class="field is-grouped">
+                        <v-datepicker-search
+                                name="date_from"
+                                date-string="{{ date_from }}"
+                                :include-hidden="true"
+                                label="С"
+                        ></v-datepicker-search>
+                        <v-datepicker-search
+                                name="date_to"
+                                date-string="{{ date_to }}"
+                                :include-hidden="true"
+                                label="По"
+                        ></v-datepicker-search>
+
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="panel">
             <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
@@ -50,16 +72,27 @@
                     <th>№ п/п</th>
                     <th>
                         <p href="?sort=location">Дата</p>
-                        {#<form>
-                            <select name="filter[id]" class="select control" onchange="this.form.submit()">
-                                {% for f in tickets %}
-                                    <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.location }}</option>
+                    </th>
+                    <th><p>№ норматива</p>
+                        <form>
+                            <select onchange="this.form.submit()" class="select" name="norm_number_id" id="">
+                                <option value=""></option>
+                                {% for item in norm_numbers %}
+                                    <option {{ item.id == norm_number_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
                                 {% endfor %}
                             </select>
-                        </form>#}
+                        </form>
                     </th>
-                    <th>№ норматива</th>
-                    <th>Тип норматива</th>
+                    <th><p>Тип норматива</p>
+                        <form>
+                            <select onchange="this.form.submit()" class="select" name="norm_type_id" id="">
+                                <option value=""></option>
+                                {% for item in norm_types %}
+                                    <option {{ item.id == norm_type_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </th>
                     <th>
                         <p href="?sort=city_area_id">Подразделение</p>
                         <form>
@@ -99,7 +132,14 @@
                     </tr>
                 {% endfor %}
             </table>
-            {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'filter_fd': filter_fd}, "search": search } %}
+            {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {
+                'filter_fd': filter_fd,
+                "search": search,
+                'norm_number_id': norm_number_id,
+                'date_from': date_from,
+                'date_to': date_to,
+                'norm_type_id': norm_type_id  }
+            } %}
         </div>
     </div>
 {% endblock content %}

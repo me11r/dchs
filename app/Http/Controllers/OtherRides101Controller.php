@@ -28,6 +28,9 @@ class OtherRides101Controller extends Controller
         $data['fire_departments'] = FireDepartment::recommend()->get();
         $data['filter_fd'] = $request->filter_fd;
         $data['filter_ride_type'] = $request->filter_ride_type;
+        $data['search'] = $request->search;
+        $data['date_from'] = $request->date_from;
+        $data['date_to'] = $request->date_to;
 
         $model = Ticket101Other::orderBy('id', 'desc');
 
@@ -37,6 +40,10 @@ class OtherRides101Controller extends Controller
                    ->whereNotNull('dispatch_id')
                ;
             });
+        }
+
+        if($data['date_from'] && $data['date_to']) {
+            $model = $model->whereBetween('custom_created_at', [$data['date_from'], $data['date_to']]);
         }
 
         if ($request->filter_ride_type) {

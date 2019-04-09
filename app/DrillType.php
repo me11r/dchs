@@ -12,4 +12,9 @@ class DrillType extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket101::class, 'drill_type_id');
+    }
 }
