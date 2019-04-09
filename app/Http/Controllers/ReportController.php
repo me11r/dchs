@@ -433,6 +433,8 @@ class ReportController extends AuthorizedController
         $emergency_name_id = $request->emergency_name_id;
         $cityAreaId = $request->city_area_id === 'null' ? null : $request->city_area_id;
         $incident_type_id = $request->incident_type_id === 'null' ? null : $request->incident_type_id;
+        $reasonBranchesId = $request->reasonBranchesId === 'null' ? null : $request->reasonBranchesId;
+        $reasonFloodingId = $request->reasonFloodingId === 'null' ? null : $request->reasonFloodingId;
 
         $dateStartHuman = Carbon::parse($request->get('date_start'))->format('d.m.Y');
         $dateEndHuman = Carbon::parse($request->get('date_end'))->format('d.m.Y');
@@ -449,11 +451,18 @@ class ReportController extends AuthorizedController
                     $q->where('additional_incident_type_id', $request->incident_type_id);
                 }
                 else {
-                    $q->whereNotNull('additional_incident_type_id');
+                    //если запускаем отчет как "падение веток и деревьев, подтопления", выбираем только эти типы происшествий
+                    if ($request->report_type === 'branches') {
+                        $q->whereIn('additional_incident_type_id', [36,37]);
+                    }
+                    else {
+                        $q->whereNotNull('additional_incident_type_id');
+                    }
                 }
             })
-//            ->skipNullValue('additional_incident_type_id',  $request->get('incident_type_id'))
             ->skipNullValue('emergency_name_id',$emergency_name_id)
+            ->skipNullValue('branch_fall_reason_id',$reasonBranchesId)
+            ->skipNullValue('flooding_reason_id',$reasonFloodingId)
             ->skipNullValue('city_area_id',$cityAreaId)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
             ->with(['cityArea', 'flooding_place', 'flooding_reason'])
@@ -642,7 +651,7 @@ class ReportController extends AuthorizedController
             $activeSheet = $spreadsheet->getActiveSheet();
             $activeSheet->getStyle('A1:L'. $rowIndex)
                 ->getFont()
-                ->setSize(7)
+                ->setSize(12)
                 ->setName('Times New Roman');
 
 
@@ -703,11 +712,19 @@ class ReportController extends AuthorizedController
         $activeSheet->getColumnDimension('H')->setWidth(20);
         $activeSheet->getColumnDimension('I')->setWidth(20);
 
+        //$footerText = $incident_type_id ? IncidentType::find($incident_type_id)->name : null;
+
+        $activeSheet->getCell('B' . $rowIndex)
+            ->setValue("Всего на номер «112» поступило {$cards->count()} сообщений о происшествиях")
+            ->getStyle()
+            ->getFont()
+            ->setBold(true);
+
 
         $activeSheet = $spreadsheet->getActiveSheet();
         $activeSheet->getStyle('A1:I'. $rowIndex)
             ->getFont()
-            ->setSize(7)
+            ->setSize(12)
             ->setName('Times New Roman');
 
 
