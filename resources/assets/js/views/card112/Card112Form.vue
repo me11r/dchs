@@ -643,6 +643,30 @@
                             </div>
                         </div>
 
+                        <!--Если тип происшествия: Падение веток и деревьев-->
+                        <div class="field is-grouped" v-if="incidentTypeText === 'Падение веток и деревьев'">
+                            <!--Причина-->
+                            <div
+                                    class="control"
+                                    style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                <p class="control">
+                                    <label for="branch_fall_reason_id">Причина (справочник)</label>
+                                </p>
+                                <div class="select">
+                                    <select
+                                            id="branch_fall_reason_id"
+                                            name="branch_fall_reason_id"
+                                            v-model="model.branch_fall_reason_id">
+                                        <option
+                                                v-for="option in branchFallReasons"
+                                                :key="`branchFallReasons_${option.id}`"
+                                                :value="option.id">{{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <!--ХАРАКТЕРИСТИКА ПРОИСШЕСТВИЯ-->
                         <div class="field">
                             <label for="emergency_feature">Характеристика происшествия</label>
@@ -1009,6 +1033,7 @@ export default {
             avalancheTypes: [],
             elevatorEmergencyTypes: [],
             diseaseTypes: [],
+            branchFallReasons: [],
             canChangeCreatedAt: false,
             servicesTabIndex: 0
         };
@@ -1221,8 +1246,8 @@ export default {
                 this.avalancheTypes = window.card112FormData.avalancheTypes;
                 this.elevatorEmergencyTypes = window.card112FormData.elevatorEmergencyTypes;
                 this.diseaseTypes = window.card112FormData.diseaseTypes;
+                this.branchFallReasons = window.card112FormData.branchFallReasons;
                 this.canChangeCreatedAt = window.card112FormData.canChangeCreatedAt;
-                console.dir(this.canChangeCreatedAt)
 
                 globalBus.$emit('dateIsReady', this.model.custom_created_at);
 

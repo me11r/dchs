@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AvalancheType;
+use App\BranchFallReason;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\DiseaseType;
@@ -214,6 +215,7 @@ class Card112Controller extends Controller
             ->with('flooding_places', FloodingPlace::all())
             ->with('flooding_reasons', FloodingReason::all())
             ->with('avalanche_types', AvalancheType::all())
+            ->with('branchFallReasons', BranchFallReason::all())
             ->with('elevator_emergency_types', ElevatorEmergencyType::all())
             ->with('disease_types', DiseaseType::all())
             ->with('canChangeCreatedAt', Auth::user()->hasRight('CAN_CHANGE_CARD112_DATE'))

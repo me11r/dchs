@@ -39,7 +39,6 @@ class Dictionary extends Model
     protected $table = 'dictionaries';
     protected $guarded = ['id'];
     protected $fillable = [
-//        'name',
         'table',
         'title',
         'url',
