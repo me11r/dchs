@@ -3,6 +3,7 @@
 namespace App\Models\Card112;
 
 use App\AvalancheType;
+use App\BranchFallReason;
 use App\Dictionary\CityArea;
 use App\Dictionary\Street;
 use App\DiseaseType;
@@ -156,6 +157,7 @@ class Card112 extends BaseModel
         'elevator_emergency_type_id',
         'disease_type_id',
         'name_disease',
+        'branch_fall_reason_id',
     ];
 
     /**
@@ -169,6 +171,11 @@ class Card112 extends BaseModel
     public function disease_type()
     {
         return $this->belongsTo(DiseaseType::class, 'disease_type_id');
+    }
+
+    public function branch_fall_reason()
+    {
+        return $this->belongsTo(BranchFallReason::class, 'branch_fall_reason_id');
     }
 
     public function avalanche_type()
