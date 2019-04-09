@@ -71,13 +71,14 @@ class ReportAvalanches
         $this->addFirstTableData($table);
 
         $section->addText('');
+        $section->addText('Общее количество: '.$this->data['records']->count());
     }
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
     {
         foreach ($this->data['records'] as $index => $record) {
             $rowVal = [
-//                ++$index,
+                ++$index,
                 @Carbon::parse($record->created_at)->format('d/m/Y'),
                 $record->detailed_address ? $record->detailed_address : $record->location,
                 $record->avalanche_type->name,
@@ -115,7 +116,7 @@ class ReportAvalanches
 
         $table->addRow(700);
         $headers = [
-//            '№ п/п',
+            '№ п/п',
             'Дата',
             'Адрес',
             'Тип схода лавин',
@@ -136,6 +137,7 @@ class ReportAvalanches
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
+        $section->addText("{$this->data['date_from']} - {$this->data['date_to']}");
         $section->addText('');
     }
 

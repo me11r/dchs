@@ -59,7 +59,7 @@
             <table class="formation-record-table">
                 <thead>
                     <tr>
-                        <!--<th>№ п/п</th>-->
+                        <th>№ п/п</th>
                         <th>Дата</th>
                         <th>Адрес</th>
                         <th>Тип схода лавин</th>
@@ -69,7 +69,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(record, index) in records">
-                        <!--<td>{{ ++index }}</td>-->
+                        <td>{{ ++index }}</td>
                         <td>{{ record.created_at|dateFilter('DD/MM/YYYY') }}</td>
                         <td>{{ record.detailed_address ? record.detailed_address : record.location }}</td>
                         <td>{{ record.avalanche_type.name }}</td>
@@ -78,6 +78,7 @@
                     </tr>
                 </tbody>
             </table>
+            <p v-if="records.length > 0">Общее количество: {{ records.length }}</p>
         </div>
         <br>
     </div>
