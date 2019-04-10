@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AirRescueReport;
 use App\Analytics101;
+use App\BranchFallReason;
 use App\CallInfo;
 use App\CustomQueue;
 use App\Dictionary\BurntObject;
@@ -77,6 +78,7 @@ use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
+use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -439,6 +441,10 @@ class ReportController extends AuthorizedController
         $dateStartHuman = Carbon::parse($request->get('date_start'))->format('d.m.Y');
         $dateEndHuman = Carbon::parse($request->get('date_end'))->format('d.m.Y');
 
+        //буквенный индекс верхней граница отчета по горизонтали, вычисляется ниже
+        //в зависимости от количества заголовков
+        $latestLetterIndex = "A";
+
         $fileName = 'Отчет:'
             . $dateStart
             . '_'
@@ -484,7 +490,7 @@ class ReportController extends AuthorizedController
                     'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
                     'Происшествие' => $card->additionalIncident->name ?? null,
                     'Место происшествия' => $card->incident_place,
-                    'Причина' => $card->reason,
+                    'Причина' => $card->branch_fall_reason->name ?? null,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
                     'Принятые меры' => $card->measures,
                     'Количество задействованных сил и средств' => $card->resources,
@@ -492,7 +498,7 @@ class ReportController extends AuthorizedController
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
                         'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
-//                    'href' => "/card112/{$card->id}/edit#return=0",
+                    //'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
             elseif ($card->additionalIncident->name == 'Подтопления') {
@@ -512,7 +518,7 @@ class ReportController extends AuthorizedController
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
                         'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
-//                    'href' => "/card112/{$card->id}/edit#return=0",
+                    //'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
             else {
@@ -531,7 +537,7 @@ class ReportController extends AuthorizedController
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
                         'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
-//                    'href' => "/card112/{$card->id}/edit#return=0",
+                    //'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
         }
@@ -677,32 +683,94 @@ class ReportController extends AuthorizedController
             $writer->save('php://output');
         }
 
+        $title = "Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
+
+        if ($incidentType->name === 'Падение веток и деревьев') {
+
+            $branchFallReasonsCountArr = [];
+            $branchFallReasonsCountStr = '';
+            foreach (BranchFallReason::all() as $reason) {
+
+                $branchFallReasonsCountArr[$reason->name] = (clone $cards)->filter(function ($q) use ($reason) {
+                    return $q->branch_fall_reason_id === $reason->id;
+                })->count();
+
+                if($branchFallReasonsCountArr[$reason->name] !== 0) {
+                    $branchFallReasonsCountStr .= "$reason->name – {$branchFallReasonsCountArr[$reason->name]}; ";
+                }
+            }
+
+            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr},в разрезе по \"Причине\"";
+        }
+
         $activeSheet
             ->getCell('C' . $rowIndex)
-            ->setValue("Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStart}. по {$dateEnd}г. поступившие на линию «109» ССА.")
+            ->setValue($title)
             ->getStyle()
             ->getFont()
             ->setBold(true);
 
         $rowIndex += 3;
         foreach ($preparedToExport as $key => $data) {
-            $activeSheet->getCell('E' . $rowIndex)->setValue($key)->getStyle()->getFont()->setBold(true);
+            $cityAreaCount = "{$key} - ".count($data);
+            $activeSheet->getCell('E' . $rowIndex)->setValue($cityAreaCount)->getStyle()->getFont()->setBold(true);
 
-            $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
+            $headers = $incidentType->name === 'Падение веток и деревьев' ? [
+                '№',
+                'Адрес',
+                'Дата происшествия',
+                'Место происшествия',
+                'Причина',
+                'Пострадавшие / погибшие',
+                'Принятые меры',
+                'Количество задействованных сил и средств',
+                'Начало и завершение работ',
+            ] : array_keys($data[0] ?? []);
+
+            if($incidentType->name === 'Падение веток и деревьев') {
+                $data = array_map(function($q) {
+                    return [
+                        $q['№'],
+                        $q['Адрес'],
+                        $q['Дата происшествия'],
+                        $q['Место происшествия'],
+                        $q['Причина'],
+                        $q['Пострадавшие / погибшие'],
+                        $q['Принятые меры'],
+                        $q['Количество задействованных сил и средств'],
+                        $q['Начало и завершение работ'],
+                    ];
+                }, $data);
+            }
+
+            $latestLetterIndexArr = range('A', 'Z');
+            $latestLetterIndex = $latestLetterIndexArr[count($headers) - 1] ?? 'A';
+
+            //заголовки
+            $activeSheet->fromArray($headers, null, 'A' . ($rowIndex + 1));
+
+            //информация
             $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
 
             $activeSheet
-                ->getStyle('A'.($rowIndex + 1).':K'. $activeSheet->getHighestRow())
+                ->getStyle('A'.($rowIndex + 1).":{$latestLetterIndex}". $activeSheet->getHighestRow())
                 ->applyFromArray(Ticket101ExcelExport::HStyle);
 
             $activeSheet
-                ->getStyle('A'.($rowIndex + 1).':K'. ($rowIndex + 1))
+                ->getStyle('A'.($rowIndex + 1).":{$latestLetterIndex}". ($rowIndex + 1))
                 ->getFont()
                 ->setBold(true);
+
+            //высота столбцов с информацией
+            foreach (range($rowIndex,$activeSheet->getHighestRow()) as $item) {
+                $activeSheet->getRowDimension($item)->setRowHeight(50);
+            }
 
             $rowIndex = $activeSheet->getHighestRow();
             $rowIndex += 3;
         }
+
+
 
         $activeSheet->getColumnDimension('A')->setWidth(3);
         $activeSheet->getColumnDimension('B')->setWidth(20);
@@ -724,7 +792,7 @@ class ReportController extends AuthorizedController
 
 
         $activeSheet = $spreadsheet->getActiveSheet();
-        $activeSheet->getStyle('A1:K'. $rowIndex)
+        $activeSheet->getStyle("A1:{$latestLetterIndex}{$rowIndex}")
             ->getFont()
             ->setSize(12)
             ->setName('Times New Roman');
