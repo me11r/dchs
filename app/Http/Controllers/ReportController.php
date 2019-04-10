@@ -1650,6 +1650,7 @@ class ReportController extends AuthorizedController
         dd('Кеш устарел, обновите страницу');
     }
 
+    //Классификация объектов
     public function getReportObjectClassification(Request $request)
     {
         $year = $request->input('year', now()->format('Y'));
@@ -1662,9 +1663,17 @@ class ReportController extends AuthorizedController
 
             foreach (range(1, 12) as $month) {
 
+                //Если тип учения = ПТЗ, считаем карточки с ПТЗ и НПТЗ, т.к. это одно и то же (ARM-584)
+                if($type->name == 'ПТЗ') {
+                    $typesArr = [$type->id,8];
+                }
+                else {
+                    $typesArr = [$type->id];
+                }
+
                 $data['counts'][$type->name]['per_month'][$month] = Ticket101::whereYear('custom_created_at', $year)
                     ->whereMonth('custom_created_at', $month)
-                    ->where('drill_type_id',$type->id)
+                    ->whereIn('drill_type_id',$typesArr)
                     ->count();
 
                 foreach ($data['object_classes'] as $object_class) {
@@ -1672,10 +1681,10 @@ class ReportController extends AuthorizedController
                     $data['records'][$type->name][$object_class->name][$month] = Ticket101::whereYear('custom_created_at', $year)
                         ->where('object_classification_id', $object_class->id)
                         ->whereMonth('custom_created_at', $month)
-                        ->where('drill_type_id',$type->id)->count();
+                        ->whereIn('drill_type_id',$typesArr)->count();
 
                     $data['counts'][$type->name]['per_object'][$object_class->name] = Ticket101::whereYear('custom_created_at', $year)
-                        ->where('drill_type_id',$type->id)
+                        ->whereIn('drill_type_id',$typesArr)
                         ->where('object_classification_id', $object_class->id)
                         ->count();
                 }
