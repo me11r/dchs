@@ -480,7 +480,9 @@ class ReportController extends AuthorizedController
                 $preparedToExport[$card->cityArea->name][] = [
                     '№' => $card->id,
                     'Адрес' => $card->location,
-                    'Дата происшествия' => $card->created_at->format('d.m.Y'),
+                    'Кол-во проживающих' => $card->living_count ?? 0,
+                    'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
+                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Место происшествия' => $card->incident_place,
                     'Причина' => $card->reason,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
@@ -489,7 +491,7 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+                        'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
 //                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
@@ -498,16 +500,18 @@ class ReportController extends AuthorizedController
                     '№' => $card->id,
                     'Адрес' => $card->location,
                     'Кол-во проживающих' => $card->living_count ?? 0,
-                    'Дата происшествия' => $card->created_at->format('d.m.Y'),
+                    'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
+                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Место подтопления' => $card->flooding_place->name ?? null,
                     'Причина подтопления' => $card->flooding_reason->name ?? null,
+                    'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
                     'Принятые меры' => $card->measures,
                     'Количество задействованных сил и средств' => $card->resources,
 
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+                        'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
 //                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
@@ -516,6 +520,8 @@ class ReportController extends AuthorizedController
                     '№' => $card->id,
                     'Адрес' => $card->location,
                     'Кол-во проживающих' => $card->living_count,
+                    'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
+                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Место происшествия' => $card->incident_place,
                     'Причина' => $card->reason,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
@@ -524,7 +530,7 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+                        'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
 //                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
@@ -608,19 +614,15 @@ class ReportController extends AuthorizedController
                 //Медеуский - 4
                 $activeSheet->getCell('E' . $rowIndex)->setValue("$key - {$totalPerArea}")->getStyle()->getFont()->setBold(true);
 
-//                $url = env('APP_URL','http://emergency.iteamsolutions.kz').$data[0]['href'];
-//                unset($data[0]['href']);
-
                 $activeSheet->fromArray(array_keys($data[0] ?? []), null, 'A' . ($rowIndex + 1));
                 $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
-//                $activeSheet->getCell("B{$rowIndex}")->setValue($data[0]['Адрес'])->getHyperlink()->setUrl($url);
 
                 $activeSheet
-                    ->getStyle('A'.($rowIndex + 1).':I'. $activeSheet->getHighestRow())
+                    ->getStyle('A'.($rowIndex + 1).':K'. $activeSheet->getHighestRow())
                     ->applyFromArray(Ticket101ExcelExport::HStyle);
 
                 $activeSheet
-                    ->getStyle('A'.($rowIndex + 1).':I'. ($rowIndex + 1))
+                    ->getStyle('A'.($rowIndex + 1).':K'. ($rowIndex + 1))
                     ->getFont()
                     ->setBold(true);
 
@@ -690,11 +692,11 @@ class ReportController extends AuthorizedController
             $activeSheet->fromArray($data, null, 'A' . ($rowIndex + 2));
 
             $activeSheet
-                ->getStyle('A'.($rowIndex + 1).':I'. $activeSheet->getHighestRow())
+                ->getStyle('A'.($rowIndex + 1).':K'. $activeSheet->getHighestRow())
                 ->applyFromArray(Ticket101ExcelExport::HStyle);
 
             $activeSheet
-                ->getStyle('A'.($rowIndex + 1).':I'. ($rowIndex + 1))
+                ->getStyle('A'.($rowIndex + 1).':K'. ($rowIndex + 1))
                 ->getFont()
                 ->setBold(true);
 
@@ -722,7 +724,7 @@ class ReportController extends AuthorizedController
 
 
         $activeSheet = $spreadsheet->getActiveSheet();
-        $activeSheet->getStyle('A1:I'. $rowIndex)
+        $activeSheet->getStyle('A1:K'. $rowIndex)
             ->getFont()
             ->setSize(12)
             ->setName('Times New Roman');
