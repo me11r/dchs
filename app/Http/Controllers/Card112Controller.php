@@ -42,81 +42,69 @@ class Card112Controller extends Controller
         $search = trim($request->search);
 
         $sort = $request->get('sort', 'created_at');
-        $id = $request->input('filter.id', '');
         $city_area = $request->input('filter.city_area', '');
+        $incidentTypeId = $request->input('incidentTypeId', null);
+        $from = $request->input('date_from', null);
+        $to = $request->input('date_to', null);
+        $incidentTypes = IncidentType::all();
+        $city_areas = CityArea::all();
 
+        $items = $this
+            ->repository
+            ->with([
+                'street',
+                'street.area'
+            ])
+            ->orderBy($sort, 'desc');
 
-        $city_areas = Card112::groupBy('city_area_id')
-            ->get(['city_area_id'])
-            ->pluck('city_area_id')
-            ->toArray();
+        if ($from && $to) {
+            $items = $items->whereBetween('custom_created_at', [$from, $to]);
+        }
 
-        $city_areas = CityArea::whereIn('id', $city_areas)->get();
+        if ($city_area) {
 
-        if ($id) {
-            $items = $this
-                ->repository
-                ->with([
-                    'street',
-                    'street.area'
-                ])
-                ->orderBy($sort, 'desc')
-                ->where('id', $id)
-                ->paginate($perPage);
-        } elseif ($city_area) {
+            $items = $items->where('city_area_id', $city_area);
+        }
 
-            $items = $this
-                ->repository
-                ->with([
-                    'street',
-                    'street.area'
-                ])
-                ->orderBy($sort, 'desc')
-                ->paginate($perPage);
-        } elseif ($search) {
+        if ($incidentTypeId) {
+
+            $items = $items->where('additional_incident_type_id', $incidentTypeId);
+        }
+
+        if ($search) {
             if (is_numeric($search)) {
-                $items = $this
-                    ->repository
-                    ->with(['street', 'street.area'])
-                    ->where('id', $search)
-                    ->orderBy($sort, 'desc')
-                    ->paginate($perPage);
-            } else {
+                $items = $items
+                    ->where('id', $search);
+            }
+            else {
                 try {
                     $date = Carbon::parse(str_replace(['/', '.'], '-', $search));
                 } catch (\Exception $e) {
                     $date = null;
                 }
 
-                $items = $this
-                    ->repository
-                    ->with(['street', 'street.area'])
+                $items = $items
                     ->where('location', "like", "$search%")
                     ->orWhereDate('created_at', $date)
                     ->orWhereHas('cityArea', function ($q) use ($search) {
                         $q->where('name', "like", "$search%");
-                    })
-                    ->orderBy($sort, 'desc')
-                    ->paginate($perPage);
+                    });
             }
 
-        } else {
-            $items = $this
-                ->repository
-                ->with([
-                    'street',
-                    'street.area'
-                ])
-                ->orderBy($sort, 'desc')
-                ->paginate($perPage);
         }
+
+        $items = $items->paginate();
 
 
         return View::make('card112.index')
             ->with('items', $items)
+            ->with('date_from', $from)
+            ->with('date_to', $to)
+            ->with('incidentTypeId', $incidentTypeId)
             ->with('search', $search)
             ->with('city_areas', $city_areas)
             ->with('per_page', $perPage)
+            ->with('incidentTypes', $incidentTypes)
             ->render();
     }
 
