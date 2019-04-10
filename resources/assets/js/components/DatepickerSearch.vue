@@ -15,46 +15,50 @@
         </b-field>
         <b-field v-if="includeTime">
             <b-timepicker
-                    class="small-time-picker"
-                    icon="clock"
-                    icon-pack="far"
-                    :ref="`${name_}_time`"
-                    type="text"
-                    @input="$emit('dateChanged',date_)"
-                    :disabled="disabled"
-                    :value="date_"
-                    v-model="date_">
+                class="small-time-picker"
+                icon="clock"
+                icon-pack="far"
+                :ref="`${name_}_time`"
+                type="text"
+                @input="$emit('dateChanged',date_)"
+                :disabled="disabled"
+                :value="date_"
+                v-model="date_">
                 <div
-                        class="field is-grouped"
-                        style="justify-content: space-between">
+                    class="field is-grouped"
+                    style="justify-content: space-between">
                     <p class="control">
                         <a
-                                class="button is-primary is-small"
-                                @click="() => {date_ = new Date(); closeTimePickerByRefName(`${name_}_time`); }">
+                            class="button is-primary is-small"
+                            @click="() => {date_ = new Date(); closeTimePickerByRefName(`${name_}_time`); }">
                             <b-icon
-                                    pack="far"
-                                    icon="clock"/>
+                                pack="far"
+                                icon="clock"/>
                             <span>Сейчас</span>
                         </a>
                     </p>
                     <p class="control">
                         <a
-                                class="button is-outlined is-small"
-                                @click="closeTimePickerByRefName(`${name_}_time`)">
+                            class="button is-outlined is-small"
+                            @click="closeTimePickerByRefName(`${name_}_time`)">
                             <i class="fas fa-check"></i><span>Принять</span>
                         </a>
                     </p>
                 </div>
             </b-timepicker>
         </b-field>
-        <input v-if="includeHidden" type="hidden" :name="name_" :value="dateYYYYMMDD">
+        <input
+            v-if="includeHidden"
+            type="hidden"
+            :name="name_"
+            :value="dateYYYYMMDD">
     </div>
 
 </template>
 
 <script>
 import moment from 'moment';
-import {globalBus} from "../scripts/global-bus";
+import {globalBus} from '../scripts/global-bus';
 export default {
     name: 'DatepickerSearch',
     props: {
@@ -64,15 +68,15 @@ export default {
         },
         disabled: {
             type: Boolean,
-            default: false,
+            default: false
         },
         includeTime: {
             type: Boolean,
-            default: false,
+            default: false
         },
         includeHidden: {
             type: Boolean,
-            default: false,
+            default: false
         },
         position: {
             type: String,
@@ -87,21 +91,21 @@ export default {
             default: 'Выберите дату'
         },
         dateString: {
-            type: String,
+            type: String | Date,
             default: ''
         },
         date: {
             type: Date,
-            default: () => new Date
-        },
+            default: () => new Date()
+        }
     },
     data: function () {
         return {
             formAction_: this.formAction,
-            months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-            days: ["Вс","Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+            months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+            days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
             date_: this.date,
-            name_: this.name,
+            name_: this.name
         };
     },
     methods: {
@@ -118,7 +122,7 @@ export default {
             } else {
                 this.$refs[refName][0].close();
             }
-        },
+        }
 
     },
     computed: {
@@ -131,8 +135,8 @@ export default {
             this.date_ = moment(this.dateString).toDate();
         }
 
-        //костыль для карточки 112
-        //дата в компонент передается после отрисовки карты
+        // костыль для карточки 112
+        // дата в компонент передается после отрисовки карты
         globalBus.$on('dateIsReady', (date) => {
             this.date_ = date;
         });

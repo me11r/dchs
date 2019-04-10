@@ -73,6 +73,12 @@ return [
             'connection' => 'default',
         ],
 
+        'reports_cache' => [
+            'driver' => 'database',
+            'table' => 'reports_cache',
+            'connection' => null,
+        ],
+
     ],
 
     /*

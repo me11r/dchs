@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\QueuedReports\QueuedReportManager;
+use App\Services\QueuedReports\ReportsCacheManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -16,6 +18,7 @@ use Illuminate\Support\Arr;
  * @property string|null $date_end
  * @property array $report_data
  * @property int $attempts
+ * @property string cache_hash_key
  * @property string|null $error_text
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -33,6 +36,10 @@ use Illuminate\Support\Arr;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QueuedReport whereReportTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QueuedReport whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $user_id
+ * @property-read mixed $file_name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QueuedReport whereCacheHashKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QueuedReport whereUserId($value)
  */
 class QueuedReport extends Model
 {
@@ -50,7 +57,8 @@ class QueuedReport extends Model
      * @var array
      */
     protected $appends = [
-        'file_name'
+        'file_name',
+        'data'
     ];
 
     /**
@@ -79,6 +87,14 @@ class QueuedReport extends Model
     public function getFileNameAttribute()
     {
         return Arr::last(explode(DIRECTORY_SEPARATOR, $this->file_path));
+    }
+
+    public function getDataAttribute()
+    {
+        /** @var ReportsCacheManager $cacheManager */
+        $cacheManager = app()->make(ReportsCacheManager::class);
+
+        return $this->cache_hash_key ? $cacheManager->get($this->cache_hash_key, []) : [];
     }
 
 }

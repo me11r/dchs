@@ -54,11 +54,16 @@
                             type="button"
                             class="button is-info is-small">Повторить попытку</button>
                         <a
-                            v-if="item.status.slug === 'ENDED'"
+                            v-if="item.status.slug === 'ENDED' && item.file_path"
                             :href="'/api/upload/queued-report/file/download/' + item.id"
                             :download="item.file_name"
                             type="button"
                             class="button is-success is-small">Скачать</a>
+                        <a
+                            v-if="item.status.slug === 'ENDED'"
+                            :href="'/reports/queued-reports/view?report_id=' + item.id"
+                            type="button"
+                            class="button is-small">Просмотр</a>
                     </td>
                 </tr>
             </tbody>
@@ -99,7 +104,7 @@ export default {
     methods: {
         loadItems: _.debounce(function() {
             axios
-                .get('/api/queued-reports', {
+                .get('/auth-api/queued-reports', {
                     params: {
                         page: this.currentPage,
                         per_page: this.perPage
@@ -125,7 +130,7 @@ export default {
         }, 500),
         sendToQueue(id) {
             axios
-                .post('/api/queued-reports/send-to-queue', {id})
+                .post('/auth-api/queued-reports/send-to-queue', {id})
                 .then(response => {
                     this.$snackbar.open({
                         message: 'Отчет отправлен в очередь обработки',
@@ -144,7 +149,7 @@ export default {
         },
         updateItemStatus(id) {
             axios
-                .get('/api/queued-reports/' + id)
+                .get('/auth-api/queued-reports/' + id)
                 .then((response) => {
                     this.setUpdatedItem(response.data);
                     this.$snackbar.open({
