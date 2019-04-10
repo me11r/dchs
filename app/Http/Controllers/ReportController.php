@@ -481,17 +481,17 @@ class ReportController extends AuthorizedController
                     '№' => $card->id,
                     'Адрес' => $card->location,
                     'Кол-во проживающих' => $card->living_count ?? 0,
-                    'Дата происшествия' => $card->created_at->format('d.m.Y'),
+                    'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
+                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Место происшествия' => $card->incident_place,
                     'Причина' => $card->reason,
-                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
                     'Принятые меры' => $card->measures,
                     'Количество задействованных сил и средств' => $card->resources,
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+                        'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
 //                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
@@ -500,10 +500,10 @@ class ReportController extends AuthorizedController
                     '№' => $card->id,
                     'Адрес' => $card->location,
                     'Кол-во проживающих' => $card->living_count ?? 0,
-                    'Дата происшествия' => $card->created_at->format('d.m.Y'),
+                    'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
+                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Место подтопления' => $card->flooding_place->name ?? null,
                     'Причина подтопления' => $card->flooding_reason->name ?? null,
-                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
                     'Принятые меры' => $card->measures,
                     'Количество задействованных сил и средств' => $card->resources,
@@ -511,7 +511,7 @@ class ReportController extends AuthorizedController
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+                        'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
 //                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
@@ -520,16 +520,17 @@ class ReportController extends AuthorizedController
                     '№' => $card->id,
                     'Адрес' => $card->location,
                     'Кол-во проживающих' => $card->living_count,
+                    'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
+                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Место происшествия' => $card->incident_place,
                     'Причина' => $card->reason,
-                    'Происшествие' => $card->additionalIncident->name ?? null,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
                     'Принятые меры' => $card->measures,
                     'Количество задействованных сил и средств' => $card->resources,
                     'Начало и завершение работ' =>
                         'Начало: ' . Carbon::parse($card->chronology_start_time)->format('H:i') .
                         ' / ' .
-                        'Отработано' . Carbon::parse($card->chronology_end_time)->format('H:i'),
+                        'Отработано: ' . Carbon::parse($card->chronology_end_time)->format('H:i'),
 //                    'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
