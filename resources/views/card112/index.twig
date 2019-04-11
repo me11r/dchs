@@ -16,20 +16,18 @@
         </div>
     </div>
     <div>
-        <form action="" method="get">
-            <div class="field   has-addons">
-                <div class="control is-expanded">
-                    <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
-                </div>
-                <div class="control">
-                </div>
-                <div class="control">
-                    <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
-                </div>
-            </div>
-        </form>
         <div id="vue">
             <form action="">
+                <div class="field   has-addons">
+                    <div class="control is-expanded">
+                        <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
+                    </div>
+                    <div class="control">
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                    </div>
+                </div>
                 <div class="field is-grouped">
                     <v-datepicker-search
                             name="date_from"
@@ -43,22 +41,34 @@
                             :include-hidden="true"
                             label="По"
                     ></v-datepicker-search>
-
                 </div>
+                <div class="control">
+                    <p>Район</p>
+                    <select name="city_area" class="select control" onchange="this.form.submit()">
+                        <option value=""></option>
+                        {% for f in city_areas %}
+                            <option {{ f.id == city_area ? 'selected' : '' }} value="{{ f.id }}">{{ f.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="control">
+                    <p>Происшествие</p>
+                    <select name="incidentTypeId" class="select control" onchange="this.form.submit()">
+                        <option value=""></option>
+
+                        {% for f in incidentTypes %}
+                            <option {{ f.id == incidentTypeId ? 'selected' : '' }} value="{{ f.id }}">{{ f.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <br>
                 <div class="control">
                     <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                 </div>
             </form>
         </div>
         <br>
-        <form>
-            <p>Происшествие</p>
-            <select name="incidentTypeId" class="select control" onchange="this.form.submit()">
-                {% for f in incidentTypes %}
-                    <option {{ f.id == incidentTypeId ? 'selected' : '' }} value="{{ f.id }}">{{ f.name }}</option>
-                {% endfor %}
-            </select>
-        </form>
     </div>
     <div class="panel">
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
@@ -67,25 +77,9 @@
                 <th>№ КУИ</th>
                 <th>
                     <a href="?sort=location">Адрес</a>
-                    {#{% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101']) %}#}
-                    <form>
-                        <select name="filter[id]" class="select control" onchange="this.form.submit()">
-                            {% for f in items %}
-                                <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.location }}</option>
-                            {% endfor %}
-                        </select>
-                    </form>
-                    {#{% endif %}#}
                 </th>
                 <th>
                     <a href="?sort=city_area_id">Район</a>
-                    <form>
-                        <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
-                            {% for f in city_areas %}
-                                <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </form>
                 </th>
                 <th class="has-text-right">
                     <a href="?sort=created_at">Дата и время</a>
@@ -99,7 +93,7 @@
                     <td class="has-text-right">{{ item.id }}</td>
                     <td><a href="{{ route('card112.edit', item.id) }}">{{ item.location }}</a></td>
                     <td>{{ item.cityArea.name|default('-') }}</td>
-                    <td class="has-text-right">{{ item.created_at|date('H:i d.m.Y') }}</td>
+                    <td class="has-text-right">{{ item.custom_created_at|date('H:i d.m.Y') }}</td>
                     <td>{{ item.additionalIncident.name|default('') }}</td>
                     <td class="has-text-right">
                         <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"

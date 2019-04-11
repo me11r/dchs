@@ -35,17 +35,19 @@ class DrillRides101Controller extends Controller
 
         if($data['city_area_id']){
 
-            $data['tickets'] = $data['tickets']->where('city_area_id', $data['city_area_id']);
+            $data['tickets'] = $data['tickets']
+                ->where('city_area_id', $data['city_area_id']);
         }
 
         if($data['drill_type_id']) {
-            $data['tickets'] = $data['tickets']->where('drill_type_id', $data['drill_type_id']);
+            $data['tickets'] = $data['tickets']
+                ->where('drill_type_id', $data['drill_type_id']);
         }
 
         if($data['search']){
             if(is_numeric($data['search'])){
-                $data['tickets'] = $data['tickets']->
-                where('id', $data['search']);
+                $data['tickets'] = $data['tickets']
+                    ->where('id', $data['search']);
             }
             else{
                 try{
