@@ -18,11 +18,15 @@
         <div class="level">
             <div class="level-left">
                 <h4 class="title">Путевой лист {{ trip.id }} от {{ trip.created_at|date('d.m.Y H:i') }} для {{ trip.department.name }}</h4>
+
             </div>
             <div class="level-right printing-invisible">
                 <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
             </div>
         </div>
+        {% if trip.ticket.drill_type|default(null) %}
+            <h4 class="title">Учебный: {{ trip.ticket.drill_type.name|default(null) }}</h4>
+        {% endif %}
         <table class="table is-narrow printing-full-width">
             {% if not trip.is_accepted %}
                 <tr class="printing-invisible">
