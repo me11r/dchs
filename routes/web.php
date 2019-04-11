@@ -468,6 +468,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
     Route::group(['middleware' => ['auth'], 'prefix' => 'auth-api', 'namespace' => 'Api'], function() {
         Route::get('queued-reports/user-has-not-finished-report', 'QueuedReportsController@userHasNotFinishedReport');
         Route::post('queued-reports/send-to-queue', 'QueuedReportsController@sendToQueue');
+        Route::get('queued-reports/show-full/{id}', 'QueuedReportsController@showFull');
         Route::apiResource('queued-reports', 'QueuedReportsController');
     });
 

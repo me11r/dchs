@@ -50,7 +50,7 @@ export default {
     },
     methods: {
         loadItem() {
-            axios.get('/auth-api/queued-reports/' + this.reportId)
+            axios.get('/auth-api/queued-reports/show-full/' + this.reportId)
                 .then((response) => {
                     this.item = response.data;
                 });

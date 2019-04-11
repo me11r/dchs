@@ -91,6 +91,12 @@ class QueuedReportsController extends Controller
      */
     public function show($id)
     {
+        return response()->json(QueuedReport::with(['reportType', 'status'])
+            ->findOrFail($id, ['id', 'report_type_id', 'queue_status_id', 'file_path', 'date_start', 'date_end', 'attempts', 'error_text', 'created_at']));
+    }
+
+    public function showFull($id)
+    {
         return response()->json(QueuedReport::with(['reportType', 'status'])->findOrFail($id));
     }
 
@@ -102,7 +108,6 @@ class QueuedReportsController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
