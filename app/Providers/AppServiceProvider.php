@@ -11,6 +11,7 @@ use App\Models\FormationRecord;
 use App\Models\MorainicLakeReport;
 use App\Models\MorainicLakeSummary;
 use App\Models\Quake;
+use App\Models\QueuedReport;
 use App\Models\Weather;
 use App\Observers\AirRescueReportObserver;
 use App\Observers\EmergencySituationObserver;
@@ -20,6 +21,7 @@ use App\Observers\FormationReportObserver;
 use App\Observers\FormationTechReportObserver;
 use App\Observers\MorainicLakeReportObserver;
 use App\Observers\QuakeObserver;
+use App\Observers\QueuedReportObserver;
 use App\Observers\WeatherObserver;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         Weather::observe(WeatherObserver::class);
         Quake::observe(QuakeObserver::class);
         AirRescueReport::observe(AirRescueReportObserver::class);
+        QueuedReport::observe(QueuedReportObserver::class);
 
         Paginator::defaultView('pagination::default');
 

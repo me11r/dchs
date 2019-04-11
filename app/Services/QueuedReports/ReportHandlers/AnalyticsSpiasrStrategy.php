@@ -11,15 +11,39 @@ use Illuminate\Support\Arr;
 
 class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
 {
+
     /**
      * @param QueuedReport $queuedReport
+     * @param $reportData
      * @return string
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function saveToFile(QueuedReport $queuedReport): string
+    public function saveToFile(QueuedReport $queuedReport, $reportData): string
     {
-        //@TODO убрать
         ini_set('memory_limit', 1024 . 'M');
+
+        $exportService = new Ticket101PeriodExcelExport($reportData);
+        $writer = $exportService->getXlsWriter();
+
+        $fileName = $this->getFileName($queuedReport);
+        $directory = storage_path('reports' . DIRECTORY_SEPARATOR . ReportType::ANALYTICS_SPIASR . DIRECTORY_SEPARATOR);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $filePath = $directory . $fileName;
+
+        $writer->save($filePath);
+
+        return $filePath;
+    }
+
+    /**
+     * @param QueuedReport $queuedReport
+     * @return mixed
+     */
+    public function getData(QueuedReport $queuedReport)
+    {
         $data = $queuedReport->report_data;
 
         $date_begin = Arr::get($data, 'date_begin');
@@ -28,22 +52,7 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
         $burnt_id = Arr::get($data, 'burnt_id');
         $city_area_id = Arr::get($data, 'city_area_id');
 
-        $stat = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
-
-        $exportService = new Ticket101PeriodExcelExport($stat);
-        $writer = $exportService->getXlsWriter();
-
-        $fileName = $this->getFileName($queuedReport);
-        $directory = storage_path('reports' . DIRECTORY_SEPARATOR . ReportType::ANALYTICS_SPIASR . DIRECTORY_SEPARATOR);
-        if (!is_dir($directory)){
-            mkdir($directory, 0755, true);
-        }
-
-        $filePath = $directory .  $fileName;
-
-        $writer->save($filePath);
-
-        return $filePath;
+        return Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
     }
 
     /**

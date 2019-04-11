@@ -7,5 +7,7 @@ use App\Models\QueuedReport;
 
 interface ReportHandlerStrategyInterface
 {
-    public function saveToFile(QueuedReport $queuedReport): string ;
+    public function saveToFile(QueuedReport $queuedReport, $reportData): string ;
+
+    public function getData(QueuedReport $queuedReport);
 }

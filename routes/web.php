@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Facades\Route;
+
 Route::get('/test/fcm', 'TestController@fcm')->name('test.fcm');
 
 Route::post('logout', 'Auth\LoginController@postLogout')->name('logout');
@@ -402,6 +405,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
     Route::get('reports/analytics-spiasr', 'AnalyticsSpiasrController@index');
 
     Route::get('reports/queued-reports', 'ReportController@queuedReports')->name('reports.queued-reports');
+    Route::get('reports/queued-reports/view', 'ReportController@queuedReportsView')->name('reports.queued-reports-view');
 
     /** Суточные отчеты в формате Ворд */
     Route::group(['prefix' => 'reports'], function(){
@@ -458,6 +462,15 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
 
     Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
     Route::post('increment-map-request', 'AjaxController@incrementMapRequest');
+
+
+    // api
+    Route::group(['middleware' => ['auth'], 'prefix' => 'auth-api', 'namespace' => 'Api'], function() {
+        Route::get('queued-reports/user-has-not-finished-report', 'QueuedReportsController@userHasNotFinishedReport');
+        Route::post('queued-reports/send-to-queue', 'QueuedReportsController@sendToQueue');
+        Route::get('queued-reports/show-full/{id}', 'QueuedReportsController@showFull');
+        Route::apiResource('queued-reports', 'QueuedReportsController');
+    });
 
     Route::get('/', 'HomeController@getIndex')->name('home');
 });

@@ -48,6 +48,7 @@ import VueDateFilter from './scripts/DateFilter';
 import {globalBus} from './scripts/global-bus';
 import EditPolygonMapScreen from './views/polygons/EditPolygonMapScreen';
 import QueudReports from './views/queued-reports/QueuedReports';
+import QueudReportView from './views/queued-reports/QueuedReportView';
 
 import Echo from 'laravel-echo';
 
@@ -186,11 +187,17 @@ if (document.getElementById(card112FormBlockId)) {
     });
 }
 
-// Карточка 112 (форма добавления/редактировани)
+// отложенные отчеты
 const queuedReportsBlock = 'queued-reports-block';
 if (document.getElementById(queuedReportsBlock)) {
     window.addEventListener('load', () => {
         new Vue({el: '#' + queuedReportsBlock, render: h => h(QueudReports)});
+    });
+}
+const queuedReportViewBlock = 'queued-report-view-block';
+if (document.getElementById(queuedReportViewBlock)) {
+    window.addEventListener('load', () => {
+        new Vue({el: '#' + queuedReportViewBlock, render: h => h(QueudReportView)});
     });
 }
 
