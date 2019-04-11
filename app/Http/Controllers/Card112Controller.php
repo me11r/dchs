@@ -41,8 +41,8 @@ class Card112Controller extends Controller
         $perPage = $request->get('per_page', 10);
         $search = trim($request->search);
 
-        $sort = $request->get('sort', 'created_at');
-        $city_area = $request->input('filter.city_area', '');
+        $sort = $request->get('sort', 'custom_created_at');
+        $city_area = $request->input('city_area', null);
         $incidentTypeId = $request->input('incidentTypeId', null);
         $from = $request->input('date_from', null);
         $to = $request->input('date_to', null);
@@ -103,6 +103,7 @@ class Card112Controller extends Controller
             ->with('incidentTypeId', $incidentTypeId)
             ->with('search', $search)
             ->with('city_areas', $city_areas)
+            ->with('city_area', $city_area)
             ->with('per_page', $perPage)
             ->with('incidentTypes', $incidentTypes)
             ->render();

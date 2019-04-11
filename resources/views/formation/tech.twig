@@ -30,6 +30,15 @@
                     :vehicles="{{ vehicles }}"
             ></add-edit-tech>
         </fieldset>
+        <fieldset class="">
+            <legend>Видеорегистраторы: прочие</legend>
+            <add-edit-dvr
+                    fire_dep_id="{{ dept_id }}"
+                    report_id="{{ model.id }}"
+                    :vehicles="{{ vehicles }}"
+                    :records="{{ model.other_dvrs|json_encode }}"
+            ></add-edit-dvr>
+        </fieldset>
     </fieldset>
 </div>
 

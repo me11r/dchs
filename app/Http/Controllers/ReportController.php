@@ -78,7 +78,6 @@ use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
-use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -351,48 +350,48 @@ class ReportController extends AuthorizedController
     //отчет-1
     public function postReport101Emergency(Request $request)
     {
-        $date_begin = $request->date_begin ? Carbon::parse($request->date_begin)->format('Y-m-d') : now()->format('Y-m-d');
-        $date_end = $request->date_end ? Carbon::parse($request->date_end)->format('Y-m-d') : now()->format('Y-m-d');
-        $result_id = $request->result_id;
-        $burnt_id = $request->burnt_id;
-        $city_area_id = $request->city_area_id;
+//        $date_begin = $request->date_begin ? Carbon::parse($request->date_begin)->format('Y-m-d') : now()->format('Y-m-d');
+//        $date_end = $request->date_end ? Carbon::parse($request->date_end)->format('Y-m-d') : now()->format('Y-m-d');
+//        $result_id = $request->result_id;
+//        $burnt_id = $request->burnt_id;
+//        $city_area_id = $request->city_area_id;
+//
+//        $data = [
+//            'date_begin' => $date_begin,
+//            'date_end' => $date_end,
+//            'result_id' => $result_id,
+//            'burnt_id' => $burnt_id,
+//            'city_area_id' => $city_area_id,
+//        ];
+//
+//        $data = json_encode($data);
+//
+//        CustomQueue::updateOrCreate([
+//            'name' => 'report1',
+//            'user_id' => Auth::id(),
+//            'options' => $data,
+//
+//        ],[
+//            'name' => 'report1',
+//            'user_id' => Auth::id(),
+//            'options' => $data,
+//        ]);
+//
+//        $final = ReportCache::name("report1_".Auth::id())->first();
+//        $result = [];
+//
+//        if($final) {
+//            $result = $final->data_decoded;
+//            $final->delete();
+//            Cache::put('report_1_data', $result, 3600);
+//            $result = ['result' => $result];
+//        }
+//
+////        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
+//
+//        return response()->json($result);
 
-        $data = [
-            'date_begin' => $date_begin,
-            'date_end' => $date_end,
-            'result_id' => $result_id,
-            'burnt_id' => $burnt_id,
-            'city_area_id' => $city_area_id,
-        ];
-
-        $data = json_encode($data);
-
-        CustomQueue::updateOrCreate([
-            'name' => 'report1',
-            'user_id' => Auth::id(),
-            'options' => $data,
-
-        ],[
-            'name' => 'report1',
-            'user_id' => Auth::id(),
-            'options' => $data,
-        ]);
-
-        $final = ReportCache::name("report1_".Auth::id())->first();
-        $result = [];
-
-        if($final) {
-            $result = $final->data_decoded;
-            $final->delete();
-            Cache::put('report_1_data', $result, 3600);
-            $result = ['result' => $result];
-        }
-
-//        $result = Ticket101::getDetailedStat($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
-
-        return response()->json($result);
-
-
+        return response()->json([]);
     }
 
     public function getReport112Emergency()
@@ -700,7 +699,7 @@ class ReportController extends AuthorizedController
                 }
             }
 
-            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr},в разрезе по \"Причине\"";
+            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr}";
         }
 
         $activeSheet
@@ -939,16 +938,16 @@ class ReportController extends AuthorizedController
     //Отчет-1
     public function exportEmergency101Xls(Request $request, QueuedReportsService $queuedReportsService)
     {
-        $dateStart = Carbon::parse(strtotime($request->date_begin));
-        $dateEnd = Carbon::parse(strtotime($request->date_end));
-        $queuedReport = $queuedReportsService->registerNewReport(
-            $dateStart,
-            $dateEnd,
-            ReportType::ANALYTICS_SPIASR,
-            $request->all()
-        );
-
-        $result = $queuedReportsService->sendToQueue($queuedReport->id);
+//        $dateStart = Carbon::parse(strtotime($request->date_begin));
+//        $dateEnd = Carbon::parse(strtotime($request->date_end));
+//        $queuedReport = $queuedReportsService->registerNewReport(
+//            $dateStart,
+//            $dateEnd,
+//            ReportType::ANALYTICS_SPIASR,
+//            $request->all()
+//        );
+//
+//        $result = $queuedReportsService->sendToQueue($queuedReport->id);
 
         return redirect()->to(route('reports.queued-reports'));
 
@@ -1912,5 +1911,10 @@ class ReportController extends AuthorizedController
     public function queuedReports()
     {
         return view('reports.queued-reports');
+    }
+
+    public function queuedReportsView()
+    {
+        return view('reports.queued-reports-view');
     }
 }

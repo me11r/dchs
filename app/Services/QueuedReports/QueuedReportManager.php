@@ -11,28 +11,44 @@ class QueuedReportManager
     /**
      * @var ReportHandlerFactory
      */
-    protected $handlerFactory;
+    private $handlerFactory;
 
     /**
-     * ImporterManager constructor.
-     * @param ReportHandlerFactory $handlerFactory
+     * @var ReportsCacheManager
      */
-    public function __construct(ReportHandlerFactory $handlerFactory)
+    private $reportsCacheManager;
+
+    /** @var QueuedReport */
+    private $queuedReport;
+
+
+    /**
+     * QueuedReportManager constructor.
+     * @param ReportHandlerFactory $handlerFactory
+     * @param ReportsCacheManager $reportsCacheManager
+     */
+    public function __construct(ReportHandlerFactory $handlerFactory, ReportsCacheManager $reportsCacheManager)
     {
         $this->handlerFactory = $handlerFactory;
+        $this->reportsCacheManager = $reportsCacheManager;
     }
 
-    public function handle(int $queuedReportId): void
+    /**
+     * @throws \Exception
+     */
+    public function handle(): void
     {
-        /** @var QueuedReport $queuedReport */
-        $queuedReport = QueuedReport::where('id', '=', $queuedReportId)->firstOrFail();
+        $queuedReport = $this->getQueuedReport();
         $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::IN_PROGRESS)->id;
         $queuedReport->attempts++;
         $queuedReport->save();
 
         try {
             $handler = $this->handlerFactory->create($queuedReport->reportType->slug);
-            $filePath = $handler->saveToFile($queuedReport);
+            $filePath = $handler->saveToFile(
+                $queuedReport,
+                $this->getReportData()
+            );
 
             $queuedReport->file_path = $filePath;
             $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::ENDED)->id;
@@ -42,5 +58,42 @@ class QueuedReportManager
         }
 
         $queuedReport->save();
+    }
+
+
+    /**
+     * @return mixed
+     * @throws Exceptions\ReportHandlerNotFound
+     * @throws \Exception
+     */
+    public function getReportData()
+    {
+        $queuedReport = $this->getQueuedReport();
+        $handler = $this->handlerFactory->create($queuedReport->reportType->slug);
+        return $this->reportsCacheManager->rememberForever($queuedReport->cache_hash_key, function() use ($handler, $queuedReport){
+            return $handler->getData($queuedReport);
+        });
+    }
+
+    /**
+     * @return QueuedReport
+     * @throws \Exception
+     */
+    public function getQueuedReport(): QueuedReport
+    {
+        if (!$this->queuedReport) {
+            throw new \Exception('Report is not set');
+        }
+        return $this->queuedReport;
+    }
+
+    /**
+     * @param QueuedReport $queuedReport
+     * @return QueuedReportManager
+     */
+    public function setQueuedReport(QueuedReport $queuedReport): QueuedReportManager
+    {
+        $this->queuedReport = $queuedReport;
+        return $this;
     }
 }

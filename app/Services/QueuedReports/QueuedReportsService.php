@@ -8,6 +8,7 @@ use App\Models\QueuedReport;
 use App\Models\QueueStatus;
 use App\Models\ReportType;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class QueuedReportsService
 {
@@ -24,7 +25,8 @@ class QueuedReportsService
             'date_end' => $dateEnd->format('Y-m-d H:i:s'),
             'report_data' => $reportData,
             'attempts' => 0,
-            'error_text' => ''
+            'error_text' => '',
+            'user_id' => Auth::user()->id
         ]);
 
         $queuedReport->save();

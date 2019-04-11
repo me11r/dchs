@@ -417,13 +417,11 @@ class Ticket101WordExport
 
     private function getRepairedDvr()
     {
-        $dvrs = $this->data['inactive_dvrs'];
+        $dvrs = $this->data['inactive_dvrsMapped'];
 
         $result = [];
         foreach ($dvrs as $item) {
-            $vehicle = Vehicle::find($item['vehicle_id']);
-            $status = $item['status_title'];
-            $result[$vehicle->fireDepartment->title][] = $vehicle->name . ' ' . ($vehicle->base ? "($vehicle->base) " : '')."($status)" .' - '. $item['comment'];
+            $result[$item['department']][] = "видеорегистратор: ".$item['vehicle'];
         }
 
         return $result;

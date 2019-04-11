@@ -6,6 +6,7 @@ use App\Aircraft;
 use App\AirRescueReport;
 use App\AirRescueReportPersonsItem;
 use App\AirRescueReportTechItem;
+use App\Dvr;
 use App\FireDepartment;
 use App\Formation\Migrations;
 use App\Formation\Operations;
@@ -499,7 +500,11 @@ class FormationController extends AuthorizedController
             $departments = FireDepartment::usingInFormationReport()->get();
         }
 
-        $model = (new FormationTechReport)->where('form_id', $form_id)->where('dept_id', $dept_id)->first();
+        $model = (new FormationTechReport)
+            ->where('form_id', $form_id)
+            ->where('dept_id', $dept_id)
+            ->first();
+
         if ($model === null) {
             $model = new FormationTechReport();
         }
@@ -569,6 +574,22 @@ class FormationController extends AuthorizedController
 
             }
         }
+
+        /*прочие видеорегистраторы (не привязаны к технике)*/
+        if($request->dvr) {
+
+            $model->other_dvrs()->delete();
+
+            foreach ($request->input('dvr.status') as $id => $item) {
+                $model->other_dvrs()->create([
+                    'date_from' => $request->input("dvr.date_from.{$id}"),
+                    'date_to' => $request->input("dvr.date_to.{$id}"),
+                    'status' => $item,
+                    'note' => $request->input("dvr.note.{$id}"),
+                ]);
+            }
+        }
+
         return redirect('/formation/101')->with('_message', ['type' => 'success', 'text' => 'Отчет успешно сохранен']);
     }
 
@@ -787,7 +808,7 @@ class FormationController extends AuthorizedController
             return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
         });
 
-        $inactive_dvrs = $rawPeople = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($form_id){
+        $inactive_dvrs = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($form_id){
             $q->where('form_id', $form_id);
         })->dvr(false)
             ->get();
@@ -795,6 +816,29 @@ class FormationController extends AuthorizedController
         $inactive_dvrs_cnt = $inactive_dvrs->groupBy(function ($q) {
             return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
         });
+
+        $inactive_dvrsMapped = $inactive_dvrs->map(function ($q) {
+            return collect([
+                'department' => $q->vehicle->fireDepartment->title,
+                'vehicle' => $q->vehicle->name. ($q->vehicle->base ? "({$q->vehicle->base}) " : ''). "({$q->status_title}) {$q->comment}",
+                'vehicle_id' => $q->id,
+            ]);
+        });
+
+        $inactive_dvrsOther = Dvr::whereHas('formation_tech_report', function ($q) use ($form_id){
+            $q->where('form_id', $form_id);
+        })->status(false)
+            ->get()
+            ->map(function ($q) {
+                return collect([
+                    'department' => $q->formation_tech_report->department->title,
+                    'vehicle' => ($q->date_from ? "c {$q->date_from_formatted}" : ''). ($q->date_to ? " по {$q->date_to_formatted} " : '') .$q->note,
+                    'vehicle_id' => $q->id,
+                ]);
+            });
+
+        $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
+
 
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($report){
             $q->where('name', 'Расстановка');
@@ -937,6 +981,7 @@ class FormationController extends AuthorizedController
             'inactive_dvrs' => $inactive_dvrs,
             'inactive_dvrs_cnt' => $inactive_dvrs_cnt,
             'formationCard101Others' => $formationCard101Others,
+            'inactive_dvrsMapped' => $inactive_dvrsMapped,
         ];
 
         Cache::put('report101_data', $dataToReport, 3600);
@@ -965,6 +1010,7 @@ class FormationController extends AuthorizedController
             ->set('vacation', $vacation)
             ->set('sick', $sick)
             ->set('sick_leave', $sick_leave)
+            ->set('inactive_dvrsMapped', $inactive_dvrsMapped)
             ->set('guard_numbers', GuardNumber::all())
             ->set('business_trip', $business_trip)
             ->set('other_reasons', $other_reasons)
@@ -972,6 +1018,7 @@ class FormationController extends AuthorizedController
             ->set('inactive_tech_cnt', $inactive_tech_cnt)
             ->set('inactive_dvrs', $inactive_dvrs)
             ->set('inactive_dvrs_cnt', $inactive_dvrs_cnt)
+            ->set('inactive_dvrsOther', $inactive_dvrsOther)
             ->set('canEditOd', Auth::user()->hasRight('CAN_EDIT_OD_FORMATION'))
             ->set('sumArray', $sumArray);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\QueuedReport;
 use App\Services\QueuedReports\QueuedReportManager;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -13,20 +14,27 @@ class HandleQueuedReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * @var int
+     */
     private $queuedReportId;
 
+    /**
+     * HandleQueuedReport constructor.
+     * @param int $queuedReportId
+     */
     public function __construct(int $queuedReportId)
     {
         $this->queuedReportId = $queuedReportId;
     }
 
+
     /**
-     * Execute the job.
-     *
-     * @return void
+     * @param QueuedReportManager $reportManager
+     * @throws \Exception
      */
     public function handle(QueuedReportManager $reportManager)
     {
-        $reportManager->handle($this->queuedReportId);
+        $reportManager->setQueuedReport(QueuedReport::find($this->queuedReportId))->handle();
     }
 }
