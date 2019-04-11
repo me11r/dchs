@@ -89,6 +89,7 @@ Object.defineProperty(Array.prototype, 'clone', {
 
 Vue.filter('dateFilter', VueDateFilter);
 Vue.component('add-edit-tech', AddEdit101Tech);
+Vue.component('add-edit-dvr', require('./views/101tech/AddEdit101Dvr'));
 Vue.component('schedule', Schedule);
 Vue.component('v-navbar', Navbar);
 Vue.component('delete-button', require('./components/DeleteButton'));
