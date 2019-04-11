@@ -24,26 +24,24 @@
             </div>
             <div class="column is-narrow">
                 <div>
-                    <a href="/norms-psp/create" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка норматива</a>
+                    <a href="/norms-psp/create" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
+                    <a href="/norms-psp" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
                 </div>
             </div>
         </div>
         <div>
-            <form action="" method="get">
-                <div class="field has-addons">
-                    <div class="control is-expanded">
-                        <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
-                    </div>
-                    <div class="control">
-                    </div>
-                    <div class="control">
-                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
-                    </div>
-                </div>
-
-            </form>
             <div id="vue">
                 <form action="">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
+                        </div>
+                        <div class="control">
+                        </div>
+                        <div class="control">
+                            <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                        </div>
+                    </div>
                     <div class="field is-grouped">
                         <v-datepicker-search
                                 name="date_from"
@@ -60,6 +58,34 @@
 
                     </div>
                     <div class="control">
+                        <p>№ норматива</p>
+                        <select onchange="this.form.submit()" class="select" name="norm_number_id" id="">
+                            <option value=""></option>
+                            {% for item in norm_numbers %}
+                                <option {{ item.id == norm_number_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="control">
+                        <p>Тип норматива</p>
+                        <select onchange="this.form.submit()" class="select" name="norm_type_id" id="">
+                            <option value=""></option>
+                            {% for item in norm_types %}
+                                <option {{ item.id == norm_type_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="control">
+                        <p href="?sort=city_area_id">Подразделение</p>
+                        <select onchange="this.form.submit()" class="select" name="filter_fd" id="">
+                            <option value=""></option>
+                            {% for item in fire_departments %}
+                                <option {{ item.id == filter_fd ? 'selected' : '' }} value="{{ item.id }}">{{ item.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <div class="control">
                         <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                     </div>
                 </form>
@@ -73,37 +99,9 @@
                     <th>
                         <p href="?sort=location">Дата</p>
                     </th>
-                    <th><p>№ норматива</p>
-                        <form>
-                            <select onchange="this.form.submit()" class="select" name="norm_number_id" id="">
-                                <option value=""></option>
-                                {% for item in norm_numbers %}
-                                    <option {{ item.id == norm_number_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                    </th>
-                    <th><p>Тип норматива</p>
-                        <form>
-                            <select onchange="this.form.submit()" class="select" name="norm_type_id" id="">
-                                <option value=""></option>
-                                {% for item in norm_types %}
-                                    <option {{ item.id == norm_type_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                    </th>
-                    <th>
-                        <p href="?sort=city_area_id">Подразделение</p>
-                        <form>
-                            <select onchange="this.form.submit()" class="select" name="filter_fd" id="">
-                                <option value=""></option>
-                                {% for item in fire_departments %}
-                                    <option {{ item.id == filter_fd ? 'selected' : '' }} value="{{ item.id }}">{{ item.title }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                    </th>
+                    <th><p>№ норматива</p></th>
+                    <th><p>Тип норматива</p></th>
+                    <th><p href="?sort=city_area_id">Подразделение</p></th>
                     <th>&nbsp;</th>
                 </tr>
                 </thead>

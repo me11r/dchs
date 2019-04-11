@@ -137,6 +137,7 @@ class Ticket101Other extends BaseModel
         return null;
     }
 
+    //attribute: dispatched_fds
     public function getDispatchedFdsAttribute()
     {
         $results = $this->results()->whereNotNull('dispatch_id')->get();

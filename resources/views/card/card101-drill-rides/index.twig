@@ -30,22 +30,21 @@
             </div>
         </div>
         <div>
-            <form action="" method="get">
-                <div class="field   has-addons">
-                    <div class="control is-expanded">
-                        <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
-                    </div>
-                    <div class="control">
-                    </div>
-
-                    <div class="control">
-                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
-                    </div>
-                </div>
-            </form>
             <div id="vue">
                 <form action="">
+                    <div class="field   has-addons">
+                        <div class="control is-expanded">
+                            <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
+                        </div>
+                        <div class="control">
+                        </div>
+
+                        <div class="control">
+                            <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                        </div>
+                    </div>
                     <div class="field is-grouped">
+
                         <v-datepicker-search
                                 name="date_from"
                                 date-string="{{ date_from }}"
@@ -61,6 +60,25 @@
 
                     </div>
                     <div class="control">
+                        <p>Район</p>
+                        <select name="city_area_id" class="select control" onchange="this.form.submit()">
+                            <option value=""></option>
+                            {% for f in city_areas %}
+                                <option {% if city_area_id is defined and city_area_id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="control">
+                        <p>Тип выезда</p>
+                        <select name="drill_type_id" class="select control" onchange="this.form.submit()">
+                            <option value=""></option>
+                            {% for f in drill_types %}
+                                <option {% if drill_type_id is defined and drill_type_id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <div class="control">
                         <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                     </div>
                 </form>
@@ -73,35 +91,12 @@
                     <th>№ КУИ</th>
                     <th>
                         <a href="?sort=location">Адрес</a>
-                        {#{% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101']) %}#}
-                        <form>
-                            <select name="filter[id]" class="select control" onchange="this.form.submit()">
-                                {% for f in tickets %}
-                                    <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.location }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                        {#{% endif %}#}
                     </th>
                     <th>
                         <a href="?sort=city_area_id">Район</a>
-                        <form>
-                            <select name="city_area_id" class="select control" onchange="this.form.submit()">
-                                {% for f in city_areas %}
-                                    <option {% if city_area_id is defined and city_area_id == f.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
                     </th>
                     <th>
                         <a href="?sort=city_area_id">Тип выезда</a>
-                        <form>
-                            <select name="drill_type_id" class="select control" onchange="this.form.submit()">
-                                {% for f in drill_types %}
-                                    <option {% if drill_type_id is defined and drill_type_id == f.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
                     </th>
                     <th class="has-text-right"><a href="?sort=created_at">Дата и время</a></th>
                     <th>Тип ЧС</th>

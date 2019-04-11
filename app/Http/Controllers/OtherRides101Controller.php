@@ -34,14 +34,6 @@ class OtherRides101Controller extends Controller
 
         $model = Ticket101Other::orderBy('id', 'desc');
 
-        if ($request->filter_fd) {
-            $model = $model->whereHas('results', function ($q) use ($request) {
-               $q->where('fire_department_id', $request->filter_fd)
-                   ->whereNotNull('dispatch_id')
-               ;
-            });
-        }
-
         if($data['date_from'] && $data['date_to']) {
             $model = $model->whereBetween('custom_created_at', [$data['date_from'], $data['date_to']]);
         }
@@ -60,6 +52,14 @@ class OtherRides101Controller extends Controller
                 ->orWhere('responsible_person', "like", "%{$request->search}%")
                 ->orWhere('direction', "like", "%{$request->search}%")
             ;
+        }
+
+        if ($request->filter_fd) {
+            $model = $model->whereHas('results', function ($q) use ($request) {
+                $q->where('fire_department_id', $request->filter_fd)
+                    ->whereNotNull('dispatch_id')
+                ;
+            });
         }
 
         $data['records'] = $model->paginate($data['per_page']);
