@@ -820,7 +820,7 @@ class FormationController extends AuthorizedController
         $inactive_dvrsMapped = $inactive_dvrs->map(function ($q) {
             return collect([
                 'department' => $q->vehicle->fireDepartment->title,
-                'vehicle' => $q->vehicle->name. ($q->vehicle->base ? "({$q->vehicle->base}) " : ''). "({$q->status_title}) {$q->vehicle->comment}",
+                'vehicle' => $q->vehicle->name. ($q->vehicle->base ? "({$q->vehicle->base}) " : ''). "({$q->status_title}) {$q->comment}",
                 'vehicle_id' => $q->id,
             ]);
         });
