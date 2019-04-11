@@ -232,7 +232,7 @@ class FormationTechReport extends Model
         return "$this->asv/$this->dask";
     }
 
-    //dvr
+    //attribute: dvr
     public function getDvrAttribute()
     {
         $action = $this->formation_tech_items()
@@ -243,11 +243,11 @@ class FormationTechReport extends Model
         $reserve = $this->formation_tech_items()
             ->whereIn('status',['reserve','repair'])
             ->dvr(true)
-            ->count();
+            ->count() + $this->other_dvrs()->status(true)->count();
 
         $broken = $this->formation_tech_items()
             ->dvr(false)
-            ->count();
+            ->count() + $this->other_dvrs()->status(false)->count();
 
         return "{$action}/{$reserve}/{$broken}";
     }
@@ -285,5 +285,10 @@ class FormationTechReport extends Model
     public function department()
     {
         return $this->belongsTo(FireDepartment::class, 'dept_id');
+    }
+
+    public function other_dvrs()
+    {
+        return $this->hasMany(Dvr::class, 'formation_tech_report_id');
     }
 }

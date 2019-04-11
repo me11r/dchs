@@ -26,8 +26,8 @@ class DrillRides101Controller extends Controller
         $data['tickets'] = Ticket101::drill()->orderBy('id', 'desc');
         $data['date_from'] = $request->date_from;
         $data['date_to'] = $request->date_to;
-        $data['city_area_id'] = $request->input('filter.city_area_id', null);
-        $data['drill_type_id'] = $request->input('filter.drill_type_id', null);
+        $data['city_area_id'] = $request->input('city_area_id', null);
+        $data['drill_type_id'] = $request->input('drill_type_id', null);
 
         if($data['date_from'] && $data['date_to']) {
             $data['tickets'] = $data['tickets']->whereBetween('custom_created_at', [$data['date_from'], $data['date_to']]);

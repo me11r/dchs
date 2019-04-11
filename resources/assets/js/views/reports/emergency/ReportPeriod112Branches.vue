@@ -53,6 +53,39 @@
                             </option>
                         </select>
                     </div>
+                    <!--Причина подтопления-->
+                    <div class="field" v-if="incident_type_id === 36">
+                        <label for="reason">Причина</label>
+                        <select
+                                class="select"
+                                name="reasonFloodingId"
+                                v-model="reasonFloodingId"
+                                id="reasonFloodingId">
+                            <option value=""></option>
+                            <option
+                                    v-for="item in reasonsFlooding"
+                                    :value="item.id"
+                                    :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <!--Причина падения веток/деревьев-->
+                    <div class="field" v-if="incident_type_id === 37">
+                        <label for="reason">Причина</label>
+                        <select
+                                class="select"
+                                name="reasonBranchesId"
+                                v-model="reasonBranchesId"
+                                id="reasonBranchesId">
+                            <option value=""></option>
+                            <option
+                                    v-for="item in reasonsBranches"
+                                    :value="item.id"
+                                    :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+
                     <div class="field is-grouped">
                         <v-datepicker-search
                                 v-model="date_begin_"
@@ -93,6 +126,7 @@
                             <th>Адрес</th>
                             <th v-if="incident_type_id === 36">Количество проживающих</th>
                             <th>Дата происшествия</th>
+                            <th>Происшествие</th>
                             <th>Место происшествия</th>
                             <th>Причина</th>
                             <th>Пострадавшие / погибшие</th>
@@ -109,6 +143,7 @@
                             <th>{{ item['Адрес'] }}</th>
                             <th v-if="incident_type_id === 36">{{ item['Кол-во проживающих'] }}</th>
                             <th>{{ item['Дата происшествия'] }}</th>
+                            <th>{{ item['Происшествие'] }}</th>
                             <th>{{ item['Место происшествия'] || item['Место подтопления'] }}</th>
                             <th>{{ item['Причина'] || item['Причина подтопления'] }}</th>
                             <th>{{ item['Пострадавшие / погибшие'] }}</th>
@@ -119,8 +154,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="section" v-if="incident_type_id === 36 && total !== 0">
-                    <h4>Общее количество подтоплений - {{ total }}</h4>
+                <div class="section">
+                    <h4>Общее количество происшествий - {{ total }}</h4>
                 </div>
             </div>
 
@@ -148,6 +183,14 @@ export default {
             type: Array,
             default: () => {}
         },
+        reasonsFlooding: {
+            type: Array,
+            default: () => {}
+        },
+        reasonsBranches: {
+            type: Array,
+            default: () => {}
+        },
     },
     computed: {
         getHref() {
@@ -156,7 +199,19 @@ export default {
                 '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
                 '&incident_type_id=' + this.incident_type_id +
                 '&city_area_id=' + this.cityAreaId +
+                '&report_type=' + this.getReportType +
+                '&reasonBranchesId=' + this.getReasonBranchesId +
+                '&reasonFloodingId=' + this.getReasonFloodingId +
                 '&csrf-token=' + this.csrf;
+        },
+        getReportType() {
+            return this.incidentTypes.length === 2 ? 'branches' : 'common';
+        },
+        getReasonFloodingId() {
+            return this.incident_type_id === 36 ? this.reasonFloodingId : null;
+        },
+        getReasonBranchesId() {
+            return this.incident_type_id === 37 ? this.reasonBranchesId : null;
         }
     },
     data: function () {
@@ -167,6 +222,8 @@ export default {
             incident_type_id: '',
             emergencyNameId: null,
             cityAreaId: null,
+            reasonFloodingId: null,
+            reasonBranchesId: null,
             total: 0,
             response: []
         };
@@ -179,12 +236,15 @@ export default {
                 'incident_type_id': this.incident_type_id,
                 'emergency_name_id': this.emergencyNameId,
                 'city_area_id': this.cityAreaId,
+                'report_type': this.getReportType,
+                'reasonBranchesId': this.getReasonBranchesId,
+                'reasonFloodingId': this.getReasonFloodingId,
             }).then((q) => {
                 this.response = q.data.data;
                 this.total = q.data.total;
             });
         }
-    }
+    },
 };
 </script>
 

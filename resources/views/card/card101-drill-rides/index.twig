@@ -86,7 +86,7 @@
                     <th>
                         <a href="?sort=city_area_id">Район</a>
                         <form>
-                            <select name="filter[city_area_id]" class="select control" onchange="this.form.submit()">
+                            <select name="city_area_id" class="select control" onchange="this.form.submit()">
                                 {% for f in city_areas %}
                                     <option {% if city_area_id is defined and city_area_id == f.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
                                 {% endfor %}
@@ -94,9 +94,9 @@
                         </form>
                     </th>
                     <th>
-                        <a href="?sort=city_area_id">Тип учений</a>
+                        <a href="?sort=city_area_id">Тип выезда</a>
                         <form>
-                            <select name="filter[drill_type_id]" class="select control" onchange="this.form.submit()">
+                            <select name="drill_type_id" class="select control" onchange="this.form.submit()">
                                 {% for f in drill_types %}
                                     <option {% if drill_type_id is defined and drill_type_id == f.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
                                 {% endfor %}
@@ -128,7 +128,13 @@
                     </tr>
                 {% endfor %}
             </table>
-            {% include "_templates/pagination" with {'items': tickets, 'per_page': per_page, 'other': {'date_from':date_from, 'date_to': date_to, 'search': search}} %}
+            {% include "_templates/pagination" with {'items': tickets, 'per_page': per_page, 'other': {
+                'date_from':date_from,
+                'date_to': date_to,
+                'search': search,
+                'city_area_id': city_area_id,
+                'drill_type_id':drill_type_id}}
+            %}
         </div>
     </div>
 {% endblock content %}
