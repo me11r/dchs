@@ -132,10 +132,22 @@ class FormationReport extends Model
             ->dvr(true)
             ->count();
 
+        $reserve += Dvr::whereHas('formation_tech_report.report', function ($q) {
+            $q->where('id', $this->id);
+        })
+            ->status(true)
+            ->count();
+
         $broken = FormationTechItem::whereHas('formation_tech_report.report', function ($q) {
             $q->where('id', $this->id);
         })
             ->dvr(false)
+            ->count();
+
+        $broken += Dvr::whereHas('formation_tech_report.report', function ($q) {
+            $q->where('id', $this->id);
+        })
+            ->status(false)
             ->count();
 
         return "{$action}/{$reserve}/{$broken}";

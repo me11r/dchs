@@ -78,7 +78,6 @@ use App\Ticket101Other;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
-use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -700,7 +699,7 @@ class ReportController extends AuthorizedController
                 }
             }
 
-            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr},в разрезе по \"Причине\"";
+            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr}";
         }
 
         $activeSheet
