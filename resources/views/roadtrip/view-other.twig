@@ -23,6 +23,9 @@
                 <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
             </div>
         </div>
+        {% if trip.ticket101_other.ride_type|default(null) %}
+            <h4 class="title">Прочий: {{ trip.ticket101_other.ride_type.name|default(null) }}</h4>
+        {% endif %}
         <table class="table is-narrow printing-full-width">
             {% if not trip.is_accepted %}
                 <tr class="printing-invisible">
