@@ -514,6 +514,8 @@ class DailyWordExport
             $generalBoldFontStyle8,
             ['align' => Jc::BOTH]
         );
+
+
         $section->addText(
             'Неисправная техника: ',
             $generalBoldUnderlineFontStyle8,
@@ -541,6 +543,7 @@ class DailyWordExport
             $generalBoldFontStyle8,
             ['align' => Jc::BOTH]
         );
+
         $text = '';
         $count_tech = 0;
         foreach ($this->data['inactive_tech_cnt'] as $name => $count) {
@@ -559,11 +562,43 @@ class DailyWordExport
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );
+
+        $section->addText(
+            'Неисправные видеорегистраторы: ',
+            $generalBoldUnderlineFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+
+        if($this->data['dvr']['inactive_dvrs']->count()) {
+            foreach ($this->data['dvr']['inactive_dvrs']->groupBy('department') as $dvr_department => $dvrs) {
+                foreach ($dvrs as $dvr) {
+                    $section->addText(
+                        $dvr_department . ' '.$dvr['vehicle'],
+                        $generalBoldFontStyle8,
+                        ['align' => Jc::BOTH]
+                    );
+                }
+            }
+        }
+
         $section->addText(
             '',
             $generalBoldFontStyle8,
             ['align' => Jc::BOTH]
         );
+
+        $text = '';
+        $count_tech = 0;
+        foreach ($this->data['dvr']['inactive_dvrs_cnt'] as $name => $count) {
+            $count_tech++;
+            $text .= $name . '-' . count($count) . (count($this->data['dvr']['inactive_dvrs_cnt']) !== $count_tech ? ', ' : '.');
+        }
+        $section->addText(
+            'Всего:___________________________' . $text,
+            $generalBoldUnderlineFontStyle8,
+            ['align' => Jc::BOTH]
+        );
+
         $section->addText(
             '',
             $generalBoldFontStyle8,

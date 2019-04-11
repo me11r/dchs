@@ -7,6 +7,7 @@ use App\Chronology101;
 use App\Dictionary\BurntObject;
 use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
+use App\Dvr;
 use App\FireDepartmentCheck;
 use App\FormationReport;
 use App\FormationTechReport;
@@ -35,6 +36,9 @@ class Report
     protected $firstDate;
     protected $secondDate;
 
+    protected $firstDateTime;
+    protected $secondDateTime;
+
     public function __construct(
         Ticket101Interface $ticket101,
         FireObjectInterface $fireObject,
@@ -61,9 +65,14 @@ class Report
             $secondDate = $carbon->addDay(1)->format('Y-m-d H:i:s');
             $this->time = strtotime($date);
 
+
+
             $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
             $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
         }
+
+        $this->firstDateTime = $firstDate;
+        $this->secondDateTime = $secondDate;
 
         $this->report = $this->ticket101->getDaily(
             $firstDate,
@@ -377,6 +386,8 @@ class Report
                 $q->where('status', 'repair');
             })->get();
 
+        $data['dvr'] = $this->getInactiveDvrs();
+
 
         $inactive_tech_cnt = [];
         foreach ($data['tech'] as $inactive_tech) {
@@ -507,7 +518,7 @@ class Report
 
         return (new FormationTechReport())
             ->with('formation_tech_items')
-            ->whereBetween('created_at', [$from, $to]);
+            ->whereBetween('created_at', [$this->firstDateTime, $this->secondDateTime]);
     }
 
     private function getFireDeptChecks()
@@ -546,6 +557,46 @@ class Report
     protected function getObjectId($object, $name): int
     {
         return $this->{$object}->getByName($name)->id ?? -1;
+    }
+
+    private function getInactiveDvrs()
+    {
+        $reports = $this->getTech()->get()->pluck('form_id')->toArray();
+        $inactive_dvrs = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($reports){
+            $q->whereIn('form_id', $reports);
+        })->dvr(false)
+            ->get();
+
+        $inactive_dvrs_cnt = $inactive_dvrs->groupBy(function ($q) {
+            return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
+        });
+
+        $inactive_dvrsMapped = $inactive_dvrs->map(function ($q) {
+            return collect([
+                'department' => $q->vehicle->fireDepartment->title,
+                'vehicle' => $q->vehicle->name. ($q->vehicle->base ? "({$q->vehicle->base}) " : ''). "({$q->status_title}) {$q->comment}",
+                'vehicle_id' => $q->id,
+            ]);
+        });
+
+        $inactive_dvrsOther = Dvr::whereHas('formation_tech_report', function ($q) use ($reports){
+            $q->whereIn('form_id', $reports);
+        })->status(false)
+            ->get()
+            ->map(function ($q) {
+                return collect([
+                    'department' => $q->formation_tech_report->department->title,
+                    'vehicle' => ($q->date_from ? "c {$q->date_from_formatted}" : ''). ($q->date_to ? " по {$q->date_to_formatted} " : '') .$q->note,
+                    'vehicle_id' => $q->id,
+                ]);
+            });
+
+        $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
+
+        return [
+            'inactive_dvrs_cnt' => $inactive_dvrs_cnt,
+            'inactive_dvrs' => $inactive_dvrsMapped,
+        ];
     }
 
 }
