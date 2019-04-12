@@ -794,6 +794,8 @@ class Ticket101 extends BaseModel
             'results.tech',
             'results.tech.formation_tech_report',
             'operational_card',
+            'result_fire_level',
+            'liquidation_method',
             'operational_plan.special_plans'
         ])
             ->whereBetween('custom_created_at',[$date_begin, $date_end]);
