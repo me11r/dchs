@@ -185,6 +185,10 @@ class Report
             'dates' => $this->getDates(),
             'allCount' => count($this->report),
             'tickets' => $this->report,
+            'drill_tickets' => $this->ticket101->getDailyDrill(
+                $firstDate,
+                $secondDate
+            ),
 
             // в разрезе
             'fire' => [
