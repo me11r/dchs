@@ -150,9 +150,7 @@ class Ticket101PeriodExcelExport
             'Локализация',
             'Ликвидация',
             'Время тушения',
-            'Стволы',
             'Звенья ГДЗС',
-            'Время работы стволов',
             'Время работы ГДЗС',
             'Спасено людей',
             'Эвакуировано людей',
@@ -165,7 +163,7 @@ class Ticket101PeriodExcelExport
             'Этажность',
         ];
         $sheet->fromArray($headers, null, 'A15');
-        $sheet->getStyle("A15:Z15")->applyFromArray([
+        $sheet->getStyle("A15:X15")->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -189,23 +187,23 @@ class Ticket101PeriodExcelExport
                 @$stat->city_area->name,
                 $stat->location,
                 $stat->object_name,
-                $stat->detailed_staff_count,
-                $stat->trucks_count,
+                @$stat->result_fire_level->name,
+                @$stat->liquidation_method->name,
                 $stat->first_arrived_time,
                 $stat->loc_time,
                 $stat->liqv_time,
                 $stat->loc_time_total,
-                $stat->chronologies_trucks()->get()->count() ? implode($stat->chronologies_trucks()->get()->map(function ($q) {
-                    if($q->event_info_arrived) {
-                        return "Тип {$q->event_info_arrived->name}; Количество: {$q->quantity}";
-                    }
-                })->toArray()) : null,
+//                $stat->chronologies_trucks()->get()->count() ? implode($stat->chronologies_trucks()->get()->map(function ($q) {
+//                    if($q->event_info_arrived) {
+//                        return "Тип {$q->event_info_arrived->name}; Количество: {$q->quantity}";
+//                    }
+//                })->toArray()) : null,
                 $stat->gdzs_count,
-                $stat->chronologies_trucks()->get()->count() ? implode($stat->chronologies_trucks()->get()->map(function ($q) {
-                    if($q->event_info_arrived) {
-                        return "Тип {$q->event_info_arrived->name}; Количество: {$q->working_time}";
-                    }
-                })->toArray()) : null,
+//                $stat->chronologies_trucks()->get()->count() ? implode($stat->chronologies_trucks()->get()->map(function ($q) {
+//                    if($q->event_info_arrived) {
+//                        return "Тип {$q->event_info_arrived->name}; Количество: {$q->working_time}";
+//                    }
+//                })->toArray()) : null,
                 $stat->chronologies()->get()->count() ? implode($stat->chronologies()->get()->map(function ($q) {
                     if($q->event_info_arrived) {
                         return "Тип {$q->event_info_arrived->name}; Количество: {$q->working_time}";
@@ -228,7 +226,7 @@ class Ticket101PeriodExcelExport
 
             $sheet->getCell("F{$rowIndex}")->setValue($arr[5])->getHyperlink()->setUrl($url);
 
-            $sheet->getStyle("A$rowIndex:Z$rowIndex")->applyFromArray(self::HStyle);
+            $sheet->getStyle("A$rowIndex:X$rowIndex")->applyFromArray(self::HStyle);
             $rowIndex++;
         }
     }

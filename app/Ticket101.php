@@ -470,6 +470,11 @@ class Ticket101 extends BaseModel
         return $this->hasOne(FireLevel::class, 'id', 'fire_level_id');
     }
 
+    public function result_fire_level()
+    {
+        return $this->belongsTo(FireLevel::class,'fire_level_id');
+    }
+
     public function fire_object()
     {
         return $this->hasOne(BurntObject::class, 'id', 'fire_object_id');
