@@ -31,22 +31,24 @@
         </div>
         <div>
             <form action="" method="get">
-                <div class="field   has-addons">
-                    <div class="control is-expanded">
-                        <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
-                    </div>
-                    <div class="control">
-                    </div>
 
-                    <div class="control">
-                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
-                    </div>
-
-                </div>
             </form>
             <div id="vue">
                 <form action="">
+                    <div class="field   has-addons">
+                        <div class="control is-expanded">
+                            <input type="search" class="input" name="search" value="{{ search }}" id="search-input">
+                        </div>
+                        <div class="control">
+                        </div>
+
+                        <div class="control">
+                            <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                        </div>
+
+                    </div>
                     <div class="field is-grouped">
+
                         <v-datepicker-search
                                 name="date_from"
                                 date-string="{{ date_from }}"
@@ -61,9 +63,21 @@
                         ></v-datepicker-search>
 
                     </div>
+
+                    <div class="control">
+                        <p>Район</p>
+                        <select name="city_area" class="select control" onchange="this.form.submit()">
+                            <option value=""></option>
+                            {% for f in city_areas %}
+                                <option {% if city_area is defined and city_area == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
                     <div class="control">
                         <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -74,24 +88,11 @@
                     <th>№ КУИ</th>
                     <th>
                         <a href="?sort=location">Адрес</a>
-                        {#{% if user.anyRole(['admin','dispatcher_od', 'Диспетчер 101']) %}#}
-                            <form>
-                                <select name="filter[id]" class="select control" onchange="this.form.submit()">
-                                    {% for f in tickets %}
-                                        <option {% if id is defined and id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.location }}</option>
-                                    {% endfor %}
-                                </select>
-                            </form>
-                        {#{% endif %}#}
                     </th>
                     <th>
                         <a href="?sort=city_area_id">Район</a>
                         <form>
-                            <select name="filter[city_area]" class="select control" onchange="this.form.submit()">
-                                {% for f in city_areas %}
-                                    <option {% if city_area is defined and city_area == f.ticket.city_area.id|default('') %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
-                                {% endfor %}
-                            </select>
+
                         </form>
                     </th>
                     <th class="has-text-right">

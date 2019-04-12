@@ -109,8 +109,7 @@ class CardController extends AuthorizedController
 
         $sort = $request->get('sort', 'custom_created_at');
 
-        $id = $request->input('filter.id', '');
-        $city_area = $request->input('filter.city_area', '');
+        $city_area = $request->input('city_area', null);
         $from = $request->input('date_from', null);
         $to = $request->input('date_to', null);
 
@@ -141,7 +140,7 @@ class CardController extends AuthorizedController
                     $date = null;
                 }
                 $tickets = $tickets
-                    ->where('location', "like", "$search%")
+                    ->where('location', "like", "%$search%")
                     ->orWhereDate('custom_created_at', $date)
                     ->orWhereHas('city_area', function ($q) use ($search){
                         $q->where('name', "like", "$search%");
@@ -153,7 +152,6 @@ class CardController extends AuthorizedController
 
         $this->set('tickets', $tickets)
             ->set('city_areas', $city_areas)
-            ->set('id', $id)
             ->set('date_from', $from)
             ->set('date_to', $to)
             ->set('card_type', 'real')

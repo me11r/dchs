@@ -546,21 +546,10 @@
             <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНЫЕ ВИДЕОРЕГИСТРАТОРЫ:</h3>
             <table class="table">
                 {% for index, item in inactive_dvrsMapped %}
-{#                    <tr>#}
-{#                        <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>#}
-{#                        <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %}({{ item.status_title }}) {{ item.comment ? ' - '~item.comment : '' }}</td>#}
-{#                    </tr>#}
-
                     <tr>
                         <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.department }}</span></td>
                         <td>{{ item.vehicle }}</td>
                     </tr>
-{#                    {% for itemInactiveOther in inactive_dvrsByFd if inactive_dvrsByFd[item.vehicle.fireDepartment.id] is defined %}#}
-{#                        <tr>#}
-{#                            <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>#}
-{#                            <td>{{ itemInactiveOther.date_from ? "с "~itemInactiveOther.date_from : '' }} {{ itemInactiveOther.date_to ? "по "~itemInactiveOther.date_to : '' }}  {{ itemInactiveOther.note ? ' - '~itemInactiveOther.note : '' }}</td>#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
                 {% endfor %}
             </table>
         </div>

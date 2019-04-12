@@ -287,4 +287,10 @@ class FireDepartmentResult extends Model
         return $q->whereBetween('created_at', [$finalDateBegin, $finalDateEnd]);
     }
 
+    //attribute: dept_number
+    public function getDeptNumberAttribute()
+    {
+        return $this->tech ? $this->tech->department : null;
+    }
+
 }

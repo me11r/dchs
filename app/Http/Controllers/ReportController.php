@@ -470,6 +470,7 @@ class ReportController extends AuthorizedController
             ->skipNullValue('flooding_reason_id',$reasonFloodingId)
             ->skipNullValue('city_area_id',$cityAreaId)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
+            ->orderBy('custom_created_at')
             ->with(['cityArea', 'flooding_place', 'flooding_reason'])
             ->get();
 
@@ -543,6 +544,7 @@ class ReportController extends AuthorizedController
         //проставляем номера 1,2,3 и тд
         foreach ($preparedToExport as $cityArea => $arrays) {
             $indx = 0;
+            $arrays = collect($arrays)->sortBy('Дата происшествия')->toArray();
             foreach ($arrays as $key => $array) {
                 $preparedToExport[$cityArea][$key]['№'] = ++$indx;
             }
