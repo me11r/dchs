@@ -387,7 +387,7 @@ class DailyWordExport
         /*учебные выезды [begin]*/
 
         foreach (DrillType::all() as $key => $drillType) {
-            $ticketsWithDrillType = $this->data['tickets']->where('drill_type_id', $drillType->id);
+            $ticketsWithDrillType = $this->data['drill_tickets']->where('drill_type_id', $drillType->id);
             if($ticketsWithDrillType->count()) {
 
                 $counterDepts = 1;
@@ -406,7 +406,7 @@ class DailyWordExport
                         $textRun = $section->addTextRun(self::$noPaddingPS);
 
                         $textRun->addText(
-                            ($counterDepts) . '. ' . ($drillResult['department'] ? $drillResult['department']['title'] : '') . ' ',
+                            ($counterDepts) . '. ' . ($drillResult['department'] ? ($drillResult['department']['title'].":".$drillResult['dept_number']) : '') . ' ',
                             $generalBoldFontStyle,
                             ['align' => Jc::BOTH]
                         );
@@ -418,7 +418,13 @@ class DailyWordExport
                         );
 
                         $textRun->addText(
-                            ($drillTicket['operational_plan'] ? $drillTicket['operational_plan']['name'] : '') .' '.$drillTicket['drill_name_total'].' ',
+                            ($drillTicket['operational_plan'] ? $drillTicket['operational_plan']['name'] : '') .' ',
+                            $simpleFontStyle,
+                            ['align' => Jc::BOTH]
+                        );
+
+                        $textRun->addText(
+                            $drillTicket['drill_name_total'].' ',
                             $simpleFontStyle,
                             ['align' => Jc::BOTH]
                         );

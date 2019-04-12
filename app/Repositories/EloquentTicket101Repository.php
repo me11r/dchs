@@ -22,4 +22,14 @@ class EloquentTicket101Repository extends Repository implements Ticket101Interfa
             ->with('city_area', 'departments', 'trip_result', 'liquidation_method')
             ->get();
     }
+
+    public function getDailyDrill($from, $to)
+    {
+        return $this->model
+            ->whereBetween('custom_created_at', [$from, $to])
+            ->whereNotNull('drill_type_id')
+            ->orderBy('custom_created_at')
+            ->with('city_area', 'departments', 'trip_result', 'liquidation_method')
+            ->get();
+    }
 }
