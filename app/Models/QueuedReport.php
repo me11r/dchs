@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Services\QueuedReports\QueuedReportManager;
-use App\Services\QueuedReports\ReportsCacheManager;
+use App\Services\QueuedReports\ReportsCacheService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -57,8 +57,7 @@ class QueuedReport extends Model
      * @var array
      */
     protected $appends = [
-        'file_name',
-        'data'
+        'file_name'
     ];
 
     /**
@@ -89,12 +88,12 @@ class QueuedReport extends Model
         return Arr::last(explode(DIRECTORY_SEPARATOR, $this->file_path));
     }
 
-    public function getDataAttribute()
+    public function getData()
     {
-        /** @var ReportsCacheManager $cacheManager */
-        $cacheManager = app()->make(ReportsCacheManager::class);
+        /** @var ReportsCacheService $cacheService */
+        $cacheService = app()->make(ReportsCacheService::class);
 
-        return $this->cache_hash_key ? $cacheManager->get($this->cache_hash_key, []) : [];
+        return $this->cache_hash_key ? $cacheService->get($this->cache_hash_key, []) : [];
     }
 
 }

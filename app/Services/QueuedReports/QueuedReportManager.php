@@ -14,23 +14,24 @@ class QueuedReportManager
     private $handlerFactory;
 
     /**
-     * @var ReportsCacheManager
+     * @var ReportsCacheService
      */
-    private $reportsCacheManager;
+    private $reportsCacheService;
 
     /** @var QueuedReport */
     private $queuedReport;
 
+    private const ATTEMPTS = 1;
 
     /**
      * QueuedReportManager constructor.
      * @param ReportHandlerFactory $handlerFactory
-     * @param ReportsCacheManager $reportsCacheManager
+     * @param ReportsCacheService $reportsCacheService
      */
-    public function __construct(ReportHandlerFactory $handlerFactory, ReportsCacheManager $reportsCacheManager)
+    public function __construct(ReportHandlerFactory $handlerFactory, ReportsCacheService $reportsCacheService)
     {
         $this->handlerFactory = $handlerFactory;
-        $this->reportsCacheManager = $reportsCacheManager;
+        $this->reportsCacheService = $reportsCacheService;
     }
 
     /**
@@ -39,22 +40,28 @@ class QueuedReportManager
     public function handle(): void
     {
         $queuedReport = $this->getQueuedReport();
-        $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::IN_PROGRESS)->id;
-        $queuedReport->attempts++;
-        $queuedReport->save();
 
-        try {
-            $handler = $this->handlerFactory->create($queuedReport->reportType->slug);
-            $filePath = $handler->saveToFile(
-                $queuedReport,
-                $this->getReportData()
-            );
-
-            $queuedReport->file_path = $filePath;
-            $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::ENDED)->id;
-        } catch (\Exception $e) {
-            $queuedReport->error_text = $e->getMessage();
+        if ($queuedReport->attempts >= self::ATTEMPTS){
+            $queuedReport->error_text = 'При генерации отчета произошла непредвиденная ошибка.';
             $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::ERROR)->id;
+        } else {
+            $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::IN_PROGRESS)->id;
+            $queuedReport->attempts++;
+            $queuedReport->save();
+
+            try {
+                $handler = $this->handlerFactory->create($queuedReport->reportType->slug);
+                $filePath = $handler->saveToFile(
+                    $queuedReport,
+                    $this->getReportData()
+                );
+
+                $queuedReport->file_path = $filePath;
+                $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::ENDED)->id;
+            } catch (\Exception $e) {
+                $queuedReport->error_text = $e->getMessage();
+                $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::ERROR)->id;
+            }
         }
 
         $queuedReport->save();
@@ -70,7 +77,7 @@ class QueuedReportManager
     {
         $queuedReport = $this->getQueuedReport();
         $handler = $this->handlerFactory->create($queuedReport->reportType->slug);
-        return $this->reportsCacheManager->rememberForever($queuedReport->cache_hash_key, function() use ($handler, $queuedReport){
+        return $this->reportsCacheService->rememberForever($queuedReport->cache_hash_key, function() use ($handler, $queuedReport){
             return $handler->getData($queuedReport);
         });
     }

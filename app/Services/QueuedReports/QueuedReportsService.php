@@ -39,6 +39,9 @@ class QueuedReportsService
         /** @var QueuedReport $queuedReport */
         $queuedReport = QueuedReport::find($queuedReportId);
         $queuedReport->queue_status_id = QueueStatus::getBySlug($statusSlug)->id;
+        if ($statusSlug === QueueStatusType::QUEUED) {
+            $queuedReport->attempts = 0;
+        }
         return $queuedReport->save();
     }
 

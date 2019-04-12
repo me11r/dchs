@@ -25,10 +25,7 @@ class QueuedReportsController extends Controller
 
         $items = $items->with(['reportType', 'status'])->where('user_id', '=', Auth::user()->id);
         $items = $items->orderBy('id', 'DESC')
-            ->paginate(
-                $request->get('per_page', 10),
-                ['id', 'report_type_id', 'queue_status_id', 'file_path', 'date_start', 'date_end', 'attempts', 'error_text', 'created_at']
-            );
+            ->paginate($request->get('per_page', 10));
 
         return response()->json($items);
     }
@@ -97,7 +94,9 @@ class QueuedReportsController extends Controller
 
     public function showFull($id)
     {
-        return response()->json(QueuedReport::with(['reportType', 'status'])->findOrFail($id));
+        $item = QueuedReport::with(['reportType', 'status'])->findOrFail($id);
+        $item['data'] = $item->getData();
+        return response()->json($item);
     }
 
     /**

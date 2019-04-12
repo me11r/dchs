@@ -7,10 +7,10 @@ use Illuminate\Cache\Repository;
 use Illuminate\Contracts\Cache\Store;
 
 /**
- * Class ReportsCacheManager
+ * Class ReportsCacheService
  * @package App\Services\QueuedReports
  */
-class ReportsCacheManager
+class ReportsCacheService
 {
 
     /**
@@ -19,7 +19,7 @@ class ReportsCacheManager
     private $cache;
 
     /**
-     * ReportsCacheManager constructor.
+     * ReportsCacheService constructor.
      * @param CacheManager $cacheManager
      */
     public function __construct(CacheManager $cacheManager)
