@@ -68,10 +68,13 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::match(['get', 'post'], '/create', 'OtherRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::match(['get', 'post'], '{id}/edit', 'OtherRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
         Route::delete('delete/{id}', 'OtherRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHERS_RIDES_CAN_DELETE']);
+        Route::post('switch-delayed', 'OtherRides101Controller@switchDelayed')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHER_RIDES_CAN_SET_DELAYED']);
+        Route::post('cancel-delayed', 'OtherRides101Controller@cancelDelayed')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHER_RIDES_CAN_SET_DELAYED']);
+        Route::post('approve-delayed', 'OtherRides101Controller@approveDelayed')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHER_RIDES_CAN_SET_DELAYED']);
     });
 
     Route::group(['prefix' => 'card101-drill-rides', 'as' => 'card101-drill-rides'], function (){
-        Route::get('/', 'DrillRides101Controller@index')->name('card101-other-rides.index')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
+        Route::get('/', 'DrillRides101Controller@index')->name('card101-drill-rides.index')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
         Route::match(['get', 'post'], '/create', 'DrillRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
         Route::match(['get', 'post'], '{id}/edit', 'DrillRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_DRILL_RIDES']);
         Route::delete('delete/{id}', 'DrillRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_DRILL_RIDES,CARD101_DRILL_RIDES_CAN_DELETE']);

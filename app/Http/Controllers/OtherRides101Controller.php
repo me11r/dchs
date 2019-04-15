@@ -10,6 +10,7 @@ use App\Models\FormationTechItem;
 use App\Models\Schedule;
 use App\Models\Staff;
 use App\RideType;
+use App\RoadtripPlan;
 use App\Ticket101HqRide;
 use App\Ticket101Other;
 use App\Ticket101OtherHqRide;
@@ -72,6 +73,9 @@ class OtherRides101Controller extends Controller
     {
         if($request->isMethod('POST')){
             $dataToSave = $request->all();
+
+            $dataToSave['created_by'] = Auth::id();
+
             $dataToSave['formation_report_id'] = FormationReport::approved()
                 ->has('tech_reports')
                 ->max('id');
@@ -101,7 +105,6 @@ class OtherRides101Controller extends Controller
 
             if($request->ajax()) {
                 return response()->json(['record' => $record, 'techItems' => $techItems]);
-                #return response()->json(['record' => ["id" => 1, 'created_at' => now()->toDateString()]]);
             }
 
             return redirect('card101-other-rides')->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
@@ -112,6 +115,7 @@ class OtherRides101Controller extends Controller
             $data['staff'] = Staff::all();
             $data['techItems'] = json_encode([]);
             $data['hq'] = json_encode([]);
+            $data['can_set_delayed'] = json_encode(Auth::user()->hasRight('CARD101_OTHER_RIDES_CAN_SET_DELAYED'));
             $data['canChangeCreatedAt'] = json_encode(Auth::user()->hasRight('CAN_CHANGE_CARD101_OTHER_RIDES_DATE'));
             return view('card.card101-other-rides.create-edit', $data);
         }
@@ -120,9 +124,20 @@ class OtherRides101Controller extends Controller
     public function edit(Request $request, $id)
     {
         $data['record'] = Ticket101Other::find($id);
+
         $all = $request->all();
+
+        $all['changed_by'] = Auth::id();
+
         if($request->isMethod('POST')){
             $data['record']->update($all);
+
+            //если выбран отложенный выезд, переводим все путевые листы в неактивный режим
+            if($data['record']->delayed_at) {
+                $roadtrip_plans = $data['record']
+                    ->roadtrip_plans()
+                    ->update(['is_closed' => true]);
+            }
 
             $techItems = $data['record']->results()->with([
                 'tech',
@@ -146,7 +161,10 @@ class OtherRides101Controller extends Controller
                     'tech',
                     'tech.formation_tech_report',
                 ])
-                ->get();;
+                ->get();
+
+            $data['can_set_delayed'] = json_encode(Auth::user()->hasRight('CARD101_OTHER_RIDES_CAN_SET_DELAYED'));
+
             return view('card.card101-other-rides.create-edit', $data);
         }
     }
@@ -246,5 +264,60 @@ class OtherRides101Controller extends Controller
                 'tech.formation_tech_report',
             ])
             ->get();
+    }
+
+    public function switchDelayed(Request $request)
+    {
+        $data['record'] = Ticket101Other::find($request->id);
+        $delayed = (boolean) $request->delayed;
+        $delayed_at = $request->delayed_at;
+
+        $roadtrip_plans = $data['record']
+            ->roadtrip_plans()
+            ->update(['is_closed' => $delayed]);
+
+        if($delayed) {
+
+            $data['record']->delayed_at = $delayed_at;
+        }
+        else {
+            $data['record']->delayed_at = null;
+        }
+
+        $data['record']->save();
+
+        return response()->json('ok');
+    }
+
+    public function cancelDelayed(Request $request)
+    {
+        $data['record'] = Ticket101Other::find($request->id);
+
+        $roadtrip_plans = $data['record']
+            ->roadtrip_plans()
+            ->delete();
+
+        $data['record']->delayed_at = null;
+
+        $data['record']->save();
+
+        $this->recommend($data['record']);
+
+        return response()->json('ok');
+    }
+
+    public function approveDelayed(Request $request)
+    {
+        $data['record'] = Ticket101Other::find($request->id);
+
+        $roadtrip_plans = $data['record']
+            ->roadtrip_plans()
+            ->update(['is_closed' => false]);
+
+        $data['record']->delayed_at = null;
+
+        $data['record']->save();
+
+        return response()->json('ok');
     }
 }

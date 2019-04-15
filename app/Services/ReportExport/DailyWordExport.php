@@ -496,12 +496,10 @@ class DailyWordExport
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
                 ($counterDepts) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
-//                ($key + 1) . '. ' . ($item->staff ? $item->staff->department->title : '') . ' ',
                 $generalBoldFontStyle,
                 ['align' => Jc::BOTH]
             );
             $textRun->addText(
-//                $item['note'],
                 "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
                 $simpleFontStyle,
                 ['align' => Jc::BOTH]

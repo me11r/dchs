@@ -23,9 +23,7 @@
                         <td>Локализация</td> <!--фактическое время Локализации (хронология)-->
                         <td>Ликвидация</td> <!--фактическое время Ликвидации (хронология)-->
                         <td>Время тушения</td> <!--время от прибытия до локализации-->
-                        <td>Стволы</td> <!--из хронологии-->
                         <td>Звенья ГДЗС</td> <!--Кол-во ГДЗС (хронология)-->
-                        <td>Время работы стволов</td> <!--из хронологии-->
                         <td>Время работы ГДЗС</td> <!--из хронологии-->
                         <td>Спасено людей</td> <!--Итоги выезда-->
                         <td>Эвакуировано людей</td> <!--Итоги выезда-->
@@ -50,31 +48,31 @@
                         <td>{{ item.city_area ? item.city_area.name : '' }}</td>
                         <td>{{ item.location }}</td>
                         <td>{{ item.object_name }}</td>
-                        <td>{{ item.detailed_staff_count }}</td> <!--УЧАСТНИКИ ТУШЕНИЯ-->
-                        <td>{{ item.trucks_count }}</td> <!--Ликвидировано стволами-->
+                        <td>{{ item.result_fire_level ? item.result_fire_level.name : '' }}</td> <!--УЧАСТНИКИ ТУШЕНИЯ-->
+                        <td>{{ item.liquidation_method ? item.liquidation_method.name : '' }}</td> <!--Ликвидировано стволами-->
                         <td>{{ item.on_way_time }}</td>
                         <td>{{ item.loc_time }}</td>
                         <td>{{ item.liqv_time }}</td>
                         <td>{{ item.loc_time_total }}</td>
-                        <td>
-                            <p
-                                v-for="(chronology, idx) in item.chronologies"
-                                v-if="chronology.event_info_arrived_id !== null && chronology.event_info_arrived.name !== 'ГДЗС'"
-                                :key="`chr_qnt_${idx}`">
-                                Тип {{ chronology.event_info_arrived.name }}
-                                Количество: {{ chronology.quantity }}<br>
-                            </p>
-                        </td> <!--СТВОЛЫ-->
+<!--                        <td>-->
+<!--                            <p-->
+<!--                                v-for="(chronology, idx) in item.chronologies"-->
+<!--                                v-if="chronology.event_info_arrived_id !== null && chronology.event_info_arrived.name !== 'ГДЗС'"-->
+<!--                                :key="`chr_qnt_${idx}`">-->
+<!--                                Тип {{ chronology.event_info_arrived.name }}-->
+<!--                                Количество: {{ chronology.quantity }}<br>-->
+<!--                            </p>-->
+<!--                        </td> &lt;!&ndash;СТВОЛЫ&ndash;&gt;-->
                         <td>{{ item.gdzs_count }}</td> <!--Звенья ГДЗС-->
-                        <td>
-                            <p
-                                v-for="(chronology, idx) in item.chronologies"
-                                v-if="chronology.event_info_arrived_id !== null && chronology.event_info_arrived.name !== 'ГДЗС'"
-                                :key="`chr_woring_time_${idx}`">
-                                Тип {{ chronology.event_info_arrived.name }}
-                                Количество: {{ chronology.working_time }}<br>
-                            </p>
-                        </td> <!--Время работы стволов-->
+<!--                        <td>-->
+<!--                            <p-->
+<!--                                v-for="(chronology, idx) in item.chronologies"-->
+<!--                                v-if="chronology.event_info_arrived_id !== null && chronology.event_info_arrived.name !== 'ГДЗС'"-->
+<!--                                :key="`chr_woring_time_${idx}`">-->
+<!--                                Тип {{ chronology.event_info_arrived.name }}-->
+<!--                                Количество: {{ chronology.working_time }}<br>-->
+<!--                            </p>-->
+<!--                        </td> &lt;!&ndash;Время работы стволов&ndash;&gt;-->
                         <td>
                             <p
                                 v-for="(chronology, idx) in item.chronologies"

@@ -43,7 +43,6 @@ class Report112
     protected $burntObject;
     private $today;
     private $yesterday;
-
     private $tomorrow;
 
     protected $dictionaries;
