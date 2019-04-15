@@ -20,7 +20,7 @@
                                                 <option
                                                     :key="'item_' + item.id"
                                                     :value="item"
-                                                    v-for="item in items">{{ item.title }}
+                                                    v-for="item in items" v-if="item.title"">{{ item.title }}
                                                 </option>
                                             </select>
                                         </div>
