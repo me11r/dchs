@@ -71,7 +71,9 @@
                                         </div>
                                     </div>
 
+
                                 </div>
+
 
                             </div>
                             <div class="level-right">
@@ -79,12 +81,6 @@
                                     <div class="field is-grouped">
                                         <div class="field">
                                             <div class="control">
-                                                <!--<label for="">Время регистрации</label>-->
-                                                <!--<input type="text"-->
-                                                       <!--:value="otherRide_.created_at|dateFilter('DD.MM.YYYY H:m')"-->
-                                                       <!--readonly="readonly"-->
-                                                       <!--class="input"-->
-                                                <!--&gt;-->
                                                 <v-datepicker-search
                                                         v-model="otherRide_.custom_created_at"
                                                         :date="otherRide_.custom_created_at"
@@ -103,6 +99,28 @@
 
                             </div>
                         </div>
+
+<!--                        <div class="field">-->
+<!--                            <b-checkbox v-model="delayed">Отложенная высылка</b-checkbox>-->
+<!--                        </div>-->
+<!--                        <div class="field" v-if="delayed">-->
+<!--                            <p>Уведомление придет в {{ delayedDateTimeHumanFormat }}</p>-->
+<!--                            <a class="button is-danger" href="">Отменить</a>-->
+<!--                            <a class="button is-basic" href="">Выслать</a>-->
+<!--                        </div>-->
+<!--todo: мб потребуется в будущем-->
+<!--                        <div class="section" v-if="delayed">-->
+<!--                            <v-datepicker-search-->
+<!--                                    v-model="otherRide_.custom_created_at"-->
+<!--                                    :date="otherRide_.custom_created_at"-->
+<!--                                    :disabled="!canChangeCreatedAt"-->
+<!--                                    name="custom_created_at"-->
+<!--                                    :include-time="true"-->
+<!--                                    class="control"-->
+<!--                                    @dateChanged="otherRide_.custom_created_at = $event"-->
+<!--                                    label="Дата и время создания карточки">-->
+<!--                            </v-datepicker-search>-->
+<!--                        </div>-->
 
                         <table class="table is-hoverable is-fullwidth">
                             <thead>
@@ -643,6 +661,7 @@
                 active: [],
                 reserve: [],
                 time: 1000 * 10,
+                delayed: false,
                 hq: this.formatHq(),
                 otherRide_: {
                     id: 0,
@@ -659,6 +678,7 @@
                     final_object_name: '',
                     created_at: '',
                     custom_created_at: new Date(),
+                    delayed_at: new Date(),
                 }
             }
         },
@@ -790,6 +810,8 @@
                 record.time_end = record.time_end !== null ? moment("2019-01-01 "+record.time_end).toDate() : null;
 
                 record.custom_created_at = record.custom_created_at !== null ? moment(record.custom_created_at).toDate() : new Date();
+                record.delayed_at = record.delayed_at !== null ? moment(record.delayed_at).toDate() : new Date();
+
                 return record;
             },
             checkRoadtrips() {
@@ -885,11 +907,19 @@
             urlToSave() {
                 return `/card101-other-rides/` + (this.otherRide_.id !== 0 ? `${this.otherRide_.id}/edit` : 'create');
             },
+            delayedDateTime() {
+                return this.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('YYYY-MM-DD HH:mm:SS') : null;
+            },
+            delayedDateTimeHumanFormat() {
+                return this.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('HH:mm:SS DD-MM-YYYY') : null;
+            },
             dataToSave() {
                 let data = JSON.parse(JSON.stringify(this.otherRide_));
+
                 data.time_begin = moment(data.time_begin).format('HH:mm');
                 data.time_end = moment(data.time_end).format('HH:mm');
-                data.custom_created_at = moment(data.custom_created_at).format('YYYY-DD-MM HH:mm:SS');
+                data.custom_created_at = moment(data.custom_created_at).format('YYYY-MM-DD HH:mm:SS');
+                data.delayed_at = this.delayedDateTime;
                 data.hq_rides = JSON.parse(JSON.stringify(this.hq));
                 data.hq_rides.forEach((item) => {
                     item.accept_time = moment(item.accept_time).format('HH:mm');
