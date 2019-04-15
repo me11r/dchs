@@ -50,7 +50,8 @@ abstract class Controller extends BaseController
             $user->last_connect_at = Carbon::now();
             $user->save();
 
-            if($user->hasRight('CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD', false)){
+            //когда пользователь может получать уведомления
+            if ($user->hasRight('CAN_RECEIVE_NOTIFICATION_FORMATION_RECORD', false) || $user->hasRight('CARD101_OTHER_RIDES_CAN_SET_DELAYED')) {
                 $params['popup_notifications'] = true;
             }
         }

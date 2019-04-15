@@ -26,11 +26,11 @@ Route::group(
         Route::post('101card/copy-chronology-from-fd', 'CardController@copyChronologyRecord101cardFromFd');
         Route::post('101card/save-info-from-fd', 'CardController@createInfo101cardFromFd');
         Route::post('101card/update-chronology', 'CardController@updateChronologyRecord101card');
-        Route::post('101card/save-on-way', 'CardController@createOnWayRecord101card');
-        Route::post('101card/save-arrived', 'CardController@createArrivedRecord101card');
+//        Route::post('101card/save-on-way', 'CardController@createOnWayRecord101card');
+//        Route::post('101card/save-arrived', 'CardController@createArrivedRecord101card');
         Route::post('101card/delete-chronology', 'CardController@deleteChronologyRecord101card');
         Route::post('101card/delete-chronology-from-fd ', 'CardController@deleteChronologyFromFdRecord101card');
-        Route::post('101card/delete-on-way', 'CardController@deleteOnWayRecord101card');
+//        Route::post('101card/delete-on-way', 'CardController@deleteOnWayRecord101card');
         Route::post('101card/delete-arrived', 'CardController@deleteArrivedRecord101card');
         Route::post('101card/promote-to-action', 'CardController@postPromoteToAction');
         Route::get('101card/get_ticket101', 'CardController@getTicket101');

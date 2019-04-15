@@ -50,6 +50,7 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 2, 'title' => 'Карточка 101: изменение даты', 'name' => 'CAN_CHANGE_CARD101_DATE'],
             ['right_group_id' => 2, 'title' => 'Карточка 112: изменение даты', 'name' => 'CAN_CHANGE_CARD112_DATE'],
             ['right_group_id' => 2, 'title' => 'Карточка 101: прочие выезда: изменение даты', 'name' => 'CAN_CHANGE_CARD101_OTHER_RIDES_DATE'],
+            ['right_group_id' => 2, 'title' => 'Карточка 101: прочие выезда: отложенный выезд', 'name' => 'CARD101_OTHER_RIDES_CAN_SET_DELAYED'],
 
             ['right_group_id' => 3, 'title' => 'Управление пользователями системы', 'name' => 'CAN_MANAGE_USERS'],
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],

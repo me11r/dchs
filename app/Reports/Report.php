@@ -38,6 +38,8 @@ class Report
 
     protected $firstDateTime;
     protected $secondDateTime;
+    private $tomorrow;
+
 
     public function __construct(
         Ticket101Interface $ticket101,
@@ -64,8 +66,6 @@ class Report
             $firstDate = $carbon->addHours(7)->format('Y-m-d H:i:s');
             $secondDate = $carbon->addDay(1)->format('Y-m-d H:i:s');
             $this->time = strtotime($date);
-
-
 
             $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
             $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
@@ -492,7 +492,7 @@ class Report
 
     private function getArrangementYesterday()
     {
-        $date = today()->addDay(-1)->format('Y-m-d');
+        $date = Carbon::parse($this->firstDateTime)->format('Y-m-d'); //today()->addDay(-1)->format('Y-m-d');
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
@@ -504,7 +504,7 @@ class Report
 
     private function getArrangementToday()
     {
-        $date = today()->format('Y-m-d');
+        $date = Carbon::parse($this->secondDateTime)->format('Y-m-d'); //today()->format('Y-m-d');
 
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
@@ -546,7 +546,7 @@ class Report
             'hour' => '07',
             'minutes' => '00',
             'to' => !$this->secondDate ? date('d.m.Y', $this->time) : $this->secondDate,
-            'from' => !$this->firstDate ? date('d.m.Y', $this->time - (60 * 60 * 24)) : $this->firstDate
+            'from' => !$this->firstDate ? date('d.m.Y', $this->time - (60 * 60 * 24)) : $this->firstDate,
         ];
     }
 
