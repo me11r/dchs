@@ -38,13 +38,13 @@ export default {
         return {
             isLoadedList: false,
             users: [],
-            lastCheckTime: null,
+            lastCheckTime: null
         };
     },
     computed: {
         allowedUsersToSend() {
             return this.users.filter((user) => {
-                return rights.canSendMessage(user.id);
+                return rights.canSendMessage(user.id) || user.email === 'notifications@localhost.net';
             });
         }
     },

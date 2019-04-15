@@ -16,7 +16,7 @@ class MessengerController extends Controller
         $online = \DB::raw('IF((DATE_SUB(NOW(), INTERVAL 5 MINUTE) < last_connect_at), 1, 0) as online');
         $me = \Auth::user();
         $users = (new User())
-            ->select(['id', 'name', 'last_connect_at', $online])
+            ->select(['id', 'email', 'name', 'last_connect_at', $online])
             ->where('id', '<>', $me->id)
             ->orderBy('online', 'desc')
             ->orderBy('id')
