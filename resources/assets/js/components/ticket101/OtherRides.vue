@@ -100,14 +100,18 @@
                             </div>
                         </div>
 
-<!--                        <div class="field">-->
-<!--                            <b-checkbox v-model="delayed">Отложенная высылка</b-checkbox>-->
-<!--                        </div>-->
-<!--                        <div class="field" v-if="delayed">-->
-<!--                            <p>Уведомление придет в {{ delayedDateTimeHumanFormat }}</p>-->
-<!--                            <a class="button is-danger" href="">Отменить</a>-->
-<!--                            <a class="button is-basic" href="">Выслать</a>-->
-<!--                        </div>-->
+                        <!--на создание отложенной высылки требуются права доступа-->
+                        <div v-if="canSetDelayed">
+                            <div class="field">
+                                <b-checkbox v-model="otherRide_.delayed">Отложенная высылка</b-checkbox>
+                            </div>
+                            <div class="field" v-if="otherRide_.delayed">
+                                <p>Уведомление придет в {{ delayedDateTimeHumanFormat }}</p>
+                                <a class="button is-danger" @click.prevent="cancelDelayed()">Отменить</a>
+                                <a class="button is-basic" @click.prevent="approveDelayed()">Выслать</a>
+                            </div>
+                        </div>
+
 <!--todo: мб потребуется в будущем-->
 <!--                        <div class="section" v-if="delayed">-->
 <!--                            <v-datepicker-search-->
@@ -650,6 +654,10 @@
                 type: Boolean,
                 default: false
             },
+            canSetDelayed: {
+                type: Boolean,
+                default: false
+            },
         },
         data: function () {
             return {
@@ -661,7 +669,6 @@
                 active: [],
                 reserve: [],
                 time: 1000 * 10,
-                delayed: false,
                 hq: this.formatHq(),
                 otherRide_: {
                     id: 0,
@@ -677,6 +684,7 @@
                     final_direction: '',
                     final_object_name: '',
                     created_at: '',
+                    delayed: false,
                     custom_created_at: new Date(),
                     delayed_at: new Date(),
                 }
@@ -783,7 +791,9 @@
                 let is_checked = object.checked;
                 object.checked = !is_checked;
 
-                axios.post('/roadtrip/other/send/' + dept_id + '/' + this.otherRide_.id + '/' + dept_number).then((response) => {
+                axios.post('/roadtrip/other/send/' + dept_id + '/' + this.otherRide_.id + '/' + dept_number, {
+                    'delayed': this.otherRide_.delayed
+                }).then((response) => {
                     alert(`Подразделение отправлено`);
                     event.target.disabled = true;
                     event.target.classList.add('is-danger');
@@ -902,16 +912,38 @@
 
                 return hq;
             },
+            switchDelayed() {
+                axios.post('/card101-other-rides/switch-delayed', {
+                    id: this.otherRide_.id,
+                    delayed: this.otherRide_.delayed,
+                    delayed_at: this.delayedDateTime
+                });
+            },
+            cancelDelayed() {
+                axios.post('/card101-other-rides/cancel-delayed', {
+                    id: this.otherRide_.id,
+                }).then((r) => {
+                    this.otherRide_.delayed = false;
+                    window.location.href = `/card101-other-rides/${this.otherRide_.id}/edit`;
+                });
+            },
+            approveDelayed() {
+                axios.post('/card101-other-rides/approve-delayed', {
+                    id: this.otherRide_.id,
+                }).then((r) => {
+                    this.otherRide_.delayed = false;
+                });
+            },
         },
         computed: {
             urlToSave() {
                 return `/card101-other-rides/` + (this.otherRide_.id !== 0 ? `${this.otherRide_.id}/edit` : 'create');
             },
             delayedDateTime() {
-                return this.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('YYYY-MM-DD HH:mm:SS') : null;
+                return this.otherRide_.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('YYYY-MM-DD HH:mm:SS') : null;
             },
             delayedDateTimeHumanFormat() {
-                return this.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('HH:mm:SS DD-MM-YYYY') : null;
+                return this.otherRide_.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('HH:mm:SS DD-MM-YYYY') : null;
             },
             dataToSave() {
                 let data = JSON.parse(JSON.stringify(this.otherRide_));
@@ -954,6 +986,9 @@
 
         },
         watch: {
+            'otherRide_.delayed'() {
+                this.switchDelayed();
+            }
         },
         mounted(){
             if(this.otherRide !== null) {

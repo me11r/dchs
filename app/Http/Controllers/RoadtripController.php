@@ -291,8 +291,6 @@ class RoadtripController extends AuthorizedController
             $result->save();
         }
 
-
-
         return response()->json([]);
     }
 
@@ -300,11 +298,17 @@ class RoadtripController extends AuthorizedController
     public function postSendOther(Request $request, $dept_id, $ticket_id, $tech_id = null)
     {
         $this->noLayout();
+        $is_delayed = (boolean) $request->delayed;
 
         $plan = RoadtripPlan::firstOrCreate([
             'card101_other_id' => $ticket_id,
-            'department_id' => $dept_id
+            'department_id' => $dept_id,
         ]);
+
+        /*если стоит флаг отложенной высылки - переводим путевой лист в неактивный режим*/
+        $plan->is_closed = $is_delayed;
+
+        $plan->save();
 
         FireDepartmentResult::updateOrCreate(
             [

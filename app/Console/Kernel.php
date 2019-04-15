@@ -47,6 +47,9 @@ class Kernel extends ConsoleKernel
             ->daily()
             ->at('07:00');
 
+        //проверка отложенных вызывов (101 прочие)
+        $schedule->command('check:ticket101other')->everyFiveMinutes();
+
          //очередь отчетов
 //         $schedule->command('process:queue')
 //            ->everyMinute();

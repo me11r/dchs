@@ -93,30 +93,32 @@ class CardController extends Controller
         return response()->json($resp);
     }
 
-    public function createOnWayRecord101card(Request $request)
-    {
-        $data = $request->all();
-        $resp = [];
-        if ($request->record) {
-            $resp = OnWay101::updateOrCreate(['id' => $request->record['id']], [
-                'ticket101_id' => $request->ticket_id,
-                'time' => $request->record['time'],
-                'information' => $request->record['information'],
-                'event_info_id' => $request->record['event_info_id'],
-                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
-            ]);
+//@todo: модель удалена
 
-            $resp = OnWay101::with([
-                'event_info',
-                'fire_department_result.tech',
-                'fire_department_result.department',])
-                ->where('id', $resp->id)
-                ->first();
-
-        }
-
-        return response()->json($resp);
-    }
+//    public function createOnWayRecord101card(Request $request)
+//    {
+//        $data = $request->all();
+//        $resp = [];
+//        if ($request->record) {
+//            $resp = OnWay101::updateOrCreate(['id' => $request->record['id']], [
+//                'ticket101_id' => $request->ticket_id,
+//                'time' => $request->record['time'],
+//                'information' => $request->record['information'],
+//                'event_info_id' => $request->record['event_info_id'],
+//                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+//            ]);
+//
+//            $resp = OnWay101::with([
+//                'event_info',
+//                'fire_department_result.tech',
+//                'fire_department_result.department',])
+//                ->where('id', $resp->id)
+//                ->first();
+//
+//        }
+//
+//        return response()->json($resp);
+//    }
 
     public function sendHqRide(Request $request)
     {
@@ -299,41 +301,44 @@ class CardController extends Controller
 
     }
 
-    public function createArrivedRecord101card(Request $request)
-    {
-        $data = $request->all();
-        $resp = [];
-        if ($request->record) {
-            $resp = Arrived101::updateOrCreate(['id' => $request->record['id']], [
-                'ticket101_id' => $request->ticket_id,
-                'working_time' => $request->record['working_time'],
-                'quantity' => $request->record['quantity'],
-                'information' => $request->record['information'],
-                'event_info_arrived_id' => $request->record['event_info_id'],
-                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
-            ]);
+//    @todo: модель удалена
 
-            $resp = Arrived101::with([
-                'event_info',
-                'fire_department_result.tech',
-                'fire_department_result.department',
-            ])
-                ->where('id', $resp->id)
-                ->first();
+//    public function createArrivedRecord101card(Request $request)
+//    {
+//        $data = $request->all();
+//        $resp = [];
+//        if ($request->record) {
+//            $resp = Arrived101::updateOrCreate(['id' => $request->record['id']], [
+//                'ticket101_id' => $request->ticket_id,
+//                'working_time' => $request->record['working_time'],
+//                'quantity' => $request->record['quantity'],
+//                'information' => $request->record['information'],
+//                'event_info_arrived_id' => $request->record['event_info_id'],
+//                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
+//            ]);
+//
+//            $resp = Arrived101::with([
+//                'event_info',
+//                'fire_department_result.tech',
+//                'fire_department_result.department',
+//            ])
+//                ->where('id', $resp->id)
+//                ->first();
+//
+//        }
+//
+//        return response()->json($resp);
+//    }
 
-        }
-
-        return response()->json($resp);
-    }
-
-    public function deleteOnWayRecord101card(Request $request)
-    {
-        $data = $request->all();
-        $record = OnWay101::destroy($request->id);
-        $resp = [];
-
-        return response()->json($resp);
-    }
+//    @todo: модель удалена
+//    public function deleteOnWayRecord101card(Request $request)
+//    {
+//        $data = $request->all();
+//        $record = OnWay101::destroy($request->id);
+//        $resp = [];
+//
+//        return response()->json($resp);
+//    }
 
     public function deleteChronologyRecord101card(Request $request)
     {
@@ -448,17 +453,6 @@ class CardController extends Controller
             'tech.formation_tech_report',
             'department',
         ])->get();
-
-
-
-        //старый вариант
-        /*$data['recommendations'] = $ticket->results()->with([
-            'tech',
-            'tech.formation_tech_report',
-            'department',
-        ])->get();*/
-
-
 
         return response()->json($data);
     }

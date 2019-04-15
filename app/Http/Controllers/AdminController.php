@@ -27,7 +27,7 @@ class AdminController extends AuthorizedController
     {
         $this->needRight(Right::CAN_MANAGE_USERS);
 
-        $perpage = $request->get('per_page', 10);
+        $perpage = $request->get('per_page', 20);
         $search = $request->input('search');
         $users = User::with('rights');
         if ($search !== null) {

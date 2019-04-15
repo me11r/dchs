@@ -62,11 +62,28 @@ class Ticket101Other extends BaseModel
         'final_direction',
         'final_object_name',
         'custom_created_at', //клон created_at, можно править в карточке
+        'created_by',
+        'changed_by',
+        'delayed_at',
+    ];
+
+    protected $appends = [
+        'delayed',
     ];
 
     public function ride_type()
     {
         return $this->belongsTo(RideType::class,'ride_type_id');
+    }
+
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+    public function changed_by_user()
+    {
+        return $this->belongsTo(User::class,'changed_by');
     }
 
     public function formation_report()
@@ -77,6 +94,11 @@ class Ticket101Other extends BaseModel
     public function results()
     {
         return $this->hasMany(FireDepartmentResult::class, 'ticket101_other_id');
+    }
+
+    public function roadtrip_plans()
+    {
+        return $this->hasMany(RoadtripPlan::class, 'card101_other_id');
     }
 
     public function hqRides()
@@ -124,6 +146,7 @@ class Ticket101Other extends BaseModel
         }
     }
 
+    //attribute: date
     public function getDateAttribute()
     {
         $format = 'd.m.Y';
@@ -135,6 +158,12 @@ class Ticket101Other extends BaseModel
         }
 
         return null;
+    }
+
+    //attribute: delayed
+    public function getDelayedAttribute()
+    {
+        return $this->delayed_at ? true : false;
     }
 
     //attribute: dispatched_fds
