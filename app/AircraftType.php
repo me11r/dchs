@@ -35,6 +35,10 @@ class AircraftType extends Model
         'name'
     ];
 
+    public $attributeNames = [
+        'name' => 'Наименование',
+    ];
+
     public function scopeName($q, $search)
     {
         return $q->where('name', $search);

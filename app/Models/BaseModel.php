@@ -8,6 +8,8 @@ abstract class BaseModel extends Model
 {
     protected $searchByDate = 'created_at';
 
+    public $attributeNames = [];
+
     public function scopeSkipNullValue($q, $field, $search)
     {
         return $search ? $q->where($field, $search) : $q;

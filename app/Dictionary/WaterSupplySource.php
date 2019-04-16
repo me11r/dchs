@@ -2,6 +2,7 @@
 
 namespace App\Dictionary;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,9 +18,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\WaterSupplySource whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\WaterSupplySource whereUpdatedAt($value)
  */
-class WaterSupplySource extends Model
+class WaterSupplySource extends BaseModel
 {
     protected $fillable = [
         'name',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 }

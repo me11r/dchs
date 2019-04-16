@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,9 +18,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\EventInfo whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class EventInfo extends Model
+class EventInfo extends BaseModel
 {
     protected $fillable = [
         'name',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 }
