@@ -103,6 +103,10 @@
                         </v-datepicker-search>
                     </div>
                     <div class="field">
+                        <p>Адрес</p>
+                        <input type="text" v-model="addressSearch" class="input">
+                    </div>
+                    <div class="field">
                         <button @click.prevent="search" class="button is-success">Поиск</button>
                     </div>
                     <div
@@ -198,6 +202,7 @@ export default {
                 '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
                 '&incident_type_id=' + this.incident_type_id +
                 '&city_area_id=' + this.cityAreaId +
+                '&addressSearch=' + this.addressSearch +
                 '&report_type=' + this.getReportType +
                 '&reasonBranchesId=' + this.getReasonBranchesId +
                 '&reasonFloodingId=' + this.getReasonFloodingId +
@@ -223,6 +228,7 @@ export default {
             cityAreaId: null,
             reasonFloodingId: null,
             reasonBranchesId: null,
+            addressSearch: null,
             total: 0,
             response: []
         };
@@ -235,6 +241,7 @@ export default {
                 'incident_type_id': this.incident_type_id,
                 'emergency_name_id': this.emergencyNameId,
                 'city_area_id': this.cityAreaId,
+                'addressSearch': this.addressSearch,
                 'report_type': this.getReportType,
                 'reasonBranchesId': this.getReasonBranchesId,
                 'reasonFloodingId': this.getReasonFloodingId,
