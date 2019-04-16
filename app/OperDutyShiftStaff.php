@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OperDutyShiftStaff whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class OperDutyShiftStaff extends Model
+class OperDutyShiftStaff extends BaseModel
 {
     use SoftDeletes;
 
@@ -30,6 +31,15 @@ class OperDutyShiftStaff extends Model
         'city',
         'rank',
         'military_rank',
+    ];
+
+    public $attributeNames = [
+        'name' => 'ФИО',
+        'guard_number_id' => 'Номер опергруппы',
+        'position' => 'Должность',
+        'city' => 'Город',
+        'rank' => 'ранг',
+        'military_rank' => 'военный ранг',
     ];
 
     public function shifts()

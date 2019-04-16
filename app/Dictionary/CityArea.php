@@ -11,6 +11,7 @@ namespace App\Dictionary;
 
 use App\DistrictManager;
 use App\FireDepartment;
+use App\Models\BaseModel;
 use App\Models\CityMicroArea;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,7 +42,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\CityArea withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\DistrictManager[] $district_managers
  */
-class CityArea extends Model
+class CityArea extends BaseModel
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -49,6 +50,10 @@ class CityArea extends Model
     protected $table = 'dict_city_area';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
+    ];
 
     public function scopeName($q, $title)
     {

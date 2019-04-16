@@ -2,6 +2,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireObject withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireObject withoutTrashed()
  */
-class FireObject extends Model
+class FireObject extends BaseModel
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -33,6 +34,10 @@ class FireObject extends Model
     protected $table = 'dict_fire_object';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
+    ];
 
     public function scopeName($q, $title)
     {

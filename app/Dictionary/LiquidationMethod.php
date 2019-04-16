@@ -4,6 +4,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\LiquidationMethod withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\LiquidationMethod withoutTrashed()
  */
-class LiquidationMethod extends Model
+class LiquidationMethod extends BaseModel
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -35,5 +36,9 @@ class LiquidationMethod extends Model
     protected $table = 'dict_liquidation_method';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
+    ];
 
 }

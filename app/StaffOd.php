@@ -8,6 +8,8 @@ abstract class StaffOd extends Model
 {
     protected $appends = ['unique'];
 
+    public $attributeNames = [];
+
     public function getUniqueAttribute()
     {
         return $this->unique();
