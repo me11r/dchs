@@ -2,10 +2,11 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class LivingSectorType extends Model
+class LivingSectorType extends BaseModel
 {
     use SoftDeletes;
 
@@ -16,6 +17,10 @@ class LivingSectorType extends Model
     private $types = [
         'Жилой дом(квартира)',
         'надворные постройки',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 
     public function tickets101()

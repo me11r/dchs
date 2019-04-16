@@ -2,13 +2,19 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DiseaseType extends Model
+class DiseaseType extends BaseModel
 {
     use SoftDeletes;
+
     protected $fillable = [
         'name'
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 }

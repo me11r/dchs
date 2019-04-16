@@ -2,15 +2,20 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class EmergencyName extends Model
+class EmergencyName extends BaseModel
 {
     use SoftDeletes;
 
     protected $fillable = [
         'name'
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 
     public function card112()

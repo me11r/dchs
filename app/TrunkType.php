@@ -2,15 +2,20 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use App\Models\Trunk;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TrunkType extends Model
+class TrunkType extends BaseModel
 {
     use SoftDeletes;
     protected $fillable = [
         'name'
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 
     public function scopeName($q, $search)

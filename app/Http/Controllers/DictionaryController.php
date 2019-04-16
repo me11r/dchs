@@ -97,6 +97,8 @@ class DictionaryController extends AuthorizedController
     }
 
     protected function getEditableFields(Model $model) {
+        return $model->attributeNames;
+
         $attrs = $model->getFillable();
         $attrs = array_filter($attrs, function ($elem) {
             if (\in_array($elem, $this->hidden_attributes, true)) {
@@ -678,12 +680,12 @@ class DictionaryController extends AuthorizedController
     public function getEdit($dict_id, $row_id = 0)
     {
         $dictionary = (new \App\Dictionary)->find($dict_id);
-        $this->set('dictinfo', $dictionary);
         $dict = new $dictionary->model;
-        $this->set('record', $dict->findOrNew($row_id));
         $fields = $this->getEditableFields($dict);
-        $this->set('fields', $fields);
 
+        $this->set('dictinfo', $dictionary);
+        $this->set('record', $dict->findOrNew($row_id));
+        $this->set('fields', $fields);
         $this->setAdditionalData($dict);
 
     }

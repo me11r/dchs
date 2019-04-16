@@ -4,6 +4,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,7 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireLevel withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\FireLevel withoutTrashed()
  */
-class FireLevel extends Model
+class FireLevel extends BaseModel
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -37,6 +38,10 @@ class FireLevel extends Model
     protected $table = 'dict_fire_level';
     protected $guarded = ['id'];
     protected $fillable = ['name'];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
+    ];
 
     public function scopeName($q, $title)
     {

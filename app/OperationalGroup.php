@@ -2,13 +2,18 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class OperationalGroup extends Model
+class OperationalGroup extends BaseModel
 {
     protected $fillable = [
         'name'
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 
     public function schedules()

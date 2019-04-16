@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -28,13 +29,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\OperDutyShift withoutTrashed()
  * @mixin \Eloquent
  */
-class OperDutyShift extends Model
+class OperDutyShift extends BaseModel
 {
     use SoftDeletes;
 
     protected $fillable = [
         'name',
         'direction',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
+        'direction' => 'Направление',
     ];
 
     public function items()

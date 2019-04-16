@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -28,5 +29,12 @@ class StaffCpps extends StaffOd
         'surname',
         'patronymic',
         'guard_number_id',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Имя',
+        'surname' => 'Фамилия',
+        'patronymic' => 'Отчество',
+        'guard_number_id' => 'Номер опер группы',
     ];
 }

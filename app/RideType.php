@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\BaseModel;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,12 +28,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\RideType withoutTrashed()
  * @mixin \Eloquent
  */
-class RideType extends Model
+class RideType extends BaseModel
 {
     use SoftDeletes;
 
     protected $fillable = [
         'name',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 
     public function ticket_101_others()

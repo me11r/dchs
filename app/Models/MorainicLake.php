@@ -20,11 +20,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MorainicLake whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class MorainicLake extends Model
+class MorainicLake extends BaseModel
 {
     protected $fillable = [
         'name',
         'altitude',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
+        'altitude' => 'Высота над уровнем моря',
     ];
 
     public function summary()

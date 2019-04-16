@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Trunk withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Trunk withoutTrashed()
  */
-class Trunk extends Model
+class Trunk extends BaseModel
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -35,6 +35,10 @@ class Trunk extends Model
 
     public $fillable = [
         'name',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 
 }
