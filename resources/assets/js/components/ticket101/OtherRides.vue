@@ -37,47 +37,44 @@
             <b-tab-item label="Высылка" icon="fa fa-truck-moving">
                 <b-tabs>
                     <b-tab-item label="Боевой расчет" icon="fa fa-truck-moving">
-                        <div class="levels">
-                            <div class="level-left">
-                                <div class="level-item">
-                                    <div class="section">
-                                        <div class="field is-grouped">
-                                            <div class="field">
-                                                <label for="ride_type_id">Наименование</label>
-                                                <div class="select"
-                                                     style="display: block">
-                                                    <select v-model="otherRide_.ride_type_id"
-                                                            style="width: 100%;">
-                                                        <option value=""></option>
-                                                        <option v-for="rideType in rideTypes_"
-                                                                :value="rideType.id">{{ rideType.name }}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <label for="">Ответственное лицо</label>
-                                                <input v-model="otherRide_.responsible_person" required class="input" type="text">
+                        <div class="columns">
+                            <div class="column is-full">
+                                <div class="section">
+                                    <div class="field is-grouped">
+                                        <div class="field">
+                                            <label for="ride_type_id">Наименование</label>
+                                            <div class="select"
+                                                 style="display: block">
+                                                <select v-model="otherRide_.ride_type_id"
+                                                        style="width: 100%;">
+                                                    <option value=""></option>
+                                                    <option v-for="rideType in rideTypes_"
+                                                            :value="rideType.id">{{ rideType.name }}</option>
+                                                </select>
                                             </div>
                                         </div>
-                                        <div class="field is-grouped">
-                                            <div class="field is-full">
-                                                <label for="">Адрес</label>
-                                                <input v-model="otherRide_.direction" required class="input" type="text">
-                                            </div>
-                                            <div class="field">
-                                                <label for="">Наименование объекта</label>
-                                                <input v-model="otherRide_.object_name" required class="input" type="text">
-                                            </div>
+                                        <div class="field">
+                                            <label for="">Ответственное лицо</label>
+                                            <input v-model="otherRide_.responsible_person" required class="input" type="text">
                                         </div>
                                     </div>
-
-
+                                    <div class="field is-grouped">
+                                        <div class="field is-full">
+                                            <label for="">Адрес</label>
+                                            <input v-model="otherRide_.direction" required class="input" type="text">
+                                        </div>
+                                        <div class="field">
+                                            <label for="">Наименование объекта</label>
+                                            <input v-model="otherRide_.object_name" required class="input" type="text">
+                                        </div>
+                                    </div>
                                 </div>
-
-
                             </div>
-                            <div class="level-right">
-                                <div class="level-item">
+                        </div>
+                        <div class="columns">
+                            <div class="column is-8"></div>
+                            <div class="column is-4">
+                                <div class="section">
                                     <div class="field is-grouped">
                                         <div class="field">
                                             <div class="control">
@@ -96,7 +93,6 @@
                                     </div>
 
                                 </div>
-
                             </div>
                         </div>
 
