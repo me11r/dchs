@@ -75,6 +75,7 @@ class OtherRides101Controller extends Controller
             $dataToSave = $request->all();
 
             $dataToSave['created_by'] = Auth::id();
+            $dataToSave['delayed_at'] = null;
 
             $dataToSave['formation_report_id'] = FormationReport::approved()
                 ->has('tech_reports')
