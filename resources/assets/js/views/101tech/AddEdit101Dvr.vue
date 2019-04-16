@@ -11,14 +11,14 @@
 
         <div
             class="panels"
-            v-for="item in records_"
+            v-for="item, key in records_"
             :key="item.id">
 
             <div class="field is-grouped">
 
                 <div
                      class="control column">
-                    <label class="is-size-7" :for="getName('status', item.id)">Статус видеорегистратора {{ item.id }}</label><br>
+                    <label class="is-size-7" :for="getName('status', item.id)">Видеорегистратор {{ ++key }}</label><br>
                     <div class="select">
                         <select
                                 :name="getName('status', item.id)"
