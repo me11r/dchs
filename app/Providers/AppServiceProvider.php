@@ -26,7 +26,7 @@ use App\Observers\WeatherObserver;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+//use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -52,11 +52,11 @@ class AppServiceProvider extends ServiceProvider
 
         view()->share('protocol', $request->isSecure() ? 'https' : 'http');
 
-        view()->composer('*', function ($view) {
-            $view->with([
-                'language' => LaravelLocalization::getCurrentLocale()
-            ]);
-        });
+//        view()->composer('*', function ($view) {
+//            $view->with([
+//                'language' => LaravelLocalization::getCurrentLocale()
+//            ]);
+//        });
     }
 
     /**
