@@ -357,6 +357,9 @@ class Card112 extends BaseModel
         }
 
         foreach ($reasons as $reason) {
+
+            $q = new Card112();
+
             foreach ($areas as $area) {
 
                 $baseQuery = $q->whereBetween('custom_created_at',[$date_begin, $date_end])
