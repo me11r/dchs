@@ -3,7 +3,7 @@
         <div class="navbar-brand">
             <a
                 class="navbar-item navbar-logo"
-                href="/">
+                :href="getHref('/')">
                 <img src="/assets/logo.png">
             </a>
             <a
@@ -24,32 +24,32 @@
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight(2)"
-                            href="/card/add101"
+                            :href="getHref('/card/add101')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Путевка 101
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_OTHERS_RIDES')"
-                            href="/card101-other-rides/create"
+                            :href="getHref('/card101-other-rides/create')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Прочие выезда
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_DRILL_RIDES')"
-                            href="/card/add101/0/drill"
+                            :href="getHref('/card/add101/0/drill')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Учения
                         </a>
                         <a
                             v-if="hasRight('CAN_ACCESS_NORMS_PSP')"
-                            href="/norms-psp"
+                            :href="getHref('/norms-psp')"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
                             Нормативы ПСП
                         </a>
                         <a
                             v-if="hasRight(2)"
-                            href="/card/101"
+                            :href="getHref('/card/101')"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточки 101
@@ -61,13 +61,13 @@
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight(33)"
-                            href="/card112/create"
+                            :href="getHref('/card112/create')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Путевка 112
                         </a>
                         <a
                             v-if="hasRight(33)"
-                            href="/card112"
+                            :href="getHref('/card112')"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
                             Карточки 112
@@ -78,52 +78,52 @@
                     class="navbar-item has-dropdown is-hoverable is-small"
                     v-if="hasAnyRight(12,13,14,15,16,17,18,19)">
                     <a
-                        href="/formation"
+                        :href="getHref('/formation')"
                         class="navbar-link is-small">
                         <i class="fas fa-address-book fa-fw"></i>&nbsp;
                         Строевые записки
                     </a>
                     <div class="navbar-dropdown">
                         <a
-                            href="/formation/101"
+                            :href="getHref('/formation/101')"
                             class="dropdown-item is-small"
                             v-if="hasRight(12)"
                         >
                             <i class="fas fa-truck fa-fw"></i>&nbsp;СП и АСР
                         </a>
                         <a
-                            href="/formation-record/mudflow"
+                            :href="getHref('/formation-record/mudflow')"
                             class="dropdown-item is-small"
                             v-if="hasRight(15)">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;ГУ «Казселезащита»
                         </a>
                         <a
-                            href="/formation/savers"
+                            :href="getHref('/formation/savers')"
                             class="dropdown-item is-small"
                             v-if="hasRight(13)">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;ГУ «РОСО КЧС МВД РК»
                         </a>
                         <a
-                            href="/formation-record/medical"
+                            :href="getHref('/formation-record/medical')"
                             class="dropdown-item is-small"
                             v-if="hasRight(14)">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;ГУ «Центр медицины катастроф»
                         </a>
                         <a
-                            href="/formation/air-rescue"
+                            :href="getHref('/formation/air-rescue')"
                             class="dropdown-item is-small"
                             v-if="hasRight(16)"
                         >
                             <i class="fas fa-truck fa-fw"></i>&nbsp;АО "Казавиаспас"
                         </a>
                         <a
-                            href="/formation-record/ort_sert"
+                            :href="getHref('/formation-record/ort_sert')"
                             class="dropdown-item is-small"
                             v-if="hasRight(17)">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;АО "Өртсөндіруші"
                         </a>
                         <a
-                            href="/formation-record/emergency_almaty"
+                            :href="getHref('/formation-record/emergency_almaty')"
                             class="dropdown-item is-small"
                             v-if="hasRight(19)">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;Служба спасения г.Алматы
@@ -135,7 +135,7 @@
                             <i class="fas fa-truck"></i>&nbsp;Ответственные по районным отделам г.Алматы
                         </a>-->
                         <a
-                            href="/formation-record"
+                            :href="getHref('/formation-record')"
                             class="dropdown-item is-small"
                             v-if="hasRight(18)">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;Журнал строевых записок ДЧС г.Алматы
@@ -149,37 +149,37 @@
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight('CAN_ACCESS_MANUAL_INPUT_CHRONO')"
-                            href="/chats"
+                            :href="getHref('/chats')"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Ручной ввод хронометража</a>
                         <a
                             v-if="hasRight('CAN_ACCESS_TECH')"
-                            href="/vehicles"
+                            :href="getHref('/vehicles')"
                             class="dropdown-item is-small"><i class="fas fa-car fa-fw"></i>&nbsp;
                             Транспортные средства</a>
                         <a
                             v-if="hasRight('CAN_ACCESS_PERSONS')"
-                            href="/staff"
+                            :href="getHref('/staff')"
                             class="dropdown-item is-small"><i class="fas fa-child fa-fw"></i>&nbsp;
                             Личный состав</a>
                         <a
                             v-if="hasRight('CAN_ACCESS_FIRE_DEPTS')"
-                            href="/schedules"
+                            :href="getHref('/schedules')"
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
                             Пожарные части</a>
                         <a
-                            href="/fire-department-checks"
+                            :href="getHref('/fire-department-checks')"
                             class="dropdown-item is-small"><i class="fas fa-check fa-fw"></i>&nbsp;
                             Проверка пожарных частей</a>
                         <a
                             v-if="hasRight('CAN_ACCESS_HYDRANT')"
-                            href="/hydrants"
+                            :href="getHref('/hydrants')"
                             target="_blank"
                             class="dropdown-item is-small"><i class="fas fa-eye-dropper fa-fw"></i>&nbsp;
                             Карта гидрантов</a>
                         <a
                             v-if="hasRight('CAN_ACCESS_SALVAGE')"
-                            href="/salvage"
+                            :href="getHref('/salvage')"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Сумма спасенного имущества</a>
                     </div>
@@ -196,7 +196,7 @@
                                 <div class="level-left">
                                     <a
                                         class="button is-bordered"
-                                        href="/reports/daily-reports/101">
+                                        :href="getHref('/reports/daily-reports/101')">
                                         <i class="fas fa-receipt fa-fw"></i>&nbsp;Суточный отчет
                                     </a>
                                 </div>
@@ -226,7 +226,7 @@
                                 <div class="level-left">
                                     <a
                                         class="button is-bordered"
-                                        href="/reports/daily-reports/112">
+                                        :href="getHref('/reports/daily-reports/112')">
                                         <i class="fas fa-receipt fa-fw"></i>&nbsp;Суточный отчет 112
                                     </a>
                                 </div>
@@ -258,7 +258,7 @@
                                               'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
                                               'WATER_CONSUMPTION_REPORT_SHOW'
                             )"
-                            href="/reports/analytics-spiasr"
+                            :href="getHref('/reports/analytics-spiasr')"
                             class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Аналитика СПиАСР
                         </a>
@@ -274,7 +274,7 @@
                                               'CAN_SEE_DAILY_REPORT',
                                               'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'
                             )"
-                            href="/reports/analytics101/"
+                            :href="getHref('/reports/analytics101/')"
                             class="dropdown-item is-small"><i class="fas fa-database"></i>
                             &nbsp; Суточные отчеты
                         </a>
@@ -290,7 +290,7 @@
                         <a
                             class="dropdown-item is-small"
                             v-if="hasRight('ANALYTICS112_SHOW')"
-                            href="/reports/112">
+                            :href="getHref('/reports/112')">
                         <i class="fas fa-database"></i>&nbsp; Аналитика ДЧС</a>
 
                         <!--<div-->
@@ -331,36 +331,36 @@
                             Оперативная информация</a>-->
                         <a
                             v-if="hasRight(23)"
-                            href="/reports/101/staff"
+                            :href="getHref('/reports/101/staff')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Отчет по ЛС</a>
                         <a
                             v-if="hasRight(24)"
-                            href="/reports/101/vehicles"
+                            :href="getHref('/reports/101/vehicles')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Отчет по технике</a>
 
                         <a
                             v-if="hasRight('SIREN_SPEECH_TECH_SHOW')"
-                            href="/reports/siren-speeches/"
+                            :href="getHref('/reports/siren-speeches/')"
                             class="dropdown-item is-small"><i class="fas fa-sad-cry"></i>
                             &nbsp; Данные по СРУ
                         </a>
                         <a
                             v-if="hasRight('CALL_INFO_SHOW')"
-                            href="/reports/call-infos/"
+                            :href="getHref('/reports/call-infos/')"
                             class="dropdown-item is-small"><i class="fas fa-amazon-pay"></i>
                             &nbsp; Информация по звонкам
                         </a>
                         <a
                             v-if="hasRight('ALERT_SYSTEM_CHECK_SHOW')"
-                            href="/reports/alert-system-checks/"
+                            :href="getHref('/reports/alert-system-checks/')"
                             class="dropdown-item is-small"><i class="fas fa-blender"></i>
                             &nbsp; Тех.проверка системы оповещения
                         </a>
 
                         <a
-                            href="/reports/queued-reports"
+                            :href="getHref('/reports/queued-reports')"
                             class="dropdown-item is-small"><i class="fas fa-list"></i>
                             &nbsp; Очередь отчетов
                         </a>
@@ -373,12 +373,12 @@
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight(21)"
-                            href="/information"
+                            :href="getHref('/information')"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Информация от служб взаимодействия</a>
                         <a
                             v-if="hasRight(22)"
-                            href="/emergency-situation"
+                            :href="getHref('/emergency-situation')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Оперативная информация</a>
                     </div>
@@ -388,14 +388,14 @@
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight(9)"
-                            href="/roadtrip/"
+                            :href="getHref('/roadtrip/')"
                             class="dropdown-item">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;
                             Путевые листы ПЧ
                         </a>
                         <a
                             v-if="hasRight(32)"
-                            href="/service-plans/"
+                            :href="getHref('/service-plans/')"
                             class="dropdown-item">
                             <i class="fas fa-archway fa-fw"></i>&nbsp;
                             Путевые листы служб взаимодействия
@@ -414,27 +414,30 @@
                     <div class="navbar-dropdown">
                         <a
                             v-if="hasRight(8)"
-                            href="/dictionaries"
+                            :href="getHref('/dictionaries')"
                             class="dropdown-item"><i class="fas fa-list-alt fa-fw"></i>&nbsp;Справочники</a>
                         <a
                             v-if="hasRight(7)"
-                            href="/admin/users"
+                            :href="getHref('/admin/users')"
                             class="dropdown-item"><i class="fas fa-user fa-fw"></i>&nbsp;Пользователи</a>
                         <a
                             v-if="hasRight(7)"
-                            href="/admin/messenger-permissions"
+                            :href="getHref('/admin/messenger-permissions')"
                             class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Разрешения мессенджера</a>
                         <a
                             v-if="hasRight(7)"
-                            href="/admin/roles"
+                            :href="getHref('/admin/roles')"
                             class="dropdown-item"><i class="fas fa-balance-scale fa-fw"></i>&nbsp;Роли</a>
                         <a
                             v-if="hasRight(7)"
-                            href="/admin/polygons"
+                            :href="getHref('/admin/polygons')"
                             class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Границы микроучастков</a>
                         <a
-                            href="/import"
+                            :href="getHref('/import')"
                             class="dropdown-item"><i class="fas fa-arrow-down fa-fw"></i>&nbsp;Импорт</a>
+                        <a
+                            :href="getHref('/translates')"
+                            class="dropdown-item"><i class="fas fa-list-alt fa-fw"></i>&nbsp;Переводы</a>
                     </div>
                 </div>
                 <div class="navbar-item">
@@ -453,64 +456,20 @@
                 </div>
             </div>
         </div>
-
-        <!--Карточка 101: прочие выезда-->
-        <div
-            class="modal"
-            :class="opened_modal101">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="modal-card-title">101 карточка</p>
-                    <button
-                        class="delete"
-                        aria-label="close"
-                        @click.prevent="toggleOpenModal101"></button>
-                </header>
-                <section class="modal-card-body">
-                    <div class="level">
-                        <div class="level-left">
-                            <a
-                                class="is-inline-block-widescreen is-block button is-primary"
-                                href="/card/add101-other-rides/">Прочие выезда</a>
-                        </div>
-                        <div class="level-right">
-                            <!--<a class="is-inline-block-widescreen is-block button is-primary" href="/card/add101/0/drill/">Учения</a>-->
-                            <a
-                                class="is-inline-block-widescreen is-block button is-primary"
-                                href="/card/add101-drill-rides/">Учения</a>
-                        </div>
-                    </div>
-                </section>
-                <footer class="modal-card-foot">
-                    <!--<button class="button is-success">Save changes</button>-->
-                    <!--<button class="button">Cancel</button>-->
-                </footer>
-            </div>
-        </div>
     </nav>
 </template>
 
 <script>
-import axios from 'axios';
 import rights from '../scripts/rights';
 function getLocalRights() {
     return rights.rightsList();
-
-    // todo: depricated: moved to rights.js
-    /* let rights = window.localStorage.getItem('preloaded_rights');
-    if (rights !== undefined) {
-        rights = JSON.parse(rights);
-    } else {
-        rights = [];
-    }
-    return rights; */
 }
 export default {
     name: 'Navbar',
     data: function () {
         return {
             opened: false,
+            language: '',
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             rights: getLocalRights()
         };
@@ -519,15 +478,14 @@ export default {
         menuClass: function () {
             return this.opened ? 'is-active' : '';
         },
-        opened_modal101: function () {
-            return this.opened_modal101_ ? 'is-active' : '';
-        }
     },
     methods: {
         toggleOpen: function () {
             this.opened = !this.opened;
         },
-
+        getHref(url) {
+            return this.language + url;
+        },
         logout: function () {
             document.getElementById('logout').submit();
         },
@@ -547,6 +505,7 @@ export default {
 
     },
     mounted: function () {
+        this.language = window.language === 'ru' ? '' : '/' + window.language;
         // тащим права из базы
         let rightsPromise = rights.getRights();
         rightsPromise.then((list) => {

@@ -1,0 +1,1 @@
+export default {"test_key":"kk text"}
