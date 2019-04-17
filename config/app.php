@@ -164,8 +164,8 @@ return [
         LaravelFCM\FCMServiceProvider::class,
         Laravel\Scout\ScoutServiceProvider::class,
         ScoutEngines\Elasticsearch\ElasticsearchProvider::class,
-//        Barryvdh\TranslationManager\ManagerServiceProvider::class,
-//        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class
+        Barryvdh\TranslationManager\ManagerServiceProvider::class,
+        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class
     ],
 
     /*
@@ -218,7 +218,7 @@ return [
         'Twig' => TwigBridge\Facade\Twig::class,
         'FCM'      => LaravelFCM\Facades\FCM::class,
         'FCMGroup' => LaravelFCM\Facades\FCMGroup::class,
-//        'LaravelLocalization' => Mcamara\LaravelLocalization\Facades\LaravelLocalization::class,
+        'LaravelLocalization' => Mcamara\LaravelLocalization\Facades\LaravelLocalization::class,
     ],
 
 ];
