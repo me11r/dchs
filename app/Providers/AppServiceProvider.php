@@ -52,11 +52,11 @@ class AppServiceProvider extends ServiceProvider
 
         view()->share('protocol', $request->isSecure() ? 'https' : 'http');
 
-//        view()->composer('*', function ($view) {
-//            $view->with([
-//                'language' => LaravelLocalization::getCurrentLocale()
-//            ]);
-//        });
+        view()->composer('*', function ($view) {
+            $view->with([
+                'language' => LaravelLocalization::getCurrentLocale()
+            ]);
+        });
     }
 
     /**

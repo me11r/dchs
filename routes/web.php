@@ -5,17 +5,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/test/fcm', 'TestController@fcm')->name('test.fcm');
 
 Route::post('logout', 'Auth\LoginController@postLogout')->name('logout');
-//Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeViewPath']], function () {
+Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeViewPath']], function () {
     Route::get('login', 'Auth\LoginController@getIndex')->name('login');
     Route::post('login', 'Auth\LoginController@postIndex')->name('post-login');
     Route::get('auth/password-reset', 'Auth\ResetPasswordController@getResetPassword')->name('password.request');
-//});
+});
 Route::get('event', function () {
     event(new \App\Events\ReportUpdated());
 });
 
 Route::group(['middleware' => ['auth','check.blocked']], function () {
-//    Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeViewPath']], function () {
+    Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeViewPath']], function () {
 
         Route::group(['prefix' => 'ajax'], function () {
             Route::get('street/{area_id?}', 'AjaxController@findStreet')->where('area_id', '[0-9]+');
@@ -494,5 +494,5 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
 
         Route::get('/', 'HomeController@getIndex')->name('home');
 
-//    });
+    });
 });
