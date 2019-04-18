@@ -9,6 +9,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
 class HandleQueuedReport implements ShouldQueue
 {
@@ -35,6 +37,13 @@ class HandleQueuedReport implements ShouldQueue
      */
     public function handle(QueuedReportManager $reportManager)
     {
+        set_time_limit(3600);
+        DB::connection()->disableQueryLog();
+
+        if (App::environment('local')) {
+            ini_set('memory_limit','1024M');
+        }
+
         $reportManager->setQueuedReport(QueuedReport::find($this->queuedReportId))->handle();
     }
 }
