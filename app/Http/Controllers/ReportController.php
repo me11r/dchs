@@ -428,7 +428,6 @@ class ReportController extends AuthorizedController
     //Отчет (падение веток и деревьев, подтопления)
     public function getReport112BranchesExport(Request $request)
     {
-        $f = $request->all();
         $dateStart = Carbon::parse($request->get('date_start'))->format('Y-m-d');
         $dateEnd = Carbon::parse($request->get('date_end'))->format('Y-m-d');
         $emergency_name_id = $request->emergency_name_id;
@@ -436,6 +435,7 @@ class ReportController extends AuthorizedController
         $incident_type_id = $request->incident_type_id === 'null' ? null : $request->incident_type_id;
         $reasonBranchesId = $request->reasonBranchesId === 'null' ? null : $request->reasonBranchesId;
         $reasonFloodingId = $request->reasonFloodingId === 'null' ? null : $request->reasonFloodingId;
+        $address = $request->addressSearch === 'null' ? null : $request->addressSearch;
 
         $dateStartHuman = Carbon::parse($request->get('date_start'))->format('d.m.Y');
         $dateEndHuman = Carbon::parse($request->get('date_end'))->format('d.m.Y');
@@ -463,6 +463,11 @@ class ReportController extends AuthorizedController
                     else {
                         $q->whereNotNull('additional_incident_type_id');
                     }
+                }
+            })
+            ->where(function ($address_q) use ($address) {
+                if($address) {
+                    $address_q->where('location', "like", "%{$address}%");
                 }
             })
             ->skipNullValue('emergency_name_id',$emergency_name_id)
@@ -1097,8 +1102,20 @@ class ReportController extends AuthorizedController
 
         $data['records'] = Card112::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->skipNullValue('city_area_id',$cityAreaId)
-            ->skipNullValue('emergency_name_id',$emergency_name_id);
+            ->skipNullValue('emergency_name_id',$emergency_name_id)
+            ->where(function ($address_q) use ($request){
+                if ($request->addressSearch) {
+                    $address_q->where('location', 'like', "%{$request->addressSearch}%");
+                }
+            })
+        ;
+
         $data['records101'] = Ticket101::whereBetween('custom_created_at', [$dateFrom, $dateTo])
+            ->where(function ($address_q) use ($request){
+                if ($request->addressSearch) {
+                    $address_q->where('location', 'like', "%{$request->addressSearch}%");
+                }
+            })
             ->skipNullValue('city_area_id',$cityAreaId);
 
         if($incidentTypeId) {
@@ -1152,6 +1169,7 @@ class ReportController extends AuthorizedController
         $data['dateTo'] = $dateTo;
         $data['incidentTypes'] = IncidentType::all();
         $data['tripResults'] = TripResult::all();
+
         Cache::put('report112_emergency_data', $data, 3600);
 
         if($request->ajax()) {

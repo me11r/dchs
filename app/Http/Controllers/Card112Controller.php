@@ -134,6 +134,7 @@ class Card112Controller extends Controller
             ->with('flooding_places', FloodingPlace::all())
             ->with('flooding_reasons', FloodingReason::all())
             ->with('avalanche_types', AvalancheType::all())
+            ->with('branchFallReasons', BranchFallReason::all())
             ->with('elevator_emergency_types', ElevatorEmergencyType::all())
             ->with('disease_types', DiseaseType::all())
             ->with('currentTabIndex', 0)

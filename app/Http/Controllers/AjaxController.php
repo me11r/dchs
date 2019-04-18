@@ -153,7 +153,6 @@ class AjaxController extends AuthorizedController
                     ->whereNotNull('dispatch_time');
             })
             ->has('ticket')
-//            ->orHas('ticket101_other')
             ->get();
 
         if(!$trips->count()) {
@@ -202,6 +201,7 @@ class AjaxController extends AuthorizedController
     {
         $service = (Auth::user())->service_type;
         $canRecieve = Auth::user()->hasRight(Right::CAN_RECEIVE_SERVICE_PLAN);
+
         if ($service === null || !$canRecieve) {
             return response()->json(['plans' => [], 'service_id' => 0], 200);
         }

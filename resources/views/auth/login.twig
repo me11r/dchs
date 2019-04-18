@@ -9,17 +9,20 @@
                 <div class="box auth">
                     <div class="level">
                         <div class="level-left">
-                            <h5 class="title">Вход в систему</h5>
+                            <h5 class="title">{{ trans('auth.logInSystem') }}</h5>
                         </div>
                         <div class="level-right">
-                            <!--<a class="button is-text is-link is-inverted" href="{{ url('?') }}">Русский</a>&nbsp;/&nbsp;-->
-                            <a class="button is-text is-link is-inverted" href="{{ url('?') }}">Қазақша</a>
+                            {% if language == 'kk' %}
+                                <a class="button is-text is-link is-inverted" href="{{ url('/') }}">Русский</a>
+                            {% else %}
+                                <a class="button is-text is-link is-inverted" href="{{ url('/kk') }}">Қазақша</a>
+                            {% endif %}
                         </div>
                     </div>
                     <form role="form" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
                         <div class="field">
-                            <label for="email" class="label">Электронная почта</label>
+                            <label for="email" class="label">{{ trans('auth.email') }}</label>
                             <input id="email" type="email" class="input  {{ errors.has('email') ? ' is-danger' : '' }}" name="email"
                                    value="{{ old('email') }}" required autofocus>
                             {% if errors.has('email') %}
@@ -29,7 +32,7 @@
                             {% endif %}
                         </div>
                         <div class="field">
-                            <label for="password" class="label">Пароль</label>
+                            <label for="password" class="label">{{ trans('auth.password') }}</label>
                             <input id="password" type="password" class="input {{ errors.has('password') ? 'is-danger' : '' }}" name="password" required>
                             {% if errors.has('password') %}
                                 <span class="help is-danger">
@@ -38,15 +41,15 @@
                             {% endif %}
                         </div>
                         <div class="field">
-                        <label for="remember" class="checkbox label">
-                            <input id="remember" class="checkbox" type="checkbox" name="remember" {{ old('remember') ? 'checking' : '' }}>
-                                Запомнить вход
+                            <label for="remember" class="checkbox label">
+                                <input id="remember" class="checkbox" type="checkbox" name="remember" {{ old('remember') ? 'checking' : '' }}>
+                                {{ trans('auth.remember') }}
                             </label>
                         </div>
                         <p></p>
                         <div class="field">
                             <button type="submit" class="button is-primary is-fullwidth">
-                                <i class="fas fa-sign-in"></i> Вход
+                                <i class="fas fa-sign-in"></i> {{ trans('auth.logIn') }}
                             </button>
                         </div>
                     </form>

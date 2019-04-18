@@ -2,6 +2,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\BaseModel;
 use App\Ticket101;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\TripResult withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Dictionary\TripResult withoutTrashed()
  */
-class TripResult extends Model
+class TripResult extends BaseModel
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -37,6 +38,11 @@ class TripResult extends Model
     protected $fillable = [
         'name',
         'show_in_daily_report101',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
+        'show_in_daily_report101' => 'Участвует в ежедневном отчете 101',
     ];
 
     public function cards101()

@@ -99,6 +99,10 @@
                     </option>
                 </select>
             </div>
+            <div class="field">
+                <p>Адрес</p>
+                <input type="text" v-model="addressSearch" class="input">
+            </div>
         </div>
 
         <div class="panel">
@@ -169,6 +173,7 @@
                 tripResultId: 0,
                 emergencyNameId: null,
                 cityAreaId: null,
+                addressSearch: null,
             }
         },
         computed: {
@@ -189,6 +194,7 @@
                         tripResultId: this.tripResultId,
                         emergency_name_id: this.emergencyNameId,
                         city_area_id: this.cityAreaId,
+                        addressSearch: this.addressSearch,
                     }
                 }).then((r) => {
                     this.records_ = r.data.records;
@@ -212,6 +218,9 @@
                 this.changeDate();
             },
             'cityAreaId'() {
+                this.changeDate();
+            },
+            'addressSearch'() {
                 this.changeDate();
             },
         }

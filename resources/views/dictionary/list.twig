@@ -13,7 +13,7 @@
             </div>
             <div>
                 <form action="" method="get">
-                    <div class="field   has-addons">
+                    <div class="field has-addons">
                         <div class="control is-expanded">
                             <input type="search" class="input" name="search" value="{{ search ?? null }}" id="search-input">
                         </div>
@@ -38,9 +38,9 @@
                 <tbody>
                 {% for record in dictionary %}
                     <tr>
-                        <td>{{ record.id }}</td>
-                        {% for field in fields %}
-                            <td class="max-width: 20%">{{ attribute(record, field) }}</td>
+                        <td>{{ loop.index }}</td>
+                        {% for name, field in fields %}
+                            <td class="max-width: 20%">{{ attribute(record, name) }}</td>
                         {% endfor %}
                         <td>
                             <form method="POST"

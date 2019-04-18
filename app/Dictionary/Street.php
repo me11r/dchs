@@ -9,6 +9,7 @@
 namespace App\Dictionary;
 
 
+use App\Models\BaseModel;
 use App\Models\CityMicroArea;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $city_micro_area_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Dictionary\Street whereCityMicroAreaId($value)
  */
-class Street extends Model
+class Street extends BaseModel
 {
     protected $table = 'streets';
     public $timestamps = false;
@@ -35,6 +36,10 @@ class Street extends Model
         'name',
         'city_area_id',
         'city_micro_area_id',
+    ];
+
+    public $attributeNames = [
+        'name' => 'Наименование',
     ];
 
     public function area()
