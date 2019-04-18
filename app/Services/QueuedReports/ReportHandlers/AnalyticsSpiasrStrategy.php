@@ -20,8 +20,6 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
      */
     public function saveToFile(QueuedReport $queuedReport, $reportData): string
     {
-        ini_set('memory_limit', 1024 . 'M');
-
         $exportService = new Ticket101PeriodExcelExport($reportData);
         $writer = $exportService->getXlsWriter();
 
