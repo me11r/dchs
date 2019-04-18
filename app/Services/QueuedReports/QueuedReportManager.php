@@ -53,6 +53,8 @@ class QueuedReportManager
         if ($queuedReport->attempts >= self::ATTEMPTS){
             $queuedReport->error_text = 'При генерации отчета произошла непредвиденная ошибка.';
             $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::ERROR)->id;
+            $queuedReport->save();
+
             $this->makeNotifications($this->getErrorMessage());
         } else {
             $queuedReport->queue_status_id = QueueStatus::getBySlug(QueueStatusType::IN_PROGRESS)->id;
