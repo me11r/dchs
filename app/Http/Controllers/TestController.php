@@ -6,28 +6,37 @@ use App\EventInfoArrived;
 use App\Jobs\SendFcmMessages;
 use App\Models\QueuedReport;
 use App\Services\QueuedReports\QueuedReportManager;
+use App\Services\QueuedReports\ReportHandlers\AnalyticsSpiasrStrategy;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Ticket101;
 use Carbon\Carbon;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
 class TestController extends Controller
 {
-    public function fcm(Request $request, QueuedReportManager $reportManager)
+    public function fcm()
     {
-        dd(QueuedReport::find(86)->getData());
+        $strategy = new AnalyticsSpiasrStrategy();
+        $result = $strategy->getResult('2019-01-01', '2019-01-31');
+
+        $xls = new Ticket101PeriodExcelExport($result);
+
+        dd('123');
+//        dd(QueuedReport::find(86)->getData());
 //        $reportManager->setQueuedReport(QueuedReport::find(86))->handle();
 
-//        $reportData = Ticket101::getDetailedStat("2019-01-01", "2019-04-01", null, null, null);
+//        $reportData = Ticket101::getDetailedStat("2019-03-01", "2019-03-04", null, null, null);
 //
 //        $exportService = new Ticket101PeriodExcelExport($reportData);
 //        $writer = $exportService->getXlsWriter();
 //
-//        $writer->save('C:\js_projects\emergency-management\test.xls');
+//        $writer->save('test.xls');
 //        dd($result);
 //        $gdzsId = Cache::rememberForever('gdzs_event_info_arrived_id', function (){
 //            return EventInfoArrived::where('name', '=', 'ГДЗС')->first()->id;
@@ -52,4 +61,5 @@ class TestController extends Controller
 //
 //        return View::make('test.fcm', ['request' => $request->all()]);
     }
+
 }

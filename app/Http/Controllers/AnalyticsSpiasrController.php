@@ -53,7 +53,7 @@ class AnalyticsSpiasrController extends Controller
         $year = now()->format('Y');
 
         /** @var Collection $itemsByTheYear */
-        $itemsByTheYear = Ticket101::whereYear('created_at', $year)->get();
+        $itemsByTheYear = Ticket101::whereYear('created_at', $year)->get(['created_at', 'drill_type_id', 'drill_type_id', 'object_classification_id']);
 
         foreach ($drillTypes as $type) {
 
