@@ -19,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
-class Ticket101PeriodExcelExport
+class Ticket101PeriodExcelExportBackup
 {
 
     use CommonExportTools;
@@ -92,42 +92,48 @@ class Ticket101PeriodExcelExport
         $this->setCell($sheet, 'Время следования', "A5", "A5", self::HStyle);
 
         $this->setCell($sheet, 'До 5 минут', "A6", "A6", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['on_way_totals']['less_5'], "B6", "B6", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('on_way_category','less_5'), "B6", "B6", self::HStyle);
 
         $this->setCell($sheet, 'До 10 минут', "A7", "A7", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['on_way_totals']['less_10'], "B7", "B7", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('on_way_category','less_10'), "B7", "B7", self::HStyle);
 
         $this->setCell($sheet, 'Более 10 минут', "A8", "A8", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['on_way_totals']['more_10'], "B8", "B8", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('on_way_category','more_10'), "B8", "B8", self::HStyle);
+
 
 
         $sheet->mergeCells('D5:E5');
         $this->setCell($sheet, 'Время ликвидации', "D5", "D5", self::HStyle);
 
         $this->setCell($sheet, 'До 15 минут', "D6", "D6", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['liqv_totals']['less_15'], "E6", "E6", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('liqv_category','less_15'), "E6", "E6", self::HStyle);
 
         $this->setCell($sheet, 'До 30 минут', "D7", "D7", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['liqv_totals']['less_30'], "E7", "E7", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('liqv_category','less_30'), "E7", "E7", self::HStyle);
 
         $this->setCell($sheet, 'До 1 часа', "D8", "D8", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['liqv_totals']['less_60'], "E8", "E8", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('liqv_category','less_60'), "E8", "E8", self::HStyle);
 
         $this->setCell($sheet, 'До 2 часов', "D9", "D9", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['liqv_totals']['less_120'], "E9", "E9", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('liqv_category','less_120'), "E9", "E9", self::HStyle);
 
         $this->setCell($sheet, 'Более 2 часов', "D10", "D10", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['liqv_totals']['more_120'], "E10", "E10", self::HStyle);
+        $this->setCell($sheet, $this->filterByCount('liqv_category','more_120'), "E10", "E10", self::HStyle);
+
 
 
         $sheet->mergeCells('G5:H5');
         $this->setCell($sheet, 'Звенья ГДЗС', "G5", "G5", self::HStyle);
 
         $this->setCell($sheet, 'одним звеном', "G6", "G6", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['elements_of_gdzs']['one'], "H6", "H6", self::HStyle);
+        $this->setCell($sheet, $this->stat->filter(function ($q) {
+            return $q->gdzs_count_type == 'one';
+        })->sum('gdzs_count_time'), "H6", "H6", self::HStyle);
 
         $this->setCell($sheet, 'двумя и более', "G7", "G7", self::HStyle);
-        $this->setCell($sheet, $this->stat['totals']['elements_of_gdzs']['many'], "H7", "H7", self::HStyle);
+        $this->setCell($sheet, $this->stat->filter(function ($q) {
+            return $q->gdzs_count_type == 'many';
+        })->sum('gdzs_count_time'), "H7", "H7", self::HStyle);
 
         $rowIndex = $startRowIndex;
         $headers = [
@@ -172,43 +178,64 @@ class Ticket101PeriodExcelExport
             $sheet->getColumnDimension($item)->setAutoSize(true);
         }
 
-        foreach ($this->stat['items'] as $item) {
+        foreach ($this->stat as $stat) {
             $arr = [
-                $item->custom_created_at_date,
-                $item->custom_created_at_hours,
-                $item->caller_name,
-                $item->caller_phone,
-                $item->city_area_name,
-                $item->location,
-                $item->object_name,
-                $item->result_fire_level_name,
-                $item->liquidation_method_name,
-                $item->first_result_arrived_time,
-                $item->loc_time,
-                $item->liqv_time,
-                $item->loc_time_total,
-                $item->gdzs_count,
-                $item->event_info_arrived_names,
-                $item->rescued_count,
-                $item->evac_count,
-                $item->gpt_burns_count,
-                $item->total_death_count,
-                $item->loc_time_total,
-                $item->liqv_time_total,
-                $item->trip_result_name,
-                $item->max_square,
-                $item->storey_count
+                Carbon::parse($stat->custom_created_at)->format('d.m.Y'),//$stat->created_at->format('d.m.Y'),
+                Carbon::parse($stat->custom_created_at)->format('H:i'),//$stat->created_at->format('H:i'),
+                $stat->caller_name,
+                $stat->caller_phone,
+                @$stat->city_area->name,
+                $stat->location,
+                $stat->object_name,
+                @$stat->result_fire_level->name,
+                @$stat->liquidation_method->name,
+                $stat->first_arrived_time,
+                $stat->loc_time,
+                $stat->liqv_time,
+                $stat->loc_time_total,
+//                $stat->chronologies_trucks()->get()->count() ? implode($stat->chronologies_trucks()->get()->map(function ($q) {
+//                    if($q->event_info_arrived) {
+//                        return "Тип {$q->event_info_arrived->name}; Количество: {$q->quantity}";
+//                    }
+//                })->toArray()) : null,
+                $stat->gdzs_count,
+//                $stat->chronologies_trucks()->get()->count() ? implode($stat->chronologies_trucks()->get()->map(function ($q) {
+//                    if($q->event_info_arrived) {
+//                        return "Тип {$q->event_info_arrived->name}; Количество: {$q->working_time}";
+//                    }
+//                })->toArray()) : null,
+                $stat->chronologies()->get()->count() ? implode($stat->chronologies()->get()->map(function ($q) {
+                    if($q->event_info_arrived) {
+                        return "Тип {$q->event_info_arrived->name}; Количество: {$q->working_time}";
+                    }
+                })->toArray()) : null,
+                $stat->rescued_count,
+                $stat->evac_count,
+                $stat->gpt_burns_count,
+                $stat->people_death_count + $stat->children_death_count,
+                $stat->loc_time_total,
+                $stat->liqv_time_total,
+                @$stat->trip_result->name,
+                $stat->max_square,
+                $stat->storey_count,
             ];
 
             $sheet->fromArray($arr, null, "A$rowIndex");
 
-            $url = env('APP_URL','http://emergency.iteamsolutions.kz')."/card/add101/{$item->id}#return=0";
+            $url = env('APP_URL','http://emergency.iteamsolutions.kz')."/card/add101/{$stat->id}#return=0";
 
             $sheet->getCell("F{$rowIndex}")->setValue($arr[5])->getHyperlink()->setUrl($url);
 
             $sheet->getStyle("A$rowIndex:X$rowIndex")->applyFromArray(self::HStyle);
             $rowIndex++;
         }
+    }
+
+    private function filterByCount($field, $value)
+    {
+        return $this->stat->filter(function ($q) use ($field, $value) {
+            return $q->$field === $value;
+        })->count();
     }
 
     /**

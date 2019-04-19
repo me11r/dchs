@@ -17,14 +17,6 @@
                             class="button is-primary"
                             @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
                     </div>
-                    <!--                    <div class="level-right has-text-right">-->
-                    <!--                        <button-->
-                    <!--                            @click.prevent="exportXls"-->
-                    <!--                            class="button is-primary"-->
-                    <!--                        >-->
-                    <!--                            <i class="fas fa-print"></i>&nbsp;Сохранить в XLS-->
-                    <!--                        </button>-->
-                    <!--                    </div>-->
                 </div>
                 <br>
                 <form>
@@ -71,24 +63,6 @@
                         </select>
                     </div>
                     <div class="field">
-                        <h4 class="title">Время следования</h4>
-
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>до 5 минут</th>
-                                    <th>до 10 минут</th>
-                                    <th>более 10 минут</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td
-                                        :key="`time_on_way_summary_${item.type}`"
-                                        v-for="item in time_onway_summary">{{ item.value }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
                         <label for="time_onway">Время следования:</label>
                         <select
                             class="select"
@@ -103,25 +77,6 @@
                         </select>
                     </div>
                     <div class="field">
-                        <h4 class="title">Время ликвидации</h4>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>до 15 минут</th>
-                                    <th>до 30 минут</th>
-                                    <th>до 1 часа</th>
-                                    <th>до 2 часов</th>
-                                    <th>более 2 часов</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td
-                                        :key="`time_liqv_summary${item.type}`"
-                                        v-for="item in time_liqv_summary">{{ item.value }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
                         <label for="time_liqv">Время ликвидации:</label>
                         <select
                             class="select"
@@ -148,129 +103,18 @@
                         label="Конец периода"
                     />
                     <div class="field">
-                        <h4 class="title">Звенья ГДЗС</h4>
-
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>одним звеном</th>
-                                    <th>двумя и более</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td
-                                        :key="`time_gdzs_${item.type}`"
-                                        v-for="item in time_gdzs_summary">{{ item.value }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="field">
-                        <!--                        <button-->
-                        <!--                            class="button is-info"-->
-                        <!--                            @click.prevent="post_data">Поиск</button>-->
-
                         <button
+                            style="margin-top:20px"
                             class="button is-info"
-                            @click.prevent="sendReportToQueue">Отправить в обработку</button>
-                    </div>
-                    <div
-                        class="field"
-                        v-if="false">
-                        <h3 class="title">Общее количество выездов: {{ summaryFiltered.length }}</h3>
-                    </div>
-                    <div
-                        v-if="false"
-                        class="tbl"
-                        style="overflow-x: scroll;">
-                        <table class="formation-record-table" >
-                            <thead>
-                                <tr>
-                                    <td>Дата выезда</td>
-                                    <td>Время</td>
-                                    <td>ФИО</td>
-                                    <td>Телефон</td>
-                                    <td>Район города</td>
-                                    <td>Адрес</td>
-                                    <td>Объект пожара</td>
-                                    <td>Участники тушения</td> <!--Из "хронологии"-->
-                                    <td>Ликвидировано стволами</td> <!--Из "хронологии"-->
-                                    <td>Время в пути</td> <!--время прибытия - время выезда-->
-                                    <td>Локализация</td> <!--фактическое время Локализации (хронология)-->
-                                    <td>Ликвидация</td> <!--фактическое время Ликвидации (хронология)-->
-                                    <td>Время тушения</td> <!--время от прибытия до локализации-->
-                                    <td>Звенья ГДЗС</td> <!--Кол-во ГДЗС (хронология)-->
-                                    <td>Время работы ГДЗС</td> <!--из хронологии-->
-                                    <td>Спасено людей</td> <!--Итоги выезда-->
-                                    <td>Эвакуировано людей</td> <!--Итоги выезда-->
-                                    <td>Травмы</td> <!--Итоги выезда-->
-                                    <td>Гибель</td> <!--Итоги выезда-->
-                                    <td>Затраченное время на локализацию</td> <!--время локализации - время прибытия-->
-                                    <td>Затраченное время на ликвидацию</td> <!--время ликвидации - время прибытия-->
-                                    <td>Результат выезда</td> <!--Справочник Результат выезда-->
-                                    <td>Площадь горения</td> <!--Итоги выезда-->
-                                    <td>Этажность</td> <!--Путевка-->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(item, idx) in summaryFiltered"
-                                    :key="`rpt_smm_${idx}`">
-
-                                    <td>{{ item.custom_created_at|dateFilter('DD.MM.YYYY') }}</td>
-                                    <td>{{ item.custom_created_at|dateFilter('HH:mm') }}</td>
-                                    <td>{{ item.caller_name }}</td>
-                                    <td>{{ item.caller_phone }}</td>
-                                    <td>{{ item.city_area ? item.city_area.name : '' }}</td>
-                                    <td>{{ item.location }}</td>
-                                    <td>{{ item.object_name }}</td>
-                                    <td>{{ item.result_fire_level ? item.result_fire_level.name : '' }}</td> <!--Уточненный ранг пожара-->
-                                    <td>{{ item.liquidation_method ? item.liquidation_method.name : '' }}</td> <!--Ликвидация достигнута-->
-                                    <td>{{ item.on_way_time }}</td>
-                                    <td>{{ item.loc_time }}</td>
-                                    <td>{{ item.liqv_time }}</td>
-                                    <td>{{ item.loc_time_total }}</td>
-<!--                                    <td>-->
-<!--                                        <p-->
-<!--                                            v-for="(chronology, idx) in item.chronologies"-->
-<!--                                            v-if="chronology.event_info_arrived_id !== null && chronology.event_info_arrived.name !== 'ГДЗС'"-->
-<!--                                            :key="`chr_qnt_${idx}`">-->
-<!--                                            Тип {{ chronology.event_info_arrived.name }}-->
-<!--                                            Количество: {{ chronology.quantity }}<br>-->
-<!--                                        </p>-->
-<!--                                    </td> &lt;!&ndash;СТВОЛЫ&ndash;&gt;-->
-                                    <td>{{ item.gdzs_count }}</td> <!--Звенья ГДЗС-->
-<!--                                    <td>-->
-<!--                                        <p-->
-<!--                                            v-for="(chronology, idx) in item.chronologies"-->
-<!--                                            v-if="chronology.event_info_arrived_id !== null && chronology.event_info_arrived.name !== 'ГДЗС'"-->
-<!--                                            :key="`chr_woring_time_${idx}`">-->
-<!--                                            Тип {{ chronology.event_info_arrived.name }}-->
-<!--                                            Количество: {{ chronology.working_time }}<br>-->
-<!--                                        </p>-->
-<!--                                    </td> &lt;!&ndash;Время работы стволов&ndash;&gt;-->
-                                    <td>
-                                        <p
-                                            v-for="(chronology, idx) in item.chronologies"
-                                            v-if="chronology.event_info_arrived_id !== null && chronology.event_info_arrived.name === 'ГДЗС'"
-                                            :key="`chr_woring_time_gdzs_${idx}`">
-                                            Тип {{ chronology.event_info_arrived.name }}
-                                            Количество: {{ chronology.working_time }}<br>
-                                        </p>
-                                    </td> <!--Время работы ГДЗС-->
-                                    <td>{{ item.rescued_count }}</td>
-                                    <td>{{ item.evac_count }}</td>
-                                    <td>{{ item.gpt_burns_count }}</td>
-                                    <td>{{ item.people_death_count + item.children_death_count }}</td>
-                                    <td>{{ item.loc_time_total }}</td> <!--Затраченное время на локализацию--> <!--время локализации - время прибытия-->
-                                    <td>{{ item.liqv_time_total }}</td> <!--Затраченное время на ликвидацию--> <!--время ликвидации - время прибытия-->
-                                    <td>{{ item.trip_result ? item.trip_result.name : '' }}</td>
-                                    <td>{{ item.max_square }}</td>
-                                    <td>{{ item.storey_count }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            :disabled="inProgress"
+                            @click.prevent="sendReportToQueue">
+                            <template v-if="inProgress">
+                                <i class="fas fa-spinner fa-pulse"></i> &nbsp; Отправка...
+                            </template>
+                            <template v-else>
+                                Отправить в обработку
+                            </template>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -356,7 +200,8 @@ export default {
                 {type: 'one', value: ''},
                 {type: 'many', value: ''}
             ],
-            loadingComponent: null
+            loadingComponent: null,
+            inProgress: false
         };
     },
     methods: {
@@ -400,6 +245,7 @@ export default {
             const dateStart = self.date_begin_ ? moment(self.date_begin_).format('YYYY-MM-DD') : '';
             const dateEnd = self.date_end_ ? moment(self.date_end_).format('YYYY-MM-DD') : '';
 
+            this.inProgress = true;
             QueuedReportService
                 .RegisterToQueue(
                     dateStart,
@@ -416,6 +262,7 @@ export default {
                     }
                 )
                 .then((response) => {
+                    this.inProgress = false;
                     const result = response.data.result;
                     if (result) {
                         this.$snackbar.open({
@@ -428,6 +275,13 @@ export default {
                             type: 'is-danger'
                         });
                     }
+                })
+                .catch(() => {
+                    this.inProgress = false;
+                    this.$snackbar.open({
+                        message: 'Во время постановки в очередь произошла ошибка',
+                        type: 'is-danger'
+                    });
                 });
         }
         // post_data() {

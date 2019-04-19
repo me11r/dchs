@@ -11,7 +11,9 @@ use App\NormType;
 use App\ObjectClassification;
 use App\RideType;
 use App\Ticket101;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -49,12 +51,17 @@ class AnalyticsSpiasrController extends Controller
         });
 
         $year = now()->format('Y');
-        $itemsByTheYear = Ticket101::whereYear('created_at', $year);
+
+        /** @var Collection $itemsByTheYear */
+        $itemsByTheYear = Ticket101::whereYear('created_at', $year)->get(['created_at', 'drill_type_id', 'drill_type_id', 'object_classification_id']);
 
         foreach ($drillTypes as $type) {
 
             foreach (range(1, 12) as $month) {
-                $itemsByTheMonth = $itemsByTheYear->whereMonth('created_at', $month);
+                $date = Carbon::create($year, $month);
+                $itemsByTheMonth = $itemsByTheYear
+                    ->where('created_at', '>=', $date->format('Y-m-d'))
+                    ->where('created_at', '<=', $date->addMonth()->format('Y-m-d'));
 
                 $data['counts'][$type->name]['per_month'][$month] = $itemsByTheMonth
                     ->where('drill_type_id',$type->id)

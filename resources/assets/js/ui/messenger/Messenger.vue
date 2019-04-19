@@ -107,7 +107,6 @@ export default {
 
     },
     mounted: function() {
-
         rights.getMessengerPermissions();
 
         evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
@@ -217,7 +216,7 @@ export default {
             }
             .messenger-body {
                 display: flex;
-                max-height: 100%;
+                max-height: 94%;
                 height: 100%;
             }
         }

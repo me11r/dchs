@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\QueueStatusType;
 use App\Services\QueuedReports\QueuedReportManager;
-use App\Services\QueuedReports\ReportsCacheManager;
+use App\Services\QueuedReports\ReportsCacheService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * App\Models\QueuedReport
@@ -57,8 +60,7 @@ class QueuedReport extends Model
      * @var array
      */
     protected $appends = [
-        'file_name',
-        'data'
+        'file_name'
     ];
 
     /**
@@ -89,12 +91,22 @@ class QueuedReport extends Model
         return Arr::last(explode(DIRECTORY_SEPARATOR, $this->file_path));
     }
 
-    public function getDataAttribute()
+    /**
+     * @return array|mixed
+     * @throws \App\Services\QueuedReports\Exceptions\ReportHandlerNotFound
+     */
+    public function getData()
     {
-        /** @var ReportsCacheManager $cacheManager */
-        $cacheManager = app()->make(ReportsCacheManager::class);
+        if (App::environment('local')) {
+            ini_set('memory_limit','1024M');
+        }
 
-        return $this->cache_hash_key ? $cacheManager->get($this->cache_hash_key, []) : [];
+        $endedStatusId = Cache::rememberForever('queue_ended_status_id', function () {
+            return QueueStatus::getBySlug(QueueStatusType::ENDED)->id;
+        });
+
+        return $this->cache_hash_key && $this->queue_status_id === $endedStatusId ?
+            (app(QueuedReportManager::class))->setQueuedReport($this)->getReportData() : [];
     }
 
 }
