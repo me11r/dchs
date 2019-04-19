@@ -40,7 +40,7 @@
                             <td>{{ item.fireDepartment.name ?? '' }}</td>
                             <td>{{ item.value }}</td>
                             <td>
-                                {% if (user.currentRole() == 'dispatcher_pch') %}
+                                {% if user.anyRole(['admin','dispatcher_pch']) %}
                                     <div class="field is-grouped">
                                     <a class="button is-basic is-small" href="{{ route('salvage.edit', {'id':item.id}) }}">
                                         <i class="fas fa-edit"></i>&nbsp;Редактировать</a>

@@ -195,16 +195,7 @@
                             <!--Отделения-->
                             <td>
                                 <p v-for="i in formReserve[department.id]">
-                                    <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status === 'reserve')">-->
                                     {{ i.tech.reserve }} <span class="small">Р</span>
-
-                                    <!--<label>
-                                        <input @change="selectToSend($event, i.id)"
-                                               :name="`departments_to_ride[${department.id }][${i.id}]`"
-                                               :id="`dept_${i.id}`" value="1"
-                                               type="checkbox"> {{ i.tech.reserve }}
-                                    </label>
-                                    &lt;!&ndash;<br>&ndash;&gt;-->
                                 </p>
                             </td>
 
