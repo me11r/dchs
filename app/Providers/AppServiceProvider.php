@@ -54,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
         view()->share('protocol', $request->isSecure() ? 'https' : 'http');
 
         $locale = LaravelLocalization::getCurrentLocale();
+        $locale = app()->getLocale();
 
         view()->composer('*', function ($view) use ($locale) {
             $view->with([

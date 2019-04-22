@@ -1,7 +1,23 @@
 <?php
 
 return array (
+    'months' => [
+        'january' => 'Январь',
+        'february' => 'Февраль',
+        'march' => 'Март',
+        'april' => 'Апрель',
+        'may' => 'Май',
+        'june' => 'Июнь',
+        'july' => 'Июль',
+        'august' => 'Август',
+        'september' => 'Сентябрь',
+        'october' => 'Октябрь',
+        'november' => 'Ноябрь',
+        'december' => 'Декабрь',
+    ],
     'download_latest_report' => 'Скачать последний отчет',
+    'direction' => 'Куда',
+    'head_person' => 'Ответственный',
     'action' => 'В боевом расчете',
     'do_you_really_want' => 'Вы действительно хотите удалить эту запись?',
     'reserve' => 'В резерве',
