@@ -93,7 +93,7 @@ class Card112Controller extends Controller
 
         }
 
-        $items = $items->paginate();
+        $items = $items->paginate($perPage);
 
 
         return View::make('card112.index')
