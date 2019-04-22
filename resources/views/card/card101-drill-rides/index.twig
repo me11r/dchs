@@ -61,7 +61,7 @@
                     </div>
                     <div class="control">
                         <p>Район</p>
-                        <select name="city_area_id" class="select control" onchange="this.form.submit()">
+                        <select name="city_area_id" class="select control">
                             <option value=""></option>
                             {% for f in city_areas %}
                                 <option {% if city_area_id is defined and city_area_id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="control">
                         <p>Тип выезда</p>
-                        <select name="drill_type_id" class="select control" onchange="this.form.submit()">
+                        <select name="drill_type_id" class="select control">
                             <option value=""></option>
                             {% for f in drill_types %}
                                 <option {% if drill_type_id is defined and drill_type_id == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
