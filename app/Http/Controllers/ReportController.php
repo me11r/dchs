@@ -1436,6 +1436,7 @@ class ReportController extends AuthorizedController
         dd('Кеш устарел, обновите страницу');
     }
 
+    //Общий свод по учениям и занятиям
     public function getReportDrillRides(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));

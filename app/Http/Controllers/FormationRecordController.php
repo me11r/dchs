@@ -271,11 +271,6 @@ class FormationRecordController extends Controller
 
             $report->items()->delete();
 
-//            OperDutyShiftStaffItem::date($date)
-//                ->where('shift_id', $operShift_id)
-//                ->where('report_id', $operShift_id)
-//                ->delete();
-
             foreach ($request->input('staff', []) as $rank => $staff_arr) {
                 foreach ($staff_arr['staff_id'] as $id) {
                     OperDutyShiftStaffItem::create([

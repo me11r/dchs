@@ -6,10 +6,13 @@ use App\Http\Resources\MudflowProtectionResource;
 use App\Models\GaugingStation;
 use App\Models\MudflowProtection;
 use App\Models\River;
+use App\MudflowProtectionBlock;
 use App\Repositories\Contracts\MudflowProtectionInterface;
 use App\Repositories\Contracts\RiverInterface;
 use App\Services\ReportExport\MudflowExcelExport;
+use App\Services\ReportExport\ReportMudflowWord;
 use Carbon\Carbon;
+use foo\bar;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -29,15 +32,13 @@ class MudflowProtectionController extends Controller
 
     public function exportExcel($date)
     {
-        $fileName = 'Казселезащита.xls';
+        $fileName = 'Казселезащита.docx';
 
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $fileName . '"');
-        header('Cache-Control: max-age=0');
+        $exportService = new ReportMudflowWord($date);
+        $writer = $exportService->getWriter('Word2007');
+        $writer->save(public_path($fileName));
 
-        $exportService = new MudflowExcelExport($date);
-        $writer = $exportService->getXlsWriter();
-        $writer->save('php://output');
+        return response()->download(public_path($fileName));
     }
 
     public function indexByDate($date)
@@ -47,6 +48,8 @@ class MudflowProtectionController extends Controller
             'gaugingStations.mudflowProtection'
         ])->get();
 
+        $block = MudflowProtectionBlock::where('date', $date)->first();
+
         $records = MudflowProtection::where('date', $date)
             ->get()
             ->keyBy('gauging_station_id');
@@ -55,6 +58,7 @@ class MudflowProtectionController extends Controller
 
         return View::make('mudflow.index')
             ->with('rivers', $rivers)
+            ->with('block', $block)
             ->with('records', $records)
             ->with('date', $date)
             ->with('dateHuman', $dateHuman)
@@ -83,9 +87,48 @@ class MudflowProtectionController extends Controller
         return view('mudflow.edit',$data);
     }
 
-    public function show($id)
+    public function createEditBlock(Request $request, $date)
     {
-        abort(418, 'Раздел в разработке');
+        $data['date'] = $date;
+
+        $data['record'] = MudflowProtectionBlock::where('date', $date)->first();
+
+        if ($request->isMethod('POST')) {
+            $data['record'] = MudflowProtectionBlock::updateOrCreate([
+                'id' => $request->id,
+            ],[
+                'date' => $request->date,
+                'text_header' => $request->text_header,
+                'text_footer' => $request->text_footer,
+            ]);
+            return back();
+        }
+
+        return view('mudflow.block',$data);
+    }
+
+    public function show($date)
+    {
+        $rivers = $this->repository->with([
+            'gaugingStations',
+            'gaugingStations.mudflowProtection'
+        ])->get();
+
+        $block = MudflowProtectionBlock::where('date', $date)->first();
+
+        $records = MudflowProtection::where('date', $date)
+            ->get()
+            ->keyBy('gauging_station_id');
+
+        $dateHuman = Carbon::parse($date)->format('d.m.Y');
+
+        return View::make('mudflow.show')
+            ->with('rivers', $rivers)
+            ->with('block', $block)
+            ->with('records', $records)
+            ->with('date', $date)
+            ->with('dateHuman', $dateHuman)
+            ->render();
     }
 
     public function edit($date, $id)
@@ -114,6 +157,8 @@ class MudflowProtectionController extends Controller
         $all = $request->all();
         $all['date'] = Carbon::parse($all['date'])->format('Y-m-d');
 
+        $block = MudflowProtectionBlock::firstOrCreate(['date' => $all['date']]);
+
         $data = MudflowProtection::create($all);
 
         return redirect("/mudflow-protection/{$date}");
@@ -127,6 +172,9 @@ class MudflowProtectionController extends Controller
 
         $all = $request->all();
         $all['date'] = Carbon::parse($all['date'])->format('Y-m-d');
+
+        $block = MudflowProtectionBlock::firstOrCreate(['date' => $all['date']]);
+
         $this->mudflowProtection->update($all, $id);
         return back();
     }

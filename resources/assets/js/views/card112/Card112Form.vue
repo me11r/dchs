@@ -129,20 +129,6 @@
                                     <label for="incident_type_text">Происшествие</label>
                                 </p>
                                 <input type="text" class="input" name="incident_type_text" v-model="model.incident_type_text">
-                                <!--<div class="select">-->
-                                    <!--<select-->
-                                        <!--id="incident_type_id"-->
-                                        <!--name="incident_type_id"-->
-                                        <!--required-->
-                                        <!--v-model="model.incident_type_id"-->
-                                    <!--&gt;-->
-                                        <!--<option-->
-                                            <!--v-for="incidentType in incidentTypes"-->
-                                            <!--:key="incidentType.id"-->
-                                            <!--:value="incidentType.id">{{ incidentType.name }}-->
-                                        <!--</option>-->
-                                    <!--</select>-->
-                                <!--</div>-->
                             </div>
 
 
@@ -354,20 +340,6 @@
                         <div
                                 class="control"
                                 style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                            <!--<p class="control">
-                                <label for="incident_type_id">Происшествие</label>
-                            </p>
-                            <div class="select">
-                                <select
-                                        name="incident_type_id"
-                                        v-model="model.incident_type_id">
-                                    <option
-                                            v-for="incidentType in incidentTypes"
-                                            :key="incidentType.id"
-                                            :value="incidentType.id">{{ incidentType.name }}
-                                    </option>
-                                </select>
-                            </div>-->
                             <div
                                     class="control"
                                     style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
@@ -390,16 +362,6 @@
                                        name="detailed_address"
                                        v-model="model.detailed_address">
                             </p>
-                            <!--<div class="select">
-                                <buefy-common-select
-                                    id="additional_street_id"
-                                    :options="streetsOptions"
-                                    v-model="model.additional_street_id"/>
-                                <input
-                                    type="hidden"
-                                    name="additional_street_id"
-                                    v-model="model.additional_street_id">
-                            </div>-->
                         </div>
 
                         <!--ТИП ПРОИСШЕСТВИЯ-->
@@ -633,7 +595,7 @@
                             <!--примечание-->
                             <div class="control is-expanded">
                                 <p class="control">
-                                    <label for="avalanche_volume">Примечание (сход лавин)</label>
+                                    <label for="avalanche_note">Примечание (сход лавин)</label>
                                 </p>
                                 <textarea
                                     class="textarea"
@@ -716,7 +678,7 @@
 
                         <!--ЗАДЕЙСТВОВАННЫЕ РЕСУРСЫ-->
                         <div class="field">
-                            <label for="resources">№ КУИ</label>
+                            <label for="kui">№ КУИ</label>
                             <input
                                 name="kui"
                                 type="number"

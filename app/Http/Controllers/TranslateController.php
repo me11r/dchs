@@ -34,7 +34,7 @@ class TranslateController extends Controller
         if ($groups instanceof Collection) {
             $groups = $groups->all();
         }
-        $groups = [''=>'Choose a group'] + $groups->toArray();
+        $groups = [''=>'Выберите группу'] + $groups->toArray();
         $numChanged = Translation::where('group', $group)->where('status', Translation::STATUS_CHANGED)->get();
 
 

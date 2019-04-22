@@ -19,8 +19,8 @@
                     </div>
                     <div class="field">
                         <label for="name">ПЧ</label><br>
-                        <input type="hidden" class="input" name="fire_department_id" id="fire_department_id" value="{{ fire_department.id }}"/>
-                        <input type="text" disabled class="input" value="{{ fire_department.title }}"/>
+                        <input type="hidden" class="input" name="fire_department_id" id="fire_department_id" value="{{ fire_department.id|default('') }}"/>
+                        <input type="text" disabled class="input" value="{{ fire_department.title|default('') }}"/>
                     </div>
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>

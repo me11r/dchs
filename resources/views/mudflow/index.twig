@@ -18,8 +18,12 @@
                 <a href="/mudflow-protection" class="button is-info">Назад</a>
             </div>
             <div class="level-right">
-                <a href="/mudflowProtection/export/xls/{{ date }}" class="button is-success">Сохранить в XLS</a>
+                <a href="/mudflowProtection/export/xls/{{ date }}" class="button is-success">Сохранить в DOCX</a>
             </div>
+        </div>
+        <div class="section">
+            <p>{{ block.text_footer ?? null }}</p>
+            <a class="button is-success" href="/mudflow-protection-block/{{ date }}">Редактировать информацию</a>
         </div>
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
             <thead>
@@ -91,5 +95,9 @@
                 {% endfor %}
             {% endfor %}
         </table>
+        <div class="section">
+            <p>{{ block.text_footer ?? null }}</p>
+            <a class="button is-success" href="/mudflow-protection-block/{{ date }}">Редактировать информацию</a>
+        </div>
     </div>
 {% endblock content %}
