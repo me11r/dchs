@@ -31,12 +31,30 @@
                             </div>
                             <script>
 
+                                /*добавляем/меняем параметр в урле*/
+                                function updateQueryStringParameter(key, value) {
+                                    let uri = window.location.href;
+                                    let re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+                                    let separator = uri.indexOf('?') !== -1 ? "&" : "?";
+                                    if (uri.match(re)) {
+                                        return uri.replace(re, '$1' + key + "=" + value + '$2');
+                                    }
+                                    else {
+                                        return uri + separator + key + "=" + value;
+                                    }
+                                }
+
                                 document.addEventListener('DOMContentLoaded', ()=>{
                                     const perpageForm = document.getElementById('pagination_change_form');
                                     const select = perpageForm.querySelector('select[name=per_page]');
-                                    select.addEventListener('change',(e)=>{
+                                    select.addEventListener('change',(e)=> {
                                         select.classList.add('is-loading');
-                                        perpageForm.submit();
+
+                                        /*добавляем/меняем параметр "per_page" в урле, чтобы не сбрысывались фильтры*/
+                                        let href = updateQueryStringParameter('per_page', e.target.options[e.target.selectedIndex].value);
+                                        window.location.href = href;
+
+                                        // perpageForm.submit();
                                     });
 
                                 });
