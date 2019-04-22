@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\MudflowProtectionBlock;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -59,7 +60,13 @@ class MudflowProtection extends Model
         'weather',
         'comment',
         'date',
+        'block_id',
     ];
+
+    public function block()
+    {
+        return $this->belongsTo(MudflowProtectionBlock::class, 'block_id');
+    }
 
     public function getDateHumanAttribute()
     {

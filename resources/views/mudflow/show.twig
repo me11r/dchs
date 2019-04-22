@@ -1,0 +1,83 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container">
+        <div class="">
+            <h4 class="title"
+                style="padding: 3px 15px">ГУ "Казселезащита" за {{ dateHuman }}
+            </h4>
+        </div>
+
+        {#    <div id="vue">#}
+        {#        <mudflow-date-selector#}
+        {#            date="{{ date }}"#}
+        {#        ></mudflow-date-selector>#}
+        {#    </div>#}
+
+        <div class="panel">
+            <div class="level">
+                <div class="level-left">
+                    <a href="/mudflow-protection" class="button is-info">Назад</a>
+                </div>
+                <div class="level-right">
+                    <a href="/mudflowProtection/export/xls/{{ date }}" class="button is-success">Сохранить в DOCX</a>
+                </div>
+            </div>
+            <div class="section">
+                <p>{{ block.text_footer ?? null }}</p>
+            </div>
+            <div class="section" style="overflow-x: scroll">
+                <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Информация</th>
+                        <th>Наименование гидропостов и их отметка</th>
+                        <th>Расход воды</th>
+                        <th>Критический расход воды</th>
+                        <th>Мутность воды</th>
+                        <th>Максимальная мутность воды</th>
+                        <th>Температура воздуха</th>
+                        <th>Температура воды</th>
+                        <th>Осадки</th>
+                        <th>Высота снега</th>
+                        <th>Погода</th>
+                        <th>Комментарий</th>
+                        <th class="has-text-right">Дата и время</th>
+                    </tr>
+                    </thead>
+                    {% set index = 1 %}
+                    {% for river in rivers %}
+                        <tr>
+                            <td colspan="15" style="text-align: center"><b>{{ river.name }}</b></td>
+                        </tr>
+                        {% for gaugingStation in river.gaugingStations %}
+                            <tr>
+                                <td class="has-text-right">{{ index }}</td>
+                                <td>{{ records[gaugingStation.id].information|default('') }}</td>
+                                <td>{{ gaugingStation.name }}</td>
+                                <td>{{ records[gaugingStation.id].water_flow_rate|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].critical_water_flow_rate|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].turbidity_of_water|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].max_turbidity_of_water|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].air_temperature|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].water_temperature|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].precipitation|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].height_of_snow |default('')}}</td>
+                                <td>{{ records[gaugingStation.id].weather|default('') }}</td>
+                                <td>{{ records[gaugingStation.id].comment|default('') }}</td>
+                                <td class="has-text-right">{{ records[gaugingStation.id].updated_at|default('') }}</td>
+                            </tr>
+
+                            {% set index = index + 1 %}
+                        {% endfor %}
+                    {% endfor %}
+                </table>
+
+            </div>
+            <div class="section">
+                <p>{{ block.text_footer ?? null }}</p>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
