@@ -13,6 +13,6 @@ class QueuedReportObserver
 
     private function getCacheHashKey(QueuedReport $item)
     {
-        return  hash('sha512', json_encode($item->report_data) . '_' . $item->user_id . '_' . $item->created_at);
+        return  hash('sha512', json_encode($item->report_data) . '_' . $item->user_id . '_' . $item->created_at) . microtime();
     }
 }

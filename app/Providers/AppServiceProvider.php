@@ -23,6 +23,7 @@ use App\Observers\MorainicLakeReportObserver;
 use App\Observers\QuakeObserver;
 use App\Observers\QueuedReportObserver;
 use App\Observers\WeatherObserver;
+use App\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
@@ -52,9 +53,13 @@ class AppServiceProvider extends ServiceProvider
 
         view()->share('protocol', $request->isSecure() ? 'https' : 'http');
 
-        view()->composer('*', function ($view) {
+        $locale = LaravelLocalization::getCurrentLocale();
+        $locale = app()->getLocale();
+
+        view()->composer('*', function ($view) use ($locale) {
             $view->with([
-                'language' => LaravelLocalization::getCurrentLocale()
+                'language' => $locale,
+                'translations' => Translation::getByLocale($locale)->get(['key', 'value']),
             ]);
         });
     }

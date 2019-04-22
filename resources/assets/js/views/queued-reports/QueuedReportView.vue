@@ -11,7 +11,12 @@
         </template>
 
         <template v-else>
-            <i class="fas fa-spinner fa-pulse"></i> &nbsp; Загрузка отчета...
+            <template v-if="!error">
+                <i class="fas fa-spinner fa-pulse"></i> &nbsp; Загрузка отчета...
+            </template>
+            <template v-if="error">
+                При получении отчета произошла ошибка.
+            </template>
         </template>
 
     </div>
@@ -30,7 +35,8 @@ export default {
     data() {
         return {
             reportId: null,
-            item: {}
+            item: {},
+            error: false
         };
     },
     computed: {
@@ -50,10 +56,16 @@ export default {
     },
     methods: {
         loadItem() {
-            axios.get('/auth-api/queued-reports/show-full/' + this.reportId)
-                .then((response) => {
-                    this.item = response.data;
+            axios.get('/auth-api/queued-reports/show-full/' + this.reportId).then((response) => {
+                this.item = response.data;
+            }).catch(() => {
+                this.error = true;
+                this.$snackbar.open({
+                    message: 'При получении отчета произошла ошибка',
+                    type: 'is-danger',
+                    duration: 3000
                 });
+            });
         }
     },
     beforeMount() {

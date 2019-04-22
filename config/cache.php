@@ -74,8 +74,10 @@ return [
         ],
 
         'reports_cache' => [
-            'driver' => 'database',
-            'table' => 'reports_cache',
+//            'driver' => 'database',
+//            'table' => 'reports_cache',
+            'driver' => 'file',
+            'path' => storage_path('framework/reports_cache/data'),
             'connection' => null,
         ],
 

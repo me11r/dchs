@@ -97,7 +97,7 @@ class SalvageController extends Controller
      */
     public function edit($id)
     {
-        if(Auth::user()->currentRole() !== 'dispatcher_pch'){
+        if(Auth::user()->currentRole() !== 'dispatcher_pch' && Auth::user()->currentRole() !== 'admin'){
             return redirect()->route('salvage.index');
         }
         else {

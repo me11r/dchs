@@ -27,6 +27,8 @@ use Carbon\Carbon;
 use function foo\func;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class Ticket101
@@ -296,12 +298,24 @@ class Ticket101 extends BaseModel
 
     public function getGdzs()
     {
-        return $this->chronologies ? $this->chronologies()
-            ->whereHas('event_info_arrived', function ($q) {
-                $q->where('name', 'ГДЗС');
-            })
-            ->with('event_info_arrived')
-            ->get() : [];
+        $chronologies = $this->relationLoaded('chronologies') ? $this->chronologies : $this->chronologies()->get();
+        $result = [];
+
+//        $result = $chronologies->count() ? $chronologies
+//            ->whereHas('event_info_arrived', function ($q) {
+//                $q->where('name', 'ГДЗС');
+//            })
+//            ->with('event_info_arrived')
+//            ->get() : [];
+
+        if ($chronologies && $chronologies->count()){
+            $gdzsId = Cache::rememberForever('gdzs_event_info_arrived_id', function (){
+                return EventInfoArrived::where('name', '=', 'ГДЗС')->first()->id;
+            });
+            $result = $chronologies->where('event_info_arrived_id', '=', $gdzsId);
+        }
+
+        return $result;
     }
 
     public function getGdzsCountTypeAttribute()
@@ -538,27 +552,44 @@ class Ticket101 extends BaseModel
         return $this->hasMany(Ticket101OtherRecord::class, 'ticket101_id', 'id');
     }
 
-    public function first_department_arrived()
+    public function first_department_arrived($results = null)
     {
-        $first_arrived = $this->results()
-            ->whereNotNull('arrive_time')
-            ->selectRaw('arrive_time, id, out_time, out_time - arrive_time as on_way_time')
-            ->groupBy('id')
-            ->havingRaw('min(arrive_time)')
-            ->first();
+        /** @var Collection $results */
+        $results = $this->relationLoaded('results')? $this->results : $this->results()->get();
 
-        if($first_arrived) {
-            try {
-                $arrive_time = Carbon::parse($first_arrived->arrive_time);
-                $first_arrived->on_way_time = $arrive_time->diffInMinutes($first_arrived->out_time);
-            }
-            catch (\Exception $e) {
+//        $first_arrived = $this->results()
+//            ->whereNotNull('arrive_time')
+//            ->selectRaw('arrive_time, id, out_time, out_time - arrive_time as on_way_time')
+//            ->groupBy('id')
+//            ->havingRaw('min(arrive_time)')
+//            ->first();
+//
+//        if($first_arrived) {
+//            try {
+//                $arrive_time = Carbon::parse($first_arrived->arrive_time);
+//                $first_arrived->on_way_time = $arrive_time->diffInMinutes($first_arrived->out_time);
+//            }
+//            catch (\Exception $e) {
+//
+//            }
+//
+//        }
 
-            }
+//        return $first_arrived;
 
+        $allItems = $results
+            ->where('arrive_time', '!=', null)
+            ->groupBy('id');
+
+        /** @var FireDepartmentResult $firstArrived */
+        $firstArrivedCollection = $allItems->where('arrive_time', '=', $allItems->min('arrive_time'))->first();
+        $firstArrived = $firstArrivedCollection ? $firstArrivedCollection->first() : null;
+        if ($firstArrived) {
+            $arriveTime = Carbon::parse($firstArrived->arrive_time);
+            $firstArrived['on_way_time'] = $arriveTime->diffInMinutes($firstArrived->out_time);
         }
 
-        return $first_arrived;
+        return $firstArrived;
     }
 
     public function departments_arrived()
@@ -777,6 +808,7 @@ class Ticket101 extends BaseModel
         $date_begin = $date_begin ? $date_begin: now()->subDays(3);
         $date_end = $date_end ? $date_end : now();
 
+        /** @var Ticket101 $q */
         $tickets = $q->with([
             'crossroad_1',
             'burn_object',
@@ -812,25 +844,45 @@ class Ticket101 extends BaseModel
             $tickets = $tickets->where('city_area_id', $city_area_id);
         }
 
-        $result = $tickets->orderBy('id', 'desc')
-            ->get()
-        ;
+        $tickets = $tickets->orderBy('id', 'DESC');
 
-        foreach ($result as $key => $ticket) {
-            $first_arrived = $ticket->first_department_arrived();
+        $fireDepartments = null;
+//        $limit = 10;
+//        $offset = 0;
+//        $resultToReturn = (new Ticket101())->newCollection();
+//
+//        do {
+//            /** @var Collection $result */
+//            $result = $tickets->limit($limit)->offset($offset)->get();
+        $result = $tickets->get();
 
-            if($first_arrived) {
-
-                $result[$key]->first_arrived_time = $first_arrived->arrive_time;
-                $result[$key]->on_way_time = $first_arrived->on_way_time;
-
-                $result[$key]->detailed_staff_count = $ticket->getDetailedStaffCount();
-                $result[$key]->gdzs_items = $ticket->getGdzs();
-
+            if ($result->count() && !$fireDepartments){
+                $fireDepartments = FireDepartment::all();
             }
-        }
+            /**
+             * @var Ticket101 $ticket
+             */
+            foreach ($result as $key => $ticket) {
+                $first_arrived = $ticket->first_department_arrived();
 
-        return $result;
+                if($first_arrived) {
+
+                    $result[$key]->first_arrived_time = $first_arrived->arrive_time;
+                    $result[$key]->on_way_time = $first_arrived->on_way_time;
+
+                    $result[$key]->detailed_staff_count = $ticket->getDetailedStaffCount($fireDepartments);
+                    $result[$key]->gdzs_items = $ticket->getGdzs();
+
+                }
+            }
+
+            return $result;
+
+//            $resultToReturn = $resultToReturn->merge($result);
+//            $offset += $limit;
+//        } while ($result->count() === $limit);
+//
+//        return $resultToReturn;
     }
 
     public function getRecommendations()
@@ -889,13 +941,17 @@ class Ticket101 extends BaseModel
         return $this->belongsTo(FormationReport::class, 'formation_report_id');
     }
 
-    public function getDetailedStaffCount()
+    public function getDetailedStaffCount(Collection $fireDepartmentsCollection = null)
     {
-        if($this->results->count()) {
-            $depts_out = $this->results()->whereNotNull('dispatch_time')->get();
+        /** @var Collection $results */
+        $results = $this->relationLoaded('results')? $this->results : $this->results()->get();
+
+        if($results && $results->count()) {
+            $fireDepartmentsCollection = $fireDepartmentsCollection ?? FireDepartment::all();
+            $depts_out = $results->where('dispatch_time', '!=', null);
             $deptsArr = array_unique($depts_out->pluck('fire_department_id')->toArray());
 
-            foreach (FireDepartment::whereIn('id', $deptsArr)->get() as $item) {
+            foreach ($fireDepartmentsCollection->whereIn('id', $deptsArr) as $item) {
 
                 $deptsNumbers = $depts_out->filter(function ($q) use ($item){
                     return $q->fire_department_id === $item->id;

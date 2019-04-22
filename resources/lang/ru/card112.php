@@ -1,0 +1,110 @@
+<?php
+
+return array (
+    '/card112/create' => [
+        'title_real' => 'Добавление: Карточка 112',
+        'next_section' => 'Следующий раздел',
+        'tabs' => [
+            'tab_call' => [
+                'title' => 'Звонок',
+                'pre_info_text' => 'Первоначальная информация заявителя',
+                'address' => 'Адрес',
+                'open_map' => 'Открыть карту',
+                'city_area_id' => 'Район',
+                'crossroad_1_id' => 'Пересечение улицы',
+                'crossroad_2_id' => 'и улицы',
+                'incident_type_text' => 'Происшествие',
+                'incident_place' => 'Место происшествия',
+                'description' => 'Описание происшествия',
+                'caller_name' => 'ФИО Заявителя',
+                'caller_phone' => 'Телефон заявителя',
+                'call_time' => 'Время получения сообщения',
+            ],
+            'tab_notify' => [
+                'title' => 'Уведомления',
+                'tabs' => [
+                    'tab_leaders' => [
+                        'title' => 'Руководство',
+                        'staff_groups' => 'Группы личного состава',
+                        'message' => 'Сообщение',
+                        'send' => 'Отправить',
+                        'refresh' => 'Обновить',
+                        'table_headers' => [
+                            'addressee' => 'Получатель',
+                            'group' => 'Группа',
+                            'send_time' => 'Время отправки',
+                            'receive_time' => 'Время получения',
+                            'status' => 'Статус',
+                            'message' => 'Сообщение',
+                        ],
+                    ],
+                    'tab_services' => [
+                        'title' => 'Службы взаимодействия',
+                        'table_headers' => [
+                            'services' => 'Службы',
+                            'send_time' => 'Время сообщения',
+                            'name_received' => 'Фамилия принявшего сообщение',
+                            'arrive_time' => 'Время прибытия',
+                            'roadtrip_sent' => 'Путевой лист отправлен',
+                            'notification_sent' => 'Уведомление отправлено',
+                        ],
+
+                    ]
+                ]
+            ],
+            'tab_chronology' => [
+                'title' => 'Хронология событий',
+                'loc_time' => 'Время начала работ',
+                'liqv_time' => 'Время завершения работ',
+                'situation' => 'Ситуация',
+                'time' => 'Время',
+            ],
+            'tab_results' => [
+                'custom_created_at' => 'Дата и время создания карточки',
+                'pre_info_title' => 'Первоначальная информация',
+                'location' => 'Первоначальный адрес',
+                'incident_type_text' => 'Происшествие',
+                'emergency_info_title' => 'Информация с места происшествия',
+                'detailed_address' => 'Уточненный адрес',
+                'emergency_type_id' => 'Тип происшествия',
+                'emergency_name_id' => 'Название ЧС',
+                'additional_incident_type_id' => 'Происшествие (уточненное)',
+                'additional_incident_place' => 'Место происшествия',
+                'flooding_place_id' => 'Место подтопления',
+                'flooding_reason_id' => 'Причина подтопления',
+                'living_count' => 'Количество проживающих',
+                'elevator_emergency_type_id' => 'Тип происшествия на лифтах',
+                'disease_type_id' => 'Тип инфекционного заболевания',
+                'avalanche_type_id' => 'Тип схода снежных лавин',
+                'avalanche_note' => 'Примечание (сход лавин)',
+                'branch_fall_reason_id' => 'Причина (справочник)',
+                'emergency_feature' => 'Характеристика происшествия',
+                'reason' => 'Причина',
+                'measures' => 'Принятые меры',
+                'resources' => 'Задействованные ресурсы',
+                'kui' => '№ КУИ',
+                'injured' => 'Пострадавших людей/детей',
+                'dead' => 'Погибших людей/детей',
+                'evacuated' => 'Эвакуированных людей/детей',
+                'hospitalized' => 'Госпитализированных людей/детей',
+                'injured_hard' => 'Травмированных людей/детей',
+                'poisoned' => 'Отравление людей/детей',
+                'saved' => 'Спасено людей/детей',
+                'saved_animals' => 'Спасено животных',
+            ],
+        ]
+    ],
+    '/card/101' => [
+        'title' => 'Карточка 101',
+        'opened' => 'Открытые',
+        'closed' => 'Закрытые',
+        'all' => 'Все карточки',
+        'real' => 'Боевые',
+        'other' => 'Прочие',
+        'drill' => 'Учебные',
+        'norms_psp' => 'Нормативы по ПСП',
+        'new_card' => 'Новая карточка',
+        'no_data' => 'Нет выбранных заявок',
+    ],
+
+);
