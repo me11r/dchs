@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use app\Http\Helpers\Helper;
 use Closure;
 use Illuminate\Support\Facades\Session;
 
