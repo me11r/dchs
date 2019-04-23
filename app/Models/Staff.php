@@ -94,6 +94,11 @@ class Staff extends Model
         return $this->belongsTo(GuardNumber::class, 'guard_number_id');
     }
 
+    public function formation_person_items()
+    {
+        return $this->hasMany(FormationPersonsItem::class, 'staff_id');
+    }
+
     public function statuses($status = null)
     {
         $arr = [

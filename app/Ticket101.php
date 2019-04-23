@@ -19,6 +19,7 @@ use App\Models\Notification\NotificationGroup;
 use App\Models\NotificationService;
 use App\Models\OperationalPlan;
 use App\Models\Schedule;
+use App\Models\Staff;
 use App\Models\Ticket101\Ticket101Notification;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\Models\UploadedFile;
@@ -941,6 +942,24 @@ class Ticket101 extends BaseModel
         return $this->belongsTo(FormationReport::class, 'formation_report_id');
     }
 
+    //attribute: head_guards
+    public function getHeadGuardsAttribute()
+    {
+        $staff = Staff::whereHas('formation_person_items.report.report', function ($q) {
+            $q->where('id', $this->formation_report_id);
+        })
+            ->whereHas('formation_person_items', function ($f) {
+                $f->where('status', 'active')
+                    ->where('rank','head_guards')
+                    ->where('rank','head_guards')
+                ;
+            })
+            ->where('department_id', $this->fire_department_id)
+            ->first();
+
+        return @$staff->rank . " " . @$staff->name;
+    }
+
     public function getDetailedStaffCount(Collection $fireDepartmentsCollection = null)
     {
         /** @var Collection $results */
@@ -1008,9 +1027,4 @@ class Ticket101 extends BaseModel
         }
         $this->attributes['custom_created_at'] = $value;
     }
-
-//    public function getCreatedAtAttribute()
-//    {
-//        return $this->custom_created_at ? Carbon::parse($this->custom_created_at) : $this->created_at;
-//    }
 }
