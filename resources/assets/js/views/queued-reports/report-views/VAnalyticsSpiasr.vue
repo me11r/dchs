@@ -147,7 +147,6 @@
 import {ReportViewMixin} from '../report-view-mixin';
 import {FlippedScrollMixin} from '../flipped-scroll-mixin';
 
-// @TODO при необходимости переносить дополнительный функционал со старой страницы отчета
 export default {
     name: 'VAnalyticsSpiasr',
     mixins: [ReportViewMixin, FlippedScrollMixin],
