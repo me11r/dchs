@@ -162,17 +162,17 @@ class ReportMudflowWord
     {
         // заголовок
         $section->addText("Информация",
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => true],
             ['align' => Jc::CENTER]
         );
 
         $section->addText($this->block->text_header ?? null,
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => false],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => false],
             ['align' => Jc::BOTH]
         );
 
         $section->addText("Гидрометеорологические данные",
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true, 'italic' => true],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => true, 'italic' => true],
             ['align' => Jc::CENTER]
         );
 
@@ -181,14 +181,12 @@ class ReportMudflowWord
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
 
-
-
         $table = $section->addTable($tableStyle);
     }
     private function addFirstPageBottomData(Section $section)
     {
         $section->addText($this->block->text_footer ?? null,
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => false],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => false],
             ['align' => Jc::BOTH]
         );
     }
@@ -212,10 +210,10 @@ class ReportMudflowWord
     private function addTableData(\PhpOffice\PhpWord\Element\Table $table, $startRowIndex = 2)
     {
         $rowIndex = $startRowIndex;
-        $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 11];
         $cellStyles = ['borderSize' => 10, 'borderColor' => '000000'];
 
-        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 11, 'valign' => Jc::CENTER];
         $hcAlignStyle = array_merge(['align' => Jc::CENTER, 'valign' => Jc::CENTER], self::$noPaddingPS);
 
         $rivers = River::all();
