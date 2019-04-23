@@ -195,3 +195,10 @@ table.table.is-striped thead th {
 .form-inline {
   display: inline;
 }
+
+.flipped, .flipped .content
+{
+  transform:rotateX(180deg);
+  -ms-transform:rotateX(180deg); /* IE 9 */
+  -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+}

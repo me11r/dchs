@@ -183,7 +183,7 @@ class Ticket101PeriodExcelExport
                 $item->object_name,
                 $item->result_fire_level_name,
                 $item->liquidation_method_name,
-                $item->first_result_arrived_time,
+                $item->on_way_time,
                 $item->loc_time,
                 $item->liqv_time,
                 $item->loc_time_total,
@@ -209,6 +209,9 @@ class Ticket101PeriodExcelExport
             $sheet->getStyle("A$rowIndex:X$rowIndex")->applyFromArray(self::HStyle);
             $rowIndex++;
         }
+
+        $totalCellAddress = "A" . ($rowIndex + 2);
+        $this->setCell($sheet, 'Общее количество выездов: ' . $this->stat['items']->count(), $totalCellAddress, $totalCellAddress, self::HStyle);
     }
 
     /**

@@ -25,6 +25,7 @@
                         <select
                             class="select"
                             name=""
+                            v-model="result_id"
                             id="reason">
                             <option value=""></option>
                             <option
@@ -269,6 +270,9 @@ export default {
                             message: 'Успешно добавлено в очередь обработки',
                             type: 'is-info'
                         });
+                        setTimeout(function() {
+                            window.location = '/reports/queued-reports';
+                        }, 1000);
                     } else {
                         this.$snackbar.open({
                             message: 'Во время постановки в очередь произошла ошибка',
