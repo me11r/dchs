@@ -24,6 +24,21 @@ class Translate {
             return code;
         }
     }
+
+    getReplace(code, lang, replace) {
+
+        let translate = this.get(code, lang);
+
+        if (replace.length > 0 && translate) {
+            for (let key in replace) {
+                translate = translate.replace(`:${key}`, replace[key]);
+            }
+
+            return translate;
+        }
+
+        return null;
+    }
 }
 
 export default Translate;

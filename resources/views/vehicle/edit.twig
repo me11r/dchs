@@ -47,7 +47,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="vehicle_type_id">Класс</label><br>
+                        <label for="vehicle_class_id">Класс</label><br>
                         <select name="vehicle_class_id" id="vehicle_class_id" required>
                             {% for vehicle_class in vehicle_classes %}
                                 <option value="{{ vehicle_class.id }}" {% if vehicle_class.id == attribute(record, 'vehicle_class_id')|default('') %}selected{% endif %}>{{ vehicle_class.name }}</option>

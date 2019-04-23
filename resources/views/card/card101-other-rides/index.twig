@@ -59,7 +59,7 @@
                     </div>
                     <div class="control">
                         <p>Тип выезда</p>
-                        <select onchange="this.form.submit()" class="select" name="filter_ride_type" id="">
+                        <select class="select" name="filter_ride_type" id="">
                             <option value=""></option>
                             {% for item in ride_types %}
                                 <option {{ item.id == filter_ride_type ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="control">
                         <p>ПЧ</p>
-                        <select onchange="this.form.submit()" class="select" name="filter_fd" id="">
+                        <select class="select" name="filter_fd" id="">
                             <option value=""></option>
                             {% for item in fire_departments %}
                                 <option {{ item.id == filter_fd ? 'selected' : '' }} value="{{ item.id }}">{{ item.title }}</option>

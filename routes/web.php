@@ -309,11 +309,16 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::group(['prefix' => 'mudflow-protection'], function () {
             Route::get('/', 'MudflowProtectionController@list')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
             Route::get('{date}', 'MudflowProtectionController@indexByDate')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
+            Route::get('{date}/show', 'MudflowProtectionController@show')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
             Route::get('{date}/{id}/edit', 'MudflowProtectionController@edit')->middleware(['right:CAN_VIEW_MUDFLOW_PROTECTION']);
             Route::get('{date}/{id}/create', 'MudflowProtectionController@create')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
             Route::post('{date}/{id}/update', 'MudflowProtectionController@update')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
             Route::post('{date}/{id}/store', 'MudflowProtectionController@store')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
             Route::post('{date}/{id}/delete', 'MudflowProtectionController@delete')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
+        });
+
+        Route::group(['prefix' => 'mudflow-protection-block'], function () {
+            Route::match(['post','get'],'{date}', 'MudflowProtectionController@createEditBlock')->middleware(['right:CAN_EDIT_MUDFLOW_PROTECTION']);
         });
 
         Route::resource('/weather', 'WeatherController')->middleware(['right:KAZGIDROMET_FILLING']);

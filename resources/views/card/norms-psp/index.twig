@@ -59,7 +59,7 @@
                     </div>
                     <div class="control">
                         <p>№ норматива</p>
-                        <select onchange="this.form.submit()" class="select" name="norm_number_id" id="">
+                        <select class="select" name="norm_number_id" id="">
                             <option value=""></option>
                             {% for item in norm_numbers %}
                                 <option {{ item.id == norm_number_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="control">
                         <p>Тип норматива</p>
-                        <select onchange="this.form.submit()" class="select" name="norm_type_id" id="">
+                        <select class="select" name="norm_type_id" id="">
                             <option value=""></option>
                             {% for item in norm_types %}
                                 <option {{ item.id == norm_type_id ? 'selected' : '' }} value="{{ item.id }}">{{ item.name }}</option>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="control">
                         <p href="?sort=city_area_id">Подразделение</p>
-                        <select onchange="this.form.submit()" class="select" name="filter_fd" id="">
+                        <select class="select" name="filter_fd" id="">
                             <option value=""></option>
                             {% for item in fire_departments %}
                                 <option {{ item.id == filter_fd ? 'selected' : '' }} value="{{ item.id }}">{{ item.title }}</option>
