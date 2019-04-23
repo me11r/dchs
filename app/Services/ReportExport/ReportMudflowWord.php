@@ -211,7 +211,6 @@ class ReportMudflowWord
 
     private function addTableData(\PhpOffice\PhpWord\Element\Table $table, $startRowIndex = 2)
     {
-        $row = $table->addRow();
         $rowIndex = $startRowIndex;
         $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
         $cellStyles = ['borderSize' => 10, 'borderColor' => '000000'];
@@ -224,7 +223,7 @@ class ReportMudflowWord
         foreach ($rivers as $key => $river) {
             $row = $table->addRow();
 
-            $table->addCell(null, ['vMerge' => 'restart','gridSpan' => 12, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText($river->name, $hcFontStyle, $hcAlignStyle);
+            $row->addCell(null, ['vMerge' => 'restart','gridSpan' => 12, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText($river->name, $hcFontStyle, $hcAlignStyle);
 
             foreach ($river->gaugingStations as $gaugingStation) {
                 $row = $table->addRow();
