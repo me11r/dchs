@@ -168,9 +168,9 @@ export default {
                 });
         },
         setHydrants() {
-            if (this.hydrantsClusterer) {
-                this.map.geoObjects.add(this.hydrantsClusterer);
-            } else {
+            // if (this.hydrantsClusterer) {
+            //     this.map.geoObjects.add(this.hydrantsClusterer);
+            // } else {
                 axios.get('/api/hydrant')
                     .then((response) => {
                         this.hydrantList = response['data']['hydrants'];
@@ -191,7 +191,7 @@ export default {
                         this.map.geoObjects.add(this.hydrantsClusterer);
                         this.showHydrantTable = true;
                     });
-            }
+            // }
         },
         mapFireDepts() {
             this.fireDepartmentNames = this.fireDepartments.map((item) => {
@@ -309,12 +309,12 @@ export default {
                 }
             });
         },
-        initHydrants() {
+        /*initHydrants() {
             this.model = window.hydrantListData.model;
             this.emptyModel = {...window.hydrantListData.model};
 
             this.setHydrantsList();
-        },
+        },*/
         resetHydrantsFilter() {
             this.selectedHydrant = null;
             this.hydrantsClusterer = null;
