@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
 {
 
+    use MysqlAdditionalFunctions;
+
     /**
      * @param QueuedReport $queuedReport
      * @param $reportData
@@ -54,8 +56,10 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
         $result_id = Arr::get($data, 'result_id');
         $burnt_id = Arr::get($data, 'burnt_id');
         $city_area_id = Arr::get($data, 'city_area_id');
+        $time_onway = Arr::get($data, 'time_onway');
+        $time_liqv = Arr::get($data, 'time_liqv');
 
-        return $this->getResult($date_begin, $date_end, $result_id, $burnt_id, $city_area_id);
+        return $this->getResult($date_begin, $date_end, $result_id, $burnt_id, $city_area_id, $time_onway, $time_liqv);
     }
 
     /**
@@ -73,7 +77,7 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
             '.xls';
     }
 
-    public function getResult($date_begin, $date_end, $result_id = null, $burnt_id = null, $city_area_id = null)
+    public function getResult($date_begin, $date_end, $result_id = null, $burnt_id = null, $city_area_id = null, $time_onway = null, $time_liqv = null)
     {
         $dateBegin = $date_begin ? Carbon::parse($date_begin) : now()->subDays(3);
         $dateEnd = $date_end ? Carbon::parse($date_end) : now();
@@ -81,7 +85,10 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
             return EventInfoArrived::where('name', '=', 'ГДЗС')->first()->id;
         });
 
+        $this->defineTimeDiffSpike();
+
         DB::statement(DB::raw('SET @on_way_time_minutes = 0;'));
+        DB::statement(DB::raw('SET @on_way_category = 0;'));
         DB::statement(DB::raw('SET @liqv_time_total_minutes = 0;'));
         DB::statement(DB::raw('SET @gdzs_count = 0;'));
 
@@ -98,23 +105,23 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
                 DB::raw('dict_fire_level.name as result_fire_level_name'),
                 DB::raw('dict_liquidation_method.name as liquidation_method_name'),
                 DB::raw('first_result.arrive_time as first_result_arrived_time'),
-                DB::raw('TIMEDIFF(first_result.arrive_time, first_result.out_time) as on_way_time'),
+                DB::raw("TIME_DIFF_SPIKE(first_result.out_time, first_result.arrive_time) as on_way_time"),
                 'ticket101.loc_time',
                 'ticket101.liqv_time',
-                DB::raw('TIMEDIFF(first_result.arrive_time, ticket101.loc_time) as loc_time_total'),
+                DB::raw('TIME_DIFF_SPIKE(first_result.arrive_time, ticket101.loc_time) as loc_time_total'),
                 DB::raw("(GROUP_CONCAT(CONCAT('Тип: ', event_info_arrived.name, ', Количество: ', gdzs_chronology.working_time) SEPARATOR ' | ')) as `event_info_arrived_names`"),
                 'ticket101.rescued_count',
                 'ticket101.evac_count',
                 'ticket101.gpt_burns_count',
                 DB::raw('COALESCE(ticket101.people_death_count, 0) + COALESCE(ticket101.children_death_count, 0) as total_death_count'),
-                DB::raw('TIMEDIFF(first_result.arrive_time, ticket101.liqv_time) as liqv_time_total'),
+                DB::raw('TIME_DIFF_SPIKE(first_result.arrive_time, ticket101.liqv_time) as liqv_time_total'),
                 'ticket101.rescued_count',
                 DB::raw('trip_result.name as trip_result_name'),
                 'ticket101.max_square',
                 'ticket101.storey_count',
 
                 DB::raw('@on_way_time_minutes := ABS((TIME_TO_SEC(first_result.arrive_time)-TIME_TO_SEC(first_result.out_time))/60) as on_way_time_minutes'),
-                DB::raw("CASE 
+                DB::raw("@on_way_category := CASE 
                                    WHEN @on_way_time_minutes < 5 THEN 'less_5'
                                    WHEN @on_way_time_minutes > 5 AND @on_way_time_minutes < 10 THEN 'less_10'
                                    WHEN @on_way_time_minutes > 10 THEN 'more_10'
@@ -174,10 +181,20 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
         }
 
         $items = $items->orderBy('id', 'DESC');
-        $items = $items->get();
 
-        $result['items'] = $items;
-        $result['totals'] = $this->getTotalsFromItems($items);
+        $itemsCollection = $items->get();
+
+        /** @var Collection $itemsCollection */
+        if ($time_onway) {
+            $itemsCollection = $itemsCollection->where('on_way_category', $time_onway);
+        }
+
+        if($time_liqv) {
+            $itemsCollection = $itemsCollection->where('liqv_category', $time_liqv);
+        }
+
+        $result['items'] = $itemsCollection;
+        $result['totals'] = $this->getTotalsFromItems($itemsCollection);
 
         return $result;
     }

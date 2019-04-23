@@ -23,7 +23,15 @@ class TestController extends Controller
     public function fcm()
     {
         $strategy = new AnalyticsSpiasrStrategy();
-        $result = $strategy->getResult('2019-01-01', '2019-01-31');
+        $result = $strategy->getResult(
+            '2019-01-01',
+            '2019-03-01',
+            null,
+            null,
+            null,
+            'less_10',
+            null
+        );
 
         $xls = new Ticket101PeriodExcelExport($result);
 
