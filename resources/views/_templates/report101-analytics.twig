@@ -13,6 +13,8 @@
 
     <span><b>Использованные стволы: </b>{% for item in ticket.chronologies %}{% if item.event_info_arrived and item.event_info_arrived.name != 'ГДЗС' %}<span>{{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
 
+    <span>н/к {{ ticket.head_guards }}</span>
+
     <span><b>На место ЧС выезжали службы взаимодействия:</b> <span>{{ service_plans_str }}.</span></span>
 
     <span>КУИ №{{ kui }} от {{ date2 }}.</span>
