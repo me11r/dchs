@@ -54,7 +54,7 @@
   "extra": {
     "laravel": {
       "dont-discover": [
-        "barryvdh/laravel-translation-manager",
+        "barryvdh/laravel-translation-manager"
       ]
     }
   },
