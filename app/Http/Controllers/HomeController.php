@@ -43,7 +43,6 @@ class HomeController extends Controller
      */
     public function getIndex(Request $request, CommonHelper $h)
     {
-
         $data['call_infos'] = [
             'count_101' => CallInfo::shiftRecords()->sum('count_101'),
             'count_112' => CallInfo::shiftRecords()->sum('count_112'),

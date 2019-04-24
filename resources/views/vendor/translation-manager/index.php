@@ -117,22 +117,22 @@
     <?php endif; ?>
     <p>
         <?php if(!isset($group)) : ?>
-        <!--        <form class="form-import" method="POST" action="--><?php //echo action('\App\Http\Controllers\TranslateController@postImport') ?><!--" data-remote="true" role="form">-->
-        <!--            <input type="hidden" name="_token" value="--><?php //echo csrf_token(); ?><!--">-->
-        <!--            <div class="form-group">-->
-        <!--                <div class="row">-->
-        <!--                    <div class="col-sm-3">-->
-        <!--                        <select name="replace" class="form-control">-->
-        <!--                            <option value="0">Append new translations</option>-->
-        <!--                            <option value="1">Replace existing translations</option>-->
-        <!--                        </select>-->
-        <!--                    </div>-->
-        <!--                    <div class="col-sm-2">-->
-        <!--                    <button type="submit" class="btn btn-success btn-block"  data-disable-with="Loading..">Import groups</button>-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </form>-->
+                <form class="form-import" method="POST" action="<?php echo action('\App\Http\Controllers\TranslateController@postImport') ?>" data-remote="true" role="form">
+                    <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <select name="replace" class="form-control">
+                                    <option value="0">Append new translations</option>
+                                    <option value="1">Replace existing translations</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                            <button type="submit" class="btn btn-success btn-block"  data-disable-with="Loading..">Import groups</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
     <form class="form-find" method="POST" action="<?php echo action('\App\Http\Controllers\TranslateController@postFind') ?>" data-remote="true" role="form" data-confirm="Are you sure you want to scan you app folder? All found translation keys will be added to the database.">
         <div class="form-group">
             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
@@ -192,12 +192,11 @@
             </tr>
             </thead>
             <tbody>
-
-            <?php foreach ($translations as $key => $translation): ?>
+            <?php foreach ($translations_ as $key => $translation): ?>
                 <tr id="<?php echo htmlentities($key, ENT_QUOTES, 'UTF-8', false) ?>">
                     <td><?php echo htmlentities($key, ENT_QUOTES, 'UTF-8', false) ?></td>
                     <?php foreach ($locales as $locale): ?>
-                        <?php $t = isset($translation[$locale]) ? $translation[$locale] : null ?>
+                        <?php $t = $translation[$locale] ?? null ?>
 
                         <td>
                             <a href="#edit"

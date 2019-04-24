@@ -20,22 +20,22 @@
         </div>
 
         <div class="field">
-            <label for="">По линни "101"</label>
+            <label for="">По линии "101"</label>
             <input type="number" class="input" v-model="record.count_101" name="count_101">
         </div>
 
         <div class="field">
-            <label for="">По линни "102"</label>
+            <label for="">По линии "102"</label>
             <input type="number" class="input" v-model="record.count_102" name="count_102">
         </div>
 
         <div class="field">
-            <label for="">По линни "103"</label>
+            <label for="">По линии "103"</label>
             <input type="number" class="input" v-model="record.count_103" name="count_103">
         </div>
 
         <div class="field">
-            <label for="">По линни "109"</label>
+            <label for="">По линии "109"</label>
             <input type="number" class="input" v-model="record.count_109" name="count_109">
         </div>
 
