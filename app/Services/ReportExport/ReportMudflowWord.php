@@ -129,7 +129,7 @@ class ReportMudflowWord
 
         $cellRowSpanThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
         $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
-        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER, 'bold' => true];
         $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
         $table->addRow(700);
@@ -137,7 +137,7 @@ class ReportMudflowWord
         $headers = [
             '№',
 //            'Бассейн реки',
-            'Информация',
+//            'Информация',
             'Наименование гидропостов и их отметка',
             'Расход воды, м3/сек',
             'Критический расход воды, м3/сек',
@@ -162,17 +162,17 @@ class ReportMudflowWord
     {
         // заголовок
         $section->addText("Информация",
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => true],
             ['align' => Jc::CENTER]
         );
 
         $section->addText($this->block->text_header ?? null,
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => false],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => false],
             ['align' => Jc::BOTH]
         );
 
         $section->addText("Гидрометеорологические данные",
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true, 'italic' => true],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => true, 'italic' => true],
             ['align' => Jc::CENTER]
         );
 
@@ -181,14 +181,12 @@ class ReportMudflowWord
         $tableStyle->setUnit(TblWidth::PERCENT);
         $tableStyle->setWidth(100 * 50);
 
-
-
         $table = $section->addTable($tableStyle);
     }
     private function addFirstPageBottomData(Section $section)
     {
         $section->addText($this->block->text_footer ?? null,
-            ['name' => 'Times New Roman', 'size' => 12, 'bold' => false],
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => false],
             ['align' => Jc::BOTH]
         );
     }
@@ -201,7 +199,7 @@ class ReportMudflowWord
     private function getNewSection()
     {
         return $this->phpWord->addSection([
-            'orientation' => 'landscape',
+            'orientation' => 'portrait',
             'marginLeft' => 500,
             'marginRight' => 500,
             'marginTop' => 500,
@@ -212,10 +210,10 @@ class ReportMudflowWord
     private function addTableData(\PhpOffice\PhpWord\Element\Table $table, $startRowIndex = 2)
     {
         $rowIndex = $startRowIndex;
-        $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 11];
         $cellStyles = ['borderSize' => 10, 'borderColor' => '000000'];
 
-        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 8, 'valign' => Jc::CENTER];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 11, 'valign' => Jc::CENTER];
         $hcAlignStyle = array_merge(['align' => Jc::CENTER, 'valign' => Jc::CENTER], self::$noPaddingPS);
 
         $rivers = River::all();
@@ -231,7 +229,7 @@ class ReportMudflowWord
                 $arr = [
                     ++$key,
 //                    $river->name,
-                    $this->models[$gaugingStation->id]->information ?? null,
+//                    $this->models[$gaugingStation->id]->information ?? null,
                     $gaugingStation->name,
                     $this->models[$gaugingStation->id]->water_flow_rate ?? null,
                     $this->models[$gaugingStation->id]->ritical_water_flow_rate ?? null,

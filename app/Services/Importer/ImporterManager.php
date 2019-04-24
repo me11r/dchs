@@ -7,6 +7,8 @@ use App\Models\SpecialPlan;
 use App\Services\Importer\Importer\HydrantImporter;
 use App\Services\Importer\Importer\ImporterInterface;
 use App\Services\Importer\Importer\SpecialPlanImporter;
+use App\Services\Importer\Importer\Ticket101OtherImporter;
+use App\Ticket101Other;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -42,6 +44,11 @@ class ImporterManager
     public function hydrantImportFile(string $filePath): ImporterInterface
     {
         return $this->importFile($filePath, HydrantImporter::class, Hydrant::class);
+    }
+
+    public function ticket101OtherImportFile(string $filePath): ImporterInterface
+    {
+        return $this->importFile($filePath, Ticket101OtherImporter::class, Ticket101Other::class);
     }
 
     /**

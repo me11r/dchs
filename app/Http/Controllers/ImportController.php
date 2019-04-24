@@ -53,5 +53,21 @@ class ImportController extends AuthorizedController
         return View::make('import.import_results', $data);
     }
 
+    public function cards101Other(Request $request)
+    {
+        $data = [
+            'importName' => 'Карточки 101: прочие',
+        ];
+
+        $file = $request->file('file');
+        if ($file) {
+            $importer = $this->importerManager->ticket101OtherImportFile($file->getRealPath());
+            $data['incorrectItems'] = $importer->getIncorrectItems();
+            $data['importedItems'] = $importer->getItems();
+        }
+
+        return View::make('import.import_results', $data);
+    }
+
 
 }
