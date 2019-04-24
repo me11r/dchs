@@ -102,9 +102,12 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::resource('/emergency-situation', 'EmergencySituationController');
         Route::get('emergency-situation/{id}/download', 'EmergencySituationController@download')->name('emergency-situation.download');
 
-        Route::get('/import', 'ImportController@index')->name('import.index');
-        Route::post('/import/special_plans', 'ImportController@specialPlans')->name('import.special_plans');
-        Route::post('/import/hydrants', 'ImportController@hydrants')->name('import.hydrants');
+        Route::group(['prefix' => 'import', 'as' => 'import.'], function () {
+            Route::get('/', 'ImportController@index')->name('index');
+            Route::post('special_plans', 'ImportController@specialPlans')->name('special_plans');
+            Route::post('hydrants', 'ImportController@hydrants')->name('hydrants');
+            Route::post('card101-other', 'ImportController@cards101Other')->name('other');
+        });
 
         // Строевые записки
         Route::group(['prefix' => 'formation'], function () {

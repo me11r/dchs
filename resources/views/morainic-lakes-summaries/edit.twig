@@ -6,28 +6,13 @@
                 <h4 class="title">Сводная информация по озерам</h4>
             </div>
         </div>
-        {#<div class="field">#}
-            {#<p class="control">#}
-                {#<label for="dept_id_selector">Озеро</label>#}
-            {#<div class="select">#}
-                {#<select class="select" name="lake_id_select" id="lake_id_select">#}
-                    {#{% for lake in lakes %}#}
-                        {#<option value="{{ lake.id }}" {% if lake.id == dept_id %}selected{% endif %}>&nbsp;{{ lake.name }}&nbsp;</option>#}
-                    {#{% endfor %}#}
-                {#</select>#}
-            {#</div>#}
-        {#</div>#}
+
         <form action="{{ date is defined ? route('morainic-lakes-summaries.update', {'id':date}) : route('morainic-lakes-summaries.store')}}" method="post">
             {% if date is defined %}
                 {{  method_field('PUT') }}
             {% endif %}
             {{ csrf_field() }}
-            {#<input type="hidden" name="lake_id" value="{{ lake_id }}"/>#}
-            {#<input type="hidden" name="summary_id" value="{{ summary_id }}"/>#}
 
-            {#{% include "formation/tech.twig" with {model: model} %}#}
-
-            {#{% include "formation/field.twig" with {fields: fieldlist, prefix: ''} %}#}
             {% if records is defined %}
                 {% set data = records%}
             {% endif %}
@@ -125,21 +110,6 @@
                     </div>
                 </div>
             {% endfor %}
-
-
-
-
-            {#<div class="field">#}
-                {#<label for="field_4">Ф.И.О Начальника караула или лица его подменяющего</label>#}
-                {#<div class="control">#}
-                    {#<select class="select" name="head_guard_id" id="head_guard_id">#}
-                        {#{% for person in staff %}#}
-                            {#<option {{ person.id == model.head_guard_id ? 'selected' : '' }} value="{{ person.id }}">{{ person.name }}</option>#}
-                        {#{% endfor %}#}
-                    {#</select>#}
-                    {#<input type="text" :readonly="isReadonly('', '4')" step="1" data-value="" class="input add101persons-input" name="head_guard" id="field_4" value="{{ model.head_guard }}">#}
-                {#</div>#}
-            {#</div>#}
 
             <div class="panel" style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">

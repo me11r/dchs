@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\TranslateService;
 use Barryvdh\TranslationManager\Manager as Manager;
 use Barryvdh\TranslationManager\Models\Translation;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class TranslateController extends Controller
 {
@@ -46,7 +48,7 @@ class TranslateController extends Controller
         }
 
         return view('vendor.translation-manager.index')
-            ->with('translations', $translations)
+            ->with('translations_', $translations)
             ->with('locales', $locales)
             ->with('groups', $groups)
             ->with('group', $group)

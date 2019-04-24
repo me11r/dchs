@@ -1,19 +1,67 @@
 <?php
 
 
-namespace App\Services\Ticket101;
+namespace App\Services\Importer\Importer;
 
 
+use App\Services\ChunkedImporter\ChunkedImporter;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Importer
+class Ticket101RealImporter implements ImporterInterface
 {
     use \App\Services\Importer\Importer\CommonImporterTrait;
 
-    public function get()
+    /**
+     * @var array
+     */
+    private $items = [];
+
+    /**
+     * @var array
+     */
+    private $incorrectItems = [];
+
+    /**
+     * @param $filePath
+     * @return ImporterInterface
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    public function loadFile($filePath): ImporterInterface
     {
-        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101.xlsx'));
-        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101 - прочие (1) (1).xlsx'));
+        $this->items = [];
+        $this->incorrectItems = [];
+
+        ChunkedImporter::create($filePath, range('A', 'I'))
+            ->each(function (Worksheet $sheet) {
+                $this->get($sheet->toArray());
+            });
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncorrectItems(): array
+    {
+        return $this->incorrectItems;
+    }
+
+    public function get(array $raw_data)
+    {
+//        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101.xlsx'));
+//        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101 - прочие (1) (1).xlsx'));
 
         $raw_data_less = [];
 
@@ -124,58 +172,79 @@ class Importer
     public function parseTemplate($data)
     {
 //        $data = "ПЧ-2::[Отделение=7|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];ПЧ-3::[Отделение=4|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];ПЧ-3::[Отделение=5|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];";
-        $data = "ПЧ-6::[Время выезда=10:30|Время возвращения=19:00|";
-        if($data === null) {
-            return [];
-        }
-        $devideByFd = explode(';',$data);
+//        $data = "ПЧ-6::[Время выезда=10:30|Время возвращения=19:00|";
 
-        $devideByDept = [];
-        $devideByParam = [];
-        $devideByParam2 = [];
-        $devideByParam3 = [];
-        $results = [];
-
-        foreach ($devideByFd as $item) {
-            if($item !== '' && $item !== null) {
-                $devideByDept[] = explode('::',$item);
+        try {
+            if($data === null) {
+                return [];
             }
-        }
 
-        $map = [
-            'Отделение' => 'tech_dept_number',
-            'Принято в работу' => 'accept_time',
-            'Время выезда' => 'out_time',
-            'Время прибытия' => 'arrive_time',
-            'Время отбоя' => 'retreat_time',
-            'Время возвращения' => 'ret_time',
-            'Время оповещения' => 'dispatch_time',
-            'Время ввода в боевой расчет' => 'promoted_at',
-            'Количество привлеченного л/с' => 'staff_count',
-            'Расстояние до места' => 'distance',
-        ];
+            //отделяем блоки с ПЧ по ;
+            $devideByFd = explode(';',$data);
 
-        foreach ($devideByDept as $item) {
-            $temp = str_replace(['[',']'], '', $item);
-            $devideByParam[] = [$temp[0] => $temp[1]];
-        }
+            $devideByDept = [];
+            $devideByParam = [];
+            $devideByParam2 = [];
+            $devideByParam3 = [];
 
-        foreach ($devideByParam as $items) {
-            foreach ($items as $fd => $item) {
-                $rawParams = explode('|',$item);
-                foreach ($rawParams as $rawParam) {
-                    $temp = explode('=',$rawParam);
-                    if(count($temp) > 1) {
-                        $devideByParam2[$map[$temp[0]]] = $temp[1];
-                        $devideByParam2['fire_department_id'] = $fd;
-                    }
+            foreach ($devideByFd as $item) {
+                if($item !== '' && $item !== null) {
+                    $devideByDept[] = explode('::',$item);
                 }
             }
-            $devideByParam3[] = $devideByParam2;
-            $devideByParam2 = [];
+
+            if (count($devideByDept) < 2) {
+                return [
+                    'type' => 'error',
+                    'message' => "Ошибка в шаблоне: нет символа ::",
+                ];
+            }
+
+            $map = [
+                'Отделение' => 'tech_dept_number',
+                'Принято в работу' => 'accept_time',
+                'Время выезда' => 'out_time',
+                'Время прибытия' => 'arrive_time',
+                'Время отбоя' => 'retreat_time',
+                'Время возвращения' => 'ret_time',
+                'Время оповещения' => 'dispatch_time',
+                'Время ввода в боевой расчет' => 'promoted_at',
+                'Количество привлеченного л/с' => 'staff_count',
+                'Расстояние до места' => 'distance',
+            ];
+
+            foreach ($devideByDept as $item) {
+                $temp = str_replace(['[',']'], '', $item);
+                $devideByParam[] = [$temp[0] => $temp[1]];
+            }
+
+            foreach ($devideByParam as $items) {
+                foreach ($items as $fd => $item) {
+                    $rawParams = explode('|',$item);
+                    foreach ($rawParams as $rawParam) {
+                        $temp = explode('=',$rawParam);
+                        if(count($temp) > 1) {
+                            $devideByParam2[$map[$temp[0]]] = $temp[1];
+                            $devideByParam2['fire_department_id'] = $fd;
+                        }
+                    }
+                }
+                $devideByParam3[] = $devideByParam2;
+                $devideByParam2 = [];
+            }
+
+            return [
+                'type' => 'error',
+                'message' => $devideByParam3,
+            ];
+        }
+        catch (\Exception $e) {
+            return [
+                'type' => 'error',
+                'message' => $e->getMessage(),
+            ];
         }
 
-        return $devideByParam3;
     }
 
     private function find_tech(&$ticket)

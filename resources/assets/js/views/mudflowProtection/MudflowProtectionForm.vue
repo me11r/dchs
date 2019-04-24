@@ -128,7 +128,7 @@
                     </div>
                     <!--Погода-->
                     <div class="field">
-                        <label for="water_flow_rate">Погода</label>
+                        <label for="weather">Погода</label>
                         <textarea
                             name="weather"
                             id="weather"
@@ -139,7 +139,7 @@
                     </div>
                     <!--Комментарий-->
                     <div class="field">
-                        <label for="water_flow_rate">Комментарий</label>
+                        <label for="comment">Комментарий</label>
                         <textarea
                             name="comment"
                             id="comment"
