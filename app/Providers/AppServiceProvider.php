@@ -56,10 +56,17 @@ class AppServiceProvider extends ServiceProvider
         $locale = LaravelLocalization::getCurrentLocale();
         $locale = app()->getLocale();
 
-        view()->composer('*', function ($view) use ($locale) {
+        try {
+            $translations = Translation::getByLocale($locale)->get(['key', 'value']);
+        }
+        catch (\Exception $exception) {
+            $translations = json_encode([]);
+        }
+
+        view()->composer('*', function ($view) use ($locale, $translations) {
             $view->with([
                 'language' => $locale,
-                'translations' => Translation::getByLocale($locale)->get(['key', 'value']),
+                'translations' => $translations,
             ]);
         });
     }

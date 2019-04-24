@@ -164,8 +164,8 @@ return [
         LaravelFCM\FCMServiceProvider::class,
         Laravel\Scout\ScoutServiceProvider::class,
         ScoutEngines\Elasticsearch\ElasticsearchProvider::class,
+        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class,
         Barryvdh\TranslationManager\ManagerServiceProvider::class,
-        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class
     ],
 
     /*
