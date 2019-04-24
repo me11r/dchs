@@ -27,7 +27,7 @@ use App\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+//use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
 
         view()->share('protocol', $request->isSecure() ? 'https' : 'http');
 
-        $locale = LaravelLocalization::getCurrentLocale();
+//        $locale = LaravelLocalization::getCurrentLocale();
         $locale = app()->getLocale();
 
         view()->composer('*', function ($view) use ($locale) {
