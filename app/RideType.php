@@ -42,6 +42,11 @@ class RideType extends BaseModel
 
     public function ticket_101_others()
     {
-        return $this->hasMany(Ticket101OtherRecord::class, '');
+        return $this->hasMany(Ticket101Other::class, 'ride_type_id');
+    }
+
+    public function scopeName($q, $search)
+    {
+        return $q->where('name', $search);
     }
 }

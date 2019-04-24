@@ -65,6 +65,7 @@ class Ticket101Other extends BaseModel
         'created_by',
         'changed_by',
         'delayed_at',
+        'imported_at',
     ];
 
     protected $appends = [
@@ -104,6 +105,11 @@ class Ticket101Other extends BaseModel
     public function hqRides()
     {
         return $this->hasMany(Ticket101OtherHqRide::class, 'ticket101_id');
+    }
+
+    public function scopeImported($q, $search = null)
+    {
+        return $search ? $q->where('imported_at', $search) : $q->whereNotNull('imported_at');
     }
 
     public function setFinalRideTypeIdAttribute($value)

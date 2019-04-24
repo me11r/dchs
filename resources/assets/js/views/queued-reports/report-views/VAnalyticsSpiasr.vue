@@ -72,9 +72,13 @@
 
         <hr>
         <div
+            ref="table_div"
             class="tbl"
-            style="overflow-x: scroll;">
-            <table class="formation-record-table" >
+            :class="parentDivClasses"
+            style="overflow-x: auto;">
+            <table
+                class="formation-record-table content"
+                ref="table_content">
                 <thead>
                     <tr>
                         <td>Дата выезда</td>
@@ -141,11 +145,11 @@
 
 <script>
 import {ReportViewMixin} from '../report-view-mixin';
+import {FlippedScrollMixin} from '../flipped-scroll-mixin';
 
-// @TODO при необходимости переносить дополнительный функционал со старой страницы отчета
 export default {
     name: 'VAnalyticsSpiasr',
-    mixins: [ReportViewMixin],
+    mixins: [ReportViewMixin, FlippedScrollMixin],
     data() {
         return {
             report_summary: {
@@ -175,5 +179,10 @@ export default {
 </script>
 
 <style scoped>
-
+    .flipped-scroll, .flipped-scroll .content
+    {
+        transform:rotateX(180deg);
+        -ms-transform:rotateX(180deg); /* IE 9 */
+        -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+    }
 </style>
