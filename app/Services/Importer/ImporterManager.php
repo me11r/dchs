@@ -46,9 +46,12 @@ class ImporterManager
         return $this->importFile($filePath, HydrantImporter::class, Hydrant::class);
     }
 
-    public function ticket101OtherImportFile(string $filePath): ImporterInterface
+    public function ticket101OtherImportFile(string $filePath, string $Class): ImporterInterface
     {
-        return $this->importFile($filePath, Ticket101OtherImporter::class, Ticket101Other::class);
+        return $importer = $this
+            ->importerFactory
+            ->createImporter($Class)
+            ->loadFile($filePath);
     }
 
     /**

@@ -4,8 +4,15 @@
 namespace App\Services\Importer\Importer;
 
 
+use App\FireDepartment;
+use App\FormationReport;
+use App\Models\FormationTechItem;
+use App\RideType;
+use App\RoadtripPlan;
 use App\Services\ChunkedImporter\ChunkedImporter;
+use App\Ticket101Other;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class Ticket101OtherImporter implements ImporterInterface
@@ -22,6 +29,8 @@ class Ticket101OtherImporter implements ImporterInterface
      */
     private $incorrectItems = [];
 
+    private $formation_report;
+
     /**
      * @param $filePath
      * @return ImporterInterface
@@ -36,7 +45,8 @@ class Ticket101OtherImporter implements ImporterInterface
 
         ChunkedImporter::create($filePath, range('A', 'I'))
             ->each(function (Worksheet $sheet) {
-                $this->get($sheet->toArray());
+                $data = $this->get($sheet->toArray());
+                $this->save($data);
             });
 
         return $this;
@@ -58,11 +68,8 @@ class Ticket101OtherImporter implements ImporterInterface
         return $this->incorrectItems;
     }
 
-    public function get(array $raw_data)
+    public function get(array $raw_data): array
     {
-//        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101.xlsx'));
-//        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101 - прочие (1) (1).xlsx'));
-
         $raw_data_less = [];
 
         unset($raw_data[0]);
@@ -93,28 +100,21 @@ class Ticket101OtherImporter implements ImporterInterface
             $changed_keys['note'] = trim($temp_item[8]); //время окончания
 
             if(!$changed_keys['custom_created_at']) {
+
+                $this->incorrectItems[] = [
+                    'data' => implode(" ", $temp_item),
+                    'message' => "Некорректная дата создания карточки",
+                ];
+
                 continue;
             }
 
+            $changed_keys['ride_type_id'] = RideType::name($changed_keys['ride_type_id'])->first()->id ?? null;
+
+            $this->find_formation_report($changed_keys);
             $this->find_tech($changed_keys);
 
             $raw_data_less[] = $changed_keys;
-        }
-
-        foreach ($raw_data_less as $key => $item) {
-            $fire_dep_main_id = \App\FireDepartment::title($item['fire_department_main_id'])->first();
-            $fire_dep_id = \App\FireDepartment::title($item['fire_department_id'])->first();
-            $level = \App\Dictionary\FireLevel::name($item['dict_fire_level_id'])->first();
-
-            if($fire_dep_id && $fire_dep_main_id){
-                $raw_data_less[$key]['fire_department_id'] = $fire_dep_id->id;
-                $raw_data_less[$key]['fire_department_main_id'] = $fire_dep_main_id->id;
-                $raw_data_less[$key]['dict_fire_level_id'] = $level->id;
-
-            }
-            else{
-                unset($raw_data_less[$key]);
-            }
         }
 
         return $raw_data_less;
@@ -132,12 +132,13 @@ class Ticket101OtherImporter implements ImporterInterface
 
     public function parseTemplate($data)
     {
-//        $data = "ПЧ-2::[Отделение=7|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];ПЧ-3::[Отделение=4|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];ПЧ-3::[Отделение=5|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];";
-//        $data = "ПЧ-6::[Время выезда=10:30|Время возвращения=19:00|";
-
         try {
-            if($data === null) {
-                return [];
+            if ($data === null) {
+                return [
+                    'type' => 'ok',
+                    'message' => null,
+                    'data' => null,
+                ];
             }
 
             //отделяем блоки с ПЧ по ;
@@ -154,7 +155,7 @@ class Ticket101OtherImporter implements ImporterInterface
                 }
             }
 
-            if (count($devideByDept) < 2) {
+            if (count($devideByDept[0] ?? []) < 2) {
                 return [
                     'type' => 'error',
                     'message' => "Ошибка в шаблоне: нет символа ::",
@@ -184,9 +185,9 @@ class Ticket101OtherImporter implements ImporterInterface
                 foreach ($items as $fd => $item) {
                     $rawParams = explode('|',$item);
                     foreach ($rawParams as $rawParam) {
-                        $temp = explode('=',$rawParam);
+                        $temp = explode('=',trim($rawParam));
                         if(count($temp) > 1) {
-                            $devideByParam2[$map[$temp[0]]] = $temp[1];
+                            $devideByParam2[trim($map[$temp[0]])] = trim($temp[1]);
                             $devideByParam2['fire_department_id'] = $fd;
                         }
                     }
@@ -204,20 +205,137 @@ class Ticket101OtherImporter implements ImporterInterface
         catch (\Exception $e) {
             return [
                 'type' => 'error',
-                'message' => $e->getMessage(),
+                'message' => "Некорректный шаблон: ".$e->getMessage(),
                 'data' => null,
             ];
         }
-
     }
 
-    private function find_tech(&$ticket)
+    private function find_formation_report(&$changed_keys)
     {
+        $date = $this->parseDate($changed_keys['custom_created_at'], 'Y-m-d');
+        $report = FormationReport::where('report_date', $date)->first();
 
+        $this->formation_report = $report;
+
+        $changed_keys['formation_report_id'] = $report->id ?? null;
     }
 
-    private function devide($item, $delimiter)
+    private function find_tech(&$changed_keys)
     {
+        if($this->formation_report) {
+            foreach ($changed_keys['fire_department_results'] as $key => $fd_result) {
 
+                $fire_department = FireDepartment::title($fd_result['fire_department_id'])->first();
+
+                $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) {
+                    $q->where('form_id', $this->formation_report->id);
+                })->where('status', 'action')
+                    ->where('department',$fd_result['tech_dept_number'] ?? null)
+                    ->first();
+
+                $changed_keys['fire_department_results'][$key]['tech_id'] = $formationTechItem->id ?? null;
+                $changed_keys['fire_department_results'][$key]['fire_department_id'] = $fire_department->id ?? null;
+                $changed_keys['fire_department_results'][$key]['ticket101_other_id'] = null;
+            }
+        }
+        else {
+
+            unset($changed_keys['fire_department_results']);
+
+            $this->incorrectItems[] = [
+                'data' => implode(" ", $changed_keys),
+                'message' => "Не найдена строевая записка",
+            ];
+        }
+    }
+
+    private function save($cards)
+    {
+        foreach ($cards as $card) {
+
+            try {
+                $ticket = Ticket101Other::create([
+                    'ride_type_id' => $card['ride_type_id'],
+                    'time_begin' => $card['time_begin'],
+                    'time_end' => $card['time_end'],
+                    'object_name' => $card['object_name'],
+                    'note' => $card['note'],
+                    'formation_report_id' => $this->formation_report->id,
+                    'responsible_person' => $card['responsible_person'],
+                    'direction' => $card['direction'],
+                    'final_ride_type_id' => $card['ride_type_id'],
+                    'final_responsible_person' => $card['responsible_person'],
+                    'final_direction' => $card['direction'],
+                    'final_object_name' => $card['object_name'],
+                    'custom_created_at' => $card['custom_created_at'],
+                    'created_by' => Auth::id(),
+                    'changed_by' => Auth::id(),
+                    'imported_at' => now(),
+                ]);
+
+                if($card['fire_department_results']) {
+                    foreach ($card['fire_department_results'] as $fire_department_result) {
+
+                        $rideType = $ticket->ride_type->name ?? null;
+
+                        $errorString = "{$card['direction']} {$rideType} " . implode(' ', $fire_department_result);
+
+                        if (!$fire_department_result['fire_department_id']) {
+
+                            $this->incorrectItems[] = [
+                                'data' => $errorString,
+                                'message' => "Не найлена ПЧ",
+                            ];
+
+                            continue;
+                        }
+
+                        if (!$fire_department_result['tech_id']) {
+
+                            $this->incorrectItems[] = [
+                                'data' => $errorString,
+                                'message' => "Не найлено отделение ПЧ",
+                            ];
+
+                            continue;
+                        }
+
+                        $roadtripPlan = RoadtripPlan::firstOrCreate([
+                            'department_id' => $fire_department_result['fire_department_id'],
+                            'card101_other_id' => $ticket->id,
+                        ],[
+                            'department_id' => $fire_department_result['fire_department_id'],
+                            'card101_other_id' => $ticket->id,
+                            'is_closed' => false,
+                            'is_accepted' => true,
+                            'printed' => true,
+                        ]);
+
+                        $ticket->results()->create([
+                            'tech_id' => $fire_department_result['tech_id'],
+                            'fire_department_id' => $fire_department_result['fire_department_id'],
+                            'out_time' => $fire_department_result['out_time'],
+                            'ret_time' => $fire_department_result['ret_time'],
+                            'dispatch_time' => $fire_department_result['out_time'],
+                            'dispatched' => true,
+                            'dispatch_id' => $roadtripPlan->id,
+                        ]);
+                    }
+                }
+
+                $this->items[] = $card;
+            }
+            catch (\Exception $e) {
+
+                unset($card['fire_department_results']);
+
+                $this->incorrectItems[] = [
+                    'data' => implode(" ", $card),
+                    'message' => $e->getMessage() . ' ' . $e->getLine(),
+                ];
+            }
+
+        }
     }
 }
