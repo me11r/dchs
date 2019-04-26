@@ -8,6 +8,7 @@ use App\FireDepartment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Scout\Searchable;
 
 /**
@@ -65,6 +66,7 @@ class SpecialPlan extends Model
         'operational_plan_id',
         'location',
         'year_of_development',
+        'sort_order',
         'file'
     ];
 
@@ -96,5 +98,16 @@ class SpecialPlan extends Model
     public function operational_plan()
     {
         return $this->belongsTo(OperationalPlan::class, 'operational_plan_id');
+    }
+
+    public function scopeGetMaxSortOrder($q)
+    {
+        return (SpecialPlan::select('*')
+                ->where(function ($qq) {
+                    if($userDept = Auth::user()->fire_department_id) {
+                        $qq->where('fire_department_id', $userDept);
+                    }
+                })
+                ->count() + 1);
     }
 }
