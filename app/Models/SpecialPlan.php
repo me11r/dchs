@@ -65,6 +65,7 @@ class SpecialPlan extends Model
         'operational_plan_id',
         'location',
         'year_of_development',
+        'sort_order',
         'file'
     ];
 
@@ -96,5 +97,10 @@ class SpecialPlan extends Model
     public function operational_plan()
     {
         return $this->belongsTo(OperationalPlan::class, 'operational_plan_id');
+    }
+
+    public function scopeGetMaxSortOrder($q)
+    {
+        return (SpecialPlan::select('*')->count() + 1);
     }
 }

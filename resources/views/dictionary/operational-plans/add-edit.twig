@@ -78,6 +78,11 @@
                         {% endif %}
                     </div>
 
+                    <div class="field">
+                        <label for="object_name">№ п/п</label>
+                        <input type="text" class="input" name="sort_order" id="sort_order" value="{{ sort_order }}"/>
+                    </div>
+
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
                         <a href="/dictionaries/{{ type }}/" class="button is-light">Отменить</a>
