@@ -38,7 +38,6 @@ class Report
 
     protected $firstDateTime;
     protected $secondDateTime;
-    private $tomorrow;
 
 
     public function __construct(
@@ -55,8 +54,12 @@ class Report
 
     public function getReport($date = null): array
     {
-        $firstDate = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-        $secondDate = today()->addHours(7)->format('Y-m-d H:i:s');
+        $nowHours = now()->hour;
+
+        $today = $nowHours < 7 ? today()->addDay(-1)->addHours(7) : today()->addHours(7);
+
+        $firstDate = $today->format('Y-m-d H:i:s');
+        $secondDate = (clone $today)->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
 
         $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
         $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
@@ -65,8 +68,8 @@ class Report
             $carbon = new Carbon($date);
             $firstDate = $carbon->addHours(7)->format('Y-m-d H:i:s');
             $secondDate = $carbon->addDay(1)->format('Y-m-d H:i:s');
-            $this->time = strtotime($date);
 
+            $this->time = strtotime($date);
             $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
             $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
         }
@@ -407,8 +410,8 @@ class Report
         }
 
         $data['inactive_tech_cnt'] = $inactive_tech_cnt;
-        $data['arrangementYesterday'] = $this->getArrangementYesterday();
-        $data['arrangementToday'] = $this->getArrangementToday();
+        $data['arrangementToday'] = $this->getArrangement($this->firstDateTime);
+        $data['arrangementTomorrow'] = $this->getArrangement($this->secondDateTime);
         $data['fireDeptChecks'] = $this->getFireDeptChecks();
 
         return $data;
@@ -490,22 +493,9 @@ class Report
         return $results;
     }
 
-    private function getArrangementYesterday()
+    private function getArrangement($date)
     {
-        $date = Carbon::parse($this->firstDateTime)->format('Y-m-d'); //today()->addDay(-1)->format('Y-m-d');
-        $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
-            $q->where('name', 'Расстановка');
-        })
-            ->whereDate('custom_created_at', $date)
-            ->get();
-
-        return $formationCard101Others;
-    }
-
-    private function getArrangementToday()
-    {
-        $date = Carbon::parse($this->secondDateTime)->format('Y-m-d'); //today()->format('Y-m-d');
-
+        $date = Carbon::parse($date)->format('Y-m-d');
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($date) {
             $q->where('name', 'Расстановка');
         })
@@ -517,9 +507,6 @@ class Report
 
     private function getTech()
     {
-        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-        $to = today()->addHours(7)->format('Y-m-d H:i:s');
-
         return (new FormationTechReport())
             ->with('formation_tech_items')
             ->whereBetween('created_at', [$this->firstDateTime, $this->secondDateTime]);
@@ -527,9 +514,6 @@ class Report
 
     private function getFireDeptChecks()
     {
-        $from = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-        $to = today()->addHours(7)->format('Y-m-d H:i:s');
-
         $result = (new FireDepartmentCheck())
             ->whereIn('date', [
                 Carbon::parse($this->firstDate)->format('Y-m-d'),

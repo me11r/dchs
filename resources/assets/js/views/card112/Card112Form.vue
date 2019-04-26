@@ -676,7 +676,7 @@
                                 v-model="model.resources"></textarea>
                         </div>
 
-                        <!--ЗАДЕЙСТВОВАННЫЕ РЕСУРСЫ-->
+                        <!--КУИ-->
                         <div class="field">
                             <label for="kui">№ КУИ</label>
                             <input
@@ -685,6 +685,17 @@
                                 id="kui"
                                 class="input"
                                 v-model="model.kui">
+                        </div>
+
+                        <!--аналитика-->
+                        <div class="field">
+                            <label for="analytics">Суточный отчет</label>
+                            <textarea
+                                disabled
+                                class="textarea"
+                                id="analytics"
+                                :value="analytics"
+                            >
                         </div>
 
                         <div class="field is-grouped">
@@ -1020,12 +1031,45 @@ export default {
         cityAreasOptions() {
             return this.commonOptionsMapping(this.cityAreas);
         },
+        analytics() {
+            let text = "";
+            let cityAreaName = this.findById(this.model.city_area_id, this.cityAreas);
+            let callTime = moment(this.call_time).format('HH:mm');
+            let customCreatedAt = moment(this.custom_created_at).format('DD.MM.YYYY');
+            let reason = '';
+
+            if (this.model.flooding_reason_id) {
+                reason = this.findById(this.model.flooding_reason_id, this.floodingReasons);
+            } else if (this.model.elevator_emergency_type_id) {
+                reason = this.findById(this.model.elevator_emergency_type_id, this.elevatorEmergencyTypes);
+            } else if (this.model.disease_type_id) {
+                reason = this.findById(this.model.disease_type_id, this.diseaseTypes);
+            } else if (this.model.avalanche_type_id) {
+                reason = this.findById(this.model.avalanche_type_id, this.avalancheTypes);
+            } else if (this.model.branch_fall_reason_id) {
+                reason = this.findById(this.model.branch_fall_reason_id, this.branchFallReasons);
+            }
+
+            text += `${callTime} ${cityAreaName} р-н, ${this.model.detailed_address} - `;
+            text += this.model.emergency_feature ? `${this.model.emergency_feature}. ` : '';
+            text += reason ? `Причина: ${reason}. ` : '';
+            text += this.model.measures ? `Были приняты следующие меры: ${this.model.measures}. ` : '';
+            text += this.model.resources ? `Задействованные ресурсы: ${this.model.resources}. ` : '';
+            text += `Материал зарегистрирован в КУИ №${this.model.kui} от ${customCreatedAt} г.`;
+
+            return text;
+        },
+
         incidentTypeText() {
             let data = _.find(this.incidentTypes, {id: this.model.additional_incident_type_id});
             return data ? data.name : null;
         }
     },
     methods: {
+        findById(id, select){
+            let data = _.find(select, {id: id});
+            return data ? data.name : null;
+        },
         commonOptionsMapping(array) {
             return array.map((item) => {
                 return {
