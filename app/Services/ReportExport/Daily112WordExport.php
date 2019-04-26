@@ -328,8 +328,33 @@ class Daily112WordExport
         $this->addParagraph($section, "$index. Отработано всего выездов Службой Спасения г. Алматы – ", $this->data['cards112']->count());
         $index++;
 
-        $sirenSpeechTech = $this->data['siren_speech_tech'] ? $this->data['siren_speech_tech']->total .":". "С-40 (моторные) – {$this->data['siren_speech_tech']->motor}, СРУ-{$this->data['siren_speech_tech']->sst}:  из них  в нерабочем – {$this->data['siren_speech_tech']->broken}" : 'не зарегистрировано';
-        $this->addParagraph($section, "$index. Данные по СРУ: ", $sirenSpeechTech);
+        if ($this->data['siren_speech_tech']) {
+            $this->data['siren_speech_tech']->total = $this->data['siren_speech_tech']->total ? $this->data['siren_speech_tech']->total : 0;
+            $this->data['siren_speech_tech']->motor = $this->data['siren_speech_tech']->motor ? $this->data['siren_speech_tech']->motor : 0;
+            $this->data['siren_speech_tech']->sst = $this->data['siren_speech_tech']->sst ? $this->data['siren_speech_tech']->sst : 0;
+            $this->data['siren_speech_tech']->broken = $this->data['siren_speech_tech']->broken ? $this->data['siren_speech_tech']->broken : 0;
+            $this->data['siren_speech_tech']->demounted = $this->data['siren_speech_tech']->demounted ? $this->data['siren_speech_tech']->demounted : 0;
+            $this->data['siren_speech_tech']->inactive = $this->data['siren_speech_tech']->inactive ? $this->data['siren_speech_tech']->inactive : 0;
+
+            $sirenSpeechTechString = '';
+            $sirenSpeechTechString .= "всего – {$this->data['siren_speech_tech']->total}, ";
+            $sirenSpeechTechString .= "С-40 (моторные) – {$this->data['siren_speech_tech']->motor}, ";
+            $sirenSpeechTechString .= "СРУ – {$this->data['siren_speech_tech']->sst}: ";
+            $sirenSpeechTechString .= "из них в нерабочем – {$this->data['siren_speech_tech']->broken}, ";
+            $sirenSpeechTechString .= "{$this->data['siren_speech_tech']->demounted} из которых демонтированы, ";
+            $sirenSpeechTechString .= "на {$this->data['siren_speech_tech']->inactive} ремонтные работы:";
+
+            $this->addParagraph($section, "$index. Данные по СРУ: ", $sirenSpeechTechString);
+
+            foreach ($this->data['siren_speech_tech']->items as $key => $siren_item) {
+                $key++;
+
+                $this->addParagraph($section, "{$key}.", $siren_item->text, ['indentation' => ['left' => 540]]);
+            }
+        }
+        else {
+            $this->addParagraph($section, "$index. Данные по СРУ: ", "не зарегистрированно");
+        }
 
         $index++;
         $this->addParagraph($section, "$index. Мониторинг интернет пространства – ", 'негативная информация не зарегистрирована.');

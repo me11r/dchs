@@ -159,7 +159,7 @@ class Report112
         $data['cmk_count'] = (clone $this->tickets112)->filterByServiceType('ЦМК')->count();
         $data['SOME'] = Quake::dailyRecords($this->today, $this->tomorrow)->get();
         $data['flooding_count'] = (clone $this->tickets112)->filterByAdditionalIncidentType('Подтопления')->count();
-        $data['siren_speech_tech'] = SirenSpeechTech::shiftRecords($this->today, $this->tomorrow)->first();
+        $data['siren_speech_tech'] = SirenSpeechTech::dailyRecords($this->today, $this->tomorrow)->first();
         $data['weather_forecast'] = Weather::whereDate('date', Carbon::parse($this->yesterday)->format('Y-m-d'))->first();
         $data['emergency_situations'] = EmergencySituation::dailyRecords()->get();
         $data['call_info'] = $callInfo;

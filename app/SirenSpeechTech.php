@@ -32,4 +32,12 @@ class SirenSpeechTech extends BaseModel
     {
         return $this->sst + $this->motor + $this->demounted + $this->broken + $this->inactive;
     }
+
+    public function scopeDailyRecords($q, $from = null, $to = null)
+    {
+        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+        $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
+
+        return $q->whereBetween('created_at', [$from, $to]);
+    }
 }
