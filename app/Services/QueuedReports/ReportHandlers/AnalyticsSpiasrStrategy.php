@@ -180,6 +180,8 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
             $items = $items->where('ticket101.city_area_id', $city_area_id);
         }
 
+        $items = $items->whereNull('ticket101.drill_type_id');
+
         $items = $items->orderBy('id', 'DESC');
 
         $itemsCollection = $items->get();
