@@ -436,6 +436,7 @@ class Card112 extends BaseModel
         }
     }
 
+    //attribute: date
     public function getDateAttribute()
     {
         $format = 'd.m.Y';
@@ -447,6 +448,40 @@ class Card112 extends BaseModel
         }
 
         return null;
+    }
+
+    //attribute: analytics
+    public function getAnalyticsAttribute()
+    {
+        $text = '';
+        $callTime = Carbon::parse($this->call_time)->format('H:i');
+        $cityArea = @$this->cityArea->name;
+        $reason = '';
+
+        if ($this->flooding_reason_id) {
+            $reason = $this->flooding_reason->name;
+        }
+        elseif ($this->elevator_emergency_type_id) {
+            $reason = $this->elevator_emergency_type->name;
+        }
+        elseif ($this->disease_type_id) {
+            $reason = $this->disease_type->name;
+        }
+        elseif ($this->avalanche_type_id) {
+            $reason = $this->avalanche_type->name;
+        }
+        elseif ($this->branch_fall_reason_id) {
+            $reason = $this->branch_fall_reason->name;
+        }
+
+        $text .= "{$callTime} {$cityArea} р-н, {$this->detailed_address} - ";
+        $text .= $this->emergency_feature ? "{$this->emergency_feature}. " : '';
+        $text .= $reason ? "Причина: {$reason}. " : '';
+        $text .= $this->measures ? "Были приняты следующие меры: {$this->measures}. " : '';
+        $text .= $this->resources ? "Задействованные ресурсы: {$this->resources}. " : '';
+        $text .= "Материал зарегистрирован в КУИ № {$this->kui} от {$this->date} г.";
+
+        return $text;
     }
 
     public function setCustomCreatedAtAttribute($value)

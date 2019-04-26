@@ -38,7 +38,6 @@ class Report
 
     protected $firstDateTime;
     protected $secondDateTime;
-    private $tomorrow;
 
 
     public function __construct(
