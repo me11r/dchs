@@ -154,12 +154,12 @@ class Report112
         $data['emergency_saved_count'] = $cards112_emergency->sum('saved') + $cards101_emergency->sum('rescued_count')."/".$cards101_emergency->sum('saved_children');
 
 
-        $data['mudflow_emergency_count'] = $this->tickets112->filterByServiceType('ГУ Казселезащита')->count();
-        $data['roso_count'] = $this->tickets112->filterByServiceType('ГУ РОСО')->count();
-        $data['cmk_count'] = $this->tickets112->filterByServiceType('ЦМК')->count();
+        $data['mudflow_emergency_count'] = (clone $this->tickets112)->filterByServiceType('ГУ Казселезащита')->count();
+        $data['roso_count'] = (clone $this->tickets112)->filterByServiceType('ГУ РОСО')->count();
+        $data['cmk_count'] = (clone $this->tickets112)->filterByServiceType('ЦМК')->count();
         $data['SOME'] = Quake::dailyRecords($this->today, $this->tomorrow)->get();
-        $data['flooding_count'] = $this->tickets112->filterByIncidentType('Подтопления')->count();
-        $data['siren_speech_tech'] = SirenSpeechTech::shiftRecords($this->today, $this->tomorrow)->first();
+        $data['flooding_count'] = (clone $this->tickets112)->filterByAdditionalIncidentType('Подтопления')->count();
+        $data['siren_speech_tech'] = SirenSpeechTech::dailyRecords($this->today, $this->tomorrow)->first();
         $data['weather_forecast'] = Weather::whereDate('date', Carbon::parse($this->yesterday)->format('Y-m-d'))->first();
         $data['emergency_situations'] = EmergencySituation::dailyRecords()->get();
         $data['call_info'] = $callInfo;
