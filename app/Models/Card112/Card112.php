@@ -436,6 +436,7 @@ class Card112 extends BaseModel
         }
     }
 
+    //attribute: date
     public function getDateAttribute()
     {
         $format = 'd.m.Y';
@@ -449,11 +450,11 @@ class Card112 extends BaseModel
         return null;
     }
 
+    //attribute: analytics
     public function getAnalyticsAttribute()
     {
         $text = '';
         $callTime = Carbon::parse($this->call_time)->format('H:i');
-        $customCreatedAt = Carbon::parse($this->custom_created_at)->format('d.m.Y');
         $cityArea = @$this->cityArea->name;
         $reason = '';
 
