@@ -406,8 +406,15 @@ class Card112 extends BaseModel
 
     public function scopeFilterByIncidentType($q, $filter)
     {
-        return $q->whereHas('incident', function ($service_type) use ($filter){
-            $service_type->where('name', $filter);
+        return $q->whereHas('incident', function ($qq) use ($filter){
+            $qq->where('name', $filter);
+        });
+    }
+
+    public function scopeFilterByAdditionalIncidentType($q, $filter)
+    {
+        return $q->whereHas('additionalIncident', function ($qq) use ($filter){
+            $qq->where('name', $filter);
         });
     }
 
