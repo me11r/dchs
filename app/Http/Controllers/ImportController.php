@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Importer\Importer\Ticket101OtherImporter;
 use App\Services\Importer\ImporterManager;
+use App\Ticket101Other;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -57,17 +59,28 @@ class ImportController extends AuthorizedController
     {
         $data = [
             'importName' => 'Карточки 101: прочие',
+            'delete_path' => 'card101-other',
         ];
 
         $file = $request->file('file');
         if ($file) {
-            $importer = $this->importerManager->ticket101OtherImportFile($file->getRealPath());
+            $importer = $this->importerManager->ticket101OtherImportFile($file->getRealPath(), Ticket101OtherImporter::class);
             $data['incorrectItems'] = $importer->getIncorrectItems();
             $data['importedItems'] = $importer->getItems();
         }
 
         return View::make('import.import_results', $data);
     }
+
+    public function destroy($model)
+    {
+        if($model === 'card101-other') {
+            Ticket101Other::imported()->delete();
+        }
+
+        return redirect('import');
+    }
+
 
 
 }

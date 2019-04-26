@@ -6,11 +6,17 @@
         </h4>
     </div>
     <hr>
-    <div class="panel" style="margin-left: 15px">
+    <div class="panel" style="margin-left: 15px; overflow: scroll;">
         Импортировано: {{ importedItems | length }}
         <br>
         <br>
         Не импортировано: {{ incorrectItems | length }}
+        {% if delete_path is defined %}
+            <form action="/import/delete/{{ delete_path }}" method="post">
+                {{ csrf_field() }}
+                <button class="button is-danger">Удалить</button>
+            </form>
+        {% endif %}
         <br>
         <table class="table is-striped">
             <tbody>

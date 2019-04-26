@@ -107,6 +107,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
             Route::post('special_plans', 'ImportController@specialPlans')->name('special_plans');
             Route::post('hydrants', 'ImportController@hydrants')->name('hydrants');
             Route::post('card101-other', 'ImportController@cards101Other')->name('other');
+            Route::post('delete/{model}', 'ImportController@destroy')->name('delete');
         });
 
         // Строевые записки
