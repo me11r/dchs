@@ -136,9 +136,7 @@ class DictionaryController extends AuthorizedController
         }
         elseif($name == 'operational-plans'){
 
-            $specialPlan = SpecialPlan::orderBy('fire_department_id')
-                ->orderBy($sort)
-            ;
+            $specialPlan = new SpecialPlan();
 
             $page = $request->page ?? 1;
 
@@ -158,19 +156,24 @@ class DictionaryController extends AuthorizedController
 
             if ($request->filter_department) {
                 $specialPlan = $specialPlan
-                    ->where('fire_department_id', '=', $request->filter_department);
+                    ->where('fire_department_id', '=', $request->filter_department)
+//                    ->orderBy('sort_order')
+                ;
             }
 
-            if(!Auth::user()->department){
-
-                $data['records'] = $specialPlan
-                    ->paginate($data['per_page']);
-            }
-            else{
+            if(Auth::user()->department){
                 $data['records'] = $specialPlan
                     ->where('fire_department_id', Auth::user()->fire_department_id)
                     ->paginate($data['per_page']);
+
             }
+
+            $data['records'] = $specialPlan
+                ->orderBy('fire_department_id')
+                ->orderBy('sort_order')
+                ->orderBy($sort)
+                ->paginate($data['per_page']);
+
             $data['filter_department'] = $request->filter_department;
             $data['title'] = "Оперативные планы";
             $data['page'] = $page;
@@ -356,6 +359,7 @@ class DictionaryController extends AuthorizedController
             $data['city_areas'] = Dictionary\CityArea::all();
             $data['fire_departments'] = $fireDepts;
             $data['operational_plans'] = OperationalPlan::all();
+            $data['sort_order'] = $data['record']->sort_order ?? SpecialPlan::getMaxSortOrder();
 
         }
         elseif($name == 'operational-cards'){
@@ -472,6 +476,7 @@ class DictionaryController extends AuthorizedController
             $record->operational_plan_id = $operational_plan_id;
             $record->location = $request->location;
             $record->year_of_development = $request->year_of_development;
+            $record->sort_order = $request->sort_order;
 
 
             $record->save();
@@ -479,6 +484,7 @@ class DictionaryController extends AuthorizedController
             $data['record'] = $record;
             $data['title'] = "Оперативные планы";
             $data['incident_categories'] = IncidentTypeCategory::all();
+            $data['sort_order'] = $data['record']->sort_order;
 
             return redirect('/dictionaries/operational-plans')->with('_message', [
                 'type' => 'success',
