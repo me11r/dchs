@@ -49,23 +49,29 @@ class Report112
 
     public function __construct($date = null)
     {
+        $this->time = time();
+
         if(!$date) {
-            $this->time = time();
-            $this->tickets101 = Ticket101::dailyRecords();
-            $this->tickets112 = Card112::dailyRecords();
-            $this->today = today()->addHours(7)->format('Y-m-d H:i:s');
-            $this->yesterday = today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-            $this->tomorrow = today()->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
+            $nowHours = now()->hour;
+
+            //если текущее время от 00:00 до 07:00, берем интервал с 07:00 прошлого дня по 07:00 текущего
+            //если текущее время от 07:00, интервал = 07:00 текущего дня по 07:00 следующего дня
+            $today = $nowHours < 7 ? today()->addDay(-1)->addHours(7) : today()->addHours(7);
+
+            $this->today = $today->format('Y-m-d H:i:s');
+            $this->yesterday = (clone $today)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
+            $this->tomorrow = (clone $today)->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
+
+            $this->tickets101 = Ticket101::shiftRecords();
+            $this->tickets112 = Card112::shiftRecords();
         }
         else {
-            $from = Carbon::parse($date)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-            $to = Carbon::parse($date)->addHours(7)->format('Y-m-d H:i:s');
-            $this->time = time();
-            $this->tickets101 = Ticket101::dailyRecords($from, $to);
-            $this->tickets112 = Card112::dailyRecords($from, $to);
             $this->today = Carbon::parse($date)->addHours(7)->format('Y-m-d H:i:s');
             $this->yesterday = Carbon::parse($date)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-            $this->tomorrow = Carbon::parse($date)->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
+            $this->tomorrow = Carbon::parse($date)->addDay()->addHours(7)->format('Y-m-d H:i:s');
+
+            $this->tickets101 = Ticket101::dailyRecords($this->today, $this->tomorrow);
+            $this->tickets112 = Card112::dailyRecords($this->today, $this->tomorrow);
         }
     }
 
@@ -160,8 +166,8 @@ class Report112
         $data['SOME'] = Quake::dailyRecords($this->today, $this->tomorrow)->get();
         $data['flooding_count'] = (clone $this->tickets112)->filterByAdditionalIncidentType('Подтопления')->count();
         $data['siren_speech_tech'] = SirenSpeechTech::dailyRecords($this->today, $this->tomorrow)->first();
-        $data['weather_forecast'] = Weather::whereDate('date', Carbon::parse($this->yesterday)->format('Y-m-d'))->first();
-        $data['emergency_situations'] = EmergencySituation::dailyRecords()->get();
+        $data['weather_forecast'] = Weather::whereDate('date', Carbon::parse($this->today)->format('Y-m-d'))->first();
+        $data['emergency_situations'] = EmergencySituation::dailyRecords($this->today, $this->tomorrow)->get();
         $data['call_info'] = $callInfo;
 
         //РОСО,ЦМК,109,Өрт сөндіруші, РГП Казавиаспас
@@ -215,8 +221,8 @@ class Report112
         return [
             'hour' => '07',
             'minutes' => '00',
-            'from' => Carbon::parse($this->yesterday)->format('d.m.Y'),
-            'to' => Carbon::parse($this->today)->format('d.m.Y'),
+            'from' => Carbon::parse($this->today)->format('d.m.Y'),
+            'to' => Carbon::parse($this->tomorrow)->format('d.m.Y'),
         ];
     }
 

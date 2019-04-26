@@ -459,13 +459,13 @@ class DailyWordExport
         );
 
         $section->addText(
-            'Расстановка на ' . $this->data['dates']['from'] . 'г: ' . (count($this->data['arrangementYesterday']) === 0 ? 'нет' : ''),
+            'Расстановка на ' . $this->data['dates']['from'] . 'г: ' . (count($this->data['arrangementToday']) === 0 ? 'нет' : ''),
             $generalBoldUnderlineFontStyle,
             ['align' => Jc::BOTH]
         );
 
         $counterDepts = 1;
-        foreach ($this->data['arrangementYesterday'] as $key => $item) {
+        foreach ($this->data['arrangementToday'] as $key => $item) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
                 ($counterDepts) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') .($item['department'] ? "({$item['department']})" : '') . ' ',
@@ -487,12 +487,12 @@ class DailyWordExport
             ['align' => Jc::BOTH]
         );
         $section->addText(
-            'Расстановка на ' . $this->data['dates']['to'] . 'г: ' . (count($this->data['arrangementToday']) === 0 ? 'нет' : ''),
+            'Расстановка на ' . $this->data['dates']['to'] . 'г: ' . (count($this->data['arrangementTomorrow']) === 0 ? 'нет' : ''),
             $generalBoldUnderlineFontStyle,
             ['align' => Jc::BOTH]
         );
         $counterDepts = 1;
-        foreach ($this->data['arrangementToday'] as $key => $item) {
+        foreach ($this->data['arrangementTomorrow'] as $key => $item) {
             $textRun = $section->addTextRun(self::$noPaddingPS);
             $textRun->addText(
                 ($counterDepts) . '. ' . ($item['fire_department'] ? $item['fire_department']['title'] : '') . ' ',
