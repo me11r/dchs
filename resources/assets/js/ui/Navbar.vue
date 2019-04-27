@@ -501,10 +501,23 @@ export default {
                 }
             });
             return hasRight;
+        },
+        getLocaleFromUrl: function () {
+            let urlSegments = window.location.href.split('/');
+            let kk = urlSegments.find((segment) => {
+                return segment === 'kk';
+            });
+
+            if (kk !== undefined) {
+                return 'kk';
+            }
+
+            return 'ru';
         }
 
     },
     mounted: function () {
+        this.getLocaleFronUrl()
         this.language = window.language === 'ru' ? '' : '/' + window.language;
         // тащим права из базы
         let rightsPromise = rights.getRights();

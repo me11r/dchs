@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    '/reports/daily-reports/101' => [
-        'title' => 'Суточные отчеты 101',
+    '/reports/daily-reports/112' => [
+        'title' => 'Суточные отчеты 112',
     ],
 );
