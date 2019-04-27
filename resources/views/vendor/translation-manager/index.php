@@ -174,11 +174,11 @@
                 <textarea class="form-control" rows="3" name="keys" placeholder="Add 1 key per line, without the group prefix"></textarea>
             </div>
             <div class="form-group">
-                <input type="submit" value="Add keys" class="btn btn-primary">
+                <input type="submit" value="Добавить ключи" class="btn btn-primary">
             </div>
         </form>
         <hr>
-        <h4>Total: <?= $numTranslations ?>, changed: <?= $numChanged ?></h4>
+        <h4>Всего: <?= $numTranslations ?></h4>
         <table class="table">
             <thead>
             <tr>

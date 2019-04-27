@@ -11,7 +11,9 @@
 
     <span><b>Время ликвидации: </b><span>{{ ticket.liqv_time }}</span></span>
 
-    <span><b>Использованные стволы: </b>{% for item in ticket.chronologies %}{% if item.event_info_arrived and item.event_info_arrived.name != 'ГДЗС' %}<span>{{ item.fire_department_result.department.title }}: {{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
+    <span><b>Использованные стволы: </b>{% for item in ticket.chronologies %}{% if item.event_info_arrived and item.event_info_arrived.name != 'ГДЗС' %}<span>{{ item.fire_department_result.department.title }}:{{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
+    <span><b>ГДЗС: </b>{% for item in ticket.chronologies %}{% if item.event_info_arrived and item.event_info_arrived.name == 'ГДЗС' %}<span>{{ item.fire_department_result.department.title }}:{{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
+    <span><b>Подвоз воды: </b>{% for item in ticket.chronologies %}{% if item.water_delivery_distance %}<span>{{ item.fire_department_result.department.title }}:{{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, расстояние подвоза:{{ item.water_delivery_distance }}, время работы:{{ item.working_time }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
 
     <span>н/к {{ ticket.head_guards }}</span>
 
