@@ -1,9 +1,9 @@
 <?php
 
 return array (
-  'email' => 'Электронная почта33',
-  'logInSystem' => 'Вход в систему33',
+  'logInSystem' => 'Вход в систему',
+  'email' => 'Электронная почта',
   'password' => 'Пароль',
-  'logIn' => 'Вход',
   'remember' => 'Запомнить вход',
+  'logIn' => 'Вход',
 );
