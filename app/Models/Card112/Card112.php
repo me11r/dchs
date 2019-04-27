@@ -426,6 +426,11 @@ class Card112 extends BaseModel
         return $q->whereBetween('custom_created_at', [$from, $to]);
     }
 
+    public function scopeDeadInjured($q)
+    {
+        return $q->sum('injured') . "/" . $q->sum('dead');
+    }
+
     public function setDetailedAddressAttribute($value)
     {
         if(!$value) {

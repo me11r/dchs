@@ -158,7 +158,14 @@
                     </table>
                 </div>
                 <div class="section">
-                    <h4>Общее количество происшествий - {{ total }}</h4>
+                    <div class="level">
+                        <div class="level-left">
+                            <h4>Общее количество происшествий - {{ total }}</h4>
+                        </div>
+                        <div class="level-right">
+                            <h4>Пострадавшие/погибшие - {{ totalInjured }}</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -230,6 +237,7 @@ export default {
             reasonBranchesId: null,
             addressSearch: null,
             total: 0,
+            totalInjured: '0',
             response: []
         };
     },
@@ -248,6 +256,7 @@ export default {
             }).then((q) => {
                 this.response = q.data.data;
                 this.total = q.data.total;
+                this.totalInjured = q.data.totalInjured;
             });
         }
     },
