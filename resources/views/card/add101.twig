@@ -118,7 +118,11 @@
                             <div class="column is-half">
                                 <div class="bd-notification is-primary">
                                     <div class="field">
-                                        <label for="fireplace">Место пожара</label>
+                                        {% if card_type == 'drill' and ticket.drill_type_id == 7 %}
+                                            <label for="fireplace">Корректировка по улицам</label>
+                                        {% else %}
+                                            <label for="fireplace">Место пожара</label>
+                                        {% endif %}
                                         <input
                                                 id="fireplace"
                                                 name="fireplace"
