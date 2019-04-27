@@ -476,13 +476,15 @@ class ReportController extends AuthorizedController
             ->skipNullValue('city_area_id',$cityAreaId)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
             ->orderBy('custom_created_at')
-            ->with(['cityArea', 'flooding_place', 'flooding_reason'])
-            ->get();
+            ->with(['cityArea', 'flooding_place', 'flooding_reason']);
+
+        //пострадавшие/погибшие
+        $deadInjured = (clone $cards)->deadInjured();
 
         $incidentType = IncidentType::find($incident_type_id ?? 1);
 
         $preparedToExport = [];
-        foreach ($cards as $card) {
+        foreach ($cards->get() as $card) {
             if (!isset($preparedToExport[$card->cityArea->name])) {
                 $preparedToExport[$card->cityArea->name] = [];
             }
@@ -561,7 +563,7 @@ class ReportController extends AuthorizedController
         }
 
         if($request->ajax()) {
-            return response()->json(['data' => $preparedToExport, 'total' => $total]);
+            return response()->json(['data' => $preparedToExport, 'total' => $total, 'totalInjured' => $deadInjured]);
         }
 
         $spreadsheet = new Spreadsheet();
@@ -792,6 +794,12 @@ class ReportController extends AuthorizedController
 
         $activeSheet->getCell('B' . $rowIndex)
             ->setValue("Всего на номер «112» поступило {$cards->count()} сообщений о происшествиях")
+            ->getStyle()
+            ->getFont()
+            ->setBold(true);
+
+        $activeSheet->getCell('H' . $rowIndex)
+            ->setValue("Пострадавшие/погибшие -  {$deadInjured}")
             ->getStyle()
             ->getFont()
             ->setBold(true);
@@ -1164,6 +1172,8 @@ class ReportController extends AuthorizedController
         if($data['records101']->count()) {
             $data['records'] = $data['records101']->merge($data['records']);
         }
+
+        $data['deadInjured'] = $data['records']->sum('injured') ."/". $data['records']->sum('dead');
 
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;

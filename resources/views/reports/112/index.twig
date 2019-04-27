@@ -29,7 +29,7 @@
             {% if user.hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_REPORT') %}
                 <b-tab-item label="Чрезвычайные ситуации">
                     <report-emergency-type-period
-                            :records="{{ records }}"
+{#                            :records="{{ records }}"#}
                             :incident-types="{{ incidentTypes }}"
                             :trip-results="{{ tripResults }}"
                             :emergency-names="{{ emergency_names }}"

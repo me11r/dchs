@@ -133,6 +133,14 @@ class Ticket112EmergencyExcelExport
             $rowIndex++;
 
         }
+
+        $rowIndex++;
+
+        $sheet->getCell('F' . $rowIndex)
+            ->setValue("Пострадавшие/погибшие -  {$this->data['deadInjured']}")
+            ->getStyle()
+            ->getFont()
+            ->setBold(true);
     }
 
     /**

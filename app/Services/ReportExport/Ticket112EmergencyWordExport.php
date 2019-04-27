@@ -71,6 +71,11 @@ class Ticket112EmergencyWordExport
         $table = $section->addTable($tableStyle);
         $this->addFirstTableHeaders($table);
         $this->addFirstTableData($table);
+
+        // пострадавшие/погибшие
+        $section->addText('Пострадавшие/погибшие - '.$this->data['deadInjured'],
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::END]);
     }
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
@@ -85,7 +90,6 @@ class Ticket112EmergencyWordExport
 
         }
 
-        // сумма
         /*$row = $table->addRow();
         foreach ($this->getFirstTableSumRow() as $value) {
             $this->addDataCellToRow($row, $value, ['borderSize' => 10, 'borderColor' => '000000'], ['bold' => true, 'name' => 'Times New Roman', 'size' => 8], self::$noPaddingPS);

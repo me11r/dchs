@@ -103,6 +103,9 @@
                 <p>Адрес</p>
                 <input type="text" v-model="addressSearch" class="input">
             </div>
+            <div class="field">
+                <button @click.prevent="changeDate" class="button is-success">Поиск</button>
+            </div>
         </div>
 
         <div class="panel">
@@ -132,6 +135,15 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="section">
+            <div class="level">
+                <div class="level-left">
+                </div>
+                <div class="level-right">
+                    <h4>Пострадавшие/погибшие - {{ totalInjured }}</h4>
+                </div>
+            </div>
         </div>
         <br>
     </div>
@@ -174,6 +186,7 @@
                 emergencyNameId: null,
                 cityAreaId: null,
                 addressSearch: null,
+                totalInjured: '0',
             }
         },
         computed: {
@@ -198,31 +211,11 @@
                     }
                 }).then((r) => {
                     this.records_ = r.data.records;
+                    this.totalInjured = r.data.deadInjured;
                 });
             }
         },
         watch: {
-            'dateTo'() {
-                this.changeDate();
-            },
-            'dateFrom'() {
-                this.changeDate();
-            },
-            'incidentTypeId'() {
-                this.changeDate();
-            },
-            'tripResultId'() {
-                this.changeDate();
-            },
-            'emergencyNameId'() {
-                this.changeDate();
-            },
-            'cityAreaId'() {
-                this.changeDate();
-            },
-            'addressSearch'() {
-                this.changeDate();
-            },
         }
     }
 </script>

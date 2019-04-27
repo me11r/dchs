@@ -517,7 +517,6 @@ export default {
 
     },
     mounted: function () {
-        this.getLocaleFronUrl()
         this.language = window.language === 'ru' ? '' : '/' + window.language;
         // тащим права из базы
         let rightsPromise = rights.getRights();

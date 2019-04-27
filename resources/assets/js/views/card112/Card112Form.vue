@@ -687,16 +687,7 @@
                                 v-model="model.kui">
                         </div>
 
-                        <!--аналитика-->
-                        <div class="field">
-                            <label for="analytics">Суточный отчет</label>
-                            <textarea
-                                disabled
-                                class="textarea"
-                                id="analytics"
-                                :value="analytics"
-                            >
-                        </div>
+
 
                         <div class="field is-grouped">
                             <!--ПОСТРАДАВШИХ ЛЮДЕЙ/ДЕТЕЙ-->
@@ -781,6 +772,16 @@
                                     name="saved_animals"
                                     id="saved_animals">
                             </div>
+                        </div>
+                        <!--аналитика-->
+                        <div class="field">
+                            <label for="analytics">Суточный отчет</label>
+                            <textarea
+                                    disabled
+                                    class="textarea"
+                                    id="analytics"
+                                    :value="analytics"
+                            >
                         </div>
                     </div>
                     <div :style="{'display': currentTabIndex === 2 ? 'block': 'none'}">
