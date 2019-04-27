@@ -54,6 +54,8 @@ class Report112Emergency
 
         $data['dateFrom'] = Carbon::parse($this->data['dateFrom'])->format('d.m.Y');
         $data['dateTo'] = Carbon::parse($this->data['dateTo'])->format('d.m.Y');
+        $data['dateTo'] = Carbon::parse($this->data['dateTo'])->format('d.m.Y');
+        $data['deadInjured'] = $this->data['deadInjured'];
 
         $data['values'] = [];
 
