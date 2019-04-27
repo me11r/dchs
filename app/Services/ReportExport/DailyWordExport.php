@@ -387,7 +387,9 @@ class DailyWordExport
         /*учебные выезды [begin]*/
 
         foreach (DrillType::all() as $key => $drillType) {
+
             $ticketsWithDrillType = $this->data['drill_tickets']->where('drill_type_id', $drillType->id);
+
             if($ticketsWithDrillType->count()) {
 
                 $counterDepts = 1;
@@ -405,30 +407,62 @@ class DailyWordExport
                     foreach ($drillResults as $drillResult) {
                         $textRun = $section->addTextRun(self::$noPaddingPS);
 
+                        //1.ПЧ-3:2
                         $textRun->addText(
                             ($counterDepts) . '. ' . ($drillResult['department'] ? ($drillResult['department']['title'].":".$drillResult['dept_number']) : '') . ' ',
                             $generalBoldFontStyle,
                             ['align' => Jc::BOTH]
                         );
 
+                        //14:00:00 - 17:16:00
                         $textRun->addText(
                             $drillTicket['drill_begin'] . ' - ' . $drillTicket['drill_end'] . ' ',
                             $simpleFontStyle,
                             ['align' => Jc::BOTH]
                         );
 
+                        // ОП 81/8
+                        // ОК 81/8
+                        $operational = '';
+                        if($drillTicket['operational_plan']) {
+                            $operational = "ОП ".$drillTicket['operational_plan']['name'];
+                        }
+                        elseif($drillTicket['operational_card']) {
+                            $operational = $drillTicket['operational_card']['oc_number'];
+                        }
+
                         $textRun->addText(
-                            ($drillTicket['operational_plan'] ? $drillTicket['operational_plan']['name'] : '') .' ',
+                            $operational .' ',
                             $simpleFontStyle,
                             ['align' => Jc::BOTH]
                         );
 
+                        //Радиотелевизионная передающая станция ТОО «Кок-тобе»
                         $textRun->addText(
                             $drillTicket['drill_name_total'].' ',
                             $simpleFontStyle,
                             ['align' => Jc::BOTH]
                         );
 
+                        //Корректировка
+                        if ($drillType->id === 7) {
+                            //Проверено ПГ/ПВ / Неисправно ПГ/ПВ
+                            //4ПГ/0ПГ 3ПВ/2ПВ
+                            $pg_pv = ($drillTicket['drill_checked_pg_total'] ? $drillTicket['drill_checked_pg_total'] : 0) . "ПГ/";
+                            $pg_pv .= ($drillTicket['drill_out_pg_total'] ? $drillTicket['drill_out_pg_total'] : 0). "ПГ ";
+
+                            $pg_pv .= ($drillTicket['drill_checked_pv_total'] ? $drillTicket['drill_checked_pv_total'] : 0) . "ПВ/";
+                            $pg_pv .= ($drillTicket['drill_out_pv_total'] ? $drillTicket['drill_out_pv_total'] : 0). "ПВ ";
+
+                            //4ПГ/0ПГ
+                            $textRun->addText(
+                                $pg_pv.' ',
+                                $simpleFontStyle,
+                                ['align' => Jc::BOTH]
+                            );
+                        }
+
+                        //Несипбаев
                         $textRun->addText(
                             $drillTicket['owner'],
                             $simpleFontStyle,
