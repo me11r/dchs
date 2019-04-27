@@ -25,7 +25,11 @@ class TranslateController extends Controller
 
     public function getIndex($group = null)
     {
-        $locales = $this->manager->getLocales();
+//        $locales = $this->manager->getLocales();
+        $locales = [
+            'kk',
+            'ru',
+        ];
         $groups = Translation::groupBy('group');
         $excludedGroups = $this->manager->getConfig('exclude_groups');
         if($excludedGroups){

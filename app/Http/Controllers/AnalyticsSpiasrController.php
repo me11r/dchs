@@ -52,66 +52,36 @@ class AnalyticsSpiasrController extends Controller
 
         $year = now()->format('Y');
 
-        /** @var Collection $itemsByTheYear */
-        $itemsByTheYear = Ticket101::whereYear('created_at', $year)->get(['created_at', 'drill_type_id', 'drill_type_id', 'object_classification_id']);
-
         foreach ($drillTypes as $type) {
 
             foreach (range(1, 12) as $month) {
-                $date = Carbon::create($year, $month);
-                $itemsByTheMonth = $itemsByTheYear
-                    ->where('created_at', '>=', $date->format('Y-m-d'))
-                    ->where('created_at', '<=', $date->addMonth()->format('Y-m-d'));
+                //Если тип учения = ПТЗ, считаем карточки с ПТЗ и НПТЗ, т.к. это одно и то же (ARM-584)
+                if($type->name == 'ПТЗ') {
+                    $typesArr = [$type->id,8];
+                }
+                else {
+                    $typesArr = [$type->id];
+                }
 
-                $data['counts'][$type->name]['per_month'][$month] = $itemsByTheMonth
-                    ->where('drill_type_id',$type->id)
+                $data['counts'][$type->name]['per_month'][$month] = Ticket101::whereYear('custom_created_at', $year)
+                    ->whereMonth('custom_created_at', $month)
+                    ->whereIn('drill_type_id',$typesArr)
                     ->count();
 
                 foreach ($data['object_classes'] as $object_class) {
 
-                    $data['records'][$type->name][$object_class->name][$month] = $itemsByTheMonth
-                        ->where('drill_type_id',$type->id)
+                    $data['records'][$type->name][$object_class->name][$month] = Ticket101::whereYear('custom_created_at', $year)
                         ->where('object_classification_id', $object_class->id)
-                        ->count();
+                        ->whereMonth('custom_created_at', $month)
+                        ->whereIn('drill_type_id',$typesArr)->count();
 
-                    $data['counts'][$type->name]['per_object'][$object_class->name] = $itemsByTheYear
-                        ->where('drill_type_id',$type->id)
+                    $data['counts'][$type->name]['per_object'][$object_class->name] = Ticket101::whereYear('custom_created_at', $year)
+                        ->whereIn('drill_type_id',$typesArr)
                         ->where('object_classification_id', $object_class->id)
                         ->count();
                 }
             }
         }
-
-//        $drillTypes = DrillType::whereIn('name', ['ПТЗ','ПТУ'])->get();
-//
-//        $year = now()->format('Y');
-//
-//
-//        foreach ($drillTypes as $type) {
-//
-//            foreach (range(1, 12) as $month) {
-//
-//                $data['counts'][$type->name]['per_month'][$month] = Ticket101::whereYear('created_at', $year)
-//                    ->whereMonth('created_at', $month)
-//                    ->where('drill_type_id',$type->id)
-//                    ->count();
-//
-//                foreach ($data['object_classes'] as $object_class) {
-//
-//                    $data['records'][$type->name][$object_class->name][$month] = Ticket101::whereYear('created_at', $year)
-//                        ->where('object_classification_id', $object_class->id)
-//                        ->whereMonth('created_at', $month)
-//                        ->where('drill_type_id',$type->id)->count();
-//
-//                    $data['counts'][$type->name]['per_object'][$object_class->name] = Ticket101::whereYear('created_at', $year)
-//                        ->where('drill_type_id',$type->id)
-//                        ->where('object_classification_id', $object_class->id)
-//                        ->count();
-//                }
-//            }
-//        }
-
-
 
         return view('analytics_spiasr.index',$data);
     }

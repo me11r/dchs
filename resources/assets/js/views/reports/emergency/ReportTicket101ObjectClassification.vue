@@ -20,7 +20,7 @@
                                     id="year">
                                     <option>-</option>
                                     <option
-                                        v-for="x in [2018, 2019, 2020]"
+                                        v-for="x in getYears()"
                                         :value="x">{{ x }}</option>
                                 </select>
                             </div>
@@ -37,6 +37,7 @@
                             </div>
                         </div>
 
+
                     </div>
 
                 </div>
@@ -48,6 +49,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="field">
+            <button @click.prevent="changeDate" class="button is-info">Поиск</button>
         </div>
 
         <div
@@ -133,12 +138,17 @@ export default {
                 this.counts_ = r.data.counts;
                 loadingComponent.close();
             });
+        },
+        getYears() {
+            let date = new Date();
+            return [
+                date.getFullYear() - 1,
+                date.getFullYear(),
+                date.getFullYear() + 1,
+            ];
         }
     },
     watch: {
-        'year'() {
-            this.changeDate();
-        }
     }
 };
 </script>

@@ -123,12 +123,12 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <select name="replace" class="form-control">
-                                    <option value="0">Append new translations</option>
-                                    <option value="1">Replace existing translations</option>
+                                    <option value="0">Добавить новые переводы</option>
+<!--                                    <option value="1">Заменить существующие переводы</option>-->
                                 </select>
                             </div>
                             <div class="col-sm-2">
-                            <button type="submit" class="btn btn-success btn-block"  data-disable-with="Loading..">Import groups</button>
+                            <button type="submit" class="btn btn-success btn-block"  data-disable-with="Loading..">Импорт групп</button>
                             </div>
                         </div>
                     </div>
@@ -136,16 +136,16 @@
     <form class="form-find" method="POST" action="<?php echo action('\App\Http\Controllers\TranslateController@postFind') ?>" data-remote="true" role="form" data-confirm="Are you sure you want to scan you app folder? All found translation keys will be added to the database.">
         <div class="form-group">
             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-            <button type="submit" class="btn btn-info" data-disable-with="Searching.." >Найти переводы в шаблонах</button>
+<!--            <button type="submit" class="btn btn-info" data-disable-with="Searching.." >Найти переводы в шаблонах</button>-->
         </div>
     </form>
 <?php endif; ?>
     <?php if(isset($group)) : ?>
-        <form class="form-inline form-publish" method="POST" action="<?php echo action('\App\Http\Controllers\TranslateController@postPublish', $group) ?>" data-remote="true" role="form" data-confirm="Are you sure you want to publish the translations group '<?php echo $group ?>? This will overwrite existing language files.">
-            <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-            <button type="submit" class="btn btn-info" data-disable-with="Publishing.." >Опубликовать переводы</button>
-            <a href="<?= action('\App\Http\Controllers\TranslateController@getIndex') ?>" id="publish" class="btn btn-default">Назад</a>
-        </form>
+<!--        <form class="form-inline form-publish" method="POST" action="--><?php //echo action('\App\Http\Controllers\TranslateController@postPublish', $group) ?><!--" data-remote="true" role="form" data-confirm="Are you sure you want to publish the translations group '--><?php //echo $group ?><!--? This will overwrite existing language files.">-->
+<!--            <input type="hidden" name="_token" value="--><?php //echo csrf_token(); ?><!--">-->
+<!--            <button type="submit" class="btn btn-info" data-disable-with="Publishing.." >Опубликовать переводы</button>-->
+<!--            <a href="--><?//= action('\App\Http\Controllers\TranslateController@getIndex') ?><!--" id="publish" class="btn btn-default">Назад</a>-->
+<!--        </form>-->
     <?php endif; ?>
     </p>
     <form role="form" method="POST" action="<?php echo action('\App\Http\Controllers\TranslateController@postAddGroup') ?>">
