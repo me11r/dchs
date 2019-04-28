@@ -23,7 +23,7 @@
                     <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;101</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(2)"
+                            v-if="hasRight('CAN_SEE_REQUEST')"
                             :href="getHref('/card/add101')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Путевка 101
@@ -48,7 +48,7 @@
                             Нормативы ПСП
                         </a>
                         <a
-                            v-if="hasRight(2)"
+                            v-if="hasRight('CAN_SEE_REQUEST')"
                             :href="getHref('/card/101')"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
@@ -60,13 +60,13 @@
                     <a class="navbar-link is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;112</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(33)"
+                            v-if="hasRight('CAN_VIEW_112_CARD')"
                             :href="getHref('/card112/create')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
                             Путевка 112
                         </a>
                         <a
-                            v-if="hasRight(33)"
+                            v-if="hasRight('CAN_VIEW_112_CARD')"
                             :href="getHref('/card112')"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
@@ -87,57 +87,51 @@
                         <a
                             :href="getHref('/formation/101')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(12)"
+                            v-if="hasRight('CAN_ACCESS_FORMATION_REPORT_101')"
                         >
                             <i class="fas fa-truck fa-fw"></i>&nbsp;СП и АСР
                         </a>
                         <a
                             :href="getHref('/formation-record/mudflow')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(15)">
+                            v-if="hasRight('CAN_ACCESS_FORMATION_REPORT_MUDFLOW_PROTECTION')">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;ГУ «Казселезащита»
                         </a>
                         <a
                             :href="getHref('/formation/savers')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(13)">
+                            v-if="hasRight('CAN_ACCESS_FORMATION_REPORT_ROSO')">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;ГУ «РОСО КЧС МВД РК»
                         </a>
                         <a
                             :href="getHref('/formation-record/medical')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(14)">
+                            v-if="hasRight('CAN_ACCESS_FORMATION_REPORT_CMK')">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;ГУ «Центр медицины катастроф»
                         </a>
                         <a
                             :href="getHref('/formation/air-rescue')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(16)"
+                            v-if="hasRight('CAN_ACCESS_FORMATION_REPORT_AIR_RESCUE')"
                         >
                             <i class="fas fa-truck fa-fw"></i>&nbsp;АО "Казавиаспас"
                         </a>
                         <a
                             :href="getHref('/formation-record/ort_sert')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(17)">
+                            v-if="hasRight('CAN_ACCESS_FORMATION_REPORT_ORTSERT')">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;АО "Өртсөндіруші"
                         </a>
                         <a
                             :href="getHref('/formation-record/emergency_almaty')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(19)">
+                            v-if="hasRight('CAN_ACCESS_FORMATION_EMERGENCY_ALMATY')">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;Служба спасения г.Алматы
                         </a>
-                        <!--<a
-                                href="/formation-record/district-managers"
-                                class="dropdown-item is-small"
-                                v-if="hasRight(18)">
-                            <i class="fas fa-truck"></i>&nbsp;Ответственные по районным отделам г.Алматы
-                        </a>-->
                         <a
                             :href="getHref('/formation-record')"
                             class="dropdown-item is-small"
-                            v-if="hasRight(18)">
+                            v-if="hasRight('CAN_ACCESS_FORMATION_DCHS_ALMATY')">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;Журнал строевых записок ДЧС г.Алматы
                         </a>
                     </div>
@@ -264,78 +258,18 @@
                         </a>
 
                         <a
-                            v-if="hasAnyRight('ANALYTICS101_SHOW',
-                                              'CAN_ACCESS_REPORT_112_EMERGENCY_REPORT',
-                                              'CAN_ACCESS_REPORT_OTHER_RIDES',
-                                              'CAN_ACCESS_REPORT_DRILL_RIDES',
-                                              'CAN_ACCESS_REPORT_FORCES_RESOURCES',
-                                              'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION',
-                                              'CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU',
-                                              'CAN_SEE_DAILY_REPORT',
-                                              'CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION'
-                            )"
-                            :href="getHref('/reports/analytics101/')"
-                            class="dropdown-item is-small"><i class="fas fa-database"></i>
-                            &nbsp; Суточные отчеты
-                        </a>
-                        <!--<a class="dropdown-item is-small"-->
-                        <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')"-->
-                        <!--href="/reports/daily-reports/101">-->
-                        <!--<i class="fas fa-database"></i>&nbsp; Суточный отчет 101</a>-->
-                        <!--<a class="dropdown-item is-small"-->
-                        <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')"-->
-                        <!--href="/reports/daily-reports/112">-->
-                        <!--<i class="fas fa-database"></i>&nbsp; Суточный отчет 112</a>-->
-
-                        <a
                             class="dropdown-item is-small"
                             v-if="hasRight('ANALYTICS112_SHOW')"
                             :href="getHref('/reports/112')">
                         <i class="fas fa-database"></i>&nbsp; Аналитика ДЧС</a>
 
-                        <!--<div-->
-                        <!--class="dropdown-item"-->
-                        <!--v-if="hasRight('CAN_SEE_DAILY_REPORT')">-->
-                        <!--<div class="level is-mobile">-->
-                        <!--<div class="level-left">-->
-                        <!--<i class="fas fa-receipt fa-fw"></i>&nbsp;-->
-                        <!--Суточный отчет 112-->
-                        <!--</div>-->
-                        <!--<div class="level-right">-->
-                        <!--<div class="buttons">-->
-                        <!--<a-->
-                        <!--href="/pdf/operational-report"-->
-                        <!--target="_blank"-->
-                        <!--class="button is-small"><i class="fas fa-file-pdf"></i>.pdf-->
-                        <!--</a>-->
-                        <!--<a-->
-                        <!--href="/reports/daily112/word"-->
-                        <!--target="_blank"-->
-                        <!--class=" button is-small">-->
-                        <!--<i class="fas fa-file-word"></i>.doc-->
-                        <!--</a>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--</div>-->
-
-                        <!--</div>-->
-                        <!--<a
-                            v-if="hasRight(21)"
-                            href="/information"
-                            class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
-                            Информация</a>
                         <a
-                            v-if="hasRight(22)"
-                            href="/emergency-situation"
-                            class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
-                            Оперативная информация</a>-->
-                        <a
-                            v-if="hasRight(23)"
+                            v-if="hasRight('CAN_ACCESS_PERORT_PERSONS')"
                             :href="getHref('/reports/101/staff')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Отчет по ЛС</a>
                         <a
-                            v-if="hasRight(24)"
+                            v-if="hasRight('CAN_ACCESS_PERORT_TECH')"
                             :href="getHref('/reports/101/vehicles')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Отчет по технике</a>
@@ -372,12 +306,12 @@
                     <a class="navbar-link is-small"><i class="fas fa-info fa-fw"></i>&nbsp;Информация</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(21)"
+                            v-if="hasRight('CAN_ACCESS_INFO')"
                             :href="getHref('/information')"
                             class="dropdown-item is-small"><i class="fas fa-address-book fa-fw"></i>&nbsp;
                             Информация от служб взаимодействия</a>
                         <a
-                            v-if="hasRight(22)"
+                            v-if="hasRight('CAN_ACCESS_OPER_INFO')"
                             :href="getHref('/emergency-situation')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Оперативная информация</a>
@@ -387,14 +321,14 @@
                     <a class="navbar-link is-small"><i class="fas fa-fw fa-road"></i>&nbsp;Путевые листы</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(9)"
+                            v-if="hasRight('CAN_SEE_TRIP_PLAN')"
                             :href="getHref('/roadtrip/')"
                             class="dropdown-item">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;
                             Путевые листы ПЧ
                         </a>
                         <a
-                            v-if="hasRight(32)"
+                            v-if="hasRight('CAN_RECEIVE_SERVICE_PLAN')"
                             :href="getHref('/service-plans/')"
                             class="dropdown-item">
                             <i class="fas fa-archway fa-fw"></i>&nbsp;
@@ -413,23 +347,23 @@
                         class="navbar-link is-small"><i class="fas fa-cog fa-fw"></i>&nbsp;Управление</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight(8)"
+                            v-if="hasRight('CAN_EDIT_DICTIONARIES')"
                             :href="getHref('/dictionaries')"
                             class="dropdown-item"><i class="fas fa-list-alt fa-fw"></i>&nbsp;Справочники</a>
                         <a
-                            v-if="hasRight(7)"
+                            v-if="hasRight('CAN_MANAGE_USERS')"
                             :href="getHref('/admin/users')"
                             class="dropdown-item"><i class="fas fa-user fa-fw"></i>&nbsp;Пользователи</a>
                         <a
-                            v-if="hasRight(7)"
+                            v-if="hasRight('CAN_MANAGE_USERS')"
                             :href="getHref('/admin/messenger-permissions')"
                             class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Разрешения мессенджера</a>
                         <a
-                            v-if="hasRight(7)"
+                            v-if="hasRight('CAN_MANAGE_USERS')"
                             :href="getHref('/admin/roles')"
                             class="dropdown-item"><i class="fas fa-balance-scale fa-fw"></i>&nbsp;Роли</a>
                         <a
-                            v-if="hasRight(7)"
+                            v-if="hasRight('CAN_MANAGE_USERS')"
                             :href="getHref('/admin/polygons')"
                             class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Границы микроучастков</a>
                         <a

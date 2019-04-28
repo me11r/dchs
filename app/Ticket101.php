@@ -671,6 +671,13 @@ class Ticket101 extends BaseModel
         }
     }
 
+    //если в "Итогах выезда" не забито поле "Наименование объекта", берем из вкладки "Звонок"
+    //актуально только для учебых
+    public function getDrillNameTotalAttribute($value)
+    {
+        return $value ? $value : $this->object_name;
+    }
+
     public function popup_notifications()
     {
         return $this->belongsToMany(

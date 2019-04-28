@@ -195,7 +195,7 @@
                             <!--Отделения-->
                             <td>
                                 <p v-for="i in formReserve[department.id]">
-                                    {{ i.tech.reserve }} <span class="small">Р</span>
+                                    {{ i.tech.reserve }}<span class="small">Р ({{ i.tech.vehicle.name }})</span>
                                 </p>
                             </td>
 
@@ -495,13 +495,25 @@
 
                 return dt;
             },
-            addToActive(result){
-                if(result.promoted_at === null && result.promoted_department !== null){
+            checkSameDepartmentExists(result) {
+                return _.find(this.active[result.fire_department_id], (item) => {
+                   return item.tech.department === +result.promoted_department || item.tech.department === +result.promoted_department;
+                }) !== undefined ? true : false;
+            },
+            addToActive(result) {
+                if(result.promoted_at === null && result.promoted_department !== null) {
+
+                    //если отделение с таким номером уже есть в боевом расчете, уведомляем пользователя
+                    if (this.checkSameDepartmentExists(result)) {
+                        if (!confirm('Отделение с таким номером уже есть в боевом расчете. Добавить?')) {
+                            return;
+                        }
+                    }
+
                     result.promoted_at = moment().format();
                     let newResult = JSON.parse(JSON.stringify(result));
 
                     newResult.tech.status = 'action';
-                    // newResult.promoted_department = this.reserve[newResult.fire_department_id].promoted_department;
 
                     axios.post('/api/101card/promote-to-action', {
                         id: newResult.id,
