@@ -452,7 +452,6 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         });
 
         Route::group(['prefix' => 'reports/analytics101', 'as' => 'reports.analytics101.'], function (){
-            Route::get('/', 'AnalyticsController@index')->name('index'); //->middleware(['right:ANALYTICS101_SHOW']);
             Route::get('{id}/edit', 'AnalyticsController@edit')->name('edit')->middleware(['right:ANALYTICS101_EDIT']);
             Route::post('update/{id}', 'AnalyticsController@update')->name('update')->middleware(['right:ANALYTICS101_EDIT']);
             Route::delete('delete/{id}', 'AnalyticsController@delete')->name('delete')->middleware(['right:ANALYTICS101_DELETE']);
