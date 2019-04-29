@@ -224,7 +224,12 @@ export default {
                 '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
                 '&result_id=' + this.reason_id +
                 '&city_area_id=' + this.cityAreaId;
-        }
+        },
+        // reportSummaryFilledRecords() {
+        //     return window._.filter(this.reportSummary, (item) => {
+        //         return item.total != 0;
+        //     });
+        // }
     },
     watch: {
 

@@ -102,7 +102,7 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
         Route::resource('/emergency-situation', 'EmergencySituationController');
         Route::get('emergency-situation/{id}/download', 'EmergencySituationController@download')->name('emergency-situation.download');
 
-        Route::group(['prefix' => 'import', 'as' => 'import.'], function () {
+        Route::group(['prefix' => 'import', 'as' => 'import.','middleware' => ['right:CAN_VIEW_IMPORT']], function () {
             Route::get('/', 'ImportController@index')->name('index');
             Route::post('special_plans', 'ImportController@specialPlans')->name('special_plans');
             Route::post('hydrants', 'ImportController@hydrants')->name('hydrants');
@@ -485,19 +485,19 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
             Route::apiResource('queued-reports', 'QueuedReportsController');
         });
 
-        Route::group(['prefix' => 'translates'], function () {
+        Route::group(['prefix' => 'translates', 'middleware' => ['right:CAN_VIEW_TRANSLATES']], function () {
             Route::get('/', 'TranslateController@getIndex');
             Route::get('view/{groupKey?}', 'TranslateController@getView')->where('groupKey', '.*');
             Route::get('/{groupKey?}', 'TranslateController@getIndex')->where('groupKey', '.*');
-            Route::post('/add/{groupKey}', 'TranslateController@postAdd')->where('groupKey', '.*');
-            Route::post('/edit/{groupKey}', 'TranslateController@postEdit')->where('groupKey', '.*');
-            Route::post('/groups/add', 'TranslateController@postAddGroup');
-            Route::post('/delete/{groupKey}/{translationKey}', 'TranslateController@postDelete')->where('groupKey', '.*');
-            Route::post('/import', 'TranslateController@postImport');
-            Route::post('/find', 'TranslateController@postFind');
-            Route::post('/locales/add', 'TranslateController@postAddLocale');
-            Route::post('/locales/remove', 'TranslateController@postRemoveLocale');
-            Route::post('/publish/{groupKey}', 'TranslateController@postPublish')->where('groupKey', '.*');
+            Route::post('/add/{groupKey}', 'TranslateController@postAdd')->where('groupKey', '.*')->middleware(['right:CAN_CREATE_TRANSLATES']);
+            Route::post('/edit/{groupKey}', 'TranslateController@postEdit')->where('groupKey', '.*')->middleware(['right:CAN_EDIT_TRANSLATES']);
+            Route::post('/groups/add', 'TranslateController@postAddGroup')->middleware(['right:CAN_CREATE_TRANSLATES']);
+            Route::post('/delete/{groupKey}/{translationKey}', 'TranslateController@postDelete')->where('groupKey', '.*')->middleware(['right:CAN_DELETE_TRANSLATES']);
+            Route::post('/import', 'TranslateController@postImport')->middleware(['right:CAN_EDIT_TRANSLATES']);
+            Route::post('/find', 'TranslateController@postFind')->middleware(['right:CAN_EDIT_TRANSLATES']);
+            Route::post('/locales/add', 'TranslateController@postAddLocale')->middleware(['right:CAN_CREATE_TRANSLATES']);
+            Route::post('/locales/remove', 'TranslateController@postRemoveLocale')->middleware(['right:CAN_DELETE_TRANSLATES']);
+            Route::post('/publish/{groupKey}', 'TranslateController@postPublish')->where('groupKey', '.*')->middleware(['right:CAN_EDIT_TRANSLATES']);
         });
 
         Route::get('/', 'HomeController@getIndex')->name('home');

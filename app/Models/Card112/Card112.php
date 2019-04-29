@@ -370,6 +370,10 @@ class Card112 extends BaseModel
                     $baseQuery = $baseQuery->where('emergency_name_id', $emergencyNameId);
                 }
 
+                if (!$baseQuery->count()) {
+                    continue;
+                }
+
                 $result[$reason->name][$area->name]['total'] = $baseQuery->count();
                 $types = [
                     'injured',
