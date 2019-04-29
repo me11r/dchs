@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class CallInfo extends Model
@@ -81,5 +82,16 @@ class CallInfo extends Model
         }
 
         return $q->whereBetween('date', [$finalDateBegin, $finalDateEnd]);
+    }
+
+    public function scopeDailyRecords($q, $from = null, $to = null)
+    {
+        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d');
+        $to = $to ? $to : today()->addHours(7)->format('Y-m-d');
+
+        $from = Carbon::parse($from)->format('Y-m-d');
+        $to = Carbon::parse($to)->format('Y-m-d');
+
+        return $q->whereBetween('date', [$from, $to]);
     }
 }

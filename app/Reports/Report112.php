@@ -59,8 +59,8 @@ class Report112
             $today = $nowHours < 7 ? today()->addDay(-1)->addHours(7) : today()->addHours(7);
 
             $this->today = $today->format('Y-m-d H:i:s');
-            $this->yesterday = (clone $today)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-            $this->tomorrow = (clone $today)->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
+            $this->yesterday = (clone $today)->addDay(-1)->format('Y-m-d H:i:s');
+            $this->tomorrow = (clone $today)->addDay(1)->format('Y-m-d H:i:s');
 
             $this->tickets101 = Ticket101::shiftRecords();
             $this->tickets112 = Card112::shiftRecords();
@@ -95,7 +95,7 @@ class Report112
 
         $air_rescue_report = AirRescueReport::dailyRecords($this->today, $this->tomorrow);
 
-        $callInfo = CallInfo::whereBetween('date', [$this->today, $this->tomorrow])->first();
+        $callInfo = CallInfo::dailyRecords($this->today, $this->tomorrow)->first();
 
         $data['fires_count_112'] = (clone $this->tickets112)->whereHas('emergency_type',function ($q) {
             $q->name('ЧС');
@@ -207,7 +207,7 @@ class Report112
 
     private function getServiceInfo($service)
     {
-        $emergency = EmergencySituation::dailyRecords($this->yesterday, $this->today)
+        $emergency = EmergencySituation::dailyRecords($this->today, $this->tomorrow)
             ->whereHas('user.service_type', function ($q) use ($service) {
                 $q->where('name', $service);
             })->orderBy('date_time')->get();

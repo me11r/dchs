@@ -81,8 +81,11 @@ class AirRescueReport extends Model
 
     public function scopeDailyRecords($q, $from = null, $to = null)
     {
-        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-        $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
+        $from = $from ? $from : today()->addDay(-1)->addHours(7)->format('Y-m-d');
+        $to = $to ? $to : today()->addHours(7)->format('Y-m-d');
+
+        $from = Carbon::parse($from)->format('Y-m-d');
+        $to = Carbon::parse($to)->format('Y-m-d');
 
         return $q->whereBetween('date', [$from, $to]);
     }
