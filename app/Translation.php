@@ -14,8 +14,15 @@ class Translation extends \Barryvdh\TranslationManager\Models\Translation
         'value',
     ];
 
+
+
     public function scopeGetByLocale($q, $search)
     {
         return $q->where('locale', $search);
+    }
+
+    public function scopeGetByKey($q, $search)
+    {
+        return $q->where('key', $search);
     }
 }

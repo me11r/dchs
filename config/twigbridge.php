@@ -185,7 +185,8 @@ return [
                         'last',
                         'mix',
             */
-            'mix'
+            'mix',
+            't', //custom translator
         ],
 
         /*

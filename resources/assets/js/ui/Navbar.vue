@@ -341,7 +341,10 @@
             <div class="navbar-end">
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(7,8)">
+                    v-if="hasAnyRight('CAN_EDIT_DICTIONARIES',
+                        'CAN_MANAGE_USERS',
+                        'CAN_VIEW_TRANSLATES',
+                    )">
                     <a
                         href="#"
                         class="navbar-link is-small"><i class="fas fa-cog fa-fw"></i>&nbsp;Управление</a>
@@ -367,9 +370,11 @@
                             :href="getHref('/admin/polygons')"
                             class="dropdown-item"><i class="fas fa-magic fa-fw"></i>&nbsp;Границы микроучастков</a>
                         <a
+                            v-if="hasRight('CAN_VIEW_IMPORT')"
                             :href="getHref('/import')"
                             class="dropdown-item"><i class="fas fa-arrow-down fa-fw"></i>&nbsp;Импорт</a>
                         <a
+                            v-if="hasRight('CAN_VIEW_TRANSLATES')"
                             :href="getHref('/translates')"
                             class="dropdown-item"><i class="fas fa-list-alt fa-fw"></i>&nbsp;Переводы</a>
                     </div>

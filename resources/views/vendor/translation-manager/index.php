@@ -22,7 +22,6 @@
 
             $.ajaxSetup({
                 beforeSend: function(xhr, settings) {
-                    console.log('beforesend');
                     settings.data += "&_token=<?php echo csrf_token() ?>";
                 }
             });
@@ -178,7 +177,7 @@
             </div>
         </form>
         <hr>
-        <h4>Всего: <?= $numTranslations ?></h4>
+        <h4>Всего: <?= $numTranslations / 2; ?></h4>
         <table class="table">
             <thead>
             <tr>
