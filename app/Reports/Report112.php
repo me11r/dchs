@@ -59,8 +59,8 @@ class Report112
             $today = $nowHours < 7 ? today()->addDay(-1)->addHours(7) : today()->addHours(7);
 
             $this->today = $today->format('Y-m-d H:i:s');
-            $this->yesterday = (clone $today)->addDay(-1)->addHours(7)->format('Y-m-d H:i:s');
-            $this->tomorrow = (clone $today)->addDay(1)->addHours(7)->format('Y-m-d H:i:s');
+            $this->yesterday = (clone $today)->addDay(-1)->format('Y-m-d H:i:s');
+            $this->tomorrow = (clone $today)->addDay(1)->format('Y-m-d H:i:s');
 
             $this->tickets101 = Ticket101::shiftRecords();
             $this->tickets112 = Card112::shiftRecords();
