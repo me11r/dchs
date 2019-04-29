@@ -95,7 +95,7 @@ class Report112
 
         $air_rescue_report = AirRescueReport::dailyRecords($this->today, $this->tomorrow);
 
-        $callInfo = CallInfo::whereBetween('date', [$this->today, $this->tomorrow])->first();
+        $callInfo = CallInfo::dailyRecords($this->today, $this->tomorrow)->first();
 
         $data['fires_count_112'] = (clone $this->tickets112)->whereHas('emergency_type',function ($q) {
             $q->name('ЧС');
