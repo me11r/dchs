@@ -36,12 +36,59 @@ class TranslateController extends Controller
             $groups->whereNotIn('group', $excludedGroups);
         }
 
-        $groups = $groups->select('group')->orderBy('group')->get()->pluck('group', 'group');
+        $groups = $groups
+            ->select('group')
+            ->orderBy('group')
+            ->get()
+            ->pluck('group', 'group');
+
         if ($groups instanceof Collection) {
             $groups = $groups->all();
         }
         $groups = [''=>'Выберите группу'] + $groups->toArray();
         $numChanged = Translation::where('group', $group)->where('status', Translation::STATUS_CHANGED)->get();
+
+        $groupNames = [
+            'alert_system_checks' => 'Тех.проверка системы оповещения',
+            'auth' => 'Авторизация',
+            'call_infos' => 'Информация по звонкам',
+            'card101' => 'Карточки 101',
+            'card101_norms_psp' => 'Карточки 101: Нормы ПСП',
+            'card101_other' => 'Карточки 101: Прочие выезда',
+            'card112' => 'Карточки 112',
+            'chats' => 'События',
+            'common' => 'Общее',
+            'daily_report101' => 'Суточные отчеты 101',
+            'daily_report112' => 'Суточные отчеты 112',
+            'dictionaries' => 'Справочники',
+            'formation_records' => 'Сроевые записки',
+            'hydrants' => 'Гидранты',
+            'import' => 'Импорт',
+            'information' => 'Информация',
+            'menu' => 'Меню',
+            'messenger_permissions' => 'Разрешения мессенджера',
+            'pagination' => 'Разбитие по страницам',
+            'passwords' => 'Пароли',
+            'polygons' => 'Полигоны районов',
+            'queued_reports' => 'Очередь отчетов',
+            'report_101_staff' => 'Отчет по строевой записке ЛС',
+            'report_101_vehicles' => 'Отчет по строевой записке техники',
+            'report_siren_speeches' => 'Данные по СРУ',
+            'reports_analytics101_daily' => 'Отчеты 101',
+            'reports_analytics112_daily' => 'Отчеты 112',
+            'reports_spiasr' => 'Аналитика СПиАСР',
+            'roadtrips' => 'Путевые листы',
+            'salvage' => 'Сумма спасенного имущества',
+            'site' => 'Сайт',
+            'staff' => 'Список ЛС',
+            'users' => 'Пользователи системы',
+            'validation' => 'Языковые ресурсы для проверки значений',
+            'vehicles' => 'Автотехника',
+        ];
+
+        foreach ($groups as $key => $g) {
+            $groups[$key] = isset($groupNames[$key]) ? $groupNames[$key] : $g;
+        }
 
 
         $allTranslations = Translation::where('group', $group)->orderBy('key', 'asc')->get();
