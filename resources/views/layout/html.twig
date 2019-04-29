@@ -8,7 +8,7 @@
     <script>
       window.csrf_token = '{{ csrf_token() }}';
       window.language = '{{ language }}';
-      {#window.translations = '{{ translations }}';#}
+      window.translations = {{ translations|raw }};
     </script>
     <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-status-bar-style" content="#5bbad5">

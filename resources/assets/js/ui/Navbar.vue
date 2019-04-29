@@ -26,19 +26,21 @@
                             v-if="hasRight('CAN_SEE_REQUEST')"
                             :href="getHref('/card/add101')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Путевка 101
+                            <!--Путевка 101-->{{ '101.card101' | trans() }}
+
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_OTHERS_RIDES')"
                             :href="getHref('/card101-other-rides/create')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Прочие выезда
+                            <!--Прочие выезда-->{{ '101.card101_other_rides' | trans() }}
                         </a>
                         <a
                             v-if="hasRight('CARD101_ACCESS_DRILL_RIDES')"
                             :href="getHref('/card/add101/0/drill')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Учения
+                            <!--Учения-->
+                            {{ '101.card101_drill_rides' | trans() }}
                         </a>
                         <a
                             v-if="hasRight('CAN_ACCESS_NORMS_PSP')"
@@ -337,6 +339,26 @@
 
                     </div>
                 </div>
+                <div class="navbar-item">
+                    <form
+                            action="/switch-language"
+                            id="changeLocale"
+                            method="post">
+                        <input
+                            type="hidden"
+                            name="_token"
+                            :value="csrf">
+                        <input
+                            type="hidden"
+                            name="current_url"
+                            :value="current_url">
+
+                        <button
+                            class="is-inline-block-widescreen is-block button is-primary">
+                        <i class="fas fa-smile-wink fa-fw"></i>&nbsp;{{ this.language === '' ? 'KZ' : 'RU' }}
+                    </button>
+                    </form>
+                </div>
             </div>
             <div class="navbar-end">
                 <div
@@ -400,6 +422,7 @@
 
 <script>
 import rights from '../scripts/rights';
+import translate from '../../js/lang/translate';
 function getLocalRights() {
     return rights.rightsList();
 }
@@ -409,6 +432,7 @@ export default {
         return {
             opened: false,
             language: '',
+            current_url: window.location.href,
             csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             rights: getLocalRights()
         };
@@ -441,22 +465,12 @@ export default {
             });
             return hasRight;
         },
-        getLocaleFromUrl: function () {
-            let urlSegments = window.location.href.split('/');
-            let kk = urlSegments.find((segment) => {
-                return segment === 'kk';
-            });
-
-            if (kk !== undefined) {
-                return 'kk';
-            }
-
-            return 'ru';
-        }
 
     },
     mounted: function () {
-        this.language = window.language === 'ru' ? '' : '/' + window.language;
+        let locale = window.localStorage.getItem('language');
+        this.language = locale === 'ru' ? '' : '/' + locale;
+
         // тащим права из базы
         let rightsPromise = rights.getRights();
         rightsPromise.then((list) => {

@@ -7,6 +7,7 @@ use Barryvdh\TranslationManager\Manager as Manager;
 use Barryvdh\TranslationManager\Models\Translation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class TranslateController extends Controller
 {
@@ -229,5 +230,26 @@ class TranslateController extends Controller
             $this->manager->removeLocale($locale);
         }
         return redirect()->back();
+    }
+
+    public function switchLanguage(Request $request)
+    {
+        $locale = Session::get('language', 'ru');
+        $url = $request->current_url;
+
+        $url = str_replace(env('APP_URL', ''), '', $url);
+
+        if ($locale === 'ru') {
+            $url = "/kk".$url;
+            app()->setLocale('kk');
+            Session::put('language', 'kk');
+        }
+        else {
+            $url = str_replace('/kk', '', $url);
+            app()->setLocale('ru');
+            Session::put('language', 'ru');
+        }
+
+        return redirect($url);
     }
 }

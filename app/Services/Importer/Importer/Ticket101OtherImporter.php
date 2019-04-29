@@ -141,6 +141,8 @@ class Ticket101OtherImporter implements ImporterInterface
                 ];
             }
 
+            //$data = "ПЧ-5::[Отделение=7|Время выезда=11:25|Время возвращения=11:25];";
+
             //отделяем блоки с ПЧ по ;
             $devideByFd = explode(';',$data);
 
