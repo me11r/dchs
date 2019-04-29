@@ -207,7 +207,7 @@ class Report112
 
     private function getServiceInfo($service)
     {
-        $emergency = EmergencySituation::dailyRecords($this->yesterday, $this->today)
+        $emergency = EmergencySituation::dailyRecords($this->today, $this->tomorrow)
             ->whereHas('user.service_type', function ($q) use ($service) {
                 $q->where('name', $service);
             })->orderBy('date_time')->get();
