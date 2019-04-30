@@ -8,7 +8,7 @@ const translations = {
 
 class Translate {
 
-    get(code, lang) {
+    find(code, lang) {
         if (translations[lang] === undefined) return code;
 
         let object = translations[lang];
@@ -25,19 +25,46 @@ class Translate {
         }
     }
 
-    getReplace(code, lang, replace) {
+    //old
+    findInWindow (key) {
+        if (window.translations === undefined) return key;
 
-        let translate = this.get(code, lang);
+        let result = window.translations.find((item) => {
+            return item.key === key;
+        });
 
-        if (replace.length > 0 && translate) {
+        return result !== undefined ? result.value : key;
+    }
+
+    // sample of  using
+    // {{ '/reports/analytics-spiasr.water_consumption.title' | trans({date_from:'abc', date_to: 'efg'}) }}
+    get(code, replace) {
+
+        let translate = this.findInWindow(code);
+
+        if (replace !== undefined && translate) {
             for (let key in replace) {
                 translate = translate.replace(`:${key}`, replace[key]);
             }
-
-            return translate;
         }
 
-        return null;
+        return translate;
+    }
+
+    getLocaleFromUrl () {
+        let urlSegments = window.location.href.split('/');
+        let kk = urlSegments.find((segment) => {
+            return segment === 'kk';
+        });
+
+        if (kk !== undefined) {
+            window.localStorage.setItem('language', 'kk');
+            return 'kk';
+        }
+
+        window.localStorage.setItem('language', 'ru');
+
+        return 'ru';
     }
 }
 

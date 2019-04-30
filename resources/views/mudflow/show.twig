@@ -7,12 +7,6 @@
             </h4>
         </div>
 
-        {#    <div id="vue">#}
-        {#        <mudflow-date-selector#}
-        {#            date="{{ date }}"#}
-        {#        ></mudflow-date-selector>#}
-        {#    </div>#}
-
         <div class="panel">
             <div class="level">
                 <div class="level-left">
@@ -51,24 +45,27 @@
                             <td colspan="15" style="text-align: center"><b>{{ river.name }}</b></td>
                         </tr>
                         {% for gaugingStation in river.gaugingStations %}
-                            <tr>
-                                <td class="has-text-right">{{ index }}</td>
-                                <td>{{ records[gaugingStation.id].information|default('') }}</td>
-                                <td>{{ gaugingStation.name }}</td>
-                                <td>{{ records[gaugingStation.id].water_flow_rate|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].critical_water_flow_rate|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].turbidity_of_water|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].max_turbidity_of_water|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].air_temperature|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].water_temperature|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].precipitation|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].height_of_snow |default('')}}</td>
-                                <td>{{ records[gaugingStation.id].weather|default('') }}</td>
-                                <td>{{ records[gaugingStation.id].comment|default('') }}</td>
-                                <td class="has-text-right">{{ records[gaugingStation.id].updated_at|default('') }}</td>
-                            </tr>
+                            {% for record in records if record.gauging_station_id == gaugingStation.id %}
 
-                            {% set index = index + 1 %}
+                                <tr>
+                                    <td class="has-text-right">{{ index }}</td>
+                                    <td>{{ record.information|default('') }}</td>
+                                    <td>{{ gaugingStation.name }}</td>
+                                    <td>{{ record.water_flow_rate|default('') }}</td>
+                                    <td>{{ record.critical_water_flow_rate|default('') }}</td>
+                                    <td>{{ record.turbidity_of_water|default('') }}</td>
+                                    <td>{{ record.max_turbidity_of_water|default('') }}</td>
+                                    <td>{{ record.air_temperature|default('') }}</td>
+                                    <td>{{ record.water_temperature|default('') }}</td>
+                                    <td>{{ record.precipitation|default('') }}</td>
+                                    <td>{{ record.height_of_snow |default('')}}</td>
+                                    <td>{{ record.weather|default('') }}</td>
+                                    <td>{{ record.comment|default('') }}</td>
+                                    <td class="has-text-right">{{ records[gaugingStation.id].updated_at|default('') }}</td>
+                                </tr>
+
+                                {% set index = index + 1 %}
+                            {% endfor %}
                         {% endfor %}
                     {% endfor %}
                 </table>

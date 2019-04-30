@@ -48,11 +48,15 @@ class MudflowProtectionController extends Controller
             'gaugingStations.mudflowProtection'
         ])->get();
 
-        $block = MudflowProtectionBlock::where('date', $date)->first();
+        $block = MudflowProtectionBlock::firstOrCreate(['date' => $date]);
 
-        $records = MudflowProtection::where('date', $date)
-            ->get()
-            ->keyBy('gauging_station_id');
+        $records = MudflowProtection::whereDate('date', $date)
+            ->get();
+
+        //если записей нет - создаем пустышки
+        if (!$records->count()) {
+            $records = MudflowProtection::createRecordsByDate($date);
+        }
 
         $dateHuman = Carbon::parse($date)->format('d.m.Y');
 
@@ -70,8 +74,8 @@ class MudflowProtectionController extends Controller
         $data['now'] = now()->format('Y-m-d');
         $data['per_page'] = $request->per_page ?? 15;
 
-        $data['records'] = MudflowProtection::groupBy('date')
-            ->orderBy('date', 'desc')
+        $data['records'] = MudflowProtectionBlock::
+            orderBy('date', 'desc')
             ->paginate($data['per_page']);
 
         return view('mudflow.list', $data);
@@ -120,6 +124,9 @@ class MudflowProtectionController extends Controller
             ->get()
             ->keyBy('gauging_station_id');
 
+        $records = $block->items()
+            ->get();
+
         $dateHuman = Carbon::parse($date)->format('d.m.Y');
 
         return View::make('mudflow.show')
@@ -155,11 +162,15 @@ class MudflowProtectionController extends Controller
         }
 
         $all = $request->all();
-        $all['date'] = Carbon::parse($all['date'])->format('Y-m-d');
+        $all['date'] = Carbon::parse($all['date'])->format('Y-m-d H:i');
 
-        $block = MudflowProtectionBlock::firstOrCreate(['date' => $all['date']]);
+        $date = Carbon::parse($all['date'])->format('Y-m-d');
 
-        $data = MudflowProtection::create($all);
+        $block = MudflowProtectionBlock::firstOrCreate(['date' => $date]);
+
+        $block->items()->create($all);
+
+//        $data = MudflowProtection::create($all);
 
         return redirect("/mudflow-protection/{$date}");
     }
@@ -171,9 +182,12 @@ class MudflowProtectionController extends Controller
         }
 
         $all = $request->all();
-        $all['date'] = Carbon::parse($all['date'])->format('Y-m-d');
+        $all['date'] = Carbon::parse($all['date'])->format('Y-m-d H:i');
+        $date = Carbon::parse($all['date'])->format('Y-m-d');
 
-        $block = MudflowProtectionBlock::firstOrCreate(['date' => $all['date']]);
+        $block = MudflowProtectionBlock::firstOrCreate(['date' => $date]);
+
+        $all['block_id'] = $block->id;
 
         $this->mudflowProtection->update($all, $id);
         return back();
