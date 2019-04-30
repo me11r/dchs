@@ -12,7 +12,7 @@
                             <h5 class="title">{{ trans('auth.logInSystem') }}</h5>
                         </div>
                         <div class="level-right">
-                            {% if language == 'kk' %}
+                            {% if language|default('ru') == 'kk' %}
                                 <a class="button is-text is-link is-inverted" href="{{ url('/') }}">Русский</a>
                             {% else %}
                                 <a class="button is-text is-link is-inverted" href="{{ url('/kk') }}">Қазақша</a>
