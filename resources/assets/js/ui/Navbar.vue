@@ -39,22 +39,21 @@
                             v-if="hasRight('CARD101_ACCESS_DRILL_RIDES')"
                             :href="getHref('/card/add101/0/drill')"
                             class="dropdown-item is-small"><i class="fas fa-address-card fa-fw"></i>&nbsp;
-                            <!--Учения-->
-                            {{ '101.card101_drill_rides' | trans() }}
+                            <!--Учения-->{{ '101.card101_drill_rides' | trans() }}
                         </a>
                         <a
                             v-if="hasRight('CAN_ACCESS_NORMS_PSP')"
                             :href="getHref('/norms-psp')"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Нормативы ПСП
+                            <!--Нормативы ПСП-->{{ '101.card101_norms_psp' | trans() }}
                         </a>
                         <a
                             v-if="hasRight('CAN_SEE_REQUEST')"
                             :href="getHref('/card/101')"
                             class="dropdown-item is-small"><i
                             class="fas fa-address-card fa-fw"></i>&nbsp;
-                            Карточки 101
+                            <!--Карточки 101-->{{ '101.cards101' | trans() }}
                         </a>
                     </div>
                 </div>

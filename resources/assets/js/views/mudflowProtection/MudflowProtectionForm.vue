@@ -22,6 +22,7 @@
                                 v-model="model_.date"
                                 :date-string="model_.date"
                                 name="date"
+                                :include-time="true"
                                 @dateChanged="model_.date = $event"
                                 class="control"
                                 label="Дата">
