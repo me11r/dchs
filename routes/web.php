@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Messenger\Message;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test/fcm', 'TestController@fcm')->name('test.fcm');
@@ -12,6 +14,18 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
 });
 Route::get('event', function () {
     event(new \App\Events\ReportUpdated());
+});
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('message-event', function () {
+        $message = new Message([
+            'message' => 'test12366',
+            'sender_id' => 2,
+            'message_type' => 'text',
+            'file_id' => null,
+            'reciever_id' => 1
+        ]);
+        $message->save();
+    });
 });
 
 Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], function () {
@@ -432,6 +446,7 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
             Route::get('users/list', 'MessengerController@getUserList');
             Route::post('message/send', 'MessengerController@postMessage');
             Route::get('messages/unread', 'MessengerController@getAnyUnread');
+            Route::get('messages/chat_was_read/{senderId}', 'MessengerController@chatWasRead');
             Route::get('messages/list/{user_id}', 'MessengerController@getMessages')->where('user_id', '[0-9]+');
 
             Route::get('messages/list/unread/{user_id}', 'MessengerController@getUnreadCount')->where('user_id', '[0-9]+');

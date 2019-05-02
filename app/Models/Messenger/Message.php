@@ -5,6 +5,7 @@ namespace App\Models\Messenger;
 
 
 use App\Models\UploadedFile;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
 final /**
@@ -31,9 +32,8 @@ final /**
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messenger\Message whereRecieverId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messenger\Message whereSenderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Messenger\Message whereUpdatedAt($value)
- * @mixin \Eloquent
  */
-class Message extends \Eloquent
+class Message extends Model
 {
     protected $table = 'messenger_messages';
     protected $fillable = ['message', 'file_id', 'sender_id', 'reciever_id', 'is_viewed', 'message_type'];

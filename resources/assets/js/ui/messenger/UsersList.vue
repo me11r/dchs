@@ -21,10 +21,18 @@ import rights from '../../scripts/rights';
 import axios from 'axios';
 import SvgPreloader from './SvgPreloader';
 import VUserListRow from './VUserListRow';
+import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 
+import SocketListener from '../../scripts/socket-listener';
+import {MessengerSocketEvents} from './MessengerSocketEvents';
+import _ from 'lodash';
+import moment from 'moment';
+
+const evbus = EventBus();
 const api = axios.create({
     baseURL: '/api/messenger/'
 });
+
 export default {
     name: 'UsersList',
     props: {
@@ -38,7 +46,8 @@ export default {
         return {
             isLoadedList: false,
             users: [],
-            lastCheckTime: null
+            lastCheckTime: null,
+            selectedUser: {}
         };
     },
     computed: {
@@ -46,6 +55,15 @@ export default {
             return this.users.filter((user) => {
                 return rights.canSendMessage(user.id) || user.email === 'notifications@localhost.net';
             });
+        },
+        totalUnreadCount() {
+            let count = 0;
+            this.users.map((item) => {
+                if (item && item.unread_count) {
+                    count += item.unread_count;
+                }
+            });
+            return count;
         }
     },
     methods: {
@@ -56,15 +74,50 @@ export default {
                     this.isLoadedList = true;
                     this.lastCheckTime = Date.now();
                 });
+        },
+        defineIncomingMessageListener() {
+            SocketListener
+                .privateUserChannel()
+                .then((channel) => {
+                    channel
+                        .listen(MessengerSocketEvents.MessageCreated, (event) => {
+                            const senderId = event.message.sender_id;
+
+                            if (parseInt(senderId) === parseInt(this.selectedUser.id)) {
+                                this.markMessagesAsRead(this.selectedUser);
+                            } else {
+                                let sender = _.find(this.users, {id: senderId});
+                                if (sender) {
+                                    sender.unread_count++;
+                                    sender.last_connect_at = moment().format('YYYY-MM-DD hh:mm');
+                                }
+                            }
+                        });
+                });
+        },
+        markMessagesAsRead(user) {
+            let sender = _.find(this.users, {id: user.id});
+            if (sender) {
+                sender.unread_count = 0;
+            }
+        }
+    },
+    watch: {
+        totalUnreadCount(newValue) {
+            evbus.$emit(EVENT_NAMES.totalUnreadCountChanged, newValue);
         }
     },
     mounted: function() {
         if (!this.isLoadedList) {
             this.updateUsers();
         }
-        setInterval(() => {
-            this.updateUsers();
-        }, 3600);
+
+        evbus.$on(EVENT_NAMES.messengerSelectedUser, (user) => {
+            this.selectedUser = user;
+            this.markMessagesAsRead(user);
+        });
+
+        this.defineIncomingMessageListener();
     }
 };
 </script>

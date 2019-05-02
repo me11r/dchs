@@ -21,6 +21,9 @@
     <meta name="msapplication-TileColor" content="#b91d47">
     <meta name="theme-color" content="#ffffff">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        window.user_id = {{ user ? user.id : null }};
+    </script>
 
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 

@@ -8,6 +8,7 @@ use App\FormationReport;
 use App\FormationTechReport;
 use App\Models\EmergencySituation;
 use App\Models\FormationRecord;
+use App\Models\Messenger\Message;
 use App\Models\MorainicLakeReport;
 use App\Models\MorainicLakeSummary;
 use App\Models\Quake;
@@ -19,6 +20,7 @@ use App\Observers\FormationPersonsReportObserver;
 use App\Observers\FormationRecordObserver;
 use App\Observers\FormationReportObserver;
 use App\Observers\FormationTechReportObserver;
+use App\Observers\Messenger\MessageObserver;
 use App\Observers\MorainicLakeReportObserver;
 use App\Observers\QuakeObserver;
 use App\Observers\QueuedReportObserver;
@@ -26,6 +28,7 @@ use App\Observers\WeatherObserver;
 use App\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -48,10 +51,17 @@ class AppServiceProvider extends ServiceProvider
         Quake::observe(QuakeObserver::class);
         AirRescueReport::observe(AirRescueReportObserver::class);
         QueuedReport::observe(QueuedReportObserver::class);
+        Message::observe(MessageObserver::class);
 
         Paginator::defaultView('pagination::default');
 
         view()->share('protocol', $request->isSecure() ? 'https' : 'http');
+
+        view()->composer('*', function ($view) {
+            $view->with([
+                'user' => Auth::user()
+            ]);
+        });
     }
 
     /**

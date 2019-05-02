@@ -1,5 +1,6 @@
 <?php
 
+use \Illuminate\Support\Facades\Broadcast;
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -10,7 +11,12 @@
 | used to check if an authenticated user can listen to the channel.
 |
 */
-Broadcast::routes();
+//Broadcast::routes(["prefix" => "api", "middleware" => "auth"]);
+
 Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+}, ['guards' => ['web']]);
+
+Broadcast::channel('Reports', function (){
+    return true;
 });
