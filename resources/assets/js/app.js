@@ -50,20 +50,14 @@ import EditPolygonMapScreen from './views/polygons/EditPolygonMapScreen';
 import QueudReports from './views/queued-reports/QueuedReports';
 import QueudReportView from './views/queued-reports/QueuedReportView';
 
-import Echo from 'laravel-echo';
+import SocketListener from './scripts/socket-listener';
+SocketListener.defineDefaultListeners();
 
 window.globalBus = new Vue({ });
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
-
-window.io = require('socket.io-client');
-
-window.Echo = new Echo({
-    broadcaster: 'socket.io',
-    host: window.location.hostname + ':6001'
-});
 
 Object.defineProperty(Array.prototype, 'chunk', {
     value: function(chunkSize) {
@@ -373,12 +367,3 @@ if (document.getElementById('fire-department-data')) {
 
 require('./scripts/emergency-situation/edit-form');
 require('./scripts/Notifications');
-
-window.addEventListener('load', () => {
-    console.log('ready to listen vor events');
-    window.Echo.channel('Reports')
-        .listen('ReportUpdated', (e) => {
-            console.log('Event on reports channel', e);
-            alert('ololo report updated on server');
-        });
-});

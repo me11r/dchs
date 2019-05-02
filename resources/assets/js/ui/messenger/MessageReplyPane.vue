@@ -36,6 +36,7 @@
 import axios from 'axios';
 import rights from '../../scripts/rights';
 import EventBus, {EVENT_NAMES} from './MessengerEventBus';
+import _ from 'lodash';
 
 const evbus = EventBus();
 const api = axios.create({
@@ -88,8 +89,7 @@ export default {
             let canSendMass = this.multiselect ? true : this.canSendMessage(userId);
             if (!this.sending && (this.message !== '') && (this.user) && canSendMass) {
                 this.send();
-            }
-            else {
+            } else {
                 alert('Нет прав для отправки сообщенения этому пользователю');
             }
         },
@@ -125,8 +125,10 @@ export default {
             this.sending = true;
             const to = this.multiselect ? this.checkedUsers : [this.user.id];
             evbus.$emit(EVENT_NAMES.messageSending);
-            return api.post('message/send', {message: this.message, to: to}).then(() => {
-                evbus.$emit(EVENT_NAMES.messageSent, this.message, this.user);
+            return api.post('message/send', {message: this.message, to: to}).then((response) => {
+                response.data.messages.map((message) => {
+                    evbus.$emit(EVENT_NAMES.messageSent, message, message.reciever_id);
+                });
                 this.sending = false;
                 this.message = '';
             });
@@ -134,8 +136,10 @@ export default {
         sendFile: function(fileId) {
             const to = this.multiselect ? this.checkedUsers : [this.user.id];
             this.sending = true;
-            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: to}).then(() => {
-                evbus.$emit(EVENT_NAMES.messageSent, this.message, this.user);
+            return api.post('message/send', {message: '', type: 'file', file_id: fileId, to: to}).then((response) => {
+                response.data.messages.map((message) => {
+                    evbus.$emit(EVENT_NAMES.messageSent, message, message.reciever_id);
+                });
                 this.sending = false;
             });
         }

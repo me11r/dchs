@@ -47,6 +47,9 @@ import VueMessengerUserList from './UsersList';
 import VueMessagePane from './MessagePane';
 import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 import rights from '../../scripts/rights';
+import SocketListener from '../../scripts/socket-listener';
+import {MessengerSocketEvents} from './MessengerSocketEvents';
+
 const evbus = EventBus();
 const api = axios.create({baseURL: '/api/messenger'});
 
@@ -79,6 +82,16 @@ export default {
                 evbus.$emit(EVENT_NAMES.messengerSelectedUser, {id: 0, name: ''});
             }
             this.isOpened = !this.isOpened;
+        },
+        defineIncomingMessageListener() {
+            SocketListener
+                .privateUserChannel()
+                .then((channel) => {
+                    channel
+                        .listen(MessengerSocketEvents.MessageCreated, () => {
+                            this.unread++;
+                        });
+                });
         },
         checkUnreadAny: function() {
             return api.get('/messages/unread')
@@ -121,10 +134,12 @@ export default {
             this.checkedUsers = [];
         });
 
+        evbus.$on(EVENT_NAMES.totalUnreadCountChanged, (newCount) => {
+            this.unread = newCount;
+        });
+
         this.checkUnreadAny();
-        setInterval(() => {
-            this.checkUnreadAny();
-        }, 3400);
+        this.defineIncomingMessageListener();
     }
 };
 </script>
