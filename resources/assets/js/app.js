@@ -49,11 +49,14 @@ import {globalBus} from './scripts/global-bus';
 import EditPolygonMapScreen from './views/polygons/EditPolygonMapScreen';
 import QueudReports from './views/queued-reports/QueuedReports';
 import QueudReportView from './views/queued-reports/QueuedReportView';
+import Translate from './lang/translate';
 
 import SocketListener from './scripts/socket-listener';
 SocketListener.defineDefaultListeners();
 
 window.globalBus = new Vue({ });
+const translator = new Translate();
+
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -82,7 +85,12 @@ Object.defineProperty(Array.prototype, 'clone', {
     configurable: true
 });
 
+translator.getLocaleFromUrl();
+
 Vue.filter('dateFilter', VueDateFilter);
+Vue.filter('trans', function (key, replace) {
+    return translator.get(key, replace);
+});
 Vue.component('add-edit-tech', AddEdit101Tech);
 Vue.component('add-edit-dvr', require('./views/101tech/AddEdit101Dvr'));
 Vue.component('schedule', Schedule);

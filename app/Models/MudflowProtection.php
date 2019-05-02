@@ -70,11 +70,30 @@ class MudflowProtection extends Model
 
     public function getDateHumanAttribute()
     {
-        return $this->date ? Carbon::parse($this->date)->format('d.m.Y') : null;
+        return $this->date ? Carbon::parse($this->date)->format('d.m.Y H:i') : null;
     }
 
     public function gaugingStation()
     {
         return $this->belongsTo(GaugingStation::class, 'gauging_station_id', 'id');
+    }
+
+    public function scopeCreateRecordsByDate($q, $date)
+    {
+        $rivers = River::all();
+        $results = [];
+        foreach ($rivers as $river) {
+            foreach ($river->gaugingStations as $gaugingStation) {
+                $block = MudflowProtectionBlock::firstOrCreate(['date' => $date]);
+                $results[] = MudflowProtection::create([
+                    'gauging_station_id' => $gaugingStation->id,
+                    'date' => $date,
+                    'block_id' => $block->id,
+                ]);
+            }
+        }
+
+        $results = collect($results);
+        return $results;
     }
 }

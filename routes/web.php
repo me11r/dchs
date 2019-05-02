@@ -28,7 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
 });
 
-Route::group(['middleware' => ['auth','check.blocked']], function () {
+Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], function () {
     Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeViewPath']], function () {
 
         Route::group(['prefix' => 'ajax'], function () {
@@ -499,6 +499,9 @@ Route::group(['middleware' => ['auth','check.blocked']], function () {
             Route::get('queued-reports/show-full/{id}', 'QueuedReportsController@showFull');
             Route::apiResource('queued-reports', 'QueuedReportsController');
         });
+
+        /*переключалка языка*/
+        Route::post('switch-language','TranslateController@switchLanguage');
 
         Route::group(['prefix' => 'translates', 'middleware' => ['right:CAN_VIEW_TRANSLATES']], function () {
             Route::get('/', 'TranslateController@getIndex');
