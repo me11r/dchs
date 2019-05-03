@@ -577,7 +577,7 @@ class ReportController extends AuthorizedController
             $floodingReasonsCountStr = '';
             foreach (FloodingReason::all() as $floodingReason) {
 
-                $floodingReasonsCountArr[$floodingReason->name] = (clone $cards)->filter(function ($q) use ($floodingReason) {
+                $floodingReasonsCountArr[$floodingReason->name] = (clone $cards)->get()->filter(function ($q) use ($floodingReason) {
                     return $q->flooding_reason_id === $floodingReason->id;
                 })->count();
 
@@ -699,7 +699,7 @@ class ReportController extends AuthorizedController
             $branchFallReasonsCountStr = '';
             foreach (BranchFallReason::all() as $reason) {
 
-                $branchFallReasonsCountArr[$reason->name] = (clone $cards)->filter(function ($q) use ($reason) {
+                $branchFallReasonsCountArr[$reason->name] = (clone $cards)->get()->filter(function ($q) use ($reason) {
                     return $q->branch_fall_reason_id === $reason->id;
                 })->count();
 
