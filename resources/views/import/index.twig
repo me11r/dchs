@@ -6,7 +6,7 @@
         </h4>
     </div>
     <hr>
-    <div class="panel">
+    <div class="panel" id="vue">
         <section class="container">
             <form action="{{ route('import.special_plans') }}" method="post" enctype='multipart/form-data'>
                 {{ csrf_field() }}
@@ -77,6 +77,54 @@
                     </button>
                 </div>
             </form>
+
+            <hr>
+
+            {#<form action="{{ route('import.drill') }}" method="post" enctype='multipart/form-data'>
+                {{ csrf_field() }}
+                <div class="field">
+                    <div class="file is-info has-name">
+                        <label class="file-label">
+                            <input class="file-input" type="file" name="file" required>
+                            <span class="file-cta">
+                                <span class="file-icon">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="file-label">
+                                    Карточка 101: Учебные выезда
+                                </span>
+                             </span>
+                        </label>
+                    </div>
+                    <button style="margin-top: 20px" type="submit" class="button is-success">
+                        <i class="fas fa-check"></i>&nbsp; Импортировать
+                    </button>
+                </div>
+            </form>
+
+            <hr>
+
+            <form action="{{ route('import.norms-psp') }}" method="post" enctype='multipart/form-data'>
+                {{ csrf_field() }}
+                <div class="field">
+                    <div class="file is-info has-name">
+                        <label class="file-label">
+                            <input class="file-input" type="file" name="file" required>
+                            <span class="file-cta">
+                                <span class="file-icon">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="file-label">
+                                    Карточка 101: Нормативы ПСП
+                                </span>
+                             </span>
+                        </label>
+                    </div>
+                    <button style="margin-top: 20px" type="submit" class="button is-success">
+                        <i class="fas fa-check"></i>&nbsp; Импортировать
+                    </button>
+                </div>
+            </form>#}
         </section>
     </div>
 {% endblock content %}

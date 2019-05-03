@@ -66,7 +66,7 @@ class CardController extends AuthorizedController
         $userDept = Auth::user()->fire_department_id;
 
         $this->set('areas', (new CityArea())->get()->toArray());
-        $this->set('fireDepartments', collect(FireDepartment::all(['id', 'title']))->toArray());
+        $this->set('fireDepartments', collect(FireDepartment::all(['id', 'title','address']))->toArray());
         $this->set('model', new HydrantResource(new Hydrant()));
 
         $this->set('userDeptRight', Auth::user()->role->hydrant_access_id ?? 0);

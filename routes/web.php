@@ -107,6 +107,8 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
             Route::post('special_plans', 'ImportController@specialPlans')->name('special_plans');
             Route::post('hydrants', 'ImportController@hydrants')->name('hydrants');
             Route::post('card101-other', 'ImportController@cards101Other')->name('other');
+            Route::post('card101-drill', 'ImportController@cards101Drill')->name('drill');
+            Route::post('card101-norms-psp', 'ImportController@cards101NormsPsp')->name('norms-psp');
             Route::post('delete/{model}', 'ImportController@destroy')->name('delete');
         });
 
