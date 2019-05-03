@@ -131,7 +131,7 @@
                 // this.updateModel(model);
             },
             setMapData() {
-                this.setPointOnTheMap(this.model.address);
+                this.setPointOnTheMap(this.currentCity + ' ' + this.model.address);
             },
             findHouse(location) {
                 this.ymaps['geocode'](location, {results: 1})

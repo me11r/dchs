@@ -367,9 +367,8 @@ export default {
         },
 
         initFireDepartments() {
-            console.dir(window.hydrantListData.fireDepartments)
             window.hydrantListData.fireDepartments.forEach((item) => {
-                this.ymaps['geocode'](item.address, {results: 1})
+                this.ymaps['geocode'](this.currentCity + ' ' + item.address, {results: 1})
                     .then((result) => {
                         let geoObject = result['geoObjects'].get(0);
 
@@ -395,8 +394,6 @@ export default {
                             });
 
                             this.map.geoObjects.add(geoObject2);
-                            // this.map.setZoom(this.zoom);
-                            // this.map.panTo(this.coords);
                         }
                     });
             });
