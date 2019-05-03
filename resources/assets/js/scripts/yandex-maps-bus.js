@@ -25,10 +25,15 @@ export default class YandexMapsBus {
                 (new YMapsService()).getYmaps()
                     .then((ymaps) => {
                         this.ymaps = ymaps;
-                        this.areas = window.areas.map((item) => {
-                            item.name = item.name.toLowerCase();
-                            return item;
-                        });
+
+                        try {
+                            this.areas = window.areas.map((item) => {
+                                item.name = item.name.toLowerCase();
+                                return item;
+                            });
+                        } catch (e) {
+                            console.dir(e.message);
+                        }
 
                         instance = this;
                         resolve(instance);
@@ -60,6 +65,10 @@ export default class YandexMapsBus {
                     );
                 }
             });
+    }
+
+    findLocation(location) {
+
     }
 
     detectArea(lat, long) {

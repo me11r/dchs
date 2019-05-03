@@ -47,7 +47,7 @@ class Ticket101OtherDelayed extends Command
 
         foreach ($ticket101Others as $ticket) {
 
-            /*отпаравка сообщения тому пользователю, который создал карточку*/
+            /*отправка сообщения тому пользователю, который создал карточку*/
             $user = $ticket->created_by_user;
 
             PopupNotification::firstOrCreate([
