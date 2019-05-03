@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Importer\Importer\Ticket101DrillImporter;
+use App\Services\Importer\Importer\Ticket101NormsPspImporter;
 use App\Services\Importer\Importer\Ticket101OtherImporter;
 use App\Services\Importer\ImporterManager;
 use App\Ticket101Other;
@@ -65,6 +67,40 @@ class ImportController extends AuthorizedController
         $file = $request->file('file');
         if ($file) {
             $importer = $this->importerManager->ticket101OtherImportFile($file->getRealPath(), Ticket101OtherImporter::class);
+            $data['incorrectItems'] = $importer->getIncorrectItems();
+            $data['importedItems'] = $importer->getItems();
+        }
+
+        return View::make('import.import_results', $data);
+    }
+
+    public function cards101Drill(Request $request)
+    {
+        $data = [
+            'importName' => 'Карточки 101: учебные',
+            'delete_path' => 'card101-drill',
+        ];
+
+        $file = $request->file('file');
+        if ($file) {
+            $importer = $this->importerManager->ticket101DrillImportFile($file->getRealPath(), Ticket101DrillImporter::class);
+            $data['incorrectItems'] = $importer->getIncorrectItems();
+            $data['importedItems'] = $importer->getItems();
+        }
+
+        return View::make('import.import_results', $data);
+    }
+
+    public function cards101NormsPsp(Request $request)
+    {
+        $data = [
+            'importName' => 'Карточки 101: Нормы ПСП',
+            'delete_path' => 'card101-norms-psp',
+        ];
+
+        $file = $request->file('file');
+        if ($file) {
+            $importer = $this->importerManager->ticket101NormsPspImportFile($file->getRealPath(), Ticket101NormsPspImporter::class);
             $data['incorrectItems'] = $importer->getIncorrectItems();
             $data['importedItems'] = $importer->getItems();
         }

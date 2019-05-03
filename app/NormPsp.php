@@ -17,6 +17,7 @@ class NormPsp extends Model
         'norm_type_id',
         'responsible_person',
         'note',
+        'imported_at',
         'gdzs_included_30', //с включение гдзс (30 минут)
     ];
 

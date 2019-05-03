@@ -22,6 +22,12 @@
                             v-model="showDistricts">Отображать границы районов
                         </b-checkbox>
                     </div>
+
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showFds">Отображать ПЧ
+                        </b-checkbox>
+                    </div>
                 </div>
             </div>
             <div
@@ -151,6 +157,7 @@ export default {
             showHydrants: window.showHydrants,
             showDepartments: true,
             showDistricts: true,
+            showFds: true,
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
             canEditAllHydrants: window.canEditAllHydrants,
@@ -346,6 +353,10 @@ export default {
                 this.initFireDepartmentAreas();
             }
 
+            if (this.showFds) {
+                this.initFireDepartments();
+            }
+
             if (this.showHydrants) {
                 this.setHydrants();
             }
@@ -353,6 +364,43 @@ export default {
             if (this.showDistricts) {
                 this.initCityAreas();
             }
+        },
+
+        initFireDepartments() {
+            console.dir(window.hydrantListData.fireDepartments)
+            window.hydrantListData.fireDepartments.forEach((item) => {
+                this.ymaps['geocode'](item.address, {results: 1})
+                    .then((result) => {
+                        let geoObject = result['geoObjects'].get(0);
+
+                        if (geoObject) {
+
+                            let coords = [
+                                geoObject.geometry.getBounds()[0][0],
+                                geoObject.geometry.getBounds()[0][1]
+                            ];
+
+                            let geoObject2 = new this.ymaps.GeoObject({
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: coords
+                                },
+                                properties: {
+                                    iconContent: item.title
+                                }
+                            }, {
+                                // preset: 'islands#blueAutoIcon',
+                                preset: 'islands#redStretchyIcon',
+                                draggable: false
+                            });
+
+                            this.map.geoObjects.add(geoObject2);
+                            // this.map.setZoom(this.zoom);
+                            // this.map.panTo(this.coords);
+                        }
+                    });
+            });
+
         },
 
         detectCityAreaOsm(lat, long) {
@@ -548,6 +596,9 @@ export default {
             this.setMapData();
         },
         'showDistricts'() {
+            this.setMapData();
+        },
+        'showFds'() {
             this.setMapData();
         },
         'selectedHydrant'() {
