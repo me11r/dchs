@@ -226,21 +226,7 @@ class AjaxController extends AuthorizedController
         return response()->json($subscription);
     }
 
-    public function checkPopupNotifications()
-    {
-        $user = Auth::user();
-        $notifications = PopupNotification::where('receiver_id', $user->id)
-            ->where('is_viewed', false)
-            ->get();
-        ;
 
-        foreach ($notifications as $notification) {
-            $notification->is_viewed = true;
-            $notification->save();
-        }
-
-        return response()->json(['notifications' => $notifications]);
-    }
 
     public function incrementMapRequest(Request $request)
     {

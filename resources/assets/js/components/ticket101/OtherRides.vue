@@ -104,7 +104,7 @@
                             </div>
                             <div class="field" v-if="otherRide_.delayed">
                                 <a class="button is-danger" @click.prevent="cancelDelayed()">Отменить</a>
-                                <a class="button is-basic" @click.prevent="approveDelayed()">Выслать</a>
+                                <a class="button is-basic" @click.prevent="approveDelayed()">Подтвердить</a>
                             </div>
                         </div>
                         <div class="field" v-if="otherRide_.delayed">
@@ -120,6 +120,7 @@
                             </v-datepicker-search>
                         </div>
 
+                        <a @click.prevent="sendChecked" class="button is-info">Отправить выбранные</a>
 
                         <table class="table is-hoverable is-fullwidth">
                             <thead>
@@ -148,14 +149,17 @@
                                 <!--Отделения-->
                                 <td>
                                     <p v-for="i in formActive[department.id]">
-                                        <label :class="[i.recommended === 1 ? 'color-green' : '', needToGetBack(department)]">
-                                            <input @change="selectToSend($event, i.id)"
+<!--                                        <span>{{ i.tech.department ? i.tech.department : i.promoted_department }}</span>-->
+                                        <label>
+                                            <input
+                                                    v-if="!i.dispatched"
+                                                    @change="addToSendList(i.id)"
                                                    :name="`departments_to_ride[${department.id }][${i.id}]`"
                                                    :id="`dept_${i.id}`"
                                                    value="1"
                                                    v-model="i.recommended"
-                                                   type="checkbox"> {{ i.tech.department ? i.tech.department : i.promoted_department }}
-                                        </label>
+                                                   type="checkbox">
+                                        </label>&nbsp;{{ i.tech.department ? i.tech.department : i.promoted_department }}
                                     </p>
 
                                 </td>
@@ -216,14 +220,14 @@
                                             <i class="fas fa-bus"></i>&nbsp;Подразделение отправлено
                                         </a>
 
-                                        <a :id="`ret_time_${i.id }`"
+                                        <!--<a :id="`ret_time_${i.id }`"
                                            v-else-if="(!i.dispatched)"
                                            @click="sendOneCheck($event, department.id, i.tech.id, i.id)"
                                            type="text"
                                            :value="i.ret_time"
                                            class="button is-primary small is-outlined small-a">
                                             <i class="fas fa-bus"></i>&nbsp;Выслать
-                                        </a>
+                                        </a>-->
                                     </p>
                                 </td>
 
@@ -663,6 +667,7 @@
                 techItems_: this.techItems,
                 active: [],
                 reserve: [],
+                sendList: [],
                 time: 1000 * 10,
                 hq: this.formatHq(),
                 otherRide_: {
@@ -686,6 +691,11 @@
             }
         },
         methods: {
+            addToSendList(id) {
+                if (this.sendList.indexOf(id) === -1) {
+                    this.sendList.push(id);
+                }
+            },
             saveCard() {
                 let form = document.getElementById('other-rides-form');
                 let loadingComponent = this.$loading.open({
@@ -693,14 +703,15 @@
                 });
                 let urlToSave = this.urlToSave;
 
-                // console.dir(this.dataToSave)
-                // return null;
-
                 axios.post(urlToSave, this.dataToSave).then((r) => {
                     this.otherRide_ = this.prepareRecord(r.data.record);
                     this.techItems_ = r.data.techItems;
                     window.history.pushState('page2', 'Title', `/card101-other-rides/${this.otherRide_.id}/edit`);
                     loadingComponent.close();
+                }).catch((e) => {
+                    console.dir(e.stack)
+                    alert('**********Ошибка сохранения карточки: ' + e.name + ': ' + e.message);
+                    window.location.href = `/card101-other-rides/${this.otherRide_.id}/edit`;
                 });
             },
             addToActive(result){
@@ -779,6 +790,15 @@
 
                 return dt;
             },
+            sendChecked() {
+                axios.post('/roadtrip/other/send-many', {
+                    ids: this.sendList,
+                    delayed: this.otherRide_.delayed,
+                }).then((r) => {
+                    this.sendList = [];
+                    window.location.href = `/card101-other-rides/${this.otherRide_.id}/edit`;
+                });
+            },
             sendOneCheck(event, dept_id, dept_number, res_id) {
 
                 /* проставляем галочки в чекбосах */
@@ -826,7 +846,10 @@
                     axios.post('/api/card101/check-roadtrip', {ticket_other_id:ticket_id}).then((response) => {
                         if (response.data.recommendations !== undefined) {
 
-                            this.techItems_ = response.data.recommendations;
+                            //если выбраны отделени в чекбоксах - не обновляем список, чтобы не сбить выбранные
+                            if (!this.sendList.length) {
+                                this.techItems_ = response.data.recommendations;
+                            }
 
                         }
 
@@ -934,12 +957,6 @@
             urlToSave() {
                 return `/card101-other-rides/` + (this.otherRide_.id !== 0 ? `${this.otherRide_.id}/edit` : 'create');
             },
-            // delayedDateTime() {
-            //     return this.otherRide_.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('YYYY-MM-DD HH:mm:SS') : null;
-            // },
-            // delayedDateTimeHumanFormat() {
-            //     return this.otherRide_.delayed ? moment(this.otherRide_.custom_created_at).subtract(90, "minutes").format('HH:mm:SS DD-MM-YYYY') : null;
-            // },
             dataToSave() {
                 let data = JSON.parse(JSON.stringify(this.otherRide_));
 

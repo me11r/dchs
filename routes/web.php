@@ -250,6 +250,7 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
             Route::get('/send-all/{ticket_id}', 'RoadtripController@postSendAll');
             Route::post('other/send-all/{ticket_id}', 'RoadtripController@postSendAllOther');
             Route::post('other/send/{dept_id}/{ticket_id}/{departments?}', 'RoadtripController@postSendOther');
+            Route::post('other/send-many', 'RoadtripController@postSendOtherMany');
             Route::post('recommend', 'RoadtripController@postRecommend');
 
             Route::get('/additional/{id}', 'RoadtripController@getAdditional')
@@ -490,7 +491,11 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
             Route::get('download', 'AlertSystemCheckController@download')->name('download')->middleware(['right:ALERT_SYSTEM_DOWNLOAD']);
         });
 
-        Route::get('check-popup-notifications', 'AjaxController@checkPopupNotifications');
+        Route::group(['prefix' => 'popup-notifications', 'as' => 'popup-notifications'], function () {
+            Route::get('check', 'PopupNotificationController@check');
+            Route::post('mark-viewed', 'PopupNotificationController@mark_viewed');
+        });
+
         Route::post('increment-map-request', 'AjaxController@incrementMapRequest');
 
 

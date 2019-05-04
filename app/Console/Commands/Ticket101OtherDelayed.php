@@ -60,6 +60,7 @@ class Ticket101OtherDelayed extends Command
                 'message' => "Необходимо подтвердить высылку карточки №{$ticket->id}",
                 'url' => "/card101-other-rides/{$ticket->id}/edit",
                 'is_viewed' => false,
+                'is_permanent' => true,
             ]);
 
         }
