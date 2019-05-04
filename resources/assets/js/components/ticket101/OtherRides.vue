@@ -796,6 +796,7 @@
                     delayed: this.otherRide_.delayed,
                 }).then((r) => {
                     this.sendList = [];
+                    window.location.href = `/card101-other-rides/${this.otherRide_.id}/edit`;
                 });
             },
             sendOneCheck(event, dept_id, dept_number, res_id) {
