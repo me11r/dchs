@@ -314,475 +314,499 @@
                     </div>
                     <div :style="{'display': currentTabIndex === 3? 'block': 'none'}">
 
-                        <v-datepicker-search
-                                v-model="model.custom_created_at"
-                                :date="model.custom_created_at"
-                                :disabled="!canChangeCreatedAt"
-                                name="custom_created_at"
-                                :include-time="true"
-                                class="control"
-                                @dateChanged="model.custom_created_at = $event"
-                                label="Дата и время создания карточки">
-                        </v-datepicker-search>
+                        <b-tabs v-model="activeTab">
+                            <b-tab-item label="Основная информация">
+                                <v-datepicker-search
+                                        v-model="model.custom_created_at"
+                                        :date="model.custom_created_at"
+                                        :disabled="!canChangeCreatedAt"
+                                        name="custom_created_at"
+                                        :include-time="true"
+                                        class="control"
+                                        @dateChanged="model.custom_created_at = $event"
+                                        label="Дата и время создания карточки">
+                                </v-datepicker-search>
 
-                        <h5 class="subtitle">Первоначальная информация:</h5>
+                                <h5 class="subtitle">Первоначальная информация:</h5>
 
-                        <div class="field">
-                            <p class="control">
-                                <label for="additional_street_id">Первоначальный адрес</label>
-                            </p>
-                            <input
-                                    class="input"
-                                    disabled
-                                    v-model="model.location">
-                        </div>
-
-                        <div
-                                class="control"
-                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                            <div
-                                    class="control"
-                                    style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="incident_type_text">Происшествие</label>
-                                </p>
-                                <input disabled type="text" class="input" v-model="model.incident_type_text">
-                            </div>
-                        </div>
-                        <br>
-
-                        <h5 class="subtitle">Информация с места происшествия:</h5>
-                        <!--УТОЧНЕННЫЙ АДРЕС-->
-                        <div class="field">
-                            <p class="control">
-                                <label for="detailed_address">Уточненный адрес</label>
-                                <input type="text"
-                                       class="input"
-                                       id="detailed_address"
-                                       name="detailed_address"
-                                       v-model="model.detailed_address">
-                            </p>
-                        </div>
-
-                        <!--ТИП ПРОИСШЕСТВИЯ-->
-                        <div class="field" style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                            <p class="control">
-                                <label for="emergency_type_id">Тип происшествия</label>
-                            </p>
-                            <div class="select">
-                                <select
-                                        id="emergency_type_id"
-                                        name="emergency_type_id"
-                                        v-model="model.emergency_type_id">
-                                    <option value="">-</option>
-                                    <option
-                                            v-for="i in emergencyTypes"
-                                            :key="i.id"
-                                            :value="i.id">{{ i.name }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!--Название ЧС-->
-                        <div
-                                class="field"
-                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                            <p class="control">
-                                <label for="emergency_name_id">Название ЧС</label>
-                            </p>
-                            <div class="select">
-                                <select
-                                        id="emergency_name_id"
-                                        name="emergency_name_id"
-                                        v-model="model.emergency_name_id"
-                                >
-                                    <option value="">-</option>
-                                    <option
-                                            v-for="name in emergencyNames"
-                                            :key="`emergency_name_${name.id}`"
-                                            :value="name.id">{{ name.name }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="field is-grouped">
-                            <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
-                            <div
-                                class="control"
-                                style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="additional_incident_type_id">Происшествие (уточненное)</label>
-                                </p>
-                                <div class="select">
-                                    <select
-                                        id="additional_incident_type_id"
-                                        name="additional_incident_type_id"
-                                        v-model="model.additional_incident_type_id">
-                                        <option
-                                            v-for="incidentType in incidentTypes"
-                                            :key="incidentType.id"
-                                            :value="incidentType.id">{{ incidentType.name }}
-                                        </option>
-                                    </select>
+                                <div class="field">
+                                    <p class="control">
+                                        <label for="additional_street_id">Первоначальный адрес</label>
+                                    </p>
+                                    <input
+                                            class="input"
+                                            disabled
+                                            v-model="model.location">
                                 </div>
-                            </div>
-                            <!--МЕСТО ПРОИСШЕСТВИЯ-->
-                            <div class="control is-expanded">
-                                <p class="control">
-                                    <label for="additional_incident_place">Место происшествия</label>
-                                </p>
-                                <input
-                                    type="text"
-                                    class="input"
-                                    name="additional_incident_place"
-                                    id="additional_incident_place"
-                                    v-model="model.additional_incident_place">
-                            </div>
-                        </div>
 
-                        <!--Если тип происшествия: Подтопления-->
-                        <div class="field is-grouped" v-if="model.additional_incident_type_id === 36">
-                            <!--Место подтопления-->
-                            <div
-                                class="control"
-                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="flooding_place_id">Место подтопления</label>
-                                </p>
-                                <div class="select">
-                                    <select
-                                        id="flooding_place_id"
-                                        name="flooding_place_id"
-                                        v-model="model.flooding_place_id">
-                                        <option
-                                            v-for="place in floodingPlaces"
-                                            :key="`flooding_place_${place.id}`"
-                                            :value="place.id">{{ place.name }}
-                                        </option>
-                                    </select>
+                                <div
+                                        class="control"
+                                        style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                    <div
+                                            class="control"
+                                            style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="incident_type_text">Происшествие</label>
+                                        </p>
+                                        <input disabled type="text" class="input" v-model="model.incident_type_text">
+                                    </div>
                                 </div>
-                            </div>
-                            <!--Причина подтопления-->
-                            <div
-                                class="control"
-                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="flooding_reason_id">Причина подтопления</label>
-                                </p>
-                                <div class="select">
-                                    <select
-                                        id="flooding_reason_id"
-                                        name="flooding_reason_id"
-                                        v-model="model.flooding_reason_id">
-                                        <option
-                                            v-for="flood in floodingReasons"
-                                            :key="`flooding_reason_${flood.id}`"
-                                            :value="flood.id">{{ flood.name }}
-                                        </option>
-                                    </select>
+                                <br>
+
+                                <h5 class="subtitle">Информация с места происшествия:</h5>
+                                <!--УТОЧНЕННЫЙ АДРЕС-->
+                                <div class="field">
+                                    <p class="control">
+                                        <label for="detailed_address">Уточненный адрес</label>
+                                        <input type="text"
+                                               class="input"
+                                               id="detailed_address"
+                                               name="detailed_address"
+                                               v-model="model.detailed_address">
+                                    </p>
                                 </div>
-                            </div>
-                            <!--Количество проживающих-->
-                            <div class="control is-expanded">
-                                <p class="control">
-                                    <label for="living_count">Количество проживающих</label>
-                                </p>
-                                <input
-                                    type="number"
-                                    class="input"
-                                    name="living_count"
-                                    id="living_count"
-                                    v-model="model.living_count">
-                            </div>
-                        </div>
 
-                        <!--Если тип происшествия: Происшествия на лифтах-->
-                        <div class="field is-grouped" v-if="incidentTypeText === 'Происшествия на лифтах'">
-                            <!--Тип происшествия на лифтах-->
-                            <div
-                                class="control"
-                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="elevator_emergency_type_id">Тип происшествия на лифтах</label>
-                                </p>
-                                <div class="select">
-                                    <select
-                                        id="elevator_emergency_type_id"
-                                        name="elevator_emergency_type_id"
-                                        v-model="model.elevator_emergency_type_id">
-                                        <option
-                                            v-for="elevatorEmergency in elevatorEmergencyTypes"
-                                            :key="`elevatorEmergency_${elevatorEmergency.id}`"
-                                            :value="elevatorEmergency.id">{{ elevatorEmergency.name }}
-                                        </option>
-                                    </select>
+                                <!--ТИП ПРОИСШЕСТВИЯ-->
+                                <div class="field" style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                    <p class="control">
+                                        <label for="emergency_type_id">Тип происшествия</label>
+                                    </p>
+                                    <div class="select">
+                                        <select
+                                                id="emergency_type_id"
+                                                name="emergency_type_id"
+                                                v-model="model.emergency_type_id">
+                                            <option value="">-</option>
+                                            <option
+                                                    v-for="i in emergencyTypes"
+                                                    :key="i.id"
+                                                    :value="i.id">{{ i.name }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <!--Если тип происшествия: Инфекционные заболевания-->
-                        <div class="field is-grouped" v-if="incidentTypeText === 'Инфекционные заболевания'">
-                            <!--Тип инфекционного заболевания-->
-                            <div
-                                class="control"
-                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="disease_type_id">Тип инфекционного заболевания</label>
-                                </p>
-                                <div class="select">
-                                    <select
-                                        id="disease_type_id"
-                                        name="disease_type_id"
-                                        v-model="model.disease_type_id">
-                                        <option
-                                            v-for="option in diseaseTypes"
-                                            :key="`diseaseTypes_${option.id}`"
-                                            :value="option.id">{{ option.name }}
-                                        </option>
-                                    </select>
+                                <!--Название ЧС-->
+                                <div
+                                        class="field"
+                                        style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                    <p class="control">
+                                        <label for="emergency_name_id">Название ЧС</label>
+                                    </p>
+                                    <div class="select">
+                                        <select
+                                                id="emergency_name_id"
+                                                name="emergency_name_id"
+                                                v-model="model.emergency_name_id"
+                                        >
+                                            <option value="">-</option>
+                                            <option
+                                                    v-for="name in emergencyNames"
+                                                    :key="`emergency_name_${name.id}`"
+                                                    :value="name.id">{{ name.name }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <!--ФИО-->
-                            <div class="control is-expanded">
-                                <p class="control">
-                                    <label for="name_disease">ФИО</label>
-                                </p>
-                                <input
-                                        type="text"
-                                        class="input"
-                                        name="name_disease"
-                                        id="name_disease"
-                                        v-model="model.name_disease">
-                            </div>
-                        </div>
 
-                        <!--Если тип происшествия: Сход снежных лавин-->
-                        <div class="field is-grouped" v-if="model.additional_incident_type_id === 46">
-                            <!--Тип схода снежных лавин-->
-                            <div
-                                class="control"
-                                style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="avalanche_type_id">Тип схода снежных лавин</label>
-                                </p>
-                                <div class="select">
-                                    <select
-                                        id="avalanche_type_id"
-                                        name="avalanche_type_id"
-                                        v-model="model.avalanche_type_id">
-                                        <option
-                                            v-for="avalancheType in avalancheTypes"
-                                            :key="`avalanche_type_${avalancheType.id}`"
-                                            :value="avalancheType.id">{{ avalancheType.name }}
-                                        </option>
-                                    </select>
+                                <div class="field is-grouped">
+                                    <!--УТОЧНЕНИЕ ТИПА ПРОИСШЕСТВИЯ-->
+                                    <div
+                                            class="control"
+                                            style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="additional_incident_type_id">Происшествие (уточненное)</label>
+                                        </p>
+                                        <div class="select">
+                                            <select
+                                                    id="additional_incident_type_id"
+                                                    name="additional_incident_type_id"
+                                                    v-model="model.additional_incident_type_id">
+                                                <option
+                                                        v-for="incidentType in incidentTypes"
+                                                        :key="incidentType.id"
+                                                        :value="incidentType.id">{{ incidentType.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--МЕСТО ПРОИСШЕСТВИЯ-->
+                                    <div class="control is-expanded">
+                                        <p class="control">
+                                            <label for="additional_incident_place">Место происшествия</label>
+                                        </p>
+                                        <input
+                                                type="text"
+                                                class="input"
+                                                name="additional_incident_place"
+                                                id="additional_incident_place"
+                                                v-model="model.additional_incident_place">
+                                    </div>
                                 </div>
-                            </div>
-                            <!--куб/м-->
-                            <div class="control is-expanded">
-                                <p class="control">
-                                    <label for="avalanche_volume">куб/м</label>
-                                </p>
-                                <input
-                                    type="number"
-                                    class="input"
-                                    name="avalanche_volume"
-                                    id="avalanche_volume"
-                                    v-model="model.avalanche_volume">
-                            </div>
-                            <!--примечание-->
-                            <div class="control is-expanded">
-                                <p class="control">
-                                    <label for="avalanche_note">Примечание (сход лавин)</label>
-                                </p>
-                                <textarea
-                                    class="textarea"
-                                    name="avalanche_note"
-                                    id="avalanche_note"
-                                    v-model="model.avalanche_note"></textarea>
-                            </div>
-                        </div>
 
-                        <!--Если тип происшествия: Падение веток и деревьев-->
-                        <div class="field is-grouped" v-if="incidentTypeText === 'Падение веток и деревьев'">
-                            <!--Причина-->
-                            <div
-                                    class="control"
-                                    style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
-                                <p class="control">
-                                    <label for="branch_fall_reason_id">Причина (справочник)</label>
-                                </p>
-                                <div class="select">
-                                    <select
-                                            id="branch_fall_reason_id"
-                                            name="branch_fall_reason_id"
-                                            v-model="model.branch_fall_reason_id">
-                                        <option
-                                                v-for="option in branchFallReasons"
-                                                :key="`branchFallReasons_${option.id}`"
-                                                :value="option.id">{{ option.name }}
-                                        </option>
-                                    </select>
+                                <!--Если тип происшествия: Подтопления-->
+                                <div class="field is-grouped" v-if="model.additional_incident_type_id === 36">
+                                    <!--Место подтопления-->
+                                    <div
+                                            class="control"
+                                            style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="flooding_place_id">Место подтопления</label>
+                                        </p>
+                                        <div class="select">
+                                            <select
+                                                    id="flooding_place_id"
+                                                    name="flooding_place_id"
+                                                    v-model="model.flooding_place_id">
+                                                <option
+                                                        v-for="place in floodingPlaces"
+                                                        :key="`flooding_place_${place.id}`"
+                                                        :value="place.id">{{ place.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--Причина подтопления-->
+                                    <div
+                                            class="control"
+                                            style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="flooding_reason_id">Причина подтопления</label>
+                                        </p>
+                                        <div class="select">
+                                            <select
+                                                    id="flooding_reason_id"
+                                                    name="flooding_reason_id"
+                                                    v-model="model.flooding_reason_id">
+                                                <option
+                                                        v-for="flood in floodingReasons"
+                                                        :key="`flooding_reason_${flood.id}`"
+                                                        :value="flood.id">{{ flood.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--Количество проживающих-->
+                                    <div class="control is-expanded">
+                                        <p class="control">
+                                            <label for="living_count">Количество проживающих</label>
+                                        </p>
+                                        <input
+                                                type="number"
+                                                class="input"
+                                                name="living_count"
+                                                id="living_count"
+                                                v-model="model.living_count">
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <!--ХАРАКТЕРИСТИКА ПРОИСШЕСТВИЯ-->
-                        <div class="field">
-                            <label for="emergency_feature">Характеристика происшествия</label>
-                            <textarea
-                                name="emergency_feature"
-                                id="emergency_feature"
-                                class="textarea"
-                                cols="30"
-                                rows="3"
-                                v-model="model.emergency_feature"></textarea>
-                        </div>
+                                <!--Если тип происшествия: Происшествия на лифтах-->
+                                <div class="field is-grouped" v-if="incidentTypeText === 'Происшествия на лифтах'">
+                                    <!--Тип происшествия на лифтах-->
+                                    <div
+                                            class="control"
+                                            style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="elevator_emergency_type_id">Тип происшествия на лифтах</label>
+                                        </p>
+                                        <div class="select">
+                                            <select
+                                                    id="elevator_emergency_type_id"
+                                                    name="elevator_emergency_type_id"
+                                                    v-model="model.elevator_emergency_type_id">
+                                                <option
+                                                        v-for="elevatorEmergency in elevatorEmergencyTypes"
+                                                        :key="`elevatorEmergency_${elevatorEmergency.id}`"
+                                                        :value="elevatorEmergency.id">{{ elevatorEmergency.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <!--ПРИЧИНА-->
-                        <div class="field">
-                            <label for="reason">Причина</label>
-                            <textarea
-                                name="reason"
-                                id="reason"
-                                class="textarea"
-                                cols="30"
-                                rows="3"
-                                v-model="model.reason"></textarea>
-                        </div>
+                                <!--Если тип происшествия: Инфекционные заболевания-->
+                                <div class="field is-grouped" v-if="incidentTypeText === 'Инфекционные заболевания'">
+                                    <!--Тип инфекционного заболевания-->
+                                    <div
+                                            class="control"
+                                            style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="disease_type_id">Тип инфекционного заболевания</label>
+                                        </p>
+                                        <div class="select">
+                                            <select
+                                                    id="disease_type_id"
+                                                    name="disease_type_id"
+                                                    v-model="model.disease_type_id">
+                                                <option
+                                                        v-for="option in diseaseTypes"
+                                                        :key="`diseaseTypes_${option.id}`"
+                                                        :value="option.id">{{ option.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--ФИО-->
+                                    <div class="control is-expanded">
+                                        <p class="control">
+                                            <label for="name_disease">ФИО</label>
+                                        </p>
+                                        <input
+                                                type="text"
+                                                class="input"
+                                                name="name_disease"
+                                                id="name_disease"
+                                                v-model="model.name_disease">
+                                    </div>
+                                </div>
 
-                        <!--ПРИНЯТЫЕ МЕРЫ-->
-                        <div class="field">
-                            <label for="measures">Принятые меры</label>
-                            <textarea
-                                name="measures"
-                                id="measures"
-                                class="textarea"
-                                cols="30"
-                                rows="3"
-                                v-model="model.measures"></textarea>
-                        </div>
-                        <!--ЗАДЕЙСТВОВАННЫЕ РЕСУРСЫ-->
-                        <div class="field">
-                            <label for="resources">Задействованные ресурсы</label>
-                            <textarea
-                                name="resources"
-                                id="resources"
-                                class="textarea"
-                                cols="30"
-                                rows="3"
-                                v-model="model.resources"></textarea>
-                        </div>
+                                <!--Если тип происшествия: Сход снежных лавин-->
+                                <div class="field is-grouped" v-if="model.additional_incident_type_id === 46">
+                                    <!--Тип схода снежных лавин-->
+                                    <div
+                                            class="control"
+                                            style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="avalanche_type_id">Тип схода снежных лавин</label>
+                                        </p>
+                                        <div class="select">
+                                            <select
+                                                    id="avalanche_type_id"
+                                                    name="avalanche_type_id"
+                                                    v-model="model.avalanche_type_id">
+                                                <option
+                                                        v-for="avalancheType in avalancheTypes"
+                                                        :key="`avalanche_type_${avalancheType.id}`"
+                                                        :value="avalancheType.id">{{ avalancheType.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--куб/м-->
+                                    <div class="control is-expanded">
+                                        <p class="control">
+                                            <label for="avalanche_volume">куб/м</label>
+                                        </p>
+                                        <input
+                                                type="number"
+                                                class="input"
+                                                name="avalanche_volume"
+                                                id="avalanche_volume"
+                                                v-model="model.avalanche_volume">
+                                    </div>
+                                    <!--примечание-->
+                                    <div class="control is-expanded">
+                                        <p class="control">
+                                            <label for="avalanche_note">Примечание (сход лавин)</label>
+                                        </p>
+                                        <textarea
+                                                class="textarea"
+                                                name="avalanche_note"
+                                                id="avalanche_note"
+                                                v-model="model.avalanche_note"></textarea>
+                                    </div>
+                                </div>
 
-                        <!--КУИ-->
-                        <div class="field">
-                            <label for="kui">№ КУИ</label>
-                            <input
-                                name="kui"
-                                type="number"
-                                id="kui"
-                                class="input"
-                                v-model="model.kui">
-                        </div>
+                                <!--Если тип происшествия: Падение веток и деревьев-->
+                                <div class="field is-grouped" v-if="incidentTypeText === 'Падение веток и деревьев'">
+                                    <!--Причина-->
+                                    <div
+                                            class="control"
+                                            style="width: 33%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="branch_fall_reason_id">Причина (справочник)</label>
+                                        </p>
+                                        <div class="select">
+                                            <select
+                                                    id="branch_fall_reason_id"
+                                                    name="branch_fall_reason_id"
+                                                    v-model="model.branch_fall_reason_id">
+                                                <option
+                                                        v-for="option in branchFallReasons"
+                                                        :key="`branchFallReasons_${option.id}`"
+                                                        :value="option.id">{{ option.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <!--ХАРАКТЕРИСТИКА ПРОИСШЕСТВИЯ-->
+                                <div class="field">
+                                    <label for="emergency_feature">Характеристика происшествия</label>
+                                    <textarea
+                                            name="emergency_feature"
+                                            id="emergency_feature"
+                                            class="textarea"
+                                            cols="30"
+                                            rows="3"
+                                            v-model="model.emergency_feature"></textarea>
+                                </div>
 
+                                <!--ПРИЧИНА-->
+                                <div class="field">
+                                    <label for="reason">Причина</label>
+                                    <textarea
+                                            name="reason"
+                                            id="reason"
+                                            class="textarea"
+                                            cols="30"
+                                            rows="3"
+                                            v-model="model.reason"></textarea>
+                                </div>
 
-                        <div class="field is-grouped">
-                            <!--ПОСТРАДАВШИХ ЛЮДЕЙ/ДЕТЕЙ-->
-                            <div class="group_25">
-                                <label for="injured">Пострадавших людей/детей</label>
-                                <input
-                                    type="number"
-                                    v-model="model.injured"
-                                    class="input"
-                                    name="injured"
-                                    id="injured">
-                            </div>
-                            <!--ПОГИБШИХ ЛЮДЕЙ/ДЕТЕЙ-->
-                            <div class="group_25">
-                                <label for="dead">Погибших людей/детей</label>
-                                <input
-                                    type="number"
-                                    v-model="model.dead"
-                                    class="input"
-                                    name="dead"
-                                    id="dead">
-                            </div>
-                            <!--ЭВАКУИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
-                            <div class="group_25">
-                                <label for="evacuated">Эвакуированных людей/детей</label>
-                                <input
-                                    type="number"
-                                    v-model="model.evacuated"
-                                    class="input"
-                                    name="evacuated"
-                                    id="evacuated">
-                            </div>
-                            <!--ГОСПИТАЛИЗИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
-                            <div class="group_25">
-                                <label for="hospitalized">Госпитализированных людей/детей</label>
-                                <input
-                                    type="number"
-                                    v-model="model.hospitalized"
-                                    class="input"
-                                    name="hospitalized"
-                                    id="hospitalized">
-                            </div>
-                        </div>
-                        <div class="field is-grouped">
-                            <!--ТРАВМИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
-                            <div class="group_25">
-                                <label for="injured_hard">Травмированных людей/детей</label>
-                                <input
-                                    type="number"
-                                    v-model="model.injured_hard"
-                                    class="input"
-                                    name="injured_hard"
-                                    id="injured_hard">
-                            </div>
-                            <!--ОТРАВЛЕННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
-                            <div class="group_25">
-                                <label for="poisoned">Отравление людей/детей</label>
-                                <input
-                                    type="number"
-                                    v-model="model.poisoned"
-                                    class="input"
-                                    name="poisoned"
-                                    id="poisoned">
-                            </div>
-                            <!--СПАСЕНО ЛЮДЕЙ/ДЕТЕЙ-->
-                            <div class="group_25">
-                                <label for="saved">Спасено людей/детей</label>
-                                <input
-                                    type="number"
-                                    v-model="model.saved"
-                                    class="input"
-                                    name="saved"
-                                    id="saved">
-                            </div>
-                            <!--СПАСЕНО ЖИВОТНЫХ-->
-                            <div class="group_25">
-                                <label for="saved_animals">Спасено животных</label>
-                                <input
-                                    type="number"
-                                    v-model="model.saved_animals"
-                                    class="input"
-                                    name="saved_animals"
-                                    id="saved_animals">
-                            </div>
-                        </div>
-                        <!--аналитика-->
-                        <div class="field">
-                            <label for="analytics">Суточный отчет</label>
-                            <textarea
-                                    disabled
-                                    class="textarea"
-                                    id="analytics"
-                                    :value="analytics"
-                            >
-                        </div>
+                                <!--ПРИНЯТЫЕ МЕРЫ-->
+                                <div class="field">
+                                    <label for="measures">Принятые меры</label>
+                                    <textarea
+                                            name="measures"
+                                            id="measures"
+                                            class="textarea"
+                                            cols="30"
+                                            rows="3"
+                                            v-model="model.measures"></textarea>
+                                </div>
+                                <!--ЗАДЕЙСТВОВАННЫЕ РЕСУРСЫ-->
+                                <div class="field">
+                                    <label for="resources">Задействованные ресурсы</label>
+                                    <textarea
+                                            name="resources"
+                                            id="resources"
+                                            class="textarea"
+                                            cols="30"
+                                            rows="3"
+                                            v-model="model.resources"></textarea>
+                                </div>
+
+                                <!--КУИ-->
+                                <div class="field">
+                                    <label for="kui">№ КУИ</label>
+                                    <input
+                                            name="kui"
+                                            type="number"
+                                            id="kui"
+                                            class="input"
+                                            v-model="model.kui">
+                                </div>
+
+                                <div class="field is-grouped">
+                                    <!--ПОСТРАДАВШИХ ЛЮДЕЙ/ДЕТЕЙ-->
+                                    <div class="group_25">
+                                        <label for="injured">Пострадавших людей/детей</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.injured"
+                                                class="input"
+                                                name="injured"
+                                                id="injured">
+                                    </div>
+                                    <!--ПОГИБШИХ ЛЮДЕЙ/ДЕТЕЙ-->
+                                    <div class="group_25">
+                                        <label for="dead">Погибших людей/детей</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.dead"
+                                                class="input"
+                                                name="dead"
+                                                id="dead">
+                                    </div>
+                                    <!--ЭВАКУИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
+                                    <div class="group_25">
+                                        <label for="evacuated">Эвакуированных людей/детей</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.evacuated"
+                                                class="input"
+                                                name="evacuated"
+                                                id="evacuated">
+                                    </div>
+                                    <!--ГОСПИТАЛИЗИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
+                                    <div class="group_25">
+                                        <label for="hospitalized">Госпитализированных людей/детей</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.hospitalized"
+                                                class="input"
+                                                name="hospitalized"
+                                                id="hospitalized">
+                                    </div>
+                                </div>
+                                <div class="field is-grouped">
+                                    <!--ТРАВМИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
+                                    <div class="group_25">
+                                        <label for="injured_hard">Травмированных людей/детей</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.injured_hard"
+                                                class="input"
+                                                name="injured_hard"
+                                                id="injured_hard">
+                                    </div>
+                                    <!--ОТРАВЛЕННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
+                                    <div class="group_25">
+                                        <label for="poisoned">Отравление людей/детей</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.poisoned"
+                                                class="input"
+                                                name="poisoned"
+                                                id="poisoned">
+                                    </div>
+                                    <!--СПАСЕНО ЛЮДЕЙ/ДЕТЕЙ-->
+                                    <div class="group_25">
+                                        <label for="saved">Спасено людей/детей</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.saved"
+                                                class="input"
+                                                name="saved"
+                                                id="saved">
+                                    </div>
+                                    <!--СПАСЕНО ЖИВОТНЫХ-->
+                                    <div class="group_25">
+                                        <label for="saved_animals">Спасено животных</label>
+                                        <input
+                                                type="number"
+                                                v-model="model.saved_animals"
+                                                class="input"
+                                                name="saved_animals"
+                                                id="saved_animals">
+                                    </div>
+                                </div>
+
+                                <!--аналитика-->
+                                <div class="field">
+                                    <label for="analytics">Суточный отчет</label>
+                                    <textarea
+                                            disabled
+                                            class="textarea"
+                                            id="analytics"
+                                            :value="analytics"
+                                    ></textarea>
+                                </div>
+
+                            </b-tab-item>
+
+                            <b-tab-item label="Информация от службы взаимодействия">
+                                <div v-for="item in model.service_plans" v-if="item.service_plan_additional" class="emergency-situation-view section container">
+                                    <p style="text-align: center; margin-bottom: 20px"><b>{{ item.service_type.name }}</b></p>
+                                    <p><b>Дата происшествия:</b>&nbsp;{{ item.service_plan_additional.date_time|dateFilter('DD.MM.YYYY') }}</p>
+                                    <p><b>Время происшествия:</b>&nbsp;{{ item.service_plan_additional.date_time|dateFilter('HH:mm') }}</p>
+                                    <p><b>Место чс:</b>&nbsp;{{ item.service_plan_additional.location }}</p>
+                                    <p><b>Информация о событии:</b></p>
+                                    <p>{{ item.service_plan_additional.description }}</p>
+                                    <p>Погибло: {{ item.service_plan_additional.died }}</p>
+                                    <p>Травмировано: {{ item.service_plan_additional.injured }}</p>
+                                    <p>Пострадало: {{ item.service_plan_additional.wounded }}</p>
+                                    <p>Отравление: {{ item.service_plan_additional.poisoned }}</p>
+                                    <p>Госпитализировано: {{ item.service_plan_additional.hospitalized }}</p>
+                                    <p>Эвакуировано: {{ item.service_plan_additional.evacuated }}</p>
+                                    <p>Спасено: {{ item.service_plan_additional.saved }}</p>
+                                    <p>Спасено животных: {{ item.service_plan_additional.saved_animals }}</p>
+                                </div>
+                            </b-tab-item>
+                        </b-tabs>
+
                     </div>
                     <div :style="{'display': currentTabIndex === 2 ? 'block': 'none'}">
                         <h5 class="subtitle">Хронология событий:</h5>
@@ -1336,5 +1360,8 @@ export default {
     }
     .add_button {
         padding: 0 0 20px 0;
+    }
+    .emergency-situation-view p {
+        margin: 5px 0 0 0;
     }
 </style>

@@ -9,6 +9,7 @@ use App\Models\FireDepartmentResult;
 use App\Models\FormationTechItem;
 use App\Models\Schedule;
 use App\Models\Staff;
+use App\PopupNotification;
 use App\RideType;
 use App\RoadtripPlan;
 use App\Ticket101HqRide;
@@ -128,17 +129,19 @@ class OtherRides101Controller extends Controller
 
         $all = $request->all();
 
+        $all['delayed_at'] = $request->delayed ? $request->delayed_at : null;
+
         $all['changed_by'] = Auth::id();
 
         if($request->isMethod('POST')){
             $data['record']->update($all);
 
-            //если выбран отложенный выезд, переводим все путевые листы в неактивный режим
-            if($data['record']->delayed_at) {
+            /*//если выбран отложенный выезд, переводим все путевые листы в неактивный режим
+            if($data['record']->delayed) {
                 $roadtrip_plans = $data['record']
                     ->roadtrip_plans()
-                    ->update(['is_closed' => true]);
-            }
+                    ->update(['is_closed' => (bool)$data['record']->delayed]);
+            }*/
 
             $techItems = $data['record']->results()->with([
                 'tech',
@@ -304,6 +307,9 @@ class OtherRides101Controller extends Controller
 
         $this->recommend($data['record']);
 
+        //помечаем всплывающее уведомление как просмотренное
+        PopupNotification::setViewed("/card101-other-rides/{$data['record']->id}/edit");
+
         return response()->json('ok');
     }
 
@@ -318,6 +324,10 @@ class OtherRides101Controller extends Controller
         $data['record']->delayed_at = null;
 
         $data['record']->save();
+
+        //помечаем всплывающее уведомление как просмотренное
+        PopupNotification::setViewed("/card101-other-rides/{$data['record']->id}/edit");
+
 
         return response()->json('ok');
     }

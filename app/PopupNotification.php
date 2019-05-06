@@ -12,6 +12,7 @@ class PopupNotification extends Model
         'message',
         'url',
         'is_viewed',
+        'is_permanent',
         'popup_position',
         'popup_type',
     ];
@@ -24,5 +25,12 @@ class PopupNotification extends Model
     public function receiver()
     {
         return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    public function scopeSetViewed($q, $condition)
+    {
+        return $q->where('id', $condition)
+            ->orWhere('url', $condition)
+            ->update(['is_viewed' => true]);
     }
 }

@@ -2,6 +2,7 @@
 import '../sass/app.scss';
 
 import axios from 'axios';
+import moment from 'moment';
 
 import Navbar from './ui/Navbar';
 import {Card112Form} from './views/card112';
@@ -56,8 +57,10 @@ import Echo from 'laravel-echo';
 window.globalBus = new Vue({ });
 const translator = new Translate();
 
-
 const token = document.head.querySelector('meta[name="csrf-token"]');
+window.token = token;
+window.axios = axios;
+window.moment = moment;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
 
@@ -172,6 +175,7 @@ Vue.component('mudflow-date-selector', require('./views/mudflowProtection/Select
 Vue.component('call-info-create-edit', require('./views/call-infos/CreateEdit'));
 Vue.component('report-staff-managers-ods', require('./views/reports/emergency/ReportStaffManagersODS'));
 Vue.component('fire-departments-map', require('./views/fire-departments/DepartmentsMap'));
+Vue.component('service-plans-additional', require('./views/service-plans/ServicePlanAdditional'));
 
 // трекер яндекс-запросов
 globalBus.$on('api-map-request', (r) => {

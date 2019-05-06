@@ -177,7 +177,7 @@ class Card112Controller extends Controller
         $model = new Card112Resource($this->repository->where('id', '=', $id)
             ->with([
                 'serviceReactions',
-                'service_plans',
+                'service_plans.service_plan_additional',
                 'service_plans.service_type',
                 'chronology',
                 'notificationGroups',

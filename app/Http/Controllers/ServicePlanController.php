@@ -29,7 +29,7 @@ class ServicePlanController extends Controller
         $per_page = $request->get('per_page', 10);
 
         $records = Ticket101ServicePlan::department($service)
-            ->orderBy('id', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->whereNotNull('dispatched_time')
             ->where(function ($q){
                 $q->has('service_type');
@@ -48,7 +48,7 @@ class ServicePlanController extends Controller
 
         $record = Ticket101ServicePlan::findOrFail($id);
 
-        if(!$record->is_accepted){
+        if(!$record->is_accepted && Auth::user()->service_type_id){
             $record->is_accepted = true;
             $record->name_accepted = Auth::user()->name;
             $record->save();
@@ -56,6 +56,43 @@ class ServicePlanController extends Controller
 
 
         return view('service-plans.view', compact('record'));
+    }
+
+    public function getAdditional($id)
+    {
+        $record = Ticket101ServicePlan::with([
+            'service_type',
+            'ticket',
+            'ticket112',
+            'service_plan_additional',
+        ])
+            ->findOrFail($id);
+
+        return view('service-plans.additional', compact('record'));
+    }
+
+    public function postAdditional(Request $request, $id)
+    {
+        $record = Ticket101ServicePlan::with([
+            'service_type',
+            'service_plan_additional',
+        ])
+            ->findOrFail($id);
+
+        $all = $request->all();
+
+        if ($record->service_plan_additional) {
+            $record->service_plan_additional()->update($all);
+        }
+        else {
+            $record->service_plan_additional()->create($all);
+        }
+
+        if ($request->ajax()) {
+            return response()->json('ok');
+        }
+
+        return back();
     }
 
     public function postSend(Request $request)

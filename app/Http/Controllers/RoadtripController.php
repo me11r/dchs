@@ -338,6 +338,35 @@ class RoadtripController extends AuthorizedController
             ]);
     }
 
+    public function postSendOtherMany(Request $request)
+    {
+        $is_delayed = (boolean) $request->delayed;
+        $results = FireDepartmentResult::whereIn('id', $request->ids)->get();
+
+        foreach ($results as $result) {
+            $plan = RoadtripPlan::firstOrCreate([
+                'card101_other_id' => $result->ticket101_other_id,
+                'department_id' => $result->tech->vehicle->fire_department_id,
+            ]);
+
+            /*если стоит флаг отложенной высылки - переводим путевой лист в неактивный режим*/
+            $plan->is_closed = $is_delayed;
+
+            $plan->save();
+
+            $result->dispatched = true;
+            $result->dispatch_time = now();
+            $result->dispatch_id = $plan->id;
+            $result->save();
+
+            RoadtripSubscription::notifyDepartment($plan->department_id, $plan->id);
+        }
+
+        if($request->ajax()){
+            return response()->json('ok', 200);
+        }
+    }
+
     public function postSendAll($ticket_id)
     {
         $this->noLayout();
