@@ -555,6 +555,11 @@
                                         Информация от ПЧ
                                     </a>
                                 </li>
+                                <li class="main-tab-inner" onclick="window.add101tabs.openInnerTab(event, 'tab_summary_services');">
+                                    <a>
+                                        Информация от службы взаимодействия
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -1132,6 +1137,26 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                        <div id="tab_summary_services" class="content-tab" style="display: none">
+                            {% for item in ticket.service_plans if item.service_plan_additional %}
+                                <div class="emergency-situation-view section container">
+                                    <p style="text-align: center; margin-bottom: 20px"><b>{{ item.service_type.name }}</b></p>
+                                    <p><b>Дата происшествия:</b>&nbsp;{{ item.service_plan_additional.date_human_format }}</p>
+                                    <p><b>Время происшествия:</b>&nbsp;{{ item.service_plan_additional.time }}</p>
+                                    <p><b>Место чс:</b>&nbsp;{{ item.service_plan_additional.location }}</p>
+                                    <p><b>Информация о событии:</b></p>
+                                    <p>{{ item.service_plan_additional.description }}</p>
+                                    <p>Погибло: {{ item.service_plan_additional.died }}</p>
+                                    <p>Травмировано: {{ item.service_plan_additional.injured }}</p>
+                                    <p>Пострадало: {{ item.service_plan_additional.wounded }}</p>
+                                    <p>Отравление: {{ item.service_plan_additional.poisoned }}</p>
+                                    <p>Госпитализировано: {{ item.service_plan_additional.hospitalized }}</p>
+                                    <p>Эвакуировано: {{ item.service_plan_additional.evacuated }}</p>
+                                    <p>Спасено: {{ item.service_plan_additional.saved }}</p>
+                                    <p>Спасено животных: {{ item.service_plan_additional.saved_animals }}</p>
+                                </div>
+                            {% endfor %}
                         </div>
                     {% endif %}
                 </div>

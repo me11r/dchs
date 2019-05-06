@@ -87,16 +87,6 @@ class Ticket101ServicePlan extends Model
         return $q->where('service_type_id', $search);
     }
 
-    public function service_type()
-    {
-        return $this->belongsTo(ServiceType::class, 'service_type_id');
-    }
-
-    public function results()
-    {
-        return $this->hasMany(FireDepartmentResult::class, 'dispatch_id');
-    }
-
     public function scopeDispatched($q, $search)
     {
         return $q->whereNotNull('dispatched');
@@ -108,5 +98,20 @@ class Ticket101ServicePlan extends Model
         $to = $to ? $to : today()->addHours(7)->format('Y-m-d H:i:s');
 
         return $q->whereBetween('created_at', [$from, $to]);
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
+    }
+
+    public function results()
+    {
+        return $this->hasMany(FireDepartmentResult::class, 'dispatch_id');
+    }
+
+    public function service_plan_additional()
+    {
+        return $this->hasOne(ServicePlanAdditional::class, 'service_plan_id');
     }
 }
