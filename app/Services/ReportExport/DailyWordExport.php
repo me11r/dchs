@@ -426,6 +426,7 @@ class DailyWordExport
                         $operational = '';
                         if($drillTicket['operational_plan']) {
                             $operational = "ОП ".$drillTicket['operational_plan']['name'];
+                            $operational = htmlspecialchars($operational);
                         }
                         elseif($drillTicket['operational_card']) {
                             $operational = $drillTicket['operational_card']['oc_number'];
@@ -439,7 +440,7 @@ class DailyWordExport
 
                         //Радиотелевизионная передающая станция ТОО «Кок-тобе»
                         $textRun->addText(
-                            $drillTicket['drill_name_total'].' ',
+                            htmlspecialchars($drillTicket['drill_name_total']).' ',
                             $simpleFontStyle,
                             ['align' => Jc::BOTH]
                         );
