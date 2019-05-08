@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 trait MysqlAdditionalFunctions
 {
-    protected function defineTimeDiffSpike($outputFormat = '%Hч. %iм. %sс.'): void
+    protected function defineTimeDiffSpike($outputFormat = '%Hч. %iм.'): void
     {
         DB::unprepared('DROP FUNCTION IF EXISTS TIME_DIFF_SPIKE');
         $function = DB::raw("CREATE FUNCTION TIME_DIFF_SPIKE(first_time TIME, second_time TIME) RETURNS VARCHAR(20) CHARSET utf8
