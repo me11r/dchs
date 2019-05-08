@@ -77,7 +77,9 @@ class DailyWordExport
         $simpleFontStyle = ['name' => 'Times New Roman', 'size' => 10];
 
         $generalBoldFontStyle8 = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true];
+        $generalBoldFontStyle10 = ['name' => 'Times New Roman', 'size' => 10, 'bold' => true];
         $generalBoldUnderlineFontStyle8 = ['name' => 'Times New Roman', 'size' => 8, 'bold' => true, 'underline' => 'single'];
+        $generalBoldUnderlineFontStyle10 = ['name' => 'Times New Roman', 'size' => 10, 'bold' => true, 'underline' => 'single'];
 
         $section->addText(
             'ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ «СЛУЖБА ПОЖАРОТУШЕНИЯ И',
@@ -566,7 +568,7 @@ class DailyWordExport
 
         $section->addText(
             'Неисправная техника: ',
-            $generalBoldUnderlineFontStyle8,
+            $generalBoldUnderlineFontStyle10,
             ['align' => Jc::BOTH]
         );
 
@@ -581,7 +583,7 @@ class DailyWordExport
                     }
                     $section->addText(
                         $techString,
-                        $generalBoldFontStyle8,
+                        $generalBoldFontStyle10,
                         ['align' => Jc::BOTH]
                     );
 
@@ -592,7 +594,7 @@ class DailyWordExport
 
         $section->addText(
             '',
-            $generalBoldFontStyle8,
+            $generalBoldFontStyle10,
             ['align' => Jc::BOTH]
         );
 
@@ -604,7 +606,7 @@ class DailyWordExport
         }
         $section->addText(
             'Всего:___________________________' . $text,
-            $generalBoldUnderlineFontStyle8,
+            $generalBoldUnderlineFontStyle10,
             ['align' => Jc::BOTH]
         );
 
@@ -617,7 +619,7 @@ class DailyWordExport
 
         $section->addText(
             'Неисправные видеорегистраторы: ',
-            $generalBoldUnderlineFontStyle8,
+            $generalBoldUnderlineFontStyle10,
             ['align' => Jc::BOTH]
         );
 
@@ -627,7 +629,7 @@ class DailyWordExport
                 foreach ($dvrs as $dvr) {
                     $section->addText(
                         "{$iterator}. ".$dvr_department . ' '.$dvr['vehicle'],
-                        $generalBoldFontStyle8,
+                        $generalBoldFontStyle10,
                         ['align' => Jc::BOTH]
                     );
                     $iterator++;
@@ -637,7 +639,7 @@ class DailyWordExport
 
         $section->addText(
             '',
-            $generalBoldFontStyle8,
+            $generalBoldFontStyle10,
             ['align' => Jc::BOTH]
         );
 
@@ -649,13 +651,13 @@ class DailyWordExport
         }
         $section->addText(
             'Всего:___________________________' . $text,
-            $generalBoldUnderlineFontStyle8,
+            $generalBoldUnderlineFontStyle10,
             ['align' => Jc::BOTH]
         );
 
         $section->addText(
             '',
-            $generalBoldFontStyle8,
+            $generalBoldFontStyle10,
             ['align' => Jc::BOTH]
         );
 

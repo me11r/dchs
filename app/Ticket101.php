@@ -593,6 +593,14 @@ class Ticket101 extends BaseModel
         return $firstArrived;
     }
 
+    public function departments_retreated()
+    {
+        return $this->results()
+            ->whereNotNull('retreat_time')
+            ->orderBy('retreat_time')
+            ->get();
+    }
+
     public function departments_arrived()
     {
         return $this->results()
