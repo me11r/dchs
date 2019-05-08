@@ -69,6 +69,7 @@ use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101ResourcesExcelExport;
 use App\Services\ReportExport\Ticket101WaterConsumptionExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
+use App\Services\ReportExport\Ticket112BranchesWordExport;
 use App\Services\ReportExport\Ticket112EmergencyExcelExport;
 use App\Services\ReportExport\Ticket112EmergencyWordExport;
 use App\Services\ReportExport\Ticket112PeriodExcelExport;
@@ -548,10 +549,19 @@ class ReportController extends AuthorizedController
                 ];
             }
         }
+
         //проставляем номера 1,2,3 и тд
         foreach ($preparedToExport as $cityArea => $arrays) {
             $indx = 0;
             $arrays = collect($arrays)->sortBy('Дата происшествия')->toArray();
+
+            foreach ($arrays as $key => $array) {
+                $preparedToExport[$cityArea][$key]['№'] = ++$indx;
+            }
+        }
+        //todo избавться от этого шаманства
+        foreach ($preparedToExport as $cityArea => $arrays) {
+            $indx = 0;
             foreach ($arrays as $key => $array) {
                 $preparedToExport[$cityArea][$key]['№'] = ++$indx;
             }
@@ -564,6 +574,61 @@ class ReportController extends AuthorizedController
 
         if($request->ajax()) {
             return response()->json(['data' => $preparedToExport, 'total' => $total, 'totalInjured' => $deadInjured]);
+        }
+
+        if($incidentType->name === 'Подтопления') {
+            $title = "Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
+
+        }
+        elseif ($incidentType->name === 'Падение веток и деревьев') {
+            $branchFallReasonsCountArr = [];
+            $branchFallReasonsCountStr = '';
+            foreach (BranchFallReason::all() as $reason) {
+
+                $branchFallReasonsCountArr[$reason->name] = (clone $cards)->get()->filter(function ($q) use ($reason) {
+                    return $q->branch_fall_reason_id === $reason->id;
+                })->count();
+
+                if($branchFallReasonsCountArr[$reason->name] !== 0) {
+                    $branchFallReasonsCountStr .= "$reason->name – {$branchFallReasonsCountArr[$reason->name]}; ";
+                }
+            }
+
+            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr}";
+        }
+        else {
+            $specific = '';
+
+            if ($incident_type_id) {
+                $specific = "по категории '{$incidentType->name}'";
+            }
+
+            $title = "Информация {$specific} по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
+        }
+
+        $footer = "Всего на номер «112» поступило {$cards->count()} сообщений о происшествиях";
+//        $title = $incident_type_id;
+
+
+        if ($request->download === 'docx') {
+
+
+            $wordReport = new Ticket112BranchesWordExport(
+                [
+                    'data' => $preparedToExport,
+                    'total' => $total,
+                    'totalInjured' => $deadInjured,
+                    'dateFrom' => $dateStartHuman,
+                    'dateTo' => $dateEndHuman,
+                    'title' => $title,
+                    'footer' => $footer,
+                ]);
+
+            $writer = $wordReport->getWriter('Word2007');
+            $fileName = 'Отчет 112 По происшествиям - '.date('d-m-Y'). '.docx';
+            $writer->save(public_path($fileName));
+
+            return response()->download(public_path($fileName));
         }
 
         $spreadsheet = new Spreadsheet();
@@ -691,25 +756,12 @@ class ReportController extends AuthorizedController
             $writer->save('php://output');
         }
 
-        $title = "Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
+        #$title = "Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
 
-        if ($incidentType->name === 'Падение веток и деревьев') {
-
-            $branchFallReasonsCountArr = [];
-            $branchFallReasonsCountStr = '';
-            foreach (BranchFallReason::all() as $reason) {
-
-                $branchFallReasonsCountArr[$reason->name] = (clone $cards)->get()->filter(function ($q) use ($reason) {
-                    return $q->branch_fall_reason_id === $reason->id;
-                })->count();
-
-                if($branchFallReasonsCountArr[$reason->name] !== 0) {
-                    $branchFallReasonsCountStr .= "$reason->name – {$branchFallReasonsCountArr[$reason->name]}; ";
-                }
-            }
+        /*if ($incidentType->name === 'Падение веток и деревьев') {
 
             $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr}";
-        }
+        }*/
 
         $activeSheet
             ->getCell('C' . $rowIndex)
@@ -777,8 +829,6 @@ class ReportController extends AuthorizedController
             $rowIndex = $activeSheet->getHighestRow();
             $rowIndex += 3;
         }
-
-
 
         $activeSheet->getColumnDimension('A')->setWidth(3);
         $activeSheet->getColumnDimension('B')->setWidth(20);
