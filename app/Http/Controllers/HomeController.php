@@ -78,8 +78,8 @@ class HomeController extends Controller
             $weatherString .= "Прогноз погоды: {$weather->forecast_city1}, дата заполнения: {$weather->created_at->format('d.m.Y')}";
         }
 
-        $mudflowProtectionLatest = MudflowProtectionBlock::latest()->first();
-        $mudflowProtectionRecords = $mudflowProtectionLatest->items->keyBy('gauging_station_id');
+        $mudflowProtectionLatest = MudflowProtectionBlock::where('date', today())->first();
+        $mudflowProtectionRecords = $mudflowProtectionLatest ? $mudflowProtectionLatest->items->keyBy('gauging_station_id') : collect([]);
 
         $data['services_infos'] = [
             'SOME' => $quakeString,
