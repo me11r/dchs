@@ -15,6 +15,7 @@ class AnalyticsService
 {
     public function fill($ticket)
     {
+        $deptsRetreated = $ticket->departments_retreated();
         $deptsArrived = $ticket->departments_arrived();
         $deptsArrivedHq = $ticket->departments_arrived_hq();
         $firstDeptArrived = $ticket->first_department_arrived();
@@ -70,6 +71,7 @@ class AnalyticsService
             'date2' => Carbon::parse($ticket->custom_created_at)->format('d.m.Y'),
             'city_area' => $ticket->city_area->name ?? null,
             'address' => $ticket->location,
+            'deptsRetreated' => $deptsRetreated,
             'deptsArrived' => $deptsArrived,
             'deptsArrivedHq' => $deptsArrivedHq,
             'caller_name' => $ticket->caller_name,

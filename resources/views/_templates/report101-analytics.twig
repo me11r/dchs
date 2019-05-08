@@ -2,6 +2,7 @@
     <span><b>Итог выезда:</b> <span>{{ ticket.ticket_result }}</span></span>
     <span><b style="text-decoration: underline; font-style: italic;">{{ pre_information }} S={{ square_max }} м2</b></span>
     <span><b>На место прибыли: </b> {% for item in deptsArrived %}<span>{{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} прибыло в {{ item.arrive_time }} ({{ item.arrive_time_minutes ? item.arrive_time_minutes ~ ' мин., ' : '' }}{{ item.distance ? item.distance ~ ' км, ' : '' }}{{ item.staff_count ? item.staff_count ~ ' человек л/с, ' : '' }}{{ item.chronology_on_way_string }});</span>{% endfor %}
+    <span><b>Отбой с пути следования: </b> {% for item in deptsRetreated %}<span>{{ item.department.title }} ({{ item.tech.department }}) на {{ item.tech.vehicle.name }} отбой в {{ item.retreat_time|date('H:i') }};</span>{% endfor %}
     {% for item in deptsArrivedHq %}
     <span>{{ item.name }} прибыло в {{ item.arrive_time }}; лс: {{ item.staff_count }}; расстояние до места: {{ item.distance }}</span>
     {% endfor %}
@@ -10,6 +11,8 @@
     <span><b>Время локализации: </b><span>{{ ticket.loc_time }}</span></span>
 
     <span><b>Время ликвидации: </b><span>{{ ticket.liqv_time }}</span></span>
+
+    <span><b>Ликвидация достигнута: </b><span>{{ ticket.liquidation_method.name|default('') }}</span></span>
 
     <span><b>Использованные стволы: </b>{% for item in ticket.chronologies %}{% if item.event_info_arrived and item.event_info_arrived.name != 'ГДЗС' %}<span>{{ item.fire_department_result.department.title }}:{{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, ситуация:{{ item.event_info_arrived.name }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
     <span><b>ГДЗС: </b>{% for item in ticket.chronologies %}{% if item.event_info_arrived and item.event_info_arrived.name == 'ГДЗС' %}<span>{{ item.fire_department_result.department.title }}:{{ item.fire_department_result.tech.department }}, время:{{ item.time }}, количество:{{ item.quantity }}, время работы:{{ item.working_time }}, информация:{{ item.information }}</span>{% endif %}{% endfor %}</span>
@@ -24,7 +27,6 @@
     {% if ticket.more_info %}
     <span><b>Дополнительная информация:</b> <span>{{ ticket.more_info }}</span></span>
     {% endif %}
-    {#<b>Ликвидация достигнута:</b> <span>{{ ticket.liquidation_method.name|default('') }}</span>#}
     {#<b>Источник противопожарного водоснабжения:</b> <span>{{ ticket.water_supply_source.name|default('') }}</span>#}
     {#<b>Расстояние до места:</b> <span>{{ ticket.distance }}</span>#}
     {#<b>Владелец:</b> <span>{{ ticket.owner }}</span>#}
