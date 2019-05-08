@@ -421,6 +421,15 @@ class DailyWordExport
                             ['align' => Jc::BOTH]
                         );
 
+                        //адрес только для "Корректировки"
+                        if ($drillType->id === 7 && $drillTicket['location']) {
+                            $textRun->addText(
+                                $drillTicket['location'],
+                                $simpleFontStyle,
+                                ['align' => Jc::BOTH]
+                            );
+                        }
+
                         // ОП 81/8
                         // ОК 81/8
                         $operational = '';
