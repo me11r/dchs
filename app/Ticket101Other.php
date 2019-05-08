@@ -175,11 +175,23 @@ class Ticket101Other extends BaseModel
     //attribute: dispatched_fds
     public function getDispatchedFdsAttribute()
     {
-        $results = $this->results()->whereNotNull('dispatch_id')->get();
+        $results = $this->results()->whereNotNull('dispatch_id')->get()->map(function ($q) {
+            return ['department' => $q->department->title ?? null];
+        })->unique();
+
+        $results_hq = $this->hqRides()->whereNotNull('dispatched')->get()->map(function ($q) {
+            return ['department' => $q->name];
+        });
+
+        if($results_hq->count() && $results->count()) {
+            $results = $results->merge($results_hq);
+        }
+
         $fd = '';
+
         foreach ($results as $key => $result) {
-            $fd .= $result->department ? $result->department->title : '';
-            $fd .= ++$key !== $results->count() ? ', ' : '';
+            $fd .= $result['department'];
+            $fd .= ++$key !== count($results) ? ', ' : '';
         }
 
         return $fd;
