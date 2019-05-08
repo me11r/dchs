@@ -113,10 +113,20 @@
                         class="buttons has-text-right is-grouped is-right"
                         style="">
                         <a
-                            :href="getHref"
+                            :href="getHref('xlsx')"
                             download
                             class="button is-success">
-                            <i class="fas fa-check"></i>&nbsp;Скачать
+                            <i class="fas fa-check"></i>&nbsp;Скачать в XLSX
+                        </a>
+                    </div>
+                    <div
+                        class="buttons has-text-right is-grouped is-right"
+                        style="">
+                        <a
+                            :href="getHref('docx')"
+                            download
+                            class="button is-success">
+                            <i class="fas fa-check"></i>&nbsp;Скачать в DOCX
                         </a>
                     </div>
                 </form>
@@ -203,18 +213,6 @@ export default {
         },
     },
     computed: {
-        getHref() {
-            return '/reports/112/branches_export' +
-                '?date_start=' + moment(this.date_begin_).format('YYYY-MM-DD') +
-                '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
-                '&incident_type_id=' + this.incident_type_id +
-                '&city_area_id=' + this.cityAreaId +
-                '&addressSearch=' + this.addressSearch +
-                '&report_type=' + this.getReportType +
-                '&reasonBranchesId=' + this.getReasonBranchesId +
-                '&reasonFloodingId=' + this.getReasonFloodingId +
-                '&csrf-token=' + this.csrf;
-        },
         getReportType() {
             return this.incidentTypes.length === 2 ? 'branches' : 'common';
         },
@@ -258,7 +256,20 @@ export default {
                 this.total = q.data.total;
                 this.totalInjured = q.data.totalInjured;
             });
-        }
+        },
+        getHref(download) {
+            return '/reports/112/branches_export' +
+                '?date_start=' + moment(this.date_begin_).format('YYYY-MM-DD') +
+                '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
+                '&incident_type_id=' + this.incident_type_id +
+                '&city_area_id=' + this.cityAreaId +
+                '&addressSearch=' + this.addressSearch +
+                '&report_type=' + this.getReportType +
+                '&reasonBranchesId=' + this.getReasonBranchesId +
+                '&reasonFloodingId=' + this.getReasonFloodingId +
+                '&download=' + download +
+                '&csrf-token=' + this.csrf;
+        },
     },
 };
 </script>
