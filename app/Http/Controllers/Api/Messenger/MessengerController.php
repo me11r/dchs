@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Messenger\Message;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MessengerController extends Controller
 {
@@ -24,7 +26,7 @@ class MessengerController extends Controller
         $unread = $this->getUnreadCount($me->id);
         foreach ($users as &$user) {
             $user->unread_count = 0;
-            if (isset($unread[$user->id])){
+            if (isset($unread[$user->id])) {
                 $user->unread_count = $unread[$user->id]['cnt'];
             }
         }
@@ -51,18 +53,21 @@ class MessengerController extends Controller
         $text = $request->get('message');
         $type = $request->get('type', 'text');
         $file_id = $request->get('file_id', null);
+        $messages = [];
+
         foreach ($to as $reciever) {
             $message = new Message([
                 'message' => $text,
                 'sender_id' => $me->id,
-                'message_type'=> $type,
+                'message_type' => $type,
                 'file_id' => $file_id,
                 'reciever_id' => (int)$reciever
             ]);
             $message->save();
+            $messages[] = $message;
         }
 
-        return response()->json(['status' => 'ok']);
+        return response()->json(['status' => 'ok', 'messages' => $messages]);
     }
 
     /**
@@ -86,7 +91,7 @@ class MessengerController extends Controller
             ->limit(150)
             ->get();
 
-        $this->markAsRead($me, $user_id);
+//        $this->markAsRead($me, $user_id);
 
         return response()->json(['messages' => $messages]);
     }
@@ -101,15 +106,26 @@ class MessengerController extends Controller
         return response()->json(['unread' => $unread]);
     }
 
-    protected function markAsRead(User $me, int $user_id)
+    public function chatWasRead($senderId)
     {
-        $messages = (new Message())
-
-            ->where(function ($query) use ($me, $user_id) {
-                return $query->where('sender_id', $user_id)
-                    ->where('reciever_id', $me->id);
-            })
-            ->update(['is_viewed' => true]);
-        return $messages;
+        DB::table('messenger_messages')
+            ->where('sender_id', '=', $senderId)
+            ->where('reciever_id', '=', Auth::user()->id)
+            ->update([
+                'is_viewed' => true
+            ]);
+        return response()->json();
     }
+
+//    protected function markAsRead(User $me, int $user_id)
+//    {
+//        $messages = (new Message())
+//
+//            ->where(function ($query) use ($me, $user_id) {
+//                return $query->where('sender_id', $user_id)
+//                    ->where('reciever_id', $me->id);
+//            })
+//            ->update(['is_viewed' => true]);
+//        return $messages;
+//    }
 }

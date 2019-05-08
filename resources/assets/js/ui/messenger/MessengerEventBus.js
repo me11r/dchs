@@ -13,5 +13,6 @@ export const EVENT_NAMES = {
     messengerClearMultiselect: 'messenger-multi-clear-all',
 
     messageSending: 'messenger-sending-message',
-    messageSent: 'messenger-message-sent'
+    messageSent: 'messenger-message-sent',
+    totalUnreadCountChanged: 'total-unread-count-changed'
 };

@@ -24,6 +24,10 @@ import VMessage from './SingleMessage';
 import SvgPreloader from './SvgPreloader';
 import EventBus, {EVENT_NAMES} from './MessengerEventBus';
 import axios from 'axios';
+import SocketListener from '../../scripts/socket-listener';
+import _ from 'lodash';
+import {MessengerSocketEvents} from './MessengerSocketEvents';
+
 const evbus = EventBus();
 const api = axios.create({
     baseURL: '/api/messenger/'
@@ -59,25 +63,55 @@ export default {
     computed: {},
     methods: {
         addMessage: function(message) {
-            this.messages.push({type: 'text', message: message, created_at: moment().format('YYYY-MM-DD hh:mm')});
+            this.messages.push(message);
+            this.scrollDown();
         },
         fetchMessages: function() {
             this.loading = true;
             if (this.user.id !== 0) {
                 return api.get('/messages/list/' + this.user.id).then(response => {
                     this.messages = response.data.messages;
-                    this.messages = _.sortBy(this.messages, 'id',['asc'])
+                    this.messages = _.sortBy(this.messages, 'id', ['asc']);
                     this.loading = false;
                     this.loaded = true;
+
+                    this.markChatAsRead();
                 }).then(() => {
                     this.scrollDown();
                 });
             }
         },
+        defineIncomingMessageListener() {
+            SocketListener
+                .privateUserChannel()
+                .then((channel) => {
+                    channel
+                        .listen(MessengerSocketEvents.MessageCreated, (event) => {
+                            if (event.message.sender_id === this.user.id) {
+                                this.messages.push(event.message);
+                                this.scrollDown();
 
-        scrollDown: function() {
+                                this.markChatAsRead();
+                            }
+                        });
+                });
+        },
+        markChatAsRead: _.debounce(function() {
+            if (_.find(this.messages, {is_viewed: 0, reciever_id: window.user_id})) {
+                api.get('/messages/chat_was_read/' + this.user.id).then(() => {
+                    this.messages = this.messages.map((item) => {
+                        if (item.reciever_id === window.user_id) {
+                            item.is_viewed = true;
+                        }
+                        return item;
+                    });
+                    this.scrollDown();
+                });
+            }
+        }, 2000),
+        scrollDown: _.debounce(function() {
             this.$el.scrollTop = this.$el.scrollHeight;
-        }
+        }, 300)
 
     },
     mounted: function() {
@@ -86,12 +120,13 @@ export default {
             this.loaded = false;
             this.fetchMessages();
         });
-        evbus.$on(EVENT_NAMES.messageSent, (message, user) => {
-            if (user.id === this.user.id) {
+        evbus.$on(EVENT_NAMES.messageSent, (message, userId) => {
+            if (userId === this.user.id) {
                 this.addMessage(message);
             }
         });
-        setInterval(this.fetchMessages, 2300);
+        this.fetchMessages();
+        this.defineIncomingMessageListener();
     }
 };
 </script>
