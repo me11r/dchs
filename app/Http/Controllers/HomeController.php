@@ -10,6 +10,7 @@ use App\Models\MudflowProtection;
 use App\Models\Quake;
 use App\Models\River;
 use App\Models\Weather;
+use App\MudflowProtectionBlock;
 use App\NormPsp;
 use App\Services\CommonHelper;
 use App\Services\DbHelper;
@@ -77,10 +78,8 @@ class HomeController extends Controller
             $weatherString .= "Прогноз погоды: {$weather->forecast_city1}, дата заполнения: {$weather->created_at->format('d.m.Y')}";
         }
 
-        $mudflowProtectionLatestDate = MudflowProtection::max('date');
-        $mudflowProtectionRecords = MudflowProtection::where('date', $mudflowProtectionLatestDate)
-            ->get()
-            ->keyBy('gauging_station_id');
+        $mudflowProtectionLatest = MudflowProtectionBlock::latest()->first();
+        $mudflowProtectionRecords = $mudflowProtectionLatest->items->keyBy('gauging_station_id');
 
         $data['services_infos'] = [
             'SOME' => $quakeString,
