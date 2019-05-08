@@ -5,7 +5,7 @@ namespace App\Services\QueuedReports\ReportHandlers;
 
 
 use Illuminate\Support\Facades\DB;
-
+//
 trait MysqlAdditionalFunctions
 {
     protected function defineTimeDiffSpike($outputFormat = '%Hч. %iм.'): void
