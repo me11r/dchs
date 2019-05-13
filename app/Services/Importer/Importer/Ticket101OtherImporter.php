@@ -141,7 +141,7 @@ class Ticket101OtherImporter implements ImporterInterface
                 ];
             }
 
-            //$data = "ПЧ-5::[Отделение=7|Время выезда=11:25|Время возвращения=11:25];";
+//            $data = "ПЧ-5::[Отделение=4|Время выезда=09:05|Время прибытия=|Время возвращения=21:00|Время оповещения=];";
 
             //отделяем блоки с ПЧ по ;
             $devideByFd = explode(';',$data);
@@ -194,6 +194,7 @@ class Ticket101OtherImporter implements ImporterInterface
                         }
                     }
                 }
+                $devideByParam2['dispatch_time'] = $devideByParam2['dispatch_time'] ? $devideByParam2['dispatch_time'] : $devideByParam2['out_time'];
                 $devideByParam3[] = $devideByParam2;
                 $devideByParam2 = [];
             }

@@ -782,9 +782,19 @@ class Ticket101 extends BaseModel
         return $q->where('drill_type_id', $search);
     }
 
-    public function scopeDrill($q)
+    public function scopeDrill($q, $is_drill = true)
     {
-        return $q->whereNotNull('drill_type_id');
+        if ($is_drill) {
+            return $q->whereNotNull('drill_type_id');
+        }
+        else {
+            return $q->whereNull('drill_type_id');
+        }
+    }
+
+    public function scopeImported($q, $search = null)
+    {
+        return $search ? $q->where('imported_at', $search) : $q->whereNotNull('imported_at');
     }
 
     public function scopeClosed($q, $search = true)
