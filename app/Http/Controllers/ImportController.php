@@ -6,6 +6,7 @@ use App\Services\Importer\Importer\Ticket101DrillImporter;
 use App\Services\Importer\Importer\Ticket101NormsPspImporter;
 use App\Services\Importer\Importer\Ticket101OtherImporter;
 use App\Services\Importer\ImporterManager;
+use App\Ticket101;
 use App\Ticket101Other;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -112,6 +113,12 @@ class ImportController extends AuthorizedController
     {
         if($model === 'card101-other') {
             Ticket101Other::imported()->delete();
+        }
+        elseif($model === 'card101-drill') {
+            Ticket101::imported()
+                ->drill(true)
+                ->withTrashed()
+                ->forceDelete();
         }
 
         return redirect('import');

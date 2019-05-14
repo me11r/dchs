@@ -18,6 +18,8 @@ use App\LivingSectorType;
 use App\Models\FormationTechItem;
 use App\Models\OperationalPlan;
 use App\Models\SpecialPlan;
+use App\ObjectClassification;
+use App\OperationalCard;
 use App\RideType;
 use App\RoadtripPlan;
 use App\Services\ChunkedImporter\ChunkedImporter;
@@ -63,6 +65,7 @@ class Ticket101DrillImporter implements ImporterInterface
         ChunkedImporter::create($filePath, $this->range)
             ->each(function (Worksheet $sheet) {
                 $data = $this->get($sheet->toArray());
+                $this->changeEmptyToNull($data);
                 $this->save($data);
             });
 
@@ -137,12 +140,12 @@ class Ticket101DrillImporter implements ImporterInterface
             $changed_keys['drill_type_id'] = $this->getIdByName(DrillType::class, trim($temp_item[9])); //d
             $changed_keys['caller_phone'] = null;
             $changed_keys['object_name'] = trim($temp_item[10]);
-            $changed_keys['operational_plan_id'] = $this->getIdByName(OperationalPlan::class, trim($temp_item[11])); //d
-            $changed_keys['operational_card_id'] = $this->getIdByName(OperationalPlan::class, trim($temp_item[12], 'oc_number')); //d
+            $changed_keys['operational_plan_id'] = $this->getIdByName(OperationalPlan::class, trim($temp_item[11])) ?? 0; //d
+            $changed_keys['operational_card_id'] = $this->getIdByName(OperationalCard::class, trim($temp_item[12]),'oc_number'); //d
             $changed_keys['building_description'] = trim($temp_item[13]);
             $changed_keys['year_of_development'] = trim($temp_item[14]);
             $changed_keys['building_square'] = trim($temp_item[15]);
-            $changed_keys['people_in_danger'] = trim($temp_item[16]);
+            $changed_keys['people_in_danger'] = (boolean) trim($temp_item[16]);
             $changed_keys['additional_description'] = trim($temp_item[17]);
 
             $changed_keys['custom_created_at'] = $this->parseDate(trim($temp_item[18]));
@@ -159,9 +162,9 @@ class Ticket101DrillImporter implements ImporterInterface
 
             $changed_keys['fire_department_results'] = $this->parseTemplate(trim($temp_item[19]));
 
-            $changed_keys['chronology'] = $this->parseTemplate(trim($temp_item[20]));
-            $changed_keys['chronology_hq'] = $this->parseTemplate(trim($temp_item[21]));
-            $changed_keys['special_plans'] = $this->parseTemplate(trim($temp_item[22]));
+//            $changed_keys['chronology'] = $this->parseTemplate(trim($temp_item[20]));
+//            $changed_keys['chronology_hq'] = $this->parseTemplate(trim($temp_item[21]));
+//            $changed_keys['special_plans'] = $this->parseTemplate(trim($temp_item[22]));
 
             $changed_keys['loc_time'] = trim($temp_item[23]);
             $changed_keys['liqv_time'] = trim($temp_item[24]);
@@ -175,14 +178,14 @@ class Ticket101DrillImporter implements ImporterInterface
             $changed_keys['out_number'] = null;//trim($temp_item[27]);
             $changed_keys['detailed_address'] = null;//trim($temp_item[28]);
             $changed_keys['drill_name_total'] = trim($temp_item[27]);
-            $changed_keys['drill_address_total'] = trim($temp_item[28]);
-            $changed_keys['drill_checked_pg_total'] = trim($temp_item[29]);
-            $changed_keys['drill_checked_pv_total'] = trim($temp_item[30]);
-            $changed_keys['drill_out_pg_total'] = trim($temp_item[31]);
-            $changed_keys['drill_out_pv_total'] = trim($temp_item[32]);
-            $changed_keys['drill_corrected_op_total'] = trim($temp_item[33]);
-            $changed_keys['drill_corrected_ok_total'] = trim($temp_item[34]);
-            $changed_keys['object_classification_id'] = trim($temp_item[35]);
+            $changed_keys['drill_address_total'] = trim($temp_item[28]) !== '-' ? trim($temp_item[28]) : null;
+            $changed_keys['drill_checked_pg_total'] = trim($temp_item[29]) !== '-' ? trim($temp_item[29]) : null;
+            $changed_keys['drill_checked_pv_total'] = trim($temp_item[30]) !== '-' ? trim($temp_item[30]) : null;
+            $changed_keys['drill_out_pg_total'] = trim($temp_item[31]) !== '-' ? trim($temp_item[31]) : null;
+            $changed_keys['drill_out_pv_total'] = trim($temp_item[32]) !== '-' ? trim($temp_item[32]) : null;
+            $changed_keys['drill_corrected_op_total'] = trim($temp_item[33]) !== '-' ? trim($temp_item[33]) : null;
+            $changed_keys['drill_corrected_ok_total'] = trim($temp_item[34]) !== '-' ? trim($temp_item[34]) : null;
+            $changed_keys['object_classification_id'] = $this->getIdByName(ObjectClassification::class, trim($temp_item[35])); //d
             $changed_keys['living_sector_type_id'] = $this->getIdByName(LivingSectorType::class, trim($temp_item[36])); //d
             $changed_keys['trip_result_id'] = $this->getIdByName(TripResult::class, trim($temp_item[37])); //d
             $changed_keys['burn_object_id'] = $this->getIdByName(BurntObject::class, null);//trim($temp_item[29]); //d
@@ -190,9 +193,9 @@ class Ticket101DrillImporter implements ImporterInterface
             $changed_keys['result_fire_level_id'] = $this->getIdByName(FireLevel::class, null);//trim($temp_item[35]); //d
             $changed_keys['max_square'] = null;
 
-            $changed_keys['vu_found'] = trim($temp_item[43]);
-            $changed_keys['animal_death'] = trim($temp_item[44]);
-            $changed_keys['car_crash'] = trim($temp_item[45]);
+            $changed_keys['vu_found'] = (boolean) trim($temp_item[43]);
+            $changed_keys['animal_death'] = (boolean) trim($temp_item[44]);
+            $changed_keys['car_crash'] = (boolean) trim($temp_item[45]);
             $changed_keys['rescued_count'] = trim($temp_item[46]);
             $changed_keys['evac_count'] = trim($temp_item[47]);
             $changed_keys['co2_poisoned_count'] = trim($temp_item[48]);
@@ -227,6 +230,20 @@ class Ticket101DrillImporter implements ImporterInterface
         return $raw_data_less;
     }
 
+    private function changeEmptyToNull(&$data)
+    {
+        foreach ($data as $data_key => $record) {
+            foreach ($record as $record_key => $datum) {
+                if(is_array($datum)) {
+                    continue;
+                }
+                else {
+                    $data[$data_key][$record_key] = $datum !== '' ? $datum : null;
+                }
+            }
+        }
+    }
+
     private function findDistrictManager(&$data)
     {
         $cityAreaId = $data['city_area_id'];
@@ -256,10 +273,14 @@ class Ticket101DrillImporter implements ImporterInterface
                 ];
             }
 
-            //$data = "ПЧ-5::[Отделение=7|Время выезда=11:25|Время возвращения=11:25];";
+//            $data = "СО::[Отделение=1,2;|Принято в работу=10:35|Время выезда=10:35|Время прибытия=|Время отбоя=|Время возвращения=11:56|Время оповещения=10:35|Время ввода в боевой расчет=|Количество привлеченного л/с=|Расстояние до места=];";
+//            $data = "СО::[Отделение=1|Принято в работу=10:35|Время выезда=10:35|Время прибытия=|Время отбоя=|Время возвращения=11:56|Время оповещения=10:35|Время ввода в боевой расчет=|Количество привлеченного л/с=|Расстояние до места=];";
 
             //отделяем блоки с ПЧ по ;
-            $devideByFd = explode(';',$data);
+//            $devideByFd = explode(';',$data);
+
+            //только для учебных, т.к. забито не по шаблону!
+            $devideByFd = [$data];
 
             $devideByDept = [];
             $devideByParam = [];
@@ -313,10 +334,40 @@ class Ticket101DrillImporter implements ImporterInterface
                 $devideByParam2 = [];
             }
 
+            /*только для учебных, т.к. забито почему-то не по шаблону*/
+            $splittedBySemicolon = [];
+            foreach ($devideByParam3 as $item) {
+                //т.к. в шаблоне номера отделений идут как попало: например, Отделение=1,2; или Отделение=1;2;
+                //заменям запятые и точки с запятыми пробелами
+                $splittedBySpace = str_replace([',', ';'], ' ', $item['tech_dept_number']);
+
+                //а по пробелу делим отделения
+                $explodedBySpace = explode(' ', $splittedBySpace);
+                $explodedBySpace = array_filter($explodedBySpace, function ($i) {
+                    return $i !== '';
+                });
+
+
+                //очищаем значения полей от лишних запятых и точек
+                //меняем '' на null
+                foreach ($explodedBySpace as $finalTechDept) {
+                    $item['tech_dept_number'] = $finalTechDept;
+                    foreach ($item as $key => $cleared) {
+                        $item[$key] = str_replace([';', ','], '', $cleared);
+
+                        if (!$item[$key]) {
+                            $item[$key] = null;
+                        }
+                    }
+                    $splittedBySemicolon[] = $item;
+                }
+            }
+
             return [
                 'type' => 'ok',
                 'message' => null,
-                'data' => $devideByParam3,
+//                'data' => $devideByParam3,
+                'data' => $splittedBySemicolon,
             ];
         }
         catch (\Exception $e) {
@@ -340,8 +391,9 @@ class Ticket101DrillImporter implements ImporterInterface
 
     private function find_tech(&$changed_keys)
     {
+        $tempArr = [];
         if ($this->formation_report) {
-            foreach ($changed_keys['fire_department_results'] as $key => $fd_result) {
+            foreach ($changed_keys['fire_department_results']['data'] as $key => $fd_result) {
 
                 $fire_department = FireDepartment::title($fd_result['fire_department_id'])->first();
 
@@ -351,14 +403,30 @@ class Ticket101DrillImporter implements ImporterInterface
                     ->where('department',$fd_result['tech_dept_number'] ?? null)
                     ->first();
 
-                $changed_keys['fire_department_results'][$key]['tech_id'] = $formationTechItem->id ?? null;
-                $changed_keys['fire_department_results'][$key]['fire_department_id'] = $fire_department->id ?? null;
-                $changed_keys['fire_department_results'][$key]['ticket101_other_id'] = null;
+                $tempArr[$key]['tech_id'] = $formationTechItem->id ?? null;
+                $tempArr[$key]['fire_department_id'] = $fire_department->id ?? null;
+                $tempArr[$key]['ticket101_id'] = null;
+
+                $tempArr[$key]['accept_time'] = $fd_result['accept_time'] ?? null;
+                $tempArr[$key]['out_time'] = $fd_result['out_time'] ?? null;
+                $tempArr[$key]['arrive_time'] = $fd_result['arrive_time'] ?? null;
+                $tempArr[$key]['retreat_time'] = $fd_result['retreat_time'] ?? null;
+                $tempArr[$key]['ret_time'] = $fd_result['ret_time'] ?? null;
+                $tempArr[$key]['dispatch_time'] = $fd_result['dispatch_time'] ?? null;
+                $tempArr[$key]['staff_count'] = $fd_result['staff_count'] ?? null;
+                $tempArr[$key]['promoted_at'] = $fd_result['promoted_at'] ?? null;
+                $tempArr[$key]['distance'] = $fd_result['distance'] ?? null;
             }
+
+            $changed_keys['fire_department_results'] = $tempArr;
+
         }
         else {
 
             unset($changed_keys['fire_department_results']);
+            unset($changed_keys['chronology']);
+            unset($changed_keys['chronology_hq']);
+            unset($changed_keys['special_plans']);
 
             $this->incorrectItems[] = [
                 'data' => implode(" ", $changed_keys),
@@ -374,31 +442,22 @@ class Ticket101DrillImporter implements ImporterInterface
             try {
                 $ticket = new Ticket101();
 
-                $ticket->fill([
-                    'ride_type_id' => $card['ride_type_id'],
-                    'time_begin' => $card['time_begin'],
-                    'time_end' => $card['time_end'],
-                    'object_name' => $card['object_name'],
-                    'note' => $card['note'],
-                    'formation_report_id' => $this->formation_report->id,
-                    'responsible_person' => $card['responsible_person'],
-                    'direction' => $card['direction'],
-                    'final_ride_type_id' => $card['ride_type_id'],
-                    'final_responsible_person' => $card['responsible_person'],
-                    'final_direction' => $card['direction'],
-                    'final_object_name' => $card['object_name'],
-                    'custom_created_at' => $card['custom_created_at'],
-                    'imported_at' => now(),
-                ]);
+                $cardData = array_filter($card, function ($q, $i) {
+                    return $i !== 'fire_department_results';
+                }, ARRAY_FILTER_USE_BOTH);
+
+                $cardData['imported_at'] = now();
+
+                $ticket->fill($cardData);
 
                 $ticket->save();
 
-                if($card['fire_department_results']) {
+                if(isset($card['fire_department_results']) && $card['fire_department_results']) {
                     foreach ($card['fire_department_results'] as $fire_department_result) {
 
                         $rideType = $ticket->ride_type->name ?? null;
 
-                        $errorString = "{$card['direction']} {$rideType} " . implode(' ', $fire_department_result);
+                        $errorString = "{$card['location']} {$rideType} " . implode(' ', $fire_department_result);
 
                         if (!$fire_department_result['fire_department_id']) {
 
@@ -422,10 +481,10 @@ class Ticket101DrillImporter implements ImporterInterface
 
                         $roadtripPlan = RoadtripPlan::firstOrCreate([
                             'department_id' => $fire_department_result['fire_department_id'],
-                            'card101_id' => $ticket->id,
+                            'card_id' => $ticket->id,
                         ],[
                             'department_id' => $fire_department_result['fire_department_id'],
-                            'card101_id' => $ticket->id,
+                            'card_id' => $ticket->id,
                             'is_closed' => false,
                             'is_accepted' => true,
                             'printed' => true,
@@ -448,13 +507,15 @@ class Ticket101DrillImporter implements ImporterInterface
             catch (\Exception $e) {
 
                 unset($card['fire_department_results']);
+                unset($card['chronology']);
+                unset($card['chronology_hq']);
+                unset($card['special_plans']);
 
                 $this->incorrectItems[] = [
                     'data' => implode(" ", $card),
                     'message' => $e->getMessage() . ' ' . $e->getLine(),
                 ];
             }
-
         }
     }
 }
