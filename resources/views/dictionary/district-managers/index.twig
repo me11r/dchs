@@ -25,6 +25,17 @@
                             <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
                         </div>
                     </div>
+                    <div class="field">
+                        <div class="control">
+                            <p>Район</p>
+                            <select name="city_area" class="select control" onchange="this.form.submit()">
+                                <option value=""></option>
+                                {% for f in city_areas %}
+                                    <option {% if city_area is defined and city_area == f.id %} selected {% endif %} value="{{ f.id }}">{{ f.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </form>
             </div>
             <table class="table is-striped is-narrow is-hoverable">
@@ -82,7 +93,7 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% include "_templates/pagination" with {'items': records, 'per_page': per_page} %}
+            {% include "_templates/pagination" with {'items': records, 'per_page': per_page, 'other': {'city_area':city_area, 'search': search}} %}
         </div>
     </div>
 {% endblock content %}
