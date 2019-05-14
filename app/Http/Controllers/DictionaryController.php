@@ -36,45 +36,6 @@ class DictionaryController extends AuthorizedController
     private $dictionaries = [];
     private $user = null;
 
-    private $additional_dicts = [
-        [
-            'title' => 'Пожарные части',
-            'href' => '/dictionaries/fire-departments',
-        ],
-        [
-            'title' => 'Типы инцидентов',
-            'href' => '/dictionaries/incident-types',
-        ],
-        [
-            'title' => 'Опер планы',
-            'href' => '/dictionaries/operational-plans',
-        ],
-        [
-            'title' => 'Опер карточки',
-            'href' => '/dictionaries/operational-cards',
-        ],
-        [
-            'title' => 'Типы воздушных судов',
-            'href' => '/dictionaries/aircraft-types',
-        ],
-        [
-            'title' => 'Воздушные суда',
-            'href' => '/dictionaries/aircrafts',
-        ],
-        [
-            'title' => 'Ответственные по районам',
-            'href' => '/dictionaries/district-managers',
-        ],
-        [
-            'title' => 'Персоны суточного отчета',
-            'href' => '/dictionaries/daily-report-persons',
-        ],
-        [
-            'title' => 'Стволы',
-            'href' => '/dictionaries/event-info-arrived',
-        ],
-    ];
-
     public function __construct(Request $request)
     {
         parent::__construct();
@@ -235,7 +196,7 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'district-managers'){
             $model = DistrictManager::orderBy('id');
 
-            if($request->search){
+            if ($request->search){
                 $model = $model->where('name', 'like', "%$request->search%")
                     ->orWhere('rank', 'like', "%$request->search%")
                     ->orWhere('nickname', 'like', "%$request->search%")
@@ -248,8 +209,14 @@ class DictionaryController extends AuthorizedController
                     });
             }
 
+            if ($request->city_area) {
+                $model = $model->where('city_area_id', $request->city_area);
+            }
+
             $data['records'] = $model->paginate($data['per_page']);
             $data['title'] = "Ответственные по районам";
+            $data['city_areas'] = Dictionary\CityArea::all();
+            $data['city_area'] = $request->city_area;
         }
         elseif($name == 'fire-departments'){
             $dept = FireDepartment::orderBy($sort);
