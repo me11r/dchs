@@ -28,7 +28,7 @@
                         <div class="select">
                             <select name="city_area_id" class="" id="city_area_id">
                                 {% for area in city_areas %}
-                                    <option {% if area.id == record.city_area_id %} selected {% endif %}value="{{ area.id }}">{{ area.name }}</option>
+                                    <option {% if area.id == record.city_area_id|default(null) %} selected {% endif %}value="{{ area.id }}">{{ area.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
