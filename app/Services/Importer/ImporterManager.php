@@ -62,6 +62,14 @@ class ImporterManager
             ->loadFile($filePath);
     }
 
+    public function ticket101RealImportFile(string $filePath, string $Class): ImporterInterface
+    {
+        return $importer = $this
+            ->importerFactory
+            ->createImporter($Class)
+            ->loadFile($filePath);
+    }
+
     public function ticket101NormsPspImportFile(string $filePath, string $Class): ImporterInterface
     {
         return $importer = $this

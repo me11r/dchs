@@ -4,7 +4,12 @@
 namespace App\Services\Importer\Importer;
 
 
+use App\FireDepartment;
+use App\FormationReport;
+use App\Models\FormationTechItem;
+use App\RoadtripPlan;
 use App\Services\ChunkedImporter\ChunkedImporter;
+use App\Ticket101;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -36,7 +41,9 @@ class Ticket101RealImporter implements ImporterInterface
 
         ChunkedImporter::create($filePath, range('A', 'I'))
             ->each(function (Worksheet $sheet) {
-                $this->get($sheet->toArray());
+                $data = $this->get($sheet->toArray());
+                $this->changeEmptyToNull($data);
+                $this->save($data);
             });
 
         return $this;
@@ -56,6 +63,25 @@ class Ticket101RealImporter implements ImporterInterface
     public function getIncorrectItems(): array
     {
         return $this->incorrectItems;
+    }
+
+    private function getIdByName($class, $search, $searchBy = 'name')
+    {
+        return $class::where($searchBy, $search)->first()->id ?? null;
+    }
+
+    private function changeEmptyToNull(&$data)
+    {
+        foreach ($data as $data_key => $record) {
+            foreach ($record as $record_key => $datum) {
+                if(is_array($datum)) {
+                    continue;
+                }
+                else {
+                    $data[$data_key][$record_key] = $datum !== '' ? $datum : null;
+                }
+            }
+        }
     }
 
     public function get(array $raw_data)
@@ -247,13 +273,143 @@ class Ticket101RealImporter implements ImporterInterface
 
     }
 
-    private function find_tech(&$ticket)
+    private function find_formation_report(&$changed_keys)
     {
+        $date = $this->parseDate($changed_keys['custom_created_at'], 'Y-m-d');
+        $report = FormationReport::where('report_date', $date)->first();
 
+        $this->formation_report = $report;
+
+        $changed_keys['formation_report_id'] = $report->id ?? null;
     }
 
-    private function devide($item, $delimiter)
+    private function find_tech(&$changed_keys)
     {
+        $tempArr = [];
+        if ($this->formation_report) {
+            foreach ($changed_keys['fire_department_results']['data'] as $key => $fd_result) {
 
+                $fire_department = FireDepartment::title($fd_result['fire_department_id'])->first();
+
+                $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) {
+                    $q->where('form_id', $this->formation_report->id);
+                })->where('status', 'action')
+                    ->where('department',$fd_result['tech_dept_number'] ?? null)
+                    ->first();
+
+                $tempArr[$key]['tech_id'] = $formationTechItem->id ?? null;
+                $tempArr[$key]['fire_department_id'] = $fire_department->id ?? null;
+                $tempArr[$key]['ticket101_id'] = null;
+
+                $tempArr[$key]['accept_time'] = $fd_result['accept_time'] ?? null;
+                $tempArr[$key]['out_time'] = $fd_result['out_time'] ?? null;
+                $tempArr[$key]['arrive_time'] = $fd_result['arrive_time'] ?? null;
+                $tempArr[$key]['retreat_time'] = $fd_result['retreat_time'] ?? null;
+                $tempArr[$key]['ret_time'] = $fd_result['ret_time'] ?? null;
+                $tempArr[$key]['dispatch_time'] = $fd_result['dispatch_time'] ?? null;
+                $tempArr[$key]['staff_count'] = $fd_result['staff_count'] ?? null;
+                $tempArr[$key]['promoted_at'] = $fd_result['promoted_at'] ?? null;
+                $tempArr[$key]['distance'] = $fd_result['distance'] ?? null;
+            }
+
+            $changed_keys['fire_department_results'] = $tempArr;
+
+        }
+        else {
+
+            unset($changed_keys['fire_department_results']);
+            unset($changed_keys['chronology']);
+            unset($changed_keys['chronology_hq']);
+            unset($changed_keys['special_plans']);
+
+            $this->incorrectItems[] = [
+                'data' => implode(" ", $changed_keys),
+                'message' => "Не найдена строевая записка",
+            ];
+        }
+    }
+
+    private function save($cards)
+    {
+        foreach ($cards as $card) {
+
+            try {
+                $ticket = new Ticket101();
+
+                $cardData = array_filter($card, function ($q, $i) {
+                    return $i !== 'fire_department_results';
+                }, ARRAY_FILTER_USE_BOTH);
+
+                $cardData['imported_at'] = now();
+
+                $ticket->fill($cardData);
+
+                $ticket->save();
+
+                if(isset($card['fire_department_results']) && $card['fire_department_results']) {
+                    foreach ($card['fire_department_results'] as $fire_department_result) {
+
+                        $rideType = $ticket->ride_type->name ?? null;
+
+                        $errorString = "{$card['location']} {$rideType} " . implode(' ', $fire_department_result);
+
+                        if (!$fire_department_result['fire_department_id']) {
+
+                            $this->incorrectItems[] = [
+                                'data' => $errorString,
+                                'message' => "Не найлена ПЧ",
+                            ];
+
+                            continue;
+                        }
+
+                        if (!$fire_department_result['tech_id']) {
+
+                            $this->incorrectItems[] = [
+                                'data' => $errorString,
+                                'message' => "Не найлено отделение ПЧ",
+                            ];
+
+                            continue;
+                        }
+
+                        $roadtripPlan = RoadtripPlan::firstOrCreate([
+                            'department_id' => $fire_department_result['fire_department_id'],
+                            'card_id' => $ticket->id,
+                        ],[
+                            'department_id' => $fire_department_result['fire_department_id'],
+                            'card_id' => $ticket->id,
+                            'is_closed' => false,
+                            'is_accepted' => true,
+                            'printed' => true,
+                        ]);
+
+                        $ticket->results()->create([
+                            'tech_id' => $fire_department_result['tech_id'],
+                            'fire_department_id' => $fire_department_result['fire_department_id'],
+                            'out_time' => $fire_department_result['out_time'],
+                            'ret_time' => $fire_department_result['ret_time'],
+                            'dispatch_time' => $fire_department_result['out_time'],
+                            'dispatched' => true,
+                            'dispatch_id' => $roadtripPlan->id,
+                        ]);
+                    }
+                }
+
+                $this->items[] = $card;
+            }
+            catch (\Exception $e) {
+
+                unset($card['fire_department_results']);
+                unset($card['chronology']);
+                unset($card['chronology_hq']);
+                unset($card['special_plans']);
+
+                $this->incorrectItems[] = [
+                    'data' => implode(" ", $card),
+                    'message' => $e->getMessage() . ' ' . $e->getLine(),
+                ];
+            }
+        }
     }
 }

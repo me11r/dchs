@@ -130,7 +130,7 @@ class Ticket101DrillImporter implements ImporterInterface
             $changed_keys['location'] = trim($temp_item[0]); //Адрес
             $changed_keys['fireplace'] = trim($temp_item[1]); //Место пожара
             $changed_keys['pre_information'] = trim($temp_item[2]); //Предварительная информация
-            $changed_keys['fire_department_id'] = trim($temp_item[3]); //Микроучасток [справочник] //d
+            $changed_keys['fire_department_id'] = $this->getIdByName(FireDepartment::class, trim($temp_item[3]),'title'); //trim($temp_item[3]); //Микроучасток [справочник] //d
             $changed_keys['city_area_id'] = $this->getIdByName(CityArea::class, trim($temp_item[4])); //Район города [справочник] //d
             $changed_keys['fire_level_id'] = $this->getIdByName(FireLevel::class, trim($temp_item[5])); //Ранг пожара [справочник] //d
             $changed_keys['storey_count'] = trim($temp_item[6]); //Этажность

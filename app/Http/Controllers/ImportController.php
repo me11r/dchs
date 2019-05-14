@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Importer\Importer\Ticket101DrillImporter;
 use App\Services\Importer\Importer\Ticket101NormsPspImporter;
 use App\Services\Importer\Importer\Ticket101OtherImporter;
+use App\Services\Importer\Importer\Ticket101RealImporter;
 use App\Services\Importer\ImporterManager;
 use App\Ticket101;
 use App\Ticket101Other;
@@ -92,6 +93,23 @@ class ImportController extends AuthorizedController
         return View::make('import.import_results', $data);
     }
 
+    public function cards101Real(Request $request)
+    {
+        $data = [
+            'importName' => 'Карточки 101: боевые',
+            'delete_path' => 'card101-real',
+        ];
+
+        $file = $request->file('file');
+        if ($file) {
+            $importer = $this->importerManager->ticket101RealImportFile($file->getRealPath(), Ticket101RealImporter::class);
+            $data['incorrectItems'] = $importer->getIncorrectItems();
+            $data['importedItems'] = $importer->getItems();
+        }
+
+        return View::make('import.import_results', $data);
+    }
+
     public function cards101NormsPsp(Request $request)
     {
         $data = [
@@ -117,6 +135,12 @@ class ImportController extends AuthorizedController
         elseif($model === 'card101-drill') {
             Ticket101::imported()
                 ->drill(true)
+                ->withTrashed()
+                ->forceDelete();
+        }
+        elseif($model === 'card101-real') {
+            Ticket101::imported()
+                ->drill(false)
                 ->withTrashed()
                 ->forceDelete();
         }
