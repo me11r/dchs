@@ -433,6 +433,8 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
         Route::get('reports/water-consumption/export/{type}','ReportController@exportReportWaterConsumption');//->middleware(['right:CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION']);
         Route::get('reports/quakes','ReportController@getReportQuakes');
 
+        Route::get('reports/result-period','ReportController@getConsolidatedReport')->middleware(['right:CONSOLIDATED_REPORT_SHOW']);
+
         Route::get('reports/daily-reports/{type}','ReportController@daily_reports');
 
         Route::get('reports/analytics-spiasr', 'AnalyticsSpiasrController@index');

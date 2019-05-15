@@ -2,9 +2,11 @@
     <div id="other-rides-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Учет аварийно спасательных работ, проведенных
+                style="padding: 3px 15px">
+            <!--Учет аварийно спасательных работ, проведенных
             ГУ «Служба пожаротушения и аварийно-спасательных работ» ДЧС г. Алматы
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
+            {{ '/reports/analytics-spiasr.emergency_form_051.title'|trans({date_from: dateFromFormatted,date_to: dateToFormatted}) }}
         </h4>
 
         <div class="panel">
@@ -44,24 +46,23 @@
                 <thead>
                     <tr>
                         <th rowspan="2">Дата</th>
-                        <th rowspan="2">Кол-во выездов по тревоге</th>
-                        <th rowspan="2">Из них на АСР</th>
-                        <th rowspan="2">Кол-во ложных  выездов</th>
-
-                        <th colspan="11">В ходе аварийно-спасательных работ</th>
+                        <th rowspan="2">{{ '/reports/analytics-spiasr.emergency_form_051.real_rides'|trans }}</th><!--Кол-во выездов по тревоге-->
+                        <th rowspan="2">{{ '/reports/analytics-spiasr.emergency_form_051.asr'|trans }}</th><!--Из них на АСР-->
+                        <th rowspan="2">{{ '/reports/analytics-spiasr.emergency_form_051.false_calls'|trans }}</th><!--Кол-во ложных  выездов-->
+                        <th colspan="11">{{ '/reports/analytics-spiasr.emergency_form_051.within_asr'|trans }}</th><!--В ходе аварийно-спасательных работ-->
                     </tr>
                     <tr>
-                        <th>Численность привлеченного  л/c (человек)</th>
-                        <th>Кол-во привлеченной техники (единиц)</th>
-                        <th>Кол-во освобожденных а/м призаносах</th>
-                        <th>Кол-во спасенных человек</th>
-                        <th>В том числе детей</th>
-                        <th>Извлечено тел</th>
-                        <th>В том числе детей</th>
-                        <th>Оказана мед. помощь</th>
-                        <th>В том числе детям</th>
-                        <th>Кол-во эвакуированных</th>
-                        <th>В том числе детей</th>
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.staff_count'|trans }}</th><!--Численность привлеченного  л/c (человек)-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.tech_count'|trans }}</th><!--Кол-во привлеченной техники (единиц)-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.vehicles_saved'|trans }}</th><!--Кол-во освобожденных а/м призаносах-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.people_saved'|trans }}</th><!--Кол-во спасенных человек-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.children_saved'|trans }}</th><!--В том числе детей-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.bodies_excavated'|trans }}</th><!--Извлечено тел-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.children_bodies_excavated'|trans }}</th><!--В том числе детей-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.medical_help_applied'|trans }}</th><!--Оказана мед. помощь-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.medical_help_applied_children'|trans }}</th><!--В том числе детям-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.evacuated'|trans }}</th><!--Кол-во эвакуированных-->
+                        <th>{{ '/reports/analytics-spiasr.emergency_form_051.evacuated_children'|trans }}</th><!--В том числе детей-->
                     </tr>
                 </thead>
                 <tbody>
