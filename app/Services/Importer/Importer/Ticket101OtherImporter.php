@@ -97,7 +97,8 @@ class Ticket101OtherImporter implements ImporterInterface
             $changed_keys['custom_created_at'] = $this->parseDate(trim($temp_item[5])); //дата и время создания
             $changed_keys['time_begin'] = trim($temp_item[6]); //время начала
             $changed_keys['time_end'] = trim($temp_item[7]); //время окончания
-            $changed_keys['note'] = trim($temp_item[8]); //время окончания
+            $changed_keys['note'] = trim($temp_item[8]); //примечание
+            $changed_keys['hq_rides'] = trim($temp_item[9]); //штабные машины
 
             if(!$changed_keys['custom_created_at']) {
 
@@ -141,7 +142,7 @@ class Ticket101OtherImporter implements ImporterInterface
                 ];
             }
 
-//            $data = "ПЧ-5::[Отделение=4|Время выезда=09:05|Время прибытия=|Время возвращения=21:00|Время оповещения=];";
+            //$data = "ПЧ-5::[Отделение=|Время выезда=09:05|Время прибытия=|Время возвращения=21:00|Время оповещения=];";
 
             //отделяем блоки с ПЧ по ;
             $devideByFd = explode(';',$data);
@@ -194,7 +195,7 @@ class Ticket101OtherImporter implements ImporterInterface
                         }
                     }
                 }
-                $devideByParam2['dispatch_time'] = $devideByParam2['dispatch_time'] ? $devideByParam2['dispatch_time'] : $devideByParam2['out_time'];
+                $devideByParam2['dispatch_time'] = ($devideByParam2['dispatch_time'] ?? null) ? $devideByParam2['dispatch_time'] : $devideByParam2['out_time'];
                 $devideByParam3[] = $devideByParam2;
                 $devideByParam2 = [];
             }
@@ -231,11 +232,23 @@ class Ticket101OtherImporter implements ImporterInterface
 
                 $fire_department = FireDepartment::title($fd_result['fire_department_id'])->first();
 
-                $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) {
-                    $q->where('form_id', $this->formation_report->id);
-                })->where('status', 'action')
-                    ->where('department',$fd_result['tech_dept_number'] ?? null)
-                    ->first();
+                if(($fd_result['tech_dept_number'] ?? null) !== null && $fd_result['tech_dept_number'] !== '') {
+                    $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department) {
+                        $q->where('form_id', $this->formation_report->id)
+                            ->where('dept_id', $fire_department->id ?? null);
+                    })->where('status', 'action')
+                        ->where('department',$fd_result['tech_dept_number'] ?? null)
+                        ->first();
+                }
+                else {
+                    $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department)  {
+                        $q->where('form_id', $this->formation_report->id)
+                            ->where('dept_id', $fire_department->id ?? null);
+                    })->where('status', 'reserve')
+                        ->first();
+                }
+
+
 
                 $changed_keys['fire_department_results'][$key]['tech_id'] = $formationTechItem->id ?? null;
                 $changed_keys['fire_department_results'][$key]['fire_department_id'] = $fire_department->id ?? null;
@@ -316,13 +329,13 @@ class Ticket101OtherImporter implements ImporterInterface
                         ]);
 
                         $ticket->results()->create([
-                            'tech_id' => $fire_department_result['tech_id'],
-                            'fire_department_id' => $fire_department_result['fire_department_id'],
-                            'out_time' => $fire_department_result['out_time'],
-                            'ret_time' => $fire_department_result['ret_time'],
-                            'dispatch_time' => $fire_department_result['out_time'],
+                            'tech_id' => @$fire_department_result['tech_id'],
+                            'fire_department_id' => @$fire_department_result['fire_department_id'],
+                            'out_time' => @$fire_department_result['out_time'],
+                            'ret_time' => @$fire_department_result['ret_time'],
+                            'dispatch_time' => @$fire_department_result['out_time'],
                             'dispatched' => true,
-                            'dispatch_id' => $roadtripPlan->id,
+                            'dispatch_id' => @$roadtripPlan->id,
                         ]);
                     }
                 }

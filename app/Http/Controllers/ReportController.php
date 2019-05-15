@@ -67,6 +67,7 @@ use App\Services\ReportExport\Ticket101ObjectClassExcelExport;
 use App\Services\ReportExport\Ticket101OtherRidesExcelExport;
 use App\Services\ReportExport\Ticket101PeriodExcelExport;
 use App\Services\ReportExport\Ticket101ResourcesExcelExport;
+use App\Services\ReportExport\Ticket101ResultPeriodWordExport;
 use App\Services\ReportExport\Ticket101WaterConsumptionExcelExport;
 use App\Services\ReportExport\Ticket101WordExport;
 use App\Services\ReportExport\Ticket112BranchesWordExport;
@@ -1987,6 +1988,48 @@ class ReportController extends AuthorizedController
         $data['user'] = Auth::user();
 
         return view("daily-reports.$type",$data);
+    }
+
+    public function getConsolidatedReport(Request $request)
+    {
+        $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
+        $dateTo = $request->input('dateTo', now()->format('Y-m-d'));
+
+        $data['records'] = [];
+
+        $cards = Ticket101::real()
+            ->with(['trip_result'])
+            ->has('trip_result')
+            ->whereBetween('custom_created_at', [$dateFrom, $dateTo])
+        ;
+
+        $data['dateFrom'] = Carbon::parse($dateFrom)->format('d.m.Y');
+        $data['dateTo'] = Carbon::parse($dateTo)->format('d.m.Y');
+        $data['total'] = $cards->count();
+
+        $cards = $cards->get()
+            ->groupBy('trip_result.name');
+
+        foreach ($cards as $resultTitle => $card) {
+            $data['records'][] = [
+                'title' => $resultTitle,
+                'count' => $card->count(),
+            ];
+        }
+
+        if (!$request->ajax()) {
+
+            $dailyWordExport = new Ticket101ResultPeriodWordExport($data);
+
+            $writer = $dailyWordExport->getWriter('Word2007');
+            $fileName = 'Сводный отчет по выездам  - '.date('d-m-Y'). '.docx';
+            $writer->save(public_path($fileName));
+
+            return response()->download(public_path($fileName));
+
+        }
+
+        return response()->json($data);
     }
 
     public function queuedReports()

@@ -4,9 +4,19 @@
 namespace App\Services\Importer\Importer;
 
 
+use App\Dictionary\BurntObject;
+use App\Dictionary\CityArea;
+use App\Dictionary\FireLevel;
+use App\Dictionary\LiquidationMethod;
+use App\Dictionary\TripResult;
+use App\Dictionary\WaterSupplySource;
+use App\DistrictManager;
+use App\EmergencyType;
 use App\FireDepartment;
 use App\FormationReport;
 use App\Models\FormationTechItem;
+use App\Models\OperationalPlan;
+use App\OperationalCard;
 use App\RoadtripPlan;
 use App\Services\ChunkedImporter\ChunkedImporter;
 use App\Ticket101;
@@ -98,16 +108,16 @@ class Ticket101RealImporter implements ImporterInterface
             $changed_keys['location'] = trim($temp_item[0]);
             $changed_keys['fireplace'] = trim($temp_item[1]);
             $changed_keys['pre_information'] = trim($temp_item[2]);
-            $changed_keys['fire_department_id'] = trim($temp_item[3]); //d
-            $changed_keys['city_area_id'] = trim($temp_item[4]); //d
-            $changed_keys['fire_level_id'] = trim($temp_item[5]); //d
+            $changed_keys['fire_department_id'] = $this->getIdByName(FireDepartment::class, trim($temp_item[3]),'title'); //d
+            $changed_keys['city_area_id'] = $this->getIdByName(CityArea::class, trim($temp_item[4])); //Район города [справочник] //d
+            $changed_keys['fire_level_id'] = $this->getIdByName(FireLevel::class, trim($temp_item[5])); //Ранг пожара [справочник] //d
             $changed_keys['storey_count'] = trim($temp_item[6]);
             $changed_keys['floor'] = trim($temp_item[7]);
             $changed_keys['caller_name'] = trim($temp_item[8]);
             $changed_keys['caller_phone'] = trim($temp_item[9]);
             $changed_keys['object_name'] = trim($temp_item[10]);
-            $changed_keys['operational_plan_id'] = trim($temp_item[11]); //d
-            $changed_keys['operational_card_id'] = trim($temp_item[12]); //d
+            $changed_keys['operational_plan_id'] = $this->getIdByName(OperationalPlan::class, trim($temp_item[11])) ?? 0; //d
+            $changed_keys['operational_card_id'] = $this->getIdByName(OperationalCard::class, trim($temp_item[12]),'oc_number'); //d
             $changed_keys['building_description'] = trim($temp_item[13]);
             $changed_keys['year_of_development'] = trim($temp_item[14]);
             $changed_keys['building_square'] = trim($temp_item[15]);
@@ -121,15 +131,15 @@ class Ticket101RealImporter implements ImporterInterface
             $changed_keys['special_plans'] = $this->parseTemplate(trim($temp_item[22]));
             $changed_keys['loc_time'] = trim($temp_item[23]);
             $changed_keys['liqv_time'] = trim($temp_item[24]);
-            $changed_keys['emergency_type_id'] = trim($temp_item[25]); //d
+            $changed_keys['emergency_type_id'] = $this->getIdByName(EmergencyType::class, trim($temp_item[25])); //d
             $changed_keys['kui'] = trim($temp_item[26]);
             $changed_keys['out_number'] = trim($temp_item[27]);
             $changed_keys['detailed_address'] = trim($temp_item[28]);
-            $changed_keys['burn_object_id'] = trim($temp_item[29]); //d
-            $changed_keys['living_sector_type_id'] = trim($temp_item[30]); //d
-            $changed_keys['trip_result_id'] = trim($temp_item[31]); //d
-            $changed_keys['liquidation_method_id'] = trim($temp_item[32]); //d
-            $changed_keys['result_fire_level_id'] = trim($temp_item[35]); //d
+            $changed_keys['burn_object_id'] = $this->getIdByName(BurntObject::class, trim($temp_item[29])); //d
+            $changed_keys['living_sector_type_id'] = $this->getIdByName(LiquidationMethod::class, trim($temp_item[30])); //d
+            $changed_keys['trip_result_id'] = $this->getIdByName(TripResult::class, trim($temp_item[31])); //d
+            $changed_keys['liquidation_method_id'] = $this->getIdByName(LiquidationMethod::class, trim($temp_item[32])); //d
+            $changed_keys['result_fire_level_id'] = $this->getIdByName(FireLevel::class, trim($temp_item[35])); //d
             $changed_keys['max_square'] = trim($temp_item[36]);
             $changed_keys['vu_found'] = trim($temp_item[37]);
             $changed_keys['animal_death'] = trim($temp_item[38]);
@@ -152,8 +162,8 @@ class Ticket101RealImporter implements ImporterInterface
             $changed_keys['ticket_result'] = trim($temp_item[55]);
             $changed_keys['special_tech'] = trim($temp_item[56]);
             $changed_keys['more_info'] = trim($temp_item[57]);
-            $changed_keys['water_supply_source_id'] = trim($temp_item[58]); //d
-            $changed_keys['district_manager_id'] = trim($temp_item[59]); //d
+            $changed_keys['water_supply_source_id'] = $this->getIdByName(WaterSupplySource::class, trim($temp_item[58])); //d
+            $changed_keys['district_manager_id'] = $this->findDistrictManager($changed_keys); //d
             $changed_keys['distance'] = trim(str_replace(",", '.',$temp_item[60]));
             $changed_keys['owner'] = trim($temp_item[61]);
 
@@ -183,6 +193,14 @@ class Ticket101RealImporter implements ImporterInterface
         }
 
         return $raw_data_less;
+    }
+
+    private function findDistrictManager(&$data)
+    {
+        $cityAreaId = $data['city_area_id'];
+        $date = $data['formation_report_id'] ? FormationReport::find($data['formation_report_id'])->report_date : null;
+
+        $data['district_manager_id'] = DistrictManager::getDailyPerson($cityAreaId, $date)->id ?? null;
     }
 
     private function parseDate($date, $format = 'Y-m-d H:i')

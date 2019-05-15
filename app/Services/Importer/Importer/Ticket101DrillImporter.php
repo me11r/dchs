@@ -397,8 +397,9 @@ class Ticket101DrillImporter implements ImporterInterface
 
                 $fire_department = FireDepartment::title($fd_result['fire_department_id'])->first();
 
-                $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) {
-                    $q->where('form_id', $this->formation_report->id);
+                $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department) {
+                    $q->where('form_id', $this->formation_report->id)
+                        ->where('dept_id', $fire_department->id);
                 })->where('status', 'action')
                     ->where('department',$fd_result['tech_dept_number'] ?? null)
                     ->first();
