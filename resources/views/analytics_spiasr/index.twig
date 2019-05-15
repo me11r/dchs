@@ -3,7 +3,8 @@
     <div class="section" id="vue">
         <b-tabs position="is-centered" class="block" id="other-rides-form">
             {% if user.hasRight('CAN_ACCESS_REPORT_101_EMERGENCY_PERIOD') %}
-                <b-tab-item label="Отчет-1">
+                {#Отчет-1#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.report1.tab_title') }}">
                     <report101-emergency
                             :results="{{ reasons }}"
                             :burnt_objects="{{ burntObjects }}"
@@ -12,11 +13,10 @@
                 </b-tab-item>
             {% endif %}
 
-
             {% if user.hasRight('CAN_ACCESS_REPORT_EMERGENCY_RESCUE_GU') %}
-                <b-tab-item label="Форма ЧС-051">
+                {#Форма ЧС-051#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.emergency_form_051.tab_title') }}">
                     <report-emergency-rescue-gu
-                            {#:record="{{ record|json_encode }}"#}
                     >
                     </report-emergency-rescue-gu>
                 </b-tab-item>
@@ -25,7 +25,6 @@
             {% if user.hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES') %}
                 <b-tab-item label="Учет выездов подразделений">
                     <report-forces-resources
-                            {#:reports="{{ reports }}"#}
                          :fire-departments="{{ fireDepartments }}">
                     </report-forces-resources>
                 </b-tab-item>
@@ -34,7 +33,6 @@
             {% if user.hasRight('CAN_ACCESS_REPORT_DRILL_RIDES') %}
                 <b-tab-item label="Общий свод по учениям и занятиям">
                     <report-drill-rides-period
-                            {#:records="{{ records|json_encode }}"#}
                             :norm-types="{{ normTypes|json_encode }}"
                             :fire-departments="{{ fireDepartments }}"
                     >
@@ -45,7 +43,6 @@
             {% if user.hasRight('CAN_ACCESS_REPORT_OTHER_RIDES') %}
                 <b-tab-item label="Общий свод по прочим выездам">
                     <report-other-rides-period
-                            {#:records="{{ records }}"#}
                             :ride-types="{{ rideTypes }}"
                             :fire-departments="{{ fireDepartments }}"
                     >
@@ -67,9 +64,15 @@
             {% if user.hasRight('WATER_CONSUMPTION_REPORT_SHOW') %}
                 <b-tab-item label="Расход воды">
                     <report-water-consumption
-                            {#:records="{{ records|json_encode }}"#}
                     >
                     </report-water-consumption>
+                </b-tab-item>
+            {% endif %}
+
+            {% if user.hasRight('CONSOLIDATED_REPORT_SHOW') %}
+                <b-tab-item label="Сводный отчет">
+                    <report-consolidated-result-period
+                    ></report-consolidated-result-period>
                 </b-tab-item>
             {% endif %}
         </b-tabs>

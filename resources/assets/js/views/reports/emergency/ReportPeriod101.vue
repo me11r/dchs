@@ -8,7 +8,8 @@
                 style="margin-top: 20px; min-height:1000px;">
                 <div class="level">
                     <div class="level-left">
-                        <h4 class="title">Отчет-1</h4>
+                        <!--Отчет-1-->
+                        <h4 class="title">{{ '/reports/analytics-spiasr.report1.tab_title'|trans }}</h4>
                     </div>
                     <div class="level-right has-text-right">
                     </div>
@@ -21,7 +22,8 @@
                 <br>
                 <form>
                     <div class="field">
-                        <label for="reason">Результат выезда:</label>
+                        <!--Результат выезда-->
+                        <label for="reason">{{ '/reports/analytics-spiasr.report1.result'|trans }}:</label>
                         <select
                             class="select"
                             name=""
@@ -36,7 +38,8 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="burnt">Объект горения:</label>
+                        <!--Объект горения-->
+                        <label for="burnt">{{ '/reports/analytics-spiasr.report1.fire_object'|trans }}:</label>
                         <select
                             class="select"
                             v-model="burnt_id"
@@ -50,7 +53,8 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="cityArea">Район города:</label>
+                        <!--Район города-->
+                        <label for="cityArea">{{ '/reports/analytics-spiasr.report1.city_area'|trans }}:</label>
                         <select
                             class="select"
                             v-model="city_area_id"
@@ -64,7 +68,8 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="time_onway">Время следования:</label>
+                        <!--Время следования-->
+                        <label for="time_onway">{{ '/reports/analytics-spiasr.report1.time_onway'|trans }}:</label>
                         <select
                             class="select"
                             v-model="time_onway"
@@ -78,7 +83,8 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="time_liqv">Время ликвидации:</label>
+                        <!--Время ликвидации-->
+                        <label for="time_liqv">{{ '/reports/analytics-spiasr.report1.time_liqv'|trans }}:</label>
                         <select
                             class="select"
                             v-model="time_liqv"
@@ -112,8 +118,9 @@
                             <template v-if="inProgress">
                                 <i class="fas fa-spinner fa-pulse"></i> &nbsp; Отправка...
                             </template>
+                            <!--Отправить в обработку-->
                             <template v-else>
-                                Отправить в обработку
+                                {{ '/reports/analytics-spiasr.report1.start_process'|trans }}
                             </template>
                         </button>
                     </div>

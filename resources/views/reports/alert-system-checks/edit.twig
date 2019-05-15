@@ -2,7 +2,8 @@
 
 {% block content %}
     <div class="section {#container#}" id="vue">
-    <h4 class="title" style="padding: 3px 15px">Тех.проверка системы оповещения: {{ check.date_human_format }}</h4>
+    {#Тех.проверка системы оповещения#}
+    <h4 class="title" style="padding: 3px 15px">{{ t('/reports/alert-system-checks.title') }}: {{ check.date_human_format }}</h4>
 
         {% if user.hasRight('ALERT_SYSTEM_DOWNLOAD') %}
             <form action="{{ route('reports.alert-system-checks.download', check.id) }}">
@@ -79,7 +80,8 @@
                         </tr>
                     {% endfor %}
                     <tr>
-                        <td colspan="6"><h3 class="title">ЗПУ</h3></td>
+                        {#ЗПУ#}
+                        <td colspan="6"><h3 class="title">{{ t('/reports/alert-system-checks.zpu') }}</h3></td>
                     </tr>
                     {% for direction in directions_reserved %}
                         <tr>

@@ -154,6 +154,7 @@ Vue.component('messenger-permissions', require('./views/messenger-permissions/Me
 Vue.component('report-emergency-type-period', require('./views/reports/emergency/ReportEmergencyTypePeriod'));
 Vue.component('report-other-rides-period', require('./views/reports/emergency/ReportTicket101OtherRidesPeriod'));
 Vue.component('report-drill-rides-period', require('./views/reports/emergency/ReportTicket101DrillRidesPeriod'));
+Vue.component('report-consolidated-result-period', require('./views/reports/emergency/ReportTicket101ResultPeriod'));
 Vue.component('card-notification-services', require('./components/ticket101/NotificationServices'));
 Vue.component('norm-psp-form', require('./components/norms-psp/CreateEdit'));
 Vue.component('report-forces-resources', require('./views/reports/emergency/ReportForcesResources'));
