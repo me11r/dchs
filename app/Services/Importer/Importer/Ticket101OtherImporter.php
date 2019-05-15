@@ -11,6 +11,7 @@ use App\RideType;
 use App\RoadtripPlan;
 use App\Services\ChunkedImporter\ChunkedImporter;
 use App\Ticket101Other;
+use App\Ticket101OtherHqRide;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -43,7 +44,7 @@ class Ticket101OtherImporter implements ImporterInterface
         $this->items = [];
         $this->incorrectItems = [];
 
-        ChunkedImporter::create($filePath, range('A', 'I'))
+        ChunkedImporter::create($filePath, range('A', 'J'))
             ->each(function (Worksheet $sheet) {
                 $data = $this->get($sheet->toArray());
                 $this->save($data);
@@ -98,7 +99,14 @@ class Ticket101OtherImporter implements ImporterInterface
             $changed_keys['time_begin'] = trim($temp_item[6]); //время начала
             $changed_keys['time_end'] = trim($temp_item[7]); //время окончания
             $changed_keys['note'] = trim($temp_item[8]); //примечание
-            $changed_keys['hq_rides'] = trim($temp_item[9]); //штабные машины
+            $changed_keys['hq_rides'] = trim($temp_item[9]) !== null ? $this->parseTemplate(trim($temp_item[9])) : null; //штабные машины
+
+            if ($changed_keys['hq_rides'] && $changed_keys['hq_rides']['type'] !== 'error') {
+                $changed_keys['hq_rides'] = $changed_keys['hq_rides']['data'];
+            }
+            else {
+                $changed_keys['hq_rides'] = null;
+            }
 
             if(!$changed_keys['custom_created_at']) {
 
@@ -248,16 +256,26 @@ class Ticket101OtherImporter implements ImporterInterface
                         ->first();
                 }
 
-
-
                 $changed_keys['fire_department_results'][$key]['tech_id'] = $formationTechItem->id ?? null;
                 $changed_keys['fire_department_results'][$key]['fire_department_id'] = $fire_department->id ?? null;
                 $changed_keys['fire_department_results'][$key]['ticket101_other_id'] = null;
+            }
+
+            if ($changed_keys['hq_rides']) {
+                foreach ($changed_keys['hq_rides'] as $hq_key => $hq_ride) {
+                    $changed_keys['hq_rides'][$hq_key]['out_time'] = @$hq_ride['out_time'] ? $hq_ride['out_time'] : '00:00';
+                    $changed_keys['hq_rides'][$hq_key]['name'] = @$hq_ride['fire_department_id'] ? $hq_ride['fire_department_id'] : '00:00';
+                    $changed_keys['hq_rides'][$hq_key]['arrive_time'] = @$hq_ride['arrive_time'] ? $hq_ride['arrive_time'] : '00:00';
+                    $changed_keys['hq_rides'][$hq_key]['retreat_time'] = @$hq_ride['retreat_time'] ? $hq_ride['retreat_time'] : '00:00';
+                    $changed_keys['hq_rides'][$hq_key]['ret_time'] = @$hq_ride['ret_time'] ? $hq_ride['ret_time'] : '00:00';
+                    $changed_keys['hq_rides'][$hq_key]['dispatch_time'] = @$hq_ride['dispatch_time'] ? $hq_ride['dispatch_time'] : '00:00';
+                }
             }
         }
         else {
 
             unset($changed_keys['fire_department_results']);
+            unset($changed_keys['hq_rides']);
 
             $this->incorrectItems[] = [
                 'data' => implode(" ", $changed_keys),
@@ -340,11 +358,33 @@ class Ticket101OtherImporter implements ImporterInterface
                     }
                 }
 
+                if($card['hq_rides'] && is_array($card['hq_rides'])) {
+                    $deptNames = (new Ticket101OtherHqRide())->getDeptNames();
+
+                    foreach ($card['hq_rides'] as $fire_department_result) {
+
+                        if ($fire_department_result['name'] && in_array($fire_department_result['name'], $deptNames)) {
+                            $ticket->hqRides()->create([
+                                'name' => $fire_department_result['name'],
+                                'accept_time' => @$fire_department_result['accept_time'],
+                                'out_time' => @$fire_department_result['out_time'],
+                                'retreat_time' => @$fire_department_result['retreat_time'],
+                                'arrive_time' => @$fire_department_result['arrive_time'],
+                                'ret_time' => @$fire_department_result['ret_time'],
+                                'dispatch_time' => @$fire_department_result['out_time'],
+                                'dispatched' => true,
+                                'distance' => null,
+                            ]);
+                        }
+                    }
+                }
+
                 $this->items[] = $card;
             }
             catch (\Exception $e) {
 
                 unset($card['fire_department_results']);
+                unset($card['hq_rides']);
 
                 $this->incorrectItems[] = [
                     'data' => implode(" ", $card),
