@@ -2,8 +2,9 @@
     <div class="container" id="forces-resources-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Учет выездов подразделений
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/analytics-spiasr.forces_resources.title'|trans({date_from: dateFromFormatted, date_to: dateToFormatted}) }}
+            <!--Учет выездов подразделений
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
         <div class="panel">
             <div
@@ -37,7 +38,7 @@
                             download
                             class="button is-primary"
                             type="submit">
-                            <i class="fas fa-print"></i>&nbsp;Сохранить в XLSX
+                            <i class="fas fa-print"></i>&nbsp;{{ 'download_excel'|trans }}<!--Сохранить в XLSX-->
                         </a>
                     </div>
                 </div>
@@ -45,7 +46,7 @@
                     <div class="level-left">
                         <div class="level-item">
                             <div class="control">
-                                <label>ПЧ</label><br>
+                                <label>{{ 'fd'|trans }}</label><br>
                                 <select v-model="fireDepartmentId"
                                         class="control">
                                     <!--<option value="">-</option>-->
@@ -60,15 +61,15 @@
                 </div>
                 <div class="field">
                     <button class="button is-info"
-                            @click.prevent="changeDate">Поиск</button>
+                            @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
                 </div>
                 <br>
                 <form>
                     <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small formation-record-table">
                         <thead>
                             <tr>
-                                <td>ПЧ</td>
-                                <td>Статус</td>
+                                <td>{{ 'fd'|trans }}</td><!--ПЧ-->
+                                <td>{{ 'status'|trans }}</td><!--Статус-->
                             </tr>
                         </thead>
                         <tbody>
@@ -79,20 +80,20 @@
                                         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small is-bordered">
                                             <thead>
                                             <tr>
-                                                <td rowspan="2">Отделение</td>
-                                                <td colspan="7">Количество выездов по тревоге</td>
-                                                <td rowspan="2">Практические выезда (ПТЗ,ПТУ,ТСУ,РКШУ,Учения, ТДК)</td>
-                                                <td rowspan="2">Корректировки</td>
-                                                <td rowspan="2">Прочие Выезда</td>
+                                                <td rowspan="2">{{ 'department'|trans }}</td><!--Отделение-->
+                                                <td colspan="7">{{ '/reports/analytics-spiasr.forces_resources.real_rides'|trans }}</td><!--Количество выездов по тревоге-->
+                                                <td rowspan="2">{{ '/reports/analytics-spiasr.forces_resources.practical_rides'|trans }}</td><!--Практические выезда (ПТЗ,ПТУ,ТСУ,РКШУ,Учения, ТДК)-->
+                                                <td rowspan="2">{{ '/reports/analytics-spiasr.forces_resources.corrections'|trans }}</td><!--Корректировки-->
+                                                <td rowspan="2">{{ '/reports/analytics-spiasr.forces_resources.false_nonreal'|trans }}</td><!--Прочие Выезда-->
                                             </tr>
                                             <tr>
-                                                <td>Общее количество выездов по тревоге</td>
-                                                <td>Пожары</td>
-                                                <td>Проведение аварийно-спасательных работ</td>
-                                                <td>Ложные/Бдительность населения</td>
-                                                <td>Срабатывание сигнализации</td>
-                                                <td>Область</td>
-                                                <td>Случаи горения, не подлежащие учету как пожары</td>
+                                                <td>{{ '/reports/analytics-spiasr.forces_resources.real_rides2'|trans }}</td><!--Общее количество выездов по тревоге-->
+                                                <td>{{ '/reports/analytics-spiasr.forces_resources.fires'|trans }}</td><!--Пожары-->
+                                                <td>{{ '/reports/analytics-spiasr.forces_resources.asr'|trans }}</td><!--Проведение аварийно-спасательных работ-->
+                                                <td>{{ '/reports/analytics-spiasr.forces_resources.false_nonreal'|trans }}</td><!--Ложные/Бдительность населения-->
+                                                <td>{{ '/reports/analytics-spiasr.forces_resources.siren'|trans }}</td><!--Срабатывание сигнализации-->
+                                                <td>{{ '/reports/analytics-spiasr.forces_resources.area'|trans }}</td><!--Область-->
+                                                <td>{{ '/reports/analytics-spiasr.forces_resources.non_fires'|trans }}</td><!--Случаи горения, не подлежащие учету как пожары-->
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -250,8 +251,6 @@ export default {
             }
 
             try {
-                console.dir(data);
-
                 return data.address + ', ранг пожара: ' +
                         this.isNull(data.status, 'fire_level').name + ', время выезда: ' + data.out_time + ', время прибытия: ' + data.arrive_time;
             } catch (e) {
@@ -271,7 +270,6 @@ export default {
                 }
             }).then((r) => {
                 this.reports_ = r.data.reports;
-                console.log(this.formActive);
                 loadingComponent.close();
             });
         }

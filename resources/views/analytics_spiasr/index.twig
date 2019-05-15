@@ -23,7 +23,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_FORCES_RESOURCES') %}
-                <b-tab-item label="Учет выездов подразделений">
+                {#Учет выездов подразделений#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.forces_resources.tab_title') }}">
                     <report-forces-resources
                          :fire-departments="{{ fireDepartments }}">
                     </report-forces-resources>
@@ -31,7 +32,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_DRILL_RIDES') %}
-                <b-tab-item label="Общий свод по учениям и занятиям">
+                {#Общий свод по учениям и занятиям#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.drill_rides_report.tab_title') }}">
                     <report-drill-rides-period
                             :norm-types="{{ normTypes|json_encode }}"
                             :fire-departments="{{ fireDepartments }}"

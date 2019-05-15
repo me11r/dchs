@@ -2,8 +2,9 @@
     <div id="other-rides-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Общий свод по учениям и занятиям
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/analytics-spiasr.drill_rides_report.title'|trans({date_from: dateFromFormatted, date_to: dateToFormatted}) }}
+            <!--Общий свод по учениям и занятиям
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -37,13 +38,14 @@
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a href="/reports/drill-rides-report/export/xlsx" class="button is-info">Сохранить в .XLSX</a>
+                        <a href="/reports/drill-rides-report/export/xlsx" class="button is-info">{{ 'download_excel'|trans }}<!--Сохранить в XLSX-->
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <label>Наименование</label><br>
+                    <label>{{ 'name'|trans }}</label><br><!--Наименование-->
                     <select v-model="normTypeId"
                             class="control">
                         <option value="">-</option>
@@ -53,7 +55,7 @@
                     </select>
                 </div>
                 <div class="control">
-                    <label>ПЧ</label><br>
+                    <label>{{ 'fd'|trans }}</label><br><!--ПЧ-->
                     <select v-model="fireDepartmentId"
                             class="control">
                         <option value="">-</option>
@@ -63,11 +65,10 @@
                     </select>
                 </div>
 
-
             </div>
             <div class="field">
                 <button class="button is-info"
-                        @click.prevent="changeDate">Поиск</button>
+                        @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -76,21 +77,21 @@
                 <thead>
                     <tr>
                         <th>№</th>
-                        <th>Дата</th>
-                        <th>Подразделение</th>
-                        <th>Тип</th>
-                        <th>Отделение</th>
-                        <th>Наименование</th>
-                        <th>Адрес</th>
-                        <th>Время начала</th>
-                        <th>Время окончания</th>
-                        <th>ФИО</th>
-                        <th>ПровПГ</th>
-                        <th>НеиспПГ</th>
-                        <th>ПровПВ</th>
-                        <th>НеиспПВ</th>
-                        <th>ОП</th>
-                        <th>ОК</th>
+                        <th>{{ 'date'|trans }}</th><!--Дата-->
+                        <th>{{ 'fd'|trans }}</th><!--Подразделение-->
+                        <th>{{ 'type'|trans }}</th><!--Тип-->
+                        <th>{{ 'department'|trans }}</th><!--Отделение-->
+                        <th>{{ 'name'|trans }}</th><!--Наименование-->
+                        <th>Адрес</th><!--Адрес-->
+                        <th>{{ 'time_begin'|trans }}</th><!--Время начала-->
+                        <th>{{ 'time_end'|trans }}</th><!--Время окончания-->
+                        <th>{{ 'name_abbreviation'|trans }}</th><!--ФИО-->
+                        <th>{{ '/reports/analytics-spiasr.drill_rides_report.checked_pg'|trans }}</th><!--ПровПГ-->
+                        <th>{{ '/reports/analytics-spiasr.drill_rides_report.damaged_pg'|trans }}</th><!--НеиспПГ-->
+                        <th>{{ '/reports/analytics-spiasr.drill_rides_report.checked_pv'|trans }}</th><!--ПровПВ-->
+                        <th>{{ '/reports/analytics-spiasr.drill_rides_report.damaged_pv'|trans }}</th><!--НеиспПВ-->
+                        <th>ОП</th><!--ОП-->
+                        <th>ОК</th><!--ОК-->
                     </tr>
                 </thead>
                 <tbody>
