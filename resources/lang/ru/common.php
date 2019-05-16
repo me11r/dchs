@@ -18,6 +18,8 @@ return array (
     'download_latest_report' => 'Скачать последний отчет',
     'ods' => 'ОДС',
     'role' => 'Роль',
+    'year' => 'Год',
+    'print' => 'Печать',
     'clear' => 'Очистить',
     'report_date' => 'Дата отчета',
     'direction' => 'Куда',

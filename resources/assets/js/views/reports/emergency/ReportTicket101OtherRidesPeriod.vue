@@ -2,8 +2,9 @@
     <div id="other-rides-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Общий свод по прочим выездам
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/analytics-spiasr.other_rides_period.title'|trans({date_from: dateFromFormatted, date_to: dateToFormatted}) }}
+            <!--Общий свод по прочим выездам
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -37,13 +38,13 @@
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a href="/reports/other-rides-report/export/xlsx" class="button is-info">Сохранить в .XLSX</a>
+                        <a href="/reports/other-rides-report/export/xlsx" class="button is-info">{{ 'download_excel'|trans }}</a><!--Сохранить в .XLSX-->
                     </div>
                 </div>
             </div>
                 <div class="field is-grouped">
                     <div class="control">
-                        <label>Куда</label><br>
+                        <label>{{ 'direction'|trans }}</label><br><!--Куда-->
                         <select v-model="rideTypeId"
                                 class="control">
                             <option value="">-</option>
@@ -53,7 +54,7 @@
                         </select>
                     </div>
                     <div class="control">
-                        <label>ПЧ</label><br>
+                        <label>{{ 'fd'|trans }}</label><br><!--ПЧ-->
                         <select v-model="fireDepartmentId"
                                 class="control">
                             <option value="">-</option>
@@ -66,7 +67,7 @@
                 </div>
             <div class="field">
                 <button class="button is-info"
-                        @click.prevent="changeDate">Поиск</button>
+                        @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -75,20 +76,19 @@
                 <thead>
                     <tr>
                         <th>№</th>
-                        <th>Дата</th>
-                        <th>Подразделение</th>
-                        <th>Отделение</th>
-                        <th>Куда</th>
-                        <th>Адрес</th>
-                        <th>Время начала</th>
-                        <th>Время окончания</th>
-                        <th>Ответственный</th>
+                        <th>{{ 'date'|trans }}</th><!--Дата-->
+                        <th>{{ 'fd'|trans }}</th><!--Подразделение-->
+                        <th>{{ 'department'|trans }}</th><!--Отделение-->
+                        <th>{{ 'direction'|trans }}</th><!--Куда-->
+                        <th>Адрес</th><!--Адрес-->
+                        <th>{{ 'time_begin'|trans }}</th><!--Время начала-->
+                        <th>{{ 'time_end'|trans }}</th><!--Время окончания-->
+                        <th>{{ 'head_person'|trans }}</th><!--Ответственный-->
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(record, key) in records_" :key="`records_${record.id}`">
                         <td>{{ ++key }}</td>
-<!--                        <td>{{ record.created_at|dateFilter('DD.MM.YYYY H:m') }}</td>-->
                         <td><a target="_blank" :href="`/card101-other-rides/${record.id}/edit`">{{ record.created_at|dateFilter('DD.MM.YYYY H:m') }}</a></td>
                         <td>
                             <p v-for="result in record.results" :key="`results_dept_title_${result.id}`">{{ result.department.title }}</p>

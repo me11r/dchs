@@ -4,7 +4,8 @@
         style="margin-top: 20px; min-height:1000px;">
         <h4
             class="title"
-            style="padding: 3px 15px">Классификация объектов за {{ year }} г.
+            style="padding: 3px 15px">{{ '/reports/analytics-spiasr.object_classification.title'|trans({year:year}) }}
+            <!--Классификация объектов за {{ year }} г.-->
         </h4>
 
         <div class="panel">
@@ -25,7 +26,7 @@
                                 </select>
                             </div>
                             <div class="control">
-                                <label for="">Тип учения</label>
+                                <label for="">{{ '/reports/analytics-spiasr.object_classification.drill_type'|trans }}</label><!--Тип учения-->
                                 <select
                                     v-model="drillType"
                                     name=""
@@ -45,14 +46,14 @@
                     <div class="level-item">
                         <a
                             href="/reports/object-classifications/export/xlsx"
-                            class="button is-info">Сохранить в .XLSX</a>
+                            class="button is-info">{{ 'download_excel'|trans }}</a><!--Сохранить в .XLSX-->
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="field">
-            <button @click.prevent="changeDate" class="button is-info">Поиск</button>
+            <button @click.prevent="changeDate" class="button is-info">{{ 'search'|trans }}</button><!--Поиск-->
         </div>
 
         <div
@@ -62,9 +63,9 @@
                 class="formation-record-table"
                 v-if="type === drillType || drillType === ''">
                 <tr>
-                    <td>классификация объектов {{ type }}</td>
+                    <td>{{ '/reports/analytics-spiasr.object_classification.header_title'|trans({type:type}) }}</td><!--классификация объектов {{ type }}-->
                     <td v-for="month in months">{{ month }}</td>
-                    <td>Итого</td>
+                    <td>{{ 'total'|trans }}</td><!--Итого-->
                 </tr>
                 <tr v-for="c in object_classes">
                     <td>{{ c.name }}</td>
@@ -72,7 +73,7 @@
                     <td>{{ counts_[type]['per_object'][c.name] }}</td>
                 </tr>
                 <tr v-if="object_classes.length">
-                    <td>Итого</td>
+                    <td>{{ 'total'|trans }}</td><!--Итого-->
                     <td v-for="totalMonth in counts_[type]['per_month']">{{ totalMonth }}</td>
                     <td></td>
                 </tr>
@@ -114,7 +115,20 @@ export default {
                 'ПТЗ',
                 'ПТУ'
             ],
-            months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+            months: [
+                window.trans.get('months.january'), //Январь
+                window.trans.get('months.february'), //Февраль
+                window.trans.get('months.march'), //Март
+                window.trans.get('months.april'), //Апрель
+                window.trans.get('months.may'), //Май
+                window.trans.get('months.june'), //Июнь
+                window.trans.get('months.july'), //Июль
+                window.trans.get('months.august'), //Август
+                window.trans.get('months.september'), //Сентябрь
+                window.trans.get('months.october'), //Октябрь
+                window.trans.get('months.november'), //Ноябрь
+                window.trans.get('months.december')  //Декабрь
+            ]
         };
     },
     computed: {

@@ -6,26 +6,26 @@
                 style="margin-top: 20px; min-height:1000px;">
                 <div class="level">
                     <div class="level-left">
-                        <h4 class="title">Отчет по карточке 112 за период</h4>
+                        <h4 class="title">{{ '/reports/analytics101.tabs.report_112_period.title'|trans }}</h4><!--Отчет по карточке 112 за период-->
                     </div>
                     <div class="level-right has-text-right">
                         <button
                             class="button is-primary"
-                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать
+                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;{{ 'print'|trans }} <!--Печать-->
                         </button>
                     </div>
                     <div class="level-right has-text-right">
                         <a
                             :href="getHref"
                             class="button is-primary"
-                        ><i class="fas fa-print"></i>&nbsp;Сохранить в XLS
+                        ><i class="fas fa-print"></i>&nbsp;{{ 'download_excel'|trans }} <!--Скачать в XLS-->
                         </a>
                     </div>
                 </div>
                 <br>
                 <form>
                     <div class="field">
-                        <label for="reason">Происшествие</label>
+                        <label for="reason">{{ 'emergency'|trans }}</label><!--Происшествие-->
                         <select
                             @change="selectReason"
                             class="select"
@@ -41,7 +41,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="reason">Район города</label>
+                        <label for="reason">{{ 'city_area'|trans }}</label><!--Район города-->
                         <select
                             class="select"
                             name="city_area_id"
@@ -56,7 +56,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="reason">Название ЧС</label>
+                        <label for="reason">{{ '/reports/analytics101.tabs.emergency_situations.emergency_name'|trans }}</label><!--Название ЧС-->
                         <select
                             class="select"
                             name="emergencyNameId"
@@ -87,14 +87,14 @@
                         </v-datepicker-search>
                     </div>
                     <div class="field">
-                        <button @click.prevent="selectPeriod" class="button is-success">Поиск</button>
+                        <button @click.prevent="selectPeriod" class="button is-success">{{ 'search'|trans }}</button><!--Поиск-->
                     </div>
 
                     <div class="field" style="overflow: scroll">
                         <table class="formation-record-table">
                             <thead>
                             <tr>
-                                <td class="is-narrow">Происшествие</td>
+                                <td class="is-narrow">{{ 'emergency'|trans }}</td><!--Происшествие-->
                                 <td></td>
                             </tr>
                             </thead>
@@ -105,16 +105,16 @@
                                     <table class="formation-record-table">
                                         <thead>
                                         <tr>
-                                            <td>Район города</td>
-                                            <td>Кол-во происшествий(ЧС)</td>
-                                            <td>Пострадавших людей/детей</td>
-                                            <td>Погибших людей/детей</td>
-                                            <td>Эвакуированных людей/детей</td>
-                                            <td>Госпитализированных людей/детей</td>
-                                            <td>Травмированных людей/детей</td>
-                                            <td>Отравление людей/детей</td>
-                                            <td>Спасено людей/детей</td>
-                                            <td>Спасено животных</td>
+                                            <td>{{ 'city_area'|trans }}</td><!--Район города-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.emergency_count'|trans }}</td><!--Кол-во происшествий(ЧС)-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.injured'|trans }}</td><!--Пострадавших людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.dead'|trans }}</td><!--Погибших людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.evacuated'|trans }}</td><!--Эвакуированных людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.hospitalized'|trans }}</td><!--Госпитализированных людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.traumatized'|trans }}</td><!--Травмированных людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.poisoned'|trans }}</td><!--Отравление людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.saved'|trans }}</td><!--Спасено людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.saved_animals'|trans }}</td><!--Спасено животных-->
                                         </tr>
                                         </thead>
                                         <tbody>

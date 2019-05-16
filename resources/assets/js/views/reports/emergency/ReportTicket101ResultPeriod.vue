@@ -2,8 +2,9 @@
     <div id="other-rides-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Сводный отчет
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/analytics-spiasr.consolidated_report.title'|trans({date_from: dateFromFormatted, date_to: dateToFormatted}) }}
+            <!--Сводный отчет
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -32,13 +33,13 @@
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a :href="exportUrl" class="button is-info">Сохранить в .DOCX</a>
+                        <a :href="exportUrl" class="button is-info">{{ 'download_word'|trans }}</a><!--Сохранить в .DOCX-->
                     </div>
                 </div>
             </div>
             <div class="field">
                 <button class="button is-info"
-                        @click.prevent="changeDate">Поиск</button>
+                        @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -46,8 +47,8 @@
             <table class="formation-record-table">
                 <thead>
                     <tr>
-                        <th>Наименование</th>
-                        <th>Количество</th>
+                        <th>{{ '/reports/analytics-spiasr.consolidated_report.name'|trans }}</th><!--Наименование-->
+                        <th>{{ '/reports/analytics-spiasr.consolidated_report.count'|trans }}</th><!--Количество-->
                     </tr>
                 </thead>
                 <tbody>
@@ -58,7 +59,7 @@
                 </tbody>
             </table>
         </div>
-        <p v-if="total">Итого: {{ total }}</p>
+        <p v-if="total">{{ 'total'|trans }}: {{ total }}</p>
         <br>
     </div>
 </template>
