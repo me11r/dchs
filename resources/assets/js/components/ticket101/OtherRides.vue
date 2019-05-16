@@ -426,7 +426,7 @@
 
                                 <!--{#Отправка HQ (Штаб)#}-->
                                 <td>
-                                    <a v-if="!hq_dept.dispatched || (hq_dept.retreated && hq_dept.dispatched)"
+                                    <a v-if="!hq_dept.dispatched && !hq_dept.retreated"
                                        @click.prevent="sendHqDept(hq_dept)"
                                        class="button is-primary is-outlined">
                                         <i class="fas fa-bus"></i>&nbsp;Выслать
@@ -436,6 +436,10 @@
                                        class="button is-danger is-outlined">
                                         <i class="fas fa-times"></i>&nbsp;Отбой
                                     </a>
+                                    <p v-else-if="hq_dept.retreated"
+                                       class="button is-default is-outlined">
+                                        <i class="fas fa-times"></i>&nbsp;Отбой
+                                    </p>
                                 </td>
 
                                 <!--{#Время оповещения#}-->
