@@ -4,12 +4,12 @@
             <div
                 class="box"
                 style="margin-top: 20px; min-height:1000px;">
-                <h4 v-if="incidentTypes.length === 2" class="title">Отчет (падение веток и деревьев, подтопления)</h4>
-                <h4 v-else class="title">Отчет 112 по происшествиям</h4>
+                <h4 v-if="incidentTypes.length === 2" class="title">{{ '/reports/analytics101.tabs.branches_fall.title'|trans }}</h4><!--Отчет (падение веток и деревьев, подтопления)-->
+                <h4 v-else class="title">{{ '/reports/analytics101.tabs.report112_emergency.title'|trans }}</h4><!--Отчет 112 по происшествиям-->
                 <br>
                 <form>
                     <div class="field">
-                        <label for="reason">Происшествие</label>
+                        <label for="reason">{{ 'emergency'|trans }}</label><!--Происшествие-->
                         <select
                             v-model="incident_type_id"
                             class="select"
@@ -24,7 +24,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="reason">Название ЧС</label>
+                        <label for="reason">{{ '/reports/analytics101.tabs.emergency_situations.emergency_name'|trans }}</label><!--Название ЧС-->
                         <select
                                 class="select"
                                 name="emergencyNameId"
@@ -39,7 +39,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="reason">Район города</label>
+                        <label for="reason">{{ 'city_area'|trans }}</label><!--Район города-->
                         <select
                                 class="select"
                                 name="city_area_id"
@@ -55,7 +55,7 @@
                     </div>
                     <!--Причина подтопления-->
                     <div class="field" v-if="incident_type_id === 36">
-                        <label for="reason">Причина</label>
+                        <label for="reason">{{ '/reports/analytics101.tabs.branches_fall.reason'|trans }}</label><!--Причина-->
                         <select
                                 class="select"
                                 name="reasonFloodingId"
@@ -71,7 +71,7 @@
                     </div>
                     <!--Причина падения веток/деревьев-->
                     <div class="field" v-if="incident_type_id === 37">
-                        <label for="reason">Причина</label>
+                        <label for="reason">{{ '/reports/analytics101.tabs.branches_fall.reason'|trans }}</label><!--Причина-->
                         <select
                                 class="select"
                                 name="reasonBranchesId"
@@ -107,7 +107,7 @@
                         <input type="text" v-model="addressSearch" class="input">
                     </div>
                     <div class="field">
-                        <button @click.prevent="search" class="button is-success">Поиск</button>
+                        <button @click.prevent="search" class="button is-success">{{ 'search'|trans }}</button><!--Поиск-->
                     </div>
                     <div
                         class="buttons has-text-right is-grouped is-right"
@@ -116,7 +116,7 @@
                             :href="getHref('xlsx')"
                             download
                             class="button is-success">
-                            <i class="fas fa-check"></i>&nbsp;Скачать в XLSX
+                            <i class="fas fa-check"></i>&nbsp;{{ 'download_excel'|trans }}<!--Скачать в XLSX-->
                         </a>
                     </div>
                     <div
@@ -126,7 +126,7 @@
                             :href="getHref('docx')"
                             download
                             class="button is-success">
-                            <i class="fas fa-check"></i>&nbsp;Скачать в DOCX
+                            <i class="fas fa-check"></i>&nbsp;{{ 'download_word'|trans }}<!--Скачать в DOCX-->
                         </a>
                     </div>
                 </form>
@@ -136,17 +136,17 @@
                         <thead>
                         <tr>
                             <th>№</th>
-                            <th>Район</th>
+                            <th></th><!--Район-->
                             <th>Адрес</th>
-                            <th v-if="incident_type_id === 36">Количество проживающих</th>
-                            <th>Дата происшествия</th>
-                            <th>Происшествие</th>
-                            <th>Место происшествия</th>
-                            <th>Причина</th>
-                            <th>Пострадавшие / погибшие</th>
-                            <th>Принятые меры</th>
-                            <th>Количество задействованных сил и средств</th>
-                            <th>Начало и завершение работ</th>
+                            <th v-if="incident_type_id === 36">{{ '/reports/analytics101.tabs.branches_fall.people_live'|trans }}</th><!--Количество проживающих-->
+                            <th>{{ 'date'|trans }}</th><!--Дата происшествия-->
+                            <th>{{ 'emergency'|trans }}</th><!--Происшествие-->
+                            <th>{{ '/reports/analytics101.tabs.branches_fall.place'|trans }}</th><!--Место происшествия-->
+                            <th>{{ '/reports/analytics101.tabs.branches_fall.reason'|trans }}</th><!--Причина-->
+                            <th>{{ '/reports/analytics101.tabs.branches_fall.dead'|trans }}</th><!--Пострадавшие / погибшие-->
+                            <th>{{ '/reports/analytics101.tabs.branches_fall.measures'|trans }}</th><!--Принятые меры-->
+                            <th>{{ '/reports/analytics101.tabs.branches_fall.resources'|trans }}</th><!--Количество задействованных сил и средств-->
+                            <th>{{ '/reports/analytics101.tabs.branches_fall.begin_end'|trans }}</th><!--Начало и завершение работ-->
                         </tr>
                         </thead>
                         <tbody>
@@ -170,10 +170,10 @@
                 <div class="section">
                     <div class="level">
                         <div class="level-left">
-                            <h4>Общее количество происшествий - {{ total }}</h4>
+                            <h4>{{ '/reports/analytics101.tabs.branches_fall.total'|trans }} - {{ total }}</h4><!--Общее количество происшествий-->
                         </div>
                         <div class="level-right">
-                            <h4>Пострадавшие/погибшие - {{ totalInjured }}</h4>
+                            <h4>{{ '/reports/analytics101.tabs.branches_fall.dead'|trans }} - {{ totalInjured }}</h4><!--Пострадавшие/погибшие-->
                         </div>
                     </div>
                 </div>

@@ -1109,12 +1109,12 @@ class Ticket101WordExport
 
         $row = $table->addRow();
         $row->addCell()->addText('ДСПТ: ' . $dspt . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('ИПЛ: ' . $ipl . ';', $headCellFontStyle, self::$noPaddingPS);
         $row->addCell()->addText('ЕДДС: ' . $edds . ';', $headCellFontStyle, self::$noPaddingPS);
-        $row->addCell()->addText('Ст. мастер связи: ' . $senior_communication_master . ';', $headCellFontStyle, self::$noPaddingPS);
 
         $row = $table->addRow();
         $row->addCell()->addText('ЦППС: ' . $cpps . ';', $headCellFontStyle, self::$noPaddingPS);
-        $row->addCell()->addText('ИПЛ: ' . $ipl . ';', $headCellFontStyle, self::$noPaddingPS);
+        $row->addCell()->addText('Ст. мастер связи: ' . $senior_communication_master . ';', $headCellFontStyle, self::$noPaddingPS);
         $row->addCell()->addText('Водоканал: ' . $water_supply . ';', $headCellFontStyle, self::$noPaddingPS);
 
     }

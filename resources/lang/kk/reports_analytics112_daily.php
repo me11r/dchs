@@ -2,6 +2,7 @@
 
 return array(
     '/reports/analytics101' => [
+        'title' => 'Аналитика ДЧС',
         'tabs' => [
             'report_112_period' => [
                 'tab_title' => 'Отчет 112 за период',
@@ -26,6 +27,8 @@ return array(
                 'measures' => 'Принятые меры',
                 'resources' => 'Количество задействованных сил и средств',
                 'begin_end' => 'Начало и завершение работ',
+                'people_live' => 'Количество проживающих',
+                'total' => 'Общее количество происшествий',
             ],
             'emergency_situations' => [
                 'tab_title' => 'Чрезвычайные ситуации',

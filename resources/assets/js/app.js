@@ -57,6 +57,7 @@ SocketListener.defineDefaultListeners();
 
 window.globalBus = new Vue({ });
 const translator = new Translate();
+window.trans = translator;
 
 const token = document.head.querySelector('meta[name="csrf-token"]');
 window.token = token;

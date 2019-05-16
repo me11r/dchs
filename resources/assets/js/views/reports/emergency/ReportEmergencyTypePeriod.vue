@@ -2,9 +2,10 @@
     <div>
         <h4
                 class="title"
-                style="padding: 3px 15px">Чрезвычайные ситуации природного и техногенного характера
+                style="padding: 3px 15px">{{ '/reports/analytics101.tabs.emergency_situations.title'|trans({date_from: dateFromFormatted, date_to: dateToFormatted}) }}
+            <!--Чрезвычайные ситуации природного и техногенного характера
             зарегистрированные по г. Алматы
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -33,16 +34,16 @@
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a href="/reports/112-emergency-report/export/docx" class="button is-info">Сохранить в .DOCX</a>
+                        <a href="/reports/112-emergency-report/export/docx" class="button is-info">{{ 'download_word'|trans }}</a><!--Сохранить в .DOCX-->
                     </div>
                     <div class="level-item">
-                        <a href="/reports/112-emergency-report/export/xlsx" class="button is-info">Сохранить в .XLSX</a>
+                        <a href="/reports/112-emergency-report/export/xlsx" class="button is-info">{{ 'download_excel'|trans }}</a><!--Сохранить в .XLSX-->
                     </div>
                 </div>
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <label>Вид ЧС (112 карточка)</label><br>
+                    <label>{{ '/reports/analytics101.tabs.emergency_situations.emergency_type112'|trans }}</label><br><!--Вид ЧС (112 карточка)-->
                     <select v-model="incidentTypeId"
                             class="control">
                         <option value="">-</option>
@@ -56,7 +57,7 @@
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <label for="reason">Название ЧС</label>
+                    <label for="reason">{{ '/reports/analytics101.tabs.emergency_situations.emergency_name'|trans }}</label><!--Название ЧС-->
                     <select
                             class="control"
                             name="emergencyNameId"
@@ -73,7 +74,7 @@
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <label>Результат выезда (101 карточка)</label><br>
+                    <label>{{ '/reports/analytics101.tabs.emergency_situations.result'|trans }}</label><br><!--Результат выезда (101 карточка)-->
                     <select v-model="tripResultId"
                             class="control">
                         <option value="">-</option>
@@ -85,7 +86,7 @@
 
             </div>
             <div class="field">
-                <label for="reason">Район города</label>
+                <label for="city_area_id">{{ 'city_area'|trans }}</label><!--Район города-->
                 <select
                         class="select"
                         name="city_area_id"
@@ -104,7 +105,7 @@
                 <input type="text" v-model="addressSearch" class="input">
             </div>
             <div class="field">
-                <button @click.prevent="changeDate" class="button is-success">Поиск</button>
+                <button @click.prevent="changeDate" class="button is-success">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -112,14 +113,14 @@
             <table class="formation-record-table">
                 <thead>
                 <tr>
-                    <th>№ п/п ЧС</th>
-                    <th>Дата и время происшествия</th>
+                    <th>№ п/п</th>
+                    <th>{{ 'datetime'|trans }}</th><!--Дата и время происшествия-->
                     <th>Адрес</th>
-                    <th>Краткая характеристика происшествия</th>
-                    <th>Кол-во погибших</th>
-                    <th>Кол-во пострадавших</th>
-                    <th>Вид ЧС</th>
-                    <th>Примечание</th>
+                    <th>{{ '/reports/analytics101.tabs.emergency_situations.description'|trans }}</th><!--Краткая характеристика происшествия-->
+                    <th>{{ '/reports/analytics101.tabs.emergency_situations.dead'|trans }}</th><!--Кол-во погибших-->
+                    <th>{{ '/reports/analytics101.tabs.emergency_situations.injured'|trans }}</th><!--Кол-во пострадавших-->
+                    <th>{{ '/reports/analytics101.tabs.emergency_situations.emergency_type'|trans }}</th><!--Вид ЧС-->
+                    <th>{{ 'note'|trans }}</th><!--Примечание-->
                 </tr>
                 </thead>
                 <tbody>
@@ -141,7 +142,7 @@
                 <div class="level-left">
                 </div>
                 <div class="level-right">
-                    <h4>Пострадавшие/погибшие - {{ totalInjured }}</h4>
+                    <h4>{{ '/reports/analytics101.tabs.branches_fall.dead'|trans }} - {{ totalInjured }}</h4><!--Пострадавшие/погибшие-->
                 </div>
             </div>
         </div>
