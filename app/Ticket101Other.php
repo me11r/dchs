@@ -186,6 +186,9 @@ class Ticket101Other extends BaseModel
         if($results_hq->count() && $results->count()) {
             $results = $results->merge($results_hq);
         }
+        elseif ($results_hq->count()) {
+            $results = $results_hq;
+        }
 
         $fd = '';
 
