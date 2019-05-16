@@ -1,11 +1,11 @@
 {% extends "layout/html" %}
 {% block content %}
     <div class="container section" id="vue">
-        <h1 class="title">Аналитика ДЧС</h1>
+        <h1 class="title">{{ t('/reports/analytics101.title') }}</h1>{#Аналитика ДЧС#}
         <b-tabs position="is-centered" class="block" id="other-rides-block">
 
             {% if user.hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_PERIOD') %}
-                <b-tab-item label="Отчет 112 за период">
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.report_112_period.tab_title') }}">{#Отчет 112 за период#}
                     <report112-emergency
                             :reasons="{{ incident_types }}"
                             :emergency-names="{{ emergency_names }}"
@@ -15,7 +15,7 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_BRANCHES') %}
-                <b-tab-item label="Подтопления / падения веток">
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.branches_fall.tab_title') }}">{#Подтопления / падения веток#}
                     <report112-branches
                             :incident-types="{{ branches }}"
                             :emergency-names="{{ emergency_names }}"
@@ -27,9 +27,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_REPORT') %}
-                <b-tab-item label="Чрезвычайные ситуации">
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.emergency_situations.tab_title') }}">{#Чрезвычайные ситуации#}
                     <report-emergency-type-period
-{#                            :records="{{ records }}"#}
                             :incident-types="{{ incidentTypes }}"
                             :trip-results="{{ tripResults }}"
                             :emergency-names="{{ emergency_names }}"

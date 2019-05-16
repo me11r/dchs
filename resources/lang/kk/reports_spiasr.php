@@ -19,6 +19,7 @@ return array(
         ],
         'object_classification' => [
             'tab_title' => 'Классификация объектов',
+            'header_title' => 'Классификация объектов :type',
             'title' => 'Классификация объектов за :year г.',
             'drill_type' => 'Тип учения',
             'headers' => [
@@ -68,6 +69,12 @@ return array(
             'time_onway' => 'Время следования',
             'time_liqv' => 'Время ликвидации',
             'start_process' => 'Отправить в обработку',
+        ],
+        'consolidated_report' => [
+            'tab_title' => 'Сводный отчет',
+            'title' => 'Сводный отчет за за :date_from по :date_to',
+            'name' => 'Наименование',
+            'count' => 'Количество',
         ],
         'emergency_form_051' => [
             'tab_title' => 'Форма ЧС-051',

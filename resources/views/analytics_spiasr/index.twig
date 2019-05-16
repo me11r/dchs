@@ -43,7 +43,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_OTHER_RIDES') %}
-                <b-tab-item label="Общий свод по прочим выездам">
+                {#Общий свод по прочим выездам#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.other_rides_period.tab_title') }}">
                     <report-other-rides-period
                             :ride-types="{{ rideTypes }}"
                             :fire-departments="{{ fireDepartments }}"
@@ -53,7 +54,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION') %}
-                <b-tab-item label="Классификация объектов">
+                {#Классификация объектов#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.object_classification.tab_title') }}">
                     <report-object-classification
                             :records="{{ records|json_encode }}"
                             :counts="{{ counts|json_encode }}"
@@ -64,7 +66,8 @@
             {% endif %}
 
             {% if user.hasRight('WATER_CONSUMPTION_REPORT_SHOW') %}
-                <b-tab-item label="Расход воды">
+                {#Расход воды#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.water_consumption.tab_title') }}">
                     <report-water-consumption
                     >
                     </report-water-consumption>
@@ -72,7 +75,8 @@
             {% endif %}
 
             {% if user.hasRight('CONSOLIDATED_REPORT_SHOW') %}
-                <b-tab-item label="Сводный отчет">
+                {#Сводный отчет#}
+                <b-tab-item label="{{ t('/reports/analytics-spiasr.consolidated_report.tab_title') }}">
                     <report-consolidated-result-period
                     ></report-consolidated-result-period>
                 </b-tab-item>
