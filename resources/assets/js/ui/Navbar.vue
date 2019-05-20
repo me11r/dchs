@@ -295,6 +295,13 @@
                         </a>
 
                         <a
+                            v-if="hasRight('ISK_REPORT_SHOW')"
+                            :href="getHref('/reports/isk/')"
+                            class="dropdown-item is-small"><i class="fas fa-file-word"></i>
+                            &nbsp; Отчет ИСК
+                        </a>
+
+                        <a
                             :href="getHref('/reports/queued-reports')"
                             class="dropdown-item is-small"><i class="fas fa-list"></i>
                             &nbsp; Очередь отчетов

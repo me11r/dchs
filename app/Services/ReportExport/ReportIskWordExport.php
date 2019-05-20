@@ -1,0 +1,178 @@
+<?php
+
+
+namespace App\Services\ReportExport;
+
+use App\FireDepartment;
+use App\FormationOdPersonItem;
+use App\FormationPersonsReport;
+use App\FormationReport;
+use App\GuardNumber;
+use App\Models\Vehicle;
+use App\OperationalGroupSchedule;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use PhpOffice\PhpWord\Element\Row;
+use PhpOffice\PhpWord\Element\Section;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\SimpleType\Jc;
+use PhpOffice\PhpWord\SimpleType\TblWidth;
+use PhpOffice\PhpWord\Style\Cell;
+use PhpOffice\PhpWord\Style\Table;
+use PhpOffice\PhpWord\Settings;
+
+class ReportIskWordExport
+{
+
+    /**
+     * @var PhpWord
+     */
+    private $phpWord;
+
+    /**
+     * @var array
+     */
+    private $data;
+
+    public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+
+    public function __construct(array $data)
+    {
+        $this->phpWord = new PhpWord();
+        $this->data = $data;
+
+        $this->prepareDocument();
+    }
+
+    private function prepareDocument()
+    {
+        $section = $this->getNewSection();
+
+        $this->addFirstPageTopData($section);
+
+        $section->addTextBreak(1, ['size' => 1]);
+
+        $this->addFirstTable($section);
+
+        $section->addPageBreak();
+    }
+
+    private function addFirstTable(Section $section)
+    {
+        $tableStyle = new Table;
+        $tableStyle->setBorderColor('black');
+        $tableStyle->setBorderSize(1);
+        $tableStyle->setUnit(TblWidth::PERCENT);
+        $tableStyle->setWidth(100 * 50);
+
+        $tableStyle->setCellMargin(10);
+
+        $table = $section->addTable($tableStyle);
+        $this->addFirstTableHeaders($table);
+        $this->addFirstTableData($table);
+    }
+
+    private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
+    {
+        $index = 1;
+        $fontStyle = ['name' => 'Times New Roman', 'size' => 14, 'bold' => true];
+
+        foreach ($this->data['records'] as $section) {
+            $row = $table->addRow();
+            $fontStyle['bold'] = true;
+            $this->addDataCellToRow($row, "{$section['section_index']}. {$section['section_title']}", [], $fontStyle, self::$noPaddingPS);
+
+            foreach ($section['fields'] as $title => $field) {
+                $row = $table->addRow();
+                $fontStyle['bold'] = false;
+
+                $this->addDataCellToRow($row, $index, [], $fontStyle, self::$noPaddingPS);
+                $this->addDataCellToRow($row, htmlspecialchars($title), [], $fontStyle, self::$noPaddingPS);
+                $this->addDataCellToRow($row, htmlspecialchars($field), [], $fontStyle, self::$noPaddingPS);
+
+                $index++;
+            }
+        }
+    }
+
+    public function export()
+    {
+        $writer = $this->getWriter('Word2007');
+        $fileName = 'Отчет ИСК  - '.date('d-m-Y'). '.docx';
+        $writer->save(public_path($fileName));
+        return response()->download(public_path($fileName));
+    }
+
+    private function addDataCellToRow(Row $row, $value, array $extraCellStyles = [], array $extraTextFStyles = [], array $extraTextPStyles = [])
+    {
+        $row
+            ->addCell(null, array_merge(['valign' => 'center', 'align' => 'center'], $extraCellStyles))
+            ->addText(
+                $value,
+                array_merge(['name' => 'Times New Roman', 'size' => 14], $extraTextFStyles),
+                array_merge(['valign' => 'center', 'align' => 'center'], $extraTextPStyles)
+            );
+    }
+
+    private function addFirstTableHeaders(\PhpOffice\PhpWord\Element\Table $table)
+    {
+        $cellRowSpan = ['vMerge' => 'restart', 'valign' => Jc::CENTER];
+        $cellRowSpanThick = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER, 'borderSize' => 10, 'borderColor' => '000000'];
+        $cellRowContinue = ['vMerge' => 'continue', 'valign' => Jc::CENTER];
+        $hcFontStyle = ['name' => 'Times New Roman', 'size' => 14, 'valign' => Jc::CENTER, 'bold' => true];
+        $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
+
+        $table->addRow(500);
+
+        foreach (['№ п/п', 'Информация', 'Примечание'] as $header) {
+            $width = 2000;
+
+            if ($header == '№ п/п') {
+                $width = 200;
+            }
+
+            $table->addCell($width, $cellRowSpan)->addText($header, $hcFontStyle, $hcAlignStyle);
+        }
+    }
+
+    private function addFirstPageTopData(Section $section)
+    {
+        // заголовок
+        $section->addText(
+            'Информационная карточка о ЧС',
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => true],
+            ['align' => Jc::CENTER]
+        );
+
+        $section->addText(
+            'природного и техногенного характера',
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => true],
+            ['align' => Jc::CENTER]
+        );
+        $section->addText(
+            'Код ЧС (класс, группа ЧС)',
+            ['name' => 'Times New Roman', 'size' => 14, 'bold' => false],
+            ['align' => Jc::CENTER]
+        );
+
+        $section->addText('');
+    }
+
+    public function getWriter($name = 'Word2007')
+    {
+        return IOFactory::createWriter($this->phpWord, $name);
+    }
+
+    private function getNewSection()
+    {
+        return $this->phpWord->addSection([
+//            'orientation' => 'landscape',
+            'marginLeft' => 500,
+            'marginRight' => 500,
+            'marginTop' => 500,
+            'marginBottom' => 500
+        ]);
+    }
+
+}
