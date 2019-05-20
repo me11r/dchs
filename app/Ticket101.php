@@ -460,6 +460,11 @@ class Ticket101 extends BaseModel
         return $this->belongsTo(DistrictManager::class, 'district_manager_id');
     }
 
+    public function report_isk()
+    {
+        return $this->hasOne(ReportIsk::class, 'ticket101_id');
+    }
+
     public function analytics()
     {
         return $this->hasOne(Analytics101Item::class, 'ticket101_id');
@@ -967,7 +972,16 @@ class Ticket101 extends BaseModel
         return $this->belongsTo(FormationReport::class, 'formation_report_id');
     }
 
-    //attribute: head_guards
+    //date_human
+    public function getDateHumanAttribute()
+    {
+        if ($this->custom_created_at) {
+           return Carbon::parse($this->custom_created_at)->format('d.m.Y H:i');
+        }
+        return null;
+    }
+
+    //attribute: head_guards (начальник караула (-ов))
     public function getHeadGuardsAttribute()
     {
         $staff = Staff::whereHas('formation_person_items.report.report', function ($q) {

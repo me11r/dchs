@@ -442,6 +442,13 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
         Route::get('reports/queued-reports', 'ReportController@queuedReports')->name('reports.queued-reports');
         Route::get('reports/queued-reports/view', 'ReportController@queuedReportsView')->name('reports.queued-reports-view');
 
+        Route::group(['prefix' => 'reports/isk', 'as' => 'reports.isk.'], function(){
+            Route::get('/', 'ReportIskController@index')->name('index')->middleware(['right:ISK_REPORT_SHOW']);
+            Route::get('{id}/edit', 'ReportIskController@edit')->name('edit')->middleware(['right:ISK_REPORT_SHOW,ISK_REPORT_EDIT']);
+            Route::get('{id}/export', 'ReportIskController@export')->name('export')->middleware(['right:ISK_REPORT_SHOW']);
+            Route::post('update/{id}', 'ReportIskController@update')->name('update')->middleware(['right:ISK_REPORT_EDIT']);
+        });
+
         /** Суточные отчеты в формате Ворд */
         Route::group(['prefix' => 'reports'], function(){
             Route::get('daily101/{format}', 'ReportController@getDaily101Formatted')->where('format', '(word)');

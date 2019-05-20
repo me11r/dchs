@@ -38,11 +38,13 @@ class TripResult extends BaseModel
     protected $fillable = [
         'name',
         'show_in_daily_report101',
+        'emergency_code',
     ];
 
     public $attributeNames = [
         'name' => 'Наименование',
         'show_in_daily_report101' => 'Участвует в ежедневном отчете 101',
+        'emergency_code' => 'Код ЧС',
     ];
 
     public function cards101()

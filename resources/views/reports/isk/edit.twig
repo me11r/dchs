@@ -1,0 +1,71 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div id="vue">
+        <div class="panel">
+            <div class="section">
+                <div class="level">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <h3 class="title"><a target="_blank" href="/card/add101/{{ record.ticket_101.id }}">Отчет ИСК</a></h3>
+                        </div>
+                    </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <a href="/reports/isk/{{ record.ticket_101.id }}/export" class="button is-info">Скачать в DOCX</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="box">
+                    <form action="/reports/isk/update/{{ record.id }}" method="post">
+                        {{ csrf_field() }}
+                        <table id="" class="detailed-table table is-small is-fullwidth is-bordered is-striped is-narrow is-hoverable" style="/*font-size: .7rem*/">
+                            <thead>
+                            <tr>
+                                <th>№ п/п</th>
+                                <th>Информация</th>
+                                <th>Примечание</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set index = 1 %}
+
+                            {% for section in records %}
+                                <tr>
+                                    <td colspan="3" class="has-text-centered is-bold"><b>{{ section.section_index }}. {{ section.section_title }}</b></td>
+                                </tr>
+                                {% for title, field in section.fields %}
+                                    <tr>
+                                        <td>{{ index }}</td>
+                                        <td>{{ title }}</td>
+                                        <td>
+                                            {% if not model.parseField(field) %}
+                                                <p>{{ field }}</p>
+                                            {% else %}
+                                                <input type="text" value="{{ model.parseField(field)[1] }}" name="{{ model.parseField(field)[0] }}" class="input">
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% set index = index + 1 %}
+                                {% endfor %}
+                            {% endfor  %}
+
+                            </tbody>
+                        </table>
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <a href="/reports/isk" class="button is-warning">Назад</a>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <button class="button is-success">Сохранить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
