@@ -659,6 +659,9 @@ class CardController extends AuthorizedController
             } else {
                 $back = "/card/add101/{$card->id}/{$card_type}";
             }
+
+            $this->saveReportIsk($card); //создаем "Отчет ИСК" по карточке, если еще не создан
+
         }
 
         if(Auth::user()->hasRight('CAN_CHANGE_CARD101_EMERGENCY_STATUS')) {
@@ -676,6 +679,13 @@ class CardController extends AuthorizedController
         }
 
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
+    }
+
+    private function saveReportIsk($ticket101)
+    {
+        if (!$ticket101->report_isk) {
+            $ticket101->report_isk()->create(['ticket101_id' => $ticket101->id]);
+        }
     }
 
     private function saveFiles(Ticket101 $ticket101, Request $request)
