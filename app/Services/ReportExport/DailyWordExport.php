@@ -446,12 +446,15 @@ class DailyWordExport
                         // ОК 81/8
                         $operational = '';
                         if($drillTicket['operational_plan']) {
-                            $operational = "ОП ".$drillTicket['operational_plan']['name'];
+                            $operational = "ОП ".$drillTicket['operational_plan']['name'] . ' '. $drillTicket['operational_plan']['special_plan']['object_name'] ?? null;
                             $operational = htmlspecialchars($operational);
                         }
                         elseif($drillTicket['operational_card']) {
-                            $operational = $drillTicket['operational_card']['oc_number'];
+                            $operational = $drillTicket['operational_card']['oc_number'] . ' '. $drillTicket['operational_card']['object_name'] ?? null;
+                            $operational = htmlspecialchars($operational);
                         }
+
+                        $operational .= $operational ? ', ' : '';
 
                         $textRun->addText(
                             $operational .' ',
@@ -467,10 +470,10 @@ class DailyWordExport
                             foreach ($drillTicket['additional_plans'] as $additional_plan) {
 
                                 if($additional_plan['special_plan']) {
-                                    $operational_additional .= "ОП ".$additional_plan['special_plan']['operational_plan']['name'];
+                                    $operational_additional .= "ОП ".$additional_plan['special_plan']['operational_plan']['name'].' '.$additional_plan['special_plan']['object_name'] ?? null;
                                 }
                                 elseif($additional_plan['operational_card']) {
-                                    $operational_additional .= $additional_plan['operational_card']['oc_number'];
+                                    $operational_additional .= $additional_plan['operational_card']['oc_number'].' '.$additional_plan['operational_card']['object_name'] ?? null;
                                 }
                                 $operational_additional .= ', ';
                                 $operational_additional = htmlspecialchars($operational_additional);
