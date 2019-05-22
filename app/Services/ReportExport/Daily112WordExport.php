@@ -120,7 +120,7 @@ class Daily112WordExport
         );
 
         $section->addText(
-            'Управления единой дежурно-диспетчерской службы ДЧС г. Алматы',
+            'Управления в кризисных ситуациях ДЧС г. Алматы',
             $generalBoldFontStyle,
             ['align' => Jc::CENTER]
         );
@@ -307,7 +307,7 @@ class Daily112WordExport
 
         $index++;
 
-        $this->addParagraph($section, "{$index}. ЕДДС: Всего поступивших звонков на «112» - ", ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
+        $this->addParagraph($section, "{$index}. УКС: Всего поступивших звонков на «112» - ", ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
 
         $strAircraft = '';
 
