@@ -24,7 +24,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="reason">{{ '/reports/analytics101.tabs.emergency_situations.emergency_name'|trans }}</label><!--Название ЧС-->
+                        <label for="emergencyNameId">{{ '/reports/analytics101.tabs.emergency_situations.emergency_name'|trans }}</label><!--Название ЧС-->
                         <select
                                 class="select"
                                 name="emergencyNameId"
@@ -39,7 +39,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="reason">{{ 'city_area'|trans }}</label><!--Район города-->
+                        <label for="city_area_id">{{ 'city_area'|trans }}</label><!--Район города-->
                         <select
                                 class="select"
                                 name="city_area_id"
@@ -55,7 +55,7 @@
                     </div>
                     <!--Причина подтопления-->
                     <div class="field" v-if="incident_type_id === 36">
-                        <label for="reason">{{ '/reports/analytics101.tabs.branches_fall.reason'|trans }}</label><!--Причина-->
+                        <label for="reasonFloodingId">{{ '/reports/analytics101.tabs.branches_fall.reason'|trans }}</label><!--Причина-->
                         <select
                                 class="select"
                                 name="reasonFloodingId"
@@ -69,9 +69,27 @@
                             </option>
                         </select>
                     </div>
+
+                    <!--Место подтопления-->
+                    <div class="field" v-if="incident_type_id === 36">
+                        <label for="placeFloodingId">{{ '/reports/analytics101.tabs.branches_fall.flooding_place'|trans }}</label><!--Место-->
+                        <select
+                                class="select"
+                                name="placeFloodingId"
+                                v-model="placeFloodingId"
+                                id="placeFloodingId">
+                            <option value=""></option>
+                            <option
+                                    v-for="item in placesFlooding"
+                                    :value="item.id"
+                                    :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+
                     <!--Причина падения веток/деревьев-->
                     <div class="field" v-if="incident_type_id === 37">
-                        <label for="reason">{{ '/reports/analytics101.tabs.branches_fall.reason'|trans }}</label><!--Причина-->
+                        <label for="reasonBranchesId">{{ '/reports/analytics101.tabs.branches_fall.reason'|trans }}</label><!--Причина-->
                         <select
                                 class="select"
                                 name="reasonBranchesId"
@@ -207,6 +225,10 @@ export default {
             type: Array,
             default: () => {}
         },
+        placesFlooding: {
+            type: Array,
+            default: () => {}
+        },
         reasonsBranches: {
             type: Array,
             default: () => {}
@@ -218,6 +240,9 @@ export default {
         },
         getReasonFloodingId() {
             return this.incident_type_id === 36 ? this.reasonFloodingId : null;
+        },
+        getPlaceFloodingId() {
+            return this.incident_type_id === 36 ? this.placeFloodingId : null;
         },
         getReasonBranchesId() {
             return this.incident_type_id === 37 ? this.reasonBranchesId : null;
@@ -232,6 +257,7 @@ export default {
             emergencyNameId: null,
             cityAreaId: null,
             reasonFloodingId: null,
+            placeFloodingId: null,
             reasonBranchesId: null,
             addressSearch: null,
             total: 0,
@@ -251,6 +277,7 @@ export default {
                 'report_type': this.getReportType,
                 'reasonBranchesId': this.getReasonBranchesId,
                 'reasonFloodingId': this.getReasonFloodingId,
+                'placeFloodingId': this.getPlaceFloodingId,
             }).then((q) => {
                 this.response = q.data.data;
                 this.total = q.data.total;
@@ -267,6 +294,7 @@ export default {
                 '&report_type=' + this.getReportType +
                 '&reasonBranchesId=' + this.getReasonBranchesId +
                 '&reasonFloodingId=' + this.getReasonFloodingId +
+                '&placeFloodingId=' + this.getPlaceFloodingId +
                 '&download=' + download +
                 '&csrf-token=' + this.csrf;
         },
