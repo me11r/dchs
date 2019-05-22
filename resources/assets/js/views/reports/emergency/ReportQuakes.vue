@@ -2,8 +2,10 @@
     <div id="other-rides-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Случаи землетрясения в г. Алматы
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">
+            {{ '/reports/analytics101.tabs.quakes.title'|trans({date_from: dateFromFormatted, date_to:dateToFormatted}) }}
+            <!--Случаи землетрясения в г. Алматы
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -32,12 +34,12 @@
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <a :href="`/reports/quakes?dateFrom=${dateFromFormattedSearch}&dateTo=${dateToFormattedSearch}`" class="button is-info">Сохранить в .DOCX</a>
+                        <a :href="`/reports/quakes?dateFrom=${dateFromFormattedSearch}&dateTo=${dateToFormattedSearch}`" class="button is-info">{{ 'download_word'|trans }}</a><!--Сохранить в .DOCX-->
                     </div>
                 </div>
             </div>
             <div class="field">
-                <button class="button is-success" @click.prevent="changeDate">Поиск</button>
+                <button class="button is-success" @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -45,9 +47,9 @@
             <table class="formation-record-table">
                 <thead>
                     <tr>
-                        <th>№ п/п ЧС</th>
-                        <th>Дата и время происшествия</th>
-                        <th>Краткая характеристика происшествия</th>
+                        <th>{{ 'number'|trans }}</th><!--№ п/п ЧС-->
+                        <th>{{ 'datetime'|trans }}</th><!--Дата и время происшествия-->
+                        <th>{{ '/reports/analytics101.tabs.diseases.description'|trans }}</th><!--Краткая характеристика происшествия-->
                     </tr>
                 </thead>
                 <tbody>

@@ -10,9 +10,11 @@ use App\EventInfoArrived;
 use App\Models\FireDepartmentResult;
 use App\Models\FormationPersonsItem;
 use App\Models\FormationTechItem;
+use App\Models\SpecialPlan;
 use App\Models\Ticket101\Ticket101OtherRecord;
 use App\NormPsp;
 use App\OnWay101;
+use App\OperationalCard;
 use App\Services\Ticket101\NotificationService;
 use App\Ticket101;
 use App\Ticket101HqRide;
@@ -301,48 +303,8 @@ class CardController extends Controller
 
     }
 
-//    @todo: модель удалена
-
-//    public function createArrivedRecord101card(Request $request)
-//    {
-//        $data = $request->all();
-//        $resp = [];
-//        if ($request->record) {
-//            $resp = Arrived101::updateOrCreate(['id' => $request->record['id']], [
-//                'ticket101_id' => $request->ticket_id,
-//                'working_time' => $request->record['working_time'],
-//                'quantity' => $request->record['quantity'],
-//                'information' => $request->record['information'],
-//                'event_info_arrived_id' => $request->record['event_info_id'],
-//                'fire_department_result_id' => $request->input('record.fire_department_result.id'),
-//            ]);
-//
-//            $resp = Arrived101::with([
-//                'event_info',
-//                'fire_department_result.tech',
-//                'fire_department_result.department',
-//            ])
-//                ->where('id', $resp->id)
-//                ->first();
-//
-//        }
-//
-//        return response()->json($resp);
-//    }
-
-//    @todo: модель удалена
-//    public function deleteOnWayRecord101card(Request $request)
-//    {
-//        $data = $request->all();
-//        $record = OnWay101::destroy($request->id);
-//        $resp = [];
-//
-//        return response()->json($resp);
-//    }
-
     public function deleteChronologyRecord101card(Request $request)
     {
-        $data = $request->all();
         $record = Chronology101::destroy($request->id);
         $resp = [];
 
@@ -351,21 +313,20 @@ class CardController extends Controller
 
     public function deleteChronologyFromFdRecord101card(Request $request)
     {
-        $data = $request->all();
         $record = Chronology101FromFd::destroy($request->id);
         $resp = [];
 
         return response()->json($resp);
     }
 
-    public function deleteArrivedRecord101card(Request $request)
+    /*public function deleteArrivedRecord101card(Request $request)
     {
         $data = $request->all();
         $record = Arrived101::destroy($request->id);
         $resp = [];
 
         return response()->json($resp);
-    }
+    }*/
 
     public function checkRoadtrip(Request $request)
     {
@@ -496,6 +457,26 @@ class CardController extends Controller
         }
 
         return response()->json(['ok']);
+    }
+
+    public function getSpecialPlans(Request $request)
+    {
+        $name = $request->name;
+        $specialPlans = SpecialPlan::with(['operational_plan'])
+            ->whereHas('operational_plan', function ($q) use ($name) {
+                $q->where('name', 'like', "{$name}%");
+            })->take(5)
+            ->get();
+        return response()->json(['special_plans' => $specialPlans]);
+    }
+
+    public function getOperationalCards(Request $request)
+    {
+        $name = $request->name;
+        $operational_cards = OperationalCard::where('oc_number', 'like', "%{$name}%")
+            ->take(5)
+            ->get();
+        return response()->json(['operational_cards' => $operational_cards]);
     }
 
 }

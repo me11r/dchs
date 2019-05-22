@@ -408,6 +408,7 @@ class DailyWordExport
 
                     foreach ($drillResults as $drillResult) {
                         $textRun = $section->addTextRun(self::$noPaddingPS);
+                        //{ПЧ:3} {время} {адрес} {Корректировка по улицам - если не пустое} {дополнительные ОП/ОК}
 
                         //1.ПЧ-3:2
                         $textRun->addText(
@@ -426,10 +427,19 @@ class DailyWordExport
                         //адрес только для "Корректировки"
                         if ($drillType->id === 7 && $drillTicket['location']) {
                             $textRun->addText(
-                                $drillTicket['location'],
+                                $drillTicket['location']. ', ',
                                 $simpleFontStyle,
                                 ['align' => Jc::BOTH]
                             );
+
+                            //Корректировка по улицам
+                            if ($drillTicket['fireplace']) {
+                                $textRun->addText(
+                                    $drillTicket['fireplace'] . ', ',
+                                    $simpleFontStyle,
+                                    ['align' => Jc::BOTH]
+                                );
+                            }
                         }
 
                         // ОП 81/8
@@ -449,6 +459,30 @@ class DailyWordExport
                             ['align' => Jc::BOTH]
                         );
 
+                        // дополнительные оп/ок, если есть
+                        if ($drillTicket['additional_plans']->count()) {
+
+                            $operational_additional = '';
+
+                            foreach ($drillTicket['additional_plans'] as $additional_plan) {
+
+                                if($additional_plan['special_plan']) {
+                                    $operational_additional .= "ОП ".$additional_plan['special_plan']['operational_plan']['name'];
+                                }
+                                elseif($additional_plan['operational_card']) {
+                                    $operational_additional .= $additional_plan['operational_card']['oc_number'];
+                                }
+                                $operational_additional .= ', ';
+                                $operational_additional = htmlspecialchars($operational_additional);
+                            }
+
+                            $textRun->addText(
+                                $operational_additional .' ',
+                                $simpleFontStyle,
+                                ['align' => Jc::BOTH]
+                            );
+                        }
+
                         //Радиотелевизионная передающая станция ТОО «Кок-тобе»
                         $textRun->addText(
                             htmlspecialchars($drillTicket['drill_name_total']).' ',
@@ -456,7 +490,7 @@ class DailyWordExport
                             ['align' => Jc::BOTH]
                         );
 
-                        //Корректировка
+                        //если Корректировка, указываем ПГ/ПВ
                         if ($drillType->id === 7) {
                             //Проверено ПГ/ПВ / Неисправно ПГ/ПВ
                             //4ПГ/0ПГ 3ПВ/2ПВ

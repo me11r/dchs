@@ -395,3 +395,8 @@
     <input type="text" id="owner" name="owner" value="{{ ticket.responsible_person|default('') }}"
            class="input"/>
 </div>
+<div id="additional-okop">
+    <card101-additional-oc
+        :records="{{ ticket.additional_plans }}"
+    ></card101-additional-oc>
+</div>

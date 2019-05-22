@@ -2,8 +2,9 @@
     <div id="other-rides-form" style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Профилактический и самопроизвольный сход лавин
-            с {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/analytics101.tabs.avalanches.title'|trans({date_from: dateFromFormatted, date_to:dateToFormatted}) }}
+            <!--Профилактический и самопроизвольный сход лавин
+            с {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -33,7 +34,7 @@
                 <div class="level-right">
                     <div class="level-item">
                         <a :href="`/reports/112/avalanches?dateFrom=${dateFromFormattedSearch}&dateTo=${dateToFormattedSearch}&avalancheTypeId=${avalancheTypeId}`"
-                           class="button is-info">Сохранить в .DOCX</a>
+                           class="button is-info">{{ 'download_word'|trans }}</a><!--Сохранить в .DOCX-->
                     </div>
                 </div>
             </div>
@@ -41,7 +42,7 @@
             <div class="field">
                 <div class="control">
                     <div class="control">
-                        <p>Тип схода снежных лавин</p>
+                        <p>{{ '/reports/analytics101.tabs.avalanches.type'|trans }}</p><!--Тип схода снежных лавин-->
                         <select class="control" id="avalancheTypeId" v-model="avalancheTypeId">
                             <option value=""></option>
                             <option v-for="type in avalancheTypes" :value="type.id">{{ type.name }}</option>
@@ -51,7 +52,7 @@
             </div>
 
             <div class="field">
-                <button class="button is-success" @click.prevent="changeDate">Поиск</button>
+                <button class="button is-success" @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -59,13 +60,13 @@
             <table class="formation-record-table">
                 <thead>
                     <tr>
-                        <th>№ п/п</th>
-                        <th>Дата</th>
-                        <th>Адрес</th>
-                        <th>Тип схода лавин</th>
-                        <th>Описание происшествия</th>
-                        <th>Куб/м</th>
-                        <th>Примечание</th>
+                        <th>{{ 'number'|trans }}</th><!--№ п/п-->
+                        <th>{{ 'date'|trans }}</th><!--Дата-->
+                        <th>{{ 'address'|trans }}</th><!--Адрес-->
+                        <th>{{ '/reports/analytics101.tabs.avalanches.type'|trans }}</th><!--Тип схода лавин-->
+                        <th>{{ 'description'|trans }}</th><!--Описание происшествия-->
+                        <th>Куб/м</th><!--Куб/м-->
+                        <th>{{ 'note'|trans }}</th><!--Примечание-->
                     </tr>
                 </thead>
                 <tbody>
@@ -80,7 +81,7 @@
                     </tr>
                 </tbody>
             </table>
-            <p v-if="records.length > 0">Общее количество: {{ records.length }}</p>
+            <p v-if="records.length > 0">{{ 'total'|trans }}: {{ records.length }}</p>
         </div>
         <br>
     </div>

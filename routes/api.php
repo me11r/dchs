@@ -60,6 +60,9 @@ Route::group(
 
         Route::group(['prefix' => 'card101'], function (){
             Route::post('check-roadtrip' ,'CardController@checkRoadtrip');
+
+            Route::post('special-plans' ,'CardController@getSpecialPlans');
+            Route::post('operational-cards' ,'CardController@getOperationalCards');
         });
     }
 );

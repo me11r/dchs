@@ -2,8 +2,9 @@
     <div style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Информация происшествия на лифтах
-            с {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/analytics101.tabs.elevators.title'|trans({date_from: dateFromFormatted, date_to:dateToFormatted}) }}
+            <!--Информация происшествия на лифтах
+            с {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -33,7 +34,7 @@
                 <div class="level-right">
                     <div class="level-item">
                         <a :href="`/reports/112/elevators?dateFrom=${dateFromFormattedSearch}&dateTo=${dateToFormattedSearch}&elevatorEmergencyTypeId=${elevatorEmergencyTypeId}`"
-                           class="button is-info">Сохранить в .DOCX</a>
+                           class="button is-info">{{ 'download_word'|trans }}</a><!--Сохранить в .DOCX-->
                     </div>
                 </div>
             </div>
@@ -41,7 +42,7 @@
             <div class="field">
                 <div class="control">
                     <div class="control">
-                        <p>Тип происшествия на лифтах</p>
+                        <p>{{ '/reports/analytics101.tabs.elevators.type'|trans }}</p><!--Тип происшествия на лифтах-->
                         <select class="control" id="elevatorEmergencyTypeId" v-model="elevatorEmergencyTypeId">
                             <option value=""></option>
                             <option v-for="type in elevatorEmergencyTypes" :value="type.id">{{ type.name }}</option>
@@ -53,7 +54,7 @@
             <div class="field">
                 <div class="control">
                     <div class="control">
-                        <p>Район города</p>
+                        <p>{{ 'city_area'|trans }}</p><!--Район города-->
                         <select class="control" id="cityAreaId" v-model="cityAreaId">
                             <option value=""></option>
                             <option v-for="area in cityAreas" :value="area.id">{{ area.name }}</option>
@@ -63,7 +64,7 @@
             </div>
 
             <div class="field">
-                <button class="button is-success" @click.prevent="changeDate">Поиск</button>
+                <button class="button is-success" @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -74,11 +75,11 @@
                         <th colspan="5">{{ title }} - {{ records_.length }}</th>
                     </tr>
                     <tr>
-                        <th>№ п/п</th>
-                        <th>Дата/Время</th>
-                        <th>Адрес</th>
-                        <th>Район города</th>
-                        <th>Характеристика происшествия</th>
+                        <th>{{ 'number'|trans }}</th><!--№ п/п-->
+                        <th>{{ 'datetime'|trans }}</th><!--Дата/Время-->
+                        <th>{{ 'address'|trans }}</th><!--Адрес-->
+                        <th>{{ 'city_area'|trans }}</th><!--Район города-->
+                        <th>{{ 'emergency_characteristics'|trans }}</th><!--Характеристика происшествия-->
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +93,7 @@
                 </tbody>
             </table>
         </div>
-        <p>Общее количество происшествия на лифтах - {{ records.length }}</p>
+        <p>{{ '/reports/analytics101.tabs.elevators.total_count'|trans }} - {{ records.length }}</p><!--Общее количество происшествия на лифтах -->
 
         <br>
     </div>
