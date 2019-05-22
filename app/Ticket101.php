@@ -520,6 +520,11 @@ class Ticket101 extends BaseModel
         return $this->hasMany(Ticket101Log::class, 'ticket101_id');
     }
 
+    public function additional_plans()
+    {
+        return $this->hasMany(AdditionalPlan101::class, 'ticket101_id');
+    }
+
     public function liquidation_method()
     {
         return $this->hasOne(LiquidationMethod::class, 'id', 'liquidation_method_id');

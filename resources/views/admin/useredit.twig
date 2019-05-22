@@ -1,7 +1,7 @@
 {% extends 'layout/html' %}
 {% block content %}
     <div class="container section">
-        <form action="{{ url('admin/users/edit/' ~ user.id|default('')) }}" method="post" id="add_user_form">
+        <form action="{{ url('admin/users/edit/' ~ user_record.id|default('')) }}" method="post" id="add_user_form">
             {{ csrf_field() }}
             <h4 class="title">Редактирование пользователя</h4>
 
@@ -10,7 +10,7 @@
                     <h5 class="subtitle">Реквизиты пользователя</h5>
                     <div class="field ">
                         <label for="fullname">ФИО пользователя</label>
-                        <input type="text" class="input {{ errors.has('fullname')?'is-danger' }}" name="fullname" id="fullname" value="{{ old('fullname')|default(user.name|default('')) }}"/>
+                        <input type="text" class="input {{ errors.has('fullname')?'is-danger' }}" name="fullname" id="fullname" value="{{ old('fullname')|default(user_record.name|default('')) }}"/>
                         {% if errors.has('fullname') %}
                             <span class="{{ errors.has('fullname')?'is-danger' }}">
                                         <small>{{ errors.first('fullname') }}</small>
@@ -19,7 +19,7 @@
                     </div>
                     <div class="field ">
                         <label for="email">Электронная почта</label>
-                        <input type="email" class="input {{ errors.has('email')?'is-danger' }}" name="email" id="email" value="{{ old('email')|default(user.email|default('')) }}"/>
+                        <input type="email" class="input {{ errors.has('email')?'is-danger' }}" name="email" id="email" value="{{ old('email')|default(user_record.email|default('')) }}"/>
                         {% if errors.has('email') %}
                             <span class="input-feedback">
                                         <small>{{ errors.first('email') }}</small>
@@ -29,7 +29,7 @@
 
                     <div class="field ">
                         <label for="call_name">Позывной</label>
-                        <input type="text" class="input {{ errors.has('call_name')?'is-danger' }}" name="call_name" id="call_name" value="{{ old('call_name')|default(user.call_name|default('')) }}"/>
+                        <input type="text" class="input {{ errors.has('call_name')?'is-danger' }}" name="call_name" id="call_name" value="{{ old('call_name')|default(user_record.call_name|default('')) }}"/>
                         {% if errors.has('call_name') %}
                             <span class="input-feedback">
                                 <small>{{ errors.first('call_name') }}</small>
@@ -39,7 +39,7 @@
 
                     <div class="field ">
                         <label for="position">Должность</label>
-                        <input type="text" class="input {{ errors.has('position')?'is-danger' }}" name="position" id="position" value="{{ old('position')|default(user.position|default('')) }}"/>
+                        <input type="text" class="input {{ errors.has('position')?'is-danger' }}" name="position" id="position" value="{{ old('position')|default(user_record.position|default('')) }}"/>
                         {% if errors.has('position') %}
                             <span class="input-feedback">
                                 <small>{{ errors.first('position') }}</small>
@@ -54,7 +54,7 @@
                             <select name="role_id" id="role_id">
                                 <option value=""></option>
                                 {% for role in roles %}
-                                    <option {% if user.role_id is defined and user.role_id == role.id %} selected {% endif %} value="{{ role.id }}">{{ role.title }}</option>
+                                    <option {% if user_record.role_id is defined and user_record.role_id == role.id %} selected {% endif %} value="{{ role.id }}">{{ role.title }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -69,7 +69,7 @@
                             <select name="fire_department_id" id="fire_department_id">
                                 <option value=""></option>
                                 {% for dept in fire_departments %}
-                                    <option {% if user.fire_department_id is defined and user.fire_department_id == dept.id %} selected {% endif %} value="{{ dept.id }}">{{ dept.title }}</option>
+                                    <option {% if user_record.fire_department_id is defined and user_record.fire_department_id == dept.id %} selected {% endif %} value="{{ dept.id }}">{{ dept.title }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -85,7 +85,7 @@
                             <select name="service_type_id" id="service_type_id">
                                 <option value=""></option>
                                 {% for dept in service_types %}
-                                    <option {% if user.service_type_id is defined and user.service_type_id == dept.id %} selected {% endif %} value="{{ dept.id }}">{{ dept.name }}</option>
+                                    <option {% if user_record.service_type_id is defined and user_record.service_type_id == dept.id %} selected {% endif %} value="{{ dept.id }}">{{ dept.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>

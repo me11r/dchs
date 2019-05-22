@@ -172,6 +172,7 @@ Vue.component('call-info-create-edit', require('./views/call-infos/CreateEdit'))
 Vue.component('report-staff-managers-ods', require('./views/reports/emergency/ReportStaffManagersODS'));
 Vue.component('fire-departments-map', require('./views/fire-departments/DepartmentsMap'));
 Vue.component('service-plans-additional', require('./views/service-plans/ServicePlanAdditional'));
+Vue.component('card101-additional-oc', require('./components/ticket101/AdditionalOC'));
 
 // трекер яндекс-запросов
 globalBus.$on('api-map-request', (r) => {
@@ -365,6 +366,13 @@ if (document.getElementById('card101_save_btn')) {
 if (document.getElementById('card-notification-services')) {
     new Vue({
         el: '#card-notification-services'
+    });
+}
+
+// дополнительные ОП/ОК в учебных карточках 101
+if (document.getElementById('additional-okop')) {
+    new Vue({
+        el: '#additional-okop'
     });
 }
 
