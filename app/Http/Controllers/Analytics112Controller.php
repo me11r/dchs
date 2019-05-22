@@ -10,6 +10,7 @@ use App\DiseaseType;
 use App\DistrictManager;
 use App\ElevatorEmergencyType;
 use App\EmergencyName;
+use App\FloodingPlace;
 use App\FloodingReason;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
@@ -98,6 +99,7 @@ class Analytics112Controller extends Controller
         $data['disease_types'] = DiseaseType::all();
         $data['reasons_branches'] = BranchFallReason::all();
         $data['reasons_flooding'] = FloodingReason::all();
+        $data['places_flooding'] = FloodingPlace::all();
 
         $data['tripResults'] = TripResult::all();
         $data['og'] = OperDutyShift::all();

@@ -29,6 +29,7 @@ return array(
                 'begin_end' => 'Начало и завершение работ',
                 'people_live' => 'Количество проживающих',
                 'total' => 'Общее количество происшествий',
+                'flooding_place' => 'Место подтопления',
             ],
             'emergency_situations' => [
                 'tab_title' => 'Чрезвычайные ситуации',
