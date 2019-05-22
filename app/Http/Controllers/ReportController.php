@@ -438,6 +438,7 @@ class ReportController extends AuthorizedController
         $reasonBranchesId = $request->reasonBranchesId === 'null' ? null : $request->reasonBranchesId;
         $reasonFloodingId = $request->reasonFloodingId === 'null' ? null : $request->reasonFloodingId;
         $address = $request->addressSearch === 'null' ? null : $request->addressSearch;
+        $placeFloodingId = $request->placeFloodingId === 'null' ? null : $request->placeFloodingId;
 
         $dateStartHuman = Carbon::parse($request->get('date_start'))->format('d.m.Y');
         $dateEndHuman = Carbon::parse($request->get('date_end'))->format('d.m.Y');
@@ -475,6 +476,7 @@ class ReportController extends AuthorizedController
             ->skipNullValue('emergency_name_id',$emergency_name_id)
             ->skipNullValue('branch_fall_reason_id',$reasonBranchesId)
             ->skipNullValue('flooding_reason_id',$reasonFloodingId)
+            ->skipNullValue('flooding_place_id',$placeFloodingId)
             ->skipNullValue('city_area_id',$cityAreaId)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
             ->orderBy('custom_created_at')
