@@ -74,7 +74,7 @@ class ReportDisease
 
         // подвал
         $section->addText(
-            $this->data['footer'] ? $this->data['footer']->position : 'Начальник УЕДДС ДЧС г. Алматы',
+            $this->data['footer'] ? $this->data['footer']->position : 'Начальник УКС ДЧС г. Алматы',
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::BOTH]
         );

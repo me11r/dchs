@@ -41,6 +41,7 @@ class IncidentType extends Model
         'category_id'
     ];
 
+    /*todo связь устарела, возможно, более не актуальна*/
     public function cards101()
     {
         return $this->hasMany(Ticket101::class, 'pre_information_id');
