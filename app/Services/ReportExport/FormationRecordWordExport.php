@@ -273,7 +273,7 @@ class FormationRecordWordExport
         $tableStyle->setWidth(100 * 50);
     }
 
-    //Дежурная смена УЕДДС ДЧС г.Алматы КЧС МВД РК
+    //Дежурная смена УКС ДЧС г.Алматы КЧС МВД РК
     private function addDutyPersonsTable(Section $section)
     {
         $cellRowSpan = ['vMerge' => 'restart', 'textDirection' => Cell::TEXT_DIR_BTLR, 'valign' => Jc::CENTER];
@@ -283,7 +283,7 @@ class FormationRecordWordExport
         $hcAlignStyle = ['align' => Jc::CENTER, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
         $section->addText(
-            'Дежурная смена УЕДДС ДЧС г.Алматы КЧС МВД РК',
+            'Дежурная смена УКС ДЧС г.Алматы КЧС МВД РК',
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
