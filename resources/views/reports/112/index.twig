@@ -39,7 +39,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_BRANCHES') %}
-                <b-tab-item label="Отчет 112 По происшествиям">
+                {#Отчет 112 По происшествиям#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.report112_emergency.tab_title') }}">
                     <report112-branches
                             :incident-types="{{ incident_types }}"
                             :emergency-names="{{ emergency_names }}"
@@ -49,14 +50,16 @@
             {% endif %}
 
             {% if user.hasRight('QUAKES_REPORT_SHOW') %}
-                <b-tab-item label="Случаи землетрясения">
+                {#Случаи землетрясения#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.quakes.tab_title') }}">
                     <report-quakes
                     ></report-quakes>
                 </b-tab-item>
             {% endif %}
 
             {% if user.hasRight('AVALANCHES_REPORT_SHOW') %}
-                <b-tab-item label="Сход лавин">
+                {#Сход лавин#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.avalanches.tab_title') }}">
                     <report-avalanches
                         :avalanche-types="{{ avalanche_types }}"
                     ></report-avalanches>
@@ -64,7 +67,8 @@
             {% endif %}
 
             {% if user.hasRight('ELEVATOR_REPORT_SHOW') %}
-                <b-tab-item label="Информация происшествия на лифтах">
+                {#Информация происшествия на лифтах#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.elevators.tab_title') }}">
                     <report-elevators
                         :elevator-emergency-types="{{ elevator_emergency_types }}"
                         :city-areas="{{ city_areas }}"

@@ -65,7 +65,7 @@ class AdminController extends AuthorizedController
             ->set('roles', $roles)
             ->set('service_types', $service_types)
             ->set('fire_departments', $fire_departments)
-            ->set('user', $user);
+            ->set('user_record', $user);
     }
 
     /**

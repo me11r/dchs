@@ -270,6 +270,9 @@ class CardController extends AuthorizedController
                 'fireDepartmentsInfo.liquidation_method',
                 'fireDepartmentsInfo.water_supply_source',
                 'hqRides',
+                'additional_plans.special_plan',
+                'additional_plans.special_plan.operational_plan',
+                'additional_plans.operational_card',
             ])
             ->findOrNew($card_id);
 
@@ -561,6 +564,8 @@ class CardController extends AuthorizedController
                 'notification_services',
                 'district_manager_id',
                 'time_retreat',
+                'additional_special_plans',
+                'additional_operational_cards',
                 '00:00', // дефолтное названия инпута из компонента timepicker
             ]);
             if(isset($data['custom_created_at'])) {
@@ -660,6 +665,9 @@ class CardController extends AuthorizedController
                 $back = "/card/add101/{$card->id}/{$card_type}";
             }
 
+            /*сохраняем доп. спец.планы и/или оперкарты (для учебных выездов)*/
+            $this->saveAdditionalPlans($request, $card);
+
             $this->saveReportIsk($card); //создаем "Отчет ИСК" по карточке, если еще не создан
 
         }
@@ -679,6 +687,27 @@ class CardController extends AuthorizedController
         }
 
         return redirect($back)->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
+    }
+
+    private function saveAdditionalPlans(Request $request, $card)
+    {
+        $card->additional_plans()->delete();
+
+        if ($additional_operational_cards = $request->additional_operational_cards) {
+            foreach ($additional_operational_cards as $additional_operational_card) {
+                if ($additional_operational_card) {
+                    $card->additional_plans()->create(['operational_card_id' => $additional_operational_card]);
+                }
+            }
+        }
+
+        if ($additional_special_plans = $request->additional_special_plans) {
+            foreach ($additional_special_plans as $additional_special_plan) {
+                if ($additional_special_plan) {
+                    $card->additional_plans()->create(['special_plan_id' => $additional_special_plan]);
+                }
+            }
+        }
     }
 
     private function saveReportIsk($ticket101)

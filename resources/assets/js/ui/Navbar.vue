@@ -310,7 +310,7 @@
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight(21,22)">
+                    v-if="hasAnyRight('CAN_ACCESS_INFO','CAN_ACCESS_OPER_INFO')">
                     <a class="navbar-link is-small"><i class="fas fa-info fa-fw"></i>&nbsp;Информация</a>
                     <div class="navbar-dropdown">
                         <a

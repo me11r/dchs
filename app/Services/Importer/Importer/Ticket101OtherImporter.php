@@ -44,7 +44,7 @@ class Ticket101OtherImporter implements ImporterInterface
         $this->items = [];
         $this->incorrectItems = [];
 
-        ChunkedImporter::create($filePath, range('A', 'J'))
+        ChunkedImporter::create($filePath, range('A', 'N'))
             ->each(function (Worksheet $sheet) {
                 $data = $this->get($sheet->toArray());
                 $this->save($data);
@@ -79,7 +79,7 @@ class Ticket101OtherImporter implements ImporterInterface
 
             $temp_item = array_slice($raw_datum, 0, 61);
 
-            $results = $this->parseTemplate(trim($temp_item[4])); // отделения
+            $results = trim($temp_item[4]) ? $this->parseTemplate(trim($temp_item[4])) : ['data' => null, 'type' => 'ok']; // отделения
 
             if ($results['type'] === 'error') {
                 $this->incorrectItems[] = [
@@ -98,8 +98,8 @@ class Ticket101OtherImporter implements ImporterInterface
             $changed_keys['custom_created_at'] = $this->parseDate(trim($temp_item[5])); //дата и время создания
             $changed_keys['time_begin'] = trim($temp_item[6]); //время начала
             $changed_keys['time_end'] = trim($temp_item[7]); //время окончания
-            $changed_keys['note'] = trim($temp_item[8]); //примечание
-            $changed_keys['hq_rides'] = trim($temp_item[9]) !== null ? $this->parseTemplate(trim($temp_item[9])) : null; //штабные машины
+            $changed_keys['note'] = trim($temp_item[12]); //примечание
+            $changed_keys['hq_rides'] = trim($temp_item[13]) !== null ? $this->parseTemplate(trim($temp_item[13])) : null; //штабные машины
 
             if ($changed_keys['hq_rides'] && $changed_keys['hq_rides']['type'] !== 'error') {
                 $changed_keys['hq_rides'] = $changed_keys['hq_rides']['data'];
@@ -119,6 +119,15 @@ class Ticket101OtherImporter implements ImporterInterface
             }
 
             $changed_keys['ride_type_id'] = RideType::name($changed_keys['ride_type_id'])->first()->id ?? null;
+
+            if(!$changed_keys['ride_type_id']) {
+                $this->incorrectItems[] = [
+                    'data' => trim($temp_item[1]) ." || ". implode(" ", $temp_item),
+                    'message' => "Не найден тип выезда: ".trim($temp_item[1]),
+                ];
+
+                continue;
+            }
 
             $this->find_formation_report($changed_keys);
             $this->find_tech($changed_keys);
@@ -236,29 +245,34 @@ class Ticket101OtherImporter implements ImporterInterface
     private function find_tech(&$changed_keys)
     {
         if($this->formation_report) {
-            foreach ($changed_keys['fire_department_results'] as $key => $fd_result) {
+            if ($changed_keys['fire_department_results']) {
+                foreach ($changed_keys['fire_department_results'] as $key => $fd_result) {
 
-                $fire_department = FireDepartment::title($fd_result['fire_department_id'])->first();
+                    $fire_department = FireDepartment::title($fd_result['fire_department_id'])->first();
 
-                if(($fd_result['tech_dept_number'] ?? null) !== null && $fd_result['tech_dept_number'] !== '') {
-                    $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department) {
-                        $q->where('form_id', $this->formation_report->id)
-                            ->where('dept_id', $fire_department->id ?? null);
-                    })->where('status', 'action')
-                        ->where('department',$fd_result['tech_dept_number'] ?? null)
-                        ->first();
+                    if(($fd_result['tech_dept_number'] ?? null) !== null && $fd_result['tech_dept_number'] !== '') {
+                        $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department) {
+                            $q->where('form_id', $this->formation_report->id)
+                                ->where('dept_id', $fire_department->id ?? null);
+                        })->where('status', 'action')
+                            ->where('department',$fd_result['tech_dept_number'] ?? null)
+                            ->first();
+                    }
+                    else {
+                        $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department)  {
+                            $q->where('form_id', $this->formation_report->id)
+                                ->where('dept_id', $fire_department->id ?? null);
+                        })->where('status', 'reserve')
+                            ->first();
+
+                        $changed_keys['fire_department_results'][$key]['promoted_department'] = rand(1,9);
+                        $changed_keys['fire_department_results'][$key]['promoted_at'] = $changed_keys['custom_created_at'];
+                    }
+
+                    $changed_keys['fire_department_results'][$key]['tech_id'] = $formationTechItem->id ?? null;
+                    $changed_keys['fire_department_results'][$key]['fire_department_id'] = $fire_department->id ?? null;
+                    $changed_keys['fire_department_results'][$key]['ticket101_other_id'] = null;
                 }
-                else {
-                    $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department)  {
-                        $q->where('form_id', $this->formation_report->id)
-                            ->where('dept_id', $fire_department->id ?? null);
-                    })->where('status', 'reserve')
-                        ->first();
-                }
-
-                $changed_keys['fire_department_results'][$key]['tech_id'] = $formationTechItem->id ?? null;
-                $changed_keys['fire_department_results'][$key]['fire_department_id'] = $fire_department->id ?? null;
-                $changed_keys['fire_department_results'][$key]['ticket101_other_id'] = null;
             }
 
             if ($changed_keys['hq_rides']) {
@@ -313,7 +327,7 @@ class Ticket101OtherImporter implements ImporterInterface
 
                         $rideType = $ticket->ride_type->name ?? null;
 
-                        $errorString = "{$card['direction']} {$rideType} " . implode(' ', $fire_department_result);
+                        $errorString = Carbon::parse($card['custom_created_at'])->format('d-m-Y H:i')." | {$card['direction']} | {$rideType} |" . json_encode($fire_department_result);
 
                         if (!$fire_department_result['fire_department_id']) {
 
@@ -349,6 +363,8 @@ class Ticket101OtherImporter implements ImporterInterface
                         $ticket->results()->create([
                             'tech_id' => @$fire_department_result['tech_id'],
                             'fire_department_id' => @$fire_department_result['fire_department_id'],
+                            'promoted_department' => @$fire_department_result['promoted_department'],
+                            'promoted_at' => @$fire_department_result['promoted_at'],
                             'out_time' => @$fire_department_result['out_time'],
                             'ret_time' => @$fire_department_result['ret_time'],
                             'dispatch_time' => @$fire_department_result['out_time'],
