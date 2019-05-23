@@ -84,7 +84,7 @@ class FormationTechItem extends Model
 
     public function vehicle()
     {
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsTo(Vehicle::class, 'vehicle_id')->withTrashed();
     }
 
     public function vehicle_status()

@@ -553,6 +553,7 @@ class Ticket101WordExport
                         if ($sectionName == 'vacation') {
                             if (count($persons['vacation'])) {
                                 $prefix = 'Трудовой-';
+                                $peopleByComma = count($persons['vacation']) ? implode(', ', array_unique($persons['vacation'])) : '-';
                                 $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
                                 $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
                             }
@@ -560,6 +561,7 @@ class Ticket101WordExport
                                 $prefix = 'Учебный-';
                                 $textRun = $section->addTextRun(['indentation' => ['left' => 1430]]);
                                 $textRun->addText($prefix, $generalBoldFontStyle, self::$noPaddingPS);
+                                $peopleByComma = count($persons['study']) ? implode(', ', array_unique($persons['study'])) : '-';
                                 $textRun->addText($peopleByComma, $generalFontStyle, self::$noPaddingPS);
                             }
                             if (count($persons['maternity'])) {
