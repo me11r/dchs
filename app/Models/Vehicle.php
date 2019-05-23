@@ -5,6 +5,7 @@ namespace App\Models;
 use App\FireDepartment;
 use App\VehicleClass;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Vehicle
@@ -41,6 +42,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Vehicle extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'number',
