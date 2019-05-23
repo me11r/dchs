@@ -404,15 +404,33 @@ class DailyWordExport
 
                 foreach ($ticketsWithDrillType as $drillTicket) {
 
-                    $drillResults = $drillTicket->results()->whereNotNull('dispatch_time')->get();
+                    $drillResults = $drillTicket
+                        ->results()
+                        ->whereNotNull('dispatch_time')
+                        ->get()
+                        ->groupBy('department.title');
 
-                    foreach ($drillResults as $drillResult) {
+
+                    $drillResultsMapped = [];
+                    /*ПЧ-1:(1,4)*/
+                    foreach ($drillResults as $fireDeptTitle => $drillResult) {
+                        $drillResultsMapped[$fireDeptTitle] = "{$fireDeptTitle}:(";
+                        foreach ($drillResult as $drill_key => $d) {
+                            $drillResultsMapped[$fireDeptTitle] .= $d['dept_number'];
+                            $drillResultsMapped[$fireDeptTitle] .= ++$drill_key != $drillResult->count() ? ',' : '';
+
+                        }
+                        $drillResultsMapped[$fireDeptTitle] .= ")";
+                    }
+
+                    foreach ($drillResultsMapped as $drillResult) {
                         $textRun = $section->addTextRun(self::$noPaddingPS);
                         //{ПЧ:3} {время} {адрес} {Корректировка по улицам - если не пустое} {дополнительные ОП/ОК}
 
                         //1.ПЧ-3:2
                         $textRun->addText(
-                            ($counterDepts) . '. ' . ($drillResult['department'] ? ($drillResult['department']['title'].":".$drillResult['dept_number']) : '') . ' ',
+//                            ($counterDepts) . '. ' . ($drillResult['department'] ? ($drillResult['department']['title'].":".$drillResult['dept_number']) : '') . ' ',
+                            ($counterDepts) . '. ' . $drillResult . ' ',
                             $generalBoldFontStyle,
                             ['align' => Jc::BOTH]
                         );

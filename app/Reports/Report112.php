@@ -196,7 +196,7 @@ class Report112
             'hospitalizedCount' => $cards101->sum('hospitalized_count'),
             'header_person' => DailyReportPerson::where('type', 'header')->where('report_type', '112_daily')->first(),
             'footer_persons' => OperDutyShiftStaff::whereHas('shifts', function ($q) {
-                $q->where('date', today())
+                $q->where('date', Carbon::parse($this->today)->format('Y-m-d'))
                     ->where('rank','duty_officer')
                 ;
             })->get()
