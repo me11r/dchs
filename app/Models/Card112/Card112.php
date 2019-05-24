@@ -12,6 +12,7 @@ use App\EmergencyName;
 use App\EmergencyType;
 use App\FloodingPlace;
 use App\FloodingReason;
+use App\IncidentPlace;
 use App\Models\BaseModel;
 use App\Models\IncidentType;
 use App\Models\Notification\Notification;
@@ -138,7 +139,7 @@ class Card112 extends BaseModel
         'saved',
         'saved_animals',
         'incident_place',
-        'additional_incident_place',
+        'additional_incident_place_id',
         'reason',
         'chronology_start_time',
         'chronology_end_time',
@@ -168,34 +169,60 @@ class Card112 extends BaseModel
         return $this->hasOne(Street::class, 'id', 'street_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function disease_type()
     {
         return $this->belongsTo(DiseaseType::class, 'disease_type_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function branch_fall_reason()
     {
         return $this->belongsTo(BranchFallReason::class, 'branch_fall_reason_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function avalanche_type()
     {
         return $this->belongsTo(AvalancheType::class, 'avalanche_type_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function elevator_emergency_type()
     {
         return $this->belongsTo(ElevatorEmergencyType::class, 'elevator_emergency_type_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function flooding_place()
     {
         return $this->belongsTo(FloodingPlace::class, 'flooding_place_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function flooding_reason()
     {
         return $this->belongsTo(FloodingReason::class, 'flooding_reason_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function additional_incident_place()
+    {
+        return $this->belongsTo(IncidentPlace::class, 'additional_incident_place_id');
     }
 
     /**

@@ -24,6 +24,21 @@
                         </select>
                     </div>
                     <div class="field">
+                        <label for="reason">{{ 'incident_place'|trans }}</label><!--Место происшествия-->
+                        <select
+                            v-model="incident_place_id"
+                            class="select"
+                            name="incident_place_id"
+                            id="incident_place_id">
+                            <option value=""></option>
+                            <option
+                                v-for="item in incidentPlaces"
+                                :value="item.id"
+                                :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
                         <label for="emergencyNameId">{{ '/reports/analytics101.tabs.emergency_situations.emergency_name'|trans }}</label><!--Название ЧС-->
                         <select
                                 class="select"
@@ -213,6 +228,10 @@ export default {
             type: Array,
             default: () => {}
         },
+        incidentPlaces: {
+            type: Array,
+            default: () => {}
+        },
         cityAreas: {
             type: Array,
             default: () => {}
@@ -254,6 +273,7 @@ export default {
             date_begin_: new Date("01/01/2019"),
             date_end_: new Date,
             incident_type_id: '',
+            incident_place_id: '',
             emergencyNameId: null,
             cityAreaId: null,
             reasonFloodingId: null,
@@ -272,6 +292,7 @@ export default {
                 'date_end': moment(this.date_end_).format('YYYY-MM-DD'),
                 'incident_type_id': this.incident_type_id,
                 'emergency_name_id': this.emergencyNameId,
+                'incident_place_id': this.incident_place_id,
                 'city_area_id': this.cityAreaId,
                 'addressSearch': this.addressSearch,
                 'report_type': this.getReportType,
@@ -289,6 +310,7 @@ export default {
                 '?date_start=' + moment(this.date_begin_).format('YYYY-MM-DD') +
                 '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
                 '&incident_type_id=' + this.incident_type_id +
+                '&incident_place_id=' + this.incident_place_id +
                 '&city_area_id=' + this.cityAreaId +
                 '&addressSearch=' + this.addressSearch +
                 '&report_type=' + this.getReportType +

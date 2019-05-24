@@ -12,6 +12,7 @@ use App\ElevatorEmergencyType;
 use App\EmergencyName;
 use App\FloodingPlace;
 use App\FloodingReason;
+use App\IncidentPlace;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
 use App\OperationalGroup;
@@ -100,6 +101,7 @@ class Analytics112Controller extends Controller
         $data['reasons_branches'] = BranchFallReason::all();
         $data['reasons_flooding'] = FloodingReason::all();
         $data['places_flooding'] = FloodingPlace::all();
+        $data['incident_places'] = IncidentPlace::all();
 
         $data['tripResults'] = TripResult::all();
         $data['og'] = OperDutyShift::all();

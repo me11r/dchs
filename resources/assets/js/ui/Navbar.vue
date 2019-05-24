@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <div
-                    v-if="hasAnyRight('CAN_ACCESS_MANUAL_INPUT_CHRONO','CAN_ACCESS_HYDRANT','CAN_ACCESS_TECH','CAN_ACCESS_PERSONS',29,30,'CAN_ACCESS_HYDRANT')"
+                    v-if="hasAnyRight('CAN_ACCESS_MANUAL_INPUT_CHRONO','CAN_ACCESS_HYDRANT','CAN_ACCESS_TECH','CAN_ACCESS_PERSONS',29,30,'CAN_ACCESS_HYDRANT','CAN_EDIT_CHECK_FD','CAN_CREATE_CHECK_FD')"
                     class="navbar-item has-dropdown is-hoverable is-small">
                     <a class="navbar-link is-small"><i class="fas fa-inbox fa-fw"></i>&nbsp;Ввод данных</a>
                     <div class="navbar-dropdown">
@@ -163,6 +163,7 @@
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
                             Пожарные части</a>
                         <a
+                            v-if="hasAnyRight('CAN_EDIT_CHECK_FD','CAN_CREATE_CHECK_FD')"
                             :href="getHref('/fire-department-checks')"
                             class="dropdown-item is-small"><i class="fas fa-check fa-fw"></i>&nbsp;
                             Проверка пожарных частей</a>

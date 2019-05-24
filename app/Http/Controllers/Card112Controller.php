@@ -13,6 +13,7 @@ use App\EmergencyType;
 use App\FloodingPlace;
 use App\FloodingReason;
 use App\Http\Resources\Card112\Card112Resource;
+use App\IncidentPlace;
 use App\Models\Card112\Card112;
 use App\Models\IncidentType;
 use App\Models\Notification\NotificationGroup;
@@ -125,6 +126,7 @@ class Card112Controller extends Controller
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('incidentPlaces', collect(IncidentPlace::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect($serviceTypes)->toArray())
             ->with('notificationGroups', (new NotificationGroup())->get())
             ->with('model', new Card112Resource(new Card112()))
@@ -196,6 +198,7 @@ class Card112Controller extends Controller
             ->with('streets', collect(Street::orderBy('name')->get(['id', 'name', 'city_area_id']))->toArray())
             ->with('cityAreas', collect(CityArea::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('incidentTypes', collect(IncidentType::orderBy('name')->get(['id', 'name']))->toArray())
+            ->with('incidentPlaces', collect(IncidentPlace::orderBy('name')->get(['id', 'name']))->toArray())
             ->with('serviceTypes', collect($serviceTypes->toArray()))
             ->with('service_plans', $ticket101_service_plans)
             ->with('notificationGroups', (new NotificationGroup())->get())

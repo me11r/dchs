@@ -145,6 +145,31 @@ class Ticket112BranchesWordExport
             ['align' => Jc::CENTER]
         );
         $section->addText('');
+
+        $section->addText(
+            $this->data['incident_places_count'],
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true, 'italic' => true],
+            ['align' => Jc::CENTER]
+        );
+        $section->addText('');
+
+        if ($this->data['flooding_places']) {
+            $section->addText(
+                $this->data['flooding_places'],
+                ['name' => 'Times New Roman', 'size' => 12, 'bold' => true, 'italic' => true],
+                ['align' => Jc::CENTER]
+            );
+            $section->addText('');
+        }
+
+        if ($this->data['flooding_reasons']) {
+            $section->addText(
+                $this->data['flooding_reasons'],
+                ['name' => 'Times New Roman', 'size' => 12, 'bold' => true, 'italic' => true],
+                ['align' => Jc::CENTER]
+            );
+            $section->addText('');
+        }
     }
 
     public function getWriter($name = 'Word2007')
