@@ -615,7 +615,7 @@ class ReportController extends AuthorizedController
 
         /*место происшествия*/
         $incidentPlacesCountArr = [];
-        $incidentPlacesCountStr = 'Место происшесвия: ';
+        $incidentPlacesCountStr = 'Место происшествия: ';
         foreach (IncidentPlace::all() as $i) {
 
             $incidentPlacesCountArr[$i->name] = (clone $cards)->get()->filter(function ($q) use ($i) {
@@ -718,7 +718,7 @@ class ReportController extends AuthorizedController
             /*место подтопления*/
             $activeSheet
                 ->getCell('C' . $rowIndex)
-                ->setValue($incidentPlacesCountStr)
+                ->setValue($floodingPlacesCountStr)
                 ->getStyle()
                 ->getFont()
                 ->setBold(true);
