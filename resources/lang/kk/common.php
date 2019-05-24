@@ -22,6 +22,7 @@ return array (
     'emergency_characteristics' => 'Характеристика происшествия',
     'role' => 'Роль',
     'year' => 'Год',
+    'incident_place' => 'Место происшествия',
     'print' => 'Печать',
     'clear' => 'Очистить',
     'report_date' => 'Дата отчета',

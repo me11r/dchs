@@ -54,7 +54,7 @@ class Card112Resource extends JsonResource
             'saved' => (int) $this->saved,
             'saved_animals' => (int) $this->saved_animals,
             'incident_place' => (string)$this->incident_place,
-            'additional_incident_place' => (string)$this->additional_incident_place,
+            'additional_incident_place_id' => (int)$this->additional_incident_place_id,
             'reason' => (string)$this->reason,
             'chronology_start_time' => Carbon::parse($this->chronology_start_time)->format('Y-m-d H:i:s'),
             'chronology_end_time' => Carbon::parse($this->chronology_end_time)->format('Y-m-d H:i:s'),

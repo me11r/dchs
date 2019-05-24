@@ -14,10 +14,12 @@ use App\Dictionary\TripResult;
 use App\DrillType;
 use App\Enums\ReportType;
 use App\FireDepartment;
+use App\FloodingPlace;
 use App\FloodingReason;
 use App\FormationDistrictManagerItem;
 use App\FormationReport;
 use App\FormationTechReport;
+use App\IncidentPlace;
 use App\Models\Card112\Card112;
 use App\Models\DailyReportPerson;
 use App\Models\EmergencySituation;
@@ -439,6 +441,7 @@ class ReportController extends AuthorizedController
         $reasonFloodingId = $request->reasonFloodingId === 'null' ? null : $request->reasonFloodingId;
         $address = $request->addressSearch === 'null' ? null : $request->addressSearch;
         $placeFloodingId = $request->placeFloodingId === 'null' ? null : $request->placeFloodingId;
+        $incident_place_id = $request->incident_place_id === 'null' ? null : $request->incident_place_id;
 
         $dateStartHuman = Carbon::parse($request->get('date_start'))->format('d.m.Y');
         $dateEndHuman = Carbon::parse($request->get('date_end'))->format('d.m.Y');
@@ -478,6 +481,7 @@ class ReportController extends AuthorizedController
             ->skipNullValue('flooding_reason_id',$reasonFloodingId)
             ->skipNullValue('flooding_place_id',$placeFloodingId)
             ->skipNullValue('city_area_id',$cityAreaId)
+            ->skipNullValue('additional_incident_place_id',$incident_place_id)
             ->whereBetween('custom_created_at', [$dateStart,$dateEnd])
             ->orderBy('custom_created_at')
             ->with(['cityArea', 'flooding_place', 'flooding_reason']);
@@ -500,7 +504,7 @@ class ReportController extends AuthorizedController
                     'Кол-во проживающих' => $card->living_count ?? 0,
                     'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
                     'Происшествие' => $card->additionalIncident->name ?? null,
-                    'Место происшествия' => $card->incident_place,
+                    'Место происшествия' => $card->additional_incident_place->name ?? null,
                     'Причина' => $card->branch_fall_reason->name ?? null,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
                     'Принятые меры' => $card->measures,
@@ -539,7 +543,7 @@ class ReportController extends AuthorizedController
                     'Кол-во проживающих' => $card->living_count,
                     'Дата происшествия' => Carbon::parse($card->custom_created_at)->format('d.m.Y'),
                     'Происшествие' => $card->additionalIncident->name ?? null,
-                    'Место происшествия' => $card->incident_place,
+                    'Место происшествия' => $card->additional_incident_place->name ?? null,
                     'Причина' => $card->reason,
                     'Пострадавшие / погибшие' => $card->injured . ' / ' . $card->dead,
                     'Принятые меры' => $card->measures,
@@ -609,12 +613,51 @@ class ReportController extends AuthorizedController
             $title = "Информация {$specific} по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
         }
 
-        $footer = "Всего на номер «112» поступило {$cards->count()} сообщений о происшествиях";
-//        $title = $incident_type_id;
+        /*место происшествия*/
+        $incidentPlacesCountArr = [];
+        $incidentPlacesCountStr = 'Место происшесвия: ';
+        foreach (IncidentPlace::all() as $i) {
 
+            $incidentPlacesCountArr[$i->name] = (clone $cards)->get()->filter(function ($q) use ($i) {
+                return $q->additional_incident_place_id === $i->id;
+            })->count();
+
+            if($incidentPlacesCountArr[$i->name] !== 0) {
+                $incidentPlacesCountStr .= "$i->name – {$incidentPlacesCountArr[$i->name]}; ";
+            }
+        }
+
+        /*причина подтопления*/
+        $floodingReasonsCountArr = [];
+        $floodingReasonsCountStr = 'Причина подтопления: ';
+        foreach (FloodingReason::all() as $floodingReason) {
+
+            $floodingReasonsCountArr[$floodingReason->name] = (clone $cards)->get()->filter(function ($q) use ($floodingReason) {
+                return $q->flooding_reason_id === $floodingReason->id;
+            })->count();
+
+            if($floodingReasonsCountArr[$floodingReason->name] !== 0) {
+                $floodingReasonsCountStr .= "$floodingReason->name – {$floodingReasonsCountArr[$floodingReason->name]} случаев(-ай); ";
+            }
+        }
+
+        /*место подтопления*/
+        $floodingPlacesCountArr = [];
+        $floodingPlacesCountStr = 'Место подтопления: ';
+        foreach (FloodingPlace::all() as $i) {
+
+            $floodingPlacesCountArr[$i->name] = (clone $cards)->get()->filter(function ($q) use ($i) {
+                return $q->flooding_place_id === $i->id;
+            })->count();
+
+            if($floodingPlacesCountArr[$i->name] !== 0) {
+                $floodingPlacesCountStr .= "$i->name – {$floodingPlacesCountArr[$i->name]} случаев(-ай); ";
+            }
+        }
+
+        $footer = "Всего на номер «112» поступило {$cards->count()} сообщений о происшествиях";
 
         if ($request->download === 'docx') {
-
 
             $wordReport = new Ticket112BranchesWordExport(
                 [
@@ -622,9 +665,12 @@ class ReportController extends AuthorizedController
                     'total' => $total,
                     'totalInjured' => $deadInjured,
                     'dateFrom' => $dateStartHuman,
+                    'flooding_reasons' => $incidentType->name === 'Подтопления' ? $floodingReasonsCountStr : null,
+                    'flooding_places' => $incidentType->name === 'Подтопления' ? $floodingPlacesCountStr : null,
                     'dateTo' => $dateEndHuman,
                     'title' => $title,
                     'footer' => $footer,
+                    'incident_places_count' => $incidentPlacesCountStr,
                 ]);
 
             $writer = $wordReport->getWriter('Word2007');
@@ -641,18 +687,7 @@ class ReportController extends AuthorizedController
         $activeSheet = $spreadsheet->getActiveSheet();
 
         if($incidentType->name === 'Подтопления') {
-            $floodingReasonsCountArr = [];
-            $floodingReasonsCountStr = '';
-            foreach (FloodingReason::all() as $floodingReason) {
 
-                $floodingReasonsCountArr[$floodingReason->name] = (clone $cards)->get()->filter(function ($q) use ($floodingReason) {
-                    return $q->flooding_reason_id === $floodingReason->id;
-                })->count();
-
-                if($floodingReasonsCountArr[$floodingReason->name] !== 0) {
-                    $floodingReasonsCountStr .= "$floodingReason->name – {$floodingReasonsCountArr[$floodingReason->name]} случаев(-ай); ";
-                }
-            }
             $activeSheet
                 ->getCell('D' . $rowIndex)
                 ->setValue("Информация")
@@ -674,6 +709,16 @@ class ReportController extends AuthorizedController
             $activeSheet
                 ->getCell('C' . $rowIndex)
                 ->setValue("зафиксировано {$cards->count()} случаев подтоплений участков, из них: {$floodingReasonsCountStr}. ")
+                ->getStyle()
+                ->getFont()
+                ->setBold(true);
+
+            $rowIndex++;
+
+            /*место подтопления*/
+            $activeSheet
+                ->getCell('C' . $rowIndex)
+                ->setValue($incidentPlacesCountStr)
                 ->getStyle()
                 ->getFont()
                 ->setBold(true);
@@ -759,18 +804,21 @@ class ReportController extends AuthorizedController
             $writer->save('php://output');
         }
 
-        #$title = "Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
-
-        /*if ($incidentType->name === 'Падение веток и деревьев') {
-
-            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr}";
-        }*/
-
         $activeSheet
             ->getCell('C' . $rowIndex)
             ->setValue($title)
             ->getStyle()
             ->getFont()
+            ->setBold(true);
+
+        $rowIndex++;
+
+        $activeSheet
+            ->getCell('C' . $rowIndex)
+            ->setValue($incidentPlacesCountStr)
+            ->getStyle()
+            ->getFont()
+            ->setItalic(true)
             ->setBold(true);
 
         $rowIndex += 3;

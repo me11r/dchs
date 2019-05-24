@@ -28,9 +28,9 @@
                             v-model="person_id"
                             id="staff">
                             <option
-                                v-for="person in orderedStaff"
+                                v-for="person, key in orderedStaff"
                                 :value="person.id"
-                                :key="`staff_${person.name}`">{{ person.name }}
+                                :key="`staff_${person.name}_${key}`">{{ person.name }}
                             </option>
                         </select>
                     </div>
