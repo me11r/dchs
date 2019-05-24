@@ -188,7 +188,15 @@ class Daily112WordExport
 
         $this->addParagraph($section, '- АГЭУ ГУ «Казселезащита: ', $this->data['mudflow_emergency_count'] ? $this->data['mudflow_emergency_count'] : 'не зарегистрировано', ['indentation' => ['left' => 540]]);
         $this->addParagraph($section, '3. Системы жизнеобеспечения города: ', 'не зарегистрировано');
+
         $this->addParagraph($section, '4. Подтопления: ', $this->data['flooding_count']);
+        $cardIndex = 1;
+        foreach ($this->data['cards112'] as $card) {
+            if ($card->additional_incident_type_id == 36) { //нас интересуют только подтопления
+                $this->addParagraph($section, $cardIndex++.". ", $card->analytics, ['indentation' => ['left' => 540]]);
+                $this->addParagraph($section, "",'');
+            }
+        }
 
         $index = 5;
         $subIndex = 1;
@@ -198,14 +206,17 @@ class Daily112WordExport
             $index++;
         }
 
+        $this->addParagraph($section, "$index. Отработано всего выездов Службой Спасения г. Алматы – ", $this->data['cards112']->count());
+        $index++;
+
         $this->addParagraph($section, "{$index}. По основной деятельности «112»: ", (!$this->data['cards112']->count() ? 'не зарегистрировано': ''));
 
+        $cardIndex = 1;
         foreach ($this->data['cards112'] as $card) {
-            $section->addText(
-                $card->analytics,
-                $simpleFontStyle,
-                ['align' => Jc::BOTH]
-            );
+            if ($card->additional_incident_type_id !== 36) { //игнорим подтопления, т.к. показываем их выше
+                $this->addParagraph($section, $cardIndex++.". ", $card->analytics, ['indentation' => ['left' => 540]]);
+                $this->addParagraph($section, "",'');
+            }
         }
 
         //11 пункт
@@ -304,7 +315,6 @@ class Daily112WordExport
 
         $this->addParagraph($section, "{$index}. ГУ «СП и АСР»: ", $guSpiasrString);
 
-
         $index++;
 
         $this->addParagraph($section, "{$index}. УКС: Всего поступивших звонков на «112» - ", ($this->data['call_info']->count_112 ?? 0). ", «101» - ".($this->data['call_info']->count_101 ?? 0) . ", «109» - ".($this->data['call_info']->count_109 ?? 0));
@@ -324,8 +334,7 @@ class Daily112WordExport
         $this->addParagraph($section, "$index. Казавиаспас: в аэропорту Боролдай в режиме дежурства: ", $strAircraft);
         $index++;
 
-        $this->addParagraph($section, "$index. Отработано всего выездов Службой Спасения г. Алматы – ", $this->data['cards112']->count());
-        $index++;
+
 
         if ($this->data['siren_speech_tech']) {
             $this->data['siren_speech_tech']->total = $this->data['siren_speech_tech']->total ? $this->data['siren_speech_tech']->total : 0;
