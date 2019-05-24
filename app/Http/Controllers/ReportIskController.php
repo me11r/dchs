@@ -19,6 +19,7 @@ class ReportIskController extends Controller
                 $q->whereIn('emergency_code', [115,116]);
             })
             ->with('ticket_101');
+
         $data['date_from'] = $request->input('date_from', Carbon::create('2019', '01', '01')->format('Y-m-d'));
         $data['date_to'] = $request->input('date_to', null);
         $data['city_areas'] = CityArea::all();
@@ -64,7 +65,9 @@ class ReportIskController extends Controller
 
 
         $data['per_page'] = $request->input('per_page', 20);
-        $data['records'] = $records->paginate($data['per_page']);
+        $data['records'] = $records
+            ->orderBy('created_at', 'desc')
+            ->paginate($data['per_page']);
         return view('reports.isk.index', $data);
     }
 

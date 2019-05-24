@@ -353,6 +353,20 @@
                                 </div>
                                 <br>
 
+                                <div
+                                        class="control"
+                                        style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                    <div
+                                            class="control"
+                                            style="width: 50%; padding: 0 6px 0 0; margin-right: 5px;">
+                                        <p class="control">
+                                            <label for="incident_type_text">Место происшествия</label>
+                                        </p>
+                                        <input disabled type="text" class="input" v-model="model.incident_place">
+                                    </div>
+                                </div>
+                                <br>
+
                                 <h5 class="subtitle">Информация с места происшествия:</h5>
                                 <!--УТОЧНЕННЫЙ АДРЕС-->
                                 <div class="field">
@@ -433,14 +447,20 @@
                                     <!--МЕСТО ПРОИСШЕСТВИЯ-->
                                     <div class="control is-expanded">
                                         <p class="control">
-                                            <label for="additional_incident_place">Место происшествия</label>
+                                            <label for="additional_incident_place_id">Место происшествия</label>
                                         </p>
-                                        <input
-                                                type="text"
-                                                class="input"
-                                                name="additional_incident_place"
-                                                id="additional_incident_place"
-                                                v-model="model.additional_incident_place">
+                                        <div class="select">
+                                            <select
+                                                    id="additional_incident_place_id"
+                                                    name="additional_incident_place_id"
+                                                    v-model="model.additional_incident_place_id">
+                                                <option
+                                                        v-for="incidentPlace in incidentPlaces"
+                                                        :key="incidentPlace.id"
+                                                        :value="incidentPlace.id">{{ incidentPlace.name }}
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1008,6 +1028,7 @@ export default {
             time: new Date(),
             streets: [],
             incidentTypes: [],
+            incidentPlaces: [],
             emergencyNames: [],
             serviceTypes: [],
             cityAreas: [],
@@ -1265,6 +1286,7 @@ export default {
                 this.cityAreas = window.card112FormData.cityAreas;
                 this.emergencyTypes = window.card112FormData.emergencyTypes;
                 this.incidentTypes = window.card112FormData.incidentTypes;
+                this.incidentPlaces = window.card112FormData.incidentPlaces;
                 this.serviceTypes = window.card112FormData.serviceTypes;
                 this.emergencyNames = window.card112FormData.emergencyNames;
                 this.method = window.card112FormData.method;
