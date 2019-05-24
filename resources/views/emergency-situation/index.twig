@@ -27,7 +27,7 @@
             </thead>
             {% for item in items %}
                 <tr>
-                    <td>{{ item.date|date('Y-m-d') }} {{ item.time }}</td>
+                    <td>{{ item.date|date('d-m-Y') }} {{ item.time }}</td>
                     <td>{{ item.user.service_type.name|default('') }}</td>
                     <td>{{ item.location }}</td>
                     <td>{{ item.size }}</td>
