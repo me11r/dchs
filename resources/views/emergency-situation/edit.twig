@@ -188,6 +188,24 @@
                         </div>
 
                     </div>
+                    {% if user.hasRight('CAN_SEND_EMERGENCY_SITUATION_NOTIFICATION_101') %}
+                        <div class="columns">
+                            <div class="column">
+                                <label>
+                                    <input type="checkbox" name="notification_101" {{ item.notification_101 ? 'checked' : '' }} value="1">&nbsp;<b>Отправить уведомление диспетчеру 101</b>
+                                </label>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if user.hasRight('CAN_SEND_EMERGENCY_SITUATION_NOTIFICATION_112') %}
+                        <div class="columns">
+                            <div class="column">
+                                <label>
+                                    <input type="checkbox" name="notification_112" {{ item.notification_112 ? 'checked' : '' }} value="1">&nbsp;<b>Отправить уведомление диспетчеру 112</b>
+                                </label>
+                            </div>
+                        </div>
+                    {% endif %}
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить

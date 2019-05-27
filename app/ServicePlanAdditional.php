@@ -20,6 +20,8 @@ class ServicePlanAdditional extends Model
         'evacuated',
         'saved',
         'service_plan_id',
+        'notification_101',
+        'notification_112',
     ];
 
     public function getDateAttribute()

@@ -110,6 +110,21 @@
 
                 </div>
 
+                <div class="columns" v-if="record.ticket">
+                    <div class="column">
+                        <b-checkbox v-model="model.notification_101">
+                            Отправить уведомление диспетчеру 101
+                        </b-checkbox>
+                    </div>
+                </div>
+                <div class="columns" v-if="record.ticket112">
+                    <div class="column">
+                        <b-checkbox v-model="model.notification_112">
+                            Отправить уведомление диспетчеру 112
+                        </b-checkbox>
+                    </div>
+                </div>
+
                 <div class="buttons has-text-right is-grouped is-right" style="">
                     <button @click.prevent="saveModel" type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
                     </button>
@@ -143,6 +158,8 @@
                     poisoned: null,
                     saved: null,
                     saved_animals: null,
+                    notification_101: 0,
+                    notification_112: 0,
                     date_time: window.moment(this.record.dispatched_time).toDate(),
                 },
                 csrf: window.token,
@@ -152,6 +169,8 @@
             saveModel() {
                 let clonedModel = window._.clone(this.model);
                 clonedModel.date_time = window.moment(clonedModel.date_time).format('YYYY-MM-DD HH:mm');
+                clonedModel.notification_101 = clonedModel.notification_101 ? 1 : 0;
+                clonedModel.notification_112 = clonedModel.notification_112 ? 1 : 0;
 
                 window.axios.post(`/service-plans/additional/${this.record.id}`, clonedModel)
                     .then((r) => {
@@ -160,6 +179,10 @@
             }
         },
         mounted() {
+            if (this.record.service_plan_additional) {
+                this.record.service_plan_additional.notification_112 = this.record.service_plan_additional.notification_112 === 0 ? false : true;
+                this.record.service_plan_additional.notification_101 = this.record.service_plan_additional.notification_101 === 0 ? false : true;
+            }
         }
     }
 </script>

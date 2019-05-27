@@ -106,8 +106,6 @@ class AdminController extends AuthorizedController
         }
         $user->save();
 
-//        $user->rights()->sync(array_values($request->input('role', [])));
-
         return redirect('admin/users')->with('_message', ['type' => 'success', 'text' => 'Пользователь успешно сохранен в системе']);
     }
 
@@ -149,7 +147,7 @@ class AdminController extends AuthorizedController
             return redirect()->back()->with('_message', ['type' => 'danger', 'text' => 'Только администратор может пользоватся этой функцией']);
         }
         $user = User::findOrFail($user_id);
-        $this->set('user', $user);
+        $this->set('record', $user);
     }
 
     public function postImpersonate($user_id)
