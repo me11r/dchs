@@ -139,8 +139,7 @@ class Ticket112BranchesWordExport
     {
         // заголовок
         $section->addText(
-            $this->data['title']
-            . "{$this->data['dateFrom']} - {$this->data['dateTo']}",
+            $this->data['title'],
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
