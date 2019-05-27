@@ -583,9 +583,10 @@ class ReportController extends AuthorizedController
             return response()->json(['data' => $preparedToExport, 'total' => $total, 'totalInjured' => $deadInjured]);
         }
 
-        if($incidentType->name === 'Подтопления') {
-            $title = "Информация по категории '{$incidentType->name}'  по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
+        $title = "Информация по подтоплениям и падениям веток/деревьев c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}";
 
+        if($incidentType->name === 'Подтопления') {
+            $title = "Информация по подтоплениям и падениям веток/деревьев c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}";
         }
         elseif ($incidentType->name === 'Падение веток и деревьев') {
             $branchFallReasonsCountArr = [];
@@ -601,7 +602,7 @@ class ReportController extends AuthorizedController
                 }
             }
 
-            $title = "Информация по падению веток и деревьев в г. Алматы за период c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}, из них: {$branchFallReasonsCountStr}";
+            $title .= ", из них: {$branchFallReasonsCountStr}";
         }
         else {
             $specific = '';
