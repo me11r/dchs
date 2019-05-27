@@ -14,6 +14,17 @@
             </a>
         </div>
     </div>
+        <form action="">
+            <div class="control">
+                <p>Отправлены уведомления</p>
+                <select onchange="this.form.submit()" name="popup_notification" class="select control">
+                    <option value=""></option>
+                    {% for item in popup_notification_types %}
+                        <option {% if popup_notification is defined and popup_notification == item %} selected {% endif %} value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
     <div class="panel">
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
             <thead>
@@ -21,7 +32,7 @@
                 <th>Дата и время</th>
                 <th>Служба взаимодействия</th>
                 <th>Место происшествия</th>
-                <th>Характер и масштаб</th>
+                <th>Отправлено для: 101,112</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
@@ -30,7 +41,7 @@
                     <td>{{ item.date|date('d-m-Y') }} {{ item.time }}</td>
                     <td>{{ item.user.service_type.name|default('') }}</td>
                     <td>{{ item.location }}</td>
-                    <td>{{ item.size }}</td>
+                    <td>{{ item.notification_101 ? '101' : '' }} {{ item.notification_112 ? '112' : '' }}</td>
                     <td class="has-text-right">
                         <a href="/emergency-situation/{{ item.id }}/download"
                            class="button is-small is-success">

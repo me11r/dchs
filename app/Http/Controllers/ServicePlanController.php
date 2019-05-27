@@ -79,6 +79,14 @@ class ServicePlanController extends Controller
         ])
             ->findOrFail($id);
 
+        $dataToSend = [
+            'sender_id' => Auth::id(),
+            'message' => "Оперативная информация для службы {$record->service_type->name} изменена пользователем " . Auth::user()->name,
+            'url' => "/service-plans/additional/{$record->id}",
+            'is_viewed' => false,
+            'is_permanent' => false,
+        ];
+
         $all = $request->all();
 
         if ($record->service_plan_additional) {
@@ -86,6 +94,19 @@ class ServicePlanController extends Controller
         }
         else {
             $record->service_plan_additional()->create($all);
+        }
+
+        if ($request->notification_101 && $record->ticket && $record->ticket->created_by_user) {
+            $userCreatedCard = $record->ticket->created_by_user;
+            if ($userCreatedCard->hasRight(['CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_101'])) {
+                $userCreatedCard->popup_notifications_received()->create($dataToSend);
+            }
+        }
+        elseif ($request->notification_112 && $record->ticket112 && $record->ticket112->created_by_user) {
+            $userCreatedCard = $record->ticket112->created_by_user;
+            if ($userCreatedCard->hasRight(['CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_112'])) {
+                $userCreatedCard->popup_notifications_received()->create($dataToSend);
+            }
         }
 
         if ($request->ajax()) {
