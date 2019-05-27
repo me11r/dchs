@@ -18,6 +18,7 @@ use App\Models\IncidentType;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
 use App\Ticket101ServicePlan;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -159,7 +160,19 @@ class Card112 extends BaseModel
         'disease_type_id',
         'name_disease',
         'branch_fall_reason_id',
+        'created_by',
+        'changed_by',
     ];
+
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+    public function changed_by_user()
+    {
+        return $this->belongsTo(User::class,'changed_by');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

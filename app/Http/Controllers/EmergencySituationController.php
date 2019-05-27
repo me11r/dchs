@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Dictionary\CityArea;
 use App\Http\Resources\EmergencySituationResource;
 use App\Models\EmergencySituation;
+use App\PopupNotification;
 use App\Repositories\Contracts\EmergencySituationRepositoryInterface;
 use App\Right;
 use App\Services\ReportExport\EmergencySituationWordExport;
@@ -35,22 +36,38 @@ class EmergencySituationController extends Controller
     /**
      * @return string
      */
-    public function index()
+    public function index(Request $request)
     {
+        $popup_notification_types = [101, 112];
+
         if(Auth::user()->hasRight([Right::CAN_SEE_ALL_EMERGENCY_SITUATIONS])){
-            $items = $this->repository->with(['user', 'user.service_type'])->orderBy('id', 'DESC')->get();
+            $items = $this->repository->with(['user', 'user.service_type']);
         }
         else{
             $items = $this->repository->with(['user', 'user.service_type'])
                 ->whereHas('user.service_type', function ($q){
                     $q->where('id', Auth::user()->service_type_id);
-                })
-                ->orderBy('id', 'DESC')
-                ->get();
+                });
         }
+
+        $popupNotification = $request->popup_notification;
+
+        if ($popupNotification == 101) {
+            $items = $items->where('notification_101', true);
+        }
+
+        if ($popupNotification == 112) {
+            $items = $items->where('notification_112', true);
+        }
+
+
+        $items = $items->orderBy('id', 'DESC')
+            ->get();
 
         return View::make('emergency-situation.index')
             ->with('items', $items)
+            ->with('popup_notification', $popupNotification)
+            ->with('popup_notification_types', $popup_notification_types)
             ->render();
     }
 
@@ -65,6 +82,7 @@ class EmergencySituationController extends Controller
         return View::make('emergency-situation.edit')
             ->with('item', new EmergencySituation())
             ->with('title', 'Добавление оперативной информации')
+            ->with('user', Auth::user())
             ->render();
     }
 
@@ -78,12 +96,35 @@ class EmergencySituationController extends Controller
             $this->throwAccessDenied();
         }
         $all = $request->all();
+
+        $all['notification_101'] = $request->notification_101 ? 1 : 0;
+        $all['notification_112'] = $request->notification_112 ? 1 : 0;
+
         $all['user_id'] = Auth::id();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
         $all['date_time'] = "$date $time";
         unset($all['date'], $all['time']);
-        $this->repository->create($all);
+        $id = $this->repository->create($all)->id;
+
+        $serviceName = Auth::user()->service_type->name ?? null;
+
+        if ($request->notification_101) {
+            PopupNotification::sendAccordingToRight([
+                'sender_id' => $all['user_id'],
+                'message' => "Оперативная информация для службы {$serviceName} изменена пользователем ".Auth::user()->name,
+                'url' => "/emergency-situation/{$id}/edit",
+            ],['CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_101']);
+        }
+
+        if ($request->notification_112) {
+            PopupNotification::sendAccordingToRight([
+                'sender_id' => $all['user_id'],
+                'message' => "Оперативная информация для службы {$serviceName} изменена пользователем " . Auth::user()->name,
+                'url' => "/emergency-situation/{$id}/edit",
+            ], ['CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_112']);
+        }
+
         return redirect(route('emergency-situation.index'));
     }
 
@@ -116,6 +157,7 @@ class EmergencySituationController extends Controller
         return View::make('emergency-situation.edit')
             ->with('item', $this->repository->with(['user', 'user.service_type'])->find($id))
             ->with('title', 'Изменение оперативной информации')
+            ->with('user', Auth::user())
             ->render();
     }
 
@@ -129,12 +171,35 @@ class EmergencySituationController extends Controller
         if(!Auth::user()->hasRight(['CAN_EDIT_EMERGENCY_SITUATION'])){
             $this->throwAccessDenied();
         }
+
         $all = $request->all();
+
+        $all['notification_101'] = $request->notification_101 ? 1 : 0;
+        $all['notification_112'] = $request->notification_112 ? 1 : 0;
+
         $all['user_id'] = Auth::id();
         $date = $request->date ? Carbon::parse($request->date)->format('Y-m-d') : now()->format('Y-m-d');
         $time = $request->time ? Carbon::parse($request->time)->format('H:i:s') : now()->format('H:i:s');
         $all['date_time'] = "$date $time";
         unset($all['date'], $all['time']);
+
+        $serviceName = Auth::user()->service_type->name ?? null;
+
+        if ($request->notification_101) {
+            PopupNotification::sendAccordingToRight([
+                'sender_id' => $all['user_id'],
+                'message' => "Оперативная информация для службы {$serviceName} изменена пользователем ".Auth::user()->name,
+                'url' => "/emergency-situation/{$id}/edit",
+            ],['CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_101']);
+        }
+
+        if ($request->notification_112) {
+            PopupNotification::sendAccordingToRight([
+                'sender_id' => $all['user_id'],
+                'message' => "Оперативная информация для службы {$serviceName} изменена пользователем ".Auth::user()->name,
+                'url' => "/emergency-situation/{$id}/edit",
+            ],['CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_112']);
+        }
 
         $this->repository->update($all, $id);
         return redirect(route('emergency-situation.edit', $id));

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\AccessDeniedException;
+use App\Models\Card112\Card112;
 use App\Models\Messenger\Message;
 use App\Models\Salvage;
 use App\Models\ServiceType;
@@ -119,9 +120,34 @@ class User extends Authenticatable
         return $this->belongsToMany(\App\Right::class, 'user_rights');
     }
 
-    public function scopeCanLogin($q)
+    public function popup_notifications_sent()
     {
-        return $this->rights()->where('right_id', 1)->exists();
+        return $this->hasMany(PopupNotification::class, 'sender_id');
+    }
+
+    public function popup_notifications_received()
+    {
+        return $this->hasMany(PopupNotification::class, 'receiver_id');
+    }
+
+    public function cards101_created()
+    {
+        return $this->hasMany(Ticket101::class, 'created_by');
+    }
+
+    public function cards101_changed()
+    {
+        return $this->hasMany(Ticket101::class, 'changed_by');
+    }
+
+    public function cards112_created()
+    {
+        return $this->hasMany(Card112::class, 'created_by');
+    }
+
+    public function cards112_changed()
+    {
+        return $this->hasMany(Card112::class, 'changed_by');
     }
 
     public function messenger_rights()
@@ -142,6 +168,11 @@ class User extends Authenticatable
     public function scopeIsAdmin($q)
     {
         return $q->isRole('admin');
+    }
+
+    public function scopeCanLogin($q)
+    {
+        return $this->rights()->where('right_id', 1)->exists();
     }
 
     public function scopeIsRole($q, $role)

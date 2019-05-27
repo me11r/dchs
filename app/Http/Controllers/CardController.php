@@ -589,10 +589,15 @@ class CardController extends AuthorizedController
             /** @var Ticket101 $card */
             $card = Ticket101::findOrNew($card_id);/*при создании карточки единожды привязываемся к строевой записке, во избежание дублей высылки*/
             if (!$card->id) {
+                $data['created_by'] = Auth::id();
                 $data['formation_report_id'] = FormationReport::approved()
                     ->has('people_reports')
                     ->max('id');
             }
+            else {
+                $data['changed_by'] = Auth::id();
+            }
+
             $canEditTicket = $card->canEditTicket();
             if (!$canEditTicket && !Auth::user()->hasRight('CARD101_EDIT_CLOSED')) {
 

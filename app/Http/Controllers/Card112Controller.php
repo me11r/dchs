@@ -152,6 +152,9 @@ class Card112Controller extends Controller
             'notification_services',
             'custom_created_at',
         ]);
+
+        $req['created_by'] = Auth::id();
+
         $data = $this->repository->createFilledWithRelations($req);
 
         if ($index) {
@@ -221,6 +224,9 @@ class Card112Controller extends Controller
         $data = $request->except([
             'notification_services',
         ]);
+
+        $req['changed_by'] = Auth::id();
+
         $data['custom_created_at'] = isset($data['custom_created_at']) ? Carbon::parse($data['custom_created_at'])->format('Y-m-d H:i') : null;
         $this->repository->updateFilledWithRelations($data, $id);
         $this->repository->updateServicePlans($request->input('notification_services', []), $id);

@@ -727,6 +727,16 @@ class Ticket101 extends BaseModel
         return $this->hasMany(FireDepartmentResult::class, 'ticket101_id');
     }
 
+    public function created_by_user()
+    {
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+    public function changed_by_user()
+    {
+        return $this->belongsTo(User::class,'changed_by');
+    }
+
     public function water_supply_source()
     {
         return $this->belongsTo(WaterSupplySource::class, 'water_supply_source_id');
