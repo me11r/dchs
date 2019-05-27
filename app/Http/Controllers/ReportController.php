@@ -583,10 +583,10 @@ class ReportController extends AuthorizedController
             return response()->json(['data' => $preparedToExport, 'total' => $total, 'totalInjured' => $deadInjured]);
         }
 
-        $title = "Информация по подтоплениям и падениям веток/деревьев c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}";
+        $title = "Информация по подтоплениям и падениям веток/деревьев за период c {$dateStartHuman} по {$dateEndHuman} в г.Алматы, зафиксировано {$cards->count()}";
 
         if($incidentType->name === 'Подтопления') {
-            $title = "Информация по подтоплениям и падениям веток/деревьев c {$dateStartHuman}. по {$dateEndHuman}г., зафиксировано {$cards->count()}";
+            $title = "Информация по подтоплениям и падениям веток/деревьев за период c {$dateStartHuman} по {$dateEndHuman} в г.Алматы, зафиксировано {$cards->count()}";
         }
         elseif ($incidentType->name === 'Падение веток и деревьев') {
             $branchFallReasonsCountArr = [];
