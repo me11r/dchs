@@ -49,7 +49,7 @@ class PopupNotification extends Model
             if(count($except)) {
                 $q->whereNotIn('name', $except);
             }
-        });
+        })->get();
 
         $users->each(function ($user) use ($messageData) {
             $user->popup_notifications_received()->create([

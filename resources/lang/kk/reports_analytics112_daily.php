@@ -77,6 +77,8 @@ return array(
                 'absence_maternity' => 'Отсутствие: Декрет',
                 'absence_sick' => 'Отсутствие: Больничный',
                 'absence_business_trip' => 'Отсутствие: Командировка',
+                'begin' => 'Начало периода',
+                'end' => 'Конец периода',
             ],
         ],
     ],

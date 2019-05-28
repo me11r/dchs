@@ -4,25 +4,25 @@
             <div
                 class="box"
                 style="margin-top: 20px; min-height:1000px;">
-                <h4 class="title">Отчет по личному составу ДЧС</h4>
+                <h4 class="title">{{ '/reports/analytics101.tabs.staff.title'|trans }}</h4><!--Отчет по личному составу ДЧС-->
                 <div class="level">
                     <div class="level-right has-text-right">
                         <button
                                 class="button is-info "
-                                @click.prevent="post_data()"><i class="fas fa-search"></i>&nbsp;Поиск</button>
+                                @click.prevent="post_data()"><i class="fas fa-search"></i>&nbsp;{{ 'search'|trans }}</button><!--Поиск-->
                     </div>
 
                     <div class="level-right has-text-right">
                         <button
                             class="button is-primary "
-                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
+                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;{{ 'print'|trans }}</button><!--Печать-->
                     </div>
 
                 </div>
                 <br>
                 <form>
                     <div class="field">
-                        <label for="staff">Ф.И.О.</label>
+                        <label for="staff">{{ 'name_abbreviation'|trans }}</label><!--Ф.И.О.-->
                         <select
                             class="select"
                             v-model="person_id"
@@ -35,7 +35,7 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="staff">ОДС</label>
+                        <label for="staff">{{ 'ods'|trans }}</label><!--ОДС-->
                         <select
                             class="select"
                             v-model="ogId"
@@ -68,13 +68,13 @@
                     <table v-if="report_summary !== null" class="formation-record-table">
                         <thead>
                             <tr>
-                                <td>Выход на дежурство</td>
-                                <td>Отсутствие</td>
-                                <td>Отсутствие: Отпуск</td>
-                                <td>Отсутствие: Декрет</td>
-                                <td>Отсутствие: Больничный</td>
-                                <td>Отсутствие: Командировка</td>
-                                <td>ОДС</td>
+                                <td>{{ '/reports/analytics101.tabs.staff.shifts'|trans }}</td><!--Выход на дежурство-->
+                                <td>{{ '/reports/analytics101.tabs.staff.absence'|trans }}</td><!--Отсутствие-->
+                                <td>{{ '/reports/analytics101.tabs.staff.absence_vacation'|trans }}</td><!--Отсутствие: Отпуск-->
+                                <td>{{ '/reports/analytics101.tabs.staff.absence_maternity'|trans }}</td><!--Отсутствие: Декрет-->
+                                <td>{{ '/reports/analytics101.tabs.staff.absence_sick'|trans }}</td><!--Отсутствие: Больничный-->
+                                <td>{{ '/reports/analytics101.tabs.staff.absence_business_trip'|trans }}</td><!--Отсутствие: Командировка-->
+                                <td>{{ 'ods'|trans }}</td><!--ОДС-->
                             </tr>
                         </thead>
                         <tbody>
