@@ -5,7 +5,8 @@
         <b-tabs position="is-centered" class="block" id="other-rides-block">
 
             {% if user.hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_PERIOD') %}
-                <b-tab-item label="{{ t('/reports/analytics101.tabs.report_112_period.tab_title') }}">{#Отчет 112 за период#}
+                {#Отчет 112 за период#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.report_112_period.tab_title') }}">
                     <report112-emergency
                             :reasons="{{ incident_types }}"
                             :emergency-names="{{ emergency_names }}"
@@ -15,7 +16,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_BRANCHES') %}
-                <b-tab-item label="{{ t('/reports/analytics101.tabs.branches_fall.tab_title') }}">{#Подтопления / падения веток#}
+                {#Подтопления / падения веток#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.branches_fall.tab_title') }}">
                     <report112-branches
                             :incident-types="{{ branches }}"
                             :emergency-names="{{ emergency_names }}"
@@ -29,7 +31,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_112_EMERGENCY_REPORT') %}
-                <b-tab-item label="{{ t('/reports/analytics101.tabs.emergency_situations.tab_title') }}">{#Чрезвычайные ситуации#}
+                {#Чрезвычайные ситуации#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.emergency_situations.tab_title') }}">
                     <report-emergency-type-period
                             :incident-types="{{ incidentTypes }}"
                             :trip-results="{{ tripResults }}"
@@ -83,7 +86,8 @@
             {% endif %}
 
             {% if user.hasRight('DISEASE_REPORT_SHOW') %}
-                <b-tab-item label="Инфекционные заболевания">
+                {#Инфекционные заболевания#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.diseases.tab_title') }}">
                     <report-disease
                         :disease-types="{{ disease_types }}"
                     ></report-disease>
@@ -91,7 +95,8 @@
             {% endif %}
 
             {% if user.hasRight('STAFF_MANAGERS_ODS_REPORT_SHOW') %}
-                <b-tab-item label="Отчет по личному составу ДЧС">
+                {#Отчет по личному составу ДЧС#}
+                <b-tab-item label="{{ t('/reports/analytics101.tabs.staff.tab_title') }}">
                     <report-staff-managers-ods
                         :staff="{{ dchs_staff }}"
                         :og="{{ og }}"
