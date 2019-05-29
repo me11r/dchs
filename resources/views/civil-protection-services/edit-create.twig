@@ -1,0 +1,18 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section" id="vue">
+        <div class="level" style="margin-top: 20px">
+            <div class="level-left">
+                <h4 class="title">Службы гражданской защиты</h4>
+            </div>
+        </div>
+
+        <civil-protection-service-form
+            :record="{{ record }}"
+            :blocks="{{ blocks }}"
+        ></civil-protection-service-form>
+
+
+
+    </div>
+{% endblock content %}

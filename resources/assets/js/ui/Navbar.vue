@@ -311,7 +311,7 @@
                 </div>
                 <div
                     class="navbar-item has-dropdown is-hoverable is-small"
-                    v-if="hasAnyRight('CAN_ACCESS_INFO','CAN_ACCESS_OPER_INFO')">
+                    v-if="hasAnyRight('CAN_ACCESS_INFO','CAN_ACCESS_OPER_INFO','CAN_VIEW_CIVIL_PROTECTION_SERVICES')">
                     <a class="navbar-link is-small"><i class="fas fa-info fa-fw"></i>&nbsp;Информация</a>
                     <div class="navbar-dropdown">
                         <a
@@ -324,6 +324,11 @@
                             :href="getHref('/emergency-situation')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;
                             Оперативная информация</a>
+                        <a
+                            v-if="hasRight('CAN_VIEW_CIVIL_PROTECTION_SERVICES')"
+                            :href="getHref('/civil-protection-services')"
+                            class="dropdown-item is-small"><i class="fas fa-balance-scale fa-fw"></i>&nbsp;
+                            Службы гражданской защиты</a>
                     </div>
                 </div>
                 <div class="navbar-item has-dropdown is-hoverable is-small">

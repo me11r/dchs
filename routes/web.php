@@ -319,6 +319,15 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
         Route::resource('/nicknames', 'NicknameController');
         Route::resource('/information', 'InformationController');
 
+        Route::group(['prefix' => 'civil-protection-services', 'as' => 'civil-protection-services.'], function () {
+            Route::delete('delete/{id}', 'CivilProtectionServiceController@destroy')->name('delete')->middleware(['right:CAN_DELETE_CIVIL_PROTECTION_SERVICES']);
+            Route::get('/', 'CivilProtectionServiceController@index')->name('index')->middleware(['right:CAN_VIEW_CIVIL_PROTECTION_SERVICES']);
+            Route::get('{id}/edit', 'CivilProtectionServiceController@edit')->name('edit')->middleware(['right:CAN_EDIT_CIVIL_PROTECTION_SERVICES']);
+            Route::get('export/{id}', 'CivilProtectionServiceController@export')->name('export')->middleware(['right:CAN_VIEW_CIVIL_PROTECTION_SERVICES']);
+            Route::get('create', 'CivilProtectionServiceController@create')->name('create')->middleware(['right:CAN_CREATE_CIVIL_PROTECTION_SERVICES']);
+            Route::post('store', 'CivilProtectionServiceController@store')->name('store')->middleware(['right:CAN_EDIT_CIVIL_PROTECTION_SERVICES']);
+        });
+
         Route::get('/fire-department-checks/{date}', 'FireDepartmentCheckController@editByDay')
             ->name('fire-department-checks.edit-by-date')->where(['date' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']);
 
