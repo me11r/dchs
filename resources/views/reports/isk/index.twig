@@ -72,6 +72,7 @@
                         <td class="has-text-right">{{ record.ticket_101.custom_created_at|date('H:i d.m.Y') }}</td>
                         <td class="has-text-right">
                             <a href="/reports/isk/{{ record.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+                            <a href="/reports/isk/{{ record.ticket_101.id }}/export" class="button is-info is-small"><i class="fas fa-file-word"></i>&nbsp; doc</a>
                         </td>
                     </tr>
                 {% else %}
