@@ -84,8 +84,8 @@ class ReportCivilProtectionServicesWordExport
         foreach ($this->data['blocks'] as $block) {
             $row = $table->addRow();
             $fontStyle['bold'] = true;
-            $gripSpan = self::$noPaddingPS + ['gridSpan' => 6];
-            $this->addDataCellToRow($row, $block['name'], [], $fontStyle, $gripSpan);
+            $gridSpan = ['gridSpan' => 6];
+            $this->addDataCellToRow($row, $block['name'], $gridSpan, $fontStyle);
 
             foreach ($this->data['record']['items'] as $blockItem) {
 
@@ -94,12 +94,12 @@ class ReportCivilProtectionServicesWordExport
                     $table->addRow();
 
                     $fontStyle['bold'] = false;
-                    $table->addCell(500)->addText(htmlspecialchars($blockItem['position']),$fontStyleSimple);
-                    $table->addCell(500)->addText(htmlspecialchars($blockItem['name']),$fontStyleSimple);
-                    $table->addCell(500)->addText(htmlspecialchars($blockItem['contacts']),$fontStyleSimple);
-                    $table->addCell(500)->addText(htmlspecialchars($blockItem['inventory1']),$fontStyleSimple);
-                    $table->addCell(500)->addText(htmlspecialchars($blockItem['inventory2']),$fontStyleSimple);
-                    $table->addCell(500)->addText(htmlspecialchars($blockItem['inventory3']),$fontStyleSimple);
+                    $table->addCell(2000)->addText(htmlspecialchars($blockItem['position']),$fontStyleSimple);
+                    $table->addCell(2000)->addText(htmlspecialchars($blockItem['name']),$fontStyleSimple);
+                    $table->addCell(2000)->addText(htmlspecialchars($blockItem['contacts']),$fontStyleSimple);
+                    $table->addCell(2000)->addText(htmlspecialchars($blockItem['inventory1']),$fontStyleSimple);
+                    $table->addCell(2000)->addText(htmlspecialchars($blockItem['inventory2']),$fontStyleSimple);
+                    $table->addCell(1000)->addText(htmlspecialchars($blockItem['inventory3']),$fontStyleSimple);
 
                     $index++;
                 }
@@ -136,17 +136,12 @@ class ReportCivilProtectionServicesWordExport
 
         $table->addRow(500);
 
-        $table->addCell(2000, $cellRowSpan)->addText('Наименование', $hcFontStyle, ['align' => Jc::CENTER, 'gridSpan' => 3, 'valign' => Jc::CENTER, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]]);
-        $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowContinue);
-        $table->addCell(null, $cellRowContinue);
-
-        $table->addCell(500, $cellRowSpan)->addText('Мешкотара', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(500, $cellRowSpan)->addText('Песок и др.', $hcFontStyle, $hcAlignStyle);
-        $table->addCell(500, $cellRowSpan)->addText('Шанцевые инструменты', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(4000, ['gridSpan' => 3, 'align' => Jc::CENTER, 'valign' => Jc::CENTER])->addText('Наименование', $hcFontStyle, $hcAlignStyle);
 
 
-
+        $table->addCell(2000, $cellRowSpan)->addText('Мешкотара', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(2000, $cellRowSpan)->addText('Песок и др.', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(2000, $cellRowSpan)->addText('Шанцевые инструменты', $hcFontStyle, $hcAlignStyle);
     }
 
     private function addFirstPageTopData(Section $section)
@@ -169,7 +164,7 @@ class ReportCivilProtectionServicesWordExport
     private function getNewSection()
     {
         return $this->phpWord->addSection([
-//            'orientation' => 'landscape',
+            'orientation' => 'landscape',
             'marginLeft' => 500,
             'marginRight' => 500,
             'marginTop' => 500,
