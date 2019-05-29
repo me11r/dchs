@@ -223,6 +223,11 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 9, 'title' => 'Получать уведомления о заполнении оперативной информации (101)', 'name' => 'CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_101'];
         $rights[] = ['right_group_id' => 9, 'title' => 'Получать уведомления о заполнении оперативной информации (112)', 'name' => 'CAN_RECEIVE_EMERGENCY_SITUATION_NOTIFICATION_112'];
 
+        $rights[] = ['right_group_id' => 9, 'title' => 'Службы гражданской защиты:просмотр', 'name' => 'CAN_VIEW_CIVIL_PROTECTION_SERVICES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'Службы гражданской защиты:создание', 'name' => 'CAN_CREATE_CIVIL_PROTECTION_SERVICES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'Службы гражданской защиты:редактирование', 'name' => 'CAN_EDIT_CIVIL_PROTECTION_SERVICES'];
+        $rights[] = ['right_group_id' => 9, 'title' => 'Службы гражданской защиты:удаление', 'name' => 'CAN_DELETE_CIVIL_PROTECTION_SERVICES'];
+
         $rights[] = ['right_group_id' => 10, 'title' => 'Может инициировать массовую рассылку', 'name' => 'CAN_DO_MASS_SENDING'];
 
 
