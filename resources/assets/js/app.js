@@ -173,6 +173,7 @@ Vue.component('report-staff-managers-ods', require('./views/reports/emergency/Re
 Vue.component('fire-departments-map', require('./views/fire-departments/DepartmentsMap'));
 Vue.component('service-plans-additional', require('./views/service-plans/ServicePlanAdditional'));
 Vue.component('card101-additional-oc', require('./components/ticket101/AdditionalOC'));
+Vue.component('civil-protection-service-form', require('./views/civil-protection-services/CivilProtectionServiceForm'));
 
 // трекер яндекс-запросов
 globalBus.$on('api-map-request', (r) => {
