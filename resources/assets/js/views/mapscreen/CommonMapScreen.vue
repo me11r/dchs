@@ -157,7 +157,7 @@ export default {
             showHydrants: window.showHydrants,
             showDepartments: true,
             showDistricts: true,
-            showFds: true,
+            showFds: false,
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
             canEditAllHydrants: window.canEditAllHydrants,
