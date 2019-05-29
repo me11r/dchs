@@ -111,9 +111,9 @@
                         <td class="has-text-right">{{ ticket.emergency_type ? ticket.emergency_type.name : '' }}</td>
                         <td class="has-text-right">
                             <a href="/card/add101/{{ ticket.id }}/{{ type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
-                            {% if ticket.trip_result.emergency_code|default('') == 115 or ticket.trip_result.emergency_code|default('') == 116 %}
+                            {#{% if ticket.trip_result.emergency_code|default('') == 115 or ticket.trip_result.emergency_code|default('') == 116 %}
                                 <a href="/reports/isk/{{ ticket.id }}/export" class="button is-info is-small"><i class="fas fa-file-word"></i>&nbsp; doc</a>
-                            {% endif %}
+                            {% endif %}#}
 
                             <delete-card-btn :can-delete="{{ can_delete }}" :ticket="{{ ticket }}"></delete-card-btn>
                         </td>
