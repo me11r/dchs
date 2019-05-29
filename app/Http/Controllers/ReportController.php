@@ -583,12 +583,22 @@ class ReportController extends AuthorizedController
             return response()->json(['data' => $preparedToExport, 'total' => $total, 'totalInjured' => $deadInjured]);
         }
 
-        $title = "Информация по подтоплениям и падениям веток/деревьев за период c {$dateStartHuman} по {$dateEndHuman} в г.Алматы, зафиксировано {$cards->count()}";
 
-        if($incidentType->name === 'Подтопления') {
+
+        if ($request->report_type === 'branches') {
             $title = "Информация по подтоплениям и падениям веток/деревьев за период c {$dateStartHuman} по {$dateEndHuman} в г.Алматы, зафиксировано {$cards->count()}";
         }
-        elseif ($incidentType->name === 'Падение веток и деревьев') {
+        else {
+            $specific = '';
+
+            if ($incident_type_id) {
+                $specific = "по категории '{$incidentType->name}'";
+            }
+
+            $title = "Информация {$specific} по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
+        }
+
+        if ($incidentType->name === 'Падение веток и деревьев') {
             $branchFallReasonsCountArr = [];
             $branchFallReasonsCountStr = '';
             foreach (BranchFallReason::all() as $reason) {
@@ -603,15 +613,6 @@ class ReportController extends AuthorizedController
             }
 
             $title .= ", из них: {$branchFallReasonsCountStr}";
-        }
-        else {
-            $specific = '';
-
-            if ($incident_type_id) {
-                $specific = "по категории '{$incidentType->name}'";
-            }
-
-            $title = "Информация {$specific} по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
         }
 
         /*место происшествия*/
