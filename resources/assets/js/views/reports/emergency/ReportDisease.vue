@@ -2,8 +2,9 @@
     <div style="margin-top: 20px; min-height:1000px;">
         <h4
                 class="title"
-                style="padding: 3px 15px">Зафиксированные случаи инфекционного заболевания в г.Алматы
-            с {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/analytics101.tabs.diseases.title'|trans({date_from:dateFromFormatted, date_to:dateToFormatted}) }}
+            <!--Зафиксированные случаи инфекционного заболевания в г.Алматы
+            с {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
 
         <div class="panel">
@@ -33,7 +34,7 @@
                 <div class="level-right">
                     <div class="level-item">
                         <a :href="`/reports/112/disease?dateFrom=${dateFromFormattedSearch}&dateTo=${dateToFormattedSearch}&diseaseTypeId=${diseaseTypeId}`"
-                           class="button is-info">Сохранить в .DOCX</a>
+                           class="button is-info">{{ 'download_word'|trans }}</a><!--Сохранить в .DOCX-->
                     </div>
                 </div>
             </div>
@@ -41,7 +42,7 @@
             <div class="field">
                 <div class="control">
                     <div class="control">
-                        <p>Типы заболеваний</p>
+                        <p>{{ '/reports/analytics101.tabs.diseases.types'|trans}}</p><!--Типы заболеваний-->
                         <select class="control" id="diseaseTypeId" v-model="diseaseTypeId">
                             <option value=""></option>
                             <option v-for="type in diseaseTypes" :value="type.id">{{ type.name }}</option>
@@ -51,7 +52,7 @@
             </div>
 
             <div class="field">
-                <button class="button is-success" @click.prevent="changeDate">Поиск</button>
+                <button class="button is-success" @click.prevent="changeDate">{{ 'search'|trans }}</button><!--Поиск-->
             </div>
         </div>
 
@@ -59,14 +60,14 @@
             <table class="formation-record-table">
                 <thead>
                     <tr>
-                        <th>№ п/п ЧС</th>
-                        <th>Дата и время происшествия</th>
-                        <th>Тип инфекционного заболевания</th>
-                        <th>Ф.И.О</th>
-                        <th>Краткая характеристика происшествия</th>
-                        <th>Кол-во погибших</th>
-                        <th>Кол-во пострадавших</th>
-                        <th>Вид ЧС</th>
+                        <th>{{ 'number'|trans }}</th><!--№ п/п ЧС-->
+                        <th>{{ 'datetime'|trans }}</th><!--Дата и время происшествия-->
+                        <th>{{ '/reports/analytics101.tabs.diseases.type'|trans }}</th><!--Тип инфекционного заболевания-->
+                        <th>{{ 'name_abbreviation'|trans }}</th><!--Ф.И.О-->
+                        <th>{{ '/reports/analytics101.tabs.diseases.description'|trans }}</th><!---->
+                        <th>{{ 'dead'|trans }}</th><!---->
+                        <th>{{ 'injured'|trans }}</th><!--Кол-во пострадавших-->
+                        <th>{{ 'type'|trans }}</th><!--Вид ЧС-->
                     </tr>
                 </thead>
                 <tbody>

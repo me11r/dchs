@@ -429,7 +429,6 @@ class DailyWordExport
 
                         //1.ПЧ-3:2
                         $textRun->addText(
-//                            ($counterDepts) . '. ' . ($drillResult['department'] ? ($drillResult['department']['title'].":".$drillResult['dept_number']) : '') . ' ',
                             ($counterDepts) . '. ' . $drillResult . ' ',
                             $generalBoldFontStyle,
                             ['align' => Jc::BOTH]
@@ -503,13 +502,6 @@ class DailyWordExport
                                 ['align' => Jc::BOTH]
                             );
                         }
-
-                        //Радиотелевизионная передающая станция ТОО «Кок-тобе»
-                        $textRun->addText(
-                            htmlspecialchars($drillTicket['drill_name_total']).' ',
-                            $simpleFontStyle,
-                            ['align' => Jc::BOTH]
-                        );
 
                         //если Корректировка, указываем ПГ/ПВ
                         if ($drillType->id === 7) {
