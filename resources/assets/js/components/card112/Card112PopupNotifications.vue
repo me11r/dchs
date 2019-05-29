@@ -13,7 +13,6 @@
                             :clear-on-select="false"
                             :hide-selected="true"
                             :preserve-search="true"
-                            :disabled="!!card112['notifications_sent']"
                             placeholder=""
                             label="name"
                             id="notification_groups"
@@ -28,7 +27,6 @@
                         <label for="notification_message">Сообщение</label>
                         <textarea
                             :title="card112['notifications_sent'] ? 'Уведомление уже было отправлено' : ''"
-                            :disabled="!!card112['notifications_sent']"
                             required
                             minlength="10"
                             maxlength="1000"
@@ -41,7 +39,6 @@
                     </div>
                     <p class="level-right">
                         <button
-                            :disabled="!!card112['notifications_sent']"
                             type="submit"
                             class="button is-success">
                             <i class="fas fa-check"></i>&nbsp; Отправить
@@ -54,7 +51,6 @@
                 <p class="level-left">
                     <button
                         style="margin-bottom: 25px;"
-                        :disabled="!card112['notifications_sent']"
                         @click="getCard112Data()"
                         type="button"
                         class="button is-basic">
