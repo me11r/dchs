@@ -265,7 +265,7 @@ export default {
         },
         getReasonBranchesId() {
             return this.incident_type_id === 37 ? this.reasonBranchesId : null;
-        }
+        },
     },
     data: function () {
         return {
