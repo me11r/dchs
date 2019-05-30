@@ -26,15 +26,9 @@ class CivilProtectionServiceController extends Controller
     public function create()
     {
         $view = "$this->base_view.edit-create";
-        $latestRecord = CivilProtectionService::with(['items'])
-            ->orderBy('date', 'desc')
-            ->first();
 
-        if ($latestRecord) {
-            $latestRecord->id = null;
-            $latestRecord->date = now()->format('Y-m-d');
-            $latestRecord->is_active = true;
-        }
+        /*пытаемся скопировать данные из прошлой записи, если таковая есть в наличии*/
+        $latestRecord = CivilProtectionService::getlatestRecord(false);
 
         $data['record'] = $latestRecord ? $latestRecord : json_encode(null);
         $data['blocks'] = CivilProtectionServiceBlock::withTrashed()->orderBy('sort_order')
@@ -59,6 +53,7 @@ class CivilProtectionServiceController extends Controller
         $all = $request->all();
 
         if (!$request->id) {
+            /*если создаем запись, то предыдущую ставим в неактивный режим*/
             CivilProtectionService::getlatestRecord(true);
         }
 

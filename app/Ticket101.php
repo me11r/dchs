@@ -14,6 +14,7 @@ use App\Dictionary\TripResult;
 use App\Dictionary\WaterSupplySource;
 use App\Models\BaseModel;
 use App\Models\FireDepartmentResult;
+use App\Models\FormationPersonsItem;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
 use App\Models\NotificationService;
@@ -999,19 +1000,25 @@ class Ticket101 extends BaseModel
     //attribute: head_guards (начальник караула (-ов))
     public function getHeadGuardsAttribute()
     {
-        $staff = Staff::whereHas('formation_person_items.report.report', function ($q) {
+        $formationItem = FormationPersonsItem::whereHas('report.report', function ($q) {
             $q->where('id', $this->formation_report_id);
         })
-            ->whereHas('formation_person_items', function ($f) {
-                $f->where('status', 'active')
-                    ->where('rank','head_guards')
-                    ->where('rank','head_guards')
-                ;
-            })
-            ->where('department_id', $this->fire_department_id)
+            ->where('status', 'active')
+            ->where('rank','head_guards')
+            ->whereNull('trainee_type')
+            ->whereHas('report', function ($qq) {
+                $qq->where('dept_id', $this->fire_department_id);
+            })->has('staff')
             ->first();
+        ;
 
-        return @$staff->rank . " " . @$staff->name;
+        if ($formationItem) {
+            $staff = $formationItem->staff ?? null;
+            return @$staff->rank . " " . @$staff->name;
+        }
+
+        return null;
+
     }
 
     public function getDetailedStaffCount(Collection $fireDepartmentsCollection = null)
