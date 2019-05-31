@@ -494,6 +494,7 @@ class Ticket101DrillImporter implements ImporterInterface
                         $ticket->results()->create([
                             'tech_id' => $fire_department_result['tech_id'],
                             'fire_department_id' => $fire_department_result['fire_department_id'],
+                            'accept_time' => $fire_department_result['accept_time'] ?? $card['custom_created_at'],
                             'out_time' => $fire_department_result['out_time'],
                             'ret_time' => $fire_department_result['ret_time'],
                             'dispatch_time' => $fire_department_result['out_time'],
