@@ -837,7 +837,12 @@ class FormationController extends AuthorizedController
                 ]);
             });
 
-        $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
+        if ($inactive_dvrsMapped->count() && $inactive_dvrsOther->count()) {
+            $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
+        }
+        elseif($inactive_dvrsOther->count()) {
+            $inactive_dvrsMapped = $inactive_dvrsOther;
+        }
 
 
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($report){
