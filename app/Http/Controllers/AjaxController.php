@@ -122,7 +122,6 @@ class AjaxController extends AuthorizedController
             $rightsArr[] = $right->id;
             $rightsArr[] = $right->name;
         }
-//        return response()->json($user->role->rights->keyBy('id'), 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
         return response()->json($rightsArr, 200, ['Content-Type' => 'application/json'], JSON_UNESCAPED_UNICODE);
     }
 

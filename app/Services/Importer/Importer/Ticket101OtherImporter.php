@@ -370,6 +370,7 @@ class Ticket101OtherImporter implements ImporterInterface
                             'dispatch_time' => @$fire_department_result['out_time'],
                             'dispatched' => true,
                             'dispatch_id' => @$roadtripPlan->id,
+                            'accept_time' => $fire_department_result['accept_time'] ?? $card['custom_created_at'],
                         ]);
                     }
                 }
@@ -382,7 +383,7 @@ class Ticket101OtherImporter implements ImporterInterface
                         if ($fire_department_result['name'] && in_array($fire_department_result['name'], $deptNames)) {
                             $ticket->hqRides()->create([
                                 'name' => $fire_department_result['name'],
-                                'accept_time' => @$fire_department_result['accept_time'],
+                                'accept_time' => $fire_department_result['accept_time'] ?? $card['custom_created_at'],
                                 'out_time' => @$fire_department_result['out_time'],
                                 'retreat_time' => @$fire_department_result['retreat_time'],
                                 'arrive_time' => @$fire_department_result['arrive_time'],
