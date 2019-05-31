@@ -93,7 +93,7 @@
                     </div>
                     <br>
 
-                    {% if user.id == 0 %}
+                    {% if user_record.id == 0 %}
                         <div class="field">
                             <label for="password">Пароль</label>
                             <input type="password" class="input {{ errors.has('password')?'is-danger' }}" name="password" id="password" value=""/>
