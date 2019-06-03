@@ -224,7 +224,7 @@ class Daily112WordExport
         $guSpiasrString = "всего выездов – " . $this->data['cards101']->count();
         $guSpiasrString .= " из них: ";
 
-        $reasons = TripResult::dailyReportConst()->get();
+        $reasons = TripResult::dailyReport112Const()->get();
         $secondIndex = 0;
 
         foreach ($reasons as $reason) {

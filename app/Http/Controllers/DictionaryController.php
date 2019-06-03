@@ -286,6 +286,16 @@ class DictionaryController extends AuthorizedController
             $data['records'] = $reports->paginate($data['per_page']);
             $data['title'] = "Типы служб";
         }
+        elseif($name == 'trip-results') {
+            $reports = Dictionary\TripResult::orderBy('id');
+
+            if($request->search){
+                $reports = $reports->where('name', 'like', "%$request->search%");
+            }
+
+            $data['records'] = $reports->paginate($data['per_page']);
+            $data['title'] = "Причина выезда";
+        }
 
 
         return view($view, $data);
@@ -390,6 +400,10 @@ class DictionaryController extends AuthorizedController
             $data['record'] = ServiceType::find($id);
             $data['users'] = User::all();
             $data['title'] = "Типы служб";
+        }
+        elseif($name == 'trip-results'){
+            $data['record'] = Dictionary\TripResult::find($id);
+            $data['title'] = "Причина выезда";
         }
         return view($view, $data);
     }
@@ -572,6 +586,15 @@ class DictionaryController extends AuthorizedController
                 }
             }
         }
+        elseif($name == 'trip-results'){
+            $record  = Dictionary\TripResult::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->show_in_daily_report101 = $request->show_in_daily_report101;
+            $record->show_in_daily_report112 = $request->show_in_daily_report112;
+            $record->emergency_code = $request->emergency_code;
+
+            $record->save();
+        }
 
         if($request->id){
             return back()->with('_message', [
@@ -725,6 +748,9 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'service-types':
                 $dict = ServiceType::class;
+                break;
+            case 'trip-results':
+                $dict = Dictionary\TripResult::class;
                 break;
         }
 
