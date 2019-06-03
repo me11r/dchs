@@ -20,4 +20,8 @@
     RewriteRule ^ index.php [L]
 
     #php_value memory_limit 1024M
+
+    #http to https redirect
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 </IfModule>
