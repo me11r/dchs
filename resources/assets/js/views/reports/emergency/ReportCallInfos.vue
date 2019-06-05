@@ -2,8 +2,9 @@
     <div class="container" id="forces-resources-form">
         <h4
                 class="title"
-                style="padding: 3px 15px">Информация по звонкам
-            за {{ dateFromFormatted }} по {{ dateToFormatted }}
+                style="padding: 3px 15px">{{ '/reports/call-infos.info_date_period'|trans({date_from: dateFromFormatted, date_to: dateToFormatted}) }}
+            <!--Информация по звонкам
+            за {{ dateFromFormatted }} по {{ dateToFormatted }}-->
         </h4>
         <div class="panel">
             <div
@@ -37,29 +38,32 @@
                             download
                             class="button is-primary"
                             type="submit">
-                            <i class="fas fa-print"></i>&nbsp;Сохранить в DOCX
+                            <i class="fas fa-print"></i>&nbsp;{{ 'download_word'|trans }}<!--Сохранить в DOCX-->
                         </a>
                     </div>
                 </div>
                 <br>
                 <form>
-                    <h3 class="title">Сведения
+                    <h3 class="title">
+                        {{ '/reports/call-infos.info_period'|trans({number: 112, date_from: this.dateFromFormatted, date_to: this.dateToFormatted}) }}
+                        <!--Сведения
                         о количестве звонков поступивших на номер «112» с 07.00 {{ this.dateFromFormatted }} до 07.00  {{ this.dateToFormatted }} года
-                        УЕДДС ДЧС г. Алматы</h3>
+                        УЕДДС ДЧС г. Алматы-->
+                    </h3>
                     <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small formation-record-table">
                         <thead>
                             <tr>
-                                <th rowspan="2">Общее количество принятых сообщения (звонков)</th>
-                                <th colspan="7">Из них</th>
+                                <th rowspan="2">{{ '/reports/call-infos.total'|trans }}</th><!--Общее количество принятых сообщений (звонков)-->
+                                <th colspan="7">{{ '/reports/call-infos.detail'|trans }}</th><!--Из них-->
                             </tr>
                             <tr>
-                                <th>По основной деятельности «112»</th>
-                                <th>По линии «101»</th>
-                                <th>По линии «102»</th>
-                                <th>По линии «103»</th>
-                                <th>Информационно – справочного характера</th>
-                                <th>Прочее (проверка сотовых телефонов, шалость детей и т.д.)</th>
-                                <th>Примечание</th>
+                                <th>{{ '/reports/call-infos.112'|trans }}</th><!--По основной деятельности «112»-->
+                                <th>{{ '/reports/call-infos.line'|trans({line: 101}) }}</th><!--По линии «101»-->
+                                <th>{{ '/reports/call-infos.line'|trans({line: 102}) }}</th><!--По линии «102»-->
+                                <th>{{ '/reports/call-infos.line'|trans({line: 103}) }}</th><!--По линии «103»-->
+                                <th>{{ '/reports/call-infos.info'|trans }}</th><!--Информационно – справочного характера-->
+                                <th>{{ '/reports/call-infos.other'|trans }}</th><!--Прочее (проверка сотовых телефонов, шалость детей и т.д.)-->
+                                <th>{{ 'note'|trans }}</th><!--Примечание-->
                             </tr>
                         </thead>
                         <tbody>
@@ -76,23 +80,26 @@
                         </tbody>
                     </table>
 
-                    <h3 class="title">Сведения
+                    <h3 class="title">
+                        {{ '/reports/call-infos.info_period'|trans({number: 101, date_from: this.dateFromFormatted, date_to: this.dateToFormatted}) }}
+                        <!--Сведения
                         о количестве звонков поступивших на номер «101» с 07.00 {{ this.dateFromFormatted }} до 07.00 {{ this.dateToFormatted }} года
-                        ГУ «СПиАСР» ДЧС г.Алматы</h3>
+                        ГУ «СПиАСР» ДЧС г.Алматы-->
+                    </h3>
                     <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small formation-record-table">
                         <thead>
                             <tr>
-                                <th rowspan="2">Общее количество принятых сообщений</th>
-                                <th colspan="6">Из них</th>
+                                <th rowspan="2">{{ '/reports/call-infos.total'|trans }}</th><!--Общее количество принятых сообщений-->
+                                <th colspan="6">{{ '/reports/call-infos.detail'|trans }}</th><!--Из них-->
                             </tr>
                             <tr>
-                                <th>По линии «101»</th>
+                                <th>{{ '/reports/call-infos.line'|trans({line: 101}) }}</th><!--По линии «101»-->
                                 <!--<th>По вопросам реагирования на ЧС природного и техногенного характера</th>-->
-                                <th>По линии «102»</th>
-                                <th>По линии «103»</th>
-                                <th>Информационно - справочного характера</th>
-                                <th>Прочие (проверка сотовых телефонов, шалость детей ит.д.)</th>
-                                <th>Примечание</th>
+                                <th>{{ '/reports/call-infos.line'|trans({line: 102}) }}</th><!--По линии «102»-->
+                                <th>{{ '/reports/call-infos.line'|trans({line: 103}) }}</th><!--По линии «103»-->
+                                <th>{{ '/reports/call-infos.info'|trans }}</th><!--Информационно - справочного характера-->
+                                <th>{{ '/reports/call-infos.other'|trans }}</th><!--Прочие (проверка сотовых телефонов, шалость детей и т.д.)-->
+                                <th>{{ 'note'|trans }}</th><!--Примечание-->
                             </tr>
                         </thead>
                         <tbody>

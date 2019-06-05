@@ -12,5 +12,6 @@ return array(
         'info_date_period' => 'Информация по звонкам за :date_from по :date_to',
         'info_period' => 'Сведения о количестве звонков поступивших на номер «:number» с 07.00 :date_from до 07.00 :date_to года УКС ДЧС г. Алматы',
         'detail' => 'Из них',
+        'period_report' => 'Отчет за период',
     ],
 );

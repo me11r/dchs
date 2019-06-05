@@ -20,7 +20,7 @@
                         date-string="{{ check.date }}"
                         label="По">
                 </v-datepicker-search>
-                <button class="button is-success" type="submit">Скачать</button>
+                <button class="button is-success" type="submit">{{ t('download') }}</button>{#Скачать#}
             </form>
         {% endif %}
 
@@ -38,12 +38,12 @@
             <table class="formation-record-table">
                 <thead>
                     <tr>
-                        <th>№п/п</th>
-                        <th>Регион (Узел связи)</th>
+                        <th>{{ t('number') }}</th>{#№п/п#}
+                        <th>{{ t('/reports/alert-system-checks.region') }}</th>{#Регион (Узел связи)#}
                         <th>09:30</th>
                         <th>15:00</th>
                         <th>18:00</th>
-                        <th>Примечание</th>
+                        <th>{{ t('note') }}</th>{#Примечание#}
                     </tr>
                     <tr>
                     </tr>
@@ -125,11 +125,11 @@
                 <div class="level-right">
                     <a href="/reports/alert-system-checks"
                        style="margin-right: 10px"
-                       class="button is-light">Назад</a>
+                       class="button is-light">{{ t('cancel') }}</a>{#Назад#}
                     <button
                             type="submit"
                             class="button is-success">
-                        <i class="fas fa-check"></i>Сохранить
+                        <i class="fas fa-check"></i>{{ t('save') }}{#Сохранить#}
                     </button>
                 </div>
             </div>

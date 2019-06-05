@@ -19,19 +19,9 @@
 
                     </siren-speech-tech>
 
-
-                    {#<div class="field">
-                        <label for="name">Название</label>
-                        <input type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
-                    </div>
-                    <div class="field">
-                        <label for="number">Абс.высота</label>
-                        <input type="text" class="input" name="altitude" id="altitude" value="{{ attribute(record, 'altitude')|default('') }}"/>
-                    </div>#}
-
                     <div class="buttons has-text-right is-grouped is-right" style="">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
-                        <a href="{{ url('/reports/siren-speeches/') }}" class="button is-light">Отменить</a>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;{{ t('save') }}</button>{#Сохранить#}
+                        <a href="{{ url('/reports/siren-speeches/') }}" class="button is-light">{{ t('cancel') }}</a>{#Отменить#}
                     </div>
                 </form>
             </div>
