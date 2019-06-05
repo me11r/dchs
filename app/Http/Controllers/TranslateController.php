@@ -85,6 +85,7 @@ class TranslateController extends Controller
             'users' => 'Пользователи системы',
             'validation' => 'Языковые ресурсы для проверки значений',
             'vehicles' => 'Автотехника',
+            'report_isk' => 'Отчет ИСК',
         ];
 
         foreach ($groups as $key => $g) {

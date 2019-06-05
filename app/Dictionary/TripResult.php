@@ -38,12 +38,14 @@ class TripResult extends BaseModel
     protected $fillable = [
         'name',
         'show_in_daily_report101',
+        'show_in_daily_report112',
         'emergency_code',
     ];
 
     public $attributeNames = [
         'name' => 'Наименование',
         'show_in_daily_report101' => 'Участвует в ежедневном отчете 101',
+        'show_in_daily_report112' => 'Участвует в ежедневном отчете 112',
         'emergency_code' => 'Код ЧС',
     ];
 
@@ -60,6 +62,11 @@ class TripResult extends BaseModel
     public function scopeDailyReportConst($q)
     {
         return $q->where('show_in_daily_report101', true);
+    }
+
+    public function scopeDailyReport112Const($q)
+    {
+        return $q->where('show_in_daily_report112', true);
     }
 
     public function scopeNonFires($q)

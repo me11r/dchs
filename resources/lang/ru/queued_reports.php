@@ -15,5 +15,9 @@ return array(
         'error_while_sending_in_queue' => 'При отправке в очередь произошла ошибка',
         'status_changed' => 'Статус обновлен',
         'error_while_status_changed' => 'При обновлении статуса произошла ошибка',
+        'report' => 'Отчет',
+        'date_from' => 'От',
+        'date_to' => 'До',
+        'retry' => 'Повторить попытку',
     ],
 );

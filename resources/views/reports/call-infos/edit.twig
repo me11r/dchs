@@ -17,8 +17,8 @@
                     </call-info-create-edit>
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
-                        <a href="{{ url('/reports/call-infos/') }}" class="button is-light">Отменить</a>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;{{ t('save') }}</button>{#Сохранить#}
+                        <a href="{{ url('/reports/call-infos/') }}" class="button is-light">{{ t('cancel') }}</a>{#Отменить#}
                     </div>
                 </form>
             </div>

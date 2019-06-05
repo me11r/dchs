@@ -498,12 +498,12 @@ class Ticket101 extends BaseModel
 
     public function fire_object()
     {
-        return $this->hasOne(BurntObject::class, 'id', 'fire_object_id');
+        return $this->hasOne(FireObject::class, 'id', 'burn_object_id'); //todo: таблица "dict_burn_object" не используется, вместо нее "dict_fire_object"
     }
 
     public function burn_object()
     {
-        return $this->hasOne(BurntObject::class, 'id', 'burn_object_id');
+        return $this->hasOne(FireObject::class, 'id', 'burn_object_id'); //todo: таблица "dict_burn_object" не используется, вместо нее "dict_fire_object"
     }
 
     public function trip_result()

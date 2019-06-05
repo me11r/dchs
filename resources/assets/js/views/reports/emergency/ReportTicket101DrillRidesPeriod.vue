@@ -72,7 +72,7 @@
             </div>
         </div>
 
-        <div class="panel">
+        <div class="panel" style="overflow-x: scroll">
             <table class="formation-record-table">
                 <thead>
                     <tr>

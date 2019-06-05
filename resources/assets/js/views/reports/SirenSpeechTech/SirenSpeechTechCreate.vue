@@ -2,19 +2,19 @@
     <div class="columns">
         <table class="table table-mobile-sort">
             <tr>
-                <td>Всего</td>
+                <td>{{ '/reports/siren-speeches.total'|trans }}</td><!--Всего-->
                 <td><input readonly type="text" class="input" v-model="total"></td>
             </tr>
             <tr>
-                <td>Моторные</td>
+                <td>{{ '/reports/siren-speeches.motor'|trans }}</td><!--Моторные-->
                 <td><input type="number" class="input" name="motor" v-model="record_.motor"></td>
             </tr>
             <tr>
-                <td>СРУ</td>
+                <td>{{ '/reports/siren-speeches.sst'|trans }}</td><!--СРУ-->
                 <td><input type="number" class="input" name="sst" v-model="record_.sst"></td>
             </tr>
             <tr>
-                <td>Демонтированные</td>
+                <td>{{ '/reports/siren-speeches.demounted'|trans }}</td><!--Демонтированные-->
                 <td>
                     <div class="field">
                         <input type="number" class="input" name="demounted" v-model="record_.demounted">
@@ -30,10 +30,10 @@
                         </div>
                     </div>
                 </td>
-                <td><button @click.prevent="addDemounted()" class="button is-info">Добавить</button></td>
+                <td><button @click.prevent="addDemounted()" class="button is-info">{{ '/reports/siren-speeches.add'|trans }}</button></td><!--Добавить-->
             </tr>
             <tr>
-                <td>В не рабочем состоянии</td>
+                <td>{{ '/reports/siren-speeches.broken'|trans }}</td><!--В не рабочем состоянии-->
                 <td>
                     <div class="field">
                         <input type="number" name="broken" class="input" v-model="record_.broken">
@@ -49,10 +49,10 @@
                         </div>
                     </div>
                 </td>
-                <td><button @click.prevent="addBroken()" class="button is-info">Добавить</button></td>
+                <td><button @click.prevent="addBroken()" class="button is-info">{{ '/reports/siren-speeches.add'|trans }}</button></td><!--Добавить-->
             </tr>
             <tr>
-                <td>Не активные</td>
+                <td>{{ '/reports/siren-speeches.inactive'|trans }}</td><!--Не активные-->
                 <td>
                     <div class="field">
                         <input type="number" name="inactive" class="input" v-model="record_.inactive">
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </td>
-                <td><button @click.prevent="addInactive()" class="button is-info">Добавить</button></td>
+                <td><button @click.prevent="addInactive()" class="button is-info">{{ '/reports/siren-speeches.add'|trans }}</button></td><!--Добавить-->
             </tr>
         </table>
     </div>

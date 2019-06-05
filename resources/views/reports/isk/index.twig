@@ -1,7 +1,7 @@
 {% extends "layout/html" %}
 {% block content %}
     <div class="section container">
-        <h4 class="title">Отчеты ИСК</h4>
+        <h4 class="title">{{ t('/reports/isk.title') }}</h4>{#Отчеты ИСК#}
         <div>
             <div id="vue">
                 <form action="">
@@ -12,12 +12,12 @@
                         <div class="control"></div>
 
                         <div class="control">
-                            <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                            <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp;{{ t('/reports/isk.search') }}</span></span></button>{#Искать#}
                         </div>
 
                     </div>
                     <div class="field">
-                        <a href="/reports/isk/" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
+                        <a href="/reports/isk/" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;{{ t('/reports/isk.reset_filter') }}</a>{#Сбросить фильтр#}
                     </div>
                     <div class="field is-grouped">
 
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="control">
-                        <p>Район</p>
+                        <p>{{ t('/reports/isk.city_area') }}</p>{#Район#}
                         <select name="city_area" class="select control">
                             <option value=""></option>
                             {% for f in city_areas %}
@@ -47,7 +47,7 @@
                     </div>
                     <br>
                     <div class="control">
-                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; Искать</span></span></button>
+                        <button class="button is-primary is-outlined" type="submit"><span><i class="fa fa-search"></i><span class="hidden-sm-down">&nbsp; {{ t('/reports/isk.search') }}</span></span></button>{#Искать#}
                     </div>
 
                 </form>
@@ -57,10 +57,10 @@
             <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small" id="card101_index_table">
                 <thead>
                 <tr>
-                    <th>№ КУИ</th>
-                    <th>Адрес</th>
-                    <th>Район</th>
-                    <th class="has-text-right">Дата и время</th>
+                    <th>{{ t('/reports/isk.kui') }}</th>{#№ КУИ#}
+                    <th>{{ t('/reports/isk.address') }}</th>{#Адрес#}
+                    <th>{{ t('/reports/isk.city_area') }}</th>{#Район#}
+                    <th class="has-text-right">{{ t('/reports/isk.date_time') }}</th>{#Дата и время#}
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
@@ -71,13 +71,13 @@
                         <td>{{ record.ticket_101.city_area.name|default('-') }} {% if record.ticket_101.crossroad_1_id %}({{ record.ticket_101.crossroad_1.name|default('-') }} &times; {{ record.ticket_101.crossroad_2.name|default('-') }}){% endif %}</td>
                         <td class="has-text-right">{{ record.ticket_101.custom_created_at|date('H:i d.m.Y') }}</td>
                         <td class="has-text-right">
-                            <a href="/reports/isk/{{ record.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+                            <a href="/reports/isk/{{ record.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; {{ t('edit') }}</a>{#Редактировать#}
                             <a href="/reports/isk/{{ record.ticket_101.id }}/export" class="button is-info is-small"><i class="fas fa-file-word"></i>&nbsp; doc</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td class="is-centered"><h1 class="title">Нет выбранных заявок</h1></td>
+                        <td class="is-centered"><h1 class="title">{{ t('no_records') }}</h1></td>{#Нет выбранных заявок#}
                     </tr>
                 {% endfor %}
             </table>
