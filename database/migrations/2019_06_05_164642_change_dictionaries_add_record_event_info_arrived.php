@@ -17,13 +17,15 @@ class ChangeDictionariesAddRecordEventInfoArrived extends Migration
             //
         });
 
-        $dictionary = \App\Dictionary::firstOrCreate([
+        $dictionary = \App\Dictionary::name('dict_trunk')->update([
             'table' => 'event_info_arriveds',
-            'title' => 'События на месте (стволы)',
             'url' => '/dictionaries/event-info-arrived',
-            'dictionary_category_id' => \App\DictionaryCategory::name('101')->first()->id ?? null,
-            'sort_order' => 10,
             'model' => \App\EventInfoArrived::class
+        ]);
+
+        \App\Right::where('name', 'DICT_TRUNK')->delete();
+        \App\Right::where('name', 'DICT_EVENT_INFO_ARRIVEDS')->update([
+            'title' => 'Стволы'
         ]);
     }
 
@@ -38,6 +40,20 @@ class ChangeDictionariesAddRecordEventInfoArrived extends Migration
             //
         });
 
-        $dictionary = \App\Dictionary::name('event_info_arriveds')->forceDelete();
+        $dictionary = \App\Dictionary::name('event_info_arriveds')->update([
+            'table' => 'dict_trunk',
+            'url' => null,
+            'model' => \App\Models\Trunk::class
+        ]);
+
+        \App\Right::create([
+            'name' => 'DICT_TRUNK',
+            'title' => 'Стволы',
+            'right_group_id' => 8,
+        ]);
+
+        \App\Right::where('name', 'DICT_EVENT_INFO_ARRIVEDS')->update([
+            'title' => 'Нормативно-справочная информация: на месте'
+        ]);
     }
 }
