@@ -1610,7 +1610,7 @@ class ReportController extends AuthorizedController
                        'name' => $q->department->title ?? null,
                    ];
                })->toArray(),
-               'type' => $q->form_type_drill,
+               'type' => $q->drill_type->name ?? null,
                'departments' => $q->results()->whereNotNull('dispatch_time')->get()->map(function ($q) {
                    return [
                        'name' => $q->tech->department ?? null,
