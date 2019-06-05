@@ -3,13 +3,13 @@
     <div class="container section">
             <div class="level">
                 <div class="level-left">
-                    <h4 style="" class="title">Информация по звонкам</h4>
+                    <h4 style="" class="title">{{ t('/reports/call-infos.title') }}</h4>{#Информация по звонкам#}
                 </div>
                 <div class="level-right has-text-right">
-                    <a href="{{ route('reports-call-infos.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                    <a href="{{ route('reports-call-infos.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;{{ t('create_record') }}</a>{#Создать запись#}
                 </div>
                 <div class="level-right has-text-right">
-                    <a href="{{ route('reports-call-infos.show') }}" class="button is-dark"><i class="fas fa-glasses"></i>&nbsp;Отчет за период</a>
+                    <a href="{{ route('reports-call-infos.show') }}" class="button is-dark"><i class="fas fa-glasses"></i>&nbsp;{{ t('/reports/call-infos.period_report') }}</a>{#Отчет за период#}
                 </div>
             </div>
         <div class="panel">
@@ -21,7 +21,7 @@
                         <th>103</th>
                         <th>109</th>
                         <th>112</th>
-                        <th>Дата</th>
+                        <th>{{ t('date') }}</th>{#Дата#}
                         <th></th>
                     </tr>
                 </thead>
@@ -37,19 +37,19 @@
                             <td>
                                 <div class="field is-grouped">
                                 <a class="button is-basic is-small" href="{{ route('reports-call-infos.edit', {'id':item.id}) }}">
-                                    <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+                                    <i class="fas fa-edit"></i>&nbsp;{{ t('edit') }}</a>{#Редактировать#}
 
                                 <form method="post" action="{{ route('reports-call-infos.delete', {'id':item.id}) }}">
                                     {{ csrf_field() }}
                                     {{  method_field('DELETE') }}
                                     <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
-                                        <i class="fas fa-crosshairs"></i>&nbsp;Удалить</button>
+                                        <i class="fas fa-crosshairs"></i>&nbsp;{{ t('delete') }}</button>{#Удалить#}
                                 </form>
                                 </div>
                             </td>
                         </tr>
                     {% else %}
-                        <tr><h3 class="is-danger">Нет данных в таблице</h3></tr>
+                        <tr><h3 class="is-danger">{{ t('no_records') }}</h3>{#Нет данных в таблице#}</tr>
                     {% endfor %}
                 </tbody>
 

@@ -4,7 +4,7 @@
         <div class="level">
             <div class="level-left">
                 <h4 class="title"
-                    style="padding: 3px 15px">Тех.проверка системы оповещения
+                    style="padding: 3px 15px">{{ t('/reports/alert-system-checks.title') }}{#Тех.проверка системы оповещения#}
                 </h4>
             </div>
         </div>
@@ -16,7 +16,7 @@
             <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
                 <thead>
                 <tr>
-                    <th class="has-text-right" style="width: 150px">Дата и время</th>
+                    <th class="has-text-right" style="width: 150px">{{ t('datetime') }}</th>{#Дата и время#}
                     <th>&nbsp;</th>
                 </tr>
                 </thead>
@@ -27,18 +27,18 @@
                             <a href="/reports/alert-system-checks/download?date_from={{ item.date }}&date_to={{ item.date }}"
                                class="button is-small is-success">
                                 <i class="fas fa-download"></i>&nbsp;
-                                Скачать
+                                {{ t('download') }}{#Скачать#}
                             </a>
                             <a href="/reports/alert-system-checks/{{ item.id }}/edit"
                                class="button is-small is-info">
                                 <i class="fas fa-pencil-alt"></i>&nbsp;
-                                Открыть
+                                {{ t('open') }}{#Открыть#}
                             </a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td class="is-centered"><h1 class="title">Нет записей</h1></td>
+                        <td class="is-centered"><h1 class="title">{{ t('no_records') }}</h1></td>{#Нет записей#}
                         <td class="is-centered"></td>
                     </tr>
                 {% endfor %}

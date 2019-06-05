@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
+use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\DrillType;
 use App\FireDepartment;
@@ -23,7 +24,7 @@ class AnalyticsSpiasrController extends Controller
     {
         $data = [];
         $data['records'] = [];
-        $data['burntObjects'] = BurntObject::orderBy('name')->get();
+        $data['burntObjects'] = FireObject::orderBy('name')->get();
         $data['reasons'] = TripResult::orderBy('name')->get();
         $data['cityAreas'] = CityArea::orderBy('name')->get();
         $data['fireDepartments'] = FireDepartment::all();

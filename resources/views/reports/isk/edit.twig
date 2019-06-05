@@ -6,12 +6,12 @@
                 <div class="level">
                     <div class="level-left">
                         <div class="level-item">
-                            <h3 class="title"><a target="_blank" href="/card/add101/{{ record.ticket_101.id }}">Отчет ИСК</a></h3>
+                            <h3 class="title"><a target="_blank" href="/card/add101/{{ record.ticket_101.id }}">{{ t('/reports/isk.title_single') }}</a></h3>{#Отчет ИСК#}
                         </div>
                     </div>
                     <div class="level-right">
                         <div class="level-item">
-                            <a href="/reports/isk/{{ record.ticket_101.id }}/export" class="button is-info">Скачать в DOCX</a>
+                            <a href="/reports/isk/{{ record.ticket_101.id }}/export" class="button is-info">{{ t('/reports/isk.docx') }}</a>{#Скачать в DOCX#}
                         </div>
                     </div>
                 </div>
@@ -21,9 +21,9 @@
                         <table id="" class="detailed-table table is-small is-fullwidth is-bordered is-striped is-narrow is-hoverable" style="/*font-size: .7rem*/">
                             <thead>
                             <tr>
-                                <th>№ п/п</th>
-                                <th>Информация</th>
-                                <th>Примечание</th>
+                                <th>{{ t('number') }}</th>{#№ п/п#}
+                                <th>{{ t('/reports/isk.information') }}</th>{#Информация#}
+                                <th>{{ t('/reports/isk.note') }}</th>{#Примечание#}
                             </tr>
                             </thead>
                             <tbody>
@@ -54,12 +54,12 @@
                         <div class="level">
                             <div class="level-left">
                                 <div class="level-item">
-                                    <a href="/reports/isk" class="button is-warning">Назад</a>
+                                    <a href="/reports/isk" class="button is-warning">{{ t('/reports/isk.back') }}</a>{#Назад#}
                                 </div>
                             </div>
                             <div class="level-right">
                                 <div class="level-item">
-                                    <button class="button is-success">Сохранить</button>
+                                    <button class="button is-success">{{ t('/reports/isk.save') }}</button>{#Сохранить#}
                                 </div>
                             </div>
                         </div>

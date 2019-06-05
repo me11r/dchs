@@ -6,30 +6,19 @@
                 style="margin-top: 20px">
                 <div class="level">
                     <div class="level-left">
-                        <h4 class="title">Отчет по строевой записке техники</h4>
+                        <h4 class="title">{{ '/reports/101/vehicles.title'|trans }}</h4><!--Отчет по строевой записке техники-->
                     </div>
                     <div class="level-right has-text-right">
                         <button
                             class="button is-primary "
-                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;Печать</button>
+                            @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;{{ 'print'|trans }}</button><!--Печать-->
                     </div>
                 </div>
                 <br>
                 <form>
 
-                    <!--<p class="content"><b>Selected:</b> {{ selected }}</p>-->
-                    <!--<b-autocomplete-->
-                    <!--rounded-->
-                    <!--v-model="selected_id"-->
-                    <!--:data="vehicles_"-->
-                    <!--placeholder="e.g. jQuery"-->
-                    <!--icon="magnify"-->
-                    <!--@select="onSelectVehicle">-->
-                    <!--<template slot="empty">No results found</template>-->
-                    <!--</b-autocomplete>-->
-
                     <div class="field">
-                        <label for="vehicles">Номер, тип</label>
+                        <label for="vehicles">{{ 'number'|trans }}, {{ 'type'|trans }}</label><!--Номер, тип-->
                         <select
                             @change="selectName"
                             class="select"
@@ -44,14 +33,14 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label for="">Начало периода</label>
+                        <label for="">{{ 'date_begin'|trans }}</label><!--Начало периода-->
                         <input
                             @blur="selectPeriod"
                             v-model="date_begin_"
                             type="date">
                     </div>
                     <div class="field">
-                        <label for="">Конец периода</label>
+                        <label for="">{{ 'date_end'|trans }}</label><!--Конец периода-->
                         <input
                             @blur="selectPeriod"
                             v-model="date_end_"
@@ -61,9 +50,9 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <td>В боевом расчете</td>
-                                <td>На ремонте</td>
-                                <td>В резерве</td>
+                                <td>{{ '/reports/101/vehicles.action'|trans }}</td><!--В боевом расчете-->
+                                <td>{{ '/reports/101/vehicles.repair'|trans }}</td><!--На ремонте-->
+                                <td>{{ '/reports/101/vehicles.reserve'|trans }}</td><!--В резерве-->
                             </tr>
                         </thead>
                         <tbody>
@@ -90,7 +79,7 @@ export default {
     props: {
         vehicles: {
             type: Array,
-            default: []
+            default: () => []
         },
         date_begin: {
             type: String,
