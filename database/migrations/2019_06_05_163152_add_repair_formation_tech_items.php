@@ -15,7 +15,7 @@ class AddRepairFormationTechItems extends Migration
     {
         Schema::table('formation_tech_items', function(Blueprint $table) {
 
-              $table->integer('rapair')->nullable();
+              $table->integer('repair')->nullable();
 
         });
     }
@@ -29,7 +29,7 @@ class AddRepairFormationTechItems extends Migration
     {
         Schema::table('formation_tech_items', function(Blueprint $table) {
 
-              $table->dropColumn('rapair');
+              $table->dropColumn('repair');
 
         });
     }
