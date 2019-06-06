@@ -93,5 +93,7 @@ return array (
     'refresh' => 'Обновить',
     'refresh_filter' => 'Сбрость фильтр',
     'datetime' => 'Дата и время',
+    'comment' => 'Комментарий',
     'additional_information' => 'Дополнительная информация',
+    'back' => 'Назад',
 );

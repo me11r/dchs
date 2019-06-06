@@ -30,7 +30,7 @@
                     </div>
                     <!--Информация-->
                     <div class="field">
-                        <label for="information">Информация</label>
+                        <label for="information">{{ 'info'|trans }}</label><!--Информация-->
                         <textarea
                             name="information"
                             id="information"
@@ -41,7 +41,7 @@
                     </div>
                     <!--Расход воды-->
                     <div class="field">
-                        <label for="water_flow_rate">Расход воды</label>
+                        <label for="water_flow_rate">{{ '/mudflow-protection.water_flow_rate'|trans }}</label><!--Расход воды-->
                         <input
                             type="number"
                             step="0.01"
@@ -52,7 +52,7 @@
                     </div>
                     <!--Критический расход воды-->
                     <div class="field">
-                        <label for="critical_water_flow_rate">Критический расход воды</label>
+                        <label for="critical_water_flow_rate">{{ '/mudflow-protection.critical_water_flow_rate'|trans }}</label><!--Критический расход воды-->
                         <input
                             type="number"
                             step="0.01"
@@ -63,7 +63,7 @@
                     </div>
                     <!--Мутность воды-->
                     <div class="field">
-                        <label for="turbidity_of_water">Мутность воды</label>
+                        <label for="turbidity_of_water">{{ '/mudflow-protection.turbidity_of_water'|trans }}</label><!--Мутность воды-->
                         <input
                             type="number"
                             step="0.01"
@@ -74,7 +74,7 @@
                     </div>
                     <!--Максимальная мутность воды-->
                     <div class="field">
-                        <label for="max_turbidity_of_water">Максимальная мутность воды</label>
+                        <label for="max_turbidity_of_water">{{ '/mudflow-protection.max_turbidity_of_water'|trans }}</label><!--Максимальная мутность воды-->
                         <input
                             type="number"
                             step="0.01"
@@ -85,7 +85,7 @@
                     </div>
                     <!--Температура воздуха-->
                     <div class="field">
-                        <label for="air_temperature">Температура воздуха</label>
+                        <label for="air_temperature">{{ '/mudflow-protection.air_temperature'|trans }}</label><!--Температура воздуха-->
                         <input
                             type="number"
                             step="0.01"
@@ -96,7 +96,7 @@
                     </div>
                     <!--Температура воды-->
                     <div class="field">
-                        <label for="water_temperature">Температура воды</label>
+                        <label for="water_temperature">{{ '/mudflow-protection.water_temperature'|trans }}</label><!--Температура воды-->
                         <input
                             type="number"
                             step="0.01"
@@ -107,7 +107,7 @@
                     </div>
                     <!--Осадки-->
                     <div class="field">
-                        <label for="precipitation">Осадки</label>
+                        <label for="precipitation">{{ '/mudflow-protection.precipitation'|trans }}</label><!--Осадки-->
                         <input
                             type="number"
                             step="0.01"
@@ -118,7 +118,7 @@
                     </div>
                     <!--Высота снега-->
                     <div class="field">
-                        <label for="height_of_snow">Высота снега</label>
+                        <label for="height_of_snow">{{ '/mudflow-protection.height_of_snow'|trans }}</label><!--Высота снега-->
                         <input
                             type="number"
                             step="0.01"
@@ -129,7 +129,7 @@
                     </div>
                     <!--Погода-->
                     <div class="field">
-                        <label for="weather">Погода</label>
+                        <label for="weather">{{ '/mudflow-protection.weather'|trans }}</label><!--Погода-->
                         <textarea
                             name="weather"
                             id="weather"
@@ -140,7 +140,7 @@
                     </div>
                     <!--Комментарий-->
                     <div class="field">
-                        <label for="comment">Комментарий</label>
+                        <label for="comment">{{ '/mudflow-protection.comment'|trans }}</label><!--Комментарий-->
                         <textarea
                             name="comment"
                             id="comment"
@@ -157,13 +157,13 @@
                     <p class="level-right">
                         <a
                             href="/mudflow-protection/2019-02-05/"
-                            class="button is-danger"><i class="fas fa-times"></i>&nbsp;Отменить
+                            class="button is-danger"><i class="fas fa-times"></i>&nbsp;{{ 'cancel'|trans }}<!--Отменить-->
                         </a>
                     </p>
                     <p class="level-right">
                         <button
                             type="submit"
-                            class="button is-success"><i class="fas fa-check"></i>Сохранить
+                            class="button is-success"><i class="fas fa-check"></i>{{ 'save'|trans }}<!--Сохранить-->
                         </button>
                     </p>
                 </div>

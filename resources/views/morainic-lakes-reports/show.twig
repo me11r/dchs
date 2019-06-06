@@ -3,10 +3,10 @@
     <div class="panel">
         <div class="level">
             <div class="level-left">
-                <h4 class="title" style="padding: 3px 15px">Сводная информация по мореным озерам на {{ date }}</h4>
+                <h4 class="title" style="padding: 3px 15px">{{ t('/morainic-lakes-summaries.lakes_info_date', {date:date|date('d.m.Y')}) }}</h4>{#Сводная информация по мореным озерам на {{ date|date('d.m.Y') }}#}
             </div>
             <div class="level-right">
-                <a href="/morainic-lakes-summaries/export/xls/{{ date }}" class="button is-success">Сохранить в XLS</a>
+                <a href="/morainic-lakes-summaries/export/xls/{{ date }}" class="button is-success">{{ t('') }}</a>{#Сохранить в XLS#}
             </div>
         </div>
         <br>
@@ -14,22 +14,22 @@
             <thead>
             <tr>
                 <th>№</th>
-                <th>Наименование озера и абс.высота</th>
-                <th>Первоначальный объём воды, (тыс.куб.м)</th>
-                <th>Текущий объём воды, (тыс.куб.м)</th>
-                <th>Приток воды с ледника, (л/с)</th>
-                <th>Отвод воды через эвак. канал</th>
-                <th>Отвод воды через насосы, (л/сек)</th>
-                <th>Отвод воды через Сифоны, л/с)</th>
-                <th>Всего сброшено воды,(тыс.куб.м) за сутки</th>
-                <th>Всего сброшено воды,(тыс.куб.м) с начала работы</th>
-                <th>Понижение от первоначального уровня, (м). {{ date }}</th>
+                <th>{{ t('/morainic-lakes-summaries.name_altitude') }}</th>{#Наименование озера и абс.высота#}
+                <th>{{ t('/morainic-lakes-summaries.initial_volume') }}</th>{#Первоначальный объём воды, (тыс.куб.м)#}
+                <th>{{ t('/morainic-lakes-summaries.current_volume') }}</th>{#Текущий объём воды, (тыс.куб.м)#}
+                <th>{{ t('/morainic-lakes-summaries.inflow_glacier') }}</th>{#Приток воды с ледника, (л/с)#}
+                <th>{{ t('/morainic-lakes-summaries.drainage_via_evacuation_channel') }}</th>{#Отвод воды через эвак. канал#}
+                <th>{{ t('/morainic-lakes-summaries.drainage_via_pump') }}</th>{#Отвод воды через насосы, (л/сек)#}
+                <th>{{ t('/morainic-lakes-summaries.drainage_via_siphon') }}</th>{#Отвод воды через Сифоны, л/с)#}
+                <th>{{ t('/morainic-lakes-summaries.water_dropped_day') }}</th>{#Всего сброшено воды,(тыс.куб.м) за сутки#}
+                <th>{{ t('/morainic-lakes-summaries.water_dropped_total') }}</th>{#Всего сброшено воды,(тыс.куб.м) с начала работы#}
+                <th>{{ t('/morainic-lakes-summaries.lowering_from_initial1') }} {{ date }}</th>{#Понижение от первоначального уровня, (м). {{ date }}#}
                 {% if compare_with is defined and compare_with %}
-                    <th>Понижение от первоначального уровня, (м). {{ comparedRecord.date ?? '' }}</th>
+                    <th>{{ t('/morainic-lakes-summaries.lowering_from_initial1') }} {{ comparedRecord.date ?? '' }}</th>{#Понижение от первоначального уровня, (м). #}
                 {% endif %}
-                <th>t&deg; воды</th>
-                <th>t&deg; воздуха</th>
-                <th>Нулевая изотерма</th>
+                <th>{{ t('/morainic-lakes-summaries.temperature_water') }}</th>{#t&deg; воды#}
+                <th>{{ t('/morainic-lakes-summaries.temperature_air') }}</th>{#t&deg; воздуха#}
+                <th>{{ t('/morainic-lakes-summaries.zero_isotherm') }}</th>{#Нулевая изотерма#}
                 {#<th></th>#}
             </tr>
             </thead>
@@ -56,7 +56,7 @@
                 </tr>
             {% endfor %}
             <tr>
-                <td colspan="2" rowspan="2">Всего:</td>
+                <td colspan="2" rowspan="2">{{ t('/morainic-lakes-summaries.total') }}:</td>{#Всего#}
                 <td rowspan="2"><span class="has-text-weight-bold">{{ lakesSumRaw.sum('initial_volume') }}</span></td>
                 <td rowspan="2"><span class="has-text-weight-bold">{{ lakesSumRaw.sum('current_volume') }}</span></td>
                 <td rowspan="2"><span class="has-text-weight-bold">{{ lakesSumRaw.sum('inflow_glacier') }}</span></td>
@@ -81,14 +81,14 @@
                 <td></td>
             </tr>
             <tr>
-                <td>Сравнение с
+                <td>{{ t('/morainic-lakes-summaries.compare_with') }}{#Сравнение с#}
                     <form action="" method="get">
                         <div class="column">
                             <label for=""></label>
                             <select onchange="this.form.submit()" name="compare_with" id="">
                                 <option value=""></option>
                                 {% for record in otherRecords %}
-                                    <option {{ compare_with is defined and compare_with == record.date ? 'selected' : '' }} value="{{ record.date }}">{{ record.date }}</option>
+                                    <option {{ compare_with is defined and compare_with == record.date ? 'selected' : '' }} value="{{ record.date }}">{{ record.date|date('d.m.Y') }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -140,11 +140,11 @@
         <form action="/morainic-lakes-reports/{{ date }}/update" method="post">
             {{ csrf_field() }}
             <div class="column">
-                <label for="note">Примечание</label>
+                <label for="note">{{ t('note') }}</label>{#Примечание#}
                 <textarea class="textarea" name="note">{{ report.note|default('') }}</textarea>
             </div>
             <div class="column">
-                <button class="button is-primary">Сохранить</button>
+                <button class="button is-primary">{{ t('save') }}</button>{#Сохранить#}
             </div>
 
         </form>

@@ -3,7 +3,7 @@
     <div class="container section">
         <div class="level" style="margin-top: 20px">
             <div class="level-left">
-                <h4 class="title">Сводная информация по озерам</h4>
+                <h4 class="title">{{ t('/morainic-lakes-summaries.lakes_info') }}</h4>{#Сводная информация по озерам#}
             </div>
         </div>
 
@@ -20,63 +20,63 @@
                 <h5 class="title">{{ lake.name }}</h5>
                 <br>
                 <div class="field">
-                    <label for="field_1">Первоначальный объём воды, (тыс.куб.м)</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.initial_volume') }}</label>{#Первоначальный объём воды, (тыс.куб.м)#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][initial_volume]" id="initial_volume_{{ lake.id }}" value="{{ lake.oneSummary(date|default('')).initial_volume|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Текущий объём воды, (тыс.куб.м)</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.current_volume') }}</label>{#Текущий объём воды, (тыс.куб.м)#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][current_volume]" id="current_volume" value="{{ lake.oneSummary(date|default('')).current_volume|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Приток воды с ледника, (л/с)</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.inflow_glacier') }}</label>{#Приток воды с ледника, (л/с)#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][inflow_glacier]" id="inflow_glacier" value="{{ lake.oneSummary(date|default('')).inflow_glacier|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Отвод воды через эвак. канал</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.drainage_via_evacuation_channel') }}</label>{#Отвод воды через эвак. канал#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][drainage_via_evacuation_channel]" id="drainage_via_evacuation_channel" value="{{ lake.oneSummary(date|default('')).drainage_via_evacuation_channel|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Отвод воды через насосы, (л/сек)</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.drainage_via_pump') }}</label>{#Отвод воды через насосы, (л/сек)#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][drainage_via_pump]" id="drainage_via_pump" value="{{ lake.oneSummary(date|default('')).drainage_via_pump|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Отвод воды через сифоны, л/с)</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.drainage_via_siphon') }}</label>{#Отвод воды через сифоны, л/с)#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][drainage_via_siphon]" id="drainage_via_siphon" value="{{ lake.oneSummary(date|default('')).drainage_via_siphon|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Всего сброшено воды,(тыс.куб.м) за сутки</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.water_dropped_day') }}</label>{#Всего сброшено воды,(тыс.куб.м) за сутки#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][water_dropped_day]" id="water_dropped_day" value="{{ lake.oneSummary(date|default('')).water_dropped_day|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Всего сброшено воды,(тыс.куб.м) с начала работы</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.water_dropped_total') }}</label>{#Всего сброшено воды,(тыс.куб.м) с начала работы#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][water_dropped_total]" id="water_dropped_total" value="{{ lake.oneSummary(date|default('')).water_dropped_total|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Понижение от первоначального уровня, (м).</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.lowering_from_initial1') }}</label>{#Понижение от первоначального уровня, (м).#}
                     <div class="control">
                         <input type="number" step="0.0000001" min=0 oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][lowering_from_initial1]" id="lowering_from_initial1" value="{{ lake.oneSummary(date|default('')).lowering_from_initial1|default('') }}">
                     </div>
@@ -90,21 +90,21 @@
                 {#</div>#}
 
                 <div class="field">
-                    <label for="field_1">t0 воды</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.temperature_water') }}</label>{#t0 воды#}
                     <div class="control">
                         <input type="number" step="0.0000001" oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][temperature_water]" id="temperature_water" value="{{ lake.oneSummary(date|default('')).temperature_water|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">t0 воздуха</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.temperature_air') }}</label>{#t0 воздуха#}
                     <div class="control">
                         <input type="number" step="0.0000001" oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][temperature_air]" id="temperature_air" value="{{ lake.oneSummary(date|default('')).temperature_air|default('') }}">
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="field_1">Нулевая изотерма</label>
+                    <label for="field_1">{{ t('/morainic-lakes-summaries.zero_isotherm') }}</label>{#Нулевая изотерма#}
                     <div class="control">
                         <input type="number" step="0.0000001" oninput="validity.valid||(value='');" class="input" name="lake[{{ lake.id }}][zero_isotherm]" id="zero_isotherm" value="{{ lake.oneSummary(date|default('')).zero_isotherm|default('') }}">
                     </div>
@@ -116,7 +116,7 @@
                     <p class="level-left">
                     </p>
                     <p class="level-right">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить</button>
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; {{ t('save') }}</button>{#Сохранить#}
                     </p>
                 </div>
             </div>

@@ -49,7 +49,7 @@ class MakeDbDump extends Command
         if (!is_dir($path)) {
             mkdir($path, 0755, true);
         }
-        $command = "mysqldump -u {$username} -p{$password} {$database} | gzip > database/dumps/dump-latest.sql.gz";
+        $command = "mysqldump -u {$username} -p'{$password}' {$database} | gzip > database/dumps/dump.sql.gz";
 
         exec($command);
     }

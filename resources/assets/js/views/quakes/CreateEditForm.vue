@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="field">
-            <label for="energy_class">Энергетический класс землетрясения</label>
+            <label for="energy_class">{{ '/quakes.energy_class'|trans }}</label><!--Энергетический класс землетрясения-->
             <input type="number" step="0.01" class="input" name="energy_class" id="energy_class" v-model="energyClass" required/>
         </div>
         <div class="field">
-            <label for="coordinates">Координаты эпицентра</label>
+            <label for="coordinates">{{ '/quakes.coordinates'|trans }}</label><!--Координаты эпицентра-->
             <input type="text" class="input" name="coordinates" id="coordinates" v-model="coordinates" required/>
         </div>
         <div style="height: 300px" id="map"></div>
