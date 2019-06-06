@@ -5,29 +5,29 @@
     <div class="container section" id="vue">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
-                <h4 class="title">Редактирование записи</h4>
+                <h4 class="title">{{ t('edit_record') }}</h4>{#Редактирование записи#}
                 <form action="{{ route('quakes.update', model.id) }}" method="post">
                     <input type="hidden" name="_method" value="PATCH">
                     {{ csrf_field() }}
                     <div class="field">
-                        <label for="description">Описание</label>
+                        <label for="description">{{ t('description') }}</label>{#Описание#}
                         <textarea class="input" name="description" id="description" required>{{ model.description }}</textarea>
                     </div>
                     <div class="field">
-                        <label for="date_almaty">Дата и время Алматинского времени</label>
+                        <label for="date_almaty">{{ t('/quakes.date_almaty') }}</label>{#Дата и время Алматинского времени#}
                         <input type="datetime-local" class="input" name="date_almaty" id="date_almaty" value="{{ model.date_almaty|date('Y-m-d\\TH:i') }}" required />
                     </div>
                     <div class="field">
-                        <label for="date_greenwich">Дата и время по Гринвичу</label>
+                        <label for="date_greenwich">{{ t('/quakes.date_greenwich') }}</label>{#Дата и время по Гринвичу#}
                         <input type="datetime-local" class="input" name="date_greenwich" id="date_greenwich" value="{{ model.date_greenwich|date('Y-m-d\\TH:i') }}" required />
                     </div>
                     <div class="field">
-                        <label for="epicenter">Эпицентр землетрясения</label>
+                        <label for="epicenter">{{ t('/quakes.epicenter') }}</label>{#Эпицентр землетрясения#}
                         <input type="text" class="input" name="epicenter" id="epicenter" value="{{ model.epicenter }}" required/>
                     </div>
 
                     <div class="field">
-                        <label for="mpv">Магнитуда MPV</label>
+                        <label for="mpv">{{ t('/quakes.mpv') }}</label>{#Магнитуда MPV#}
                         <input type="number" step="0.01" class="input" name="mpv" id="mpv" value="{{ model.mpv }}" required/>
                     </div>
                     {#<div class="field">
@@ -35,11 +35,11 @@
                         <input type="text" class="input" name="coordinates" id="coordinates" value="{{ model.coordinates }}" required/>
                     </div>#}
                     <div class="field">
-                        <label for="deep">Глубина</label>
+                        <label for="deep">{{ t('/quakes.deep') }}</label>{#Глубина#}
                         <input type="number" step="0.01" class="input" name="deep" id="deep" value="{{ model.deep }}" required/>
                     </div>
                     <div class="field">
-                        <label for="information">Сведения об ощутимости</label>
+                        <label for="information">{{ t('/quakes.information') }}</label>{#Сведения об ощутимости#}
                         <input type="text" class="input" name="information" id="information" value="{{ model.information }}" required/>
                     </div>
 
@@ -50,9 +50,8 @@
 
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
-                        <a href="{{ route('quakes.index') }}" class="button is-light">Отменить</a>
-
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;{{ t('save') }}</button>{#Сохранить#}
+                        <a href="{{ route('quakes.index') }}" class="button is-light">{{ t('cancel') }}</a>{#Отменить#}
                     </div>
 
 

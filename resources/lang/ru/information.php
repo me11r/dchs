@@ -9,6 +9,7 @@ return array(
         'morainic_lakes' => 'Моренные озера',
         'hydro_data' => 'Гидрометеорологические данные',
         'hydro_sheet' => 'Гидрометеорологический бюллетень',
+        'name' => 'Наименование организации',
     ],
     '/morainic-lakes-summaries' => [
         'lakes_info' => 'Сводная информация по озерам',
@@ -24,9 +25,14 @@ return array(
         'temperature_water' => 't0 воды',
         'temperature_air' => 't0 воздуха',
         'zero_isotherm' => 'Нулевая изотерма',
+        'lakes_info_date' => 'Сводная информация по мореным озерам на :date',
+        'compare_with' => 'Сравнение с',
+        'name_altitude' => 'Наименование озера и абс.высота',
+        'total' => 'Всего',
     ],
     '/mudflow-protection' => [
         'information' => 'Информация',
+        'hydro_name' => 'Наименование гидропостов и их отметка',
         'water_flow_rate' => 'Расход воды',
         'critical_water_flow_rate' => 'Критический расход воды',
         'turbidity_of_water' => 'Мутность воды',

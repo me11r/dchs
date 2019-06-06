@@ -4,35 +4,35 @@
     <div class="level">
         <div class="level-left">
         <h4 class="title"
-            style="padding: 3px 15px">ТОО СОМЭ
+            style="padding: 3px 15px">{{ t('/information.some') }}{#ТОО СОМЭ#}
         </h4>
         </div>
         <div class="level-right">
                 <a href="{{ route('quakes.create') }}" class="button is-main is-basic"
                    style="margin: 2px 10px 2px">
-                    <i class="fas fa-plus"></i>&nbsp;Добавить
+                    <i class="fas fa-plus"></i>&nbsp;{{ t('add') }}{#Добавить#}
                 </a>
         </div>
     </div>
     <div class="panel">
         <div class="levels">
             <div class="level-right">
-                <a href="/quakes/export/xls" class="button is-success">Сохранить в XLS</a>
+                <a href="/quakes/export/xls" class="button is-success">{{ t('download_excel') }}</a>{#Сохранить в XLS#}
             </div>
         </div>
         <table class="table is-narrow is-hoverable is-fullwidth is-striped is-small">
             <thead>
             <tr>
                 <th>№</th>
-                <th>Описание</th>
-                <th>Дата и время Алматинского времени</th>
-                <th>Дата и время по Гринвичу</th>
-                <th>Эпицентр землетрясения</th>
-                <th>Энергетический класс землетрясения</th>
-                <th>Магнитуда MPV</th>
-                <th>Координаты эпицентра</th>
-                <th>Глубина</th>
-                <th>Сведения об ощутимости</th>
+                <th>{{ t('/quakes.description') }}</th>{#Описание#}
+                <th>{{ t('/quakes.date_almaty') }}</th>{#Дата и время Алматинского времени#}
+                <th>{{ t('/quakes.date_greenwich') }}</th>{#Дата и время по Гринвичу#}
+                <th>{{ t('/quakes.epicenter') }}</th>{#Эпицентр землетрясения#}
+                <th>{{ t('/quakes.energy_class') }}</th>{#Энергетический класс землетрясения#}
+                <th>{{ t('/quakes.mpv') }}</th>{#Магнитуда MPV#}
+                <th>{{ t('/quakes.coordinates') }}</th>{#Координаты эпицентра#}
+                <th>{{ t('/quakes.deep') }}</th>{#Глубина#}
+                <th>{{ t('/quakes.information') }}</th>{#Сведения об ощутимости#}
                 <th> &nbsp;</th>
             </tr>
             </thead>
@@ -52,7 +52,7 @@
                             <a href="{{ route('quakes.edit', item.id) }}"
                                class="button is-small is-basic">
                                 <i class="fas fa-pencil-alt"></i>&nbsp;
-                                Редактировать
+                                {{ t('edit') }}{#Редактировать#}
                             </a>
 
                             <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
@@ -60,7 +60,7 @@
                                   action="{{ route('quakes.destroy', item.id) }}">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="DELETE">
-                                <button title="Удалить"
+                                <button title="{{ t('delete') }}"
                                         class="button is-small is-danger">
                                     <i class="fas fa-trash"></i>
                                 </button>
