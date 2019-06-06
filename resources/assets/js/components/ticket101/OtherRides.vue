@@ -819,22 +819,7 @@
                 }
 
             },
-            addToAction(result){
-                if(result.repair_at === null && result.repair_department !== null){
-                    result.repair_at = moment().format();
-                    let newResult = JSON.parse(JSON.stringify(result));
-
-                    newResult.tech.status = 'action';
-
-                    axios.post('/api/101card/promote-to-action', {
-                        id: newResult.id,
-                        repair_department: newResult.repair_department,
-                    });
-
-                    this.active[newResult.fire_department_id].push(newResult);
-                }
-
-            },
+            
             sendAllTripPlans() {
                 axios.post('/roadtrip/other/send-all/' + this.otherRide_.id).then((response) => {
                     alert('Силы отправлены');
