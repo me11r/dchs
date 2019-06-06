@@ -159,7 +159,7 @@
                                                    value="1"
                                                    v-model="i.recommended"
                                                    type="checkbox">
-                                        </label>&nbsp;{{ i.tech.department ? i.tech.department : i.promoted_department }}
+                                        </label>&nbsp;{{ i.tech.department ? i.tech.department :  i.repair_department ? i.repair_department : i.promoted_department }}
                                     </p>
 
                                 </td>
@@ -315,6 +315,90 @@
                                         <a
                                                 v-if="i.promoted_at === null"
                                                 @click="addToActive(i)"
+                                                class="small-a button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Ввести
+                                        </a>
+                                        <a
+                                                v-else
+                                                class="small-a button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;В боевом расчете
+                                        </a>
+                                    </p>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </b-tab-item>
+                    <!--Новый таб "На ремонте"-->
+                    <b-tab-item label="На ремонте" icon="fa fa-truck">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                            <tr>
+                                <th>Подразделение</th>
+                                <th>Отделения</th>
+                                <th>Время ввода в боевой расчет</th>
+                                <th>Номер отделения</th>
+                                <th>Ввести в боевой расчет</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="department in fireDepartments_">
+
+                                <!--Подразделение-->
+                                <td class=""
+                                    :id="`ph_${department.id}_text`"
+                                    :class="isRecommended(department)">
+                                    {{ department.title }}
+                                </td>
+
+                                <!--Отделения-->
+                                <td>
+                                  
+                                    <p v-for="i in formRepair[department.id]">
+                                        <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status === 'repair')">-->
+                                        {{ i.tech.repair }} <span class="small">Р</span>
+
+                                        <!--<label>
+
+                                            <input @change="selectToSend($event, i.id)"
+                                                   :name="`departments_to_ride[${department.id }][${i.id}]`"
+                                                   :id="`dept_${i.id}`" value="1"
+                                                   type="checkbox"> {{ i.tech.repair }}
+                                        }
+                                        }
+                                        </label>
+                                        &lt;!&ndash;<br>&ndash;&gt;-->
+
+                                    </p>
+                                </td>
+
+                                <!--Время ввода в боевой расчет-->
+                                <td>
+                                    <p v-for="i in formRepair[department.id]">
+                                        <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'repair')">-->
+                                        <label for="">
+                                            <input v-model="i.repair_at" type="text" class="input small-imput">
+                                        </label>
+                                    </p>
+
+                                </td>
+
+                                <!--Номер отделения-->
+                                <td>
+                                    <p v-for="i in formRepair[department.id]">
+                                        <label v-if="i.tech.formation_tech_report.dept_id == department.id">
+                                            <input v-model="i.repair_department" type="text" class="input small-imput">
+                                        </label>
+                                        <!--<br>-->
+                                    </p>
+                                </td>
+
+                                <!--Ввести в боевой расчет-->
+                                <td>
+                                    <p v-for="i in formRepair[department.id]">
+                                        <!--<a v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'repairs')"-->
+                                        <a
+                                                v-if="i.repair_at === null"
+                                                @click="addToAction(i)"
                                                 class="small-a button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Ввести
                                         </a>
                                         <a
@@ -671,6 +755,7 @@
                 techItems_: this.techItems,
                 active: [],
                 reserve: [],
+                repair: [],
                 sendList: [],
                 time: 1000 * 10,
                 hq: this.formatHq(),
@@ -728,6 +813,22 @@
                     axios.post('/api/101card/promote-to-action', {
                         id: newResult.id,
                         promoted_department: newResult.promoted_department,
+                    });
+
+                    this.active[newResult.fire_department_id].push(newResult);
+                }
+
+            },
+            addToAction(result){
+                if(result.repair_at === null && result.repair_department !== null){
+                    result.repair_at = moment().format();
+                    let newResult = JSON.parse(JSON.stringify(result));
+
+                    newResult.tech.status = 'action';
+
+                    axios.post('/api/101card/promote-to-action', {
+                        id: newResult.id,
+                        repair_department: newResult.repair_department,
                     });
 
                     this.active[newResult.fire_department_id].push(newResult);
@@ -984,7 +1085,7 @@
                 this.fireDepartments_.forEach((dept) => {
                     this.active[dept.id] = _.filter(this.techItems_, function (result) {
                         return (result.tech.department && result.tech.formation_tech_report.dept_id === dept.id && result.tech.status === 'action') ||
-                            (result.promoted_at !== null && result.tech.formation_tech_report.dept_id === dept.id);
+                            (result.promoted_at !== null && result.tech.formation_tech_report.dept_id === dept.id) || (result.repair_at !== null && result.tech.formation_tech_report.dept_id === dept.id);
                     });
                 });
 
@@ -999,7 +1100,16 @@
 
                 return this.reserve;
             },
+            formRepair() {
+                this.fireDepartments_.forEach((dept) => {
+                    this.repair[dept.id] = _.filter(this.techItems_, function (result) {
+                        return result.tech.formation_tech_report.dept_id === dept.id && result.tech.status === 'repair';
+                    });
+                });
 
+                return this.repair;
+            },
+           
         },
         watch: {
         },
