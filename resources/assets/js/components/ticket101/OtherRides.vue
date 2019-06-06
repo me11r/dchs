@@ -159,7 +159,7 @@
                                                    value="1"
                                                    v-model="i.recommended"
                                                    type="checkbox">
-                                        </label>&nbsp;{{ i.tech.department ? i.tech.department :  i.repair_department ? i.repair_department : i.promoted_department }}
+                                        </label>&nbsp;{{ i.tech.department ? i.tech.department : i.promoted_department }}
                                     </p>
 
                                 </td>
@@ -376,7 +376,7 @@
                                     <p v-for="i in formRepair[department.id]">
                                         <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'repair')">-->
                                         <label for="">
-                                            <input v-model="i.repair_at" type="text" class="input small-imput">
+                                            <input v-model="i.promoted_at" type="text" class="input small-imput">
                                         </label>
                                     </p>
 
@@ -386,7 +386,7 @@
                                 <td>
                                     <p v-for="i in formRepair[department.id]">
                                         <label v-if="i.tech.formation_tech_report.dept_id == department.id">
-                                            <input v-model="i.repair_department" type="text" class="input small-imput">
+                                            <input v-model="i.promoted_department" type="text" class="input small-imput">
                                         </label>
                                         <!--<br>-->
                                     </p>
@@ -397,8 +397,8 @@
                                     <p v-for="i in formRepair[department.id]">
                                         <!--<a v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'repairs')"-->
                                         <a
-                                                v-if="i.repair_at === null"
-                                                @click="addToAction(i)"
+                                                v-if="i.promoted_at === null"
+                                                @click="addToActive(i)"
                                                 class="small-a button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Ввести
                                         </a>
                                         <a
