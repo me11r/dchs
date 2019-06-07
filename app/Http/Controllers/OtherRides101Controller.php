@@ -220,7 +220,7 @@ class OtherRides101Controller extends Controller
 
             $activeTech = $report
                 ->items()
-                ->whereIn('status', ['reserve', 'action'])
+                ->whereIn('status', ['reserve', 'action', 'repair'])
                 ->get();
 
             foreach ($activeTech as $tech) {
