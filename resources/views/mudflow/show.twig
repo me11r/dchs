@@ -3,17 +3,17 @@
     <div class="container">
         <div class="">
             <h4 class="title"
-                style="padding: 3px 15px">ГУ "Казселезащита" за {{ dateHuman }}
+                style="padding: 3px 15px">{{ t('/information.kaz_mudflow') }} {{ dateHuman }}{#ГУ "Казселезащита" за #}
             </h4>
         </div>
 
         <div class="panel">
             <div class="level">
                 <div class="level-left">
-                    <a href="/mudflow-protection" class="button is-info">Назад</a>
+                    <a href="/mudflow-protection" class="button is-info">{{ t('back') }}</a>{#Назад#}
                 </div>
                 <div class="level-right">
-                    <a href="/mudflowProtection/export/xls/{{ date }}" class="button is-success">Сохранить в DOCX</a>
+                    <a href="/mudflowProtection/export/xls/{{ date }}" class="button is-success">{{ t('docx') }}</a>{#Сохранить в DOCX#}
                 </div>
             </div>
             <div class="section">
@@ -24,19 +24,19 @@
                     <thead>
                     <tr>
                         <th>№</th>
-                        <th>Информация</th>
-                        <th>Наименование гидропостов и их отметка</th>
-                        <th>Расход воды</th>
-                        <th>Критический расход воды</th>
-                        <th>Мутность воды</th>
-                        <th>Максимальная мутность воды</th>
-                        <th>Температура воздуха</th>
-                        <th>Температура воды</th>
-                        <th>Осадки</th>
-                        <th>Высота снега</th>
-                        <th>Погода</th>
-                        <th>Комментарий</th>
-                        <th class="has-text-right">Дата и время</th>
+                        <th>{{ t('information') }}</th>{#Информация#}
+                        <th>{{ t('/mudflow-protection.hydro_name') }}</th>{#Наименование гидропостов и их отметка#}
+                        <th>{{ t('/mudflow-protection.water_flow_rate') }}</th>{#Расход воды#}
+                        <th>{{ t('/mudflow-protection.critical_water_flow_rate') }}</th>{#Критический расход воды#}
+                        <th>{{ t('/mudflow-protection.turbidity_of_water') }}</th>{#Мутность воды#}
+                        <th>{{ t('/mudflow-protection.max_turbidity_of_water') }}</th>{#Максимальная мутность воды#}
+                        <th>{{ t('/mudflow-protection.air_temperature') }}</th>{#Температура воздуха#}
+                        <th>{{ t('/mudflow-protection.water_temperature') }}</th>{#Температура воды#}
+                        <th>{{ t('/mudflow-protection.precipitation') }}</th>{#Осадки#}
+                        <th>{{ t('/mudflow-protection.height_of_snow') }}</th>{#Высота снега#}
+                        <th>{{ t('/mudflow-protection.weather') }}</th>{#Погода#}
+                        <th>{{ t('comment') }}</th>{#Комментарий#}
+                        <th class="has-text-right">{{ t('datetime') }}</th>{#Дата и время#}
                     </tr>
                     </thead>
                     {% set index = 1 %}

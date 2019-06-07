@@ -2,14 +2,14 @@
 {% block content %}
     <div class="container section">
         <div class="panel">
-            <h4 style="" class="title">Сводная информация по мореным озерам</h4>
+            <h4 style="" class="title">{{ t('/morainic-lakes-summaries.lakes_info') }}</h4>{#Сводная информация по мореным озерам#}
             <div class="level-right has-text-right">
-                <a href="{{ route('morainic-lakes-summaries.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                <a href="{{ route('morainic-lakes-summaries.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;{{ t('create_record') }}</a>{#Создать запись#}
             </div>
             <table class="table is-narrow is-striped is-hoverable is-selectable">
                 <thead>
                 <tr>
-                    <th>Дата</th>
+                    <th>{{ t('date') }}</th>{#Дата#}
                     <th></th>
                 </tr>
                 </thead>
@@ -19,9 +19,9 @@
                         <td>{{ item.date }}</td>
                         <td>
                             <a class="button is-basic is-small" href="{{ route('morainic-lakes-summaries.edit', {'id':item.date}) }}">
-                                <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
+                                <i class="fas fa-edit"></i>&nbsp;{{ t('edit') }}</a>{#Редактировать#}
                             <a class="button is-info is-small" href="{{ route('morainic-lakes-summaries.show', {'id':item.date}) }}">
-                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a>
+                                <i class="fas fa-edit"></i>&nbsp;{{ t('view') }}</a>{#Просмотр#}
                             {% if user and user.hasRight('CAN_DELETE_REPORT_MORAINIC_LAKES') %}
                                 <form method="post" action="/morainic-lakes-summaries/{{ item.date }}" style="display: inline">
                                     {{ csrf_field() }}
@@ -29,7 +29,7 @@
                                     <button onclick="return confirm('Удалить?');"
                                             class="button is-small is-danger">
                                         <i class="fas fa-times"></i>&nbsp;
-                                        Удалить
+                    {{ t('delete') }}{#Удалить#}
                                     </button>
                                 </form>
                             {% endif %}
@@ -40,7 +40,7 @@
                         <td>{{  "now"|date("d/m/Y") }}</td>
                         <td>
                             <a class="button is-basic is-small" href="/morainic-lakes-reports/{{  "now"|date("d-m-Y") }}">
-                                <i class="fas fa-edit"></i>&nbsp;Просмотр</a>
+                                <i class="fas fa-edit"></i>&nbsp;{{ t('view') }}</a>{#Просмотр#}
                         </td>
                     </tr>
                 {% endfor %}

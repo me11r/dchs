@@ -3,7 +3,7 @@
     <div class="section container">
     <div class="">
         <h4 class="title"
-            style="padding: 3px 15px">Информация
+            style="padding: 3px 15px">{{ t('/information.title') }}{#Информация#}
         </h4>
     </div>
     <div class="columns is-gapless">
@@ -23,37 +23,37 @@
             <thead>
             <tr>
                 <th>№</th>
-                <th>Наименование организации</th>
+                <th>{{ t('/information.name') }}</th>{#Наименование организации#}
                 <th>&nbsp;</th>
             </tr>
             </thead>
                 <tr>
                     <td class="has-text-right">1</td>
                     <td>
-                        <p>ГУ Казселезащита</p>
+                        <p>{{ t('/information.kaz_mudflow') }}</p>{#ГУ Казселезащита#}
                     </td>
                     <td class="has-text-right">
                         {#<a class="button is-info is-small" href="/morainic-lakes">Моренные озера</a>#}
-                        <a class="button is-info is-small" href="/morainic-lakes-summaries">Моренные озера</a>
-                        <a class="button is-info is-small" href="/mudflow-protection">Гидрометеорологические данные</a>
+                        <a class="button is-info is-small" href="/morainic-lakes-summaries">{{ t('/information.morainic_lakes') }}</a>{#Моренные озера#}
+                        <a class="button is-info is-small" href="/mudflow-protection">{{ t('/information.hydro_data') }}</a>{#Гидрометеорологические данные#}
                     </td>
                 </tr>
                 <tr>
                     <td class="has-text-right">2</td>
                     <td>
-                        <p>РГП Казгидромет</p>
+                        <p>{{ t('/information.kaz_hydro') }}</p>{#РГП Казгидромет#}
                     </td>
                     <td class="has-text-right">
-                        <a class="button is-info is-small" href="/weather">Гидрометеорологический бюллетень</a>
+                        <a class="button is-info is-small" href="/weather">{{ t('/information.hydro_sheet') }}</a>{#Гидрометеорологический бюллетень#}
                     </td>
                 </tr>
                 <tr>
                     <td class="has-text-right">3</td>
                     <td>
-                        <p>ТОО СОМЭ</p>
+                        <p>{{ t('/information.some') }}</p>{#ТОО СОМЭ#}
                     </td>
                     <td class="has-text-right">
-                        <a class="button is-info is-small" href="/quakes">Просмотр</a>
+                        <a class="button is-info is-small" href="/quakes">{{ t('view') }}</a>{#Просмотр#}
                     </td>
                 </tr>
         </table>
