@@ -85,6 +85,7 @@ class FireDepartmentResult extends Model
         'retreat_time',
         'need_check_retreat', //нужно отправить уведомление об отбое
         'distance', //Расстояние до места
+        
     ];
 
     protected $appends = [
