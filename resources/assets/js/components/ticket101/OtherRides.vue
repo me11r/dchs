@@ -754,6 +754,7 @@
                 ticket_: this.ticket,
                 techItems_: this.techItems,
                 active: [],
+                repair: [],
                 reserve: [],
                 sendList: [],
                 time: 1000 * 10,
