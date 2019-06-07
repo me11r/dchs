@@ -755,7 +755,6 @@
                 techItems_: this.techItems,
                 active: [],
                 reserve: [],
-                repair: [],
                 sendList: [],
                 time: 1000 * 10,
                 hq: this.formatHq(),
@@ -1070,7 +1069,7 @@
                 this.fireDepartments_.forEach((dept) => {
                     this.active[dept.id] = _.filter(this.techItems_, function (result) {
                         return (result.tech.department && result.tech.formation_tech_report.dept_id === dept.id && result.tech.status === 'action') ||
-                            (result.promoted_at !== null && result.tech.formation_tech_report.dept_id === dept.id) || (result.repair_at !== null && result.tech.formation_tech_report.dept_id === dept.id);
+                            (result.promoted_at !== null && result.tech.formation_tech_report.dept_id === dept.id);
                     });
                 });
 
