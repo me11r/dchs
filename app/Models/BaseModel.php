@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 abstract class BaseModel extends Model
 {
@@ -45,5 +46,17 @@ abstract class BaseModel extends Model
         }
 
         return $q->whereBetween($this->searchByDate, [$finalDateBegin, $finalDateEnd]);
+    }
+
+    /*betweenInclusive*/
+    /**
+    более точный период, учитывает вхождения даты начала и окончания в период
+     *
+     */
+    public function scopeBetweenInclusive($q, array $dates, string $searchBy = null)
+    {
+        $searchBy = $searchBy ? $searchBy : $this->searchByDate;
+
+        return $q->whereBetween(DB::raw("date({$searchBy})"), $dates);
     }
 }
