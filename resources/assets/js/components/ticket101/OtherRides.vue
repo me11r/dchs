@@ -328,6 +328,90 @@
                             </tbody>
                         </table>
                     </b-tab-item>
+                    <!--Новый таб "На ремонте"-->
+                    <b-tab-item label="На ремонте" icon="fa fa-truck">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                            <tr>
+                                <th>Подразделение</th>
+                                <th>Отделения</th>
+                                <th>Время ввода в боевой расчет</th>
+                                <th>Номер отделения</th>
+                                <th>Ввести в боевой расчет</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="department in fireDepartments_">
+
+                                <!--Подразделение-->
+                                <td class=""
+                                    :id="`ph_${department.id}_text`"
+                                    :class="isRecommended(department)">
+                                    {{ department.title }}
+                                </td>
+
+                                <!--Отделения-->
+                                <td>
+                                  
+                                    <p v-for="i in formRepair[department.id]">
+                                        <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status === 'repair')">-->
+                                        {{ i.tech.repair }} <span class="small">Р</span>
+
+                                        <!--<label>
+
+                                            <input @change="selectToSend($event, i.id)"
+                                                   :name="`departments_to_ride[${department.id }][${i.id}]`"
+                                                   :id="`dept_${i.id}`" value="1"
+                                                   type="checkbox"> {{ i.tech.repair }}
+                                        }
+                                        }
+                                        </label>
+                                        &lt;!&ndash;<br>&ndash;&gt;-->
+
+                                    </p>
+                                </td>
+
+                                <!--Время ввода в боевой расчет-->
+                                <td>
+                                    <p v-for="i in formRepair[department.id]">
+                                        <!--<label v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'repair')">-->
+                                        <label for="">
+                                            <input v-model="i.promoted_at" type="text" class="input small-imput">
+                                        </label>
+                                    </p>
+
+                                </td>
+
+                                <!--Номер отделения-->
+                                <td>
+                                    <p v-for="i in formRepair[department.id]">
+                                        <label v-if="i.tech.formation_tech_report.dept_id == department.id">
+                                            <input v-model="i.promoted_department" type="text" class="input small-imput">
+                                        </label>
+                                        <!--<br>-->
+                                    </p>
+                                </td>
+
+                                <!--Ввести в боевой расчет-->
+                                <td>
+                                    <p v-for="i in formRepair[department.id]">
+                                        <!--<a v-if="(i.tech.formation_tech_report.dept_id == department.id && i.tech.status == 'repairs')"-->
+                                        <a
+                                                v-if="i.promoted_at === null"
+                                                @click="addToActive(i)"
+                                                class="small-a button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;Ввести
+                                        </a>
+                                        <a
+                                                v-else
+                                                class="small-a button is-primary is-outlined"><i class="fas fa-bus"></i>&nbsp;В боевом расчете
+                                        </a>
+                                    </p>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </b-tab-item>
                     <b-tab-item label="Штаб" icon="fa fa-truck-moving">
 
                         <table class="table is-hoverable is-fullwidth">
@@ -670,6 +754,7 @@
                 ticket_: this.ticket,
                 techItems_: this.techItems,
                 active: [],
+                repair: [],
                 reserve: [],
                 sendList: [],
                 time: 1000 * 10,
@@ -734,6 +819,7 @@
                 }
 
             },
+            
             sendAllTripPlans() {
                 axios.post('/roadtrip/other/send-all/' + this.otherRide_.id).then((response) => {
                     alert('Силы отправлены');
@@ -999,7 +1085,16 @@
 
                 return this.reserve;
             },
+            formRepair() {
+                this.fireDepartments_.forEach((dept) => {
+                    this.repair[dept.id] = _.filter(this.techItems_, function (result) {
+                        return result.tech.formation_tech_report.dept_id === dept.id && result.tech.status === 'repair';
+                    });
+                });
 
+                return this.repair;
+            },
+           
         },
         watch: {
         },
