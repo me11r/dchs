@@ -85,6 +85,7 @@ use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -1469,7 +1470,8 @@ class ReportController extends AuthorizedController
         $fire_department_id = $request->fireDepartmentId;
         $direction = $request->direction;
 
-        $data['records'] = Ticket101Other::whereBetween('created_at', [$dateFrom, $dateTo]);
+        /*более точное вхождение периода дат*/
+        $data['records'] = Ticket101Other::betweenInclusive([$dateFrom, $dateTo]);
 
         //берем только те записи, где есть выезды
         if($fire_department_id) {
@@ -1497,6 +1499,7 @@ class ReportController extends AuthorizedController
             ->with([
                 'ride_type',
             ])
+            ->orderBy('custom_created_at')
             ->get();
 
         foreach ($data['records'] as $record) {
