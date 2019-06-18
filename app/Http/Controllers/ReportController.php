@@ -1697,6 +1697,7 @@ class ReportController extends AuthorizedController
     }
 
 
+    /*Учет выездов подразделений*/
     public function getReportForcesResources(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
@@ -1738,6 +1739,7 @@ class ReportController extends AuthorizedController
     }
 
 
+    /*Учет выездов подразделений*/
     public function exportReportForcesResources(Request $request, $type)
     {
         if ($data = Cache::get('report_forces_resources_data')) {
@@ -2045,6 +2047,7 @@ class ReportController extends AuthorizedController
         return view("daily-reports.$type",$data);
     }
 
+    /*Сводный отчет */
     public function getConsolidatedReport(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
