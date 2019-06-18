@@ -1621,8 +1621,8 @@ class ReportController extends AuthorizedController
                })->toArray(),
                'name' => $q->object_name,
                'location' => $q->location,
-               'time_begin' => $q->loc_time,
-               'time_end' => $q->liqv_time,
+               'time_begin' => $q->drill_begin,
+               'time_end' => $q->drill_end,
                'responsible_person' => $q->responsible_person,
                'checked_pg_total' => $q->drill_checked_pg_total,
                'checked_pv_total' => $q->drill_checked_pv_total,
@@ -1697,6 +1697,7 @@ class ReportController extends AuthorizedController
     }
 
 
+    /*Учет выездов подразделений*/
     public function getReportForcesResources(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));
@@ -1738,6 +1739,7 @@ class ReportController extends AuthorizedController
     }
 
 
+    /*Учет выездов подразделений*/
     public function exportReportForcesResources(Request $request, $type)
     {
         if ($data = Cache::get('report_forces_resources_data')) {
@@ -2045,6 +2047,7 @@ class ReportController extends AuthorizedController
         return view("daily-reports.$type",$data);
     }
 
+    /*Сводный отчет */
     public function getConsolidatedReport(Request $request)
     {
         $dateFrom = $request->input('dateFrom', now()->format('Y-m-d'));

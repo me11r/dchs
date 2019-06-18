@@ -95,7 +95,7 @@ class Report101Resources
 
 
                 $data['values'][$dept->title][] = [
-                    $ride['tech']['department'] ?? ($ride->tech->reserve) . ' резерв',
+                    $ride['tech']['department'] ?? ($ride['tech']['reserve']) . ' резерв',
 
                     $count,
                     $countFire,
@@ -107,7 +107,7 @@ class Report101Resources
                     $count - ($countFire + $countAsr + $countPeople + $countSignal + $countRegion),
 
                     //Колво карточек учения по ТИПУ УЧЕНИЯ (ПТЗ,ПТУ,ТСУ,РКШУ,Учения, ТДК)
-                    count($this->amountDrill($dept->id, $ride['tech']['department'], [1,2,3,4,5,6])),
+                    count($this->amountDrill($dept->id, $ride['tech']['department'], [], true)),
                     //Колво карточек учения 101 с Типом учения Корректировка
                     count($this->amountDrill($dept->id, $ride['tech']['department'], [7])),
                     //Колво карточек прочие выезда 101
@@ -126,10 +126,15 @@ class Report101Resources
         })->toArray();
     }
 
-    private function amountDrill($deptId, $department, $drill)
+    private function amountDrill($deptId, $department, $drill, $any = false)
     {
-        return collect($this->amountRides($deptId, $department))->filter(function ($q) use ($drill) {
-            return $q['ticket'] && in_array($q['ticket']['drill_type_id'], $drill);
+        return collect($this->amountRides($deptId, $department))->filter(function ($q) use ($drill, $any) {
+            if ($any) {
+                return $q['ticket'] && $q['ticket']['drill_type_id'] !== null;
+            }
+            else {
+                return $q['ticket'] && in_array($q['ticket']['drill_type_id'], $drill);
+            }
         })->toArray();
     }
 
