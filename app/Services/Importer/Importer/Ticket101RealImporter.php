@@ -119,6 +119,16 @@ class Ticket101RealImporter implements ImporterInterface
         }
     }
 
+    private function parseExcelDate($dateTime, $format = 'Y-m-d H:i')
+    {
+        try {
+            return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($dateTime)->format($format);
+        }
+        catch (\Exception $e) {
+            return null;
+        }
+    }
+
     public function get(array $raw_data): array
     {
 //        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101.xlsx'));
@@ -174,12 +184,8 @@ class Ticket101RealImporter implements ImporterInterface
             $changed_keys['building_square'] = trim($temp_item[15]);
             $changed_keys['people_in_danger'] = trim($temp_item[16]) ? trim($temp_item[16]) : 0;
             $changed_keys['additional_description'] = trim($temp_item[17]);
-            try {
-                $changed_keys['custom_created_at'] = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(trim($temp_item[18]))->format('Y-m-d H:i');
-            }
-            catch (\Exception $e) {
-                $changed_keys['custom_created_at'] = null;
-            }
+
+            $changed_keys['custom_created_at'] = $this->parseExcelDate(trim($temp_item[18]));
 
             if(!$changed_keys['custom_created_at']) {
 
@@ -195,8 +201,8 @@ class Ticket101RealImporter implements ImporterInterface
             $changed_keys['chronology'] = $this->parseTemplate(trim($temp_item[20]));
             $changed_keys['chronology_hq'] = $this->parseTemplate(trim($temp_item[21]));
 //            $changed_keys['special_plans'] = $this->parseTemplate(trim($temp_item[22])); //todo function
-            $changed_keys['loc_time'] = trim($temp_item[23]); //todo parse time
-            $changed_keys['liqv_time'] = trim($temp_item[24]); //todo parse time
+            $changed_keys['loc_time'] = $this->parseExcelDate(trim($temp_item[23]), 'H:i'); //todo parse time
+            $changed_keys['liqv_time'] = $this->parseExcelDate(trim($temp_item[24]), 'H:i'); //todo parse time
             $changed_keys['emergency_type_id'] = $this->getIdByName(EmergencyType::class, trim($temp_item[25])); //d
             $changed_keys['kui'] = trim($temp_item[26]);
             $changed_keys['out_number'] = trim($temp_item[27]);
