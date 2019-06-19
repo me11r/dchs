@@ -91,7 +91,7 @@
             exportUrl() {
                 let dateFrom = moment(this.dateFrom).format('YYYY-MM-DD');
                 let dateTo = moment(this.dateTo).format('YYYY-MM-DD');
-                return `/reports/result-period?dateFrom=${dateFrom}&$dateTo=${dateTo}`;
+                return `/reports/result-period?dateFrom=${dateFrom}&dateTo=${dateTo}`;
             }
         },
         methods: {

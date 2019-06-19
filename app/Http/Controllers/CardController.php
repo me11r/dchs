@@ -550,6 +550,8 @@ class CardController extends AuthorizedController
 
     public function postAdd101(Request $request, $card_id = 0)
     {
+        $back = '/card/101';
+
         if (Auth::user()->hasRight('CAN_EDIT_REQUEST')) {
             $data = $request->except([
                 'ph',
@@ -573,7 +575,6 @@ class CardController extends AuthorizedController
             }
             $deptsToGetBack = collect([]);
             unset($data['comeback']);
-            $back = '/card/101';
             $comeback = $request->get('comeback', false);
             $otherRecords = array_get($data, 'other_records', []);
             unset($data['other_records']);
@@ -663,7 +664,9 @@ class CardController extends AuthorizedController
             if ($card->trip_result_id) {
                 $this->saveAnalytics($card);
             }
+
             $card_type = ($card->drill_type ?? null) == null ? '' : 'drill';
+
             if ($comeback) {
                 $back = "/card/add101/{$card->id}/{$card_type}#return={$comeback}";
             } else {
