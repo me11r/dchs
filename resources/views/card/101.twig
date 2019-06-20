@@ -115,7 +115,7 @@
                                 <a href="/reports/isk/{{ ticket.id }}/export" class="button is-info is-small"><i class="fas fa-file-word"></i>&nbsp; doc</a>
                             {% endif %}#}
 
-                            <delete-card-btn :can-delete="{{ can_delete }}" :ticket="{{ ticket }}"></delete-card-btn>
+                            <delete-card-btn :can-delete="{{ can_delete|json_encode() }}" :ticket-id="{{ ticket.id }}"></delete-card-btn>
                         </td>
                     </tr>
                 {% else %}

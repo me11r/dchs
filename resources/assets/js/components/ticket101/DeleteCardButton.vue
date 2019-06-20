@@ -7,27 +7,25 @@
     export default {
         name: "DeleteCardButton",
         props: {
-            ticket: {
-                type: Object,
-                default: () => {
-                    return {};
-                }
+            ticketId: {
+                type: String | Number,
+                default: 0
             },
             canDelete: {
-                type: Number,
+                type: Number | Boolean,
                 default: 0
             }
         },
         data: function() {
             return {
-                ticket_: this.ticket,
+                ticketId_: this.ticketId,
                 canDelete_: this.canDelete,
             };
         },
         methods: {
             deleteTicket() {
                 if(confirm('Удалить карточку?')){
-                    axios.post('/card/101/delete', {id: this.ticket_.id}).then((resp) => {
+                    axios.post('/card/101/delete', {id: this.ticketId_}).then((resp) => {
                         window.location.href = "/card/101";
                     })
                 }
