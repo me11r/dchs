@@ -66,6 +66,7 @@ class Ticket101Other extends BaseModel
         'changed_by',
         'delayed_at',
         'imported_at',
+        'fire_department_id',
     ];
 
     protected $appends = [
@@ -75,6 +76,11 @@ class Ticket101Other extends BaseModel
     public function ride_type()
     {
         return $this->belongsTo(RideType::class,'ride_type_id');
+    }
+
+    public function fire_department()
+    {
+        return $this->belongsTo(FireDepartment::class,'fire_department_id');
     }
 
     public function created_by_user()
