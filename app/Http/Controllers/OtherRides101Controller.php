@@ -36,6 +36,10 @@ class OtherRides101Controller extends Controller
 
         $model = Ticket101Other::orderBy('id', 'desc');
 
+        if ($userFd = Auth::user()->fire_department_id) {
+            $model = $model->where('fire_department_id', $userFd);
+        }
+
         if($data['date_from'] && $data['date_to']) {
             $model = $model->whereBetween('custom_created_at', [$data['date_from'], $data['date_to']]);
         }

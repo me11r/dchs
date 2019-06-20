@@ -45,11 +45,10 @@ class SchedulesSeeder extends Seeder
             $fire_dep_id = \App\FireDepartment::title($item['fire_department_id'])->first();
             $level = \App\Dictionary\FireLevel::name($item['dict_fire_level_id'])->first();
 
-            if($fire_dep_id && $fire_dep_main_id){
+            if($fire_dep_id && $fire_dep_main_id && $level){
                 $raw_data_less[$key]['fire_department_id'] = $fire_dep_id->id;
                 $raw_data_less[$key]['fire_department_main_id'] = $fire_dep_main_id->id;
                 $raw_data_less[$key]['dict_fire_level_id'] = $level->id;
-
             }
             else{
                 unset($raw_data_less[$key]);

@@ -157,9 +157,16 @@ class Ticket101RealImporter implements ImporterInterface
             $changed_keys['location'] = trim($temp_item[0]);
             $changed_keys['fireplace'] = trim($temp_item[1]);
             $changed_keys['pre_information'] = trim($temp_item[2]);
-            $changed_keys['fire_department_id'] = $this->getIdByName(FireDepartment::class, trim($temp_item[3]),'title'); //d
+
+            if (in_array(trim($temp_item[3]), (new Ticket101OtherHqRide())->getDeptNames()) || trim($temp_item[3]) !== null) {
+                $changed_keys['fire_department_id'] = FireDepartment::inRandomOrder()->first()->id;
+            }
+            else {
+                $changed_keys['fire_department_id'] = $this->getIdByName(FireDepartment::class, trim($temp_item[3]),'title'); //d
+            }
 
             if (!$changed_keys['fire_department_id']) {
+
                 $this->incorrectItems[] = [
                     'data' => implode(" ", $temp_item),
                     'message' => "На найдена ПЧ (микроучасток) {$temp_item[3]}",
