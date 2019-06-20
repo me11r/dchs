@@ -23,6 +23,7 @@ use App\OperationalCard;
 use App\RoadtripPlan;
 use App\Services\ChunkedImporter\ChunkedImporter;
 use App\Ticket101;
+use App\Ticket101OtherHqRide;
 use App\TrunkType;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Shared\OLE\PPS\File;
@@ -131,9 +132,6 @@ class Ticket101RealImporter implements ImporterInterface
 
     public function get(array $raw_data): array
     {
-//        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101.xlsx'));
-//        $raw_data = $this->parseItems(database_path('seeds/sources/импорт 101 - прочие (1) (1).xlsx'));
-
         $raw_data_less = [];
         unset($raw_data[0]);
 
@@ -270,9 +268,6 @@ class Ticket101RealImporter implements ImporterInterface
 
     public function parseTemplate($data)
     {
-//        $data = "ПЧ-2::[Отделение=7|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];ПЧ-3::[Отделение=4|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];ПЧ-3::[Отделение=5|Принято в работу=11:25|Время выезда=11:25|Время прибытия=11:25|Время отбоя=|Время возвращения=11:25|Время оповещения=11:25|Время ввода в боевой расчет=|Количество привлеченного л/с=15|Расстояние до места=5];";
-//        $data = "ПЧ-6::[Время выезда=10:30|Время возвращения=19:00|";
-
         try {
             if ($data === null) {
                 return [
@@ -350,10 +345,41 @@ class Ticket101RealImporter implements ImporterInterface
                 $devideByParam2 = [];
             }
 
+            $splittedBySemicolon = [];
+            foreach ($devideByParam3 as $item) {
+                if (isset($item['tech_dept_number'])) {
+                    //т.к. в шаблоне номера отделений идут как попало: например, Отделение=1,2; или Отделение=1;2;
+                    //заменям запятые и точки с запятыми пробелами
+                    $splittedBySpace = str_replace([',', ';'], ' ', $item['tech_dept_number']);
+
+                    //а по пробелу делим отделения
+                    $explodedBySpace = explode(' ', $splittedBySpace);
+                    $explodedBySpace = array_filter($explodedBySpace, function ($i) {
+                        return $i !== '';
+                    });
+
+
+                    //очищаем значения полей от лишних запятых и точек
+                    //меняем '' на null
+                    foreach ($explodedBySpace as $finalTechDept) {
+                        $item['tech_dept_number'] = $finalTechDept;
+                        foreach ($item as $key => $cleared) {
+                            $item[$key] = str_replace([';', ','], '', $cleared);
+
+                            if (!$item[$key]) {
+                                $item[$key] = null;
+                            }
+                        }
+                        $splittedBySemicolon[] = $item;
+                    }
+                }
+            }
+
+
             return [
                 'type' => 'ok',
                 'message' => null,
-                'data' => $devideByParam3,
+                'data' => count($splittedBySemicolon) ? $splittedBySemicolon : $devideByParam3,
 //                'data' => $splittedBySemicolon,
             ];
         }
@@ -382,39 +408,55 @@ class Ticket101RealImporter implements ImporterInterface
     {
         $tempArr = [];
         if ($this->formation_report) {
+            $deptHqNames = (new Ticket101OtherHqRide())->getDeptNames();
+
             foreach ($changed_keys['fire_department_results']['data'] as $key => $fd_result) {
 
-                $fire_department = FireDepartment::title(trim($fd_result['fire_department_id']))->first();
+                $deptTitle = trim($fd_result['fire_department_id']);
 
-                if(!$fire_department) {
-                    $this->incorrectItems[] = [
-                        'data' => $changed_keys['location'] ." ".implode(' ', $fd_result),
-                        'message' => "Не найлена ПЧ в высылке: {$fd_result['fire_department_id']}",
-                    ];
-                    unset($changed_keys['fire_department_results']['data'][$key]);
-                    continue;
+                if ($deptTitle && in_array($deptTitle, $deptHqNames)) {
+                    foreach ($changed_keys['hq_rides'] as $hq_key => $hq_ride) {
+                        $tempArr[$key]['out_time'] = @$hq_ride['out_time'] ? $hq_ride['out_time'] : '00:00';
+                        $tempArr[$key]['name'] = @$hq_ride['fire_department_id'] ? $hq_ride['fire_department_id'] : '00:00';
+                        $tempArr[$key]['arrive_time'] = @$hq_ride['arrive_time'] ? $hq_ride['arrive_time'] : '00:00';
+                        $tempArr[$key]['retreat_time'] = @$hq_ride['retreat_time'] ? $hq_ride['retreat_time'] : '00:00';
+                        $tempArr[$key]['ret_time'] = @$hq_ride['ret_time'] ? $hq_ride['ret_time'] : '00:00';
+                        $tempArr[$key]['dispatch_time'] = @$hq_ride['dispatch_time'] ? $hq_ride['dispatch_time'] : '00:00';
+                    }
                 }
+                else {
+                    $fire_department = FireDepartment::title($deptTitle)->first();
 
-                $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department) {
-                    $q->where('form_id', $this->formation_report->id)
-                        ->where('dept_id', $fire_department->id ?? null);
-                })->where('status', 'action')
-                    ->where('department',$fd_result['tech_dept_number'] ?? null)
-                    ->first();
+                    if(!$fire_department) {
+                        $this->incorrectItems[] = [
+                            'data' => $changed_keys['location'] ." ".implode(' ', $fd_result),
+                            'message' => "Не найлена ПЧ в высылке: {$fd_result['fire_department_id']}",
+                        ];
+                        unset($changed_keys['fire_department_results']['data'][$key]);
+                        continue;
+                    }
 
-                $tempArr[$key]['tech_id'] = $formationTechItem->id ?? null;
-                $tempArr[$key]['fire_department_id'] = $fire_department->id ?? null;
-                $tempArr[$key]['ticket101_id'] = null;
+                    $formationTechItem = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($fire_department) {
+                        $q->where('form_id', $this->formation_report->id)
+                            ->where('dept_id', $fire_department->id ?? null);
+                    })->where('status', 'action')
+                        ->where('department',$fd_result['tech_dept_number'] ?? null)
+                        ->first();
 
-                $tempArr[$key]['accept_time'] = $fd_result['accept_time'] ?? null;
-                $tempArr[$key]['out_time'] = $fd_result['out_time'] ?? null;
-                $tempArr[$key]['arrive_time'] = $fd_result['arrive_time'] ?? null;
-                $tempArr[$key]['retreat_time'] = $fd_result['retreat_time'] ?? null;
-                $tempArr[$key]['ret_time'] = $fd_result['ret_time'] ?? null;
-                $tempArr[$key]['dispatch_time'] = $fd_result['dispatch_time'] ?? null;
-                $tempArr[$key]['staff_count'] = $fd_result['staff_count'] ?? null;
-                $tempArr[$key]['promoted_at'] = $fd_result['promoted_at'] ?? null;
-                $tempArr[$key]['distance'] = $fd_result['distance'] ?? null;
+                    $tempArr[$key]['tech_id'] = $formationTechItem->id ?? null;
+                    $tempArr[$key]['fire_department_id'] = $fire_department->id ?? null;
+                    $tempArr[$key]['ticket101_id'] = null;
+
+                    $tempArr[$key]['accept_time'] = $fd_result['accept_time'] ?? null;
+                    $tempArr[$key]['out_time'] = $fd_result['out_time'] ?? null;
+                    $tempArr[$key]['arrive_time'] = $fd_result['arrive_time'] ?? null;
+                    $tempArr[$key]['retreat_time'] = $fd_result['retreat_time'] ?? null;
+                    $tempArr[$key]['ret_time'] = $fd_result['ret_time'] ?? null;
+                    $tempArr[$key]['dispatch_time'] = $fd_result['dispatch_time'] ?? null;
+                    $tempArr[$key]['staff_count'] = $fd_result['staff_count'] ?? null;
+                    $tempArr[$key]['promoted_at'] = $fd_result['promoted_at'] ?? null;
+                    $tempArr[$key]['distance'] = $fd_result['distance'] ?? null;
+                }
             }
 
             $changed_keys['fire_department_results'] = $tempArr;
@@ -532,31 +574,47 @@ class Ticket101RealImporter implements ImporterInterface
                             'printed' => true,
                         ]);
 
-                        $result = $ticket->results()->create([
-                            'tech_id' => $fire_department_result['tech_id'],
-                            'fire_department_id' => $fire_department_result['fire_department_id'],
-                            'accept_time' => $fire_department_result['accept_time'] ?? $card['custom_created_at'],
-                            'out_time' => $fire_department_result['out_time'],
-                            'ret_time' => $fire_department_result['ret_time'],
-                            'dispatch_time' => $fire_department_result['out_time'],
-                            'dispatched' => true,
-                            'dispatch_id' => $roadtripPlan->id,
-                        ]);
+                        if (isset($fire_department_result['name'])) {
+                            $ticket->hqRides()->create([
+                                'name' => $fire_department_result['name'],
+                                'accept_time' => $fire_department_result['accept_time'] ?? $card['custom_created_at'],
+                                'out_time' => @$fire_department_result['out_time'],
+                                'retreat_time' => @$fire_department_result['retreat_time'],
+                                'arrive_time' => @$fire_department_result['arrive_time'],
+                                'ret_time' => @$fire_department_result['ret_time'],
+                                'dispatch_time' => @$fire_department_result['out_time'],
+                                'dispatched' => true,
+                                'distance' => null,
+                            ]);
+                        }
+                        else {
+                            $result = $ticket->results()->create([
+                                'tech_id' => $fire_department_result['tech_id'],
+                                'fire_department_id' => $fire_department_result['fire_department_id'],
+                                'accept_time' => $fire_department_result['accept_time'] ?? $card['custom_created_at'],
+                                'out_time' => $fire_department_result['out_time'],
+                                'ret_time' => $fire_department_result['ret_time'],
+                                'dispatch_time' => $fire_department_result['out_time'],
+                                'dispatched' => true,
+                                'dispatch_id' => $roadtripPlan->id,
+                            ]);
 
-                        if ($card['chronology']) {
+                            if ($card['chronology']) {
 
-                            $chronoItems = collect($card['chronology'])->where('tech_id', $fire_department_result['tech_id'])->toArray();
+                                $chronoItems = collect($card['chronology'])->where('tech_id', $fire_department_result['tech_id'])->toArray();
 
-                            foreach ($chronoItems as $chronoKey => $chronoItem) {
-                                $chronoItem['fire_department_result_id'] = $result->id;
-                                try {
-                                    Chronology101::create($chronoItem);
-                                }
-                                catch (\Exception $e) {
-                                    continue;
+                                foreach ($chronoItems as $chronoKey => $chronoItem) {
+                                    $chronoItem['fire_department_result_id'] = $result->id;
+                                    try {
+                                        Chronology101::create($chronoItem);
+                                    }
+                                    catch (\Exception $e) {
+                                        continue;
+                                    }
                                 }
                             }
                         }
+
                     }
                 }
 

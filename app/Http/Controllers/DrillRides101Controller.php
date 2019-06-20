@@ -29,6 +29,10 @@ class DrillRides101Controller extends Controller
         $data['city_area_id'] = $request->input('city_area_id', null);
         $data['drill_type_id'] = $request->input('drill_type_id', null);
 
+        if ($userFd = Auth::user()->fire_department_id) {
+            $data['tickets'] = $data['tickets']->where('fire_department_id', $userFd);
+        }
+
         if($data['date_from'] && $data['date_to']) {
             $data['tickets'] = $data['tickets']->whereBetween('custom_created_at', [$data['date_from'], $data['date_to']]);
         }

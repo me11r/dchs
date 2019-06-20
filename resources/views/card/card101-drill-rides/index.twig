@@ -114,7 +114,7 @@
                         <td class="has-text-right">
                             <a href="/card/add101/{{ ticket.id }}/{{ card_type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
 
-                            <delete-card-btn :can-delete="{{ can_delete }}" :ticket="{{ ticket }}"></delete-card-btn>
+                            <delete-card-btn :can-delete="{{ can_delete|json_encode() }}" :ticket-id="{{ ticket.id }}"></delete-card-btn>
                         </td>
                     </tr>
                 {% else %}
