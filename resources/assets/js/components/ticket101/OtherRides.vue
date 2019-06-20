@@ -30,6 +30,20 @@
                         <input v-model="otherRide_.object_name" name="object_name" required class="input" type="text">
                     </div>
                 </div>
+                <div class="field is-grouped">
+                    <div class="field">
+                        <label for="ride_type_id">Микроучасток</label>
+                        <div class="select"
+                             style="display: block">
+                            <select required v-model="otherRide_.fire_department_id"
+                                    style="width: 100%;">
+                                <option value=""></option>
+                                <option v-for="fd in fireDepartments"
+                                        :value="fd.id">{{ fd.title }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <p style="color:red;">Для продолжения необходимо сохранить карточку</p>
             </div>
         </div>
@@ -627,6 +641,20 @@
 
                 </div>
                 <div class="field is-grouped">
+                    <div class="field">
+                        <label for="ride_type_id">Микроучасток</label>
+                        <div class="select"
+                             style="display: block">
+                            <select v-model="otherRide_.fire_department_id"
+                                    style="width: 100%;">
+                                <option value=""></option>
+                                <option v-for="fd in fireDepartments"
+                                        :value="fd.id">{{ fd.title }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-grouped">
                     <div class="bd-notification is-primary">
                         <div class="field">
                             <div class="bd-notification is-primary">
@@ -703,6 +731,7 @@
                         final_responsible_person: '',
                         final_direction: '',
                         final_object_name: '',
+                        fire_department_id: null,
                         created_at: ''
                     };
                 }
@@ -827,7 +856,7 @@
                 });
             },
             needToGetBack(department) {
-                if(department.get_back === 1){
+                if(department.get_back === 1) {
                     return 'blink5';
                 }
 
@@ -1046,6 +1075,9 @@
         computed: {
             urlToSave() {
                 return `/card101-other-rides/` + (this.otherRide_.id !== 0 ? `${this.otherRide_.id}/edit` : 'create');
+            },
+            fireDepartmentsBasedId() {
+                return _.filter(this.fireDepartments_)
             },
             dataToSave() {
                 let data = JSON.parse(JSON.stringify(this.otherRide_));
