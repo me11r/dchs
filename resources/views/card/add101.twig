@@ -74,6 +74,7 @@
                                             {% endif %}
 
                                         </label>
+                                        {% if card_type != 'drill' %}
                                         <input name="location"
                                                ref="location"
                                                id="location"
@@ -97,6 +98,14 @@
                                                 </a>
                                             </div>
                                         </div>
+                                        {% else %}
+                                            <input name="location"
+                                                   id="location"
+                                                   class="input"
+                                                   tabindex="1"
+                                                   value="{{ ticket.location|default('') }}"
+                                                   >
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -251,6 +260,7 @@
 
                             <div class="column is-2">
                                 <div class="bd-notification is-primary">
+                                    {% if card_type != 'drill' %}
                                     <p class="control"
                                        data-name="fire_department_id"
                                        data-component="buefy-common-select"
@@ -269,6 +279,18 @@
                                                 v-model="selectedId">
                                         </buefy-common-select>
                                     </p>
+                                    {% else %}
+                                        <p class="control">
+                                            <label for="fire_department_id">Микроучасток</label>
+                                        </p>
+                                        <div class="select">
+                                            <select tabindex="4" required name="fire_department_id" id="fire_department_id">
+                                                {% for dept in fire_departments %}
+                                                    <option {{ dept.id == ticket.fire_department_id|default('') ? 'selected' : '' }} value="{{ dept.id }}">{{ dept.text }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="column is-2">
