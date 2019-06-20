@@ -18,7 +18,7 @@ class DrillRides101Controller extends Controller
     public function index(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 10);
-        $data['can_delete'] = Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_DELETE');
+        $data['can_delete'] = Auth::user()->hasRight('CARD101_DRILL_RIDES_CAN_DELETE');
         $data['card_type'] = 'drill';
         $data['search'] = $request->search;
         $data['city_areas'] = CityArea::all();
@@ -28,6 +28,10 @@ class DrillRides101Controller extends Controller
         $data['date_to'] = $request->date_to;
         $data['city_area_id'] = $request->input('city_area_id', null);
         $data['drill_type_id'] = $request->input('drill_type_id', null);
+
+        if ($userFd = Auth::user()->fire_department_id) {
+            $data['tickets'] = $data['tickets']->where('fire_department_id', $userFd);
+        }
 
         if($data['date_from'] && $data['date_to']) {
             $data['tickets'] = $data['tickets']->whereBetween('custom_created_at', [$data['date_from'], $data['date_to']]);
