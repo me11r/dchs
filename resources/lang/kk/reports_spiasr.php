@@ -18,9 +18,11 @@ return array(
             ]
         ],
         'object_classification' => [
-            'tab_title' => 'Классификация объектов',
+            'tab_title' => 'Отчет по ПТЗ и ПТУ',
             'header_title' => 'Классификация объектов :type',
+            'table_title' => 'Классификация объектов',
             'title' => 'Классификация объектов за :year г.',
+            'sub_title' => ':type за :year г.',
             'drill_type' => 'Тип учения',
             'headers' => [
                 'ptz' => 'классификация объектов ПТЗ',

@@ -59,11 +59,12 @@
         <div
             class="panel"
             v-for="type in drillTypes">
+            <h2 class="title has-text-centered">{{ '/reports/analytics-spiasr.object_classification.sub_title'|trans({type: type, year: year}) }}</h2>
             <table
                 class="formation-record-table"
                 v-if="type === drillType || drillType === ''">
                 <tr>
-                    <td>{{ '/reports/analytics-spiasr.object_classification.header_title'|trans({type:type}) }}</td><!--классификация объектов {{ type }}-->
+                    <td>{{ '/reports/analytics-spiasr.object_classification.table_title'|trans }}</td><!--классификация объектов-->
                     <td v-for="month in months">{{ month }}</td>
                     <td>{{ 'total'|trans }}</td><!--Итого-->
                 </tr>
