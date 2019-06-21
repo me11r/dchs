@@ -108,10 +108,9 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
                 DB::raw("TIME_DIFF_SPIKE(first_result.out_time, first_result.arrive_time) as on_way_time"),
                 DB::raw('TIME_FORMAT(ticket101.loc_time, "%H:%i") as loc_time'),
                 DB::raw('TIME_FORMAT(ticket101.liqv_time, "%H:%i") as liqv_time'),
-//                'ticket101.loc_time',
-//                'ticket101.liqv_time',
                 DB::raw('TIME_DIFF_SPIKE(first_result.arrive_time, ticket101.loc_time) as loc_time_total'),
                 DB::raw("(GROUP_CONCAT(CONCAT('Тип: ', event_info_arrived.name, ', Количество: ', gdzs_chronology.working_time) SEPARATOR ' | ')) as `event_info_arrived_names`"),
+                DB::raw("(GROUP_CONCAT(CONCAT('Тип: ', trunk_event_info_arrived.name, ', Количество: ', non_gdzs_chronology.working_time) SEPARATOR ' | ')) as `trunks_event_info_arrived_names`"),
                 'ticket101.rescued_count',
                 'ticket101.evac_count',
                 'ticket101.gpt_burns_count',
@@ -144,9 +143,13 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
                                    ELSE 0
                                END as gdzs_count"),
                 DB::raw('SUM(gdzs_chronology.working_time) as gdzs_chronology_working_time'),
+                DB::raw('SUM(non_gdzs_chronology.working_time) as trunks_chronology_working_time'),
+                'object_classifications.name as object_classification_name',
             ])
             ->leftJoin('dict_city_area', 'ticket101.city_area_id', '=', 'dict_city_area.id')
-            ->leftJoin('dict_fire_level', 'ticket101.fire_level_id', '=', 'dict_fire_level.id')
+//            ->leftJoin('dict_fire_level', 'ticket101.result_fire_level_id', '=', 'result_dict_fire_level.id')
+            ->leftJoin('object_classifications', 'ticket101.object_classification_id', '=', 'object_classifications.id')
+            ->leftJoin('dict_fire_level', 'ticket101.result_fire_level_id', '=', 'dict_fire_level.id')
             ->leftJoin('dict_liquidation_method', 'ticket101.liquidation_method_id', '=', 'dict_liquidation_method.id')
             ->leftJoin('fire_department_results as first_result', function (JoinClause $query) {
                 $query
@@ -159,6 +162,12 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
                     ->on('gdzs_chronology.ticket101_id', '=', 'ticket101.id')
                     ->where('gdzs_chronology.event_info_arrived_id', '=', $gdzsEventInfoArrivedId)
                     ->leftJoin('event_info_arriveds as event_info_arrived', 'gdzs_chronology.event_info_arrived_id', '=', 'event_info_arrived.id');
+            })
+            ->leftJoin('chronology101s as non_gdzs_chronology', function (JoinClause $query) use ($gdzsEventInfoArrivedId) {
+                $query
+                    ->on('non_gdzs_chronology.ticket101_id', '=', 'ticket101.id')
+                    ->where('non_gdzs_chronology.event_info_arrived_id', '<>', $gdzsEventInfoArrivedId)
+                    ->leftJoin('event_info_arriveds as trunk_event_info_arrived', 'non_gdzs_chronology.event_info_arrived_id', '=', 'trunk_event_info_arrived.id');
             })
             ->leftJoin('dict_trip_result as trip_result', 'ticket101.trip_result_id', '=', 'trip_result.id')
             ->groupBy('ticket101.id');
