@@ -54,7 +54,8 @@
             {% endif %}
 
             {% if user.hasRight('CAN_ACCESS_REPORT_OBJECT_CLASSIFICATION') %}
-                {#Классификация объектов#}
+                {#Классификация объектов (old)#}
+                {#Отчет по ПТЗ и ПТУ#}
                 <b-tab-item label="{{ t('/reports/analytics-spiasr.object_classification.tab_title') }}">
                     <report-object-classification
                             :records="{{ records|json_encode }}"

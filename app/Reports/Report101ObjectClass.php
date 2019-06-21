@@ -43,13 +43,13 @@ class Report101ObjectClass
     public function getReport(): array
     {
         $data = $this->data;
-        $data['months'] = ["Январь", "Февраль", "Март", "Апреть", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        $data['months'] = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
         $data['drillTypes'] = ["ПТЗ", "ПТУ"];
         $values = [];
 
         /*headers*/
         foreach ($data['drillTypes'] as $drillType) {
-            $values[$drillType]['headers'][] = "классификация объектов {$drillType}";
+            $values[$drillType]['headers'][] = "Классификация объектов";
             foreach ($data['months'] as $month) {
                 $values[$drillType]['headers'][] = $month;
             }

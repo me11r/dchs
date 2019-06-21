@@ -101,7 +101,7 @@ class Ticket101ObjectClassExcelExport
     {
         // заголовки таблицы
         $sheet->getCell('B1')
-            ->setValue("Классификация объектов за {$this->data['year']}");
+            ->setValue("ПТЗ за {$this->data['year']}");
         $sheet->mergeCells('B1:T1');
         $sheet->getRowDimension(1)->setRowHeight(50);
         $sheet->getRowDimension(2)->setRowHeight(50);
@@ -117,6 +117,11 @@ class Ticket101ObjectClassExcelExport
 
     private function addSecondTableHeaders(Worksheet $sheet)
     {
+        $sheet->getCell('B15')
+            ->setValue("ПТУ за {$this->data['year']}");
+        $sheet->mergeCells('B15:T15');
+        $sheet->getRowDimension(15)->setRowHeight(50);
+
         $letters = range('A', 'Z');
         $sheet->getRowDimension(16)->setRowHeight(50);
 
