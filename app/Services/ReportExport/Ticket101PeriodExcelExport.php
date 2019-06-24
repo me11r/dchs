@@ -137,27 +137,31 @@ class Ticket101PeriodExcelExport
             'Телефон',
             'Район города',
             'Адрес',
-            'Объект пожара',
-            'Участники тушения',
+            'Наименование объектов',
+            'Классификация объектов',
+//            'Участники тушения',
+            'Ранг пожара',
             'Ликвидировано стволами',
-            'Время в пути',
+            'Время следования',
+            'Время тушения',
             'Локализация',
             'Ликвидация',
-            'Время тушения',
+            'Пенные стволы',
+            'Время работы стволов',
             'Звенья ГДЗС',
             'Время работы ГДЗС',
             'Спасено людей',
             'Эвакуировано людей',
             'Травмы',
             'Гибель',
-            'Затраченное время на локализацию',
-            'Затраченное время на ликвидацию',
             'Результат выезда',
             'Площадь горения',
+//            'Затраченное время на локализацию',
+//            'Затраченное время на ликвидацию',
             'Этажность',
         ];
         $sheet->fromArray($headers, null, 'A15');
-        $sheet->getStyle("A15:X15")->applyFromArray([
+        $sheet->getStyle("A15:Y15")->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -181,20 +185,23 @@ class Ticket101PeriodExcelExport
                 $item->city_area_name,
                 $item->location,
                 $item->object_name,
+                $item->object_classification_name,
                 $item->result_fire_level_name,
                 $item->liquidation_method_name,
                 $item->on_way_time,
+                $item->loc_time_total,
                 $item->loc_time,
                 $item->liqv_time,
-                $item->loc_time_total,
+                $item->trunks_event_info_arrived_names,
+                $item->trunks_chronology_working_time,
                 $item->gdzs_count,
                 $item->event_info_arrived_names,
                 $item->rescued_count,
                 $item->evac_count,
                 $item->gpt_burns_count,
                 $item->total_death_count,
-                $item->loc_time_total,
-                $item->liqv_time_total,
+//                $item->loc_time_total,
+//                $item->liqv_time_total,
                 $item->trip_result_name,
                 $item->max_square,
                 $item->storey_count
@@ -206,7 +213,7 @@ class Ticket101PeriodExcelExport
 
             $sheet->getCell("F{$rowIndex}")->setValue($arr[5])->getHyperlink()->setUrl($url);
 
-            $sheet->getStyle("A$rowIndex:X$rowIndex")->applyFromArray(self::HStyle);
+            $sheet->getStyle("A$rowIndex:Y$rowIndex")->applyFromArray(self::HStyle);
             $rowIndex++;
         }
 
