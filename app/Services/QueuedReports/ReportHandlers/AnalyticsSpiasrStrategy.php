@@ -27,7 +27,6 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
      */
     public function saveToFile(QueuedReport $queuedReport, $reportData): string
     {
-        dd(1);
         $exportService = new Ticket101PeriodExcelExport($reportData);
         $writer = $exportService->getXlsWriter();
 
