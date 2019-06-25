@@ -44,8 +44,6 @@ class MakeDbDump extends Command
         $database = env('DB_DATABASE');
 
         $path = database_path() . $ds . 'dumps'.$ds;
-//        $file = 'dump-'.date('d-m-Y') . '.sql';
-//        $command = sprintf('mysqldump -h %s -u %s -p\'%s\' %s > %s', $host, $username, $password, $database, $path . $file);
         if (!is_dir($path)) {
             mkdir($path, 0755, true);
         }

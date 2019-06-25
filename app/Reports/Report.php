@@ -21,6 +21,7 @@ use App\Repositories\Contracts\Ticket101Interface;
 use App\Repositories\Contracts\FireObjectInterface;
 use App\Ticket101Other;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Report
 {
@@ -38,6 +39,8 @@ class Report
 
     protected $firstDateTime;
     protected $secondDateTime;
+
+    protected $formationReport;
 
 
     public function __construct(
@@ -73,6 +76,10 @@ class Report
             $this->firstDate = (new Carbon($firstDate))->format('d.m.Y');
             $this->secondDate = (new Carbon($secondDate))->format('d.m.Y');
         }
+
+        $this->formationReport = FormationReport::where('report_date', (new Carbon($firstDate))->format('Y-m-d'))
+            ->approved(true)
+            ->first();
 
         $this->firstDateTime = $firstDate;
         $this->secondDateTime = $secondDate;
@@ -395,21 +402,7 @@ class Report
 
         $data['dvr'] = $this->getInactiveDvrs();
 
-
-        $inactive_tech_cnt = [];
-        foreach ($data['tech'] as $inactive_tech) {
-            foreach ($inactive_tech->items as $inactive_tech_item) {
-                if ($inactive_tech_item->status == 'repair') {
-                    if (in_array($inactive_tech_item->vehicle->name, $inactive_tech_cnt)) {
-                        $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = ++$inactive_tech_cnt[$inactive_tech_item->vehicle->name];
-                    } else {
-                        $inactive_tech_cnt[$inactive_tech_item->vehicle->name] = 1;
-                    }
-                }
-            }
-        }
-
-        $data['inactive_tech_cnt'] = $inactive_tech_cnt;
+        $data['inactive_tech_cnt'] = $this->getInactiveTech();
         $data['arrangementToday'] = $this->getArrangement($this->firstDateTime);
         $data['arrangementTomorrow'] = $this->getArrangement($this->secondDateTime);
         $data['fireDeptChecks'] = $this->getFireDeptChecks();
@@ -509,7 +502,61 @@ class Report
     {
         return (new FormationTechReport())
             ->with('formation_tech_items')
-            ->whereBetween('created_at', [$this->firstDateTime, $this->secondDateTime]);
+            ->where('form_id', $this->formationReport->id)
+            ;
+    }
+
+    private function getInactiveTech()
+    {
+        $tech = FormationTechItem::whereHas('formation_tech_report', function ($q){
+            $q->where('form_id', $this->formationReport->id ?? null);
+        })->status('repair')
+            ->get();
+
+        $tech = $tech->groupBy(function ($q) {
+            return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
+        });
+
+        return $tech;
+    }
+
+    private function getInactiveDvrs()
+    {
+        $inactive_dvrs = FormationTechItem::whereHas('formation_tech_report', function ($q){
+            $q->where('form_id', $this->formationReport->id ?? null);
+        })->dvr(false)
+            ->get();
+
+        $inactive_dvrs_cnt = $inactive_dvrs->groupBy(function ($q) {
+            return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
+        });
+
+        $inactive_dvrsMapped = $inactive_dvrs->map(function ($q) {
+            return collect([
+                'department' => $q->vehicle->fireDepartment->title,
+                'vehicle' => $q->vehicle->name. ($q->vehicle->base ? "({$q->vehicle->base}) " : ''). "({$q->status_title}) {$q->comment}",
+                'vehicle_id' => $q->id,
+            ]);
+        });
+
+        $inactive_dvrsOther = Dvr::whereHas('formation_tech_report', function ($q){
+            $q->where('form_id', $this->formationReport->id ?? null);
+        })->status(false)
+            ->get()
+            ->map(function ($q) {
+                return collect([
+                    'department' => $q->formation_tech_report->department->title,
+                    'vehicle' => ($q->date_from ? "c {$q->date_from_formatted}" : ''). ($q->date_to ? " по {$q->date_to_formatted} " : '') .$q->note,
+                    'vehicle_id' => $q->id,
+                ]);
+            });
+
+        $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
+
+        return [
+            'inactive_dvrs_cnt' => $inactive_dvrs_cnt,
+            'inactive_dvrs' => $inactive_dvrsMapped,
+        ];
     }
 
     private function getFireDeptChecks()
@@ -547,44 +594,6 @@ class Report
         return $this->{$object}->getByName($name)->id ?? -1;
     }
 
-    private function getInactiveDvrs()
-    {
-        $reports = $this->getTech()->get()->pluck('form_id')->toArray();
-        $inactive_dvrs = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($reports){
-            $q->whereIn('form_id', $reports);
-        })->dvr(false)
-            ->get();
 
-        $inactive_dvrs_cnt = $inactive_dvrs->groupBy(function ($q) {
-            return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
-        });
-
-        $inactive_dvrsMapped = $inactive_dvrs->map(function ($q) {
-            return collect([
-                'department' => $q->vehicle->fireDepartment->title,
-                'vehicle' => $q->vehicle->name. ($q->vehicle->base ? "({$q->vehicle->base}) " : ''). "({$q->status_title}) {$q->comment}",
-                'vehicle_id' => $q->id,
-            ]);
-        });
-
-        $inactive_dvrsOther = Dvr::whereHas('formation_tech_report', function ($q) use ($reports){
-            $q->whereIn('form_id', $reports);
-        })->status(false)
-            ->get()
-            ->map(function ($q) {
-                return collect([
-                    'department' => $q->formation_tech_report->department->title,
-                    'vehicle' => ($q->date_from ? "c {$q->date_from_formatted}" : ''). ($q->date_to ? " по {$q->date_to_formatted} " : '') .$q->note,
-                    'vehicle_id' => $q->id,
-                ]);
-            });
-
-        $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
-
-        return [
-            'inactive_dvrs_cnt' => $inactive_dvrs_cnt,
-            'inactive_dvrs' => $inactive_dvrsMapped,
-        ];
-    }
 
 }
