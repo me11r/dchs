@@ -26,7 +26,7 @@
         </tr>
         {% for report in reports %}
             <tr class="{% if report.report_date == today %}is-primary{% elseif report.is_approved %}is-warning{% endif %}">
-                <td>{{ report.report_date }}</td>
+                <td>{{ report.report_date|date('d.m.Y') }}</td>
                 <td class="has-text-right">{{ report.is_approved ? 'Утверждена' : 'Не утверждена' }}</td>
                 <td class="has-text-right">
                     <a href="{{ url('formation/add101persons/' ~ report.id ~ '/' ~ department_id) }}" class="button is-primary is-small"><i class="fas fa-user"></i>&nbsp;{{ read_only ? 'Смотреть' : 'Указать' }} личный состав</a>

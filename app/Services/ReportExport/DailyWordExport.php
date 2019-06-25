@@ -621,7 +621,7 @@ class DailyWordExport
 
         $iterator = 1;
         foreach ($this->data['tech'] as $item) {
-            foreach ($item['formation_tech_items'] as $tech) {
+            foreach ($item['items'] as $tech) {
                 if ($tech['status'] === 'repair') {
                     $techString = "{$iterator}. ".$item['department']['title'] . ' ' . $tech['vehicle']['name'] . ' ' . $tech['vehicle']['base'] . ' ' . $tech['comment'];
                     if($tech['date_from']) {
@@ -649,7 +649,7 @@ class DailyWordExport
         $count_tech = 0;
         foreach ($this->data['inactive_tech_cnt'] as $name => $count) {
             $count_tech++;
-            $text .= $name . '-' . $count . (count($this->data['inactive_tech_cnt']) !== $count_tech ? ', ' : '.');
+            $text .= $name . '-' . $count->count() . (count($this->data['inactive_tech_cnt']) !== $count_tech ? ', ' : '.');
         }
         $section->addText(
             'Всего:___________________________' . $text,

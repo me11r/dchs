@@ -661,12 +661,6 @@ class Ticket101WordExport
             );
         }
 
-        /*$section->addText(
-            '',
-            ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
-            ['align' => Jc::BOTH]
-        );*/
-
         $section->addText(
             'Неисправная техника',
             $redFontStyle,
@@ -675,7 +669,6 @@ class Ticket101WordExport
 
         $techIndex = 1;
         foreach ($repairedTech as $fireDept => $tech) {
-//            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
             $tabs = "\t";
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
@@ -704,7 +697,6 @@ class Ticket101WordExport
 
         $techIndex = 1;
         foreach ($repairedDvr as $fireDept => $tech) {
-//            $tabs = strlen($fireDept) > 5 ? "\t" : "\t\t";
             $tabs = "\t";
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
