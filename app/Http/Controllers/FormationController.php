@@ -336,6 +336,10 @@ class FormationController extends AuthorizedController
 
         $formationReport = FormationReport::find($form_id);
 
+        if($formationReport->is_approved){
+            $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
+        }
+
         //todo: временно отключено
         /*$canEditReport = $formationReport->canEditReport();
         if(!$canEditReport && Auth::id() != 1){
@@ -536,15 +540,10 @@ class FormationController extends AuthorizedController
 
         $except = $request->except('tech');
         $formationReport = FormationReport::find($form_id);
-        $canEditReport = $formationReport->canEditReport();
 
         if($formationReport->is_approved){
             $this->needRight(Right::CAN_APPROVE_FORMATION_REPORT_101);
         }
-
-        /*if(!$canEditReport && Auth::id() != 1){
-            return redirect('/formation/101')->with('_message', ['type' => 'danger', 'text' => 'Отчет может быть сохранен только в период 18:00-19:00, 08:00-09:00']);
-        }*/
 
         $model = FormationTechReport::updateOrCreate([
                 'form_id' => $form_id,
