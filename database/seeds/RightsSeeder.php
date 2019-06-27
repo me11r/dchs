@@ -80,7 +80,7 @@ class RightsSeeder extends Seeder
             ['title' => 'АО "Өртсөндіруші": удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_ORT_SERT'],
             ['title' => 'Служба спасения г.Алматы": удаление строевой', 'right_group_id' => 5, 'name' => 'CAN_DELETE_FORMATION_RECORD_EMERGENCY'],
 
-            ['title' => 'Может одобрять суточный отчет', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_REPORT_101'],
+            ['title' => 'Может утверждать строевую СП и АСР', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_REPORT_101'],
             ['title' => 'Может утверждать Журнал строевых записок ДЧС г.Алматы', 'right_group_id' => 5, 'name' => 'CAN_APPROVE_FORMATION_RECORD'],
             ['title' => 'Может редактировать Журнал строевых записок ДЧС г.Алматы после утверждения', 'right_group_id' => 5, 'name' => 'CAN_EDIT_APPROVED_FORMATION_RECORD'],
 

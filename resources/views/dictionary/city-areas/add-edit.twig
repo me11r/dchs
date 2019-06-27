@@ -1,0 +1,29 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="container section">
+        <div class="panel">
+            <div class="box" style="margin-top: 20px">
+                <h4 class="title">{{ title }}</h4>
+                <form action="/dictionaries/city-areas/create-edit" method="post">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="id" value="{{ record.id|default() }}"/>
+                    <div class="field">
+                        <label for="name">Наименование</label>
+                        <input required type="text" class="input" name="name" id="name" value="{{ attribute(record, 'name')|default('') }}"/>
+                    </div>
+                    <div class="field">
+                        <label for="district_managers_using">Участвует в Журнале строевых записок ДЧС г. Алматы – Ответственные по районам</label>
+                        <select required name="district_managers_using" id="district_managers_using" class="select">
+                            <option {{ 1 == record.district_managers_using|default(0) ? 'selected' : '' }} value="1">Да</option>
+                            <option {{ 0 == record.district_managers_using|default(0) ? 'selected' : '' }} value="0">Нет</option>
+                        </select>
+                    </div>
+                    <div class="buttons has-text-right is-grouped is-right" style="">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
+                        <a href="/dictionaries/city-areas/" class="button is-light">Отменить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
