@@ -193,6 +193,16 @@ class DictionaryController extends AuthorizedController
             $data['records'] = $aircraft->paginate($data['per_page']);
             $data['title'] = "Воздушные суда";
         }
+        elseif($name == 'city-areas'){
+            $areas = Dictionary\CityArea::orderBy('id');
+
+            if($request->search){
+                $areas = $areas->where('name', 'like', "%$request->search%");
+            }
+
+            $data['records'] = $areas->paginate($data['per_page']);
+            $data['title'] = "Районы города";
+        }
         elseif($name == 'district-managers'){
             $model = DistrictManager::orderBy('id');
 
@@ -327,6 +337,10 @@ class DictionaryController extends AuthorizedController
             $data['title'] = "Тип инцидента";
             $data['incident_categories'] = IncidentTypeCategory::all();
 
+        }
+        elseif($name == 'city-areas'){
+            $data['record'] = Dictionary\CityArea::find($id);
+            $data['title'] = "Район города";
         }
         elseif($name == 'operational-plans'){
 
@@ -515,6 +529,12 @@ class DictionaryController extends AuthorizedController
             $record->type = $request->type;
             $record->aircraft_type_id = $request->aircraft_type_id;
 
+            $record->save();
+        }
+        elseif($name == 'city-areas'){
+            $record  = Dictionary\CityArea::firstOrNew(['id' => $request->id]);
+            $record->name = $request->name;
+            $record->district_managers_using = $request->district_managers_using;
             $record->save();
         }
         elseif ($name == 'daily-report-persons') {
@@ -751,6 +771,9 @@ class DictionaryController extends AuthorizedController
                 break;
             case 'trip-results':
                 $dict = Dictionary\TripResult::class;
+                break;
+            case 'city-areas':
+                $dict = Dictionary\CityArea::class;
                 break;
         }
 

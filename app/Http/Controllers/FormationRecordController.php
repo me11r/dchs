@@ -81,7 +81,7 @@ class FormationRecordController extends Controller
 
         $formationDistrictManager = FormationDistrictManager::date($item->date)->first();
         $date = $item->date;
-        $cityAreas = CityArea::all();
+        $cityAreas = CityArea::districtManagersUsing()->get();
 
         $dutyPersonsService = DutyPersonsService::whereDate('date',$date)->first();
 
@@ -331,7 +331,6 @@ class FormationRecordController extends Controller
             ->first();
 
         if($request->isMethod('post')){
-            $all = $request->all();
 
             $this->hasRightToEdit();
 
@@ -385,12 +384,10 @@ class FormationRecordController extends Controller
     {
         $data['report'] = FormationDistrictManager::whereDate('date', $date)->first();
         $data['staff'] = DistrictManager::all();
-        $data['districts'] = CityArea::all();
+        $data['districts'] = CityArea::districtManagersUsing()->get();
         $data['date'] = $date;
 
         if($request->isMethod('post')){
-            $all = $request->all();
-
             $this->hasRightToEdit();
 
             $report = FormationDistrictManager::firstOrCreate([

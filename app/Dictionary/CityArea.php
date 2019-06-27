@@ -49,15 +49,25 @@ class CityArea extends BaseModel
 
     protected $table = 'dict_city_area';
     protected $guarded = ['id'];
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'district_managers_using',
+    ];
 
     public $attributeNames = [
         'name' => 'Наименование',
+        'district_managers_using' => 'Использовать в отчете "Ответственные по районам"',
     ];
 
     public function scopeName($q, $title)
     {
         return $q->where('name', $title);
+    }
+
+    //districtManagersUsing()
+    public function scopeDistrictManagersUsing($q, $search = true)
+    {
+        return $q->where('district_managers_using', $search);
     }
 
     public function city_micro_areas()
