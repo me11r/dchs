@@ -76,11 +76,11 @@ class FormationRecordController extends Controller
 
     public function totalEdit($id)
     {
-        $item = (new FormationRecord())->findOrFail($id);
+        $formationRecord = (new FormationRecord())->findOrFail($id);
         $fields = (new FormationRecord())->getRows(); // собираем поля для таблицы
 
-        $formationDistrictManager = FormationDistrictManager::date($item->date)->first();
-        $date = $item->date;
+        $formationDistrictManager = FormationDistrictManager::date($formationRecord->date)->first();
+        $date = $formationRecord->date;
         $cityAreas = CityArea::districtManagersUsing()->get();
 
         $dutyPersonsService = DutyPersonsService::whereDate('date',$date)->first();
@@ -120,18 +120,18 @@ class FormationRecordController extends Controller
             ->with(['staff'])
             ->get();
 
-        $items = (new FormationRecord())->where('date', '=', $item->date)
+        $formationRecords = (new FormationRecord())->where('date', '=', $formationRecord->date)
             ->whereNotIn('organisation', [
                 FormationOrganisation::DCHS_ALMATY,
                 FormationOrganisation::DISTRICT_MANAGERS,
             ])
             ->get();
 
-        $airRescueReport = AirRescueReport::byDate($item->date)
+        $airRescueReport = AirRescueReport::byDate($formationRecord->date)
             ->with(['tech'])
             ->first();
 
-        foreach ($items as $item){
+        foreach ($formationRecords as $item){
             if($item->organisation == 'air_rescue' && $airRescueReport){
                 $item->head = $airRescueReport->staff_head;
                 $item->head_count = $airRescueReport->staff_head_count;
@@ -160,7 +160,7 @@ class FormationRecordController extends Controller
         }
 
         $data = [
-            'formationMainRecord' => $item,
+            'formationMainRecord' => $formationRecord,
             'fields' => $fields,
             'cityAreas' => $cityAreas,
             'formationDistrictManager' => $formationDistrictManager,
@@ -168,14 +168,14 @@ class FormationRecordController extends Controller
             'dutyShiftItemsInactive' => $dutyShiftItemsInactive,
             'dutyShiftCheckpointItems' => $dutyShiftCheckpointItems,
             'dutyShiftCheckpointItemsInactive' => $dutyShiftCheckpointItemsInactive,
-            'formationRecords' => $items,
+            'formationRecords' => $formationRecords,
             'dutyPersonsServiceArr' => $dutyPersonsServiceArr,
         ];
 
         Cache::put('formation_record_journal_data', $data, 3600);
 
         return View::make('formation-record.total-edit')
-            ->with('item', $item)
+            ->with('item', $formationRecord)
             ->with('fields', $fields)
             ->with('cityAreas', $cityAreas)
             ->with('formationDistrictManager', $formationDistrictManager)
@@ -184,7 +184,7 @@ class FormationRecordController extends Controller
             ->with('dutyShiftCheckpointItems', $dutyShiftCheckpointItems)
             ->with('dutyShiftCheckpointItemsInactive', $dutyShiftCheckpointItemsInactive)
             ->with('dutyPersonsServiceArr', $dutyPersonsServiceArr)
-            ->with('items', $items);
+            ->with('items', $formationRecords);
     }
 
     public function update($id, Request $request)
@@ -204,7 +204,6 @@ class FormationRecordController extends Controller
 
     public function totalUpdate($id, Request $request)
     {
-        $f = $request->all();
         foreach ($request->get('items', []) as $itemId => $item) {
             $itemModel = (new FormationRecord())->find($itemId);
             $itemModel->update($item);
@@ -260,8 +259,6 @@ class FormationRecordController extends Controller
             ->first();
 
         if($request->isMethod('post')){
-            $all = $request->all();
-
             $this->hasRightToEdit();
 
             $report = OperDutyShiftStaffReport::firstOrCreate([
@@ -274,7 +271,6 @@ class FormationRecordController extends Controller
             foreach ($request->input('staff', []) as $rank => $staff_arr) {
                 foreach ($staff_arr['staff_id'] as $id) {
                     OperDutyShiftStaffItem::create([
-//                        'shift_id' => $operShift_id,
                         'staff_id' => $id,
                         'report_id' => $report->id,
                         'rank' => $rank,
@@ -292,7 +288,6 @@ class FormationRecordController extends Controller
                     $comment = $request->input("staff_inactive.{$rank}.comment.{$key}", null);
 
                     OperDutyShiftStaffItem::create([
-//                        'shift_id' => $operShift_id,
                         'report_id' => $report->id,
                         'staff_id' => $id,
                         'rank' => $rank,
@@ -480,7 +475,7 @@ class FormationRecordController extends Controller
         if ($data = Cache::get('formation_record_journal_data')){
             $exportService = new FormationRecordWordExport($data);
             $writer = $exportService->getWriter();
-            $date = $data['formationMainRecord']->created_at->addDay()->format('d.m.Y');
+            $date = $data['formationMainRecord']->created_at->format('d.m.Y');
             $fileName = 'Журнал строевых записок ДЧС г.Алматы (' . $date . ').docx';
 
             $writer->save(public_path($fileName));
