@@ -198,6 +198,7 @@ class Report112
             'footer_persons' => OperDutyShiftStaff::whereHas('shifts', function ($q) {
                 $q->where('date', Carbon::parse($this->today)->format('Y-m-d'))
                     ->where('rank','duty_officer')
+                    ->where('inactive_type', null)
                 ;
             })->get()
         ]);

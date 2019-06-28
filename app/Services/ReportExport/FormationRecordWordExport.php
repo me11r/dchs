@@ -260,9 +260,7 @@ class FormationRecordWordExport
     {
         // заголовок
         $section->addText(
-            'Журнал строевых записок ДЧС г.Алматы ' . now()
-                ->addDay()
-                ->format('d.m.Y'),
+            'Журнал строевых записок ДЧС г.Алматы ' . Carbon::parse($this->data['formationMainRecord']->date)->format('d.m.Y'),
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );
