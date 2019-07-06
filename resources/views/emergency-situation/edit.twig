@@ -54,7 +54,7 @@
                     <div class="field field-quarter"
                          id="emergency-situation-datepicker"
                          data-value="{{ item.date| date("Y-m-d H:i:s") }}">
-                        <label for="incident_type">Дата</label>
+                        <label for="incident_type">{{ t('date') }}</label>{#Дата#}
                         <input type="hidden" name="date" :value="dateToSave">
                         <b-datepicker
                                 v-model="date"
@@ -71,7 +71,7 @@
                     <div class="field field-quarter"
                          id="emergency-situation-timepicker"
                          data-value="{{ item.time| date("Y-m-d H:i:s") }}">
-                        <label for="incident_type">Время</label>
+                        <label for="incident_type">{{ t('time') }}</label>{#Время#}
                         <input type="hidden" name="time" :value="timeToSave">
                         <b-timepicker icon="clock"
                                       icon-pack="far"
@@ -97,7 +97,7 @@
                         </b-timepicker>
                     </div>
                     <div class="field inline-field field-half">
-                        <label for="location">Место ЧС</label>
+                        <label for="location">{{ t('/emergency-situation.location') }}</label>{#Место ЧС#}
                         <input type="text"
                                class="input"
                                name="location"
@@ -105,14 +105,14 @@
                                value="{{ item.location }}"/>
                     </div>
                     <div class="field is-full">
-                        <label for="description">Информация о событии</label>
+                        <label for="description">{{ t('/emergency-situation.description') }}</label>{#Информация о событии#}
                         <textarea name="description" class="textarea" id="description" cols="30" rows="10">{{ item.description }}</textarea>
                     </div>
 
                     <div class="columns">
 
                         <div class="column">
-                            <label for="wounded">Пострадавших людей/детей</label>
+                            <label for="wounded">{{ t('/emergency-situation.wounded') }}</label>{#Пострадавших людей/детей#}
                             <input type="number"
                                    class="input"
                                    name="wounded"
@@ -121,7 +121,7 @@
                         </div>
 
                         <div class="column">
-                            <label for="died">Погибло людей/детей</label>
+                            <label for="died">{{ t('/emergency-situation.died') }}</label>{#Погибло людей/детей#}
                             <input type="number"
                                    class="input"
                                    name="died"
@@ -130,7 +130,7 @@
                         </div>
 
                         <div class="column">
-                            <label for="evacuated">Эвакуированных людей/детей</label>
+                            <label for="evacuated">{{ t('/emergency-situation.evacuated') }}</label>{#Эвакуированных людей/детей#}
                             <input type="number"
                                    class="input"
                                    name="evacuated"
@@ -139,7 +139,7 @@
                         </div>
 
                         <div class="column">
-                            <label for="hospitalized">Госпитализированных людей/детей</label>
+                            <label for="hospitalized">{{ t('/emergency-situation.hospitalized') }}</label>{#Госпитализированных людей/детей#}
                             <input type="number"
                                    class="input"
                                    name="hospitalized"
@@ -151,7 +151,7 @@
                     <div class="columns">
 
                         <div class="column">
-                            <label for="injured">Травмированных людей/детей</label>
+                            <label for="injured">{{ t('/emergency-situation.injured') }}</label>{#Травмированных людей/детей#}
                             <input type="number"
                                    class="input"
                                    name="injured"
@@ -161,7 +161,7 @@
 
 
                         <div class="column">
-                            <label for="poisoned">Отравление людей/детей</label>
+                            <label for="poisoned">{{ t('/emergency-situation.poisoned') }}</label>{#Отравление людей/детей#}
                             <input type="number"
                                    class="input"
                                    name="poisoned"
@@ -170,7 +170,7 @@
                         </div>
 
                         <div class="column">
-                            <label for="saved">Спасено людей/детей</label>
+                            <label for="saved">{{ t('/emergency-situation.saved') }}</label>{#Спасено людей/детей#}
                             <input type="number"
                                    class="input"
                                    name="saved"
@@ -179,7 +179,7 @@
                         </div>
 
                         <div class="column">
-                            <label for="saved_animals">Спасено животных</label>
+                            <label for="saved_animals">{{ t('/emergency-situation.saved_animals') }}</label>{#Спасено животных#}
                             <input type="number"
                                    class="input"
                                    name="saved_animals"
@@ -192,7 +192,7 @@
                         <div class="columns">
                             <div class="column">
                                 <label>
-                                    <input type="checkbox" name="notification_101" {{ item.notification_101 ? 'checked' : '' }} value="1">&nbsp;<b>Отправить уведомление диспетчеру 101</b>
+                                    <input type="checkbox" name="notification_101" {{ item.notification_101 ? 'checked' : '' }} value="1">&nbsp;<b>{{ t('/emergency-situation.notification_sent_for_service', {service: 101}) }}</b>{#Отправить уведомление диспетчеру 101#}
                                 </label>
                             </div>
                         </div>
@@ -201,16 +201,16 @@
                         <div class="columns">
                             <div class="column">
                                 <label>
-                                    <input type="checkbox" name="notification_112" {{ item.notification_112 ? 'checked' : '' }} value="1">&nbsp;<b>Отправить уведомление диспетчеру 112</b>
+                                    <input type="checkbox" name="notification_112" {{ item.notification_112 ? 'checked' : '' }} value="1">&nbsp;<b>{{ t('/emergency-situation.notification_sent_for_service', {service: 112}) }}</b>{#Отправить уведомление диспетчеру 112#}
                                 </label>
                             </div>
                         </div>
                     {% endif %}
 
                     <div class="buttons has-text-right is-grouped is-right" style="">
-                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;{{ t('save') }}{#Сохранить#}
                         </button>
-                        <a href="{{ url('/emergency-situation') }}" class="button is-light">Отменить</a>
+                        <a href="{{ url('/emergency-situation') }}" class="button is-light">{{ t('cancel') }}{#Отменить#}</a>
                     </div>
                 </form>
             </div>

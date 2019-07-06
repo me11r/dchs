@@ -94,5 +94,8 @@ return array(
         'poisoned' => 'Отравление людей/детей',
         'saved' => 'Спасено людей/детей',
         'saved_animals' => 'Спасено животных',
+        'notification_sent' => 'Отправлены уведомления',
+        'notification_sent_for' => 'Отправлено для: 101, 112',
+        'notification_sent_for_service' => 'Отправить уведомление диспетчеру :service',
     ],
 );
