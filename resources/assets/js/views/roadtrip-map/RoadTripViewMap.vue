@@ -102,7 +102,13 @@ export default {
 
                 if (this.hydrants.length > 0) {
                     this.hydrants.map((item) => {
-                        hydrants.push(item.long + ',' + item.lat + ',' + 'vkgrm');
+                        let hydrantMark = 'pm2orgm';
+
+                        if (item.active !== 1) {
+                            hydrantMark = 'pm2ntm';
+                        }
+
+                        hydrants.push(item.long + ',' + item.lat + ',' + hydrantMark);
                     });
                 }
 
@@ -112,7 +118,7 @@ export default {
                     'l': 'map',
                     'll': center[1] + ',' + center[0],
                     'pl': routeCoordinates.join(','),
-                    'pt': firstPoint + ',flag' + '~' + lastPoint + ',pm2wtm' + (hydrants.length > 0 ? '~' + hydrants.join('~') : ''),
+                    'pt': firstPoint + ',flag' + '~' + lastPoint + ',round' + (hydrants.length > 0 ? '~' + hydrants.join('~') : ''),
                     'z': 16,
                     'size': '650,450'
                 };
