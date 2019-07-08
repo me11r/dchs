@@ -1,6 +1,7 @@
 {% extends "layout/html" %}
 {% block content %}
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+{#    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>#}
+    {% include "yandex/script.twig" %}
     <div class="container section" id="vue">
         <div class="panel">
             <div class="box" style="margin-top: 20px">
