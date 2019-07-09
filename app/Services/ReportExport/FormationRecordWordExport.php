@@ -139,7 +139,7 @@ class FormationRecordWordExport
         $table->addRow(1250);
         $table->addCell(null, $cellRowContinue);
 
-        $table->addCell(600, $cellRowSpanV)->addText('Банзин', $hcFontStyle, $hcAlignStyle);
+        $table->addCell(600, $cellRowSpanV)->addText('Бензин', $hcFontStyle, $hcAlignStyle);
         $table->addCell(600, $cellRowSpanV)->addText('Дизтопливо', $hcFontStyle, $hcAlignStyle);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
