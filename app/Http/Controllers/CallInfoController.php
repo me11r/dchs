@@ -14,7 +14,7 @@ class CallInfoController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $data['items'] = CallInfo::orderBy('id', 'desc')->paginate($perPage);
+        $data['items'] = CallInfo::orderBy('date', 'desc')->paginate($perPage);
         $data['per_page'] = $perPage;
         return view('reports.call-infos.index', $data);
     }
