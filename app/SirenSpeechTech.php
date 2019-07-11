@@ -17,6 +17,7 @@ class SirenSpeechTech extends BaseModel
         'demounted',
         'broken',
         'inactive',
+        'created_at',
     ];
 
     protected $appends = [
