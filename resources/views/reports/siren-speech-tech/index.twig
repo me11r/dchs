@@ -30,7 +30,7 @@
                             <td>{{ item.demounted }}</td>
                             <td>{{ item.broken }}</td>
                             <td>{{ item.inactive }}</td>
-                            <td>{{ item.created_at }}</td>
+                            <td>{{ item.created_at|date('d.m.Y') }}</td>
                             <td>
                                 <div class="field is-grouped">
                                 <a class="button is-basic is-small" href="{{ route('reports-siren-speeches.edit', {'id':item.id}) }}">
