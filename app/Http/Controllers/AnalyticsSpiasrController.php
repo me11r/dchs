@@ -27,7 +27,7 @@ class AnalyticsSpiasrController extends Controller
         $data['burntObjects'] = FireObject::orderBy('name')->get();
         $data['reasons'] = TripResult::orderBy('name')->get();
         $data['cityAreas'] = CityArea::orderBy('name')->get();
-        $data['fireDepartments'] = FireDepartment::all();
+        $data['fireDepartments'] = FireDepartment::sortByCustomOrder()->get();
         $data['user'] = Auth::user();
 
         $normTypes = NormType::all()->map(function ($item) {

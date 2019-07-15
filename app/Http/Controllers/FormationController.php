@@ -264,9 +264,12 @@ class FormationController extends AuthorizedController
         $belongsToDept = Auth::user()->fire_department_id;
 
         if($belongsToDept){
-            $departments = FireDepartment::where('id', $belongsToDept)->get();
+            $departments = FireDepartment::where('id', $belongsToDept)
+                ->get();
         } else {
-            $departments = FireDepartment::usingInFormationReport()->get();
+            $departments = FireDepartment::usingInFormationReport()
+                ->sortByCustomOrder()
+                ->get();
         }
 
         $fieldlist = [
@@ -501,7 +504,9 @@ class FormationController extends AuthorizedController
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::usingInFormationReport()->get();
+            $departments = FireDepartment::usingInFormationReport()
+                ->sortByCustomOrder()
+                ->get();
         }
 
         $model = (new FormationTechReport)
@@ -765,7 +770,7 @@ class FormationController extends AuthorizedController
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
 
         $departments = new FireDepartment();
-        $departments = $departments->usingInFormationReport();
+        $departments = $departments->usingInFormationReport()->sortByCustomOrder();
         if (auth()->user()->fire_department_id){
             $departments = $departments->where('id', '=', auth()->user()->fire_department_id);
         }

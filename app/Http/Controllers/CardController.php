@@ -66,7 +66,7 @@ class CardController extends AuthorizedController
         $userDept = Auth::user()->fire_department_id;
 
         $this->set('areas', (new CityArea())->get()->toArray());
-        $this->set('fireDepartments', collect(FireDepartment::all(['id', 'title','address']))->toArray());
+        $this->set('fireDepartments', collect(FireDepartment::sortByCustomOrder()->get(['id', 'title','address']))->toArray());
         $this->set('model', new HydrantResource(new Hydrant()));
 
         $this->set('userDeptRight', Auth::user()->role->hydrant_access_id ?? 0);
@@ -87,7 +87,7 @@ class CardController extends AuthorizedController
         $data['showHydrants'] = true;
 
         $data['areas'] = (new CityArea())->get()->toArray();
-        $data['fireDepartments'] = collect(FireDepartment::all(['id', 'title']))->toArray();
+        $data['fireDepartments'] = collect(FireDepartment::sortByCustomOrder()->get(['id', 'title']))->toArray();
         $data['model'] = new HydrantResource(new Hydrant());
 
         $data['userDeptRight'] = Auth::user()->role->hydrant_access_id ?? 0;
@@ -174,6 +174,10 @@ class CardController extends AuthorizedController
             'b04' => 'ДЧС "Байкал-04"',
         ];
 
+        $fire_departments = FireDepartment::recommend()
+            ->sortByCustomOrder()
+            ->get();
+
         $service_notify = ServiceType::inCard101()
             ->orderBy('sort_order')
             ->get();
@@ -187,7 +191,8 @@ class CardController extends AuthorizedController
             ->arrived($card_id)
             ->get();
 
-        $ssv_out = FireDepartment::recommend()->get();
+        $ssv_out = clone $fire_departments;
+
         $wall_materials = WallMaterial::all();
         if ($card_id != 0) {
             foreach ($ssv_out as $key => $item) {
@@ -204,7 +209,7 @@ class CardController extends AuthorizedController
         $this->set('wall_materials', $wall_materials);
         $this->set('notification_get_back', session()->pull('notification.get_back', 0));
         $this->set('ride_types', RideType::all());
-        $this->set('fire_departments_vue', FireDepartment::recommend()->get());
+        $this->set('fire_departments_vue', $fire_departments);
         $this->set('card_type', $card_type);
         $this->set('departmentsOnWay', $departmentsOnWay);
         $this->set('departmentsArrived', $departmentsArrived);
@@ -233,7 +238,7 @@ class CardController extends AuthorizedController
                 'text' => $item->name
             ];
         })->toArray());
-        $this->set('fire_departments', collect(FireDepartment::recommend(true)->get())->map(function ($item) {
+        $this->set('fire_departments', collect(clone $fire_departments)->map(function ($item) {
             return [
                 'id' => $item->id,
                 'text' => $item->name

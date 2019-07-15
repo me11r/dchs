@@ -1516,7 +1516,7 @@ class ReportController extends AuthorizedController
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
         $data['rideTypes'] = RideType::all();
-        $data['fireDepartments'] = FireDepartment::all();
+        $data['fireDepartments'] = FireDepartment::sortByCustomOrder()->get();
 
 
         Cache::put('report101_other_rides', $data, 3600);
@@ -1577,7 +1577,7 @@ class ReportController extends AuthorizedController
         $data['dateFrom'] = $dateFrom;
         $data['dateTo'] = $dateTo;
         $data['normTypes'] = $normTypes;
-        $data['fireDepartments'] = FireDepartment::all();
+        $data['fireDepartments'] = FireDepartment::sortByCustomOrder()->get();
 
         $data['drill'] = Ticket101::whereBetween('custom_created_at', [$dateFrom, $dateTo])
             ->drill();
@@ -1726,7 +1726,7 @@ class ReportController extends AuthorizedController
 
         $data['reports'] = $reportData->orderBy('fire_department_id')->get();
 
-        $data['fireDepartments'] = FireDepartment::all();
+        $data['fireDepartments'] = FireDepartment::sortByCustomOrder()->get();
 
         Cache::put('report_forces_resources_data', $data, 3600);
 

@@ -31,7 +31,7 @@ class VehicleController extends Controller
         $search = $request->search;
         $filter_department = $request->filter_department;
         $fullAccess = Auth::user()->hasRight('VEHICLES_FULL_VIEW_ACCESS');
-        $fire_departments = FireDepartment::all();
+        $fire_departments = FireDepartment::sortByCustomOrder()->get();
         $user = Auth::user();
 
         $items = $fullAccess ? $this->repository : Auth::user()->vehicles();
@@ -74,7 +74,7 @@ class VehicleController extends Controller
     public function create()
     {
         if(Auth::id() == 1){
-            $fire_departments = FireDepartment::all();
+            $fire_departments = FireDepartment::sortByCustomOrder()->get();
         }
         else{
             $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
@@ -123,7 +123,7 @@ class VehicleController extends Controller
     public function edit($id)
     {
         if(Auth::id() == 1){
-            $fire_departments = FireDepartment::all();
+            $fire_departments = FireDepartment::sortByCustomOrder()->get();
         }
         else{
             $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
