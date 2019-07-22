@@ -494,6 +494,8 @@ class ReportController extends AuthorizedController
 
         $preparedToExport = [];
         foreach ($cards->get() as $card) {
+        
+         if(!empty($card->cityArea->name)) {
             if (!isset($preparedToExport[$card->cityArea->name])) {
                 $preparedToExport[$card->cityArea->name] = [];
             }
@@ -556,6 +558,7 @@ class ReportController extends AuthorizedController
                     //'href' => "/card112/{$card->id}/edit#return=0",
                 ];
             }
+          }
         }
 
         //проставляем номера 1,2,3 и тд
