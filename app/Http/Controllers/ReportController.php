@@ -76,6 +76,7 @@ use App\Services\ReportExport\Ticket112BranchesWordExport;
 use App\Services\ReportExport\Ticket112EmergencyExcelExport;
 use App\Services\ReportExport\Ticket112EmergencyWordExport;
 use App\Services\ReportExport\Ticket112PeriodExcelExport;
+use App\Services\ReportExport\Ticket112PeriodWordExport;
 use App\SirenSpeechTech;
 use App\Ticket101;
 use App\Ticket101Other;
@@ -1112,6 +1113,23 @@ class ReportController extends AuthorizedController
 
         $writer->save('php://output');
 
+    }
+    
+    public function exportEmergency112Word(Request $request)
+    {
+        $date_begin = $request->date_begin === 'null' ? null : $request->date_begin;
+        $date_end = $request->date_end === 'null' ? null : $request->date_end;
+        $result_id = $request->result_id === 'null' ? null : $request->result_id;
+        $city_area_id = $request->city_area_id === 'null' ? null : $request->city_area_id;
+
+        $data = Card112::getDetailedStat($date_begin, $date_end, $result_id, $city_area_id);
+
+        $dailyWordExport = new Ticket112PeriodWordExport($data);
+       
+                $writer = $dailyWordExport->getWriter('Word2007');
+                $fileName = 'Отчет по карточке 112 за период.docx';
+                $writer->save(public_path($fileName));
+                return response()->download(public_path($fileName));
     }
 
 
