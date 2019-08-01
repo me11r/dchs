@@ -314,6 +314,7 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
         Route::get('/xls/report101/forces', 'ReportController@exportForcesXls')->name('report101.forces.xls');
         Route::get('/xls/report101/emergency', 'ReportController@exportEmergency101Xls')->name('report101.emergency.xls');
         Route::get('/xls/report112/emergency', 'ReportController@exportEmergency112Xls')->name('report112.emergency.xls');
+        Route::get('/word/report112/emergency', 'ReportController@exportEmergency112Word')->name('report112.emergency.docx');
         Route::get('/xls/card101/chronology/{card_id}', 'ReportController@exportCard101ChronologyXls')->name('card101.chronology.xls');
         Route::resource('/chats', 'ChatController');
         Route::resource('/messages', 'MessageController');

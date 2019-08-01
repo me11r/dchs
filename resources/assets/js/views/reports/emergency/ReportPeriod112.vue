@@ -14,6 +14,14 @@
                             @click.prevent="print()"><i class="fas fa-print"></i>&nbsp;{{ 'print'|trans }} <!--Печать-->
                         </button>
                     </div>
+                    <!-- Добавляем Ворд -->
+                    <div class="level-right has-text-right">
+                        <a
+                            :href="getHreftoWord"
+                            class="button is-primary"
+                        ><i class="fas fa-print"></i>&nbsp;{{ 'download_word'|trans }} <!--Скачать в Word-->
+                        </a>
+                    </div>
                     <div class="level-right has-text-right">
                         <a
                             :href="getHref"
@@ -220,6 +228,13 @@ export default {
     computed: {
         getHref() {
             return '/xls/report112/emergency' +
+                '?date_begin=' + moment(this.date_begin_).format('YYYY-MM-DD') +
+                '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
+                '&result_id=' + this.reason_id +
+                '&city_area_id=' + this.cityAreaId;
+        },
+        getHreftoWord(){
+            return '/word/report112/emergency' +
                 '?date_begin=' + moment(this.date_begin_).format('YYYY-MM-DD') +
                 '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
                 '&result_id=' + this.reason_id +
