@@ -554,7 +554,7 @@
             </table>
         </div>
         <div class="column">
-            <p><span class="has-text-weight-bold">Всего: {{ total_count_dvrs }}</span> {% for name, count in inactive_dvrs_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Всего: {{ total_count_dvrs + total_count_other_dvrs }}</span> {% for name, count in inactive_dvrs_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
 
 
