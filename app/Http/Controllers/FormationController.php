@@ -839,6 +839,8 @@ class FormationController extends AuthorizedController
                     'vehicle_id' => $q->id,
                 ]);
             });
+            
+            $result_otherdvrs = count($inactive_dvrsOther);
 
         if ($inactive_dvrsMapped->count() && $inactive_dvrsOther->count()) {
             $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
@@ -847,6 +849,7 @@ class FormationController extends AuthorizedController
             $inactive_dvrsMapped = $inactive_dvrsOther;
         }
 
+        
 
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($report){
             $q->where('name', 'Расстановка');
@@ -1030,6 +1033,7 @@ class FormationController extends AuthorizedController
             ->set('canEditOd', Auth::user()->hasRight('CAN_EDIT_OD_FORMATION'))
             ->set('sumArray', $sumArray)
             ->set('total_count_tech', $result_tech)
+            ->set('total_count_other_dvrs', $result_otherdvrs)
             ->set('total_count_dvrs', $result_dvrs);
     }
 
