@@ -802,6 +802,8 @@ class FormationController extends AuthorizedController
             $q->where('form_id', $form_id);
         })->where('status', 'repair')
             ->get();
+        
+        $result_tech = count($inactive_tech);
 
         $inactive_tech_cnt = $inactive_tech->groupBy(function ($q) {
             return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
@@ -823,6 +825,8 @@ class FormationController extends AuthorizedController
                 'vehicle_id' => $q->id,
             ]);
         });
+        
+        $result_dvrs = count($inactive_dvrsMapped);
 
         $inactive_dvrsOther = Dvr::whereHas('formation_tech_report', function ($q) use ($form_id){
             $q->where('form_id', $form_id);
@@ -1024,7 +1028,9 @@ class FormationController extends AuthorizedController
             ->set('inactive_dvrs_cnt', $inactive_dvrs_cnt)
             ->set('inactive_dvrsOther', $inactive_dvrsOther)
             ->set('canEditOd', Auth::user()->hasRight('CAN_EDIT_OD_FORMATION'))
-            ->set('sumArray', $sumArray);
+            ->set('sumArray', $sumArray)
+            ->set('total_count_tech', $result_tech)
+            ->set('total_count_dvrs', $result_dvrs);
     }
 
     public function getServicesList(Request $request)
