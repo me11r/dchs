@@ -21,7 +21,7 @@
                                 <a href="{{ route('staff.index') }}" class="button is-danger is-outlined" type="submit"><span><i class="fa fa-times"></i><span class="hidden-sm-down">&nbsp; Сбросить фильтр</span></span></a>
                         </div>
                     </form>
-
+            <form>
                 </div>
                 <table class="table is-narrow is-hoverable is-selectable is-striped">
                     <thead>
@@ -67,6 +67,7 @@
                         <li><h3 class="is-danger">Нет ЛС</h3></li>
                     {% endfor %}
                 </table>
+            </form>
             {% include "_templates/pagination" with {'items': items, 'per_page': per_page,'other': {'filter_department':filter_department, 'search':search}} %}
 
 
