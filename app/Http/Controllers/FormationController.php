@@ -39,6 +39,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Spipu\Html2Pdf\Html2Pdf;
+use App\Dictionary;
 
 class FormationController extends AuthorizedController
 {
