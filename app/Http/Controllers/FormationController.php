@@ -996,6 +996,30 @@ class FormationController extends AuthorizedController
         ];
 
         Cache::put('report101_data', $dataToReport, 3600);
+        
+        $staff_dspt = Dictionary::where('id', '27')->get();
+        $staff_cpps = Dictionary::where('id', '16')->get();
+        $staff_edds = Dictionary::where('id', '17')->get();
+        $staff_ipls = Dictionary::where('id', '18')->get();
+        $staff_water_supply = Dictionary::where('id', '20')->get();
+        $staff_senior_communication_master = Dictionary::where('id', '19')->get();
+        $staff_crb = Dictionary::where('id', '21')->get();
+        $staff_baza_gdzs = Dictionary::where('id', '22')->get();
+        $staff_doctor = Dictionary::where('id', '23')->get();
+        $staff_kshms = Dictionary::where('id', '25')->get();
+        $staff_zhalins = Dictionary::where('id', '26')->get();
+        
+        $res_dspt = $staff_dspt[0]['title'];
+        $res_cpps = $staff_cpps[0]['title'];
+        $res_edds = $staff_edds[0]['title'];
+        $res_ipls = $staff_ipls[0]['title'];
+        $res_water_supply = $staff_water_supply[0]['title'];
+        $res_senior_communication_master = $staff_senior_communication_master[0]['title'];
+        $res_crb = $staff_crb[0]['title'];
+        $res_baza_gdzs = $staff_baza_gdzs[0]['title'];
+        $res_doctor = $staff_doctor[0]['title'];
+        $res_kshms = $staff_kshms[0]['title'];
+        $res_zhalins = $staff_zhalins[0]['title'];
 
         $this->set('people', $people)
             ->set('form_id', $form_id)
@@ -1034,7 +1058,18 @@ class FormationController extends AuthorizedController
             ->set('sumArray', $sumArray)
             ->set('total_count_tech', $result_tech)
             ->set('total_count_other_dvrs', $result_otherdvrs)
-            ->set('total_count_dvrs', $result_dvrs);
+            ->set('total_count_dvrs', $result_dvrs)
+            ->set('dspt', $res_dspt)
+            ->set('cpps', $res_cpps)
+            ->set('edds', $res_edds)
+            ->set('water_supply', $res_water_supply)
+            ->set('senior_communication_master', $res_senior_communication_master)
+            ->set('crb', $res_crb)
+            ->set('baza_gdzs', $res_baza_gdzs)
+            ->set('doctor', $res_doctor)
+            ->set('kshms', $res_kshms)
+            ->set('zhalins', $res_zhalins)
+            ->set('ipls', $res_ipls);
     }
 
     public function getServicesList(Request $request)
