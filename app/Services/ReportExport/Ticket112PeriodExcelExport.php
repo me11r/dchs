@@ -132,29 +132,45 @@ class Ticket112PeriodExcelExport
         }
 
         foreach ($this->stat as $incident_type => $stat) {
-
-            foreach ($stat as $citAreaTitle => $cityArea) {
-                $arr = [
-                    $incident_type,
-                    $citAreaTitle,
-                    $cityArea['total'],
-                    $cityArea['injured'],
-                    $cityArea['dead'],
-                    $cityArea['evacuated'],
-                    $cityArea['hospitalized'],
-                    $cityArea['injured_hard'],
-                    $cityArea['poisoned'],
-                    $cityArea['saved'],
-                    $cityArea['saved_animals'],
-                ];
-                $sheet->fromArray($arr, null, "A$rowIndex");
-                $sheet->getStyle("A$rowIndex:B$rowIndex")->applyFromArray(self::HStyleRight);
-                $sheet->getStyle("A$rowIndex:K$rowIndex")->applyFromArray(self::HStyleRight);
-                $rowIndex++;
+            if($incident_type !== 'Итог') {
+                foreach ($stat as $citAreaTitle => $cityArea) {
+                    $arr = [
+                        $incident_type,
+                        $citAreaTitle,
+                        $cityArea['total'],
+                        $cityArea['injured'],
+                        $cityArea['dead'],
+                        $cityArea['evacuated'],
+                        $cityArea['hospitalized'],
+                        $cityArea['injured_hard'],
+                        $cityArea['poisoned'],
+                        $cityArea['saved'],
+                        $cityArea['saved_animals'],
+                    ];
+                    $sheet->fromArray($arr, null, "A$rowIndex");
+                    $sheet->getStyle("A$rowIndex:B$rowIndex")->applyFromArray(self::HStyleRight);
+                    $sheet->getStyle("A$rowIndex:K$rowIndex")->applyFromArray(self::HStyleRight);
+                    $rowIndex++;
+                }
             }
-
-
         }
+
+        $arr = [
+            'Итог',
+            '',
+            $this->stat['Итог']['total'],
+            $this->stat['Итог']['injured'],
+            $this->stat['Итог']['dead'],
+            $this->stat['Итог']['evacuated'],
+            $this->stat['Итог']['hospitalized'],
+            $this->stat['Итог']['injured_hard'],
+            $this->stat['Итог']['poisoned'],
+            $this->stat['Итог']['saved'],
+            $this->stat['Итог']['saved_animals'],
+        ];
+        $sheet->fromArray($arr, null, "A$rowIndex");
+        $sheet->getStyle("A$rowIndex:B$rowIndex")->applyFromArray(self::HStyleRight);
+        $sheet->getStyle("A$rowIndex:K$rowIndex")->applyFromArray(self::HStyleRight);
     }
 
     /**

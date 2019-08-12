@@ -107,7 +107,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="(record, title) in report_summary">
+                            <tr v-for="(record, title) in reportSummaryFiltered">
                                 <td class="is-narrow">{{ title }}</td>
                                 <td>
                                     <table class="formation-record-table">
@@ -138,10 +138,44 @@
                                             <td>{{ cityArea.saved }}</td>
                                             <td>{{ cityArea.saved_animals }}</td>
                                         </tr>
+
                                         </tbody>
                                     </table>
                                 </td>
+                            </tr>
+                            <tr v-if="totalRow['Итог']">
+                                <td class="is-narrow">Итог</td>
+                                <td>
+                                    <table class="formation-record-table">
+                                        <thead>
+                                        <tr>
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.emergency_count'|trans }}</td><!--Кол-во происшествий(ЧС)-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.injured'|trans }}</td><!--Пострадавших людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.dead'|trans }}</td><!--Погибших людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.evacuated'|trans }}</td><!--Эвакуированных людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.hospitalized'|trans }}</td><!--Госпитализированных людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.traumatized'|trans }}</td><!--Травмированных людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.poisoned'|trans }}</td><!--Отравление людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.saved'|trans }}</td><!--Спасено людей/детей-->
+                                            <td>{{ '/reports/analytics101.tabs.report_112_period.saved_animals'|trans }}</td><!--Спасено животных-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{ totalRow['Итог'].total }}</td>
+                                            <td>{{ totalRow['Итог'].injured }}</td>
+                                            <td>{{ totalRow['Итог'].dead }}</td>
+                                            <td>{{ totalRow['Итог'].evacuated }}</td>
+                                            <td>{{ totalRow['Итог'].hospitalized }}</td>
+                                            <td>{{ totalRow['Итог'].injured_hard }}</td>
+                                            <td>{{ totalRow['Итог'].poisoned }}</td>
+                                            <td>{{ totalRow['Итог'].saved }}</td>
+                                            <td>{{ totalRow['Итог'].saved_animals }}</td>
+                                        </tr>
 
+                                        </tbody>
+                                    </table>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -233,18 +267,23 @@ export default {
                 '&result_id=' + this.reason_id +
                 '&city_area_id=' + this.cityAreaId;
         },
-        getHreftoWord(){
+        getHreftoWord() {
             return '/word/report112/emergency' +
                 '?date_begin=' + moment(this.date_begin_).format('YYYY-MM-DD') +
                 '&date_end=' + moment(this.date_end_).format('YYYY-MM-DD') +
                 '&result_id=' + this.reason_id +
                 '&city_area_id=' + this.cityAreaId;
         },
-        // reportSummaryFilledRecords() {
-        //     return window._.filter(this.reportSummary, (item) => {
-        //         return item.total != 0;
-        //     });
-        // }
+        reportSummaryFiltered() {
+            return window._.pickBy(this.report_summary, (item, key) => {
+                return key !== 'Итог';
+            });
+        },
+        totalRow() {
+            return window._.pickBy(this.report_summary, (item, key) => {
+                return key === 'Итог';
+            });
+        }
     },
     watch: {
 

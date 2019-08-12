@@ -17,11 +17,11 @@ use PhpOffice\PhpWord\Style\Cell;
 use PhpOffice\PhpWord\Style\Table;
 use PhpOffice\PhpWord\Settings;
 
-class Ticket112PeriodWordExport 
+class Ticket112PeriodWordExport
 {
 
-   
-   /**
+
+    /**
      * @var PhpWord
      */
     private $phpWord;
@@ -33,7 +33,7 @@ class Ticket112PeriodWordExport
 
     public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
-     public function __construct(array $data)
+    public function __construct(array $data)
     {
         $this->phpWord = new PhpWord();
         $this->data = $data;
@@ -68,47 +68,57 @@ class Ticket112PeriodWordExport
         $this->addFirstTableHeaders($table);
         $this->addFirstTableData($table);
 
-        
+
     }
 
     private function addFirstTableData(\PhpOffice\PhpWord\Element\Table $table)
     {
-       foreach ($this->data as $incident_type => $stat) {
-          
-            foreach ($stat as $citAreaTitle => $cityArea) {
-                $row = $table->addRow();
-                $arr = [
-                    $incident_type,
-                    $citAreaTitle,
-                    $cityArea['total'],
-                    $cityArea['injured'],
-                    $cityArea['dead'],
-                    $cityArea['evacuated'],
-                    $cityArea['hospitalized'],
-                    $cityArea['injured_hard'],
-                    $cityArea['poisoned'],
-                    $cityArea['saved'],
-                    $cityArea['saved_animals'],
-                ];
+        foreach ($this->data as $incident_type => $stat) {
+            if($incident_type !== 'Итог') {
+                foreach ($stat as $citAreaTitle => $cityArea) {
+                    $row = $table->addRow();
+                    $arr = [
+                        $incident_type,
+                        $citAreaTitle,
+                        $cityArea['total'],
+                        $cityArea['injured'],
+                        $cityArea['dead'],
+                        $cityArea['evacuated'],
+                        $cityArea['hospitalized'],
+                        $cityArea['injured_hard'],
+                        $cityArea['poisoned'],
+                        $cityArea['saved'],
+                        $cityArea['saved_animals'],
+                    ];
 
-             foreach ($arr as $value) {
-
-
-
-             	$fontStyle = ['name' => 'Times New Roman', 'size' => 8];
-               $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
-             }
-               
-               
+                    foreach ($arr as $value) {
+                        $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+                        $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
+                    }
+                }
             }
-
-
         }
 
-        /*$row = $table->addRow();
-        foreach ($this->getFirstTableSumRow() as $value) {
-            $this->addDataCellToRow($row, $value, ['borderSize' => 10, 'borderColor' => '000000'], ['bold' => true, 'name' => 'Times New Roman', 'size' => 8], self::$noPaddingPS);
-        }*/
+        $row = $table->addRow();
+
+        $arr = [
+            'Итог',
+            '',
+            $this->data['Итог']['total'],
+            $this->data['Итог']['injured'],
+            $this->data['Итог']['dead'],
+            $this->data['Итог']['evacuated'],
+            $this->data['Итог']['hospitalized'],
+            $this->data['Итог']['injured_hard'],
+            $this->data['Итог']['poisoned'],
+            $this->data['Итог']['saved'],
+            $this->data['Итог']['saved_animals'],
+        ];
+
+        foreach ($arr as $value) {
+            $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
+            $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
+        }
     }
 
     private function addDataCellToRow(Row $row, $value, array $extraCellStyles = [], array $extraTextFStyles = [], array $extraTextPStyles = [])
@@ -169,7 +179,7 @@ class Ticket112PeriodWordExport
         $section->addTable($tableStyle);*/
     }
 
-     public function getWriter($name = 'Word2007')
+    public function getWriter($name = 'Word2007')
     {
         return IOFactory::createWriter($this->phpWord, $name);
     }
@@ -184,8 +194,6 @@ class Ticket112PeriodWordExport
             'marginBottom' => 500
         ]);
     }
-
-
 
 
 }
