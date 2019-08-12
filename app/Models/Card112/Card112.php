@@ -436,7 +436,39 @@ class Card112 extends BaseModel
                     + $baseQuery->sum('poisoned');
 
             }
+
+            /* Итого для каждого типа происшествия */
+            if (isset($result[$reason->name])) {
+
+                $result[$reason->name]['Итого'] = [
+                    'total' => collect($result[$reason->name])->sum('total'),
+                    'injured' => collect($result[$reason->name])->sum('injured'),
+                    'dead' => collect($result[$reason->name])->sum('dead'),
+                    'evacuated' => collect($result[$reason->name])->sum('evacuated'),
+                    'hospitalized' => collect($result[$reason->name])->sum('hospitalized'),
+                    'injured_hard' => collect($result[$reason->name])->sum('injured_hard'),
+                    'poisoned' => collect($result[$reason->name])->sum('poisoned'),
+                    'saved' => collect($result[$reason->name])->sum('saved'),
+                    'saved_animals' => collect($result[$reason->name])->sum('saved_animals'),
+                    'hurt' => collect($result[$reason->name])->sum('hurt'),
+                ];
+            }
         }
+
+        $f = collect($result)->sum('Итого.total');
+
+        $result['Итог'] = [
+            'total' => collect($result)->sum('Итого.total'),
+            'injured' => collect($result)->sum('Итого.injured'),
+            'dead' => collect($result)->sum('Итого.dead'),
+            'evacuated' => collect($result)->sum('Итого.evacuated'),
+            'hospitalized' => collect($result)->sum('Итого.hospitalized'),
+            'injured_hard' => collect($result)->sum('Итого.injured_hard'),
+            'poisoned' => collect($result)->sum('Итого.poisoned'),
+            'saved' => collect($result)->sum('Итого.saved'),
+            'saved_animals' => collect($result)->sum('Итого.saved_animals'),
+            'hurt' => collect($result)->sum('Итого.hurt'),
+        ];
 
         return $result;
     }
