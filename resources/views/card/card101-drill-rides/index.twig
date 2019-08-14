@@ -99,8 +99,8 @@
                         <a href="?sort=city_area_id">Тип выезда</a>
                     </th>
                     <th class="has-text-right"><a href="?sort=created_at">Дата и время</a></th>
-                    <th>Тип ЧС</th>
-                    <th>&nbsp;</th>
+                    <th>Подразделение</th>
+                    <th>Действия</th>
                 </tr>
                 </thead>
                 {% for ticket in tickets %}
@@ -111,7 +111,8 @@
                         <td class="has-text-right">{{ ticket.drill_type.name|default() }}</td>
                         <td class="has-text-right">{{ ticket.custom_created_at|date('H:i d.m.Y') }}</td>
                         <td class="has-text-right">{{ ticket.emergency_type ? ticket.emergency_type.name : '' }}</td>
-                        <td class="has-text-right">
+                        <td class="has-text-right">{{ ticket.getDetailedStaffCount() }}</td>
+                        <td style="width: 25%; text-align: center;">
                             <a href="/card/add101/{{ ticket.id }}/{{ card_type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
 
                             <delete-card-btn :can-delete="{{ can_delete|json_encode() }}" :ticket-id="{{ ticket.id }}"></delete-card-btn>
