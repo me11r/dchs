@@ -99,7 +99,8 @@
                         <a href="?sort=created_at">Дата и время</a>
                     </th>
                     <th>Тип ЧС</th>
-                    <th>&nbsp;</th>
+                    <th>Подразделение</th>
+                    <th>Действия</th>
                 </tr>
                 </thead>
                 {% for ticket in tickets %}
@@ -109,6 +110,7 @@
                         <td>{{ ticket.city_area.name|default('-') }} {% if ticket.crossroad_1_id %}({{ ticket.crossroad_1.name|default('-') }} &times; {{ ticket.crossroad_2.name|default('-') }}){% endif %}</td>
                         <td class="has-text-right">{{ ticket.custom_created_at|date('H:i d.m.Y') }}</td>
                         <td class="has-text-right">{{ ticket.emergency_type ? ticket.emergency_type.name : '' }}</td>
+                        <td style="width: 25%;">{{ ticket.getDetailedStaffCount() }}</td>
                         <td class="has-text-right">
                             <a href="/card/add101/{{ ticket.id }}/{{ type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
                             {#{% if ticket.trip_result.emergency_code|default('') == 115 or ticket.trip_result.emergency_code|default('') == 116 %}
