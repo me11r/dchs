@@ -1054,6 +1054,43 @@ class Ticket101 extends BaseModel
         }
         return $this->detailed_staff_count;
     }
+    
+    // Здесь по просьбе заказчиков показал  без количества людей (Только подразделения)
+    
+    public function getDetailedStaffWithoutHuman(Collection $fireDepartmentsCollection = null)
+    {
+        /** @var Collection $results */
+        $results = $this->relationLoaded('results')? $this->results : $this->results()->get();
+
+        if($results && $results->count()) {
+            $fireDepartmentsCollection = $fireDepartmentsCollection ?? FireDepartment::all();
+            $depts_out = $results->where('dispatch_time', '!=', null);
+            $deptsArr = array_unique($depts_out->pluck('fire_department_id')->toArray());
+
+            foreach ($fireDepartmentsCollection->whereIn('id', $deptsArr) as $item) {
+
+                $deptsNumbers = $depts_out->filter(function ($q) use ($item){
+                    return $q->fire_department_id === $item->id;
+                })->pluck('tech.department')->toArray();
+
+                $deptsStaffCounts = $depts_out->filter(function ($q) use ($item){
+                    return $q->fire_department_id === $item->id;
+                })->pluck('staff_count')->toArray();
+
+               $res = [];
+                foreach ($deptsNumbers as $key => $deptsNumber) {
+                    $res[] = "{$deptsNumber}:{$deptsStaffCounts[$key]} чел.";
+               }
+
+                $deptsNumbers = implode(',', $res);
+
+                $this->detailed_staff_count .= "{$item->title}, ";
+
+            }
+        }
+        return $this->detailed_staff_count;
+    }
+
 
     public function setTotalStaffCountAttribute($value)
     {
