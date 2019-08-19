@@ -79,6 +79,7 @@ class Card112Resource extends JsonResource
             'name_disease' => $this->name_disease,
             'avalanche_note' => $this->avalanche_note,
             'branch_fall_reason_id' => $this->branch_fall_reason_id,
+            'departure_results_scene_of_incident' => (string) $this->departure_results_scene_of_incident,
         ];
     }
 }
