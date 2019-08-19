@@ -162,6 +162,7 @@ class Card112 extends BaseModel
         'branch_fall_reason_id',
         'created_by',
         'changed_by',
+        'departure_results_scene_of_incident',
     ];
 
     public function created_by_user()
