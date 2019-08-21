@@ -673,7 +673,7 @@ class Ticket101WordExport
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
-                ['align' => Jc::BOTH]
+                ['align' => Jc::BOTH, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]]
             );
             $techIndex++;
         }
@@ -701,7 +701,7 @@ class Ticket101WordExport
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
-                ['align' => Jc::BOTH]
+                ['align' => Jc::BOTH, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]]
             );
             $techIndex++;
         }
