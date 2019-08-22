@@ -346,7 +346,7 @@
         </div>
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Диспетчера:</h3>
-            <table class="table">
+            <table class="action">
                 {% for item in dispatchers %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ item.staff.department.name }}</span></td>
@@ -357,7 +357,7 @@
         </div>
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Отпуск:</h3>
-            <table class="table">
+            <table class="action">
                 {% set previous = false %}
                 {% for item in vacation %}
                     {% if (previous == false) %}
@@ -450,7 +450,7 @@
         {% endfor %}
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Командировка:</h3>
-            <table class="table">
+            <table class="action">
                 {% set previous = false %}
                 {% for item in business_trip %}
                     {% if (previous == false) %}
@@ -491,7 +491,7 @@
 
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Другие причины:</h3>
-            <table class="table">
+            <table class="action">
                 {% set previous = false %}
                 {% for item in other_reasons %}
                     {% if (previous == false) %}
@@ -518,7 +518,7 @@
 
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">Расстановка на {{ report.report_date|date('d-m-Y') }}:</h3>
-            <table class="table">
+            <table class="action">
                 {% for item in formationCard101Others %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ loop.index }}. {{ item.fire_department ? item.fire_department.name : '' }}</span></td>
@@ -529,7 +529,7 @@
         </div>
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНАЯ ТЕХНИКА:</h3>
-            <table class="table">
+            <table class="action">
                 {% for index, item  in inactive_tech %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>
@@ -544,7 +544,7 @@
 
         <div class="column">
             <h3 class="title" style="text-decoration: underline !important;">НЕИСПРАВНЫЕ ВИДЕОРЕГИСТРАТОРЫ:</h3>
-            <table class="table">
+            <table class="action">
                 {% for index, item in inactive_dvrsMapped %}
                     <tr>
                         <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.department }}</span></td>
@@ -562,7 +562,7 @@
             <h3 class="title" style="text-decoration: underline !important;">Больничные:</h3>
             {% for guard_number in guard_numbers %}
                 <h6 class="title" style="text-decoration: underline !important;">{{ guard_number.name }}:</h6>
-                <table class="table">
+                <table class="action">
                     {% for item in sick_leave %}
                         {% if(guard_number.id == item.guard_number_id) %}
                             <tr>
@@ -578,9 +578,23 @@
     </div>
 
     <style>
-        table.table {
-           line-height: 0.6em;
+      
+       .action {
+          
+          background-color: white;
+          color: #363636;
+
         }
+        .action td,
+        .action th {
+           
+           border: #b5b5b5;
+           border-width: 0 0 1px;
+           padding: 0em 0.75em;
+           vertical-align: top;
+
+        }
+      
         th.rotate {
             /* Something you can count on */
             height: 180px;
