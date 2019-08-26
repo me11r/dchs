@@ -20,7 +20,7 @@ class NormPspController extends Controller
 
         $data['per_page'] = $request->get('per_page', 20);
         $data['card_type'] = $this->view;
-        $data['fire_departments'] = FireDepartment::recommend()->get();
+        $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
         $data['norm_types'] = NormType::all();
         $data['norm_numbers'] = NormNumber::all();
         $data['filter_fd'] = $request->filter_fd;
@@ -72,7 +72,7 @@ class NormPspController extends Controller
         $data['norm_types'] = NormType::all();
         $data['fire_department'] = $data['record']->fire_department; //Auth::user()->department ? Auth::user()->department : json_encode(null);
         $data['can_select_fd'] = Auth::user()->hasRight('CAN_SELECT_FD_NORMS_PSP');
-        $data['fire_departments'] = FireDepartment::all();
+        $data['fire_departments'] = FireDepartment::sortByCustomOrder()->get();
         $data['departments'] = $data['record']->departments;
 
         return view("card.$this->view.create-edit", $data);
@@ -127,7 +127,7 @@ class NormPspController extends Controller
             return redirect()->route('norms-psp.edit', $data['record']->id);
         }
         $data = [];
-        $data['fire_departments'] = FireDepartment::all();
+        $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
         $data['norm_numbers'] = NormNumber::all();
         $data['norm_types'] = NormType::all();
         $data['can_select_fd'] = Auth::user()->hasRight('CAN_SELECT_FD_NORMS_PSP');

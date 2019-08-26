@@ -44,7 +44,7 @@ class FireDepartmentCheckController extends Controller
 
         $data['fire_dept_id'] = Auth::user()->fire_department_id ?? 0;
 
-        $data['fire_depts'] = FireDepartment::all();
+        $data['fire_depts'] = FireDepartment::sortByCustomOrder()->get();
         return view('fire-department-checks.edit', $data);
     }
 
@@ -90,7 +90,7 @@ class FireDepartmentCheckController extends Controller
             $this->throwAccessDenied();
         }
         $data['record'] = FireDepartmentCheck::with(['fire_department'])->find($id);
-        $data['fire_depts'] = FireDepartment::all();
+        $data['fire_depts'] = FireDepartment::sortByCustomOrder()->get();
         return view('fire-department-checks.edit',$data);
     }
 
@@ -107,7 +107,7 @@ class FireDepartmentCheckController extends Controller
         $data['dspt'] = $items->where('is_dspt', '=', true)->all();
         $data['not_dspt'] = $items->where('is_dspt', '=', false)->all();
 
-        $data['fire_depts'] = FireDepartment::all();
+        $data['fire_depts'] = FireDepartment::sortByCustomOrder()->get();
         $data['date'] = $date;
 
         $data['fire_dept_id'] = Auth::user()->fire_department_id ?? 0;
@@ -143,14 +143,6 @@ class FireDepartmentCheckController extends Controller
             $model->fill($item);
             $model->save();
         }
-//        $f = $request->all();
-//        $data['record'] = FireDepartmentCheck::find($id);
-//        $data['record']->fire_department_id = $request->fire_department_id;
-//        $data['record']->time_begin = $request->time_begin;
-//        $data['record']->time_end = $request->time_end;
-//        $data['record']->responsible_person = $request->responsible_person;
-//        $data['record']->note = $request->note;
-//        $data['record']->save();
 
         return redirect('fire-department-checks');
     }
@@ -167,7 +159,6 @@ class FireDepartmentCheckController extends Controller
         if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
             $this->throwAccessDenied();
         }
-        $f = $request->all();
         $data['record'] = FireDepartmentCheck::find($id);
         $data['record']->fire_department_id = $request->fire_department_id;
         $data['record']->time_begin = $request->time_begin;

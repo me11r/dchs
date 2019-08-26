@@ -264,9 +264,12 @@ class FormationController extends AuthorizedController
         $belongsToDept = Auth::user()->fire_department_id;
 
         if($belongsToDept){
-            $departments = FireDepartment::where('id', $belongsToDept)->get();
+            $departments = FireDepartment::where('id', $belongsToDept)
+                ->get();
         } else {
-            $departments = FireDepartment::usingInFormationReport()->get();
+            $departments = FireDepartment::usingInFormationReport()
+                ->sortByCustomOrder()
+                ->get();
         }
 
         $fieldlist = [
@@ -501,7 +504,9 @@ class FormationController extends AuthorizedController
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::usingInFormationReport()->get();
+            $departments = FireDepartment::usingInFormationReport()
+                ->sortByCustomOrder()
+                ->get();
         }
 
         $model = (new FormationTechReport)
@@ -765,7 +770,7 @@ class FormationController extends AuthorizedController
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
 
         $departments = new FireDepartment();
-        $departments = $departments->usingInFormationReport();
+        $departments = $departments->usingInFormationReport()->sortByCustomOrder();
         if (auth()->user()->fire_department_id){
             $departments = $departments->where('id', '=', auth()->user()->fire_department_id);
         }
@@ -780,22 +785,22 @@ class FormationController extends AuthorizedController
         $people = (new FormationPersonsReport)->with('formation_person_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
 
         $dispatchers = FormationPersonsItem::byRankAndForm('dispatchers', $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $vacation = FormationPersonsItem::byRanksAndForm(['vacation', 'maternity','study'], $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $other_reasons = FormationPersonsItem::byRanksAndForm(['other'], $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $sick_leave = FormationPersonsItem::byRanksAndForm(['sick_leave','sick'], $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
 
         $inactive_tech = $rawPeople = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($form_id){
