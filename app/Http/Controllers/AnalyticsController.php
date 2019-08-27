@@ -58,8 +58,6 @@ class AnalyticsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $all = $request->all();
-
         foreach ($request->input('text', []) as $item_id => $text) {
             $analyticsItem = Analytics101Item::find($item_id);
 
@@ -70,7 +68,6 @@ class AnalyticsController extends Controller
         }
 
         return redirect('reports/daily-reports/101');
-
     }
 
     public function delete(Request $request, $id)

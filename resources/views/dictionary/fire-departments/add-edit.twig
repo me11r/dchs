@@ -10,13 +10,13 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="id" value="{{ record.id|default() }}"/>
                     <div class="field">
-                        <label for="object_name">Название</label>
+                        <label for="title">Название</label>
                         <input required type="text" class="input" name="title" id="title" value="{{ attribute(record, 'title')|default('') }}"/>
                     </div>
-                    {#<div class="field">
-                        <label for="location">Адрес</label>
-                        <input required type="text" class="input" name="address" id="address" value="{{ attribute(record, 'address')|default('') }}"/>
-                    </div>#}
+                    <div class="field">
+                        <label for="old_title">Название (старое)</label>
+                        <input type="text" class="input" name="old_title" id="old_title" value="{{ attribute(record, 'old_title')|default('') }}"/>
+                    </div>
 
                     <div class="field">
                         <p class="control" for="fire_level_id">Использовать в рекомендациях</p>
@@ -47,6 +47,11 @@
                                 {% endfor %}
                             </select>
                         </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="sort_order">Сортировка</label>
+                        <input type="number" class="input" name="sort_order" id="sort_order" value="{{ attribute(record, 'sort_order')|default('') }}"/>
                     </div>
 
                     <fire-departments-map

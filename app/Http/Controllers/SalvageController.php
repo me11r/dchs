@@ -27,7 +27,7 @@ class SalvageController extends Controller
         $per_page = 20;
         $filter_department = $request->filter_department;
         $fullAccess = Auth::user()->currentRole() !== 'dispatcher_pch';
-        $fire_departments = FireDepartment::all();
+        $fire_departments = FireDepartment::sortByCustomOrder()->get();
         $user = Auth::user();
 
         $items = $fullAccess ? $this->repository : Auth::user()->salvage();

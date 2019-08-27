@@ -64,7 +64,7 @@
                 {% for record in records %}
                     <tr>
                         <td>{{ record.id }}</td>
-                        <td class="max-width: 20%">{{ record.name|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.title_with_old|default('') }}</td>
                         <td class="max-width: 20%">{{ record.city_area.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.recommend|default('') ? 'Да' : 'Нет' }}</td>
                         <td class="max-width: 20%">{{ record.goes_in_formation_report|default('') ? 'Да' : 'Нет' }}</td>

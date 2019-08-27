@@ -59,7 +59,7 @@ class StaffController extends Controller
             ->paginate($per_page);
 
         $user = Auth::user();
-        $fire_departments = FireDepartment::all();
+        $fire_departments = FireDepartment::sortByCustomOrder()->get();
 
         return view("$this->table.index", compact(
             'items',
@@ -78,7 +78,7 @@ class StaffController extends Controller
     public function create()
     {
         if(Auth::id() == 1){
-            $fire_departments = FireDepartment::all();
+            $fire_departments = FireDepartment::sortByCustomOrder()->get();
         }
         else{
             $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
@@ -123,7 +123,7 @@ class StaffController extends Controller
     public function edit($id)
     {
         if(Auth::id() == 1){
-            $fire_departments = FireDepartment::all();
+            $fire_departments = FireDepartment::sortByCustomOrder()->get();
         }
         else{
             $fire_departments = FireDepartment::where('id', Auth::user()->fire_department_id)->get();
