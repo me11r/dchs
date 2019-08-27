@@ -27,7 +27,7 @@ class OtherRides101Controller extends Controller
         $data['can_delete'] = Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_DELETE');
         $data['card_type'] = 'other';
         $data['ride_types'] = RideType::all();
-        $data['fire_departments'] = FireDepartment::recommend()->get();
+        $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
         $data['filter_fd'] = $request->filter_fd;
         $data['filter_ride_type'] = $request->filter_ride_type;
         $data['search'] = $request->search;
@@ -116,7 +116,7 @@ class OtherRides101Controller extends Controller
             return redirect('card101-other-rides')->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
         }
         else{
-            $data['fire_departments'] = FireDepartment::recommend()->get();
+            $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
             $data['techItems'] = json_encode([]);
@@ -159,7 +159,7 @@ class OtherRides101Controller extends Controller
         }
         else{
 
-            $data['fire_departments'] = FireDepartment::recommend()->get();
+            $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
             $data['hq'] = $data['record']->hqRides;

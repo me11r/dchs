@@ -447,20 +447,14 @@
                                     <!--МЕСТО ПРОИСШЕСТВИЯ-->
                                     <div class="control is-expanded">
                                         <p class="control">
-                                            <label for="additional_incident_place_id">Место происшествия</label>
+                                            <label for="departure_results_scene_of_incident">Место происшествия</label>
                                         </p>
-                                        <div class="select">
-                                            <select
-                                                    id="additional_incident_place_id"
-                                                    name="additional_incident_place_id"
-                                                    v-model="model.additional_incident_place_id">
-                                                <option
-                                                        v-for="incidentPlace in incidentPlaces"
-                                                        :key="incidentPlace.id"
-                                                        :value="incidentPlace.id">{{ incidentPlace.name }}
-                                                </option>
-                                            </select>
-                                        </div>
+                                        <input
+                                               type="text"
+                                               class="input"
+                                               name="departure_results_scene_of_incident"
+                                               id="departure_results_scene_of_incident"
+                                               v-model="model.departure_results_scene_of_incident">
                                     </div>
                                 </div>
 

@@ -264,9 +264,12 @@ class FormationController extends AuthorizedController
         $belongsToDept = Auth::user()->fire_department_id;
 
         if($belongsToDept){
-            $departments = FireDepartment::where('id', $belongsToDept)->get();
+            $departments = FireDepartment::where('id', $belongsToDept)
+                ->get();
         } else {
-            $departments = FireDepartment::usingInFormationReport()->get();
+            $departments = FireDepartment::usingInFormationReport()
+                ->sortByCustomOrder()
+                ->get();
         }
 
         $fieldlist = [
@@ -501,7 +504,9 @@ class FormationController extends AuthorizedController
         if($belongsToDept){
             $departments = FireDepartment::where('id', $belongsToDept)->get();
         } else {
-            $departments = FireDepartment::usingInFormationReport()->get();
+            $departments = FireDepartment::usingInFormationReport()
+                ->sortByCustomOrder()
+                ->get();
         }
 
         $model = (new FormationTechReport)
@@ -765,7 +770,7 @@ class FormationController extends AuthorizedController
         $excludedIds = $formationService->getExcludedDepartments()->pluck('id');
 
         $departments = new FireDepartment();
-        $departments = $departments->usingInFormationReport();
+        $departments = $departments->usingInFormationReport()->sortByCustomOrder();
         if (auth()->user()->fire_department_id){
             $departments = $departments->where('id', '=', auth()->user()->fire_department_id);
         }
@@ -780,28 +785,30 @@ class FormationController extends AuthorizedController
         $people = (new FormationPersonsReport)->with('formation_person_items')->where('form_id', $form_id)->get()->keyBy('dept_id');
 
         $dispatchers = FormationPersonsItem::byRankAndForm('dispatchers', $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $vacation = FormationPersonsItem::byRanksAndForm(['vacation', 'maternity','study'], $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $other_reasons = FormationPersonsItem::byRanksAndForm(['other'], $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $sick = FormationPersonsItem::byRankAndForm('sick', $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $sick_leave = FormationPersonsItem::byRanksAndForm(['sick_leave','sick'], $form_id)->get()->sortBy('staff_id')->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
         $business_trip = FormationPersonsItem::byRankAndForm('business_trip', $form_id)->get()->sortBy(function ($q){
-            return $q->staff->department_id;
+            return $q->staff->department->sort_order;
         });
 
         $inactive_tech = $rawPeople = FormationTechItem::whereHas('formation_tech_report', function ($q) use ($form_id){
             $q->where('form_id', $form_id);
         })->where('status', 'repair')
             ->get();
+        
+        $result_tech = count($inactive_tech);
 
         $inactive_tech_cnt = $inactive_tech->groupBy(function ($q) {
             return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
@@ -823,6 +830,8 @@ class FormationController extends AuthorizedController
                 'vehicle_id' => $q->id,
             ]);
         });
+        
+        $result_dvrs = count($inactive_dvrsMapped);
 
         $inactive_dvrsOther = Dvr::whereHas('formation_tech_report', function ($q) use ($form_id){
             $q->where('form_id', $form_id);
@@ -835,6 +844,8 @@ class FormationController extends AuthorizedController
                     'vehicle_id' => $q->id,
                 ]);
             });
+            
+            $result_otherdvrs = count($inactive_dvrsOther);
 
         if ($inactive_dvrsMapped->count() && $inactive_dvrsOther->count()) {
             $inactive_dvrsMapped = $inactive_dvrsMapped->merge($inactive_dvrsOther);
@@ -843,6 +854,7 @@ class FormationController extends AuthorizedController
             $inactive_dvrsMapped = $inactive_dvrsOther;
         }
 
+        
 
         $formationCard101Others = Ticket101Other::whereHas('ride_type', function ($q) use ($report){
             $q->where('name', 'Расстановка');
@@ -1024,7 +1036,10 @@ class FormationController extends AuthorizedController
             ->set('inactive_dvrs_cnt', $inactive_dvrs_cnt)
             ->set('inactive_dvrsOther', $inactive_dvrsOther)
             ->set('canEditOd', Auth::user()->hasRight('CAN_EDIT_OD_FORMATION'))
-            ->set('sumArray', $sumArray);
+            ->set('sumArray', $sumArray)
+            ->set('total_count_tech', $result_tech)
+            ->set('total_count_other_dvrs', $result_otherdvrs)
+            ->set('total_count_dvrs', $result_dvrs);
     }
 
     public function getServicesList(Request $request)

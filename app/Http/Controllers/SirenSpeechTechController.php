@@ -11,7 +11,7 @@ class SirenSpeechTechController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $data['items'] = SirenSpeechTech::orderBy('id', 'desc')->paginate(15);
+        $data['items'] = SirenSpeechTech::orderBy('created_at', 'desc')->paginate(15);
         $data['per_page'] = $perPage;
         return view('reports.siren-speech-tech.index', $data);
     }
@@ -91,6 +91,7 @@ class SirenSpeechTechController extends Controller
             'demounted' => $request->demounted,
             'broken' => $request->broken,
             'inactive' => $request->inactive,
+            'created_at' => $request->date,
         ]);
 
         foreach ($request->input('demounted_text', []) as $item) {

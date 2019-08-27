@@ -118,7 +118,6 @@ class DictionaryController extends AuthorizedController
             if ($request->filter_department) {
                 $specialPlan = $specialPlan
                     ->where('fire_department_id', '=', $request->filter_department)
-//                    ->orderBy('sort_order')
                 ;
             }
 
@@ -228,12 +227,14 @@ class DictionaryController extends AuthorizedController
             $data['city_areas'] = Dictionary\CityArea::all();
             $data['city_area'] = $request->city_area;
         }
-        elseif($name == 'fire-departments'){
+        elseif($name == 'fire-departments') {
+            $sort = $sort === 'id' ? 'sort_order' : $sort;
             $dept = FireDepartment::orderBy($sort);
 
-            if($request->search){
+            if($request->search) {
                 $data['search'] = $request->search;
-                $dept = $dept->where('title', 'like',"$request->search")
+                $dept = $dept->where('title', 'like',"$request->search%")
+                    ->orWhere('old_title','like',"$request->search%")
                     ->orWhereHas('city_area', function ($q) use ($request){
                         $q->where('name', $request->search);
                     });
@@ -550,6 +551,8 @@ class DictionaryController extends AuthorizedController
         elseif($name == 'fire-departments'){
             $record  = FireDepartment::firstOrNew(['id' => $request->id]);
             $record->title = $request->title;
+            $record->old_title = $request->old_title;
+            $record->sort_order = $request->sort_order;
             $record->city_area_id = $request->city_area_id;
             $record->recommend = $request->recommend;
             $record->goes_in_formation_report = $request->goes_in_formation_report;

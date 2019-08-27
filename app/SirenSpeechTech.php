@@ -17,6 +17,7 @@ class SirenSpeechTech extends BaseModel
         'demounted',
         'broken',
         'inactive',
+        'created_at',
     ];
 
     protected $appends = [
@@ -30,7 +31,7 @@ class SirenSpeechTech extends BaseModel
 
     public function getTotalAttribute()
     {
-        return $this->sst + $this->motor + $this->demounted + $this->broken + $this->inactive;
+        return $this->sst + $this->motor;
     }
 
     public function scopeDailyRecords($q, $from = null, $to = null)

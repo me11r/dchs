@@ -2,6 +2,13 @@
     <div class="columns">
         <table class="table table-mobile-sort">
             <tr>
+                <td>Дата</td>
+                  <td>
+                    <input v-if="record_.id" v-model="record_.created_at" type="text" class="input"  disabled>
+                    <input v-else type="date" class="input" value="" name="date">
+                 </td>
+            </tr>
+            <tr>
                 <td>{{ '/reports/siren-speeches.total'|trans }}</td><!--Всего-->
                 <td><input readonly type="text" class="input" v-model="total"></td>
             </tr>

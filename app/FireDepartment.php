@@ -50,6 +50,8 @@ class FireDepartment extends Model
     protected $guarded = ['id'];
     protected $fillable = [
         'title',
+        'title_old',
+        'sort_order',
         'address',
         'recommend',
         'city_area_id',
@@ -59,6 +61,17 @@ class FireDepartment extends Model
     public function getNameAttribute()
     {
         return $this->attributes['title'];
+    }
+
+    //title_with_old
+    public function getTitleWithOldAttribute()
+    {
+        $old = $this->attributes['old_title'];
+        $new = $this->attributes['title'];
+
+        $old = ($old !== null && $old !== $new) ? " ({$old})" : '';
+
+        return "{$this->attributes['title']}$old";
     }
 
     public function setNameAttribute($value)
@@ -94,5 +107,10 @@ class FireDepartment extends Model
     public function scopeUsingInFormationReport($q, $search = true)
     {
         return $q->where('goes_in_formation_report', $search);
+    }
+
+    public function scopeSortByCustomOrder($q, $direction = 'asc')
+    {
+        return $q->orderBy('sort_order', $direction);
     }
 }

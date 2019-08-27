@@ -11,6 +11,7 @@ use App\GuardNumber;
 use App\Models\Vehicle;
 use App\OperationalGroupSchedule;
 use Carbon\Carbon;
+use function foo\func;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Row;
 use PhpOffice\PhpWord\Element\Section;
@@ -136,7 +137,9 @@ class Ticket101WordExport
         $this->phpWord = new PhpWord();
         $this->formationReport = $formationReport;
         $this->departments = $departments;
-        $this->people = $people;
+        $this->people = $people->sortBy(function($q) {
+            return $q->fireDepartment->sort_order;
+        });
         $this->tech = $tech;
         $this->sumPeople = $sumPeople;
         $this->data = $data;
@@ -243,6 +246,7 @@ class Ticket101WordExport
     private function peopleByDept()
     {
         $people = $this->people;
+
         $result = [];
         foreach ($people as $dept_id => $personSummary) {
 
@@ -430,7 +434,6 @@ class Ticket101WordExport
     private function addBottomText(Section $section)
     {
         $people = $this->peopleByDept();
-        $people = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $people); // сортируем
 
         foreach ($people as $key => $persons) {
             if(!is_array($persons)){
@@ -439,7 +442,6 @@ class Ticket101WordExport
         }
 
         $sickPeople = $this->getSickLeavePeople();
-        $sickPeople = array_replace(array_flip(self::$sortedDepartmentNamesBottom), $sickPeople); // сортируем
 
         $repairedTech = $this->getRepairedTech();
         $repairedDvr = $this->getRepairedDvr();
@@ -470,7 +472,6 @@ class Ticket101WordExport
             'tulpar10' => 'Тулпар-10: ',
             'kshm' => 'КШМ: ',
             'ipl_zhalyn' => 'ИПЛ «Жалын»: '
-//            'sick_leave' => 'Больничные: ',
         ];
 
         $generalFontStyle = ['name' => 'Times New Roman', 'size' => 8];
@@ -673,7 +674,7 @@ class Ticket101WordExport
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
-                ['align' => Jc::BOTH]
+                ['align' => Jc::BOTH, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]]
             );
             $techIndex++;
         }
@@ -701,7 +702,7 @@ class Ticket101WordExport
             $section->addText(
                 "{$techIndex}. {$fireDept}:$tabs" . implode(', ', $tech),
                 ['name' => 'Times New Roman', 'size' => 10, 'bold' => true],
-                ['align' => Jc::BOTH]
+                ['align' => Jc::BOTH, 'space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]]
             );
             $techIndex++;
         }
