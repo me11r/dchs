@@ -559,7 +559,7 @@ class ReportController extends AuthorizedController
                 $specific = "по категории '{$incidentType->name}'";
             }
 
-            $title = "Информация {$specific} по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившие на линию «109» ССА.";
+            $title = "Информация {$specific} по г.Алматы в период c {$dateStartHuman}. по {$dateEndHuman}г. поступившая в ДЧС г. Алматы";
         }
 
         if ($incidentType->name === 'Падение веток и деревьев') {

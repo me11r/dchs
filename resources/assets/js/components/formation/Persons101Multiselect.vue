@@ -7,7 +7,7 @@
         <template v-if="activated">
             <multiselect
                 v-model="$parent.selectedStaff[rank]"
-                :options="options"
+                :options="del"
                 :multiple="true"
                 :close-on-select="false"
                 :clear-on-select="false"
@@ -134,6 +134,15 @@ export default {
         },
         options() {
             return this.$parent.odStaff && this.$parent.odStaff[this.tableName] ? this.$parent.odStaff[this.tableName] : [];
+        },
+        del(){
+            const data = [];
+            _.each(this.$parent.odStaff[this.tableName], (item) => {
+              if (item['deleted_at'] == null){
+                    data.push(item);
+                }
+            });        
+          return data ? data : [];
         }
     },
     data() {

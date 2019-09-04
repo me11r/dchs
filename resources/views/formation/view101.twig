@@ -27,37 +27,37 @@
         <div class="level">
             <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
-                        :name="'ДСПТ'"
+                        :name="'{{ dspt }}'"
                         :rank="'dspt'">
                 </persons101-multiselect>
             </p>
             <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
-                        :name="'ЦППС'"
+                        :name="'{{ cpps }}'"
                         :rank="'cpps'">
                 </persons101-multiselect>
             </p>
             <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
-                        :name="'ЕДДС'"
+                        :name="'{{ edds }}'"
                         :rank="'edds'">
                 </persons101-multiselect>
             </p>
             <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
-                        :name="'ИПЛ'"
+                        :name="'{{ ipls }}'"
                         :rank="'ipl'">
                 </persons101-multiselect>
             </p>
             <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
-                        :name="'Водоканал'"
+                        :name="'{{ water_supply }}'"
                         :rank="'water_supply'">
                 </persons101-multiselect>
             </p>
             <p class="" style="width: 16%; padding: 0 20px 0 0">
                 <persons101-multiselect
-                        :name="'Ст. мастер связи'"
+                        :name="'{{ senior_communication_master }}'"
                         :rank="'senior_communication_master'">
                 </persons101-multiselect>
             </p>
@@ -234,21 +234,21 @@
             <p>
                 <persons101-multiselect
                     :title-class="'has-text-weight-bold'"
-                    :name="'ЦРБ'"
+                    :name="'{{ crb }}'"
                     :rank="'crb'">
                 </persons101-multiselect>
             </p>
             <p>
                 <persons101-multiselect
                     :title-class="'has-text-weight-bold'"
-                    :name="'База ГДЗС'"
+                    :name="'{{ baza_gdzs }}'"
                     :rank="'gdzs_base'">
                 </persons101-multiselect>
             </p>
             <p>
                 <persons101-multiselect
                         :title-class="'has-text-weight-bold'"
-                        :name="'Врач'"
+                        :name="'{{ doctor }}'"
                         :rank="'doctor'">
                 </persons101-multiselect>
             </p>
@@ -330,7 +330,7 @@
             <p>
                 <persons101-multiselect
                         :title-class="'has-text-weight-bold'"
-                        :name="'КШМ'"
+                        :name="'{{ kshms }}'"
                         :machine-block="true"
                         :rank="'kshm'">
                 </persons101-multiselect>
@@ -338,7 +338,7 @@
             <p>
                 <persons101-multiselect
                         :title-class="'has-text-weight-bold'"
-                        :name="'ИПЛ «Жалын»'"
+                        :name="'{{ zhalins }}'"
                         :machine-block="true"
                         :rank="'ipl_zhalyn'">
                 </persons101-multiselect>
