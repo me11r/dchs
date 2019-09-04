@@ -47,6 +47,16 @@
                         {% endif %}
                     </div>
 
+                    <div class="field ">
+                        <label for="sort_order">Номер п/п</label>
+                        <input type="text" autocomplete="off" class="input {{ errors.has('sort_order')?'is-danger' }}" name="sort_order" id="sort_order" value="{{ old('sort_order')|default(user_record.sort_order|default('')) }}"/>
+                        {% if errors.has('sort_order') %}
+                            <span class="input-feedback">
+                                <small>{{ errors.first('sort_order') }}</small>
+                            </span>
+                        {% endif %}
+                    </div>
+
                     <div class="field">
                         <label for="role_id">Роль</label>
                         <br>
