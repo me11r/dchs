@@ -88,7 +88,8 @@ class User extends Authenticatable
         'device_token',
         'service_type_id',
         'call_name',
-        'position'
+        'position',
+        'sort_order',
     ];
 
     /**

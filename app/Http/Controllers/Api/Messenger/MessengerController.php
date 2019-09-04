@@ -21,7 +21,7 @@ class MessengerController extends Controller
             ->select(['id', 'email', 'name', 'last_connect_at', $online])
             ->where('id', '<>', $me->id)
             ->orderBy('online', 'desc')
-            ->orderBy('id')
+            ->orderBy('sort_order')
             ->get();
         $unread = $this->getUnreadCount($me->id);
         foreach ($users as &$user) {
