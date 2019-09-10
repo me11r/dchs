@@ -1833,6 +1833,7 @@ class ReportController extends AuthorizedController
                 $data['counts'][$type->name]['per_month'][$month] = Ticket101::whereYear('custom_created_at', $year)
                     ->whereMonth('custom_created_at', $month)
                     ->whereIn('drill_type_id',$typesArr)
+                    ->whereNotNull('object_classification_id')
                     ->count();
 
                 foreach ($data['object_classes'] as $object_class) {
