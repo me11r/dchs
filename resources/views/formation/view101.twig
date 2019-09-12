@@ -532,7 +532,7 @@
             <table class="action">
                 {% for index, item  in inactive_tech %}
                     <tr>
-                        <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.vehicle.fireDepartment.name }}</span></td>
+                        <td><span class="has-text-weight-bold">{% for ind, name in inactive_tech_new %}{% if index == ind %}{{ name }} {% else %} {{ '' }} {% endif %}{% endfor %}</span></td>
                         <td>{{ item.vehicle.name }} {% if item.vehicle.base %} ({{ item.vehicle.base }}) {% endif %} {{ item.comment ? ' - '~item.comment : '' }} {{ item.date_from_formatted ? ' с '~item.date_from_formatted }}</td>
                     </tr>
                 {% endfor %}
@@ -547,14 +547,14 @@
             <table class="action">
                 {% for index, item in inactive_dvrsMapped %}
                     <tr>
-                        <td><span class="has-text-weight-bold">{{ (index + 1) ~ '. ' ~ item.department }}</span></td>
+                        <td><span class="has-text-weight-bold">{% for ind, name in res_dvrsMapped %}{% if index == ind %}{{ name }}{% else %} {{ '' }} {% endif %}{% endfor %}</span></td>
                         <td>{{ item.vehicle }}</td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
         <div class="column">
-            <p><span class="has-text-weight-bold">Всего: {{ total_count_dvrs + total_count_other_dvrs }}</span> {% for name, count in inactive_dvrs_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
+            <p><span class="has-text-weight-bold">Всего: {{ total_count_dvrs + total_count_other_dvrs }}</span> {% if total_count_other_dvrs %}{{ ' Прочие -  ' ~ total_count_other_dvrs }}{% else %}{{ ' Прочие - 0 ' }}{%endif%}</b>{% for name, count in inactive_dvrs_cnt|default([]) %} {{ name ~ '-' ~ count|length ~ (not loop.last ? ', ' : '') }} {% endfor %}</p>
         </div>
 
 
