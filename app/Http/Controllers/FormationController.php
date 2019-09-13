@@ -817,7 +817,7 @@ class FormationController extends AuthorizedController
          
         $res_inactive_tech = array_unique($arr);
         
-        $result_tech = count($res_inactive_tech);
+        $result_tech = count($inactive_tech);
 
         $inactive_tech_cnt = $inactive_tech->groupBy(function ($q) {
             return $q->vehicle->vehicleClass ? $q->vehicle->vehicleClass->name : null;
@@ -850,7 +850,7 @@ class FormationController extends AuthorizedController
       
 
 
-        $result_dvrs = count($res_dvrsMapped);
+        $result_dvrs = count($inactive_dvrsMapped);
 
         $inactive_dvrsOther = Dvr::whereHas('formation_tech_report', function ($q) use ($form_id){
             $q->where('form_id', $form_id);
