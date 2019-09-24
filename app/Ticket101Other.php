@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\BaseModel;
 use App\Models\FireDepartmentResult;
+use App\Dictionary\CityArea;
 use App\Models\Staff;
 use Carbon\Carbon;
 use Faker\Provider\Base;
