@@ -18,6 +18,7 @@ use App\Ticket101OtherHqRide;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Dictionary\CityArea;
 
 class OtherRides101Controller extends Controller
 {
@@ -116,6 +117,7 @@ class OtherRides101Controller extends Controller
             return redirect('card101-other-rides')->with('_message', ['type' => 'success', 'text' => 'Данные успешно сохранены']);
         }
         else{
+            $data['city_area'] = CityArea::all();
             $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
@@ -158,7 +160,7 @@ class OtherRides101Controller extends Controller
 
         }
         else{
-
+            $data['city_area'] = CityArea::all();
             $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
             $data['ride_types'] = RideType::all();
             $data['staff'] = Staff::all();
