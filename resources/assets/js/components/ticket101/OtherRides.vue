@@ -43,6 +43,22 @@
                             </select>
                         </div>
                     </div>
+                    <div class="field">
+                        <label for="">Ход</label>
+                        <input v-model="otherRide_.move" name="move" required class="input" type="text">
+                    </div>
+                    <div class="field">
+                        <label for="ride_type_id">Районы</label>
+                        <div class="select"
+                             style="display: block">
+                            <select required v-model="otherRide_.area_id"
+                                    style="width: 100%;">
+                                <option value=""></option>
+                                <option v-for="fd in cityArea"
+                                        :value="fd.id">{{ fd.name }}</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <p style="color:red;">Для продолжения необходимо сохранить карточку</p>
             </div>
@@ -80,6 +96,23 @@
                                         <div class="field">
                                             <label for="">Наименование объекта</label>
                                             <input v-model="otherRide_.object_name" required class="input" type="text">
+                                        </div>
+                                        <div class="field">
+                                            <label for="">Ход</label>
+                                            <input v-model="otherRide_.move" name="move" required class="input" type="text">
+                                        </div>
+
+                                        <div class="field">
+                                            <label for="ride_type_id">Районы</label>
+                                            <div class="select"
+                                                 style="display: block">
+                                                <select required v-model="otherRide_.area_id"
+                                                        style="width: 100%;">
+                                                    <option value=""></option>
+                                                    <option v-for="fd in cityArea"
+                                                            :value="fd.id">{{ fd.name }}</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -685,6 +718,22 @@
                         <label for="">Наименование объекта</label>
                         <input v-model="otherRide_.final_object_name" class="input" type="text">
                     </div>
+                    <div class="field">
+                        <label for="">Ход</label>
+                        <input v-model="otherRide_.move" name="move" required class="input" type="text">
+                    </div>
+                    <div class="field">
+                        <label for="ride_type_id">Районы</label>
+                        <div class="select"
+                             style="display: block">
+                            <select required v-model="otherRide_.area_id"
+                                    style="width: 100%;">
+                                <option value=""></option>
+                                <option v-for="fd in cityArea"
+                                        :value="fd.id">{{ fd.name }}</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="field">
                     <div class="field is-fullwidth">
@@ -754,6 +803,12 @@
                     return [];
                 }
             },
+            cityArea: {
+                type: Array,
+                default: () => {
+                    return [];
+                }
+            },
             techItems: {
                 type: Array,
                 default: () => {
@@ -779,6 +834,7 @@
             return {
                 rideTypes_: this.rideTypes,
                 fireDepartments_: this.fireDepartments,
+                cityArea_: this.cityArea,
                 staff_: this.staff,
                 ticket_: this.ticket,
                 techItems_: this.techItems,
