@@ -54,6 +54,14 @@
                 <td>{{ trip.ticket101_other.responsible_person|default('-') }}</td>
             </tr>
             <tr>
+                <td class="has-text-right is-bold">Ход</td>
+                <td>{{ trip.ticket101_other.move|default('-') }}</td>
+            </tr>
+            <tr>
+                <td class="has-text-right is-bold">Район</td>
+                <td>{{ trip.ticket101_other.city_area.name|default('-') }}</td>
+            </tr>
+            <tr>
                 <td class="has-text-right is-bold">Состав высылаемых сил и средств</td>
                 <td>
                     {% if not trip.is_accepted %}
