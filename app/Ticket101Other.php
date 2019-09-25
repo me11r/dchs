@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\BaseModel;
 use App\Models\FireDepartmentResult;
+use App\Dictionary\CityArea;
 use App\Models\Staff;
 use Carbon\Carbon;
 use Faker\Provider\Base;
@@ -67,12 +68,19 @@ class Ticket101Other extends BaseModel
         'delayed_at',
         'imported_at',
         'fire_department_id',
+        'move',
+        'area_id',
     ];
 
     protected $appends = [
         'delayed',
     ];
-
+    
+    public function city_area()
+    {
+        return $this->hasOne(CityArea::class, 'id', 'area_id');
+    }
+    
     public function ride_type()
     {
         return $this->belongsTo(RideType::class,'ride_type_id');
