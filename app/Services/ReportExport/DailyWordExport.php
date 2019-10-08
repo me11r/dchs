@@ -502,7 +502,22 @@ class DailyWordExport
                                 ['align' => Jc::BOTH]
                             );
                         }
+                        //если ПТЗ, указываем ПГ/ПВ
+                        if ($drillType->id === 4) {
+                        // ПГ, ПВ
+                            $pg_pv = ($drillTicket['drill_checked_pg_total'] ? $drillTicket['drill_checked_pg_total'] : 0) . "ПГ/";
+                            $pg_pv .= ($drillTicket['drill_out_pg_total'] ? $drillTicket['drill_out_pg_total'] : 0). "ПГ ";
 
+                            $pg_pv .= ($drillTicket['drill_checked_pv_total'] ? $drillTicket['drill_checked_pv_total'] : 0) . "ПВ/";
+                            $pg_pv .= ($drillTicket['drill_out_pv_total'] ? $drillTicket['drill_out_pv_total'] : 0). "ПВ ";
+
+                            //4ПГ/0ПГ
+                            $textRun->addText(
+                                $pg_pv.' ',
+                                $simpleFontStyle,
+                                ['align' => Jc::BOTH]
+                            );
+                          }
                         //если Корректировка, указываем ПГ/ПВ
                         if ($drillType->id === 7) {
                             //Проверено ПГ/ПВ / Неисправно ПГ/ПВ
