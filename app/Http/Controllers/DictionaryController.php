@@ -77,7 +77,7 @@ class DictionaryController extends AuthorizedController
         $data['edit_path'] = "/dictionaries/{$name}/";
         $data['per_page'] = $request->get('per_page', 20);
         $data['type'] = $name;
-        $data['fire_departments'] = FireDepartment::all();
+        $data['fire_departments'] = FireDepartment::orderBy('sort_order')->get();
         $data['city_areas'] = Dictionary\CityArea::all();
         $data['search'] = $request->search;
 

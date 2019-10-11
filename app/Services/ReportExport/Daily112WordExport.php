@@ -367,6 +367,9 @@ class Daily112WordExport
         $index++;
         $this->addParagraph($section, "$index. Мониторинг интернет пространства – ", 'негативная информация не зарегистрирована.');
 
+        $index++;
+        $this->addParagraph($section, "$index. Приложение «DARMEN»: ", '');
+
 
         $section->addText(
             '',
