@@ -655,8 +655,8 @@ class Ticket101WordExport
                 ['align' => Jc::BOTH]
             );
 
-            $textRun->addText(
-                "начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''),
+            $safeString = htmlspecialchars("начало в {$item->time_begin } {$item->object_name} {$item->direction} {$item->note}" . ($item->date_from ? " c {$item->date_from}" : ''));
+            $textRun->addText($safeString,
                 ['name' => 'Times New Roman', 'size' => 8, 'bold' => true],
                 ['align' => Jc::BOTH]
             );
