@@ -76,6 +76,7 @@ class Ticket112PeriodWordExport
         foreach ($this->data as $incident_type => $stat) {
             if($incident_type !== 'Итог') {
                 foreach ($stat as $citAreaTitle => $cityArea) {
+                  if($citAreaTitle !== 'Итого'){
                     $row = $table->addRow();
                     $arr = [
                         $incident_type,
@@ -94,7 +95,9 @@ class Ticket112PeriodWordExport
                     foreach ($arr as $value) {
                         $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
                         $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
-                    }
+                     }
+                    
+                   }
                 }
             }
         }
