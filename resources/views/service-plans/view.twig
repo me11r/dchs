@@ -1,6 +1,6 @@
 {% extends "layout/html" %}
 {% block content %}
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU" type="text/javascript"></script>
+    {% include "yandex/script.twig" %}
     <script>
         window.addEventListener('load', () => {
             window.roadTripViewData = {
