@@ -710,6 +710,17 @@
                             department: '',
                             dispatched: false,
                         },
+                        {
+                            name: 'РОЧС',
+                            accept_time: '',
+                            out_time: '',
+                            arrive_time: '',
+                            ret_time: '',
+                            retreat_time: '',
+                            dispatch_time: '',
+                            department: '',
+                            dispatched: false,
+                        },
                     ];
                 }
 
