@@ -15,8 +15,11 @@ services:
       - app-network
 
   app-fpm:
-    image: ogorbunov/php:7.2-fpm-mysql
+    build:
+      context: ./_docker
+      dockerfile: php-fpm.docker
     container_name: "app-fpm"
+    working_dir: /current
     volumes:
       - ./:/current
       - ./_docker/php/php.ini:/usr/local/etc/php/php.ini:ro
@@ -36,6 +39,10 @@ services:
       BROADCAST_DRIVER: redis
       REDIS_HOST: app-redis
       REDIS_PORT: 6379
+    expose:
+      - "9000"
+      - "9001"
+    tty: true
 
   app-db:
     image: mysql:5.7
