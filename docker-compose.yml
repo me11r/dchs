@@ -13,6 +13,8 @@ services:
       - ./.docker/routing/conf.d/:/etc/nginx/conf.d:ro
     networks:
       - app-network
+    depends_on:
+      - app-fpm
 
   app-fpm:
     image: ogorbunov/php:7.3-fpm-alpine
@@ -38,6 +40,8 @@ services:
       REDIS_PORT: 6379
       ELASTICSEARCH_HOST: http://app-elasticsearch
     tty: true
+    depends_on:
+      - app-composer-vendors
 
   app-db:
     image: mysql:8
@@ -79,6 +83,8 @@ services:
       REDIS_HOST: app-redis
       REDIS_PORT: 6379
     command: php /current/artisan queue:work
+    depends_on:
+      - app-composer-vendors
 
   app-redis:
     container_name: "app-redis"
@@ -103,6 +109,37 @@ services:
     image: elasticsearch:5.6
     networks:
       - app-network
+
+  # service containers
+  app-composer-vendors:
+    container_name: "app-composer-vendors"
+    image: composer:latest
+    volumes:
+      - ./:/app
+    command: composer install --ignore-platform-reqs
+
+  app-scout-models:
+    container_name: "app-scout-models"
+    image: ogorbunov/php:7.3-cli-alpine
+    volumes:
+      - ./:/current
+    environment:
+      APP_ENV: local
+      APP_DEBUG: 1
+      APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
+      DB_CONNECTION: mysql
+      DB_HOST: app-db
+      DB_PORT: 3306
+      DB_USERNAME: emergency
+      DB_PASSWORD: emergency
+      DB_DATABASE: emergency
+    command: /current/.docker/scouting.sh
+    networks:
+      - app-network
+    depends_on:
+      - app-composer-vendors
+      - app-elasticsearch
+      - app-db
 
 volumes:
   app-db-data:
