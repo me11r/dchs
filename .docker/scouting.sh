@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
-cd ..
-php artisan scout:import "App\Models\SpecialPlan"
-php artisan scout:import "App\OperationalCard"
+#!/usr/bin/env sh
+php /current/artisan scout:import "App\Models\SpecialPlan"
+php /current/artisan scout:import "App\OperationalCard"

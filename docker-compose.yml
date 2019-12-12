@@ -117,6 +117,8 @@ services:
     volumes:
       - ./:/app
     command: composer install --ignore-platform-reqs
+    networks:
+      - app-network
 
   app-scout-models:
     container_name: "app-scout-models"
@@ -133,6 +135,7 @@ services:
       DB_USERNAME: emergency
       DB_PASSWORD: emergency
       DB_DATABASE: emergency
+      ELASTICSEARCH_HOST: http://app-elasticsearch
     command: /current/.docker/scouting.sh
     networks:
       - app-network
