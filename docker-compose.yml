@@ -20,7 +20,6 @@ services:
     working_dir: /current
     volumes:
       - ./:/current
-      - ./.docker/php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./.docker/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
     networks:
       - app-network
@@ -37,6 +36,7 @@ services:
       BROADCAST_DRIVER: redis
       REDIS_HOST: app-redis
       REDIS_PORT: 6379
+      ELASTICSEARCH_HOST: http://app-elasticsearch
     tty: true
 
   app-db:
@@ -59,6 +59,7 @@ services:
       - "--default-authentication-plugin=mysql_native_password"
 
   app-queue:
+    container_name: "app-queue"
     image: ogorbunov/php:7.3-cli-alpine
     volumes:
       - ./:/current
@@ -80,11 +81,13 @@ services:
     command: php /current/artisan queue:work
 
   app-redis:
+    container_name: "app-redis"
     image: redis:latest
     networks:
       - app-network
 
   app-broadcast:
+    container_name: "app-broadcast"
     image: node:10
     networks:
       - app-network
@@ -94,6 +97,12 @@ services:
       - 6001:6001
     working_dir: /app
     command: ./start.sh
+
+  app-elasticsearch:
+    container_name: "app-elasticsearch"
+    image: elasticsearch:5.6
+    networks:
+      - app-network
 
 volumes:
   app-db-data:
