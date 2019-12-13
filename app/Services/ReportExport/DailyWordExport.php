@@ -734,6 +734,11 @@ class DailyWordExport
             ['align' => Jc::BOTH]
         );
         $section->addText(
+            $this->data['footer_first_person']['post'],
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
             $this->data['footer_first_person']['name'],
             $generalBoldFontStyle,
             ['align' => Jc::END]
@@ -756,6 +761,11 @@ class DailyWordExport
         );
         $section->addText(
             $this->data['footer_second_person']['city'],
+            $generalBoldFontStyle,
+            ['align' => Jc::BOTH]
+        );
+        $section->addText(
+            $this->data['footer_second_person']['post'],
             $generalBoldFontStyle,
             ['align' => Jc::BOTH]
         );

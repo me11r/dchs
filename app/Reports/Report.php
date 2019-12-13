@@ -9,7 +9,6 @@ use App\Dictionary\FireObject;
 use App\Dictionary\TripResult;
 use App\Dvr;
 use App\FireDepartmentCheck;
-use App\FormationPersonsReport;
 use App\FormationReport;
 use App\FormationTechReport;
 use App\LivingSectorType;
@@ -190,14 +189,6 @@ class Report
 
             return in_array($event->trip_result_id, $q);
         })->count();
-        $formationReport = FormationReport::whereReportDate(date('Y-m-d', strtotime($this->getDates()['from'])))->first();
-        /** @var FormationPersonsReport $formationPersonReport */
-        $formationPersonReport = $formationReport->people_reports()->whereDeptId(19)->first();
-        $staff = $formationPersonReport->formation_person_items_od()->whereIn('rank', ['dspt', 'cpps'])->get();
-        $footerDayliReportFirstPerson = DailyReportPerson::where('type', 'footer_first')->where('report_type', '101_daily')->first();
-        $footerDayliReportFirstPerson->name = $staff->first()->staff->name;
-        $footerDayliReportSecondPerson = DailyReportPerson::where('type', 'footer_second')->where('report_type', '101_daily')->first();
-        $footerDayliReportSecondPerson->name = $staff->where('rank', 'cpps')->first()->staff->name;
 
 
         $data = [
@@ -398,8 +389,8 @@ class Report
             'childrenDeathCount' => $this->report->sum('children_death_count'),
             'hospitalizedCount' => $this->report->sum('hospitalized_count'),
             'header_person' => DailyReportPerson::where('type', 'header')->where('report_type', '101_daily')->first(),
-            'footer_first_person' => $footerDayliReportFirstPerson,
-            'footer_second_person' => $footerDayliReportSecondPerson
+            'footer_first_person' => DailyReportPerson::where('type', 'footer_first')->where('report_type', '101_daily')->first(),
+            'footer_second_person' => DailyReportPerson::where('type', 'footer_second')->where('report_type', '101_daily')->first()
 
         ];
 
