@@ -562,7 +562,7 @@
                     <div id="ticket101_other_records"></div>
                     <div class="field">
                         <label for="add_info">Дополнительная информация</label>
-                        <textarea name="add_info" id="add_info" class="textarea" cols="30" rows="3"></textarea>
+                        <textarea name="add_info" id="add_info" class="textarea" cols="30" rows="3">{{ ticket.add_info|default('') }}</textarea>
                     </div>
                 </div>
                 <div id="tab_summary" class="is-hidden">
