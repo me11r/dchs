@@ -74,6 +74,8 @@ class Report101ObjectClass
                 $tempArr[] = $total;
             }
 
+            $tempArr[] = $this->data['counts'][$drillType]['total'];
+
             $values[$drillType]['values'][] = $tempArr;
             $tempArr = [];
         }
