@@ -1849,6 +1849,8 @@ class ReportController extends AuthorizedController
                         ->count();
                 }
             }
+
+            $data['counts'][$type->name]['total'] = array_sum($data['counts'][$type->name]['per_month']);
         }
 
         $data['year'] = $year;
