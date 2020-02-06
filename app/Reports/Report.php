@@ -55,7 +55,7 @@ class Report
         $this->dictionaries = config('dictionaries');
     }
 
-    public function getReport($date = null): array
+    public function getReport($date = null)
     {
         $nowHours = now()->hour;
 
@@ -80,6 +80,10 @@ class Report
         $this->formationReport = FormationReport::where('report_date', (new Carbon($firstDate))->format('Y-m-d'))
             ->approved(true)
             ->first();
+
+        if (!$this->formationReport) {
+            return null;
+        }
 
         $this->firstDateTime = $firstDate;
         $this->secondDateTime = $secondDate;

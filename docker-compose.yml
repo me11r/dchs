@@ -53,6 +53,7 @@ services:
       - ./database/dumps/emergency-20-03-2019.sql.gz:/docker-entrypoint-initdb.d/01-init.sql.gz
       - ./database/dumps/report_cache_structure.sql:/docker-entrypoint-initdb.d/02-report-cache-structure.sql.gz
       - app-db-data:/var/lib/mysql
+      - ./:/current
     networks:
       - app-network
     environment:
