@@ -18,6 +18,7 @@ use App\RideType;
 use App\Services\ReportExport\DailyWordExport;
 use App\Ticket101;
 use Carbon\Carbon;
+use foo\bar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -80,6 +81,13 @@ class AnalyticsController extends Controller
     {
         $analytic = Analytics101::find($id);
         $data = (new Report($this->ticket101, $this->fireObject, $this->burntObject))->getReport($analytic->date);
+
+        if (!$data) {
+            return back()->with('_message', [
+                'type' => 'success',
+                'text' => 'Строевая записка не утверждена'
+            ]);
+        }
 
         $dailyWordExport = new DailyWordExport(
             $data
