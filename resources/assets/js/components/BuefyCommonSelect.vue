@@ -49,6 +49,13 @@ export default {
                 let text = option.text.toString().toLowerCase();
                 let value = this.text.toLowerCase();
                 return text.indexOf(value) >= 0;
+            }).sort((a, b) => {
+                if (parseInt(a.text) - parseInt(b.text) === 0) { // compare between the same digits
+                    a = a.text.substring(a.text.indexOf('/') + 1);
+                    b = b.text.substring(b.text.indexOf('/') + 1);
+                    return parseInt(a) - parseInt(b);
+                }
+                return parseInt(a.text) - parseInt(b.text);
             }) : [];
         },
         emptyText() {

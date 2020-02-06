@@ -30,13 +30,17 @@ class Ticket112PeriodWordExport
      * @var array
      */
     private $data;
+    private $dateBegin;
+    private $dateEnd;
 
     public static $noPaddingPS = ['space' => ['before' => 0, 'after' => 0], 'indentation' => ['left' => 0, 'right' => 0]];
 
-    public function __construct(array $data)
+    public function __construct(array $data, $dateBegin, $dateEnd)
     {
         $this->phpWord = new PhpWord();
         $this->data = $data;
+        $this->dateBegin = Carbon::parse($dateBegin)->format('d.m.Y');
+        $this->dateEnd = Carbon::parse($this->dateEnd)->format('d.m.Y');
 
         $this->prepareDocument();
     }
@@ -76,11 +80,10 @@ class Ticket112PeriodWordExport
         foreach ($this->data as $incident_type => $stat) {
             if($incident_type !== 'Итог') {
                 foreach ($stat as $citAreaTitle => $cityArea) {
-                  if($citAreaTitle !== 'Итого'){
                     $row = $table->addRow();
                     $arr = [
-                        $incident_type,
-                        $citAreaTitle,
+                        $citAreaTitle !== 'Итого' ? $incident_type : 'Итого',
+                        $citAreaTitle !== 'Итого' ? $citAreaTitle : '',
                         $cityArea['total'],
                         $cityArea['injured'],
                         $cityArea['dead'],
@@ -96,8 +99,6 @@ class Ticket112PeriodWordExport
                         $fontStyle = ['name' => 'Times New Roman', 'size' => 8];
                         $this->addDataCellToRow($row, $value, [], $fontStyle, self::$noPaddingPS);
                      }
-                    
-                   }
                 }
             }
         }
@@ -168,7 +169,14 @@ class Ticket112PeriodWordExport
     {
         // заголовок
         $section->addText(
-            'Отчет по карточке 112 за период',
+            "Отчет по карточке 112 за период c {$this->dateBegin} по {$this->dateEnd}",
+            ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
+            ['align' => Jc::CENTER]
+        );
+        $section->addText('');
+
+        $section->addText(
+            "Количество происшествий: {$this->data['Итог']['total']}",
             ['name' => 'Times New Roman', 'size' => 12, 'bold' => true],
             ['align' => Jc::CENTER]
         );

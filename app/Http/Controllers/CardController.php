@@ -232,10 +232,10 @@ class CardController extends AuthorizedController
         // право на редактирование даты создания карточки
         $this->set('canChangeCreatedAt', Auth::user()->hasRight('CAN_CHANGE_CARD101_DATE'));
 
-        $this->set('operational_plans', collect(OperationalPlan::all())->map(function ($item) {
+        $this->set('operational_plans', collect(OperationalPlan::orderBy('name')->get())->map(function ($item) {
             return [
                 'id' => $item->id,
-                'text' => $item->name
+                'text' => trim($item->name)
             ];
         })->toArray());
         $this->set('fire_departments', collect(clone $fire_departments)->map(function ($item) {

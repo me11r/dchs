@@ -26,6 +26,10 @@ export default function bindLocationInputApp() {
                             location: this.location
                         }
                     }).then((response) => {
+                        if (response.data.special_plans[0].location === this.location) {
+                            this.selectItem(response.data.special_plans[0]);
+                            return;
+                        }
                         this.setData(response.data);
                     }).catch(() => {
                         this.setData([]);
