@@ -76,7 +76,7 @@
                 <tr v-if="object_classes.length">
                     <td>{{ 'total'|trans }}</td><!--Итого-->
                     <td v-for="totalMonth in counts_[type]['per_month']">{{ totalMonth }}</td>
-                    <td></td>
+                    <td>{{ counts_[type]['total'] }}</td>
                 </tr>
             </table>
         </div>

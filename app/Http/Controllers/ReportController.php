@@ -1053,7 +1053,7 @@ class ReportController extends AuthorizedController
 
         $data = Card112::getDetailedStat($date_begin, $date_end, $result_id, $city_area_id);
 
-        $dailyWordExport = new Ticket112PeriodWordExport($data);
+        $dailyWordExport = new Ticket112PeriodWordExport($data, $date_begin, $date_end);
        
         $writer = $dailyWordExport->getWriter('Word2007');
         $fileName = 'Отчет по карточке 112 за период.docx';
@@ -1849,6 +1849,8 @@ class ReportController extends AuthorizedController
                         ->count();
                 }
             }
+
+            $data['counts'][$type->name]['total'] = array_sum($data['counts'][$type->name]['per_month']);
         }
 
         $data['year'] = $year;
