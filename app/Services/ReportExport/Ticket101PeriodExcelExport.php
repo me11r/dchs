@@ -79,6 +79,10 @@ class Ticket101PeriodExcelExport
         $sheet = $this->getActiveSheetByIndex(0);
         $sheet->setTitle('Отчет по карточке 101 за период');
         $this->addTableData($sheet);
+        
+        $sheet = $this->getActiveSheetByIndex(1);
+        $sheet->setTitle('Итоги по карточке 101 за период');
+        $this->addResultData($sheet);
     }
 
     /**
@@ -86,7 +90,7 @@ class Ticket101PeriodExcelExport
      * @param int $startRowIndex
      * @throws Exception
      */
-    private function addTableData(Worksheet $sheet, $startRowIndex = 16)
+    private function addResultData(Worksheet $sheet)
     {
         $sheet->mergeCells('A5:B5');
         $this->setCell($sheet, 'Время следования', "A5", "A5", self::HStyle);
@@ -129,41 +133,53 @@ class Ticket101PeriodExcelExport
         $this->setCell($sheet, 'двумя и более', "G7", "G7", self::HStyle);
         $this->setCell($sheet, $this->stat['totals']['elements_of_gdzs']['many'], "H7", "H7", self::HStyle);
 
+        $this->setCell($sheet, 'Общее количество выездов: ' . $this->stat['items']->count(), 'A12', 'A12', self::HStyle);
+
+        foreach (range('A', 'I') as $item) {
+            $sheet->getColumnDimension($item)->setAutoSize(true);
+        }
+    }
+
+
+    /**
+     * @param Worksheet $sheet
+     * @param int $startRowIndex
+     * @throws Exception
+     */
+    private function addTableData(Worksheet $sheet, $startRowIndex = 1)
+    {
         $rowIndex = $startRowIndex;
         $headers = [
-            'Дата выезда',
-            'Время',
+            "Дата выезда\nВремя",
             'ФИО',
             'Телефон',
             'Район города',
             'Адрес',
-            'Наименование объектов',
-            'Классификация объектов',
-//            'Участники тушения',
+            "Наименование объектов\nКлассификация объектов",
             'Ранг пожара',
-            'Ликвидировано стволами',
-            'Время следования',
-            'Время тушения',
-            'Локализация',
-            'Ликвидация',
+            "Cледование\nТушение",
+            "Локализация\nЛиквидация", // 10
+            'Ликвидировано стволами', 
             'Пенные стволы',
-            'Время работы стволов',
-            'Звенья ГДЗС',
-            'Время работы ГДЗС',
-            'Спасено людей',
-            'Эвакуировано людей',
-            'Травмы',
-            'Гибель',
-            'Результат выезда',
-            'Площадь горения',
-//            'Затраченное время на локализацию',
-//            'Затраченное время на ликвидацию',
+            "Время\nработы\nстволов",
+            "Звенья\nГДЗС",
+            'Время работы ГДЗС', // 15
+            "Спасено\nЭвакуировано",
+            "Травмы\nГибель",
+            "Площадь\nгорения",
             'Этажность',
+            'Результат выезда',
         ];
-        $sheet->fromArray($headers, null, 'A15');
-        $sheet->getStyle("A15:Y15")->applyFromArray([
+        
+        $sheet->fromArray($headers, null, 'A'.$rowIndex);
+
+        $sheet->getStyle("A$rowIndex:S$rowIndex")->applyFromArray([
             'font' => [
-                'bold' => true,
+                'bold' => true
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+                'vertical' => Alignment::VERTICAL_TOP
             ],
             'borders' => [
                 'allBorders' => [
@@ -171,54 +187,78 @@ class Ticket101PeriodExcelExport
                 ],
             ]
         ]);
-
-        foreach (range('A', 'Z') as $item) {
-            $sheet->getColumnDimension($item)->setAutoSize(true);
-        }
+        
+        $rowIndex += 1;
 
         foreach ($this->stat['items'] as $item) {
             $arr = [
-                $item->custom_created_at_date,
-                $item->custom_created_at_hours,
+                $item->custom_created_at_date."\n".$item->custom_created_at_hours,
                 $item->caller_name,
                 $item->caller_phone,
                 $item->city_area_name,
                 $item->location,
-                $item->object_name,
-                $item->object_classification_name,
+                $item->object_name."\n".$item->object_classification_name,
                 $item->result_fire_level_name,
+                $item->on_way_time."\n".$item->loc_time_total, 
+                $item->loc_time."\n".$item->liqv_time, 
                 $item->liquidation_method_name,
-                $item->on_way_time,
-                $item->loc_time_total,
-                $item->loc_time,
-                $item->liqv_time,
                 $item->trunks_event_info_arrived_names,
                 $item->trunks_chronology_working_time,
                 $item->gdzs_count,
-                $item->event_info_arrived_names,
-                $item->rescued_count,
-                $item->evac_count,
-                $item->gpt_burns_count,
-                $item->total_death_count,
-//                $item->loc_time_total,
-//                $item->liqv_time_total,
-                $item->trip_result_name,
+                $item->event_info_arrived_names, 
+                $item->rescued_count."\n".$item->evac_count,
+                $item->gpt_burns_count."\n".$item->total_death_count,
                 $item->max_square,
-                $item->storey_count
+                $item->storey_count,
+                $item->trip_result_name
             ];
 
             $sheet->fromArray($arr, null, "A$rowIndex");
 
             $url = env('APP_URL','http://emergency.iteamsolutions.kz')."/card/add101/{$item->id}#return=0";
 
-            $sheet->getCell("F{$rowIndex}")->setValue($arr[5])->getHyperlink()->setUrl($url);
+            $sheet->getCell("E{$rowIndex}")->setValue($arr[4])->getHyperlink()->setUrl($url);
 
-            $sheet->getStyle("A$rowIndex:Y$rowIndex")->applyFromArray(self::HStyle);
-            $rowIndex++;
+            $sheet->getStyle("A$rowIndex:S$rowIndex")->applyFromArray(self::HStyle);
+            $rowIndex += 1;
         }
 
-        $totalCellAddress = "A" . ($rowIndex + 2);
-        $this->setCell($sheet, 'Общее количество выездов: ' . $this->stat['items']->count(), $totalCellAddress, $totalCellAddress, self::HStyle);
+        foreach (range('A', 'S') as $item) {
+            
+            switch($item) {
+                
+                case 'E':
+                    $sheet->getColumnDimension($item)->setWidth(23);
+                    break;
+
+                case 'K':
+                    $sheet->getColumnDimension($item)->setWidth(22);
+                    break;
+
+                case 'G':
+                    $sheet->getColumnDimension($item)->setWidth(17);
+                    break;
+
+                case 'F':
+                case 'N':
+                    $sheet->getColumnDimension($item)->setWidth(25);
+                    break;
+
+                case 'J':
+                case 'S':
+                    $sheet->getColumnDimension($item)->setWidth(30);
+                    break;
+                
+                case 'A':
+                case 'H':
+                case 'I':
+                    $sheet->getColumnDimension($item)->setWidth(12);
+                    break;
+
+                default:
+                    $sheet->getColumnDimension($item)->setAutoSize(true);
+            }
+        }
     }
 
     /**
