@@ -32,6 +32,7 @@ END";
      */
     public function up()
     {
+        DB::unprepared('DROP FUNCTION IF EXISTS TIME_DIFF_SPIKE');
         DB::unprepared(self::$SQL);
     }
 
