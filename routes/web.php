@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test/fcm', 'TestController@fcm')->name('test.fcm');
+Route::get('/test/report101', 'TestController@report101')->name('test.report101');
 
 Route::post('logout', 'Auth\LoginController@postLogout')->name('logout');
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeViewPath']], function () {
