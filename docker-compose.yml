@@ -61,7 +61,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: emergency
     command:
-      - "--default-authentication-plugin=mysql_native_password"
+      - "--default-authentication-plugin=mysql_native_password --log_bin_trust_function_creators=1"
 
   app-queue:
     container_name: "app-queue"
