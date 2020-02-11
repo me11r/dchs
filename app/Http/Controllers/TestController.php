@@ -70,4 +70,23 @@ class TestController extends Controller
 //        return View::make('test.fcm', ['request' => $request->all()]);
     }
 
+    public function report101() {
+        $strategy = new AnalyticsSpiasrStrategy();
+        $result = $strategy->getResult(
+            '2019-12-01',
+            '2019-12-31',
+            null,
+            null,
+            null,
+            'less_10',
+            null
+        );
+
+        $exportService = new Ticket101PeriodExcelExport($result);
+
+        $writer = $exportService->getXlsWriter();
+
+        $writer->save('./test.xls');
+        return response()->download('./test.xls');
+    }
 }
