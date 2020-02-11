@@ -7,7 +7,7 @@ class MoveTimeDiffSpikeToMigration extends Migration
     private static $SQL = "CREATE FUNCTION TIME_DIFF_SPIKE(first_time TIME, second_time TIME)
     RETURNS VARCHAR(20) CHARSET utf8
     LANGUAGE SQL
-    NO SQL 
+    READS SQL DATA 
     DETERMINISTIC
 BEGIN
     DECLARE first_date TIMESTAMP;
