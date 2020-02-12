@@ -13,6 +13,8 @@ trait MysqlAdditionalFunctions
         DB::unprepared('DROP FUNCTION IF EXISTS TIME_DIFF_SPIKE');
         $function = DB::raw("CREATE FUNCTION TIME_DIFF_SPIKE(first_time TIME, second_time TIME) RETURNS VARCHAR(20) CHARSET utf8
                       LANGUAGE SQL
+                      DETERMINISTIC
+                      READS SQL DATA
                     BEGIN
                       DECLARE first_date TIMESTAMP;
                       DECLARE second_date TIMESTAMP;
