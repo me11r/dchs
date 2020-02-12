@@ -87,7 +87,8 @@ class TestController extends Controller
         $exportService = new Ticket101PeriodExcelExport($result);
 
         $writer = $exportService->getXlsWriter();
-        $path = public_path().'/test.xls';
+
+        $path = (env('IS_LOCAL', false) ? public_path() : storage_path('reports')) . DIRECTORY_SEPARATOR .'test.xls';
         $writer->save($path);
         return response()->download($path);
     }
