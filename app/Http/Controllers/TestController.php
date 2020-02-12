@@ -88,7 +88,7 @@ class TestController extends Controller
 
         $writer = $exportService->getXlsWriter();
 
-        $path = (env('IS_LOCAL', false) ? public_path() : storage_path('reports')) . DIRECTORY_SEPARATOR .'test.xls';
+        $path = (env('IS_LOCAL', false) ? public_path('test.xls') : storage_path('test.xls'));
         $writer->save($path);
         return response()->download($path);
     }
