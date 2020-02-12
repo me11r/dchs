@@ -59,26 +59,29 @@
         <div
             class="panel"
             v-for="type in drillTypes">
-            <h2 class="title has-text-centered">{{ '/reports/analytics-spiasr.object_classification.sub_title'|trans({type: type, year: year}) }}</h2>
-            <table
-                class="formation-record-table"
-                v-if="type === drillType || drillType === ''">
-                <tr>
-                    <td>{{ '/reports/analytics-spiasr.object_classification.table_title'|trans }}</td><!--классификация объектов-->
-                    <td v-for="month in months">{{ month }}</td>
-                    <td>{{ 'total'|trans }}</td><!--Итого-->
-                </tr>
-                <tr v-for="c in object_classes">
-                    <td>{{ c.name }}</td>
-                    <td v-for="(month, key) in months">{{ records_[type][c.name][++key] }}</td>
-                    <td>{{ counts_[type]['per_object'][c.name] }}</td>
-                </tr>
-                <tr v-if="object_classes.length">
-                    <td>{{ 'total'|trans }}</td><!--Итого-->
-                    <td v-for="totalMonth in counts_[type]['per_month']">{{ totalMonth }}</td>
-                    <td>{{ counts_[type]['total'] }}</td>
-                </tr>
-            </table>
+            <template
+                    v-if="type === drillType || drillType === ''"
+            >
+                <h2 class="title has-text-centered">{{ '/reports/analytics-spiasr.object_classification.sub_title'|trans({type: type, year: year}) }}</h2>
+                <table
+                        class="formation-record-table">
+                    <tr>
+                        <td>{{ '/reports/analytics-spiasr.object_classification.table_title'|trans }}</td><!--классификация объектов-->
+                        <td v-for="month in months">{{ month }}</td>
+                        <td>{{ 'total'|trans }}</td><!--Итого-->
+                    </tr>
+                    <tr v-for="c in object_classes">
+                        <td>{{ c.name }}</td>
+                        <td v-for="(month, key) in months">{{ records_[type][c.name][++key] }}</td>
+                        <td>{{ counts_[type]['per_object'][c.name] }}</td>
+                    </tr>
+                    <tr v-if="object_classes.length">
+                        <td>{{ 'total'|trans }}</td><!--Итого-->
+                        <td v-for="totalMonth in counts_[type]['per_month']">{{ totalMonth }}</td>
+                        <td>{{ counts_[type]['total'] }}</td>
+                    </tr>
+                </table>
+            </template>
         </div>
         <br>
     </div>
