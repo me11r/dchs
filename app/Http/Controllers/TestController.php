@@ -17,6 +17,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
+
 
 class TestController extends Controller
 {
@@ -85,8 +87,8 @@ class TestController extends Controller
         $exportService = new Ticket101PeriodExcelExport($result);
 
         $writer = $exportService->getXlsWriter();
-
-        $writer->save('./test.xls');
-        return response()->download('./test.xls');
+        $path = public_path().'/test.xls';
+        $writer->save($path);
+        return response()->download($path);
     }
 }
