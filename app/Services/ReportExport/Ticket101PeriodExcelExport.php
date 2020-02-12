@@ -228,15 +228,19 @@ class Ticket101PeriodExcelExport
             switch($item) {
                 
                 case 'E':
-                    $sheet->getColumnDimension($item)->setWidth(23);
+                    $sheet->getColumnDimension($item)->setWidth(20);
                     break;
 
                 case 'K':
                     $sheet->getColumnDimension($item)->setWidth(22);
                     break;
-
+                
                 case 'G':
                     $sheet->getColumnDimension($item)->setWidth(17);
+                    break;
+                
+                case 'B':
+                    $sheet->getColumnDimension($item)->setWidth(16);
                     break;
 
                 case 'F':
@@ -248,8 +252,13 @@ class Ticket101PeriodExcelExport
                 case 'S':
                     $sheet->getColumnDimension($item)->setWidth(30);
                     break;
-                
+                    
+                case 'D':
+                    $sheet->getColumnDimension($item)->setWidth(15);
+                    break;
+
                 case 'A':
+                case 'C':
                 case 'H':
                 case 'I':
                     $sheet->getColumnDimension($item)->setWidth(12);
