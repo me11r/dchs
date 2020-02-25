@@ -172,16 +172,16 @@ class Ticket101PeriodExcelExport
               ->setPaperSize(PageSetup::PAPERSIZE_A4);
         
         $sheet->getPageMargins()
-              ->setLeft(0.2);
+              ->setLeft(0.4);
 
         $sheet->getPageMargins()
-              ->setRight(0.2);
+              ->setRight(0.4);
 
         $sheet->getPageMargins()
-              ->setTop(0.3);
+              ->setTop(0.4);
 
         $sheet->getPageMargins()
-              ->setBottom(0.3);
+              ->setBottom(0.4);
 
         $headers = [
             "Дата выезда\nВремя",
