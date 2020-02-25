@@ -1,13 +1,6 @@
 <?php
-
-
 namespace App\Services\ReportExport;
 
-use App\FireDepartment;
-use App\FormationReport;
-use App\Ticket101;
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -15,8 +8,6 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\IWriter;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
@@ -61,14 +52,6 @@ class Ticket101PeriodExcelExport
                 'borderStyle' => Border::BORDER_THIN,
             ],
         ]
-    ];
-
-    const HFontStyle = [
-        'size' => 11
-    ];
-    
-    const BFontStyle = [
-        'size' => 10
     ];
 
     public function __construct($stat)
@@ -223,8 +206,6 @@ class Ticket101PeriodExcelExport
             ]
         ]);
         
-        // $sheet->getStyle("A$rowIndex:S$rowIndex")->getFont()->applyFromArray(self::HFontStyle);
-        
         $rowIndex += 1;
 
         foreach ($this->stat['items'] as $item) {
@@ -257,7 +238,6 @@ class Ticket101PeriodExcelExport
             $sheet->getCell("E{$rowIndex}")->setValue($arr[4])->getHyperlink()->setUrl($url);
 
             $sheet->getStyle("A$rowIndex:S$rowIndex")->applyFromArray(self::HStyle);
-            // $sheet->getStyle("A$rowIndex:S$rowIndex")->getFont()->applyFromArray(self::BFontStyle);
             $rowIndex += 1;
         }
 
