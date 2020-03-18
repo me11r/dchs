@@ -166,158 +166,6 @@ class Ticket101PeriodExcelExport
 
         $sheet->getPageMargins()
             ->setBottom(0.3);
-        /*
-        $headers = [
-            "Дата выезда\nВремя",
-            'ФИО',
-            'Телефон',
-            'Район города',
-            'Адрес',
-            "Наименование объектов\nКлассификация объектов",
-            'Этажность',
-            'Ранг пожара',
-            "Cледование\nТушение",
-            "Локализация\nЛиквидация", // 10
-            'Ликвидировано стволами', 
-            'Пенные стволы',
-            "Время\nработы\nстволов",
-            'Звенья ГДЗС',
-            "Время\nработы\nГДЗС", // 15
-            "Спасено\nЭвакуировано",
-            "Травмы\nГибель",
-            "Площадь\nгорения",
-            'Результат выезда',
-        ];
-        
-        $sheet->fromArray($headers, null, 'A'.$rowIndex);
-
-        $sheet->getStyle("A$rowIndex:S$rowIndex")->applyFromArray([
-            'font' => [
-                'bold' => true,
-                'size' => 9
-            ],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_LEFT,
-                'vertical' => Alignment::VERTICAL_TOP
-            ],
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                ],
-            ]
-        ]);
-        
-        $rowIndex += 1;
-
-        foreach ($this->stat['items'] as $item) {
-            $arr = [
-                $item->custom_created_at_date."\n".$item->custom_created_at_hours,
-                $item->caller_name,
-                $item->caller_phone,
-                $item->city_area_name,
-                $item->location,
-                $item->object_name."\n".$item->object_classification_name,
-                strval($item->storey_count),
-                $item->result_fire_level_name,
-                $item->on_way_time."\n".$item->loc_time_total, 
-                $item->loc_time."\n".$item->liqv_time,
-                $item->liquidation_method_name,
-                $item->trunks_event_info_arrived_names,
-                $item->trunks_chronology_working_time,
-                $item->event_info_arrived_names,
-                strval($item->gdzs_count),
-                strval($item->rescued_count)."\n".strval($item->evac_count),
-                strval($item->gpt_burns_count)."\n".strval($item->total_death_count),
-                strval($item->max_square),
-                $item->trip_result_name
-            ];
-
-            $sheet->fromArray($arr, null, "A$rowIndex");
-
-            $url = env('APP_URL','http://emergency.iteamsolutions.kz')."/card/add101/{$item->id}#return=0";
-
-            $sheet->getCell("E{$rowIndex}")->setValue($arr[4])->getHyperlink()->setUrl($url);
-
-            $sheet->getStyle("A$rowIndex:S$rowIndex")->applyFromArray(self::HStyle);
-            $rowIndex += 1;
-        }
-
-        foreach (range('A', 'S') as $item) {
-            
-            switch($item) {
-                
-                case 'E':
-                    $sheet->getColumnDimension($item)->setWidth(21);
-                    break;
-
-                case 'L':
-                    $sheet->getColumnDimension($item)->setWidth(19);
-                    break;
-                
-                case 'B':
-                    $sheet->getColumnDimension($item)->setWidth(15);
-                    break;
-
-                case 'H':
-                    $sheet->getColumnDimension($item)->setWidth(15);
-                    break;
-
-                case 'F':
-                    $sheet->getColumnDimension($item)->setWidth(20);
-                    break;
-
-                case 'N':
-                    $sheet->getColumnDimension($item)->setWidth(23);
-                    break;
-
-                case 'K':
-                    $sheet->getColumnDimension($item)->setWidth(27);
-                    break;
-
-                case 'S':
-                    $sheet->getColumnDimension($item)->setWidth(27);
-                    break;
-                    
-                case 'D':
-                    $sheet->getColumnDimension($item)->setWidth(14);
-                    break;
-
-                case 'A':
-                    $sheet->getColumnDimension($item)->setWidth(11);
-                    break;
-
-                case 'I':
-                    $sheet->getColumnDimension($item)->setWidth(10);
-                    break;
-
-                case 'J':
-                    $sheet->getColumnDimension($item)->setWidth(11);
-                    break;
-                
-                case 'C':
-                case 'P':
-                    $sheet->getColumnDimension($item)->setWidth(12);
-                    break;
-                
-                case 'G':
-                    $sheet->getColumnDimension($item)->setWidth(9);
-                    break;
-                
-                case 'M':
-                case 'O':
-                case 'Q':
-                    $sheet->getColumnDimension($item)->setWidth(7);
-                    break;
-                
-                case 'R':
-                    $sheet->getColumnDimension($item)->setWidth(8);
-                    break;
-
-                default:
-                    $sheet->getColumnDimension($item)->setAutoSize(true);
-            }
-        }
-        */
 
         $headers = [
             "Дата\nвыезда\nВремя",
@@ -457,10 +305,13 @@ class Ticket101PeriodExcelExport
                 case 'I':
                     $sheet->getColumnDimension($item)->setWidth(18);
                     break;
-                
 
                 case 'C':
                     $sheet->getColumnDimension($item)->setWidth(12);
+                    break;
+
+                case 'W':
+                    $sheet->getColumnDimension($item)->setWidth(9);
                     break;
 
                 case 'O':
