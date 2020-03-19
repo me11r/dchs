@@ -1,13 +1,7 @@
 <?php
 
-
 namespace App\Services\ReportExport;
 
-use App\FireDepartment;
-use App\FormationReport;
-use App\Ticket101;
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -15,9 +9,9 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\IWriter;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder;
 
 class Ticket101PeriodExcelExport
 {
@@ -32,9 +26,12 @@ class Ticket101PeriodExcelExport
     private $stat;
 
     const HStyle = [
+        'font' => [
+            'size' => 10
+        ],
         'alignment' => [
-            'horizontal' => Alignment::HORIZONTAL_CENTER,
-            'vertical' => Alignment::VERTICAL_CENTER,
+            'horizontal' => Alignment::HORIZONTAL_LEFT,
+            'vertical' => Alignment::VERTICAL_TOP,
             'wrapText' => true
         ],
         'borders' => [
@@ -76,10 +73,12 @@ class Ticket101PeriodExcelExport
 
     private function prepareSpreadsheet()
     {
+        Cell::setValueBinder(new AdvancedValueBinder());
+
         $sheet = $this->getActiveSheetByIndex(0);
         $sheet->setTitle('Отчет по карточке 101 за период');
         $this->addTableData($sheet);
-        
+
         $sheet = $this->getActiveSheetByIndex(1);
         $sheet->setTitle('Итоги по карточке 101 за период');
         $this->addResultData($sheet);
@@ -149,33 +148,60 @@ class Ticket101PeriodExcelExport
     private function addTableData(Worksheet $sheet, $startRowIndex = 1)
     {
         $rowIndex = $startRowIndex;
+
+        $sheet->getPageSetup()
+            ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+
+        $sheet->getPageSetup()
+            ->setPaperSize(PageSetup::PAPERSIZE_A4);
+
+        $sheet->getPageMargins()
+            ->setLeft(0.3);
+
+        $sheet->getPageMargins()
+            ->setRight(0.3);
+
+        $sheet->getPageMargins()
+            ->setTop(0.3);
+
+        $sheet->getPageMargins()
+            ->setBottom(0.3);
+
         $headers = [
-            "Дата выезда\nВремя",
+            "Дата\nвыезда\nВремя",
             'ФИО',
             'Телефон',
-            'Район города',
+            "Район\nгорода",
             'Адрес',
-            "Наименование объектов\nКлассификация объектов",
-            'Ранг пожара',
-            "Cледование\nТушение",
-            "Локализация\nЛиквидация", // 10
-            'Ликвидировано стволами', 
-            'Пенные стволы',
+            "Наименование\nобъектов",
+            "Классификация\nобъектов",
+            //            'Участники тушения',
+            "Ранг\nпожара",
+            "Ликвидировано\nстволами",
+            "Время\nследования",
+            "Время\nтушения",
+            'Локализация',
+            'Ликвидация',
+            "Пенные\nстволы",
             "Время\nработы\nстволов",
             "Звенья\nГДЗС",
-            'Время работы ГДЗС', // 15
-            "Спасено\nЭвакуировано",
-            "Травмы\nГибель",
+            "Время\nработы\nГДЗС",
+            "Спасено\nлюдей",
+            "Эвакуировано\nлюдей",
+            'Травмы',
+            'Гибель',
+            "Результат\nвыезда",
             "Площадь\nгорения",
+            //            'Затраченное время на локализацию',
+            //            'Затраченное время на ликвидацию',
             'Этажность',
-            'Результат выезда',
         ];
         
-        $sheet->fromArray($headers, null, 'A'.$rowIndex);
-
-        $sheet->getStyle("A$rowIndex:S$rowIndex")->applyFromArray([
+        $sheet->fromArray($headers, null, "A{$rowIndex}");
+        $sheet->getStyle("A{$rowIndex}:X{$rowIndex}")->applyFromArray([
             'font' => [
-                'bold' => true
+                'bold' => true,
+                'size' => 9
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_LEFT,
@@ -187,7 +213,7 @@ class Ticket101PeriodExcelExport
                 ],
             ]
         ]);
-        
+
         $rowIndex += 1;
 
         foreach ($this->stat['items'] as $item) {
@@ -197,62 +223,99 @@ class Ticket101PeriodExcelExport
                 $item->caller_phone,
                 $item->city_area_name,
                 $item->location,
-                $item->object_name."\n".$item->object_classification_name,
+                $item->object_name,
+                $item->object_classification_name,
                 $item->result_fire_level_name,
-                $item->on_way_time."\n".$item->loc_time_total, 
-                $item->loc_time."\n".$item->liqv_time, 
                 $item->liquidation_method_name,
+                $item->on_way_time,
+                $item->loc_time_total,
+                $item->loc_time,
+                $item->liqv_time,
                 $item->trunks_event_info_arrived_names,
                 $item->trunks_chronology_working_time,
                 $item->gdzs_count,
-                $item->event_info_arrived_names, 
-                $item->rescued_count."\n".$item->evac_count,
-                $item->gpt_burns_count."\n".$item->total_death_count,
+                $item->event_info_arrived_names,
+                $item->rescued_count,
+                $item->evac_count,
+                $item->gpt_burns_count,
+                $item->total_death_count,
+                //                $item->loc_time_total,
+                //                $item->liqv_time_total,
+                $item->trip_result_name,
                 $item->max_square,
-                $item->storey_count,
-                $item->trip_result_name
+                $item->storey_count
             ];
 
-            $sheet->fromArray($arr, null, "A$rowIndex");
+            $sheet->fromArray($arr, null, "A{$rowIndex}");
 
-            $url = env('APP_URL','http://emergency.iteamsolutions.kz')."/card/add101/{$item->id}#return=0";
+            $url = env('APP_URL', 'http://emergency.iteamsolutions.kz') . "/card/add101/{$item->id}#return=0";
 
             $sheet->getCell("E{$rowIndex}")->setValue($arr[4])->getHyperlink()->setUrl($url);
 
-            $sheet->getStyle("A$rowIndex:S$rowIndex")->applyFromArray(self::HStyle);
+            $sheet->getStyle("A{$rowIndex}:X{$rowIndex}")->applyFromArray(self::HStyle);
+            
             $rowIndex += 1;
         }
 
-        foreach (range('A', 'S') as $item) {
-            
-            switch($item) {
-                
+        foreach (range('A', 'X') as $item) {
+
+            switch ($item) {
+
                 case 'E':
-                    $sheet->getColumnDimension($item)->setWidth(23);
+                    $sheet->getColumnDimension($item)->setWidth(21);
                     break;
 
-                case 'K':
-                    $sheet->getColumnDimension($item)->setWidth(22);
+                case 'B':
+                    $sheet->getColumnDimension($item)->setWidth(15);
                     break;
 
-                case 'G':
-                    $sheet->getColumnDimension($item)->setWidth(17);
+                case 'H':
+                    $sheet->getColumnDimension($item)->setWidth(8);
                     break;
 
                 case 'F':
-                case 'N':
-                    $sheet->getColumnDimension($item)->setWidth(25);
+                case 'G':
+                    $sheet->getColumnDimension($item)->setWidth(15);
                     break;
 
-                case 'J':
-                case 'S':
-                    $sheet->getColumnDimension($item)->setWidth(30);
+                case 'Q':
+                    $sheet->getColumnDimension($item)->setWidth(13);
                     break;
-                
+
+                case 'N':
+                    $sheet->getColumnDimension($item)->setWidth(13);
+                    break;
+
+                case 'V':
+                    $sheet->getColumnDimension($item)->setWidth(17);
+                    break;
+
+                case 'S':
+                    $sheet->getColumnDimension($item)->setWidth(13);
+                    break;
+
+                case 'D':
+                    $sheet->getColumnDimension($item)->setWidth(14);
+                    break;
+
                 case 'A':
-                case 'H':
+                    $sheet->getColumnDimension($item)->setWidth(11);
+                    break;
+
                 case 'I':
+                    $sheet->getColumnDimension($item)->setWidth(18);
+                    break;
+
+                case 'C':
                     $sheet->getColumnDimension($item)->setWidth(12);
+                    break;
+
+                case 'W':
+                    $sheet->getColumnDimension($item)->setWidth(9);
+                    break;
+
+                case 'O':
+                    $sheet->getColumnDimension($item)->setWidth(7);
                     break;
 
                 default:
@@ -279,8 +342,7 @@ class Ticket101PeriodExcelExport
         string $cell1,
         string $cell2,
         array $styles
-    )
-    {
+    ) {
         if ($cell2 && $cell2 !== $cell1) {
             $styleCoordinates = "$cell1:$cell2";
             $sheet->mergeCells("$cell1:$cell2");

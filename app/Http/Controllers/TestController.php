@@ -17,6 +17,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
+
 
 class TestController extends Controller
 {
@@ -70,4 +72,24 @@ class TestController extends Controller
 //        return View::make('test.fcm', ['request' => $request->all()]);
     }
 
+    public function report101() {
+        $strategy = new AnalyticsSpiasrStrategy();
+        $result = $strategy->getResult(
+            '2019-12-01',
+            '2019-12-31',
+            null,
+            null,
+            null,
+            'less_10',
+            null
+        );
+
+        $exportService = new Ticket101PeriodExcelExport($result);
+
+        $writer = $exportService->getXlsWriter();
+
+        $path = (env('IS_LOCAL', false) ? public_path('test.xls') : storage_path('test.xls'));
+        $writer->save($path);
+        return response()->download($path);
+    }
 }

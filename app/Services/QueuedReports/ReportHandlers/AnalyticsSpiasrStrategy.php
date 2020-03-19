@@ -193,7 +193,7 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
 
         $items = $items->whereNull('ticket101.drill_type_id');
 
-        $items = $items->orderBy('id', 'DESC');
+        $items = $items->orderBy('custom_created_at', 'ASC');
 
         $itemsCollection = $items->get();
 
