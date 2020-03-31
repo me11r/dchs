@@ -17,17 +17,17 @@
                     </div>
                     <div class="field">
                         <label for="">Ответственное лицо</label>
-                        <input required v-model="otherRide_.responsible_person" required class="input" type="text">
+                        <input required v-model="otherRide_.responsible_person" class="input" type="text">
                     </div>
                 </div>
                 <div class="field is-grouped">
                     <div class="field is-full">
                         <label for="">Адрес</label>
-                        <input required v-model="otherRide_.direction" name="direction" required class="input" type="text">
+                        <input required v-model="otherRide_.direction" name="direction" class="input" type="text">
                     </div>
                     <div class="field">
                         <label for="">Наименование объекта</label>
-                        <input v-model="otherRide_.object_name" name="object_name" required class="input" type="text">
+                        <input required v-model="otherRide_.object_name" name="object_name" class="input" type="text">
                     </div>
                 </div>
                 <div class="field is-grouped">
