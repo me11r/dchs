@@ -1,0 +1,14 @@
+<ul class="">
+    {% if user.hasRight('CAN_SEE_REQUEST') %}
+        <li class="{% if card_type == 'real' %}is-active{% endif %}"><a href="/card/101">Боевые</a></li>
+    {% endif %}
+    {% if user.hasRight('CARD101_ACCESS_OTHERS_RIDES') %}
+        <li class="{% if card_type == 'other' %}is-active{% endif %}"><a href="/card101-other-rides">Прочие</a></li>
+    {% endif %}
+    {% if user.hasRight('CARD101_ACCESS_DRILL_RIDES') %}
+        <li class="{% if card_type == 'drill' %}is-active{% endif %}"><a href="/card101-drill-rides">Учебные</a></li>
+    {% endif %}
+    {% if user.hasRight('CAN_ACCESS_NORMS_PSP') %}
+        <li class="{% if card_type == 'norms-psp' %}is-active{% endif %}"><a href="/norms-psp">Нормативы по ПСП</a></li>
+    {% endif %}
+</ul>

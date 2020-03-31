@@ -3,28 +3,40 @@
     <div class="section container" id="vue1">
         <h4 class="title">Карточка 101 (Учебные выезда)</h4>
         <div class="columns is-gapless">
-            <div class="column">
-                <div class="tabs buttab">
-                    <ul class="">
-                        <li class="is-active"><a href="">Открытые</a></li>
-                        <li><a href="">Закрытые</a></li>
-                        <li><a href="">Все карточки</a></li>
-                    </ul>
+            {% if not user.role.name == 'dispatcher_pch' %}
+                <div class="column">
+                    <div class="tabs buttab">
+                        <ul class="">
+                            <li class="is-active"><a href="">Открытые</a></li>
+                            <li><a href="">Закрытые</a></li>
+                            <li><a href="">Все карточки</a></li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             <div class="column">
                 <div class="tabs buttab">
                     <ul class="">
-                        <li class="{% if card_type == 'real' %}is-active{% endif %}"><a href="/card/101">Боевые</a></li>
-                        <li class="{% if card_type == 'other' %}is-active{% endif %}"><a href="/card101-other-rides">Прочие</a></li>
-                        <li class="{% if card_type == 'drill' %}is-active{% endif %}"><a href="/card101-drill-rides">Учебные</a></li>
-                        <li class="{% if card_type == 'norms-psp' %}is-active{% endif %}"><a href="/norms-psp">Нормативы по ПСП</a></li>
+                        {% if user.hasRight('CAN_SEE_REQUEST') %}
+                            <li class="{% if card_type == 'real' %}is-active{% endif %}"><a href="/card/101">Боевые</a></li>
+                        {% endif %}
+                        {% if user.hasRight('CARD101_ACCESS_OTHERS_RIDES') %}
+                            <li class="{% if card_type == 'other' %}is-active{% endif %}"><a href="/card101-other-rides">Прочие</a></li>
+                        {% endif %}
+                        {% if user.hasRight('CARD101_ACCESS_DRILL_RIDES') %}
+                            <li class="{% if card_type == 'drill' %}is-active{% endif %}"><a href="/card101-drill-rides">Учебные</a></li>
+                        {% endif %}
+                        {% if user.hasRight('CAN_ACCESS_NORMS_PSP') and user.role.name != 'dispatcher_pch' %}
+                            <li class="{% if card_type == 'norms-psp' %}is-active{% endif %}"><a href="/norms-psp">Нормативы по ПСП</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
             <div class="column is-narrow">
                 <div>
-                    <a href="/card/add101/0/drill" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
+                    {% if user.hasRight('CARD101_DRILL_RIDES_CAN_CREATE') %}
+                        <a href="/card/add101/0/drill" class="button is-basic is-main" style="margin: 2px 10px 2px"><i class="fas fa-plus"></i>&nbsp;Новая карточка</a>
+                    {% endif %}
                     <a href="/card101-drill-rides" class="button is-info is-main" style="margin: 2px 10px 2px"><i class="fas fa-crosshairs"></i>&nbsp;Сбросить фильтр</a>
                 </div>
             </div>
