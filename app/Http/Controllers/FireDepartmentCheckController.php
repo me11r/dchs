@@ -103,7 +103,6 @@ class FireDepartmentCheckController extends Controller
             ->where('date', '=', $date)
             ->where(function ($item) {
                 /*if user is not admin, select only records, related to his fire department */
-                /*todo add this right to db*/
                 if (!Auth::user()->isAdmin() && !Auth::user()->hasRight('CAN_SEE_ALL_CHECK_FD')) {
                     $item->where('fire_department_id', Auth::user()->fire_department_id);
                 }
