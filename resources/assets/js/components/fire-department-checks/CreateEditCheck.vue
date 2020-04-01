@@ -16,7 +16,7 @@
                 :fire-dept-id="fireDeptId"
                 :fire-depts="fireDepts_"/>
 
-            <div
+            <div v-if="block.editable"
                 class="field is-full"
                 style="float: right;">
                 <button
@@ -76,6 +76,7 @@ export default {
                 id: 1,
                 fire_department_id: 1,
                 note: '',
+                editable: true,
                 responsible_person: '',
                 time_begin: '00:00:00',
                 time_end: '00:00:00'
@@ -96,6 +97,7 @@ export default {
                 id: moment().valueOf(),
                 fire_department_id: this.fireDeptId,
                 note: '',
+                editable: true,
                 responsible_person: '',
                 time_begin: '00:00:00',
                 time_end: '00:00:00',
@@ -104,7 +106,8 @@ export default {
         }
     },
     created() {
-        const records = !Array.isArray(this.records) ? _.toArray(this.records) : this.records;
+        let records = !Array.isArray(this.records) ? _.toArray(this.records) : this.records;
+        records.forEach(item => item.editable = false);
 
         this.firedeptBlocks = records.map((item) => {
             return item;
