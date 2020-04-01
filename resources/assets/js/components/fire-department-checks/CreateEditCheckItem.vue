@@ -9,6 +9,7 @@
                 <div class="field">
                     <label>Подразделение</label><br>
                     <select
+                        :disabled="!block.editable"
                         class="select"
                         v-model="block.fire_department_id"
                         title="Подразделение"
@@ -28,6 +29,7 @@
                     <label>Время начала</label>
                     <timepicker-input
                         :value="block.time_begin"
+                        :disabled="!block.editable"
                         v-model="block.time_begin"
                         :id="setName('time_begin', block)"
                         :name="setName('time_begin', block)"/>
@@ -38,6 +40,7 @@
                     <label>Время окончания</label>
                     <timepicker-input
                         :value="block.time_end"
+                        :disabled="!block.editable"
                         v-model="block.time_end"
                         :id="setName('time_end', block)"
                         :name="setName('time_end', block)"/>
@@ -48,6 +51,7 @@
                 <div class="field">
                     <label>Ответственное лицо</label><br>
                     <input
+                        :disabled="!block.editable"
                         type="text"
                         v-model="block.responsible_person"
                         title="Ответственное лицо"
@@ -61,6 +65,7 @@
         <div class="field">
             <label>Примечание</label>
             <input
+                :disabled="!block.editable"
                 type="text"
                 v-model="block.note"
                 class="input"

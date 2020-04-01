@@ -42,6 +42,9 @@ services:
     tty: true
     depends_on:
       - app-composer-vendors
+    expose:
+      - "9000"
+      - "9001"
 
   app-db:
     image: mysql:8
@@ -60,8 +63,10 @@ services:
       MYSQL_PASSWORD: emergency
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: emergency
+      MYSQL_ROOT_HOST: "%"
     command:
-      - "--default-authentication-plugin=mysql_native_password --log_bin_trust_function_creators=1"
+      - "--default-authentication-plugin=mysql_native_password"
+      - "--log_bin_trust_function_creators=1"
 
   app-queue:
     container_name: "app-queue"
@@ -105,11 +110,11 @@ services:
     working_dir: /app
     command: ./start.sh
 
-  app-elasticsearch:
-    container_name: "app-elasticsearch"
-    image: elasticsearch:5.6
-    networks:
-      - app-network
+#  app-elasticsearch:
+#    container_name: "app-elasticsearch"
+#    image: elasticsearch:5.6
+#    networks:
+#      - app-network
 
   # service containers
   app-composer-vendors:
@@ -121,29 +126,29 @@ services:
     networks:
       - app-network
 
-  app-scout-models:
-    container_name: "app-scout-models"
-    image: ogorbunov/php:7.3-cli-alpine
-    volumes:
-      - ./:/current
-    environment:
-      APP_ENV: local
-      APP_DEBUG: 1
-      APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
-      DB_CONNECTION: mysql
-      DB_HOST: app-db
-      DB_PORT: 3306
-      DB_USERNAME: emergency
-      DB_PASSWORD: emergency
-      DB_DATABASE: emergency
-      ELASTICSEARCH_HOST: http://app-elasticsearch
-    command: /current/.docker/scouting.sh
-    networks:
-      - app-network
-    depends_on:
-      - app-composer-vendors
-      - app-elasticsearch
-      - app-db
+#  app-scout-models:
+#    container_name: "app-scout-models"
+#    image: ogorbunov/php:7.3-cli-alpine
+#    volumes:
+#      - ./:/current
+#    environment:
+#      APP_ENV: local
+#      APP_DEBUG: 1
+#      APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
+#      DB_CONNECTION: mysql
+#      DB_HOST: app-db
+#      DB_PORT: 3306
+#      DB_USERNAME: emergency
+#      DB_PASSWORD: emergency
+#      DB_DATABASE: emergency
+#      ELASTICSEARCH_HOST: http://app-elasticsearch
+#    command: /current/.docker/scouting.sh
+#    networks:
+#      - app-network
+#    depends_on:
+#      - app-composer-vendors
+#      - app-elasticsearch
+#      - app-db
 
 volumes:
   app-db-data:

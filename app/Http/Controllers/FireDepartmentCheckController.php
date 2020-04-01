@@ -96,9 +96,6 @@ class FireDepartmentCheckController extends Controller
 
     public function editByDay($date)
     {
-        if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
-            $this->throwAccessDenied();
-        }
         $items = FireDepartmentCheck::with(['fire_department'])
             ->where('date', '=', $date)
             ->where(function ($item) {
@@ -123,9 +120,6 @@ class FireDepartmentCheckController extends Controller
 
     public function updateByDay(Request $request, $date)
     {
-        if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
-            $this->throwAccessDenied();
-        }
         $items = $request->get('items', []);
         $ids = array_map(function($item) {
             return $item['id'];
@@ -162,9 +156,6 @@ class FireDepartmentCheckController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!Auth::user()->hasRight(['CAN_EDIT_CHECK_FD'])){
-            $this->throwAccessDenied();
-        }
         $data['record'] = FireDepartmentCheck::find($id);
         $data['record']->fire_department_id = $request->fire_department_id;
         $data['record']->time_begin = $request->time_begin;
