@@ -50,10 +50,18 @@ class AnalyticsServicesController extends Controller
         $xml = new \SimpleXMLElement($response);
         foreach ($xml as $item) {
             $results[] = [
-                'date' => ''
+                'date' => $item->DATE->__toString(),
+                'category' => $item->CAT->__toString(),
+                'sub_category' => $item->SUBCAT->__toString(),
+                'state' => $item->STATE->__toString(),
+                'district' => $item->DISTRICT->__toString(),
+                'street' => $item->STREET->__toString(),
+                'house' => $item->HOUSE->__toString(),
+                'injured_count' => $item->INJURED_COUNT->__toString(),
+                'lost_count' => $item->LOST_COUNT->__toString(),
+                'saved_count' => $item->SAVED_COUNT->__toString(),
             ];
-            dd($item);
         }
-        dd($xml->event);
+        dd($results);
     }
 }

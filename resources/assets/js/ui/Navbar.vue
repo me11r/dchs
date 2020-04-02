@@ -266,6 +266,11 @@
                         <i class="fas fa-database"></i>&nbsp; Аналитика ДЧС</a>
 
                         <a
+                            class="dropdown-item is-small"
+                            :href="getHref('/reports/analytics-services')">
+                        <i class="fas fa-database"></i>&nbsp; Аналитика служб взаимодействия</a>
+
+                        <a
                             v-if="hasRight('CAN_ACCESS_PERORT_PERSONS')"
                             :href="getHref('/reports/101/staff')"
                             class="dropdown-item is-small"><i class="fas fa-hand-spock fa-fw"></i>&nbsp;

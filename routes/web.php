@@ -450,6 +450,9 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
         Route::get('reports/daily-reports/{type}','ReportController@daily_reports');
 
         Route::get('reports/analytics-spiasr', 'AnalyticsSpiasrController@index');
+        Route::group(['prefix' => 'reports/analytics-services', 'as' => 'reports.analytics-services.'], function(){
+            Route::get('/', 'AnalyticsServicesController@index');
+        });
 
         Route::get('reports/queued-reports', 'ReportController@queuedReports')->name('reports.queued-reports');
         Route::get('reports/queued-reports/view', 'ReportController@queuedReportsView')->name('reports.queued-reports-view');
