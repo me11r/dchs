@@ -14,9 +14,10 @@
             <create-edit-check-item
                 :block="block"
                 :fire-dept-id="fireDeptId"
+                :has-edit-right="hasEditRight"
                 :fire-depts="fireDepts_"/>
 
-            <div v-if="block.editable"
+            <div v-if="block.editable && hasEditRight"
                 class="field is-full"
                 style="float: right;">
                 <button
@@ -49,6 +50,10 @@ export default {
         fireDepts: {
             type: Array,
             default: () => []
+        },
+        hasEditRight: {
+            type: Boolean,
+            default: false
         },
         staff: {
             type: Array,

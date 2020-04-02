@@ -149,6 +149,7 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 7, 'title' => 'Сумма спасенного имущества', 'name' => 'CAN_ACCESS_SALVAGE'],
             ['right_group_id' => 7, 'title' => 'Проверка пожарных частей: создание', 'name' => 'CAN_CREATE_CHECK_FD'],
             ['right_group_id' => 7, 'title' => 'Проверка пожарных частей: общий просмотр', 'name' => 'CAN_SEE_ALL_CHECK_FD'],
+            ['right_group_id' => 7, 'title' => 'Проверка пожарных частей: редактирование', 'name' => 'CAN_EDIT_CHECK_FD'],
 
             ['title' => 'Строевые: только чтение', 'right_group_id' => 5, 'name' => 'CAN_READ_ONLY_FORMATION'],
 
