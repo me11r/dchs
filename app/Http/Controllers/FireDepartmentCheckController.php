@@ -114,6 +114,7 @@ class FireDepartmentCheckController extends Controller
         $data['date'] = $date;
 
         $data['fire_dept_id'] = Auth::user()->fire_department_id ?? 0;
+        $data['has_edit_right'] = Auth::user()->hasRight('CAN_EDIT_CHECK_FD');
 
         return view('fire-department-checks.edit',$data);
     }
