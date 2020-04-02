@@ -17,7 +17,7 @@
                 :has-edit-right="hasEditRight"
                 :fire-depts="fireDepts_"/>
 
-            <div v-if="block.editable && hasEditRight"
+            <div v-if="block.editable || hasEditRight"
                 class="field is-full"
                 style="float: right;">
                 <button
