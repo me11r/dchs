@@ -174,6 +174,7 @@ Vue.component('fire-departments-map', require('./views/fire-departments/Departme
 Vue.component('service-plans-additional', require('./views/service-plans/ServicePlanAdditional'));
 Vue.component('card101-additional-oc', require('./components/ticket101/AdditionalOC'));
 Vue.component('civil-protection-service-form', require('./views/civil-protection-services/CivilProtectionServiceForm'));
+Vue.component('report-services', require('./views/reports/services/ReportServices'));
 
 // трекер яндекс-запросов
 globalBus.$on('api-map-request', (r) => {
