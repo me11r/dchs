@@ -45,6 +45,8 @@ class FireDepartmentCheckController extends Controller
         $data['fire_dept_id'] = Auth::user()->fire_department_id ?? 0;
 
         $data['fire_depts'] = FireDepartment::sortByCustomOrder()->get();
+        $data['has_edit_right'] = Auth::user()->hasRight('CAN_EDIT_CHECK_FD');
+
         return view('fire-department-checks.edit', $data);
     }
 
