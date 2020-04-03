@@ -5,7 +5,8 @@
 
         <b-tabs position="is-centered" class="block">
             {% for report in reports %}
-                {% if user.hasRight(report.right) %}
+                {#todo на будущее#}
+{#                {% if user.hasRight(report.right) %}#}
                     <b-tab-item label="{{ report.name }}">
                         <report-services
                             :records="{{ records|json_encode }}"
@@ -16,7 +17,7 @@
                         >
                         </report-services>
                     </b-tab-item>
-                {% endif %}
+{#                {% endif %}#}
             {% endfor %}
 
 
