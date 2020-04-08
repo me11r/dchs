@@ -112,7 +112,7 @@ export default {
     },
     created() {
         let records = !Array.isArray(this.records) ? _.toArray(this.records) : this.records;
-        records.forEach(item => item.editable = false);
+        records.forEach(item => item.editable = this.hasEditRight);
 
         this.firedeptBlocks = records.map((item) => {
             return item;
