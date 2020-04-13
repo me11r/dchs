@@ -125,6 +125,7 @@ class OtherRides101Controller extends Controller
             $data['hq'] = json_encode([]);
             $data['can_set_delayed'] = json_encode(Auth::user()->hasRight('CARD101_OTHER_RIDES_CAN_SET_DELAYED'));
             $data['canChangeCreatedAt'] = json_encode(Auth::user()->hasRight('CAN_CHANGE_CARD101_OTHER_RIDES_DATE'));
+            $data['can_edit'] = json_encode(Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_EDIT'));
             return view('card.card101-other-rides.create-edit', $data);
         }
     }
@@ -140,6 +141,15 @@ class OtherRides101Controller extends Controller
         $all['changed_by'] = Auth::id();
 
         if($request->isMethod('POST')){
+
+            if (!Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_EDIT')) {
+                return response()->json([
+                    'record' => null,
+                    'techItems' => [],
+                    'error' => 'У пользователя нет прав на редактирование'
+                ]);
+            }
+
             $data['record']->update($all);
 
             /*//если выбран отложенный выезд, переводим все путевые листы в неактивный режим
@@ -174,6 +184,7 @@ class OtherRides101Controller extends Controller
                 ->get();
 
             $data['can_set_delayed'] = json_encode(Auth::user()->hasRight('CARD101_OTHER_RIDES_CAN_SET_DELAYED'));
+            $data['can_edit'] = json_encode(Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_EDIT'));
 
             return view('card.card101-other-rides.create-edit', $data);
         }

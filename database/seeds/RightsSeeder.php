@@ -199,6 +199,7 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101', 'name' => 'CARD101_ACCESS_OTHERS_RIDES'];
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101: создание', 'name' => 'CARD101_CREATE_OTHERS_RIDES'];
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101: удаление', 'name' => 'CARD101_OTHERS_RIDES_CAN_DELETE'];
+        $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Прочие 101: редактирование', 'name' => 'CARD101_OTHERS_RIDES_CAN_EDIT'];
 
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Учебные 101', 'name' => 'CARD101_ACCESS_DRILL_RIDES'];
         $rights[] = ['right_group_id' => 2, 'title' => 'Карточка 101: Учебные 101: удаление', 'name' => 'CARD101_DRILL_RIDES_CAN_DELETE'];
