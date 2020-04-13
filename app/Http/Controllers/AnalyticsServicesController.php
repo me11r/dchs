@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiDictionary;
 use App\Dictionary\BurntObject;
 use App\Dictionary\CityArea;
 use App\Dictionary\FireObject;
@@ -27,17 +28,25 @@ class AnalyticsServicesController extends Controller
     {
         $data = [];
         $data['records'] = [];
+        $dictionary['ssa'] = ApiDictionary::getByServiceTypeByName('Служба спасения-109 г. Алматы')->first();
+        $dictionary['ssa'] = $dictionary['ssa'] ? $dictionary['ssa']->data : [];
+
+        $dictionary['mudflow'] = [];
+        $dictionary['cmk'] = [];
+        $dictionary['roso'] = [];
+
         $data['reports'] = [
-            ['name' => 'ГУ "РОСО"', 'slug' => 'roso', 'right' => ''],
-            ['name' => 'ССА', 'slug' => 'ssa', 'right' => ''],
-            ['name' => 'ЦМК', 'slug' => 'cmk', 'right' => ''],
-            ['name' => 'АГЭУ ГУ "Казселезащита"', 'slug' => 'mudflow', 'right' => ''],
+            ['name' => 'ГУ "РОСО"', 'slug' => 'roso', 'right' => '', 'dictionaries' => $dictionary['roso']],
+            ['name' => 'ССА', 'slug' => 'ssa', 'right' => '', 'dictionaries' => $dictionary['ssa']],
+            ['name' => 'ЦМК', 'slug' => 'cmk', 'right' => '', 'dictionaries' => $dictionary['cmk']],
+            ['name' => 'АГЭУ ГУ "Казселезащита"', 'slug' => 'mudflow', 'right' => '', 'dictionaries' => $dictionary['mudflow']],
         ];
+
         $data['incident_types'] = IncidentType::all();
         $data['city_areas'] = CityArea::all();
         $data['ride_types'] = RideType::all();
 
-        return view('analytics-services.index',$data);
+        return view('analytics-services.index', $data);
     }
 
     public function search(Request $request)
