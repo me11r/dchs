@@ -61,7 +61,7 @@
                             <option value=""></option>
                             <option
                                     v-for="item in cityAreas"
-                                    :value="item.id"
+                                    :value="item.name"
                                     :key="item.id">{{ item.name }}
                             </option>
                         </select>
@@ -78,6 +78,34 @@
                                     v-for="item in rideTypes"
                                     :value="item.id"
                                     :key="item.id">{{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="reason">Категория</label><!--Категория-->
+                        <select
+                                class="select"
+                                v-model="form.category"
+                        >
+                            <option value=""></option>
+                            <option
+                                    v-for="item in categories"
+                                    :value="item.category"
+                                    :key="`category_${item.category}`">{{ item.category }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="reason">Подкатегория</label><!--Подкатегория-->
+                        <select
+                                class="select"
+                                v-model="form.subcategory"
+                        >
+                            <option value=""></option>
+                            <option
+                                    v-for="item in subcategories"
+                                    :value="item"
+                                    :key="`subcategory_${item}`">{{ item }}
                             </option>
                         </select>
                     </div>
@@ -100,7 +128,10 @@
                     <div class="field">
                         <button @click.prevent="selectPeriod" class="button is-success">{{ 'search'|trans }}</button><!--Поиск-->
                     </div>
-
+                    <div v-if="tableData.length" class="field">
+                        <p>Всего за период: <b>{{ tableData.length }}</b></p>
+                        <p>Отфильтровано: <b>{{ filteredTableData.length }}</b></p>
+                    </div>
                     <div class="field" style="overflow: scroll">
                         <table class="formation-record-table">
                             <thead>
@@ -119,7 +150,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(record, key) in tableData" :key="`${reportInfo.slug}_${key}`">
+                                <tr v-for="(record, key) in filteredTableData" :key="`${reportInfo.slug}_${key}`">
                                     <td class="is-narrow">{{ record.date }}</td>
                                     <td>{{ record.date_end }}</td>
                                     <td>{{ record.first_msg }}</td>
@@ -152,6 +183,10 @@
                 type: Array,
                 default: () => []
             },
+            apiDictionaries: {
+                type: [Array, Object],
+                default: () => []
+            },
             reportInfo: {
                 type: Object,
                 default: () => {}
@@ -175,6 +210,8 @@
                     emergencyTypeId: 0,
                     cityAreaId: 0,
                     rideTypeId: 0,
+                    category: '',
+                    subcategory: '',
                     dateFrom: new Date(),
                     dateTo: new Date(),
                 },
@@ -182,6 +219,31 @@
             }
         },
         computed: {
+            categories() {
+                return this.apiDictionaries;
+            },
+            subcategories() {
+                const category = this.form.category ? this.apiDictionaries.find((item) => {
+                    return item.category === this.form.category;
+                }) : {};
+
+                return category ? category.subcategories : [];
+            },
+            filteredTableData() {
+                let records = this.form.cityAreaId
+                    ? this.tableData.filter((item) => item.district.toLowerCase() === this.form.cityAreaId.toLowerCase())
+                    : this.tableData;
+
+                return records.filter((item) => {
+                    if (this.form.category && this.form.subcategory) {
+                        return item.cat === this.form.category && item.subcat === this.form.subcategory;
+                    } else if (this.form.category) {
+                        return item.cat === this.form.category;
+                    } else {
+                        return true;
+                    }
+                });
+            }
         },
         methods: {
             print() {
