@@ -17,7 +17,11 @@
                     </div>
                     <div class="field">
                         <label for="">Ответственное лицо</label>
-                        <input required v-model="otherRide_.responsible_person" class="input" type="text">
+                        <input required
+                               v-model="otherRide_.responsible_person"
+                               class="input"
+                               type="text"
+                        >
                     </div>
                 </div>
                 <div class="field is-grouped">
@@ -85,28 +89,43 @@
                                         </div>
                                         <div class="field">
                                             <label for="">Ответственное лицо</label>
-                                            <input v-model="otherRide_.responsible_person" required class="input" type="text">
+                                            <input v-model="otherRide_.responsible_person"
+                                                   required
+                                                   class="input"
+                                                   type="text">
                                         </div>
                                     </div>
                                     <div class="field is-grouped">
                                         <div class="field is-full">
                                             <label for="">Адрес</label>
-                                            <input v-model="otherRide_.direction" required class="input" type="text">
+                                            <input v-model="otherRide_.direction"
+                                                   required
+                                                   class="input"
+                                                   type="text">
                                         </div>
                                         <div class="field">
                                             <label for="">Наименование объекта</label>
-                                            <input v-model="otherRide_.object_name" required class="input" type="text">
+                                            <input v-model="otherRide_.object_name"
+                                                   required
+                                                   class="input"
+                                                   type="text">
                                         </div>
                                         <div class="field">
                                             <label for="">Ход</label>
-                                            <input v-model="otherRide_.move" name="move" required class="input" type="text">
+                                            <input
+                                                   v-model="otherRide_.move"
+                                                   name="move"
+                                                   required
+                                                   class="input"
+                                                   type="text">
                                         </div>
 
                                         <div class="field">
                                             <label for="ride_type_id">Районы</label>
                                             <div class="select"
                                                  style="display: block">
-                                                <select required v-model="otherRide_.area_id"
+                                                <select required
+                                                        v-model="otherRide_.area_id"
                                                         style="width: 100%;">
                                                     <option value=""></option>
                                                     <option v-for="fd in cityArea"
@@ -171,20 +190,20 @@
 
                         <table class="table is-hoverable is-fullwidth">
                             <thead>
-                            <tr>
-                                <th>Подразделение</th>
-                                <th>Отделения</th>
-                                <th>Принято в работу</th>
-                                <th>Время выезда</th>
-                                <th>Время прибытия</th>
-                                <th>Время возвращения</th>
-                                <th>Отправка</th>
-                                <th>Статус</th>
-                                <th>Время оповещения</th>
-                            </tr>
+                                <tr>
+                                    <th>Подразделение</th>
+                                    <th>Отделения</th>
+                                    <th>Принято в работу</th>
+                                    <th>Время выезда</th>
+                                    <th>Время прибытия</th>
+                                    <th>Время возвращения</th>
+                                    <th>Отправка</th>
+                                    <th>Статус</th>
+                                    <th>Время оповещения</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="department in fireDepartments_">
+                                <tr v-for="department in fireDepartments_">
 
                                 <!--Подразделение-->
                                 <td class=""
@@ -206,7 +225,8 @@
                                                    value="1"
                                                    v-model="i.recommended"
                                                    type="checkbox">
-                                        </label>&nbsp;{{ i.tech.department ? i.tech.department : i.promoted_department }}
+                                            {{ i.tech.department ? i.tech.department : i.promoted_department }}
+                                        </label>&nbsp;
                                     </p>
 
                                 </td>
@@ -829,6 +849,10 @@
                 type: Boolean,
                 default: false
             },
+            canEdit: {
+                type: Boolean,
+                default: false
+            },
         },
         data: function () {
             return {
@@ -878,9 +902,19 @@
                 let urlToSave = this.urlToSave;
 
                 axios.post(urlToSave, this.dataToSave).then((r) => {
-                    this.otherRide_ = this.prepareRecord(r.data.record);
-                    this.techItems_ = r.data.techItems;
-                    window.history.pushState('page2', 'Title', `/card101-other-rides/${this.otherRide_.id}/edit`);
+                    if (r.data.error) {
+                        this.$snackbar.open({
+                            message: r.data.error,
+                            type: 'is-danger',
+                            position: 'is-top',
+                        });
+                    } else {
+                        const record = r.data.record;
+                        this.otherRide_ = this.prepareRecord(record);
+                        this.techItems_ = r.data.techItems;
+                        window.history.pushState('page2', 'Title', `/card101-other-rides/${this.otherRide_.id}/edit`);
+                    }
+
                     loadingComponent.close();
                 }).catch((e) => {
                     console.dir(e.stack)
@@ -889,6 +923,9 @@
                 });
             },
             addToActive(result){
+                if (!this.hasEditRight) {
+                    return;
+                }
                 if(result.promoted_at === null && result.promoted_department !== null){
                     result.promoted_at = moment().format();
                     let newResult = JSON.parse(JSON.stringify(result));
@@ -904,7 +941,6 @@
                 }
 
             },
-            
             sendAllTripPlans() {
                 axios.post('/roadtrip/other/send-all/' + this.otherRide_.id).then((response) => {
                     alert('Силы отправлены');
@@ -966,13 +1002,23 @@
                 return dt;
             },
             sendChecked() {
-                axios.post('/roadtrip/other/send-many', {
-                    ids: this.sendList,
-                    delayed: this.otherRide_.delayed,
-                }).then((r) => {
-                    this.sendList = [];
-                    window.location.href = `/card101-other-rides/${this.otherRide_.id}/edit`;
-                });
+                /*todo need this right here?*/
+                if (this.canEdit) {
+
+                    axios.post('/roadtrip/other/send-many', {
+                        ids: this.sendList,
+                        delayed: this.otherRide_.delayed,
+                    }).then((r) => {
+                        this.sendList = [];
+                        window.location.href = `/card101-other-rides/${this.otherRide_.id}/edit`;
+                    });
+                } else {
+                    this.$snackbar.open({
+                        message: 'У пользователя нет прав на редактирование',
+                        type: 'is-danger',
+                        position: 'is-top',
+                    });
+                }
             },
             sendOneCheck(event, dept_id, dept_number, res_id) {
 
@@ -1033,6 +1079,9 @@
                 }
             },
             sendHqDept(dept) {
+                if (!this.hasEditRight) {
+                    return;
+                }
                 dept.ticket101_id = this.otherRide_.id;
                 dept.dispatch_time = this.formatTime(moment().format('HH:mm'));
                 dept.dispatched = true;
@@ -1040,6 +1089,9 @@
                 // globalBus.$emit('hqDeptSent', dept);
             },
             retreatHqDept(hq) {
+                if (!this.hasEditRight) {
+                    return;
+                }
 
                 let props = {
                     force: true,
@@ -1131,6 +1183,17 @@
         computed: {
             urlToSave() {
                 return `/card101-other-rides/` + (this.otherRide_.id !== 0 ? `${this.otherRide_.id}/edit` : 'create');
+            },
+            hasEditRight() {
+                if (this.canEdit) {
+                    return true;
+                }
+                this.$snackbar.open({
+                    message: 'У пользователя нет прав на редактирование',
+                    type: 'is-danger',
+                    position: 'is-top',
+                });
+                return false;
             },
             fireDepartmentsBasedId() {
                 return _.filter(this.fireDepartments_)

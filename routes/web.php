@@ -83,7 +83,8 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
         Route::group(['prefix' => 'card101-other-rides', 'as' => 'card101-other-rides'], function (){
             Route::get('/', 'OtherRides101Controller@index')->name('index')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
             Route::match(['get', 'post'], '/create', 'OtherRides101Controller@create')->name('create')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_CREATE_OTHERS_RIDES']);
-            Route::match(['get', 'post'], '{id}/edit', 'OtherRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+            Route::get('{id}/edit', 'OtherRides101Controller@edit')->name('edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES']);
+            Route::post('{id}/edit', 'OtherRides101Controller@edit')->name('post.edit')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHERS_RIDES_CAN_EDIT']);
             Route::delete('delete/{id}', 'OtherRides101Controller@delete')->name('delete')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHERS_RIDES_CAN_DELETE']);
             Route::post('switch-delayed', 'OtherRides101Controller@switchDelayed')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHER_RIDES_CAN_SET_DELAYED']);
             Route::post('cancel-delayed', 'OtherRides101Controller@cancelDelayed')->middleware(['right:CARD101_ACCESS_OTHERS_RIDES,CARD101_OTHER_RIDES_CAN_SET_DELAYED']);
