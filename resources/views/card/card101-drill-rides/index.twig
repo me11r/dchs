@@ -124,7 +124,7 @@
                         <td class="has-text-right">{{ ticket.custom_created_at|date('H:i d.m.Y') }}</td>
                         <td style="text-align: center;">{{ ticket.getDetailedStaffWithoutHuman() }}</td>
                         <td style="width: 25%; text-align: center;">
-                            <a href="/card/add101/{{ ticket.id }}/{{ card_type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+                            <a href="/card/add101/{{ ticket.id }}/{{ card_type }}" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Смотреть</a>
 
                             <delete-card-btn :can-delete="{{ can_delete|json_encode() }}" :ticket-id="{{ ticket.id }}"></delete-card-btn>
                         </td>

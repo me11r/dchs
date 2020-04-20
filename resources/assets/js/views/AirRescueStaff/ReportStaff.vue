@@ -126,7 +126,6 @@ export default {
                 staff_id: self.person_id
             }).then((resp) => {
                 self.report_summary = resp.data;
-                console.dir(self.report_summary);
             });
         },
 

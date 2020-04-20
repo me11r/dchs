@@ -125,7 +125,7 @@
                         <td class="has-text-right">{{ ticket.norm_type.name|default() }}</td>
                         <td>{{ ticket.fire_department.title ?? '' }}</td>
                         <td class="has-text-right">
-                            <a href="/norms-psp/{{ ticket.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Редактировать</a>
+                            <a href="/norms-psp/{{ ticket.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; Смотреть</a>
 
                             {% if can_delete %}
                                 <form onSubmit="if(!confirm('Удалить запись?')){return false;}" style="display: inline" action="/norms-psp/delete/{{ ticket.id }}" method="post">

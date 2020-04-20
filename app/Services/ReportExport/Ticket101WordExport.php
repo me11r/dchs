@@ -116,8 +116,10 @@ class Ticket101WordExport
         'tulpar3',
         'tulpar4',
         'tulpar5',
+        'tulpar6',
         'tulpar7',
         'tulpar8',
+        'tulpar9',
         'tulpar10',
         'kshm',
         'ipl_zhalyn'
@@ -273,8 +275,10 @@ class Ticket101WordExport
             $tulpar3 = $personSummary->formation_person_items_od()->rank('tulpar3')->get();
             $tulpar4 = $personSummary->formation_person_items_od()->rank('tulpar4')->get();
             $tulpar5 = $personSummary->formation_person_items_od()->rank('tulpar5')->get();
+            $tulpar6 = $personSummary->formation_person_items_od()->rank('tulpar6')->get();
             $tulpar7 = $personSummary->formation_person_items_od()->rank('tulpar7')->get();
             $tulpar8 = $personSummary->formation_person_items_od()->rank('tulpar8')->get();
+            $tulpar9 = $personSummary->formation_person_items_od()->rank('tulpar9')->get();
             $tulpar10 = $personSummary->formation_person_items_od()->rank('tulpar10')->get();
             $kshm = $personSummary->formation_person_items_od()->rank('kshm')->get();
             $ipl_zhalyn = $personSummary->formation_person_items_od()->rank('ipl_zhalyn')->get();
@@ -352,10 +356,16 @@ class Ticket101WordExport
                 'tulpar5' => $tulpar5->map(function ($item) {
                     return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
+                'tulpar6' => $tulpar6->map(function ($item) {
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
+                })->toArray(),
                 'tulpar7' => $tulpar7->map(function ($item) {
                     return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar8' => $tulpar8->map(function ($item) {
+                    return ($item->staff->name ?? null) . ' '.$item->gsm_count;
+                })->toArray(),
+                'tulpar9' => $tulpar9->map(function ($item) {
                     return ($item->staff->name ?? null) . ' '.$item->gsm_count;
                 })->toArray(),
                 'tulpar10' => $tulpar10->map(function ($item) {
@@ -467,8 +477,10 @@ class Ticket101WordExport
             'tulpar3' => 'Тулпар-3: ',
             'tulpar4' => 'Тулпар-4: ',
             'tulpar5' => 'Тулпар-5: ',
+            'tulpar6' => 'Тулпар-6: ',
             'tulpar7' => 'Тулпар-7: ',
             'tulpar8' => 'Тулпар-8: ',
+            'tulpar9' => 'Тулпар-9: ',
             'tulpar10' => 'Тулпар-10: ',
             'kshm' => 'КШМ: ',
             'ipl_zhalyn' => 'ИПЛ «Жалын»: '

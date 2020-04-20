@@ -23,6 +23,7 @@
                             :fire-dept-id="{{ fire_dept_id }}"
                             :records="{{ not_dspt|default([])|json_encode }}"
                             :type="'fire_dept'"
+                            :has-edit-right="{{ has_edit_right|json_encode }}"
                     ></fire-dept-check-form>
 
                     <h4 class="title">ДСПТ</h4>
@@ -32,6 +33,7 @@
                             :fire-dept-id="{{ fire_dept_id }}"
                             :records="{{ dspt|default([])|json_encode }}"
                             :type="'dspt'"
+                            :has-edit-right="{{ has_edit_right|json_encode }}"
                     ></fire-dept-check-form>
 
 

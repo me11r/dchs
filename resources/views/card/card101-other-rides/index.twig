@@ -122,7 +122,7 @@
                         <td class="has-text-right">{{ ticket.custom_created_at|date('H:i d.m.Y') }}</td>
                         <td>{{ ticket.dispatched_fds }}</td>
                         <td class="has-text-right">
-                            <a href="/card101-other-rides/{{ ticket.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; {{ user.hasRight('CARD101_CREATE_OTHERS_RIDES') ? 'Редактировать' : 'Смотреть'}}</a>
+                            <a href="/card101-other-rides/{{ ticket.id }}/edit" class="button is-basic is-small"><i class="fas fa-pencil-alt"></i>&nbsp; {{'Смотреть'}}</a>
                             {% if can_delete %}
                                 <form onSubmit="if(!confirm('Удалить запись?')){return false;}" style="display: inline" action="/card101-other-rides/delete/{{ ticket.id }}" method="post">
                                     {{ csrf_field() }}

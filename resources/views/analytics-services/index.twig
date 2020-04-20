@@ -1,0 +1,30 @@
+{% extends "layout/html" %}
+{% block content %}
+    <div class="section" id="vue">
+        <h1 class="title">Аналитика служб взаимодействия</h1>
+
+        <b-tabs position="is-centered" class="block">
+            {% for report in reports %}
+                {#todo на будущее#}
+{#                {% if user.hasRight(report.right) %}#}
+                    <b-tab-item label="{{ report.name }}">
+                        <report-services
+                            :records="{{ records|json_encode }}"
+                            :report-info="{{ report|json_encode }}"
+                            :ride-types="{{ ride_types }}"
+                            :city-areas="{{ city_areas }}"
+                            :incident-types="{{ incident_types }}"
+                            :api-dictionaries="{{ report.dictionaries|json_encode }}"
+                        >
+                        </report-services>
+                    </b-tab-item>
+{#                {% endif %}#}
+            {% endfor %}
+
+
+
+        </b-tabs>
+
+
+    </div>
+{% endblock content %}
