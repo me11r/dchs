@@ -85,8 +85,10 @@ export default {
                 'tulpar3',
                 'tulpar4',
                 'tulpar5',
+                'tulpar6',
                 'tulpar7',
                 'tulpar8',
+                'tulpar9',
                 'tulpar10'
             ];
 
