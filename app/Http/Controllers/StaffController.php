@@ -133,7 +133,7 @@ class StaffController extends Controller
         $statuses = $record->statuses();
         $guardNumbers = GuardNumber::all();
 
-        return view("$this->table.edit", compact('items', 'fire_departments','title', 'record', 'statuses', 'guardNumbers'));
+        return view("{$this->table}.edit", compact('fire_departments','title', 'record', 'statuses', 'guardNumbers'));
     }
 
     /**
