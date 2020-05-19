@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(FireDepartmentUsersSeeder::class);
         $this->call(DailyReportPersonSeeder::class);
+        $this->call(DiffSpikeSeeder::class);
     }
 }

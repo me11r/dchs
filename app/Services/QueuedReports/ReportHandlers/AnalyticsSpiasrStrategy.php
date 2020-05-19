@@ -146,6 +146,7 @@ class AnalyticsSpiasrStrategy implements ReportHandlerStrategyInterface
                 DB::raw('SUM(non_gdzs_chronology.working_time) as trunks_chronology_working_time'),
                 'object_classifications.name as object_classification_name',
             ])
+            ->whereNull('ticket101.deleted_at')
             ->leftJoin('dict_city_area', 'ticket101.city_area_id', '=', 'dict_city_area.id')
 //            ->leftJoin('dict_fire_level', 'ticket101.result_fire_level_id', '=', 'result_dict_fire_level.id')
             ->leftJoin('object_classifications', 'ticket101.object_classification_id', '=', 'object_classifications.id')
