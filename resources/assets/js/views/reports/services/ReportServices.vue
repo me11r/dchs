@@ -2,8 +2,8 @@
     <div class="container">
         <div class="panel">
             <div
-                    class="box"
-                    style="margin-top: 20px">
+                    class="box vue-report-form"
+                    style="margin-top: 20px;">
                 <div class="level">
                     <div class="level-left">
                         <h4 class="title">Отчет по {{ reportInfo.name }}</h4>
