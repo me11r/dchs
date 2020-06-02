@@ -124,16 +124,6 @@ class FireDepartmentCheckController extends Controller
     public function updateByDay(Request $request, $date)
     {
         $items = $request->get('items', []);
-        $ids = array_map(function($item) {
-            return $item['id'];
-        }, $items);
-
-        $existsItems = FireDepartmentCheck::with(['fire_department'])->where('date', '=', $date)->get();
-        foreach ($existsItems as $existsItem) {
-            if (!\in_array($existsItem->id, $ids, false)){
-                $existsItem->delete();
-            }
-        }
 
         foreach ($items as $item) {
             $item['date'] = $date;

@@ -478,7 +478,10 @@ class FormationController extends AuthorizedController
                             $inputs['guard_number_id'][$input_key] = $operGroupId->id ?? null;
                         }
 
-                        FormationPersonsItem::create([
+                        FormationPersonsItem::updateOrCreate([
+                            'staff_id' => $input,
+                            'report_id' => $model->id,
+                        ],[
                             'staff_id' => $input,
                             'report_id' => $model->id,
                             'comment' => $inputs['comment'][$input_key] ?? null,
