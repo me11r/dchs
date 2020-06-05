@@ -23,7 +23,7 @@
                 <button
                     class="button is-small is-danger square-button-36"
                     type="button"
-                    @click="dropById(block.id)"
+                    @click="dropItem(block, index)"
                     title="Удалить">
                     <i class="fa fa-trash"></i>
                 </button>
@@ -79,6 +79,7 @@ export default {
             staff_: this.staff,
             record_: this.record ? this.record : {
                 id: 1,
+                is_new: true,
                 fire_department_id: 1,
                 note: '',
                 editable: true,
@@ -92,16 +93,18 @@ export default {
     watch: {
     },
     methods: {
-        dropById(id) {
-            this.firedeptBlocks = this.firedeptBlocks.filter((item) => {
-                return item.id !== id;
-            });
+        dropItem(item, index) {
+            this.firedeptBlocks.splice(index, 1);
+            if (!item.is_new) {
+                axios.delete('/fire-department-checks/'+ item.id);
+            }
         },
         addEmptyItem() {
             this.firedeptBlocks.push({
                 id: moment().valueOf(),
                 fire_department_id: this.fireDeptId,
                 note: '',
+                is_new: true,
                 editable: true,
                 responsible_person: '',
                 time_begin: '00:00:00',
