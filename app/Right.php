@@ -4,6 +4,7 @@ namespace App;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * App\Right
@@ -83,5 +84,15 @@ class Right extends Model
     public function group()
     {
         return $this->belongsTo(\App\Rights\Group::class, 'right_group_id', 'id');
+    }
+
+    public static function userFireDepartmentMatch($fireDepartmentId)
+    {
+        $user = Auth::user();
+        if ($user->isAdmin() || $fireDepartmentId === null || $user->fire_department_id === null) {
+            return true;
+        }
+
+        return (int) $fireDepartmentId === (int) $user->fire_department_id;
     }
 }

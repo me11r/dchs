@@ -18,6 +18,7 @@ use App\DrillType;
 use App\EmergencyType;
 use App\EventInfo;
 use App\EventInfoArrived;
+use App\Exceptions\AccessDeniedException;
 use App\FireDepartment;
 use App\FormationReport;
 use App\FormationTechReport;
@@ -40,6 +41,7 @@ use App\Models\WallMaterial;
 use App\ObjectClassification;
 use App\OperationalCard;
 use App\RideType;
+use App\Right;
 use App\Services\AnalyticsService;
 use App\Services\FileUploadService;
 use App\Ticket101;
@@ -280,6 +282,13 @@ class CardController extends AuthorizedController
                 'additional_plans.operational_card',
             ])
             ->findOrNew($card_id);
+
+        if ($card_id && $card_type === 'drill') {
+            /*user doesn't have rights to see card*/
+            if (!Right::userFireDepartmentMatch($ticket->fire_department_id)) {
+                throw new AccessDeniedException();
+            }
+        }
 
         $recommendedDispatched = $ticket->results()
             ->isDispatched()

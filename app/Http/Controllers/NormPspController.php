@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AccessDeniedException;
 use App\FireDepartment;
 use App\NormNumber;
 use App\NormPsp;
 use App\NormPspDepartment;
 use App\NormType;
+use App\Right;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,10 +19,10 @@ class NormPspController extends Controller
     public function index(Request $request)
     {
         $records = NormPsp::orderBy('id', 'desc');
+        $userFd = Auth::user()->fire_department_id;
 
         $data['per_page'] = $request->get('per_page', 20);
         $data['card_type'] = $this->view;
-        $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
         $data['norm_types'] = NormType::all();
         $data['norm_numbers'] = NormNumber::all();
         $data['filter_fd'] = $request->filter_fd;
@@ -30,6 +32,20 @@ class NormPspController extends Controller
         $data['date_to'] = $request->date_to;
         $data['norm_type_id'] = $request->norm_type_id;
         $data['norm_number_id'] = $request->norm_number_id;
+
+        if ($userFd) {
+            $data['fire_departments'] = FireDepartment::where('id', $userFd)
+                ->sortByCustomOrder()
+                ->get();
+        } else {
+            $data['fire_departments'] = FireDepartment::recommend()
+                ->sortByCustomOrder()
+                ->get();
+        }
+
+        if ($userFd) {
+            $records = $records->where('fire_department_id', $userFd);
+        }
 
         if ($request->filter_fd) {
             $records = $records->where('fire_department_id', $request->filter_fd);
@@ -74,6 +90,11 @@ class NormPspController extends Controller
         $data['can_select_fd'] = Auth::user()->hasRight('CAN_SELECT_FD_NORMS_PSP');
         $data['fire_departments'] = FireDepartment::sortByCustomOrder()->get();
         $data['departments'] = $data['record']->departments;
+
+        /*user doesn't have rights to see card*/
+        if (!Right::userFireDepartmentMatch($data['record']->fire_department_id)) {
+            throw new AccessDeniedException();
+        }
 
         return view("card.$this->view.create-edit", $data);
     }
