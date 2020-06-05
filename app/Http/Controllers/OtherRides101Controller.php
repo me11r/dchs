@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AccessDeniedException;
 use App\FireDepartment;
 use App\FormationReport;
 use App\FormationTechReport;
@@ -11,6 +12,7 @@ use App\Models\Schedule;
 use App\Models\Staff;
 use App\PopupNotification;
 use App\RideType;
+use App\Right;
 use App\RoadtripPlan;
 use App\Ticket101HqRide;
 use App\Ticket101Other;
@@ -25,19 +27,29 @@ class OtherRides101Controller extends Controller
     public function index(Request $request)
     {
         $data['per_page'] = $request->get('per_page', 20);
+        $userFd = Auth::user()->fire_department_id;
         $data['can_delete'] = Auth::user()->hasRight('CARD101_OTHERS_RIDES_CAN_DELETE');
         $data['card_type'] = 'other';
         $data['ride_types'] = RideType::all();
-        $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
         $data['filter_fd'] = $request->filter_fd;
         $data['filter_ride_type'] = $request->filter_ride_type;
         $data['search'] = $request->search;
         $data['date_from'] = $request->date_from;
         $data['date_to'] = $request->date_to;
 
+        if ($userFd) {
+            $data['fire_departments'] = FireDepartment::where('id', Auth::user()->fire_department_id)
+                ->sortByCustomOrder()
+                ->get();
+        } else {
+            $data['fire_departments'] = FireDepartment::recommend()
+                ->sortByCustomOrder()
+                ->get();
+        }
+
         $model = Ticket101Other::orderBy('id', 'desc');
 
-        if ($userFd = Auth::user()->fire_department_id) {
+        if ($userFd) {
             $model = $model->where('fire_department_id', $userFd);
         }
 
@@ -170,6 +182,11 @@ class OtherRides101Controller extends Controller
 
         }
         else{
+            /*user doesn't have rights to see card*/
+            if (!Right::userFireDepartmentMatch($data['record']->fire_department_id)) {
+                throw new AccessDeniedException();
+            }
+
             $data['city_area'] = CityArea::all();
             $data['fire_departments'] = FireDepartment::recommend()->sortByCustomOrder()->get();
             $data['ride_types'] = RideType::all();
