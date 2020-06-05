@@ -166,9 +166,12 @@ class FireDepartmentCheckController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         FireDepartmentCheck::destroy($id);
+        if ($request->ajax()) {
+            return response()->json(['ok']);
+        }
         return back();
     }
 }
