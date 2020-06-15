@@ -42,7 +42,6 @@
                         placeholder="Отделение"
                         type="number"
                         class="input"
-                        max="82"
                         min="1"
                         v-model="item.department"
                         @change="departmentCheck($event)"
