@@ -211,6 +211,7 @@ class Ticket101WordExport
             'ipl' => 'ИПЛ',
             'kshm' => 'КШМ',
             'dspt' => 'ДСПТ',
+            'cpps' => 'ЦОУСС',
         ];
 
         $queryArr = [];
