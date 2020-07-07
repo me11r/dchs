@@ -96,6 +96,11 @@ export default {
                 'ipl_zhalyn'
             ];
 
+            const cppsTypes = [
+                'cpps_sick',
+                'cpps_vacation',
+            ];
+
             const dsptTypes = [
                 'dspt_vacation',
                 'dspt_business_trip',
@@ -130,6 +135,8 @@ export default {
                 return 'ipl';
             } else if (kshmTypes.indexOf(this.rank) !== -1) {
                 return 'kshm';
+            } else if (cppsTypes.indexOf(this.rank) !== -1) {
+                return 'cpps';
             } else {
                 return this.rank;
             }
