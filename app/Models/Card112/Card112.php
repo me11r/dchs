@@ -127,17 +127,27 @@ class Card112 extends BaseModel
         'additional_incident_type_id',
         'measures',
         'resources',
+
         'injured',
         'dead',
         'evacuated',
         'hospitalized',
+        'injured_hard',
+        'poisoned',
+        'saved',
+
+        'injured_children',
+        'dead_children',
+        'evacuated_children',
+        'hospitalized_children',
+        'injured_hard_children',
+        'poisoned_children',
+        'saved_children',
+
         'additional_comment',
         'city_area_id',
         'location',
         'detailed_address',
-        'injured_hard',
-        'poisoned',
-        'saved',
         'saved_animals',
         'incident_place',
         'additional_incident_place_id',
@@ -424,7 +434,15 @@ class Card112 extends BaseModel
                     'injured_hard',
                     'poisoned',
                     'saved',
-                    'saved_animals'
+                    'saved_animals',
+
+                    'injured_children',
+                    'dead_children',
+                    'evacuated_children',
+                    'hospitalized_children',
+                    'injured_hard_children',
+                    'poisoned_children',
+                    'saved_children',
                 ];
 
                 foreach ($types as $type) {
@@ -440,35 +458,51 @@ class Card112 extends BaseModel
 
             /* Итого для каждого типа происшествия */
             if (isset($result[$reason->name])) {
+                $collection = collect($result[$reason->name]);
 
                 $result[$reason->name]['Итого'] = [
-                    'total' => collect($result[$reason->name])->sum('total'),
-                    'injured' => collect($result[$reason->name])->sum('injured'),
-                    'dead' => collect($result[$reason->name])->sum('dead'),
-                    'evacuated' => collect($result[$reason->name])->sum('evacuated'),
-                    'hospitalized' => collect($result[$reason->name])->sum('hospitalized'),
-                    'injured_hard' => collect($result[$reason->name])->sum('injured_hard'),
-                    'poisoned' => collect($result[$reason->name])->sum('poisoned'),
-                    'saved' => collect($result[$reason->name])->sum('saved'),
-                    'saved_animals' => collect($result[$reason->name])->sum('saved_animals'),
-                    'hurt' => collect($result[$reason->name])->sum('hurt'),
+                    'total' => $collection->sum('total'),
+                    'injured' => $collection->sum('injured'),
+                    'dead' => $collection->sum('dead'),
+                    'evacuated' => $collection->sum('evacuated'),
+                    'hospitalized' => $collection->sum('hospitalized'),
+                    'injured_hard' => $collection->sum('injured_hard'),
+                    'poisoned' => $collection->sum('poisoned'),
+                    'saved' => $collection->sum('saved'),
+                    'saved_animals' => $collection->sum('saved_animals'),
+                    'hurt' => $collection->sum('hurt'),
+
+                    'injured_children' => $collection->sum('injured_children'),
+                    'dead_children' => $collection->sum('dead_children'),
+                    'evacuated_children' => $collection->sum('evacuated_children'),
+                    'hospitalized_children' => $collection->sum('hospitalized_children'),
+                    'injured_hard_children' => $collection->sum('injured_hard_children'),
+                    'poisoned_children' => $collection->sum('poisoned_children'),
+                    'saved_children' => $collection->sum('saved_children'),
                 ];
             }
         }
 
-        $f = collect($result)->sum('Итого.total');
-
+        $resultCollection = collect($result);
         $result['Итог'] = [
-            'total' => collect($result)->sum('Итого.total'),
-            'injured' => collect($result)->sum('Итого.injured'),
-            'dead' => collect($result)->sum('Итого.dead'),
-            'evacuated' => collect($result)->sum('Итого.evacuated'),
-            'hospitalized' => collect($result)->sum('Итого.hospitalized'),
-            'injured_hard' => collect($result)->sum('Итого.injured_hard'),
-            'poisoned' => collect($result)->sum('Итого.poisoned'),
-            'saved' => collect($result)->sum('Итого.saved'),
-            'saved_animals' => collect($result)->sum('Итого.saved_animals'),
-            'hurt' => collect($result)->sum('Итого.hurt'),
+            'total' => $resultCollection->sum('Итого.total'),
+            'injured' => $resultCollection->sum('Итого.injured'),
+            'dead' => $resultCollection->sum('Итого.dead'),
+            'evacuated' => $resultCollection->sum('Итого.evacuated'),
+            'hospitalized' => $resultCollection->sum('Итого.hospitalized'),
+            'injured_hard' => $resultCollection->sum('Итого.injured_hard'),
+            'poisoned' => $resultCollection->sum('Итого.poisoned'),
+            'saved' => $resultCollection->sum('Итого.saved'),
+            'saved_animals' => $resultCollection->sum('Итого.saved_animals'),
+            'hurt' => $resultCollection->sum('Итого.hurt'),
+
+            'injured_children' => $resultCollection->sum('Итого.injured_children'),
+            'dead_children' => $resultCollection->sum('Итого.dead_children'),
+            'evacuated_children' => $resultCollection->sum('Итого.evacuated_children'),
+            'hospitalized_children' => $resultCollection->sum('Итого.hospitalized_children'),
+            'injured_hard_children' => $resultCollection->sum('Итого.injured_hard_children'),
+            'poisoned_children' => $resultCollection->sum('Итого.poisoned_children'),
+            'saved_children' => $resultCollection->sum('Итого.saved_children'),
         ];
 
         return $result;

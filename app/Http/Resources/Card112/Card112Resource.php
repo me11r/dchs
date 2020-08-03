@@ -51,6 +51,15 @@ class Card112Resource extends JsonResource
             'city_area' => $this->resource->relationLoaded('cityArea') ? (new CityAreaResource($this->cityArea)) : null,
             'injured_hard' => (int) $this->injured_hard,
             'poisoned' => (int) $this->poisoned,
+
+            'injured_children' => (int) $this->injured_children,
+            'dead_children' => (int) $this->dead_children,
+            'evacuated_children' => (int) $this->evacuated_children,
+            'hospitalized_children' => (int) $this->hospitalized_children,
+            'injured_hard_children' => (int) $this->injured_hard_children,
+            'poisoned_children' => (int) $this->poisoned_children,
+            'saved_children' => (int) $this->saved_children,
+
             'saved' => (int) $this->saved,
             'saved_animals' => (int) $this->saved_animals,
             'incident_place' => (string)$this->incident_place,

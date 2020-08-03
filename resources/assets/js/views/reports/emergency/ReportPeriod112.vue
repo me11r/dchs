@@ -129,13 +129,13 @@
                                         <tr v-for="(cityArea, citAreaTitle) in record">
                                             <td>{{ citAreaTitle }}</td>
                                             <td>{{ cityArea.total }}</td>
-                                            <td>{{ cityArea.injured }}</td>
-                                            <td>{{ cityArea.dead }}</td>
-                                            <td>{{ cityArea.evacuated }}</td>
-                                            <td>{{ cityArea.hospitalized }}</td>
-                                            <td>{{ cityArea.injured_hard }}</td>
-                                            <td>{{ cityArea.poisoned }}</td>
-                                            <td>{{ cityArea.saved }}</td>
+                                            <td>{{ cityArea.injured }} / {{ cityArea.injured_children }}</td>
+                                            <td>{{ cityArea.dead }} / {{ cityArea.dead_children }}</td>
+                                            <td>{{ cityArea.evacuated }} / {{ cityArea.evacuated_children }}</td>
+                                            <td>{{ cityArea.hospitalized }} / {{ cityArea.hospitalized_children }}</td>
+                                            <td>{{ cityArea.injured_hard }} / {{ cityArea.injured_hard_children }}</td>
+                                            <td>{{ cityArea.poisoned }} / {{ cityArea.poisoned_children }}</td>
+                                            <td>{{ cityArea.saved }} / {{ cityArea.saved_children }}</td>
                                             <td>{{ cityArea.saved_animals }}</td>
                                         </tr>
 
@@ -163,13 +163,13 @@
                                         <tbody>
                                         <tr>
                                             <td>{{ totalRow['Итог'].total }}</td>
-                                            <td>{{ totalRow['Итог'].injured }}</td>
-                                            <td>{{ totalRow['Итог'].dead }}</td>
-                                            <td>{{ totalRow['Итог'].evacuated }}</td>
-                                            <td>{{ totalRow['Итог'].hospitalized }}</td>
-                                            <td>{{ totalRow['Итог'].injured_hard }}</td>
-                                            <td>{{ totalRow['Итог'].poisoned }}</td>
-                                            <td>{{ totalRow['Итог'].saved }}</td>
+                                            <td>{{ totalRow['Итог'].injured }} / {{ totalRow['Итог'].injured_children }}</td>
+                                            <td>{{ totalRow['Итог'].dead }} / {{ totalRow['Итог'].dead_children }}</td>
+                                            <td>{{ totalRow['Итог'].evacuated }} / {{ totalRow['Итог'].evacuated_children }}</td>
+                                            <td>{{ totalRow['Итог'].hospitalized }} / {{ totalRow['Итог'].hospitalized_children }}</td>
+                                            <td>{{ totalRow['Итог'].injured_hard }} / {{ totalRow['Итог'].injured_hard_children }}</td>
+                                            <td>{{ totalRow['Итог'].poisoned }} / {{ totalRow['Итог'].poisoned_children }}</td>
+                                            <td>{{ totalRow['Итог'].saved }} / {{ totalRow['Итог'].saved_children }}</td>
                                             <td>{{ totalRow['Итог'].saved_animals }}</td>
                                         </tr>
 
