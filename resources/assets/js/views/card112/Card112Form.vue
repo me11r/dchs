@@ -707,74 +707,159 @@
                                     <!--ПОСТРАДАВШИХ ЛЮДЕЙ/ДЕТЕЙ-->
                                     <div class="group_25">
                                         <label for="injured">Пострадавших людей/детей</label>
-                                        <input
-                                                type="number"
-                                                v-model="model.injured"
-                                                class="input"
-                                                name="injured"
-                                                id="injured">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.injured"
+                                                        class="input"
+                                                        name="injured"
+                                                        id="injured">
+                                            </div>
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.injured_children"
+                                                        class="input"
+                                                        name="injured_children"
+                                                        id="injured_children">
+                                            </div>
+                                        </div>
                                     </div>
                                     <!--ПОГИБШИХ ЛЮДЕЙ/ДЕТЕЙ-->
                                     <div class="group_25">
                                         <label for="dead">Погибших людей/детей</label>
-                                        <input
-                                                type="number"
-                                                v-model="model.dead"
-                                                class="input"
-                                                name="dead"
-                                                id="dead">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.dead"
+                                                        class="input"
+                                                        name="dead"
+                                                        id="dead">
+                                            </div>
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.dead_children"
+                                                        class="input"
+                                                        name="dead_children"
+                                                        id="dead_children">
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <!--ЭВАКУИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
                                     <div class="group_25">
                                         <label for="evacuated">Эвакуированных людей/детей</label>
-                                        <input
-                                                type="number"
-                                                v-model="model.evacuated"
-                                                class="input"
-                                                name="evacuated"
-                                                id="evacuated">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.evacuated"
+                                                        class="input"
+                                                        name="evacuated"
+                                                        id="evacuated">
+                                            </div>
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.evacuated_children"
+                                                        class="input"
+                                                        name="evacuated_children"
+                                                        id="evacuated_children">
+                                            </div>
+                                        </div>
                                     </div>
                                     <!--ГОСПИТАЛИЗИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
                                     <div class="group_25">
                                         <label for="hospitalized">Госпитализированных людей/детей</label>
-                                        <input
-                                                type="number"
-                                                v-model="model.hospitalized"
-                                                class="input"
-                                                name="hospitalized"
-                                                id="hospitalized">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.hospitalized"
+                                                        class="input"
+                                                        name="hospitalized"
+                                                        id="hospitalized">
+                                            </div>
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.hospitalized_children"
+                                                        class="input"
+                                                        name="hospitalized_children"
+                                                        id="hospitalized_children">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="field is-grouped">
                                     <!--ТРАВМИРОВАННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
                                     <div class="group_25">
                                         <label for="injured_hard">Травмированных людей/детей</label>
-                                        <input
-                                                type="number"
-                                                v-model="model.injured_hard"
-                                                class="input"
-                                                name="injured_hard"
-                                                id="injured_hard">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.injured_hard"
+                                                        class="input"
+                                                        name="injured_hard"
+                                                        id="injured_hard">
+                                            </div>
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.injured_hard_children"
+                                                        class="input"
+                                                        name="injured_hard_children"
+                                                        id="injured_hard_children">
+                                            </div>
+                                        </div>
                                     </div>
                                     <!--ОТРАВЛЕННЫХ ЛЮДЕЙ/ДЕТЕЙ-->
                                     <div class="group_25">
                                         <label for="poisoned">Отравление людей/детей</label>
-                                        <input
-                                                type="number"
-                                                v-model="model.poisoned"
-                                                class="input"
-                                                name="poisoned"
-                                                id="poisoned">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.poisoned"
+                                                        class="input"
+                                                        name="poisoned"
+                                                        id="poisoned">
+                                            </div>
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.poisoned_children"
+                                                        class="input"
+                                                        name="poisoned_children"
+                                                        id="poisoned_children">
+                                            </div>
+                                        </div>
                                     </div>
                                     <!--СПАСЕНО ЛЮДЕЙ/ДЕТЕЙ-->
                                     <div class="group_25">
                                         <label for="saved">Спасено людей/детей</label>
-                                        <input
-                                                type="number"
-                                                v-model="model.saved"
-                                                class="input"
-                                                name="saved"
-                                                id="saved">
+                                        <div class="columns">
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.saved"
+                                                        class="input"
+                                                        name="saved"
+                                                        id="saved">
+                                            </div>
+                                            <div class="column">
+                                                <input
+                                                        type="number"
+                                                        v-model="model.saved_children"
+                                                        class="input"
+                                                        name="saved_children"
+                                                        id="saved_children">
+                                            </div>
+                                        </div>
                                     </div>
                                     <!--СПАСЕНО ЖИВОТНЫХ-->
                                     <div class="group_25">
@@ -1019,6 +1104,7 @@ export default {
     data() {
         return {
             csrf: window.csrf_token,
+            activeTab: 0,
             time: new Date(),
             streets: [],
             incidentTypes: [],
