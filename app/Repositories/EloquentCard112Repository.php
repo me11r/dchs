@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Card112File;
 use App\EmergencyType;
 use App\Models\Card112\Card112;
 use App\Models\Card112\Card112Chronology;
@@ -9,8 +10,10 @@ use App\Models\Card112\Card112ServiceReaction;
 use App\Models\IncidentType;
 use App\Models\ServiceType;
 use App\Repositories\Contracts\Card112RepositoryInterface;
+use App\Services\FileUploadService;
 use App\Ticket101ServicePlan;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class EloquentCard112Repository extends Repository implements Card112RepositoryInterface
@@ -144,6 +147,19 @@ class EloquentCard112Repository extends Repository implements Card112RepositoryI
             $record->dispatched_time = $data['message_time'] ? Carbon::parse($data['message_time']) : null;
             $record->arrive_time = $data['arrive_time'] ? Carbon::parse($data['arrive_time']) : null;
             $record->save();
+        }
+    }
+
+    public function saveFiles($id, Request $request)
+    {
+        $service = new FileUploadService();
+        $files = $request->file('data_files', []);
+        foreach ($files as $file) {
+            $upload = $service->saveFile($file);
+            Card112File::create([
+                'file_id' => $upload->id,
+                'card_id' => $id,
+            ]);
         }
     }
 }

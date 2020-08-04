@@ -157,6 +157,8 @@ class Card112Controller extends Controller
 
         $data = $this->repository->createFilledWithRelations($req);
 
+        $this->repository->saveFiles($data->id, $request);
+
         if ($index) {
             $back = "/card112/{$data->id}/edit/#return={$index}";
         }
@@ -229,6 +231,7 @@ class Card112Controller extends Controller
 
         $data['custom_created_at'] = isset($data['custom_created_at']) ? Carbon::parse($data['custom_created_at'])->format('Y-m-d H:i') : null;
         $this->repository->updateFilledWithRelations($data, $id);
+        $this->repository->saveFiles($id, $request);
         $this->repository->updateServicePlans($request->input('notification_services', []), $id);
         return redirect(route('card112.edit', $id))->with('currentTabIndex', $index);
     }

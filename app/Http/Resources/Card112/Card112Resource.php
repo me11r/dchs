@@ -60,6 +60,8 @@ class Card112Resource extends JsonResource
             'poisoned_children' => (int) $this->poisoned_children,
             'saved_children' => (int) $this->saved_children,
 
+            'files' => $this->files,
+
             'saved' => (int) $this->saved,
             'saved_animals' => (int) $this->saved_animals,
             'incident_place' => (string)$this->incident_place,

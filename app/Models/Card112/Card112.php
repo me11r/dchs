@@ -17,6 +17,7 @@ use App\Models\BaseModel;
 use App\Models\IncidentType;
 use App\Models\Notification\Notification;
 use App\Models\Notification\NotificationGroup;
+use App\Models\UploadedFile;
 use App\Ticket101ServicePlan;
 use App\User;
 use Carbon\Carbon;
@@ -183,6 +184,11 @@ class Card112 extends BaseModel
     public function changed_by_user()
     {
         return $this->belongsTo(User::class,'changed_by');
+    }
+
+    public function files()
+    {
+        return $this->belongsToMany(UploadedFile::class, 'card112_files','card_id', 'file_id');
     }
 
     /**
