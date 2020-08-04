@@ -8,6 +8,7 @@
         <form
             :action="this.formRoute"
             id="card112_form"
+            enctype='multipart/form-data'
             method="POST">
             <input
                 type="hidden"
@@ -215,6 +216,9 @@
                                     </p>
                                 </div>
                             </b-timepicker>
+                        </div>
+                        <div class="field">
+                            <input type="file" multiple name="data_files[]">
                         </div>
                     </div>
                     <div :style="{'display': currentTabIndex === 1 ? 'block': 'none'}">
@@ -882,6 +886,13 @@
                                             id="analytics"
                                             :value="analytics"
                                     ></textarea>
+                                </div>
+
+                                <div v-if="model.files && model.files.length" class="field">
+                                    <label for="analytics">Файлы</label>
+                                    <p v-for="(file, fileKey) in model.files" :key="`files_${fileKey}`">
+                                        <a target="_blank" :href="`/api/upload/file/download/${file.id}`">Скачать</a>
+                                    </p>
                                 </div>
 
                             </b-tab-item>
