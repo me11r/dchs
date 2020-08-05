@@ -449,16 +449,30 @@
             </table>
         </div>
         <p class="" style="width: 20%; padding: 0 20px 0 0">
-            <persons101-multiselect
-                    :name="'ДСПТ больничный'"
-                    :rank="'dspt_sick'">
-            </persons101-multiselect>
+            <persons-od101-select
+                name="ДСПТ больничный"
+                status="dspt_sick"
+                table-name="dspt"
+                :staff="{{ dept_od_people_formatted | json_encode }}"
+            ></persons-od101-select>
+
+{#            <persons101-multiselect#}
+{#                    :name="'ДСПТ больничный'"#}
+{#                    :rank="'dspt_sick'">#}
+{#            </persons101-multiselect>#}
         </p>
         <p class="" style="width: 20%; padding: 0 20px 0 0">
-            <persons101-multiselect
-                    :name="'ЦОУСС больничный'"
-                    :rank="'cpps_sick'">
-            </persons101-multiselect>
+            <persons-od101-select
+                    name="ЦОУСС больничный"
+                    status="cpps_sick"
+                    table-name="cpps"
+                    :staff="{{ dept_od_people_formatted | json_encode }}"
+            ></persons-od101-select>
+
+{#            <persons101-multiselect#}
+{#                    :name="'ЦОУСС больничный'"#}
+{#                    :rank="'cpps_sick'">#}
+{#            </persons101-multiselect>#}
         </p>
         {% for key, item in depts_od_ppl_inactive %}
             <p class="" style="width: 20%; padding: 0 20px 0 0">

@@ -238,7 +238,14 @@ class Ticket101WordExport
                 $res[$title][$inactive_item] = $result->filter(function ($q) use ($combineName){
                     return $q->rank === $combineName;
                 })->map(function ($qq) {
-                    return $qq->staff->name ?? null;
+                    if ($qq->staff) {
+                        $result = $qq->staff->name ?? '';
+                        $result .= $qq->date_from ? " с " . Carbon::parse($qq->date_from)->format('d-m-Y') : '';
+                        $result .= $qq->date_to ? " по " . Carbon::parse($qq->date_to)->format('d-m-Y') : '';
+                        $result .= $qq->comment ? " {$qq->comment}" : '';
+                        return $result;
+                    }
+                    return null;
                 })->toArray();
             }
         }
