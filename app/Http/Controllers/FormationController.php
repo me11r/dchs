@@ -893,11 +893,29 @@ class FormationController extends AuthorizedController
             }
         }
 
+        /*больничные цоусс и дспт*/
+        $dept_od_people_formatted = [];
         // лс ОД
         if(isset($people[19])){
             foreach ($people[19]->formation_person_items_od as $item) {
                 if($item->status == 'active'){
-                    $dept_od_people[$item->rank][] = $item->staff();
+                    $person = $item->staff();
+                    $dept_od_people[$item->rank][] = $person;
+
+                    if (in_array($item->table_name, ['dspt', 'cpps'])) {
+                        $dept_od_people_formatted[] = [
+                            'id' => $item->id,
+                            'staff_id' => $item->staff_id,
+                            'table_name' => $item->table_name,
+                            'person_name' => $person['name'],
+                            'person_guard_number_id' => $person['guard_number_id'],
+                            'formation_report_id' => $item->report_id,
+                            'status' => $item->rank,
+                            'date_from' => $item->date_from,
+                            'date_to' => $item->date_to,
+                            'comment' => $item->comment,
+                        ];
+                    }
                 }
             }
         }
@@ -1020,6 +1038,7 @@ class FormationController extends AuthorizedController
             'inactive_dvrs_cnt' => $inactive_dvrs_cnt,
             'formationCard101Others' => $formationCard101Others,
             'inactive_dvrsMapped' => $inactive_dvrsMapped,
+            'dept_od_people_formatted' => $dept_od_people_formatted,
         ];
 
         Cache::put('report101_data', $dataToReport, 3600);
@@ -1050,6 +1069,7 @@ class FormationController extends AuthorizedController
 
         $this->set('people', $people)
             ->set('form_id', $form_id)
+            ->set('dept_od_people_formatted', $dept_od_people_formatted)
             ->set('depts_od_ppl_inactive', $depts_od_ppl_inactive)
             ->set('od_staff', (new FormationPersonsReport())->getODStaff())
             ->set('tech', $tech)

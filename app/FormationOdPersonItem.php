@@ -79,10 +79,13 @@ class FormationOdPersonItem extends Model
         if(isset($staff_tables[$this->table_name])){
             $staff_entity = $staff_tables[$this->table_name]::withTrashed()->where('id',$this->staff_id)->first();
             #$this->staff = $staff_entity;
-            return ['name' => $staff_entity->name ?? null];
+            return [
+                'name' => $staff_entity->name ?? null,
+                'guard_number_id' => $staff_entity->guard_number_id ?? null,
+            ];
         }
 
-        return ['name' => ''];
+        return ['name' => '', 'guard_number_id' => ''];
     }
 
 

@@ -1,5 +1,6 @@
 import Vue from '../../VueInstance';
 import Persons101Multiselect from '../../components/formation/Persons101Multiselect';
+import PersonsOd101Select from '../../components/formation/PersonsOdSelect';
 
 export default class View101App {
     createApp(element, people, odStaff, formId) {
@@ -12,7 +13,8 @@ export default class View101App {
                 formId: formId
             },
             components: {
-                Persons101Multiselect
+                Persons101Multiselect,
+                PersonsOd101Select,
             },
             methods: {
                 setSelectedStaff() {

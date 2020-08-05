@@ -62,13 +62,12 @@ class FormationStaffController extends Controller
             FormationOdPersonItem::create([
                 'staff_id' => $staff['id'],
                 'report_id' => $formationPersonsReport->id,
-                'comment' => null,
-                'date_from' => null,
-                'date_to' => null,
+                'comment' => $staff['comment'] ?? null,
+                'date_from' => $staff['date_from'] ?? null,
+                'date_to' => $staff['date_to'] ?? null,
                 'rank' => $type,
                 'table_name' => $tableName,
                 'gsm_count' => $staff['gsm_count'] ?? null,
-//                'status' => 'inactive',
                 'status' => $request->inactiveType ? $request->inactiveType : 'active',
             ]);
         }
