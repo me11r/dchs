@@ -223,12 +223,19 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
             Route::get('/', 'RoadtripController@getIndex');
             Route::post('/accept/{id}', 'RoadtripController@postAccept')->where('id', '[0-9]+');
             Route::post('/force-out/{id}', 'RoadtripController@postForceOut')->where('id', '[0-9]+');
+
             Route::get('/view/{plan_id}', 'RoadtripController@getView')
                 ->name('roadtrip.plan.view')
-                ->where('plan_id', '[0-9]+');
+                ->where('plan_id', '[0-9]+')
+                ->middleware(['right:CAN_VIEW_TRIP_PLAN'])
+            ;
+
             Route::get('/view-other/{plan_id}', 'RoadtripController@getViewOther')
                 ->name('roadtrip.plan.view.other')
-                ->where('plan_id', '[0-9]+');
+                ->where('plan_id', '[0-9]+')
+                ->middleware(['right:CAN_VIEW_TRIP_PLAN'])
+            ;
+
             Route::get('/print/{id}', 'RoadtripController@getPrint')
                 ->where('id', '[0-9]+')
                 ->name('roadtrip.plan.print');
@@ -258,7 +265,9 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
 
             Route::get('/additional/{id}', 'RoadtripController@getAdditional')
                 ->name('roadtrip.additional')
-                ->where('id', '[0-9]+');
+                ->where('id', '[0-9]+')
+                ->middleware(['right:CAN_VIEW_TRIP_PLAN'])
+            ;
 
         });
 

@@ -387,6 +387,7 @@
 
 <script>
 import axios from 'axios';
+import rights from '../../scripts/rights';
 
 export default {
     props: {
@@ -463,13 +464,32 @@ export default {
     },
 
     mounted() {
-        console.dir(this.ticket)
         let token = document.head.querySelector('meta[name="csrf-token"]');
         axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content || '';
     },
+    computed:{
+        hasEditRight() {
+            if (window.user_id === 1) {
+                return true;
+            }
+            return rights.hasAnyRight(['CAN_CHANGE_TRIP_PLAN']);
+        }
+    },
     methods: {
+        openNoEditRightsToast() {
+            this.$toast.open({
+                duration: 5000,
+                message: `Нет прав на редактирование`,
+                position: 'is-bottom',
+                type: 'is-danger'
+            });
+        },
         saveInfo() {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             axios.post('/api/101card/save-info-from-fd', {
                 card: this.card
             }).then((resp) => {

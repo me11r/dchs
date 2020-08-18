@@ -58,6 +58,8 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],
 
             ['right_group_id' => 4, 'title' => 'Получение путевых листов ПЧ', 'name' => 'CAN_SEE_TRIP_PLAN'],
+            ['right_group_id' => 4, 'title' => 'Путевые листы ПЧ: просмотр', 'name' => 'CAN_VIEW_TRIP_PLAN'],
+            ['right_group_id' => 4, 'title' => 'Путевые листы ПЧ: редактирование', 'name' => 'CAN_CHANGE_TRIP_PLAN'],
             ['right_group_id' => 4, 'title' => 'Может смотреть суточный отчет', 'name' => 'CAN_SEE_DAILY_REPORT'],
 
             ['title' => 'СП и АСР', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_101'],

@@ -84,6 +84,7 @@
 <script>
 import {globalBus} from '../../scripts/global-bus';
 import axios from 'axios';
+import rights from '../../scripts/rights';
 export default {
     data () {
         return {
@@ -107,12 +108,31 @@ export default {
             trunkTypes: window.ticket101fd.trunk_types
         };
     },
+    computed: {
+        hasEditRight() {
+            if (window.user_id === 1) {
+                return true;
+            }
+            return rights.hasAnyRight(['CAN_CHANGE_TRIP_PLAN']);
+        }
+    },
     methods: {
+        openNoEditRightsToast() {
+            this.$toast.open({
+                duration: 5000,
+                message: `Нет прав на редактирование`,
+                position: 'is-bottom',
+                type: 'is-danger'
+            });
+        },
         setTab(tabIndex) {
             this.currentTabIndex = tabIndex;
         },
         retreat(result) {
-
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             //признак того, что мы отзываем отделение из вкладки "Высылка"
             //время прибытия обнуляется
             let props = {
@@ -140,6 +160,10 @@ export default {
         },
 
         dispatchDept() {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             let self = this;
             axios.post('/roadtrip/dispatch', {
                 dept_id: self.dep_.id
@@ -148,6 +172,10 @@ export default {
             });
         },
         markDeptArrived(dept) {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             axios.post('/roadtrip/arrived', {
                 dept_id: dept.id
             }).then((resp) => {
@@ -155,6 +183,10 @@ export default {
             });
         },
         markDeptReturned(dept) {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             axios.post('/roadtrip/return', {
                 dept_id: dept.id
             }).then((resp) => {
