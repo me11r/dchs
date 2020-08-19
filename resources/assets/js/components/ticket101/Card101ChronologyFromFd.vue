@@ -451,6 +451,7 @@ import moment from 'moment';
 import Timepicker from '../../components/Timepicker';
 import _ from 'lodash';
 import {globalBus} from '../../scripts/global-bus'
+import rights from '../../scripts/rights';
 export default {
     name: 'Card101Chronology',
     components: {
@@ -511,7 +512,23 @@ export default {
             tableEdits: []
         };
     },
+    computed: {
+        hasEditRight() {
+            if (window.user_id === 1) {
+                return true;
+            }
+            return rights.hasAnyRight(['CAN_CHANGE_TRIP_PLAN']);
+        }
+    },
     methods: {
+        openNoEditRightsToast() {
+            this.$toast.open({
+                duration: 5000,
+                message: `Нет прав на редактирование`,
+                position: 'is-bottom',
+                type: 'is-danger'
+            });
+        },
         parsedTime(timestamp) {
             if (moment(timestamp).isValid()) {
                 return moment(timestamp).format('HH:mm');
@@ -520,13 +537,20 @@ export default {
             }
         },
         changeStaffCount(dept) {
-            // document.getElementById('total_staff_count').value = '';
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             axios.post('/api/101card/update-fire-department-result', {
                 id: dept.id,
                 staff_count: dept.staff_count,
             });
         },
         changeDistanceCount(dept) {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             axios.post('/api/101card/update-fire-department-result-distance', {
                 id: dept.id,
                 distance: dept.distance,
@@ -537,7 +561,6 @@ export default {
             if (_.find(this.tableEdits, {id: id})) {
                 _.find(this.tableEdits, {id: id}).edit = !_.find(this.tableEdits, {id: id}).edit;
             }
-            console.dir(this.tableEdits);
         },
         canEdit(id) {
             if (_.find(this.tableEdits, {id: id})) {
@@ -626,6 +649,10 @@ export default {
             });
         },
         postItem(record) {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             let card_data = window.ticket101fd;
 
             axios.post('/api/101card/save-chronology-from-fd', {
@@ -642,6 +669,10 @@ export default {
             });
         },
         updateItem(record) {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             let card_data = window.ticket101fd;
 
             axios.post('/api/101card/save-chronology-from-fd', {
@@ -697,6 +728,10 @@ export default {
             }
         },
         removeItemFromTable(id) {
+            if (!this.hasEditRight) {
+                this.openNoEditRightsToast();
+                return;
+            }
             if (confirm('Вы действительно хотите удалить эту запись?')) {
                 axios.post('/api/101card/delete-chronology-from-fd', {id: id});
                 this.tableRecords = this.tableRecords.filter(function (item) {

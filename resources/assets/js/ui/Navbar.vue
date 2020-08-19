@@ -340,7 +340,7 @@
                     <a class="navbar-link is-small"><i class="fas fa-fw fa-road"></i>&nbsp;Путевые листы</a>
                     <div class="navbar-dropdown">
                         <a
-                            v-if="hasRight('CAN_SEE_TRIP_PLAN')"
+                            v-if="hasAnyRight('CAN_SEE_TRIP_PLAN', 'CAN_VIEW_TRIP_PLAN', 'CAN_CHANGE_TRIP_PLAN')"
                             :href="getHref('/roadtrip/')"
                             class="dropdown-item">
                             <i class="fas fa-truck fa-fw"></i>&nbsp;

@@ -59,7 +59,6 @@
                 <tbody>
                 {% for record in records %}
                     <tr>
-                        {#<td>{{ record.id }}</td>#}
                         <td>{{ per_page * page - per_page + loop.index}}</td> {#нумерация 1,2,3 и т.д., т.к. мин. id = 2671 #}
                         <td class="max-width: 20%">{{ record.fire_level.name|default('') }}</td>
                         <td class="max-width: 20%">{{ record.city_area.name|default('') }}</td>
@@ -70,21 +69,27 @@
                         <td class="max-width: 20%">{{ record.year_of_development|default('') }}</td>
                         <td class="max-width: 20%">{{ record.sort_order|default('') }}</td>
                         <td>
-                            <form method="POST"
-                                  onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
-                                  action="{{ url(route('dictionaries.row.delete_by_name', {'name': type, 'row_id': record.id })) }}">
-                                <input name="_method" type="hidden" value="DELETE">
-                                {{ csrf_field() }}
 
-                                <a href="{{ url(edit_path ~ record.id ~ '/' ~ 'edit') }}" class="button is-small is-primary is-outlined">
-                                    <i class="fas fa-edit"></i>&nbsp;Изменить
-                                </a>
+                                <form method="POST"
+                                      onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
+                                      action="{{ url(route('dictionaries.row.delete_by_name', {'name': type, 'row_id': record.id })) }}">
+                                    <input name="_method" type="hidden" value="DELETE">
+                                    {{ csrf_field() }}
 
-                                <button type="submit"
-                                        class="button is-small is-danger is-outlined">
-                                    <i class="fas fa-trash"></i>&nbsp;Удалить
-                                </button>
-                            </form>
+                                    {% if user.hasRight('CAN_VIEW_DICT_OPER_PLAN')%}
+                                        <a href="{{ url(edit_path ~ record.id ~ '/' ~ 'edit') }}" class="button is-small is-primary is-outlined">
+                                            <i class="fas fa-edit"></i>&nbsp;Изменить
+                                        </a>
+                                    {% endif %}
+
+                                    {% if user.hasRight('CAN_DELETE_DICT_OPER_PLAN') %}
+                                        <button type="submit"
+                                                class="button is-small is-danger is-outlined">
+                                            <i class="fas fa-trash"></i>&nbsp;Удалить
+                                        </button>
+                                    {% endif %}
+
+                                </form>
                         </td>
                     </tr>
                 {% else %}

@@ -58,6 +58,8 @@ class RightsSeeder extends Seeder
             ['right_group_id' => 3, 'title' => 'Редактирование справочников', 'name' => 'CAN_EDIT_DICTIONARIES'],
 
             ['right_group_id' => 4, 'title' => 'Получение путевых листов ПЧ', 'name' => 'CAN_SEE_TRIP_PLAN'],
+            ['right_group_id' => 4, 'title' => 'Путевые листы ПЧ: просмотр', 'name' => 'CAN_VIEW_TRIP_PLAN'],
+            ['right_group_id' => 4, 'title' => 'Путевые листы ПЧ: редактирование', 'name' => 'CAN_CHANGE_TRIP_PLAN'],
             ['right_group_id' => 4, 'title' => 'Может смотреть суточный отчет', 'name' => 'CAN_SEE_DAILY_REPORT'],
 
             ['title' => 'СП и АСР', 'right_group_id' => 5, 'name' => 'CAN_ACCESS_FORMATION_REPORT_101'],
@@ -243,16 +245,31 @@ class RightsSeeder extends Seeder
         $rights[] = ['right_group_id' => 12, 'title' => 'Импорт: доступ в раздел', 'name' => 'CAN_VIEW_IMPORT'];
 
 
-
-
         foreach (\App\Dictionary::all() as $dict) {
             $rights[] = ['right_group_id' => 8, 'title' => $dict->title, 'name' => mb_strtoupper(str_start($dict->table, 'dict_'))];
         }
 
+        $this->addSpecialDictionaryRights($rights);
+
         foreach ($rights as $item) {
             \App\Right::updateOrCreate(['title' => $item['title']], $item);
         }
+    }
 
-
+    protected function addSpecialDictionaryRights(&$rights)
+    {
+        $mapping = [
+            'Опер планы' => 'DICT_OPER_PLAN',
+            'Опер карточки' => 'DICT_OPER_CARD'
+        ];
+        $dictionaries = \App\Dictionary::whereIn('title', ['Опер планы', 'Опер карточки'])->get();
+        foreach ($dictionaries as $dictionary) {
+            $tablePostfix = $mapping[$dictionary->title] ?? null;
+            if ($tablePostfix) {
+                $rights[] = ['right_group_id' => 8, 'title' => "{$dictionary->title}: просмотр", 'name' => 'CAN_VIEW_'.$tablePostfix];
+                $rights[] = ['right_group_id' => 8, 'title' => "{$dictionary->title}: редактирование", 'name' => 'CAN_EDIT_'.$tablePostfix];
+                $rights[] = ['right_group_id' => 8, 'title' => "{$dictionary->title}: удаление", 'name' => 'CAN_DELETE_'.$tablePostfix];
+            }
+        }
     }
 }

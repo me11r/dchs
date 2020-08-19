@@ -41,7 +41,7 @@
 
 <script>
 import axios from 'axios';
-
+import rights from '../../scripts/rights';
 export default {
     name: 'RoadtripDeptBtn',
     props: {
@@ -68,36 +68,62 @@ export default {
         };
     },
     methods: {
+        openNoEditRightsToast() {
+            this.$toast.open({
+                duration: 5000,
+                message: `Нет прав на редактирование`,
+                position: 'is-bottom',
+                type: 'is-danger'
+            });
+        },
         dispatchDept() {
             let self = this;
-            axios.post('/roadtrip/dispatch', {
-                dept_id: self.dep_.id
-            }).then((resp) => {
-                self.is_dispatched_ = 1;
-            });
+            if (this.hasEditRight) {
+                axios.post('/roadtrip/dispatch', {
+                    dept_id: self.dep_.id
+                }).then((resp) => {
+                    self.is_dispatched_ = 1;
+                });
+                return;
+            }
+            this.openNoEditRightsToast();
         },
         markDeptArrived() {
             let self = this;
-            axios.post('/roadtrip/arrived', {
-                dept_id: self.dep_.id
-            }).then((resp) => {
-                self.is_arrived_ = true;
-            });
+            if (this.hasEditRight) {
+                axios.post('/roadtrip/arrived', {
+                    dept_id: self.dep_.id
+                }).then((resp) => {
+                    self.is_arrived_ = true;
+                });
+                return;
+            }
+            this.openNoEditRightsToast();
         },
         markDeptReturn() {
             let self = this;
-            axios.post('/roadtrip/return', {
-                dept_id: self.dep_.id
-            }).then((resp) => {
-                self.is_returned_ = true;
-                self.dep.ret_time = 1;
-            });
+            if (this.hasEditRight) {
+                axios.post('/roadtrip/return', {
+                    dept_id: self.dep_.id
+                }).then((resp) => {
+                    self.is_returned_ = true;
+                    self.dep.ret_time = 1;
+                });
+                return;
+            }
+            this.openNoEditRightsToast();
         }
     },
     computed: {
         isReal() {
             return (this.dep_.ticket !== null && this.dep_.ticket !== undefined) && (this.dep_.ticket.drill_type_id === null);
         },
+        hasEditRight() {
+            if (window.user_id === 1) {
+                return true;
+            }
+            return rights.hasAnyRight(['CAN_CHANGE_TRIP_PLAN']);
+        }
     },
     created() {
         window.addEventListener('storage', (event) => {
