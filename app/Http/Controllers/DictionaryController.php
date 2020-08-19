@@ -10,6 +10,7 @@ use App\DictionaryCategory;
 use App\Direction;
 use App\DistrictManager;
 use App\EventInfoArrived;
+use App\Exceptions\AccessDeniedException;
 use App\FireDepartment;
 use App\IncidentTypeCategory;
 use App\Models\DailyReportPerson;
@@ -446,6 +447,9 @@ class DictionaryController extends AuthorizedController
 
         }
         elseif($name == 'operational-plans'){
+            if (!Auth::user()->hasRight('CAN_EDIT_DICT_OPER_PLAN')) {
+                throw new AccessDeniedException();
+            }
             $record  = SpecialPlan::find($request->id);
 
             if($request->operational_plan !== null){
@@ -489,6 +493,9 @@ class DictionaryController extends AuthorizedController
 
         }
         elseif($name == 'operational-cards'){
+            if (!Auth::user()->hasRight('CAN_EDIT_DICT_OPER_CARD')) {
+                throw new AccessDeniedException();
+            }
             $record  = OperationalCard::firstOrNew(['id' => $request->id]);
 
             if($request->file){
