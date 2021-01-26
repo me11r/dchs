@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Polygon;
+use App\Soc;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class PolygonController extends Controller
+class SocController extends Controller
 {
 
     public function index()
     {
-        return Polygon::whereNotNull('title')->where('title', '<>', '')
-            ->whereNotNull('fill_color')->where('fill_color', '<>', '')
-            ->whereNotNull('line_color')->where('line_color', '<>', '')
-            ->get();
+        return Soc::all();
     }
 
     /**
@@ -68,7 +65,7 @@ class PolygonController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
-        (Polygon::find($id))->fill($request->only(['points', 'title', 'line_color', 'fill_color', 'opacity']))->save();
+        (Soc::find($id))->fill($request->only(['lat', 'long', 'name']))->save();
         return response()->json(['success' => true]);
     }
 

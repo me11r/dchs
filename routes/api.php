@@ -19,6 +19,9 @@ Route::group(
 
         Route::apiResource('hydrant', 'HydrantController');
         Route::apiResource('polygon', 'PolygonController');
+        Route::apiResource('school', 'SchoolController');
+        Route::apiResource('med', 'MedController');
+        Route::apiResource('soc', 'SocController');
 
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
         Route::post('101card/save-chronology', 'CardController@createChronologyRecord101card');

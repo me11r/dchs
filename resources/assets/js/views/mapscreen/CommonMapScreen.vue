@@ -28,6 +28,24 @@
                             v-model="showFds">Отображать ПЧ
                         </b-checkbox>
                     </div>
+                    
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showMeds">Отображать медицинские учреждения
+                        </b-checkbox>
+                    </div>
+                    
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showSchools">Отображать школьные учреждения
+                        </b-checkbox>
+                    </div>
+                    
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showSocs">Отображать социальные учреждения
+                        </b-checkbox>
+                    </div>
                 </div>
             </div>
             <div
@@ -158,6 +176,10 @@ export default {
             showDepartments: true,
             showDistricts: true,
             showFds: false,
+            showMeds: false,
+            showSchools: false,
+            showSocs: false,
+
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
             canEditAllHydrants: window.canEditAllHydrants,
@@ -364,6 +386,18 @@ export default {
             if (this.showDistricts) {
                 this.initCityAreas();
             }
+            
+            if (this.showMeds) {
+                this.initMeds();
+            }
+            
+            if (this.showSchools) {
+                this.initSchools();
+            }
+            
+            if (this.showSocs) {
+                this.initSocs();
+            }
         },
 
         initFireDepartments() {
@@ -476,6 +510,19 @@ export default {
             this.map.setZoom(this.zoom);
             this.map.panTo([lat, long]);
         },
+        setSpecialPointOnTheMap(lat, long, name) {
+            const geoObject = new this.ymaps.GeoObject({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [lat, long]
+                },
+                properties: {
+                    balloonContentBody: name
+                }
+            });
+            this.map.geoObjects.add(geoObject);
+        },
+
         detectLocation(geoObject) {
             this.location = geoObject.properties
                 .get('name')
@@ -539,6 +586,55 @@ export default {
                     });
                 });
         },
+        initMeds() {
+            /* 
+                1.Больницы буфер             
+                4.Поликлиники буфер
+                7.Учреждения здравоохранения
+                9.Больницы
+            */
+            axios
+                .get('/api/med')
+                .then(response => {
+                    response.data.forEach(item => {
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                    });
+                    this.map.setZoom(this.zoom - 2);
+                });
+        },
+        initSchools() {
+            /* 
+                2.Дошкольные учреждения
+                8.Школа гимназия
+                13.Детские сады
+                14.Детские сады буфер
+                20.Школы_ГГП
+                21.Школы_ГГП Буфер
+                22.Школы обновленные
+                34.Общеобразовательные школы
+            */
+            axios
+                .get('/api/school')
+                .then(response => {
+                    response.data.forEach(item => {
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                    });
+                    this.map.setZoom(this.zoom - 2);
+                });
+        },
+        initSocs() {
+            /* 
+                5.Объекты обслуживания населения
+            */
+            axios
+                .get('/api/soc')
+                .then(response => {
+                    response.data.forEach(item => {
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                    });
+                    this.map.setZoom(this.zoom - 2);
+                });
+        },
         zoomToObject(hydrant, lat, long) {
             window.scrollTo(0, document.body.scrollHeight);
             this.map.setZoom(18);
@@ -596,6 +692,15 @@ export default {
             this.setMapData();
         },
         'showFds'() {
+            this.setMapData();
+        },
+        'showMeds'() {
+            this.setMapData();
+        },
+        'showSchools'() {
+            this.setMapData();
+        },
+        'showSocs'() {
             this.setMapData();
         },
         'selectedHydrant'() {
