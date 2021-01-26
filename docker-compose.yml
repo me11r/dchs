@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app-nginx:
     image: nginx:alpine
-    container_name: "app-nginx"
+    # container_name: "app-nginx"
     ports:
       - 3080:80
     volumes:
@@ -18,7 +18,7 @@ services:
 
   app-fpm:
     image: ogorbunov/php:7.3-fpm-alpine
-    container_name: "app-fpm"
+    # container_name: "app-fpm"
     working_dir: /current
     volumes:
       - ./:/current
@@ -48,7 +48,7 @@ services:
 
   app-db:
     image: mysql:8
-    container_name: "app-db"
+    # container_name: "app-db"
     ports:
       - 33306:3306
     volumes:
@@ -69,7 +69,7 @@ services:
       - "--log_bin_trust_function_creators=1"
 
   app-queue:
-    container_name: "app-queue"
+    # container_name: "app-queue"
     image: ogorbunov/php:7.3-cli-alpine
     volumes:
       - ./:/current
@@ -93,13 +93,13 @@ services:
       - app-composer-vendors
 
   app-redis:
-    container_name: "app-redis"
+    # container_name: "app-redis"
     image: redis:latest
     networks:
       - app-network
 
   app-broadcast:
-    container_name: "app-broadcast"
+    # container_name: "app-broadcast"
     image: node:10
     networks:
       - app-network
@@ -118,7 +118,7 @@ services:
 
   # service containers
   app-composer-vendors:
-    container_name: "app-composer-vendors"
+    # container_name: "app-composer-vendors"
     image: composer:latest
     volumes:
       - ./:/app
