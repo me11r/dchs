@@ -34,7 +34,7 @@
                         <td class="has-text-right">
                             <form method="POST"
                                   onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
-                                  action="{{ url(route('civil-protection-services.delete', {'id': record.id })) }}">
+                                  action="{{ url(custom_route('civil-protection-services.delete', {'id': record.id })) }}">
                                 <input name="_method" type="hidden" value="DELETE">
                                 {{ csrf_field() }}
 

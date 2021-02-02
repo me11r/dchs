@@ -7,7 +7,7 @@
             </div>
         </div>
 
-        <form action="{{ date is defined ? route('morainic-lakes-summaries.update', {'id':date}) : route('morainic-lakes-summaries.store')}}" method="post">
+        <form action="{{ date is defined ? custom_route('morainic-lakes-summaries.update', {'id':date}) : custom_route('morainic-lakes-summaries.store')}}" method="post">
             {% if date is defined %}
                 {{  method_field('PUT') }}
             {% endif %}

@@ -5,7 +5,7 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
-                <form action="{{ record.id is defined ? route('reports-call-infos.update', {'id':record.id}) : route('reports-call-infos.store')}}" method="post">
+                <form action="{{ record.id is defined ? custom_route('reports-call-infos.update', {'id':record.id}) : custom_route('reports-call-infos.store')}}" method="post">
                     {% if record.id is defined %}
                         {{  method_field('PUT') }}
                     {% endif %}

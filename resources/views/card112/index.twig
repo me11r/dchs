@@ -8,7 +8,7 @@
         </h4>
         </div>
         <div class="level-right">
-            <a href="{{ route('card112.create') }}" class="button is-basic is-main"
+            <a href="{{ custom_route('card112.create') }}" class="button is-basic is-main"
                style="margin: 2px 10px 2px">
                 <i class="fas fa-plus"></i>&nbsp;Новая карточка
             </a>
@@ -91,18 +91,18 @@
             {% for item in items %}
                 <tr>
                     <td class="has-text-right">{{ item.id }}</td>
-                    <td><a href="{{ route('card112.edit', item.id) }}">{{ item.location }}</a></td>
+                    <td><a href="{{ custom_route('card112.edit', item.id) }}">{{ item.location }}</a></td>
                     <td>{{ item.cityArea.name|default('-') }}</td>
                     <td class="has-text-right">{{ item.custom_created_at|date('H:i d.m.Y') }}</td>
                     <td>{{ item.additionalIncident.name|default('') }}</td>
                     <td class="has-text-right">
                         <form onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
                               method="POST"
-                              action="{{ route('card112.destroy', item.id) }}">
+                              action="{{ custom_route('card112.destroy', item.id) }}">
                             {{ csrf_field() }}
                             <input type="hidden" name="_method" value="DELETE">
 
-                            <a href="{{ route('card112.edit', item.id) }}"
+                            <a href="{{ custom_route('card112.edit', item.id) }}"
                                class="button is-small is-basic">
                                 <i class="fas fa-pencil-alt"></i>&nbsp;
                                 Редактировать

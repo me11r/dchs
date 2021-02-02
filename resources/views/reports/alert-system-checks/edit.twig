@@ -6,7 +6,7 @@
     <h4 class="title" style="padding: 3px 15px">{{ t('/reports/alert-system-checks.title') }}: {{ check.date_human_format }}</h4>
 
         {% if user.hasRight('ALERT_SYSTEM_DOWNLOAD') %}
-            <form action="{{ route('reports.alert-system-checks.download', check.id) }}">
+            <form action="{{ custom_route('reports.alert-system-checks.download', check.id) }}">
                 <p class="title">Скачать отчет</p>
                 <v-datepicker-search
                         class="column is-2"
@@ -24,7 +24,7 @@
             </form>
         {% endif %}
 
-    <form action="{{ route('reports.alert-system-checks.update', check.id) }}" method="POST">
+    <form action="{{ custom_route('reports.alert-system-checks.update', check.id) }}" method="POST">
         <input type="hidden" name="_method" value="PATCH">
         {{ csrf_field() }}
         <v-datepicker-search

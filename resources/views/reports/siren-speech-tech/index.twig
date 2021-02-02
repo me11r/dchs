@@ -6,7 +6,7 @@
             <h4 style="" class="title">{{ t('/reports/siren-speeches.title') }}</h4>{#Данные по СРУ#}
             </div>
             <div class="level-right has-text-right">
-                <a href="{{ route('reports-siren-speeches.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;{{ t('create_record') }}</a>{#Создать запись#}
+                <a href="{{ custom_route('reports-siren-speeches.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;{{ t('create_record') }}</a>{#Создать запись#}
             </div>
             </div>
         <div class="panel">
@@ -33,10 +33,10 @@
                             <td>{{ item.created_at|date('d.m.Y') }}</td>
                             <td>
                                 <div class="field is-grouped">
-                                <a class="button is-basic is-small" href="{{ route('reports-siren-speeches.edit', {'id':item.id}) }}">
+                                <a class="button is-basic is-small" href="{{ custom_route('reports-siren-speeches.edit', {'id':item.id}) }}">
                                     <i class="fas fa-edit"></i>&nbsp;{{ t('edit') }}</a>{#Редактировать#}
 
-                                <form method="post" action="{{ route('reports-siren-speeches.delete', {'id':item.id}) }}">
+                                <form method="post" action="{{ custom_route('reports-siren-speeches.delete', {'id':item.id}) }}">
                                     {{ csrf_field() }}
                                     {{  method_field('DELETE') }}
                                     <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">

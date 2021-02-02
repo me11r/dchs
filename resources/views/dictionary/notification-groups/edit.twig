@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">Группы личного состава</h4>
-                <form action="{% if item.id is null %}{{ route('notification-groups.store') }}{% else %}{{ route('notification-groups.update', item.id) }}{% endif %}" method="post">
+                <form action="{% if item.id is null %}{{ custom_route('notification-groups.store') }}{% else %}{{ custom_route('notification-groups.update', item.id) }}{% endif %}" method="post">
                     <input
                             type="hidden"
                             name="_method"
@@ -30,7 +30,7 @@
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
-                        <a href="{{ route('notification-groups.index') }}" class="button is-light">Назад</a>
+                        <a href="{{ custom_route('notification-groups.index') }}" class="button is-light">Назад</a>
                     </div>
                 </form>
             </div>

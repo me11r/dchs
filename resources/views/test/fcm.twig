@@ -1,7 +1,7 @@
 {% extends "layout/html" %}
 {% block content %}
     <section class="container">
-        <form method="get" action="{{ route('test.fcm') }}" class="form">
+        <form method="get" action="{{ custom_route('test.fcm') }}" class="form">
             {{ csrf_field() }}
 
             <label for="title">Title</label>

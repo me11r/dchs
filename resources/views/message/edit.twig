@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">Сообщение</h4>
-                <form action="{{ route('messages.update', model.id) }}?chatId={{ chat.id }}" method="post">
+                <form action="{{ custom_route('messages.update', model.id) }}?chatId={{ chat.id }}" method="post">
                     <input type="hidden" name="chat_id" value="{{ chat.id }}">
                     <input type="hidden"
                            name="_method"
@@ -38,7 +38,7 @@
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
-                        <a href="{{ route('messages.index', {'chatId': chat.id}) }}"
+                        <a href="{{ custom_route('messages.index', {'chatId': chat.id}) }}"
                            class="button is-light">Отменить</a>
                     </div>
                 </form>

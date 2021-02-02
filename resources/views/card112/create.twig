@@ -23,7 +23,7 @@
             diseaseTypes: {{ disease_types | json_encode() | raw }},
             branchFallReasons: {{ branchFallReasons | json_encode() | raw }},
             canChangeCreatedAt: {{ canChangeCreatedAt | json_encode() | raw }},
-            formRoute: '{{ route('card112.store') }}'
+            formRoute: '{{ custom_route('card112.store') }}'
         };
     </script>
     <div id="card112-form-block"></div>

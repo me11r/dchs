@@ -187,6 +187,7 @@ return [
             */
             'mix',
             't', //custom translator
+            'custom_route'
         ],
 
         /*

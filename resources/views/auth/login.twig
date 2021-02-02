@@ -19,7 +19,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    <form role="form" method="POST" action="{{ route('login') }}">
+                    <form role="form" method="POST" action="{{ custom_route('login') }}">
                         {{ csrf_field() }}
                         <div class="field">
                             <label for="email" class="label">{{ trans('auth.email') }}</label>

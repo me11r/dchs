@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <form action="{{ route('formation-record.total-update', item.id) }}" method="POST">
+    <form action="{{ custom_route('formation-record.total-update', item.id) }}" method="POST">
         {{ csrf_field() }}
         <div class="big-table-container">
             <table class="formation-record-table">
@@ -228,7 +228,7 @@
             <div class="level-left">&nbsp;</div>
         <div class="level-right">
             <div class="field is-grouped">
-            <a href="{{ route('formation-record.index') }}"
+            <a href="{{ custom_route('formation-record.index') }}"
                style="margin-right: 10px"
                class="button is-primary">Назад</a>
             <button

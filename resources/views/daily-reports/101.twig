@@ -24,10 +24,10 @@
                         <td>{{ item.date_from }} &mdash; {{ item.date_to }}</td>
                         <td>
                             <div class="field is-grouped">
-                                <a class="button is-basic is-small" href="{{ route('reports.analytics101.edit', {'id':item.id}) }}">
+                                <a class="button is-basic is-small" href="{{ custom_route('reports.analytics101.edit', {'id':item.id}) }}">
                                     <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
 
-                                <form method="post" action="{{ route('reports.analytics101.delete', {'id':item.id}) }}">
+                                <form method="post" action="{{ custom_route('reports.analytics101.delete', {'id':item.id}) }}">
                                     {{ csrf_field() }}
                                     {{  method_field('DELETE') }}
                                     <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">
@@ -35,7 +35,7 @@
                                 </form>
                                 <a class="button is-info is-small"
                                    target="_blank"
-                                   href="{{ route('reports.analytics101.word', {'id':item.id}) }}">
+                                   href="{{ custom_route('reports.analytics101.word', {'id':item.id}) }}">
                                     <i class="fas fa-file-word"></i>.doc</a>
                             </div>
                         </td>

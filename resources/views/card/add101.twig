@@ -989,7 +989,7 @@
                                             Приложить объяснения очевидца   
                                             {% if ticket.file_1 %}
                                                 <a style="color: #FFF"
-                                                   href="{{ route('storage.file.download', {'file_id':ticket.file_1.id}) }}"
+                                                   href="{{ custom_route('storage.file.download', {'file_id':ticket.file_1.id}) }}"
                                                    download>Скачать</a>
                                             {% endif %}
                                         </span>
@@ -1010,7 +1010,7 @@
                                             Приложить схему пожара   
                                             {% if ticket.file_2 %}
                                                 <a style="color: #FFF"
-                                                   href="{{ route('storage.file.download', {'file_id':ticket.file_2.id}) }}"
+                                                   href="{{ custom_route('storage.file.download', {'file_id':ticket.file_2.id}) }}"
                                                    download>Скачать</a>
                                             {% endif %}
                                         </span>
@@ -1031,7 +1031,7 @@
                                             Приложить информацию от начальника караула   
                                             {% if ticket.file_3 %}
                                                 <a style="color: #FFF"
-                                                   href="{{ route('storage.file.download', {'file_id':ticket.file_3.id}) }}"
+                                                   href="{{ custom_route('storage.file.download', {'file_id':ticket.file_3.id}) }}"
                                                    download>Скачать</a>
                                             {% endif %}
                                         </span>
@@ -1052,7 +1052,7 @@
                                             Приложить информацию от РОЧС   
                                             {% if ticket.file_4 %}
                                                 <a style="color: #FFF"
-                                                   href="{{ route('storage.file.download', {'file_id':ticket.file_4.id}) }}"
+                                                   href="{{ custom_route('storage.file.download', {'file_id':ticket.file_4.id}) }}"
                                                    download>Скачать</a>
                                             {% endif %}
                                         </span>
