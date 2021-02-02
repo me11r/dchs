@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::defaultView('pagination::default');
 
-        view()->share('protocol', $request->isSecure() ? 'https' : 'http');
+        view()->share('protocol', env('APP_SCHEME'));
 
         view()->composer('*', function ($view) {
             $view->with([
@@ -72,5 +72,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         require_once __DIR__ . '/../Services/TranslationHelper.php';
+        require_once __DIR__ . '/../Services/UrlHelper.php';
     }
 }

@@ -8,7 +8,7 @@
                 </div>
                 <div class="level-right has-text-right">
                     {% if (user.currentRole() == 'dispatcher_pch') %}
-                        <a href="{{ route('salvage.create') }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                        <a href="{{ custom_route('salvage.create') }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
                     {% endif %}
                 </div>
             </div>
@@ -42,10 +42,10 @@
                             <td>
                                 {% if user.anyRole(['admin','dispatcher_pch']) %}
                                     <div class="field is-grouped">
-                                    <a class="button is-basic is-small" href="{{ route('salvage.edit', {'id':item.id}) }}">
+                                    <a class="button is-basic is-small" href="{{ custom_route('salvage.edit', {'id':item.id}) }}">
                                         <i class="fas fa-edit"></i>&nbsp;Редактировать</a>
 
-                                    <form method="post" action="{{ route('salvage.destroy', {'id':item.id}) }}">
+                                    <form method="post" action="{{ custom_route('salvage.destroy', {'id':item.id}) }}">
                                         {{ csrf_field() }}
                                         {{  method_field('DELETE') }}
                                         <button onclick="return confirm('Удалить запись?');" class="button is-danger is-small">

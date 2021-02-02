@@ -6,7 +6,7 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{{ t('create_record') }}</h4>{#Добавить#}
-                <form action="{{ route('quakes.store') }}" method="post">
+                <form action="{{ custom_route('quakes.store') }}" method="post">
                     {{ csrf_field() }}
                     <div class="field">
                         <label for="description">{{ t('description') }}</label>{#Описание#}
@@ -47,7 +47,7 @@
                     <quakes-form></quakes-form>
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;{{ t('save') }}</button>{#Сохранить#}
-                        <a href="{{ route('quakes.index') }}" class="button is-light">{{ t('cancel') }}</a>{#Отменить#}
+                        <a href="{{ custom_route('quakes.index') }}" class="button is-light">{{ t('cancel') }}</a>{#Отменить#}
                     </div>
                 </form>
             </div>

@@ -45,7 +45,7 @@
                         <td>
                             <form method="POST"
                                   onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
-                                  action="{{ url(route('dictionaries.row.delete', {'dict_id': dictinfo.id, 'row_id': record.id })) }}">
+                                  action="{{ url(custom_route('dictionaries.row.delete', {'dict_id': dictinfo.id, 'row_id': record.id })) }}">
                                 <input name="_method" type="hidden" value="DELETE">
                                 {{ csrf_field() }}
 

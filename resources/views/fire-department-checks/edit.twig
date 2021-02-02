@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">Проверка пожарных частей {{ date|default('')|date('d-m-Y') }}</h4>
-                <form action="{{ date is defined ? route('fire-department-checks.update-by-date', {'date':date}) : route('fire-department-checks.store') }}"
+                <form action="{{ date is defined ? custom_route('fire-department-checks.update-by-date', {'date':date}) : custom_route('fire-department-checks.store') }}"
                       method="post">
                     {{ csrf_field() }}
 

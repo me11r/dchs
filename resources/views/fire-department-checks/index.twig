@@ -7,7 +7,7 @@
                     <h4 style="" class="title">Проверка пожарных частей</h4>
                 </div>
                 <div class="level-right has-text-right">
-                    <a href="{{ route('fire-department-checks.create') }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                    <a href="{{ custom_route('fire-department-checks.create') }}" class="button is-main is-basic"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
                 </div>
             </div>
             <table class="table is-narrow is-striped is-hoverable is-selectable">
@@ -22,7 +22,7 @@
                         <td>{{ item.date }}</td>
                         <td>
                             <div class="field is-grouped">
-                            <a class="button is-basic is-small" href="{{ route('fire-department-checks.edit-by-date', {'date':item.date}) }}">
+                            <a class="button is-basic is-small" href="{{ custom_route('fire-department-checks.edit-by-date', {'date':item.date}) }}">
                                 <i class="fas fa-edit"></i>&nbsp;Смотреть</a>
                             </div>
                         </td>

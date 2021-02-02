@@ -8,7 +8,7 @@
         </h4>
         </div>
         <div class="level-right">
-            <a href="{{ route('emergency-situation.create') }}" class="button is-main is-basic"
+            <a href="{{ custom_route('emergency-situation.create') }}" class="button is-main is-basic"
                >
                 <i class="fas fa-plus"></i>&nbsp;{{ t('add') }}{#Добавить#}
             </a>
@@ -47,19 +47,19 @@
                            class="button is-small is-success">
                             <i class="fas fa-download"></i>&nbsp;
                         </a>
-                        <a href="{{ route('emergency-situation.show', item.id) }}"
+                        <a href="{{ custom_route('emergency-situation.show', item.id) }}"
                            class="button is-small is-info">
                             <i class="fas fa-eye"></i>&nbsp;
                             {{ t('view') }}{#Просмотр#}
                         </a>
-                        <a href="{{ route('emergency-situation.edit', item.id) }}"
+                        <a href="{{ custom_route('emergency-situation.edit', item.id) }}"
                            class="button is-small is-basic">
                             <i class="fas fa-pencil-alt"></i>&nbsp;
                             {{ t('edit') }}{#Редактировать#}
                         </a>
                         <form style="display: inline;" onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
                               method="POST"
-                              action="{{ route('emergency-situation.destroy', item.id) }}">
+                              action="{{ custom_route('emergency-situation.destroy', item.id) }}">
                             {{ csrf_field() }}
                             <input type="hidden" name="_method" value="DELETE">
                             <button title="Удалить"

@@ -17,7 +17,7 @@
                 {#</select>#}
             {#</div>#}
         {#</div>#}
-        <form action="{{ record is defined ? route('morainic-lakes-summaries.update', {'id':record.id}) : route('morainic-lakes-summaries.store')}}" method="post">
+        <form action="{{ record is defined ? custom_route('morainic-lakes-summaries.update', {'id':record.id}) : custom_route('morainic-lakes-summaries.store')}}" method="post">
             {% if record is defined %}
                 {{  method_field('PUT') }}
             {% endif %}

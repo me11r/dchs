@@ -7,7 +7,7 @@
                     <h4 class="title">Группы личного состава</h4>
                 </div>
                 <div class="level-right has-text-right">
-                    <a href="{{ route('notification-groups.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
+                    <a href="{{ custom_route('notification-groups.create') }}" class="button is-basic is-main"><i class="fas fa-plus"></i>&nbsp;Создать запись</a>
                 </div>
                 <div class="level-right has-text-left">
                     <a href="/dictionaries" class="button is-info"><i class="fas fa-backspace"></i>&nbsp;Назад</a>
@@ -51,11 +51,11 @@
                         <td>
                             <form method="POST"
                                   onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
-                                  action="{{ route('notification-groups.destroy', item.id) }}">
+                                  action="{{ custom_route('notification-groups.destroy', item.id) }}">
                                 <input name="_method" type="hidden" value="DELETE">
                                 {{ csrf_field() }}
 
-                                <a href="{{ route('notification-groups.edit', item.id)  }}" class="button is-small is-primary is-outlined">
+                                <a href="{{ custom_route('notification-groups.edit', item.id)  }}" class="button is-small is-primary is-outlined">
                                     <i class="fas fa-edit"></i>&nbsp;Изменить
                                 </a>
 

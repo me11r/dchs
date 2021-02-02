@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="box" style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
-                <form method="post" action="{{ route('schedules.update', fire_department.id) }}">
+                <form method="post" action="{{ custom_route('schedules.update', fire_department.id) }}">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
 

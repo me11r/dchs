@@ -43,7 +43,7 @@
                  style="margin-top: 20px">
                 <h4 class="title">{{ title }}</h4>
                 <h5 class="title">{{ item.user.service_type.name|default('') }}</h5>
-                <form action="{{ item.id ? route('emergency-situation.update', {'id':item.id}) : route('emergency-situation.store') }}"
+                <form action="{{ item.id ? custom_route('emergency-situation.update', {'id':item.id}) : custom_route('emergency-situation.store') }}"
                       method="post">
                     {% if item.id %}
                         {{ method_field('PATCH') }}

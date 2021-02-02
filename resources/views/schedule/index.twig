@@ -20,7 +20,7 @@
                             </i>&nbsp;{{ item.title }}</td>
                         <td>{{ item.city_area.name ?? null }}</td>
                         <td>
-                            <a class="button is-basic is-small" href="{{ route('schedules.edit', item.id) }}">
+                            <a class="button is-basic is-small" href="{{ custom_route('schedules.edit', item.id) }}">
                                 <i class="fas fa-edit"></i>&nbsp;
                                 Редактировать расписание</a>
                             <a class="button is-info is-small" href="/dictionaries/edit/1/{{ item.id }}">

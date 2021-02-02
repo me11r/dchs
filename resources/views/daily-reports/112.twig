@@ -26,12 +26,12 @@
                                 <div class="field is-grouped">
                                     <a class="button is-info is-small"
                                        target="_blank"
-                                       href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'word'}) }}">
+                                       href="{{ custom_route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'word'}) }}">
                                         <i class="fas fa-file-word"></i>.DOCX</a>
 
                                     <a class="button is-danger is-small"
                                        target="_blank"
-                                       href="{{ route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'pdf'}) }}">
+                                       href="{{ custom_route('reports.analytics112.download', {'date':item.date|date('d.m.Y'), 'type':'pdf'}) }}">
                                         <i class="fas fa-file-pdf"></i>.PDF</a>
                                 </div>
                             </td>

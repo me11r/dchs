@@ -12,7 +12,7 @@
                         <a class="button is-outlined is-large print-button" id="open-print-button"><i class="fas fa-fw fa-print"></i>&nbsp;Печать</a>
                     </div>
                 </h4>
-                <form action="{% if record.id is defined %}{{ route('weather.update', {id:record.id}) }}{% else %}{{ route('weather.store') }}{% endif %}" method="post" enctype="multipart/form-data">
+                <form action="{% if record.id is defined %}{{ custom_route('weather.update', {id:record.id}) }}{% else %}{{ custom_route('weather.store') }}{% endif %}" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     {% if record.id is defined %}
                         {{ method_field('put') }}
@@ -142,7 +142,7 @@
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить
                         </button>
-                        <a href="{{ route('weather.index') }}" class="button is-light">Отменить</a>
+                        <a href="{{ custom_route('weather.index') }}" class="button is-light">Отменить</a>
                     </div>
                 </form>
             </div>
