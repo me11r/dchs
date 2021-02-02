@@ -13,12 +13,14 @@ class CreateMedsTable extends Migration
      */
     public function up()
     {
-        Schema::create('meds', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->double('lat');
-            $table->double('long');
-        });
+        if (!Schema::hasTable('meds')) {
+            Schema::create('meds', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->double('lat');
+                $table->double('long');
+            });
+        }
 
         \Illuminate\Support\Facades\Artisan::call('db:seed', [
             '--class' => MedsSeeder::class,

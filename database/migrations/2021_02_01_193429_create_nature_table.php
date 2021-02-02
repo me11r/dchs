@@ -13,17 +13,19 @@ class CreateNatureTable extends Migration
      */
     public function up()
     {
-        Schema::create('nature', function (Blueprint $table) {
-            $table->increments('id');
+        if (!Schema::hasTable('nature')) {
+            Schema::create('nature', function (Blueprint $table) {
+                $table->increments('id');
 
-            $table->json('points');
-            $table->string('title');
-            $table->string('line_color');
-            $table->string('fill_color');
-            $table->double('opacity');
+                $table->json('points');
+                $table->string('title');
+                $table->string('line_color');
+                $table->string('fill_color');
+                $table->double('opacity');
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
 
         \Illuminate\Support\Facades\Artisan::call('db:seed', [
             '--class' => NaturesSeeder::class,
