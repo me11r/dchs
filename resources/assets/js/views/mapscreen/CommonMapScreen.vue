@@ -554,7 +554,16 @@ export default {
             this.map.setZoom(this.zoom);
             this.map.panTo([lat, long]);
         },
-        setSpecialPointOnTheMap(lat, long, name) {
+        /**
+        * @var icontype :number (0, 1, 2) typeof icon for point
+        *   0 - default
+        *   1 - meds
+        *   2 - schools
+        *   3 - socs
+        *   4 - finances
+        *   5 - techs
+         */
+        setSpecialPointOnTheMap(lat, long, name, iconType = 0) {
             const geoObject = new this.ymaps.GeoObject({
                 geometry: {
                     type: 'Point',
@@ -563,6 +572,10 @@ export default {
                 properties: {
                     balloonContentBody: name
                 }
+            }, {
+                // preset: 'islands#blueAutoIcon',
+                preset: (['islands#redStretchyIcon', 'islands#redMedicalIcon', 'islands#blueEducationIcon', 'islands#yellowInfoIcon', 'islands#violetMoneyIcon', 'islands#blueAttentionIcon'])[iconType],
+                draggable: false
             });
             this.map.geoObjects.add(geoObject);
         },
@@ -641,7 +654,7 @@ export default {
                 .get('/api/meds')
                 .then(response => {
                     response.data.forEach(item => {
-                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 1);
                     });
                     this.map.setZoom(this.zoom - 3);
                 });
@@ -661,7 +674,7 @@ export default {
                 .get('/api/schools')
                 .then(response => {
                     response.data.forEach(item => {
-                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 2);
                     });
                     this.map.setZoom(this.zoom - 3);
                 });
@@ -674,7 +687,7 @@ export default {
                 .get('/api/socs')
                 .then(response => {
                     response.data.forEach(item => {
-                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 3);
                     });
                     this.map.setZoom(this.zoom - 3);
                 });
@@ -688,7 +701,7 @@ export default {
                 .get('/api/finances')
                 .then(response => {
                     response.data.forEach(item => {
-                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 4);
                     });
                     this.map.setZoom(this.zoom - 3);
                 });
