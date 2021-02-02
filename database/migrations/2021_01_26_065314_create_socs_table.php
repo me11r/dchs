@@ -13,13 +13,14 @@ class CreateSocsTable extends Migration
      */
     public function up()
     {
-        Schema::create('socs', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->double('lat');
-            $table->double('long');
-        });
-
+        if (!Schema::hasTable('socs')) {
+            Schema::create('socs', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->double('lat');
+                $table->double('long');
+            });
+        }
         \Illuminate\Support\Facades\Artisan::call('db:seed', [
             '--class' => SocsSeeder::class,
         ]);
