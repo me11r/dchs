@@ -59,13 +59,13 @@
                         </b-checkbox>
                     </div>
                     
-                    <div class="field">
+                    <div class="field" v-if="false">
                         <b-checkbox
                             v-model="showNature">Отображать природу
                         </b-checkbox>
                     </div>
                     
-                    <div class="field">
+                    <div class="field" v-if="false">
                         <b-checkbox
                             v-model="showTech">Отображать техническую часть
                         </b-checkbox>
