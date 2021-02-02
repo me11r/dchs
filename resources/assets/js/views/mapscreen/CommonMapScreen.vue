@@ -46,6 +46,30 @@
                             v-model="showSocs">Отображать социальные учреждения
                         </b-checkbox>
                     </div>
+                    
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showFinances">Отображать финансовые учреждения
+                        </b-checkbox>
+                    </div>
+                    
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showLivingZone">Отображать жилую зону
+                        </b-checkbox>
+                    </div>
+                    
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showNature">Отображать природу
+                        </b-checkbox>
+                    </div>
+                    
+                    <div class="field">
+                        <b-checkbox
+                            v-model="showTech">Отображать техническую часть
+                        </b-checkbox>
+                    </div>
                 </div>
             </div>
             <div
@@ -173,12 +197,16 @@ export default {
             showHydrantTable: false,
 
             showHydrants: window.showHydrants,
-            showDepartments: true,
-            showDistricts: true,
+            showDepartments: false,
+            showDistricts: false,
             showFds: false,
             showMeds: false,
             showSchools: false,
             showSocs: false,
+            showFinances: false,
+            showLivingZone: true,
+            showNature: false,
+            showTech: false,
 
             isAdmin: window.isAdmin,
             canEditOwnHydrants: window.canEditOwnHydrants,
@@ -398,6 +426,22 @@ export default {
             if (this.showSocs) {
                 this.initSocs();
             }
+            
+            if (this.showFinances) {
+                this.initFinances();
+            }
+            
+            if (this.showLivingZone) {
+                this.initLivingZone();
+            }
+            
+            if (this.showNature) {
+                this.initNature();
+            }
+            
+            if (this.showTech) {
+                this.initTech();
+            }
         },
 
         initFireDepartments() {
@@ -510,7 +554,16 @@ export default {
             this.map.setZoom(this.zoom);
             this.map.panTo([lat, long]);
         },
-        setSpecialPointOnTheMap(lat, long, name) {
+        /**
+        * @var icontype :number (0, 1, 2) typeof icon for point
+        *   0 - default
+        *   1 - meds
+        *   2 - schools
+        *   3 - socs
+        *   4 - finances
+        *   5 - techs
+         */
+        setSpecialPointOnTheMap(lat, long, name, iconType = 0) {
             const geoObject = new this.ymaps.GeoObject({
                 geometry: {
                     type: 'Point',
@@ -519,6 +572,10 @@ export default {
                 properties: {
                     balloonContentBody: name
                 }
+            }, {
+                // preset: 'islands#blueAutoIcon',
+                preset: (['islands#redStretchyIcon', 'islands#redMedicalIcon', 'islands#blueEducationIcon', 'islands#yellowInfoIcon', 'islands#violetMoneyIcon', 'islands#blueAttentionIcon'])[iconType],
+                draggable: false
             });
             this.map.geoObjects.add(geoObject);
         },
@@ -594,12 +651,12 @@ export default {
                 9.Больницы
             */
             axios
-                .get('/api/med')
+                .get('/api/meds')
                 .then(response => {
                     response.data.forEach(item => {
-                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 1);
                     });
-                    this.map.setZoom(this.zoom - 2);
+                    this.map.setZoom(this.zoom - 3);
                 });
         },
         initSchools() {
@@ -614,12 +671,12 @@ export default {
                 34.Общеобразовательные школы
             */
             axios
-                .get('/api/school')
+                .get('/api/schools')
                 .then(response => {
                     response.data.forEach(item => {
-                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 2);
                     });
-                    this.map.setZoom(this.zoom - 2);
+                    this.map.setZoom(this.zoom - 3);
                 });
         },
         initSocs() {
@@ -627,12 +684,103 @@ export default {
                 5.Объекты обслуживания населения
             */
             axios
-                .get('/api/soc')
+                .get('/api/socs')
+                .then(response => {
+                    response.data.forEach(item => {
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 3);
+                    });
+                    this.map.setZoom(this.zoom - 3);
+                });
+        },
+        initFinances() {
+            /* 
+                1.Бизнес центры
+                3.Кредитно-финансовые учреждения
+            */
+            axios
+                .get('/api/finances')
+                .then(response => {
+                    response.data.forEach(item => {
+                        this.setSpecialPointOnTheMap(item.lat, item.long, item.name, 4);
+                    });
+                    this.map.setZoom(this.zoom - 3);
+                });
+        },
+        initLivingZone() {
+            /* 
+                15.Основные улицы Алматы
+                18.Жилая зона города Алматы
+                29.Акбулак_Жас_Канат
+                30.Нуркент
+                31.Саялы
+                32.Шугыла
+            */
+            axios
+                .get('/api/livingzones')
+                .then(response => {
+                    response['data'].forEach(item => {
+                        this.map.geoObjects.add(new this.ymaps.Polygon([
+                            item.points
+                        ], {
+                            hintContent: item.title
+                        }, {
+                            strokeColor: item.line_color,
+                            fillColor: item.fill_color,
+                            strokeWidth: 1,
+                            opacity: item.opacity
+                        }))
+                    });
+                    
+                    this.map.setZoom(this.zoom - 4);
+                });
+        },
+        initNature() {
+            /* 
+                10.Алатауский национальный парк
+                19.Санитарная зона кладбищ
+                24.Граница лесничества
+                25.Русла рек города Алматы
+                26.Водоохранная зона
+                27.Зона обеспеченности водными ресурсами
+                28.Водные поверхности
+                38.Резервуары
+            */
+            axios
+                .get('/api/nature')
+                .then(response => {
+                    response['data'].forEach(item => {
+                        this.map.geoObjects.add(new this.ymaps.Polygon([
+                            item.points
+                        ], {
+                            hintContent: item.title
+                        }, {
+                            strokeColor: item.line_color,
+                            fillColor: item.fill_color,
+                            strokeWidth: 1,
+                            opacity: item.opacity
+                        }))
+                    });
+                    this.map.setZoom(this.zoom - 4);
+                });
+        },
+        initTech() {
+            /* 
+                35.Колодцы смотровые на теплосетях
+                36.Проектные колодцы и люки
+                37.Насосные станции
+                39.Схема Трубопроводов Водоснабжения
+                40.Распределительный шкаф
+                42.Кабельные линии
+                43.Люки сетей водоснабжения
+                44.Трансформаторы
+            */
+            axios
+                .get('/api/techs')
                 .then(response => {
                     response.data.forEach(item => {
                         this.setSpecialPointOnTheMap(item.lat, item.long, item.name);
                     });
-                    this.map.setZoom(this.zoom - 2);
+                    this.map.setZoom(this.zoom - 3);
                 });
         },
         zoomToObject(hydrant, lat, long) {
@@ -701,6 +849,18 @@ export default {
             this.setMapData();
         },
         'showSocs'() {
+            this.setMapData();
+        },
+        'showFinances'() {
+            this.setMapData();
+        },
+        'showLivingZone'() {
+            this.setMapData();
+        },
+        'showNature'() {
+            this.setMapData();
+        },
+        'showTech'() {
             this.setMapData();
         },
         'selectedHydrant'() {

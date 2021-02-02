@@ -19,9 +19,14 @@ Route::group(
 
         Route::apiResource('hydrant', 'HydrantController');
         Route::apiResource('polygon', 'PolygonController');
-        Route::apiResource('school', 'SchoolController');
-        Route::apiResource('med', 'MedController');
-        Route::apiResource('soc', 'SocController');
+
+        Route::get('meds', 'PointsController@meds');
+        Route::get('schools', 'PointsController@schools');
+        Route::get('socs', 'PointsController@socs');
+        Route::get('finances', 'PointsController@finances');
+        Route::get('livingzones', 'PointsController@livingZones');
+        Route::get('nature', 'PointsController@nature');
+        Route::get('techs', 'PointsController@techs');
 
         Route::post('101card/save-other-records', 'CardController@createOtherRecord101card');
         Route::post('101card/save-chronology', 'CardController@createChronologyRecord101card');
