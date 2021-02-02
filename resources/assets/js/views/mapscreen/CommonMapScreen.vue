@@ -197,14 +197,14 @@ export default {
             showHydrantTable: false,
 
             showHydrants: window.showHydrants,
-            showDepartments: false,
-            showDistricts: false,
+            showDepartments: true,
+            showDistricts: true,
             showFds: false,
             showMeds: false,
             showSchools: false,
             showSocs: false,
             showFinances: false,
-            showLivingZone: true,
+            showLivingZone: false,
             showNature: false,
             showTech: false,
 
