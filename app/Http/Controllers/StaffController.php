@@ -88,7 +88,7 @@ class StaffController extends Controller
         $statuses = (new Staff())->statuses();
         $guardNumbers = GuardNumber::all();
 
-        return view("$this->table.edit", compact('items', 'fire_departments','title', 'statuses', 'guardNumbers'));
+        return view("$this->table.edit", compact('fire_departments','title', 'statuses', 'guardNumbers'));
     }
 
     /**
