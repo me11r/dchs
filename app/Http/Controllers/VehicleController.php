@@ -84,7 +84,6 @@ class VehicleController extends Controller
         $vehicle_classes = VehicleClass::all();
         $title = 'Создать запись';
         return view('vehicle.edit', compact(
-            'items',
             'fire_departments',
             'vehicle_types',
             'vehicle_classes',
@@ -132,7 +131,7 @@ class VehicleController extends Controller
         $vehicle_classes = VehicleClass::all();
         $title = 'Редактировать запись';
         $record = Vehicle::find($id);
-        return view('vehicle.edit', compact('items',
+        return view('vehicle.edit', compact(
             'fire_departments',
             'vehicle_types',
             'vehicle_classes',
