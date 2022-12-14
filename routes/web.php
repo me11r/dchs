@@ -52,6 +52,9 @@ Route::group(['middleware' => ['auth','check.blocked', 'detectLocale']], functio
             Route::get('users/edit/{user_id?}', 'AdminController@getUserEdit')->where(['user_id' => '[0-9]+'])->name('admin-users-edit');
             Route::post('users/edit/{user_id?}', 'AdminController@postUserEdit')->where(['user_id' => '[0-9]+'])->name('post-admin-users-edit');
 
+            Route::get('users/create', 'AdminController@getUserCreate')->name('admin-users-create');
+            Route::post('users/create', 'AdminController@postUserCreate')->name('post-admin-users-create');
+
             Route::get('users/lock/{user_id}', 'AdminController@getUserLock')->where(['user_id' => '[0-9]+'])->name('admin-users-lock');
             Route::post('users/lock/{user_id}', 'AdminController@postUserLock')->where(['user_id' => '[0-9]+'])->name('post-admin-users-lock');
 

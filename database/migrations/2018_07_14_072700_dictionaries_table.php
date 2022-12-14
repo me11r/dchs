@@ -18,6 +18,7 @@ class DictionariesTable extends Migration
             $table->string('table');
             $table->string('title');
             $table->string('model');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

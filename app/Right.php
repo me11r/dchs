@@ -74,6 +74,21 @@ class Right extends Model
 
     public const CAN_SEE_ALL_EMERGENCY_SITUATIONS = 38;
 
+    public const DEFAULT_FIRE_DEPARTMENT_RIGHTS = [
+        self::CAN_LOGIN,
+        self::CAN_SEE_REQUEST,
+        self::CAN_EDIT_DICTIONARIES,
+        self::CAN_SEE_DAILY_REPORT
+    ];
+
+    public const DEFAULT_RIGHTS_BY_ROLE_ID = [
+        Role::FIRE_DEPARTMENT_ROLE_ID => self::DEFAULT_FIRE_DEPARTMENT_RIGHTS,
+    ];
+
+    public const ONLY_LOGIN_RIGHT = [
+        self::CAN_LOGIN
+    ];
+
     protected $table = 'rights';
     protected $fillable = [
         'title',
@@ -93,6 +108,6 @@ class Right extends Model
             return true;
         }
 
-        return (int) $fireDepartmentId === (int) $user->fire_department_id;
+        return (int)$fireDepartmentId === (int)$user->fire_department_id;
     }
 }

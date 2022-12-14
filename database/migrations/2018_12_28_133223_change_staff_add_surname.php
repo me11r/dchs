@@ -14,6 +14,7 @@ class ChangeStaffAddSurname extends Migration
     public function up()
     {
         Schema::table('staff', function (Blueprint $table) {
+            $table->softDeletes();
             $table->string('surname')->nullable()->after('id');
             $table->string('patronymic')->nullable()->after('id');
         });

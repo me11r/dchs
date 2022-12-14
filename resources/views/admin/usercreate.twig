@@ -1,0 +1,140 @@
+{% extends 'layout/html' %}
+{% block content %}
+    <div class="container section">
+        <form action="{{ url('admin/users/create') }}" method="post" id="add_user_form" autocomplete="off">
+            {{ csrf_field() }}
+            <h4 class="title">Добавить пользователя</h4>
+
+            <div class="row">
+                <div class="col-md">
+                    <h5 class="subtitle">Реквизиты пользователя</h5>
+                    <div class="field ">
+                        <label for="fullname">ФИО пользователя</label>
+                        <input type="text" autocomplete="off" class="input {{ errors.has('name')?'is-danger' }}"
+                               name="name" id="name" value="{{ old('name') }}"/>
+                        {% if errors.has('name') %}
+                            <span class="{{ errors.has('name')?'is-danger' }}">
+                                        <small>{{ errors.first('name') }}</small>
+                                    </span>
+                        {% endif %}
+                    </div>
+                    <div class="field ">
+                        <label for="email">Электронная почта</label>
+                        <input type="email" autocomplete="off" class="input {{ errors.has('email')?'is-danger' }}"
+                               name="email" id="email" value="{{ old('email') }}"/>
+                        {% if errors.has('email') %}
+                            <span class="input-feedback">
+                                        <small>{{ errors.first('email') }}</small>
+                                    </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="field ">
+                        <label for="call_name">Позывной</label>
+                        <input type="text" autocomplete="off" class="input {{ errors.has('call_name')?'is-danger' }}"
+                               name="call_name" id="call_name" value="{{ old('call_name') }}"/>
+                        {% if errors.has('call_name') %}
+                            <span class="input-feedback">
+                                <small>{{ errors.first('call_name') }}</small>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="field ">
+                        <label for="position">Должность</label>
+                        <input type="text" autocomplete="off" class="input {{ errors.has('position')?'is-danger' }}"
+                               name="position" id="position" value="{{ old('position') }}"/>
+                        {% if errors.has('position') %}
+                            <span class="input-feedback">
+                                <small>{{ errors.first('position') }}</small>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="field ">
+                        <label for="sort_order">Номер п/п</label>
+                        <input type="text" autocomplete="off" class="input {{ errors.has('sort_order')?'is-danger' }}"
+                               name="sort_order" id="sort_order" value="{{ old('sort_order') }}"/>
+                        {% if errors.has('sort_order') %}
+                            <span class="input-feedback">
+                                <small>{{ errors.first('sort_order') }}</small>
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        <label for="role_id">Роль</label>
+                        <br>
+                        <div class="select">
+                            <select name="role_id" id="role_id">
+                                <option value=""></option>
+                                {% for role in roles %}
+                                    <option value="{{ role.id }}">{{ role.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <div class="field">
+                        <label for="role_id">Доступ в рамках ПЧ</label>
+                        <p>Оставить пустым для доступа ко всем справочникам</p>
+                        <div class="select">
+                            <select name="fire_department_id" id="fire_department_id">
+                                <option value=""></option>
+                                {% for dept in fire_departments %}
+                                    <option value="{{ dept.id }}">{{ dept.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <div class="field">
+
+                        <label for="role_id">Доступ в рамках службы взаимодействия</label>
+                        <p>Оставить пустым для доступа ко всем справочникам</p>
+                        <div class="select">
+                            <select name="service_type_id" id="service_type_id">
+                                <option value=""></option>
+                                {% for dept in service_types %}
+                                    <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                    <br>
+                    <div class="field">
+                        <label for="password">Пароль</label>
+                        <input type="password" autocomplete="off" class="input {{ errors.has('password')?'is-danger' }}"
+                               name="password" id="password" value=""/>
+                        {% if errors.has('password') %}
+                            <span class="input-feedback">
+                                        <small>{{ errors.first('password') }}</small>
+                                    </span>
+                        {% endif %}
+                    </div>
+                    <div class="field">
+                        <label for="password_confirmation">Пароль (повторно)</label>
+                        <input type="password" autocomplete="off" class="input" name="password_confirmation"
+                               id="password_confirmation" value=""/>
+                    </div>
+                </div>
+            </div>
+            <div class="panel"
+                 style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
+                <div class="level">
+                    <p class="level-left">
+                    </p>
+                    <p class="level-right">
+                        <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp; Сохранить
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

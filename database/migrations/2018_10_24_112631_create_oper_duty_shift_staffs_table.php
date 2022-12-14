@@ -15,6 +15,7 @@ class CreateOperDutyShiftStaffsTable extends Migration
     {
         Schema::create('oper_duty_shift_staffs', function (Blueprint $table) {
             $table->increments('id');
+            $table->softDeletes();
             $table->string('name')->index();
             $table->timestamps();
         });

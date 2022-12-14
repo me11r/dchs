@@ -13,6 +13,7 @@ use App\Role;
 use App\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class AdminController extends AuthorizedController
@@ -67,6 +68,54 @@ class AdminController extends AuthorizedController
             ->set('fire_departments', $fire_departments)
             ->set('user_record', $user);
     }
+
+    /**
+     * @param null $user_id
+     * @throws AccessDeniedException
+     */
+    public function getUserCreate()
+    {
+        $this->needRight(Right::CAN_MANAGE_USERS);
+
+        $rights = Right::with('group')->orderBy('right_group_id')->get();
+        $roles = Role::all();
+        $fire_departments = FireDepartment::all();
+        $service_types = ServiceType::all();
+
+        $this->set('rights', $rights)
+            ->set('roles', $roles)
+            ->set('service_types', $service_types)
+            ->set('fire_departments', $fire_departments);
+    }
+
+
+    public function postUserCreate(Request $request)
+    {
+        try {
+            $this->needRight(Right::CAN_MANAGE_USERS);
+
+            $rules = [
+                'name' => 'required',
+                'email' => ['required', 'email'],
+                'phone_mobile' => ['numeric', 'nullable'],
+                'password' => 'required|min:6|confirmed'
+            ];
+
+            $this->validate($request, $rules);
+            $user = new User();
+            $userdata = $request->only($user->getFillable());
+            $user = User::createUser($userdata);
+            $rights = Right::DEFAULT_RIGHTS_BY_ROLE_ID[$user->role_id]
+                ?? Right::ONLY_LOGIN_RIGHT;
+            $user->rights()->sync($rights);
+            return redirect('admin/users')->with('_message', ['type' => 'success', 'text' => 'Пользователь успешно сохранен в системе']);
+        } catch (\Exception $e) {
+            Log::warning($e->getMessage());
+            return redirect('admin/users')->with('_message', ['type' => 'danger', 'text' => 'Произошла ошибка, повторите позднее']);
+        }
+
+    }
+
 
     /**
      * @param null $user_id

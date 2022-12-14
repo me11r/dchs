@@ -19,7 +19,6 @@ class ChangeDictTrunkAddTrunkTypeId extends Migration
                 ->references('id')
                 ->on('trunk_types')
                 ->onDelete('cascade');
-            $table->softDeletes();
 
         });
     }
