@@ -15,6 +15,7 @@ class ChangeVehiclesAddVehicleClassId extends Migration
     {
         Schema::table('vehicles', function (Blueprint $table) {
             $table->unsignedInteger('vehicle_class_id')->nullable()->after('id');
+            $table->softDeletes();
             $table->foreign('vehicle_class_id')
                 ->references('id')
                 ->on('vehicle_classes')

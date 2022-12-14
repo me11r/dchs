@@ -14,7 +14,6 @@ class ChangeStaffAddSoftDeletes extends Migration
     public function up()
     {
         $tables = [
-            'staff',
             'staff_cpps',
             'staff_crbs',
             'staff_dspts',
@@ -27,7 +26,6 @@ class ChangeStaffAddSoftDeletes extends Migration
             'staff_senior_communication_masters',
             'staff_water_canals',
             'staff_zhalins',
-            'oper_duty_shift_staffs',
         ];
 
         foreach ($tables as $table) {

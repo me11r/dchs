@@ -22,8 +22,6 @@ class ChangeDictionariesAddCategoryId extends Migration
 
             $table->integer('sort_order')->index()->after('id')->nullable()->default(10);
             $table->string('url')->after('id')->nullable();
-
-            $table->softDeletes()->after('updated_at');
         });
 
         $dictionaryToRename = \App\Dictionary::name('Нормативно-справочная информация')->first();

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Exceptions\AccessDeniedException;
 use App\Models\Card112\Card112;
 use App\Models\Messenger\Message;
 use App\Models\Salvage;
@@ -10,8 +9,8 @@ use App\Models\ServiceType;
 use App\Models\Staff;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -104,6 +103,12 @@ class User extends Authenticatable
 
     protected $appends = ['full_username'];
 
+    public static function createUser($data)
+    {
+        $data['password'] = bcrypt($data['password']);
+        return self::create($data);
+    }
+
     public function getFullUsernameAttribute()
     {
         return $this->name .
@@ -179,8 +184,8 @@ class User extends Authenticatable
     public function scopeIsRole($q, $role)
     {
         $user = Auth::user();
-        if($user && $user->role){
-            if($user->role->name === $role){
+        if ($user && $user->role) {
+            if ($user->role->name === $role) {
                 return true;
             }
         }
@@ -191,13 +196,12 @@ class User extends Authenticatable
     public function scopeAnyRole($q, $role)
     {
         $user = Auth::user();
-        if($user && $user->role){
-            if(is_array($role)){
+        if ($user && $user->role) {
+            if (is_array($role)) {
                 $query = $user->role()->whereIn('name', $role)
                     ->orWhereIn('title', $role)
                     ->exists();
-            }
-            else{
+            } else {
                 $query = $user->role()
                     ->where('name', $role)
                     ->orWhere('title', $role)
@@ -212,11 +216,11 @@ class User extends Authenticatable
 
     public function hasRight($right_id, $includeAdmin = true)
     {
-        if(!$this->role){
+        if (!$this->role) {
             return false;
         }
 
-        if($this->role->name == 'admin' && $includeAdmin){
+        if ($this->role->name == 'admin' && $includeAdmin) {
             return true;
         }
 
@@ -241,7 +245,7 @@ class User extends Authenticatable
     {
         $user = Auth::user();
 
-        if(($user && $user->id == 1) || ($user && !$user->fire_department_id)){
+        if (($user && $user->id == 1) || ($user && !$user->fire_department_id)) {
             return true;
         }
 
@@ -279,10 +283,9 @@ class User extends Authenticatable
 
     public function currentRole()
     {
-        try{
+        try {
             return Auth::user()->role->name;
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             return null;
         }
     }

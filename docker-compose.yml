@@ -17,6 +17,9 @@ services:
       - app-fpm
 
   app-fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: ogorbunov/php:7.3-fpm-alpine
     # container_name: "app-fpm"
     working_dir: /current

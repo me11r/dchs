@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class Role extends Model
 {
+    const FIRE_DEPARTMENT_ROLE_ID = 3;
+
     protected $fillable = [
         'name',
         'hydrant_access_id',

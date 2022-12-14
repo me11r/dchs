@@ -15,7 +15,7 @@ class CreateEventInfoArrivedsTable extends Migration
     {
         Schema::create('event_info_arriveds', function (Blueprint $table) {
             $table->increments('id');
-
+            $table->softDeletes();
             $table->string('name')->index();
 
             $table->timestamps();
