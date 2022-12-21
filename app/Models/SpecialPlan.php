@@ -21,6 +21,7 @@ use Laravel\Scout\Searchable;
  * @property int $fire_department_id
  * @property int $operational_plan_id
  * @property string $location
+ * @property string $additional_info
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpecialPlan whereCityAreaId($value)
@@ -67,7 +68,8 @@ class SpecialPlan extends Model
         'location',
         'year_of_development',
         'sort_order',
-        'file'
+        'file',
+        'additional_info',
     ];
 
     public function searchableAs(): string
@@ -104,7 +106,7 @@ class SpecialPlan extends Model
     {
         return (SpecialPlan::select('*')
                 ->where(function ($qq) {
-                    if($userDept = Auth::user()->fire_department_id) {
+                    if ($userDept = Auth::user()->fire_department_id) {
                         $qq->where('fire_department_id', $userDept);
                     }
                 })

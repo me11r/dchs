@@ -345,15 +345,14 @@ class DictionaryController extends AuthorizedController
             $data['title'] = "Район города";
         }
         elseif($name == 'operational-plans'){
-
-            $data['record'] = SpecialPlan::find($id);
+            $specialPlan = SpecialPlan::find($id);
+            $data['record'] = $specialPlan;
             $data['title'] = "Оперативный план";
             $data['fire_levels'] = Dictionary\FireLevel::all();
             $data['city_areas'] = Dictionary\CityArea::all();
             $data['fire_departments'] = $fireDepts;
             $data['operational_plans'] = OperationalPlan::all();
             $data['sort_order'] = $data['record']->sort_order ?? SpecialPlan::getMaxSortOrder();
-
         }
         elseif($name == 'operational-cards'){
             $data['record'] = OperationalCard::find($id);
@@ -477,6 +476,7 @@ class DictionaryController extends AuthorizedController
             $record->location = $request->location;
             $record->year_of_development = $request->year_of_development;
             $record->sort_order = $request->sort_order;
+            $record->additional_info = $request->additional_info;
 
 
             $record->save();

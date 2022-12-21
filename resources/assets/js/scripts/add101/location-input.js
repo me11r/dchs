@@ -76,6 +76,8 @@ export default function bindLocationInputApp() {
                 globalBus.$emit('specialPlanFound', item);
 
                 document.getElementById('fire_level_id1').value = item.fire_level_id;
+                document.getElementById('additional_description').value = item.additional_info;
+
 
                 this.showList = false;
                 this.keyUp = false;
@@ -139,7 +141,7 @@ export default function bindLocationInputApp() {
                     id: q
                 }}).then((resp) => {
                     let data = resp.data.specialPlan;
-                    if(data && data.special_plan){
+                    if (data && data.special_plan) {
                         globalBus.$emit('specialPlanFound', data.special_plan);
                         this.location = data.special_plan.location;
                         document.getElementById('fire_level_id1').value = data.special_plan.fire_level_id;
