@@ -54,6 +54,7 @@
                     <th>Адрес</th>
                     <th>Год постройки</th>
                     <th>Номер в справочнике</th>
+                    <th>Доп.инфо</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -68,6 +69,7 @@
                         <td class="max-width: 20%">{{ record.location|default('') }}</td>
                         <td class="max-width: 20%">{{ record.year_of_development|default('') }}</td>
                         <td class="max-width: 20%">{{ record.sort_order|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.additional_info|default('') }}</td>
                         <td>
 
                                 <form method="POST"

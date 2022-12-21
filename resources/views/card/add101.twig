@@ -68,43 +68,43 @@
                                         <label for="location">Адрес
                                             {% if card_type != 'drill' %}
                                                 <a href="{{ url('/card/mapscreen') }}"
-                                                                           target="_blank"
-                                                                           class="button is-basic is-main"><i
+                                                   target="_blank"
+                                                   class="button is-basic is-main"><i
                                                             class="far fa-map"></i>&nbsp;Открыть карту</a>
                                             {% endif %}
 
                                         </label>
                                         {% if card_type != 'drill' %}
-                                        <input name="location"
-                                               ref="location"
-                                               id="location"
-                                               class="input"
-                                               v-model="location"
-                                               @blur="onBlur"
-                                               @focus="onFocus"
-                                               tabindex="1"
-                                               @keyup="keyUp = true">
-                                        <div class="dropdown-menu"
-                                             :style="{'display': showList ? 'block': 'none'}"
-                                             style="position: relative">
-                                            <div class="dropdown-content">
-                                                <a class="dropdown-item"
-                                                   @click="selectItem(item)"
-                                                   v-for="item in items">
-                                                    <div class="row">
-                                                        <span v-html="item.location"></span>
-                                                        <small>, <span v-html="item.object_name"></span></small>
-                                                    </div>
-                                                </a>
+                                            <input name="location"
+                                                   ref="location"
+                                                   id="location"
+                                                   class="input"
+                                                   v-model="location"
+                                                   @blur="onBlur"
+                                                   @focus="onFocus"
+                                                   tabindex="1"
+                                                   @keyup="keyUp = true">
+                                            <div class="dropdown-menu"
+                                                 :style="{'display': showList ? 'block': 'none'}"
+                                                 style="position: relative">
+                                                <div class="dropdown-content">
+                                                    <a class="dropdown-item"
+                                                       @click="selectItem(item)"
+                                                       v-for="item in items">
+                                                        <div class="row">
+                                                            <span v-html="item.location"></span>
+                                                            <small>, <span v-html="item.object_name"></span></small>
+                                                        </div>
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
                                         {% else %}
                                             <input name="location"
                                                    id="location"
                                                    class="input"
                                                    tabindex="1"
                                                    value="{{ ticket.location|default('') }}"
-                                                   >
+                                            >
                                         {% endif %}
                                     </div>
                                 </div>
@@ -240,7 +240,8 @@
                                     <div class="field">
                                         <div class="control">
                                             <label for="pre_information">Предварительная информация</label>
-                                            <textarea tabindex="3" class="textarea" name="pre_information" id="pre_information"
+                                            <textarea tabindex="3" class="textarea" name="pre_information"
+                                                      id="pre_information"
                                                       cols="30"
                                                       rows="2">{{ ticket.pre_information|default('') }}</textarea>
                                         </div>
@@ -250,7 +251,8 @@
                             <div class="column is-half">
                                 <div class="bd-notification is-primary">
                                     <label for="building_description">Конструктивные особенности</label>
-                                    <textarea tabindex="13" class="textarea" name="building_description" id="building_description"
+                                    <textarea tabindex="13" class="textarea" name="building_description"
+                                              id="building_description"
                                               cols="30"
                                               rows="2">{{ ticket.building_description|default('') }}</textarea>
                                 </div>
@@ -261,32 +263,34 @@
                             <div class="column is-2">
                                 <div class="bd-notification is-primary">
                                     {% if card_type != 'drill' %}
-                                    <p class="control"
-                                       data-name="fire_department_id"
-                                       data-component="buefy-common-select"
-                                       data-value="{{ ticket.fire_department_id|default(0) }}">
-                                        <label for="fire_department_id">Микроучасток</label>
-                                        <input type="hidden"
-                                               name="fire_department_id"
-                                               required
-                                               id="fire_department_id"
-                                               v-model="selectedId">
-                                        <buefy-common-select
-                                                :options='{{ fire_departments | json_encode() | raw }}'
-                                                :min-length="1"
-                                                tabindex="4"
-                                                required="required"
-                                                v-model="selectedId">
-                                        </buefy-common-select>
-                                    </p>
+                                        <p class="control"
+                                           data-name="fire_department_id"
+                                           data-component="buefy-common-select"
+                                           data-value="{{ ticket.fire_department_id|default(0) }}">
+                                            <label for="fire_department_id">Микроучасток</label>
+                                            <input type="hidden"
+                                                   name="fire_department_id"
+                                                   required
+                                                   id="fire_department_id"
+                                                   v-model="selectedId">
+                                            <buefy-common-select
+                                                    :options='{{ fire_departments | json_encode() | raw }}'
+                                                    :min-length="1"
+                                                    tabindex="4"
+                                                    required="required"
+                                                    v-model="selectedId">
+                                            </buefy-common-select>
+                                        </p>
                                     {% else %}
                                         <p class="control">
                                             <label for="fire_department_id">Микроучасток</label>
                                         </p>
                                         <div class="select">
-                                            <select tabindex="4" required name="fire_department_id" id="fire_department_id">
+                                            <select tabindex="4" required name="fire_department_id"
+                                                    id="fire_department_id">
                                                 {% for dept in fire_departments %}
-                                                    <option {{ dept.id == ticket.fire_department_id|default('') ? 'selected' : '' }} value="{{ dept.id }}">{{ dept.text }}</option>
+                                                    <option {{ dept.id == ticket.fire_department_id|default('') ? 'selected' : '' }}
+                                                            value="{{ dept.id }}">{{ dept.text }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -346,7 +350,8 @@
                             <div class="column is-3">
                                 <div class="bd-notification is-primary">
                                     <label for="storey_count">Этажность</label>
-                                    <input tabindex="7" min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                    <input tabindex="7" min=0 oninput="validity.valid||(value='');" type="number"
+                                           class="input"
                                            name="storey_count" id="storey_count"
                                            value="{{ ticket.storey_count|default('') }}"/>
                                 </div>
@@ -354,7 +359,8 @@
                             <div class="column is-3">
                                 <div class="bd-notification is-primary">
                                     <label for="floor">На каком этаже пожар</label>
-                                    <input tabindex="8" min=0 oninput="validity.valid||(value='');" type="number" class="input"
+                                    <input tabindex="8" min=0 oninput="validity.valid||(value='');" type="number"
+                                           class="input"
                                            name="floor" id="floor"
                                            value="{{ ticket.floor|default('') }}"/>
                                 </div>
@@ -382,11 +388,13 @@
                                         <p class="control is-expanded">
                                             {% if (card_type == 'drill') %}
                                                 <label for="caller_name">Ответственное лицо</label>
-                                                <input tabindex="9" type="text" class="input" name="responsible_person" id="responsible_person"
+                                                <input tabindex="9" type="text" class="input" name="responsible_person"
+                                                       id="responsible_person"
                                                        value="{{ ticket.responsible_person|default('') }}"/>
                                             {% else %}
                                                 <label for="caller_name">ФИО Заявителя</label>
-                                                <input tabindex="9" type="text" class="input" name="caller_name" id="caller_name"
+                                                <input tabindex="9" type="text" class="input" name="caller_name"
+                                                       id="caller_name"
                                                        value="{{ ticket.caller_name|default('') }}"/>
                                             {% endif %}
                                         </p>
@@ -400,7 +408,8 @@
                                             <label for="people_in_danger">Опасность для людей</label>
                                             Да - <input tabindex="16" type="radio" name="people_in_danger" value="1"
                                                         {% if ticket.people_in_danger %}checked{% endif %}>
-                                            Неизвестно - <input tabindex="16" type="radio" name="people_in_danger" value="0"
+                                            Неизвестно - <input tabindex="16" type="radio" name="people_in_danger"
+                                                                value="0"
                                                                 {% if not ticket.people_in_danger %}checked{% endif %}>
                                         </div>
                                     </div>
@@ -413,21 +422,22 @@
                                     <div class="field">
                                         <p class="control">
                                             {% if (card_type == 'drill') %}
-                                                <label for="caller_name">Тип учения</label>
-                                                <div class="select" style="display: block">
-                                                    <select tabindex="6" name="drill_type_id" id="drill_type_id" required
-                                                            style="width: 100%;">
-                                                        {% for object in drill_types %}
-                                                            <option {% if object.id == ticket.drill_type_id %} selected {% endif %}
-                                                                    value="{{ object.id }}">{{ object.name }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                            {% else %}
-                                                <label for="caller_phone">Телефон заявителя</label>
-                                                <input tabindex="10" type="text" class="input" name="caller_phone" id="caller_phone"
-                                                       value="{{ ticket.caller_phone|default('') }}"/>
-                                            {% endif %}
+                                            <label for="caller_name">Тип учения</label>
+                                        <div class="select" style="display: block">
+                                            <select tabindex="6" name="drill_type_id" id="drill_type_id" required
+                                                    style="width: 100%;">
+                                                {% for object in drill_types %}
+                                                    <option {% if object.id == ticket.drill_type_id %} selected {% endif %}
+                                                            value="{{ object.id }}">{{ object.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        {% else %}
+                                            <label for="caller_phone">Телефон заявителя</label>
+                                            <input tabindex="10" type="text" class="input" name="caller_phone"
+                                                   id="caller_phone"
+                                                   value="{{ ticket.caller_phone|default('') }}"/>
+                                        {% endif %}
                                         </p>
                                     </div>
                                 </div>
@@ -436,11 +446,13 @@
                                 <div class="bd-notification is-primary">
                                     <div class="field">
                                         <label for="additional_description">Дополнительная информация</label>
+
                                         <textarea class="textarea" name="additional_description"
                                                   id="additional_description"
                                                   cols="30"
                                                   tabindex="17"
-                                                  rows="2">{{ ticket.additional_description|default('') }}</textarea>
+                                                  rows="2">{{ special_plan.additional_info|default('') }}</textarea>
+
                                     </div>
                                 </div>
                             </div>
@@ -450,10 +462,10 @@
                 <div id="tab-truck" class="is-hidden">
                     <div id="tab-truck-vue">
                         <ticket101-truck
-                            :departments="{{ ssv_out|raw|json_encode }}"
-                            :can-change-created-at="{{ canChangeCreatedAt|raw|json_encode }}"
-                            :results="{{ ticket.results }}"
-                            :ticket="{{ ticket }}"
+                                :departments="{{ ssv_out|raw|json_encode }}"
+                                :can-change-created-at="{{ canChangeCreatedAt|raw|json_encode }}"
+                                :results="{{ ticket.results }}"
+                                :ticket="{{ ticket }}"
                         >
                         </ticket101-truck>
                     </div>
@@ -486,9 +498,9 @@
                             ></card-notification-services>
                         {% endif %}
 
-                        {#{% if ticket and ticket.id %}#}
-                            {#{% include 'card/elements/notification-services.twig' with {ticket: ticket} %}#}
-                        {#{% endif %}#}
+                        {# {% if ticket and ticket.id %} #}
+                        {# {% include 'card/elements/notification-services.twig' with {ticket: ticket} %} #}
+                        {# {% endif %} #}
                     </div>
                 </div>
                 <div id="tab_chronology" class="is-hidden">
@@ -542,18 +554,18 @@
 
                         {% if notification_get_back == 1 %}
                             <notification
-                                message="Необходимо оповестить отделения о понижении ранга"
+                                    message="Необходимо оповестить отделения о понижении ранга"
                             >
                             </notification>
                         {% endif %}
 
                         <ticket101-chronology
-                            :records="{{ ticket.chronologies }}"
-                            :departments="{{ departmentsOnWay }}"
-                            :card="{{ ticket }}"
-                            :trunk-types="{{ trunk_types }}"
-                            :event-info="{{ eventInfos }}"
-                            :event-info-arrived="{{ eventInfosArrived }}"
+                                :records="{{ ticket.chronologies }}"
+                                :departments="{{ departmentsOnWay }}"
+                                :card="{{ ticket }}"
+                                :trunk-types="{{ trunk_types }}"
+                                :event-info="{{ eventInfos }}"
+                                :event-info-arrived="{{ eventInfosArrived }}"
                         ></ticket101-chronology>
                     </div>
                 </div>
@@ -562,7 +574,8 @@
                     <div id="ticket101_other_records"></div>
                     <div class="field">
                         <label for="add_info">Дополнительная информация</label>
-                        <textarea name="add_info" id="add_info" class="textarea" cols="30" rows="3">{{ ticket.add_info|default('') }}</textarea>
+                        <textarea name="add_info" id="add_info" class="textarea" cols="30"
+                                  rows="3">{{ ticket.add_info|default('') }}</textarea>
                     </div>
                 </div>
                 <div id="tab_summary" class="is-hidden">
@@ -572,17 +585,20 @@
                     {% else %}
                         <div class="tabs buttab is-boxed" id="">
                             <ul>
-                                <li class="main-tab-inner is-active" onclick="window.add101tabs.openInnerTab(event, 'tab_summary_base');">
+                                <li class="main-tab-inner is-active"
+                                    onclick="window.add101tabs.openInnerTab(event, 'tab_summary_base');">
                                     <a>
                                         Основная информация
                                     </a>
                                 </li>
-                                <li class="main-tab-inner" onclick="window.add101tabs.openInnerTab(event, 'tab_summary_pch');">
+                                <li class="main-tab-inner"
+                                    onclick="window.add101tabs.openInnerTab(event, 'tab_summary_pch');">
                                     <a>
                                         Информация от ПЧ
                                     </a>
                                 </li>
-                                <li class="main-tab-inner" onclick="window.add101tabs.openInnerTab(event, 'tab_summary_services');">
+                                <li class="main-tab-inner"
+                                    onclick="window.add101tabs.openInnerTab(event, 'tab_summary_services');">
                                     <a>
                                         Информация от службы взаимодействия
                                     </a>
@@ -602,7 +618,8 @@
                                         <select id="emergency_type_id" name="emergency_type_id">
                                             <option value="">-</option>
                                             {% for i in emergencyTypes %}
-                                                <option {% if ticket.emergency_type_id == i.id%} selected {% endif %} value="{{ i.id }}">{{ i.name }}</option>
+                                                <option {% if ticket.emergency_type_id == i.id %} selected {% endif %}
+                                                        value="{{ i.id }}">{{ i.name }}</option>
                                             {% endfor %}
 
                                         </select>
@@ -615,9 +632,11 @@
                                     Номер КУИ:
                                 </label>
                                 {% if ticket.kui is defined %}
-                                    <input type="text" class="input" name="kui" id="kui" value="{{ ticket.kui|default('') }}"/>
+                                    <input type="text" class="input" name="kui" id="kui"
+                                           value="{{ ticket.kui|default('') }}"/>
                                 {% else %}
-                                    <input type="text" class="input" name="kui" id="kui" value="{{ ticket.id|default('') }}"/>
+                                    <input type="text" class="input" name="kui" id="kui"
+                                           value="{{ ticket.id|default('') }}"/>
                                 {% endif %}
                             </div>
 
@@ -637,7 +656,8 @@
                                     <p class="control">
                                         <label for="city_area">Район города</label>
                                     </p>
-                                    <input class="input" readonly value="{{ ticket.city_area ? ticket.city_area.name : '' }}">
+                                    <input class="input" readonly
+                                           value="{{ ticket.city_area ? ticket.city_area.name : '' }}">
                                 </div>
                             </div>
 
@@ -721,11 +741,13 @@
                                     </div>
                                     <div class="control">
                                         <label for="">Количество привлеченного л/с</label>
-                                        <textarea readonly id="detailed_staff_count" class="textarea">{{ ticket.getDetailedStaffCount() }}</textarea>
+                                        <textarea readonly id="detailed_staff_count"
+                                                  class="textarea">{{ ticket.getDetailedStaffCount() }}</textarea>
                                     </div>
                                     <div class="control">
                                         <label for="">Количество привлеченного л/с (сумма)</label>
-                                        <input type="text" readonly id="total_staff_count" value="{{ ticket.total_staff_count }}" class="input">
+                                        <input type="text" readonly id="total_staff_count"
+                                               value="{{ ticket.total_staff_count }}" class="input">
                                     </div>
                                 </div>
                                 <div class="control">
@@ -869,7 +891,8 @@
                             </div>
                             <div class="field is-grouped" style="margin-right: 40px">
                                 <div class="control" style="width: 25%">
-                                    <label class="is-small" for="gpt_burns_count">Количество освобожденных а/м при заносах</label>
+                                    <label class="is-small" for="gpt_burns_count">Количество освобожденных а/м при
+                                        заносах</label>
                                     <input min=0 oninput="validity.valid||(value='');" type="number" class="input"
                                            name="saved_vehicles" id="saved_vehicles"
                                            value="{{ ticket.saved_vehicles|default('') }}"/>
@@ -1113,20 +1136,24 @@
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Результат выезда: <b>{{ info.trip_result.name|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
-                                            Ликвидация достигнута: <b>{{ info.liquidation_method.name|default('-') }}</b>
+                                            Ликвидация достигнута:
+                                            <b>{{ info.liquidation_method.name|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Уточненный ранг пожар: <b>{{ info.fire_level.name|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 2px;">
-                                            Площадь пожара: <b>{{ info.max_square|default('-') }} <span class="field">м<sup><small>2</small></sup></span></b>
+                                            Площадь пожара: <b>{{ info.max_square|default('-') }} <span
+                                                        class="field">м<sup><small>2</small></sup></span></b>
                                         </td>
                                         <td>
                                             Спасено людей: <b>{{ info.rescued_count|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Эвакуировано людей: <b>{{ info.evac_count|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
-                                            Получили отравления угарным газом: <b>{{ info.co2_poisoned_count|default('-') }}</b>
+                                            Получили отравления угарным газом:
+                                            <b>{{ info.co2_poisoned_count|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
-                                            Получили отравления природным газом: <b>{{ info.ch4_poisoned_count|default('-') }}</b>
+                                            Получили отравления природным газом:
+                                            <b>{{ info.ch4_poisoned_count|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Получили ожоги: <b>{{ info.gpt_burns_count|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 2px;">
@@ -1141,7 +1168,8 @@
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Спец. тех. средства: <b>{{ info.special_tech|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
-                                            Источник противопожарного водоснабжения: <b>{{ info.water_supply_source.name|default('-') }}</b>
+                                            Источник противопожарного водоснабжения:
+                                            <b>{{ info.water_supply_source.name|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Расстояние до места: <b>{{ info.distance|default('-') }}</b>
                                         </td>
@@ -1150,7 +1178,8 @@
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Гибель животных: <b>{{ info.animal_death ? 'Да' : 'Нет' }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
-                                            Авария А/М при следовании на пожар: <b> {{ info.car_crash ? 'Да' : 'Нет' }}</b>
+                                            Авария А/М при следовании на пожар:
+                                            <b> {{ info.car_crash ? 'Да' : 'Нет' }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
                                             Владелец(дома,кв.,а/м): <b>{{ info.owner|default('-') }}</b>
                                             <hr style="margin: 3px;background-color: black; height: 1px;">
@@ -1159,7 +1188,8 @@
                                     </tr>
                                 {% else %}
                                     <tr>
-                                        <td class="is-centered"><h1 class="title">Нет добавленных информации от ПЧ</h1></td>
+                                        <td class="is-centered"><h1 class="title">Нет добавленных информации от ПЧ</h1>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -1168,8 +1198,11 @@
                         <div id="tab_summary_services" class="content-tab" style="display: none">
                             {% for item in ticket.service_plans if item.service_plan_additional %}
                                 <div class="emergency-situation-view section container">
-                                    <p style="text-align: center; margin-bottom: 20px"><b>{{ item.service_type.name }}</b></p>
-                                    <p><b>Дата происшествия:</b>&nbsp;{{ item.service_plan_additional.date_human_format }}</p>
+                                    <p style="text-align: center; margin-bottom: 20px">
+                                        <b>{{ item.service_type.name }}</b></p>
+                                    <p><b>Дата
+                                            происшествия:</b>&nbsp;{{ item.service_plan_additional.date_human_format }}
+                                    </p>
                                     <p><b>Время происшествия:</b>&nbsp;{{ item.service_plan_additional.time }}</p>
                                     <p><b>Место чс:</b>&nbsp;{{ item.service_plan_additional.location }}</p>
                                     <p><b>Информация о событии:</b></p>
@@ -1192,14 +1225,14 @@
             <div class="panel"
                  style="padding: 30px 10px 20px; margin-top:20px;border-top: 1px solid #dbdbdb; background-color: #f7f7f7">
                 <div class="level">
-                    {#todo убрано по требованию заказчика#}
+                    {# todo убрано по требованию заказчика #}
                     <div class="level-left">
-                        {#<button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
+                        {# <button id="nexttab" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;
                             Следующий раздел
-                        </button>#}
-                        {#<button id="truck_tab_button" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp;#}
-                            {#Высылка#}
-                        {#</button>#}
+                        </button> #}
+                        {# <button id="truck_tab_button" class="button is-info is-main"><i class="fas fa-arrow-right"></i>&nbsp; #}
+                        {# Высылка #}
+                        {# </button> #}
                     </div>
 
                     <div class="level-left">
@@ -1207,9 +1240,9 @@
                             <ticket101-save-btn></ticket101-save-btn>
                         </div>
                     </div>
-                        {#<button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp;
+                    {# <button type="submit" class="button is-basic is-main"><i class="fas fa-check"></i>&nbsp;
                             Сохранить
-                        </button>#}
+                        </button> #}
                 </div>
             </div>
         </form>
