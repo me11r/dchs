@@ -161,7 +161,7 @@
                             v-if="hasRight('CAN_ACCESS_FIRE_DEPTS')"
                             :href="getHref('/schedules')"
                             class="dropdown-item is-small"><i class="fas fa-fire fa-fw"></i>&nbsp;
-                            Пожарные части</a>
+                            Расписание выездов</a>
                         <a
                             v-if="hasAnyRight('CAN_EDIT_CHECK_FD','CAN_CREATE_CHECK_FD')"
                             :href="getHref('/fire-department-checks')"
