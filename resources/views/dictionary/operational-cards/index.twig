@@ -64,6 +64,7 @@
                         <td class="max-width: 20%">{{ record.oc_number|default('') }}</td>
                         <td class="max-width: 20%">{{ record.fire_department.title|default('') }}</td>
                         <td class="max-width: 20%">{{ record.location|default('') }}</td>
+                        <td class="max-width: 20%">{{ record.note|default('') }}</td>
                         <td>
                             <form method="POST"
                                   onsubmit="return confirm('Вы действительно хотите удалить эту запись?');"
@@ -86,7 +87,6 @@
 
                             </form>
                         </td>
-                        <td class="max-width: 20%">{{ record.note|default('') }}</td>
                     </tr>
                 {% else %}
                     <tr>
