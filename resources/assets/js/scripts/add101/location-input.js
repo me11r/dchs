@@ -158,6 +158,7 @@ export default function bindLocationInputApp() {
                         document.getElementById('fire_level_id1').value = data.fire_level_id;
                         this.fire_department_id = data.fire_department_id;
                         document.getElementById('object_name').value = data.object_name;
+                        document.getElementById('additional_description').value = data.note;
                     }
                 });
             });
