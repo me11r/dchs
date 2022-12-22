@@ -76,15 +76,14 @@ export default function bindLocationInputApp() {
                 globalBus.$emit('specialPlanFound', item);
 
                 document.getElementById('fire_level_id1').value = item.fire_level_id;
-                document.getElementById('additional_description').value = item.additional_info;
-
 
                 this.showList = false;
                 this.keyUp = false;
-                if (item.is_card === true) {
+                if (item.is_card) {
                     // document.getElementById('fire_level_id1').value = 2;
                     document.getElementById('operational_card_id').value = item.id;
-                } else{
+                    document.getElementById('additional_description').value = item.note;
+                } else {
                     document.getElementById('operational_card_id').value = '';
                 }
             },
