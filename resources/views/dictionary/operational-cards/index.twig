@@ -52,6 +52,7 @@
                         {% endif %}
                     </th>
                     <th>Адрес</th>
+                    <th>Примечание</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -85,6 +86,7 @@
 
                             </form>
                         </td>
+                        <td class="max-width: 20%">{{ record.note|default('') }}</td>
                     </tr>
                 {% else %}
                     <tr>
