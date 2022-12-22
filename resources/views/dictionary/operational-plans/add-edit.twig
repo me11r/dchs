@@ -83,11 +83,6 @@
                         <input type="text" class="input" name="sort_order" id="sort_order" value="{{ sort_order }}"/>
                     </div>
 
-                    <div class="field">
-                        <label for="additional_info">Дополнительная информация</label>
-                        <input type="text" class="input" name="additional_info" id="additional_info" value="{{ attribute(record, 'additional_info')|default('') }}"/>
-                    </div>
-
                     <div class="buttons has-text-right is-grouped is-right" style="">
                         <button type="submit" class="button is-success"><i class="fas fa-check"></i>&nbsp;Сохранить</button>
                         <a href="/dictionaries/{{ type }}/" class="button is-light">Отменить</a>
