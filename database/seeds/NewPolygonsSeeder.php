@@ -12,7 +12,6 @@ class NewPolygonsSeeder extends Seeder
     public function run()
     {
         \Schema::disableForeignKeyConstraints();
-        \App\Models\Polygon::truncate();
         \Schema::enableForeignKeyConstraints();
 
         $items = [
