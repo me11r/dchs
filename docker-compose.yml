@@ -7,10 +7,10 @@ services:
     ports:
       - 3080:80
     volumes:
-      - ./:/current:z
-      - ./.docker/routing/nginx.conf:/etc/nginx/nginx.conf:ro,z
-      - ./.docker/routing/fastcgi_params:/etc/nginx/fastcgi_params:ro,z
-      - ./.docker/routing/conf.d/:/etc/nginx/conf.d:ro,z
+      - ./:/var/www
+      - ./.docker/routing/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/routing/fastcgi_params:/etc/nginx/fastcgi_params:ro
+      - ./.docker/routing/conf.d/:/etc/nginx/conf.d:ro
     networks:
       - app-network
     depends_on:
@@ -20,30 +20,30 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ogorbunov/php:7.3-fpm-alpine
+    image: dchs-app-fpm
     # container_name: "app-fpm"
-    working_dir: /current
+    working_dir: /var/www
     volumes:
-      - ./:/current:z
-      - ./.docker/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro,z
+      - ./:/var/www
+      - ./.docker/php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
     networks:
       - app-network
     environment:
-      APP_ENV: local
-      APP_DEBUG: 1
-      APP_URL: http://localhost:3080
-      APP_SCHEME: http
-      APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
-      DB_CONNECTION: mysql
-      DB_HOST: app-db
-      DB_PORT: 3306
-      DB_USERNAME: emergency
-      DB_PASSWORD: emergency
-      DB_DATABASE: emergency
-      BROADCAST_DRIVER: redis
-      REDIS_HOST: app-redis
-      REDIS_PORT: 6379
-      ELASTICSEARCH_HOST: http://app-elasticsearch
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL}
+      APP_SCHEME: ${APP_SCHEME:-http}
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: ${DB_CONNECTION:-mysql}
+      DB_HOST: ${DB_HOST:-app-db}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      BROADCAST_DRIVER: ${BROADCAST_DRIVER:-redis}
+      REDIS_HOST: ${REDIS_HOST:-app-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-http://app-elasticsearch}
     tty: true
     depends_on:
       - app-composer-vendors
@@ -57,16 +57,15 @@ services:
     ports:
       - 33306:3306
     volumes:
-      - ./database/dumps/report_cache_structure.sql:/docker-entrypoint-initdb.d/02-report-cache-structure.sql:ro,z
+      - ./database/dumps/report_cache_structure.sql:/docker-entrypoint-initdb.d/02-report-cache-structure.sql:ro
       - app-db-data:/var/lib/mysql
-      - ./:/current:z
     networks:
       - app-network
     environment:
-      MYSQL_USER: emergency
-      MYSQL_PASSWORD: emergency
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: emergency
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_HOST: "%"
     command:
       - "--log_bin_trust_function_creators=1"
@@ -75,25 +74,25 @@ services:
     # container_name: "app-queue"
     image: ogorbunov/php:7.3-cli-alpine
     volumes:
-      - ./:/current:z
+      - ./:/var/www
     networks:
       - app-network
     environment:
-      APP_ENV: local
-      APP_DEBUG: 1
-      APP_URL: http://localhost:3080
-      APP_SCHEME: http
-      APP_KEY: "base64:46UPFHEBEGaa9CBU4SQbNd5N0BZAxW5gmDB0e12kcRk="
-      DB_CONNECTION: mysql
-      DB_HOST: app-db
-      DB_PORT: 3306
-      DB_USERNAME: emergency
-      DB_PASSWORD: emergency
-      DB_DATABASE: emergency
-      BROADCAST_DRIVER: redis
-      REDIS_HOST: app-redis
-      REDIS_PORT: 6379
-    command: sh -lc 'while [ ! -f /current/vendor/autoload.php ]; do sleep 2; done; php /current/artisan queue:work'
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL}
+      APP_SCHEME: ${APP_SCHEME:-http}
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: ${DB_CONNECTION:-mysql}
+      DB_HOST: ${DB_HOST:-app-db}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      BROADCAST_DRIVER: ${BROADCAST_DRIVER:-redis}
+      REDIS_HOST: ${REDIS_HOST:-app-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+    command: sh -lc 'while [ ! -f /var/www/vendor/autoload.php ]; do sleep 2; done; php /var/www/artisan queue:work'
     depends_on:
       - app-composer-vendors
     restart: unless-stopped
@@ -110,7 +109,7 @@ services:
     networks:
       - app-network
     volumes:
-      - ./echo-server:/app:z
+      - ./echo-server:/app
     ports:
       - 6001:6001
     working_dir: /app
@@ -128,7 +127,7 @@ services:
     # container_name: "app-composer-vendors"
     image: composer:1
     volumes:
-      - ./:/app:z
+      - ./:/app
     command: composer install --ignore-platform-reqs --no-interaction
     networks:
       - app-network
@@ -164,5 +163,3 @@ volumes:
 
 networks:
   app-network:
-
-
