@@ -11,6 +11,7 @@ services:
       - 3080:80
     volumes:
       - ./:/var/www
+      - ./.docker/routing/conf.d/:/etc/nginx/conf.d/:ro
     networks:
       - app-network
     depends_on:
