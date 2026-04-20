@@ -9,8 +9,6 @@ services:
     # container_name: "app-nginx"
     ports:
       - 3080:80
-    volumes:
-      - ./:/var/www
     networks:
       - app-network
     depends_on:
@@ -23,8 +21,6 @@ services:
     image: dchs-app-fpm:v1
     # container_name: "app-fpm"
     working_dir: /var/www
-    volumes:
-      - ./:/var/www
     networks:
       - app-network
     environment:
@@ -69,9 +65,7 @@ services:
 
   app-queue:
     # container_name: "app-queue"
-    image: ogorbunov/php:7.3-cli-alpine
-    volumes:
-      - ./:/var/www
+    image: dchs-app-fpm:v1
     networks:
       - app-network
     environment:
@@ -89,7 +83,7 @@ services:
       BROADCAST_DRIVER: ${BROADCAST_DRIVER:-redis}
       REDIS_HOST: ${REDIS_HOST:-app-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
-    command: sh -lc 'while [ ! -f /var/www/vendor/autoload.php ]; do sleep 2; done; php /var/www/artisan queue:work'
+    command: php /var/www/artisan queue:work
     restart: unless-stopped
 
   app-redis:
