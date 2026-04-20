@@ -1,3 +1,10 @@
+# Stage 1: Build dependencies
+FROM composer:1 as build-stage
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --no-plugins --no-scripts --no-autoloader --ignore-platform-reqs
+
+# Stage 2: Final application image
 FROM laradock/php-fpm:2.2-7.2
 
 RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list \
@@ -15,49 +22,14 @@ RUN apt-get update && apt-get install -y libmcrypt-dev libfreetype6-dev libjpeg6
     && pecl install xdebug-2.7.1 \
     && docker-php-ext-enable xdebug \
     && docker-php-ext-enable pcntl
-#
-#ADD ./php/php.ini /usr/local/etc/php/conf.d/default.ini
-RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet
-
-# PHPUnit
-RUN wget https://phar.phpunit.de/phpunit.phar -O /usr/local/bin/phpunit \
-    && chmod +x /usr/local/bin/phpunit
-
-# PHP Memcached:
-ARG INSTALL_MEMCACHED=false
-
-RUN if [ ${INSTALL_MEMCACHED} = true ]; then \
-    # Install the php memcached extension
-    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-      curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/2.2.0.tar.gz"; \
-    else \
-      curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz"; \
-    fi \
-    && mkdir -p memcached \
-    && tar -C memcached -zxvf /tmp/memcached.tar.gz --strip 1 \
-    && ( \
-        cd memcached \
-        && phpize \
-        && ./configure \
-        && make -j$(nproc) \
-        && make install \
-    ) \
-    && rm -r memcached \
-    && rm /tmp/memcached.tar.gz \
-    && docker-php-ext-enable memcached \
-;fi
 
 WORKDIR /var/www
 
-# Copy composer files and install dependencies
-COPY composer.json composer.lock ./
-RUN composer install --no-interaction --no-plugins --no-scripts --no-autoloader --ignore-platform-reqs
+# Copy vendor from build stage
+COPY --from=build-stage /app/vendor /var/www/vendor
 
-# Copy the rest of the application
+# Copy application code
 COPY . .
 
-# Run final autoloader optimization
-ENV COMPOSER_MEMORY_LIMIT=-1
-RUN composer dump-autoload -v --no-scripts --ignore-platform-reqs
-
+# Final config copy
 COPY ./.docker/php/php-fpm.conf /usr/local/etc/php-fpm.conf
