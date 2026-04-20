@@ -57,6 +57,7 @@ RUN composer install --no-interaction --no-plugins --no-scripts --no-autoloader 
 COPY . .
 
 # Run final autoloader optimization
-RUN composer dump-autoload --optimize --no-scripts --ignore-platform-reqs
+ENV COMPOSER_MEMORY_LIMIT=-1
+RUN composer dump-autoload -v --no-scripts --ignore-platform-reqs
 
 COPY ./.docker/php/php-fpm.conf /usr/local/etc/php-fpm.conf
