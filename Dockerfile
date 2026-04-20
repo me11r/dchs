@@ -48,3 +48,5 @@ RUN if [ ${INSTALL_MEMCACHED} = true ]; then \
 ;fi
 
 WORKDIR /var/www
+
+COPY ./.docker/php/php-fpm.conf /usr/local/etc/php-fpm.conf
