@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx
-    image: dchs-app-nginx
+    image: dchs-app-nginx:v1
     # container_name: "app-nginx"
     ports:
       - 3080:80
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dchs-app-fpm
+    image: dchs-app-fpm:v1
     # container_name: "app-fpm"
     working_dir: /var/www
     volumes:
