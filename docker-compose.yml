@@ -44,8 +44,6 @@ services:
       REDIS_PORT: ${REDIS_PORT:-6379}
       ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-http://app-elasticsearch}
     tty: true
-    depends_on:
-      - app-composer-vendors
     expose:
       - "9000"
       - "9001"
@@ -92,8 +90,6 @@ services:
       REDIS_HOST: ${REDIS_HOST:-app-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
     command: sh -lc 'while [ ! -f /var/www/vendor/autoload.php ]; do sleep 2; done; php /var/www/artisan queue:work'
-    depends_on:
-      - app-composer-vendors
     restart: unless-stopped
 
   app-redis:
@@ -120,16 +116,6 @@ services:
   #    image: elasticsearch:5.6
   #    networks:
   #      - app-network
-
-  # service containers
-  app-composer-vendors:
-    # container_name: "app-composer-vendors"
-    image: composer:1
-    volumes:
-      - ./:/app
-    command: composer install --ignore-platform-reqs --no-interaction
-    networks:
-      - app-network
 
 #  app-scout-models:
 #    container_name: "app-scout-models"

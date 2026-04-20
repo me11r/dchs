@@ -49,4 +49,14 @@ RUN if [ ${INSTALL_MEMCACHED} = true ]; then \
 
 WORKDIR /var/www
 
+# Copy composer files and install dependencies
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --no-plugins --no-scripts --no-autoloader --ignore-platform-reqs
+
+# Copy the rest of the application
+COPY . .
+
+# Run final autoloader optimization
+RUN composer dump-autoload --optimize --ignore-platform-reqs
+
 COPY ./.docker/php/php-fpm.conf /usr/local/etc/php-fpm.conf
