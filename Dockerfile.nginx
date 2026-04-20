@@ -3,3 +3,6 @@ FROM nginx:alpine
 COPY ./.docker/routing/nginx.conf /etc/nginx/nginx.conf
 COPY ./.docker/routing/fastcgi_params /etc/nginx/fastcgi_params
 COPY ./.docker/routing/conf.d/ /etc/nginx/conf.d/
+
+# Copy public assets into the Nginx image so it can serve them directly
+COPY ./public /var/www/public

@@ -5,12 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx
-    image: dchs-app-nginx:v1
+    image: dchs-app-nginx:v2
     # container_name: "app-nginx"
     ports:
       - 3080:80
-    volumes:
-      - ./:/var/www:ro
     networks:
       - app-network
     depends_on:
