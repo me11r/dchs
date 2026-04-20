@@ -34,5 +34,10 @@ COPY . .
 # Copy fully-built vendor from Stage 1 (overrides any empty vendor in COPY above)
 COPY --from=build-stage /app/vendor /var/www/vendor
 
+# Fix permissions so Laravel can write to storage and cache
+RUN mkdir -p /var/www/storage/logs \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
 # Final config copy
 COPY ./.docker/php/php-fpm.conf /usr/local/etc/php-fpm.conf

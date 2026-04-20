@@ -18,7 +18,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dchs-app-fpm:v2
+    image: dchs-app-fpm:v3
     # container_name: "app-fpm"
     working_dir: /var/www
     networks:
@@ -65,7 +65,7 @@ services:
 
   app-queue:
     # container_name: "app-queue"
-    image: dchs-app-fpm:v2
+    image: dchs-app-fpm:v3
     networks:
       - app-network
     environment:
