@@ -1,5 +1,9 @@
 FROM laradock/php-fpm:2.2-7.2
 
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list \
+    && sed -i 's/security.debian.org/archive.debian.org/g' /etc/apt/sources.list \
+    && apt-get -o Acquire::Check-Valid-Until=false update
+    
 RUN apt-get update && apt-get install -y libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libzip-dev zip libpq-dev default-mysql-client wget libzip-dev  \
     && docker-php-ext-install pdo_mysql \
     && docker-php-ext-install pcntl \
