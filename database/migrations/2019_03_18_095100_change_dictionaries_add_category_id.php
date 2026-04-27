@@ -14,14 +14,21 @@ class ChangeDictionariesAddCategoryId extends Migration
     public function up()
     {
         Schema::table('dictionaries', function (Blueprint $table) {
-            $table->unsignedInteger('dictionary_category_id')->after('id')->nullable();
-            $table->foreign('dictionary_category_id')
-                ->references('id')
-                ->on('dictionary_categories')
-                ->onDelete('SET NULL');
+            if (!Schema::hasColumn('dictionaries', 'dictionary_category_id')) {
+                $table->unsignedInteger('dictionary_category_id')->after('id')->nullable();
+                $table->foreign('dictionary_category_id')
+                    ->references('id')
+                    ->on('dictionary_categories')
+                    ->onDelete('SET NULL');
+            }
 
-            $table->integer('sort_order')->index()->after('id')->nullable()->default(10);
-            $table->string('url')->after('id')->nullable();
+            if (!Schema::hasColumn('dictionaries', 'sort_order')) {
+                $table->integer('sort_order')->index()->after('id')->nullable()->default(10);
+            }
+
+            if (!Schema::hasColumn('dictionaries', 'url')) {
+                $table->string('url')->after('id')->nullable();
+            }
         });
 
         $dictionaryToRename = \App\Dictionary::name('Нормативно-справочная информация')->first();
