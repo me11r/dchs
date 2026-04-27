@@ -26,7 +26,7 @@ class CreateBuildingsTable extends Migration
 
             $table->string('building_number')->nullable();
 
-            $table->integer('street_id')->nullable();
+            $table->unsignedInteger('street_id')->nullable();
             $table->foreign('street_id')
                 ->references('id')
                 ->on('streets')
