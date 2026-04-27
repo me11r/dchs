@@ -94,7 +94,7 @@ class ChangeDictionariesAddCategoryId extends Migration
 
         foreach ($setCategoryItems as $sortOrder => $setCategoryItem) {
 
-            $category = \App\DictionaryCategory::name($setCategoryItem['category'])->first();
+            $category = \App\DictionaryCategory::firstOrCreate(['name' => $setCategoryItem['category']]);
             $dict = \App\Dictionary::name($setCategoryItem['dict'])->first();
 
             if ($category && $dict) {
@@ -115,7 +115,7 @@ class ChangeDictionariesAddCategoryId extends Migration
             }
         }
 
-        $commonSection = \App\DictionaryCategory::name('Общий раздел')->first();
+        $commonSection = \App\DictionaryCategory::firstOrCreate(['name' => 'Общий раздел']);
 
         $otherDicts = \App\Dictionary::whereNull('dictionary_category_id')->update(['dictionary_category_id' => $commonSection->id]);
 
